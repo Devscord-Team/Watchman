@@ -53,14 +53,14 @@ namespace Watchman.Discord.Areas.Users.Controllers
             if(user.Roles.Any(x => x.Name == role.Name)) //todo change name to ID, but for that we need database
             {
                 //todo message
-                message.Channel.SendMessageAsync($"Użytkownik {user.Nickname} posiada już role {commandRole}");
+                message.Channel.SendMessageAsync($"Użytkownik {user.ToString()} posiada już role {commandRole}");
                 return;
             }
             var serverRole = Server.GetRoles(user.Guild.Id).First(x => x.Name == role.Name); // todo change name to id
 
             user.AddRoleAsync(serverRole).Wait();
             //todo message
-            message.Channel.SendMessageAsync($"Dodano role {commandRole} użytkownikowi {user.Nickname}");
+            message.Channel.SendMessageAsync($"Dodano role {commandRole} użytkownikowi {user.ToString()}");
         }
 
         [DiscordCommand("-remove role")]
