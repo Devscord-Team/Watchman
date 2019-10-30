@@ -9,7 +9,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
     public class AntiSpamController : IController
     {
         //TODO balans
-        private List<Tuple<ulong, DateTime>> _lastMessages = new List<Tuple<ulong, DateTime>>();
+        private List<(ulong AuthorId, DateTime MessageDateTime)> _lastMessages = new List<(ulong, DateTime)>();
         private List<ulong> _warns = new List<ulong>();
 
         public AntiSpamController()
@@ -21,7 +21,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         {
             var authorId = message.Author.Id;
 
-            var messagesInLastTime = _lastMessages.Where(x => x.Item2 >= DateTime.Now.AddSeconds(-10) && x.Item1 == authorId).Count();
+            var messagesInLastTime = _lastMessages.Where(x => x.MessageDateTime >= DateTime.Now.AddSeconds(-10) && x.AuthorId == authorId).Count();
             if (messagesInLastTime >= 5)
             {
                 if (!_warns.Contains(authorId))
@@ -36,12 +36,12 @@ namespace Watchman.Discord.Areas.Protection.Controllers
                 }
                 
             }
-            else if (_warns.Contains(authorId) && !_lastMessages.Any(x => x.Item2 >= DateTime.Now.AddSeconds(-10) && x.Item1 == authorId)) //todo optimalize
+            else if (_warns.Contains(authorId) && !_lastMessages.Any(x => x.MessageDateTime >= DateTime.Now.AddSeconds(-10) && x.AuthorId == authorId)) //todo optimalize
             {
                 _warns.Remove(authorId);
             }
-            _lastMessages.Add(new Tuple<ulong, DateTime>(authorId, DateTime.Now));
-            _lastMessages.Where(x => x.Item2 < DateTime.Now.AddSeconds(-15))
+            _lastMessages.Add((authorId, DateTime.Now));
+            _lastMessages.Where(x => x.MessageDateTime < DateTime.Now.AddSeconds(-15))
                 .ToList()
                 .ForEach(x => _lastMessages.Remove(x));
         }
