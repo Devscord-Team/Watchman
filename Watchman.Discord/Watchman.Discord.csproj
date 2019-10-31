@@ -21,4 +21,8 @@
     <Folder Include="Areas\Users\Services\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Watchman.Integrations\Watchman.Integrations.csproj" />
+  </ItemGroup>
+
 </Project>
