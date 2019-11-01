@@ -69,7 +69,7 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
             };
 
             var content = message.Content;
-            var date = DateTime.Now; //TODO save all dates in UTC
+            var date = DateTime.UtcNow;
 
             var result = new MessageInformation
             {
