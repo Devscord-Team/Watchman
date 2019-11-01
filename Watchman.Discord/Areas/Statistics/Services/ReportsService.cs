@@ -66,9 +66,9 @@ namespace Watchman.Discord.Areas.Statistics.Services
             switch (period)
             {
                 case Period.Hour:
-                    return new DateTime(endOfPeriod.Year, endOfPeriod.Month, endOfPeriod.Day, endOfPeriod.Hour, 0, 0).AddHours(-1);
+                    return new DateTime(endOfPeriod.Year, endOfPeriod.Month, endOfPeriod.Day, endOfPeriod.Hour, 0, 0);
                 case Period.Day:
-                    return new DateTime(endOfPeriod.Year, endOfPeriod.Month, endOfPeriod.Day).AddDays(-1);
+                    return new DateTime(endOfPeriod.Year, endOfPeriod.Month, endOfPeriod.Day);
                 case Period.Week:
                     return new DateTime(endOfPeriod.Year, endOfPeriod.Month, endOfPeriod.Day).AddDays(-6);
                 case Period.Month:
@@ -82,7 +82,7 @@ namespace Watchman.Discord.Areas.Statistics.Services
             switch (period)
             {
                 case Period.Hour:
-                    return new DateTime(latestDate.Year, latestDate.Month, latestDate.Day, latestDate.Hour, 0, 0).AddMilliseconds(-1);
+                    return new DateTime(latestDate.Year, latestDate.Month, latestDate.Day, latestDate.Hour, 0, 0).AddHours(1).AddMilliseconds(-1);
                 case Period.Day:
                     return new DateTime(latestDate.Year, latestDate.Month, latestDate.Day).AddDays(1).AddMilliseconds(-1);
                 case Period.Week:
