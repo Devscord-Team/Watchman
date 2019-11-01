@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Watchman.Discord.Areas.Commons.Models;
+using Watchman.Common.Models;
 using Watchman.Discord.Areas.Statistics.Models;
 
 namespace Watchman.Discord.Areas.Statistics.Services
