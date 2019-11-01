@@ -1,4 +1,4 @@
-﻿namespace Watchman.Discord.Areas.Commons.Models
+﻿namespace Watchman.Common.Models
 {
     public enum Period
     {
