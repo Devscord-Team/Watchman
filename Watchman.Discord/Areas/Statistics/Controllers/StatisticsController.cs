@@ -1,12 +1,10 @@
 ﻿using Discord.WebSocket;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Watchman.Discord.Areas.Commons.Models;
+using Watchman.Common.Models;
 using Watchman.Discord.Areas.Statistics.Models;
 using Watchman.Discord.Areas.Statistics.Services;
 using Watchman.Discord.Framework;
@@ -32,11 +30,13 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
 
         private readonly ISession _session;
         private readonly ReportsService _reportsService;
+        private readonly ChartsService _chartsService;
 
         public StatisticsController()
         {
             this._session = new SessionFactory(Server.GetDatabase()).Create(); //todo use IoC
             this._reportsService = new ReportsService();
+            this._chartsService = new ChartsService();
         }
 
         //TODO informations about author, channel and server should be set in middleware 
@@ -135,6 +135,8 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
             var dataToMessage = "```json\n" + JsonConvert.SerializeObject(report.StatisticsPerPeriod.Where(x => x.MessagesQuantity > 0), Formatting.Indented) + "\n```";
             message.Channel.SendMessageAsync(dataToMessage);
 #endif
+            var path = _chartsService.GetImageStatisticsPerPeriod(report);
+            message.Channel.SendFileAsync(path);
         }
 
         private Task SaveToDatabase(MessageInformation data)
