@@ -10,6 +10,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="config-prod.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -19,6 +22,10 @@
     <Folder Include="Areas\Commons\Extensions\" />
     <Folder Include="Areas\Users\Models\" />
     <Folder Include="Areas\Users\Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Watchman.Integrations\Watchman.Integrations.csproj" />
   </ItemGroup>
 
 </Project>

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Watchman.Discord.Areas.Protection.Controllers;
 using Watchman.Discord.Framework;
 using Watchman.Discord.Framework.Middlewares;
+using Watchman.Integrations.MongoDB;
 
 namespace Watchman.Discord
 {
@@ -20,24 +21,28 @@ namespace Watchman.Discord
 
         public WatchmanBot(DiscordConfiguration configuration = null)
         {
+            var configPath = "config.json";
+#if RELEASE
+            configPath = "config-prod.json"
+#endif
+            this._configuration = configuration ?? JsonConvert
+                .DeserializeObject<DiscordConfiguration>(File.ReadAllText(configPath));
+
             this._client = new DiscordSocketClient(new DiscordSocketConfig 
             {
                 TotalShards = 1
             });
-
-            Server.Initialize(this._client);
-
             this._workflow = new Workflow();
-
-            this._configuration = configuration ?? JsonConvert
-                .DeserializeObject<DiscordConfiguration>(File.ReadAllText("config.json"));
-
             _client.MessageReceived += this.MessageReceived;
             _client.Log += this.Log;
         }
 
         public async Task Start()
         {
+            MongoConfiguration.Initialize();
+            Server.Initialize(this._client, this._configuration.MongoDbConnectionString);
+            
+            
             this._workflow
                 .AddMiddleware<LoggingMiddleware>()
                 .AddControllers();
