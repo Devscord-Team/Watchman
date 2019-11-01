@@ -3,9 +3,12 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Watchman.Discord.Areas.Commons.Models;
 using Watchman.Discord.Areas.Statistics.Models;
+using Watchman.Discord.Areas.Statistics.Services;
 using Watchman.Discord.Framework;
 using Watchman.Discord.Framework.Architecture.Controllers;
 using Watchman.Integrations.MongoDB;
@@ -28,10 +31,12 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
 
 
         private readonly ISession _session;
+        private readonly ReportsService _reportsService;
 
         public StatisticsController()
         {
             this._session = new SessionFactory(Server.GetDatabase()).Create(); //todo use IoC
+            this._reportsService = new ReportsService();
         }
 
         //TODO informations about author, channel and server should be set in middleware 
@@ -89,6 +94,47 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
 #endif
 
             this.SaveToDatabase(result);
+        }
+
+        [DiscordCommand("-stats")]
+        public void GetStatisticsPerPeriod(SocketMessage message)
+        {
+
+#if DEBUG
+            if (!message.Channel.Name.Contains("test"))
+            {
+                return;
+            }
+#endif
+
+            var period = Period.Day;
+            //todo other class in Commons
+            if (message.Content.ToLowerInvariant().Contains("hour"))
+            {
+                period = Period.Hour;
+            }
+            else if (message.Content.ToLowerInvariant().Contains("day"))
+            {
+                period = Period.Day;
+            }
+            else if (message.Content.ToLowerInvariant().Contains("week"))
+            {
+                period = Period.Week;
+            }
+            else if (message.Content.ToLowerInvariant().Contains("month"))
+            {
+                period = Period.Month;
+            }
+
+            //todo set oldest possible based on period
+            var messages = this._session.Get<MessageInformation>().ToList();
+            var report = _reportsService.CreateReport(messages, period);
+
+#if DEBUG
+            var shortStatistics = report.StatisticsPerPeriod.Select(x => (Amount: x.MessagesQuantity, x.TimeRange));
+            var dataToMessage = "```json\n" + JsonConvert.SerializeObject(shortStatistics, Formatting.Indented) + "\n```";
+            message.Channel.SendMessageAsync(dataToMessage);
+#endif
         }
 
         private Task SaveToDatabase(MessageInformation data)
