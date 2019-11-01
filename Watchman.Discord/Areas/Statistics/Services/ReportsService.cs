@@ -18,9 +18,9 @@ namespace Watchman.Discord.Areas.Statistics.Services
             }
 
             var sortedMessages = messages.OrderByDescending(x => x.Date);
-            var latestDateBasedOnPeriod = this.GetLatestDateBasedOnPeriod(messages.First().Date, period);
+            var latestDateBasedOnPeriod = this.GetLatestDateBasedOnPeriod(sortedMessages.First().Date, period);
 
-            var statisticsPerPeriod = this.SplitMessagesToReportsPerPeriod(messages, latestDateBasedOnPeriod, period);
+            var statisticsPerPeriod = this.SplitMessagesToReportsPerPeriod(sortedMessages, latestDateBasedOnPeriod, period);
 
             return new StatisticsReport
             {
@@ -48,55 +48,32 @@ namespace Watchman.Discord.Areas.Statistics.Services
                 result.Add(statisticsInCurrentPeriod);
                 currentPeriod = this.TransferToPreviousPeriod(currentPeriod, period);
 
-            } while (messagesInCurrentPeriod.Any());
-            
+            } while (currentPeriod.Start.Date >= messages.Last().Date.Date);
+            var last = messages.Last();
             return result;
         }
 
         private TimeRange TransferToPreviousPeriod(TimeRange currentPeriod, Period period)
         {
-            switch (period)
+            return new TimeRange
             {
-                case Period.Hour:
-                    return new TimeRange
-                    {
-                        Start = currentPeriod.Start.AddHours(-1),
-                        End = currentPeriod.End.AddHours(-1)
-                    };
-                case Period.Day:
-                    return new TimeRange
-                    {
-                        Start = currentPeriod.Start.AddDays(-1),
-                        End = currentPeriod.End.AddDays(-1),
-                    };
-                case Period.Week:
-                    return new TimeRange
-                    {
-                        Start = currentPeriod.Start.AddDays(-7),
-                        End = currentPeriod.End.AddDays(-7),
-                    };
-                case Period.Month:
-                    return new TimeRange
-                    {
-                        Start = currentPeriod.Start.AddMonths(-1),
-                        End = currentPeriod.End.AddMonths(-1),
-                    };
-            }
-            return default;
+                Start = this.GetOldestMessageInCurrentPeriod(currentPeriod.Start.AddMinutes(-1), period),
+                End = this.GetLatestDateBasedOnPeriod(currentPeriod.Start.AddMinutes(-1), period),
+            };
         }
 
-        private DateTime GetOldestMessageInCurrentPeriod(DateTime startOfPeriod, Period period)
+        private DateTime GetOldestMessageInCurrentPeriod(DateTime endOfPeriod, Period period)
         {
             switch (period)
             {
                 case Period.Hour:
-                    return startOfPeriod.AddHours(-1);
+                    return new DateTime(endOfPeriod.Year, endOfPeriod.Month, endOfPeriod.Day, endOfPeriod.Hour, 0, 0).AddHours(-1);
                 case Period.Day:
-                    return startOfPeriod.AddDays(-1);
+                    return new DateTime(endOfPeriod.Year, endOfPeriod.Month, endOfPeriod.Day).AddDays(-1);
                 case Period.Week:
-                    return startOfPeriod.AddDays(-7);
+                    return new DateTime(endOfPeriod.Year, endOfPeriod.Month, endOfPeriod.Day).AddDays(-6);
                 case Period.Month:
-                    return startOfPeriod.AddMonths(-1);
+                    return new DateTime(endOfPeriod.Year, endOfPeriod.Month, 1);
             }
             return default;
         }
@@ -106,13 +83,13 @@ namespace Watchman.Discord.Areas.Statistics.Services
             switch (period)
             {
                 case Period.Hour:
-                    return new DateTime(latestDate.Year, latestDate.Month, latestDate.Day, latestDate.Hour + 1, 0, 0);
+                    return new DateTime(latestDate.Year, latestDate.Month, latestDate.Day, latestDate.Hour, 0, 0).AddMilliseconds(-1);
                 case Period.Day:
-                    return new DateTime(latestDate.Year, latestDate.Month, latestDate.Day);
+                    return new DateTime(latestDate.Year, latestDate.Month, latestDate.Day).AddDays(1).AddMilliseconds(-1);
                 case Period.Week:
-                    return new DateTime(latestDate.Year, latestDate.Month, latestDate.Day).AddDays(-(int)latestDate.DayOfWeek + 6); //should be sunday
+                    return new DateTime(latestDate.Year, latestDate.Month, latestDate.Day).AddDays(-(int)latestDate.DayOfWeek + 7).AddDays(1).AddMilliseconds(-1); //should be sunday
                 case Period.Month:
-                    return new DateTime(latestDate.Year, latestDate.Month + 1, 1).AddDays(-1); //last day of current month
+                    return new DateTime(latestDate.Year, latestDate.Month, DateTime.DaysInMonth(latestDate.Year, latestDate.Month)).AddDays(1).AddMilliseconds(-1); //last day of current month
             }
             return default;
         }

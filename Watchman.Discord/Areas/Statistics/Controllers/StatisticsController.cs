@@ -131,8 +131,8 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
             var report = _reportsService.CreateReport(messages, period);
 
 #if DEBUG
-            var shortStatistics = report.StatisticsPerPeriod.Select(x => (Amount: x.MessagesQuantity, x.TimeRange));
-            var dataToMessage = "```json\n" + JsonConvert.SerializeObject(shortStatistics, Formatting.Indented) + "\n```";
+
+            var dataToMessage = "```json\n" + JsonConvert.SerializeObject(report.StatisticsPerPeriod.Where(x => x.MessagesQuantity > 0), Formatting.Indented) + "\n```";
             message.Channel.SendMessageAsync(dataToMessage);
 #endif
         }
