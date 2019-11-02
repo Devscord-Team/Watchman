@@ -90,7 +90,7 @@ namespace Watchman.Discord.Framework
 
                     var command = (DiscordCommand)Activator.CreateInstance(typeof(DiscordCommand), commandArguments);
 
-                    if (message.Content.StartsWith(command.Command))
+                    if (message.Content.ToLowerInvariant().StartsWith(command.Command))
                     {
                         method.Invoke(controller, new object[] { message });
                         break;

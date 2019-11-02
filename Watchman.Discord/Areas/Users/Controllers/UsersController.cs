@@ -40,7 +40,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
         [DiscordCommand("-add role")]
         public void AddRole(SocketMessage message)
         {
-            var commandRole = message.Content.Replace("-add role ", string.Empty);
+            var commandRole = message.Content.ToLowerInvariant().Replace("-add role ", string.Empty);
 
             var role = _safeRoles.FirstOrDefault(x => x.Name == commandRole);
             if(role == null)
@@ -66,7 +66,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
         [DiscordCommand("-remove role")]
         public void RemoveRole(SocketMessage message)
         {
-            var commandRole = message.Content.Replace("-remove role ", string.Empty);
+            var commandRole = message.Content.ToLowerInvariant().Replace("-remove role ", string.Empty);
             var role = _safeRoles.FirstOrDefault(x => x.Name == commandRole);
             if (role == null)
             {
