@@ -28,10 +28,5 @@ Jeśli chcesz przyjrzeć się działaniu Watchmana z zewnątrz, wejdź na na ser
      - Jakie masz doświadczenie w programowaniu i C# (hobbystyczne i komercyjne)
      - Czy masz doświadczenie w tworzeniu botów discordowych
      - Dlaczego chcesz pomóc w rozwijaniu bota? (opcjonalne)
-           - Uważasz to za wartościowe doświadczenie do CV
-           - Chcesz poznać ludzi z branży
-           - Chcesz zdobyć doświadczenie w grupowym rozwijaniu projektów
-           - Sam używasz bota i chcesz dodać mu kilka funkcjonalności
-           - Inne
-      - Podaj link do swojego githuba (lub innego repozytorium które jest twoim portfolio)
+     - Podaj link do swojego githuba (lub innego repozytorium które jest twoim portfolio)
  - Czekaj na prywatną wiadomość od jednego z programistów
