@@ -40,7 +40,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
         [DiscordCommand("-add role")]
         public void AddRole(SocketMessage message)
         {
-            var commandRole = message.Content.ToLower().Replace("-add role ", string.Empty);
+            var commandRole = message.Content.ToLowerInvariant().Replace("-add role ", string.Empty);
 
             var role = _safeRoles.FirstOrDefault(x => x.Name == commandRole);
             if(role == null)
