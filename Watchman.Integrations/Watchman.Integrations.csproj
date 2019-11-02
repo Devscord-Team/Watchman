@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Discord.Net.WebSocket" Version="2.1.1" />
     <PackageReference Include="MongoDB.Driver" Version="2.9.2" />
   </ItemGroup>
 
