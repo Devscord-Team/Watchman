@@ -1,4 +1,5 @@
-﻿using Watchman.Discord.Areas.Commons.Models;
+﻿
+using Watchman.Common.Models;
 
 namespace Watchman.Discord.Areas.Statistics.Models
 {

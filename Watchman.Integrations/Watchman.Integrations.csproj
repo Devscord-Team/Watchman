@@ -8,4 +8,8 @@
     <PackageReference Include="MongoDB.Driver" Version="2.9.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Watchman.Common\Watchman.Common.csproj" />
+  </ItemGroup>
+
 </Project>

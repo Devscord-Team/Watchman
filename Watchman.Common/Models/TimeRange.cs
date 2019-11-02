@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Watchman.Discord.Areas.Commons.Models
+namespace Watchman.Common.Models
 {
     public class TimeRange
     {

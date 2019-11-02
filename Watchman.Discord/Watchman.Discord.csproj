@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Areas\Statistics\Services\ChartsService.cs~RF1d33175.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Discord.Net" Version="2.1.1" />
   </ItemGroup>
 
@@ -19,12 +23,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Commons\Extensions\" />
     <Folder Include="Areas\Users\Models\" />
     <Folder Include="Areas\Users\Services\" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Watchman.Common\Watchman.Common.csproj" />
     <ProjectReference Include="..\Watchman.Integrations\Watchman.Integrations.csproj" />
   </ItemGroup>
 
