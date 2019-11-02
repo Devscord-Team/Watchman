@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using Watchman.Discord.Framework.Architecture.Controllers;
@@ -8,32 +9,35 @@ namespace Watchman.Discord.Areas.Announcements.Controllers
 {
     class AnnouncementsController : ReadAlways, IController
     {
-        private TimeSpan HowOften => new TimeSpan(0, 0, 15); // every 2 hours and 1 minute
-        private bool _autoBumpIsOn;
+        private TimeSpan HowOften => new TimeSpan(2, 1, 0); // every 2 hours and 1 minute
+        private CancellationTokenSource _tokenSource;
         private ServerBumper _bumper;
 
         [DiscordCommand("-autobump start")]
         public void AutoBumpStart(SocketMessage socketMessage)
         {
-            _autoBumpIsOn = true;
+            this._tokenSource = new CancellationTokenSource();
+
             socketMessage.Channel.SendMessageAsync("Started auto bumping.");
 
             _bumper = new ServerBumper(socketMessage.Channel);
-            ManageBumping();
+            _ = BumpUntilNotStopped();
         }
 
         [DiscordCommand("-autobump stop")]
         public void AutoBumpStop(SocketMessage socketMessage)
         {
-            _autoBumpIsOn = false;
+            this._tokenSource.Cancel();
             socketMessage.Channel.SendMessageAsync("Stopped auto bumping.");
         }
 
-        private async void ManageBumping()
+        private async Task BumpUntilNotStopped()
         {
-            while (_autoBumpIsOn)
+            var factory = new TaskFactory(_tokenSource.Token);
+
+            while (true)
             {
-                await _bumper.SendBump();
+                await factory.StartNew(() => _bumper.SendBump());
                 await Task.Delay(HowOften);
             }
         }
