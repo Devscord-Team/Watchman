@@ -6,7 +6,6 @@ Po doświadczeniu chaosu związanego z używaniem wielu botów na naszym serwerz
 
 ## Jak dodać Watchmana do mojego serwera?
 Kliknij w [ZAPROSZENIE BOTA](https://discordapp.com/api/oauth2/authorize?client_id=636274997786312723&permissions=2147483127&scope=bot) i wybierz z listy te uprawnienia, które chcesz żeby posiadał Watchman na twoim serwerze.
-
 #### Dlaczego domyślnie ustawione są wszystkie uprawnienia?
 - Bot jest ciągle rozwijany i bardzo możliwe, że z czasem będą dochodzić możliwości, wymagające kolejnych uprawnień
 - Zdajemy sobie sprawę z tego, że różne serwery mają różną politykę funkcjonowania
@@ -14,6 +13,7 @@ Kliknij w [ZAPROSZENIE BOTA](https://discordapp.com/api/oauth2/authorize?client_
 Powiemy ci o tym. Jeśli spróbujesz zrobić coś, do czego Watchman nie ma uprawnienia, dostaniesz powiadomienie którego powiadomienia brakuje ci, aby wykonać tą akcję.
 ## Gdzie można spotkać Watchmana?
 Jeśli chcesz przyjrzeć się działaniu Watchmana z zewnątrz, wejdź na na serwer **Devscord** [ZAPROSZENIE](https://discord.gg/TZfg68D) i zobacz jak funkcjonuje w naturalnym środowisku.
+
 ## Jak pomóc w rozwoju Watchamana?
 #### Jakich narzędzi potrzebuję aby zacząć współpracę?
 - .NET Core 2.2
