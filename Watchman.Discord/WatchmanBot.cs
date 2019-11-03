@@ -23,7 +23,7 @@ namespace Watchman.Discord
         {
             var configPath = "config.json";
 #if RELEASE
-            configPath = "config-prod.json"
+            configPath = "config-prod.json";
 #endif
             this._configuration = configuration ?? JsonConvert
                 .DeserializeObject<DiscordConfiguration>(File.ReadAllText(configPath));
