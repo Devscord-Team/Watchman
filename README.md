@@ -4,7 +4,7 @@ Aby do niego dołączyć kliknij w to  [ZAPROSZENIE](https://discord.gg/TZfg68D)
 
 Po doświadczeniu chaosu związanego z używaniem wielu botów na naszym serwerze uznaliśmy, że (skoro jesteśmy programistami) dużo lepszym rozwiązaniem będzie stworzenie własnego bota, który zastąpi wszystkie inne, które uważaliśmy za niezbędne.
 
-## Jak dodać Watchmana do mojego serwera?
+## Jak mogę dodać Watchmana do mojego serwera?
 Kliknij w [ZAPROSZENIE BOTA](https://discordapp.com/api/oauth2/authorize?client_id=636274997786312723&permissions=2147483127&scope=bot) i wybierz z listy te uprawnienia, które chcesz żeby posiadał Watchman na twoim serwerze.
 
 #### Dlaczego domyślnie ustawione są wszystkie uprawnienia?
