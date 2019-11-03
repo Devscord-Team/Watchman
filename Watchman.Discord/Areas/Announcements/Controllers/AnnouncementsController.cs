@@ -7,7 +7,7 @@ using Watchman.Integrations.Disboard;
 
 namespace Watchman.Discord.Areas.Announcements.Controllers
 {
-    class AnnouncementsController : ReadAlways, IController
+    class AnnouncementsController : IController
     {
         private readonly ServerBumper _bumper;
 
@@ -16,6 +16,7 @@ namespace Watchman.Discord.Areas.Announcements.Controllers
             _bumper = new ServerBumper();
         }
 
+        [ReadAlways]
         [DiscordCommand("-autobump start")]
         public void AutoBumpStart(SocketMessage socketMessage)
         {
@@ -27,6 +28,7 @@ namespace Watchman.Discord.Areas.Announcements.Controllers
             }
         }
 
+        [ReadAlways]
         [DiscordCommand("-autobump stop")]
         public void AutoBumpStop(SocketMessage socketMessage)
         {

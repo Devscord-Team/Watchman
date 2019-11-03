@@ -11,7 +11,7 @@ namespace Watchman.Integrations.Disboard
     {
         public ISocketMessageChannel MessageChannel { get; }
         
-        private const string BumpMessage = "!d bump";
+        private const string _bumpMessage = "!d bump";
 
         private static TimeSpan HowOften => new TimeSpan(2, 1, 0); // every 2 hours and 1 minute
 
@@ -43,7 +43,7 @@ namespace Watchman.Integrations.Disboard
 
         private Task SendBump()
         {
-            MessageChannel.SendMessageAsync(BumpMessage);
+            MessageChannel.SendMessageAsync(_bumpMessage);
             return Task.CompletedTask;
         }
     }
