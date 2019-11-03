@@ -16,7 +16,6 @@ namespace Watchman.Discord.Areas.Announcements.Controllers
             _bumper = new ServerBumper();
         }
 
-        [ReadAlways]
         [DiscordCommand("-autobump start")]
         public void AutoBumpStart(SocketMessage socketMessage)
         {
@@ -28,7 +27,6 @@ namespace Watchman.Discord.Areas.Announcements.Controllers
             }
         }
 
-        [ReadAlways]
         [DiscordCommand("-autobump stop")]
         public void AutoBumpStop(SocketMessage socketMessage)
         {
