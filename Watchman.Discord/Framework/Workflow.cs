@@ -92,10 +92,11 @@ namespace Watchman.Discord.Framework
 
                     if (message.Content.ToLowerInvariant().StartsWith(command.Command))
                     {
-                        if (method.CustomAttributes.Any(a => a.AttributeType.FullName == typeof(AdminCommand).FullName))
+                        bool isMethodAdminOnly = method.CustomAttributes.Any(a => a.AttributeType.FullName == typeof(AdminCommand).FullName);
+
+                        if (isMethodAdminOnly && !HasAdminPermissions(message.Author))
                         {
-                            if (!HasAdminPermissions(message.Author))
-                                break;
+                            break;
                         }
 
                         method.Invoke(controller, new object[] { message });
