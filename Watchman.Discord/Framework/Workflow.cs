@@ -109,7 +109,7 @@ namespace Watchman.Discord.Framework
         private bool HasAdminPermissions(SocketUser user)
         {
             var author = (SocketGuildUser)user;
-            return author.Roles.Any(r => r.Permissions.Administrator);
+            return author.Roles.Any(r => r.Name.ToLowerInvariant() == "admin");
         }
     }
 }
