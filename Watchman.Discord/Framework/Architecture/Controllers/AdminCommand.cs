@@ -15,11 +15,5 @@ namespace Watchman.Discord.Framework.Architecture.Controllers
         public AdminCommand()
         {
         }
-
-        public AdminCommand(SocketMessage socketMessage)
-        {
-            var author = (SocketGuildUser)socketMessage.Author;
-            this.IsRequestedByAdmin = author.Roles.Any(r => r.Permissions.Administrator);
-        }
     }
 }

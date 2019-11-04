@@ -94,8 +94,7 @@ namespace Watchman.Discord.Framework
                     {
                         if (method.CustomAttributes.Any(a => a.AttributeType.FullName == typeof(AdminCommand).FullName))
                         {
-                            var adminCommand = new AdminCommand(message);
-                            if (!adminCommand.IsRequestedByAdmin)
+                            if (!HasAdminPermissions(message.Author))
                                 break;
                         }
 
@@ -105,6 +104,11 @@ namespace Watchman.Discord.Framework
                 }
             }
             return Task.CompletedTask;
+        }
+        private bool HasAdminPermissions(SocketUser user)
+        {
+            var author = (SocketGuildUser)user;
+            return author.Roles.Any(r => r.Permissions.Administrator);
         }
     }
 }
