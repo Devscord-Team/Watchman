@@ -10,7 +10,6 @@ namespace Watchman.Discord.Framework.Architecture.Controllers
     [AttributeUsage(AttributeTargets.Method)]
     class AdminCommand : Attribute
     {
-        public bool IsRequestedByAdmin { get; }
 
         public AdminCommand()
         {
