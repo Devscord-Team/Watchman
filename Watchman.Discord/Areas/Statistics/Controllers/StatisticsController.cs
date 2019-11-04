@@ -96,6 +96,7 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
             this.SaveToDatabase(result);
         }
 
+        [AdminCommand]
         [DiscordCommand("-stats")]
         public void GetStatisticsPerPeriod(SocketMessage message)
         {

@@ -92,12 +92,24 @@ namespace Watchman.Discord.Framework
 
                     if (message.Content.ToLowerInvariant().StartsWith(command.Command))
                     {
+                        bool isMethodAdminOnly = method.CustomAttributes.Any(a => a.AttributeType.FullName == typeof(AdminCommand).FullName);
+
+                        if (isMethodAdminOnly && !HasAdminPermissions(message.Author))
+                        {
+                            break;
+                        }
+
                         method.Invoke(controller, new object[] { message });
                         break;
                     }
                 }
             }
             return Task.CompletedTask;
+        }
+        private bool HasAdminPermissions(SocketUser user)
+        {
+            var author = (SocketGuildUser)user;
+            return author.Roles.Any(r => r.Name.ToLowerInvariant() == "admin");
         }
     }
 }
