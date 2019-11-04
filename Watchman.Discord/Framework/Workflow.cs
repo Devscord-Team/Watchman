@@ -95,12 +95,11 @@ namespace Watchman.Discord.Framework
                         if (method.CustomAttributes.Any(a => a.AttributeType.FullName == typeof(AdminCommand).FullName))
                         {
                             var adminCommand = new AdminCommand(message);
-                            if (adminCommand.IsRequestedByAdmin)
-                                method.Invoke(controller, new object[] { message });
+                            if (!adminCommand.IsRequestedByAdmin)
+                                break;
                         }
-                        else
-                            method.Invoke(controller, new object[] { message });
 
+                        method.Invoke(controller, new object[] { message });
                         break;
                     }
                 }
