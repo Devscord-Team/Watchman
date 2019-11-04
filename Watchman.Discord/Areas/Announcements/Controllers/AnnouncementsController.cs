@@ -28,6 +28,7 @@ namespace Watchman.Discord.Areas.Announcements.Controllers
             }
         }
 
+        [AdminCommand]
         [DiscordCommand("-autobump stop")]
         public void AutoBumpStop(SocketMessage socketMessage)
         {

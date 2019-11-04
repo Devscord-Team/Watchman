@@ -68,7 +68,6 @@ namespace Watchman.Discord.Framework
                 var methods = controller.GetType().GetMethods();
                 var withReadAll = methods.Where(x => x.CustomAttributes.Any(a => a.AttributeType.FullName == typeof(ReadAlways).FullName));
                 var withDiscordCommand = methods.Where(x => x.CustomAttributes.Any(a => a.AttributeType.FullName == typeof(DiscordCommand).FullName));
-                var adminCommand = methods.Where(x => x.CustomAttributes.Any(a => a.AttributeType.FullName == typeof(AdminCommand).FullName));
 
                 foreach (var method in withReadAll)
                 {
@@ -93,14 +92,17 @@ namespace Watchman.Discord.Framework
 
                     if (message.Content.ToLowerInvariant().StartsWith(command.Command))
                     {
-                        method.Invoke(controller, new object[] { message });
+                        if (method.CustomAttributes.Any(a => a.AttributeType.FullName == typeof(AdminCommand).FullName))
+                        {
+                            var adminCommand = new AdminCommand(message);
+                            if (adminCommand.IsRequestedByAdmin)
+                                method.Invoke(controller, new object[] { message });
+                        }
+                        else
+                            method.Invoke(controller, new object[] { message });
+
                         break;
                     }
-                }
-
-                foreach (var method in adminCommand)
-                {
-
                 }
             }
             return Task.CompletedTask;
