@@ -9,11 +9,13 @@ namespace Watchman.Discord.Middlewares.Contexts
     {
         public ulong Id { get; private set; }
         public string Name { get; private set; }
+        public IEnumerable<string> Roles { get; private set; }
 
-        public UserContext(ulong id, string name)
+        public UserContext(ulong id, string name, IEnumerable<string> roles)
         {
             Id = id;
             Name = name;
+            Roles = roles;
         }
     }
 }

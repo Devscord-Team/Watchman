@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord.WebSocket;
@@ -12,7 +13,9 @@ namespace Watchman.Discord.Middlewares
     {
         public UserContext Process(SocketMessage data)
         {
-            return new UserContext(data.Author.Id, data.Author.ToString());
+            var user = (SocketGuildUser)data.Author;
+            var roles = user.Roles.Select(x => x.Name);
+            return new UserContext(user.Id, user.ToString(), roles);
         }
     }
 }
