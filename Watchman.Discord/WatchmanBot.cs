@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Watchman.Discord.Areas.Protection.Controllers;
 using Watchman.Discord.Framework;
-using Watchman.Discord.Framework.Middlewares;
+using Watchman.Discord.Middlewares;
 using Watchman.Integrations.MongoDB;
 
 namespace Watchman.Discord
