@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
+using Watchman.Common.Extensions;
 using Watchman.Discord.Framework.Architecture.Controllers;
 using Watchman.Discord.Framework.Architecture.Middlewares;
 using Watchman.Discord.Middlewares.Contexts;
@@ -41,10 +43,11 @@ namespace Watchman.Discord.Framework
             return this;
         }
 
-        public async Task Run<T>(SocketMessage data)
+        public Task Run<T>(SocketMessage data)
         {
             var contexts = this.RunMiddlewares(data);
             this.RunControllers(data.Content, contexts);
+            return Task.CompletedTask;
         }
 
         private Dictionary<string, IDiscordContext> RunMiddlewares<T>(T data)
@@ -63,42 +66,41 @@ namespace Watchman.Discord.Framework
             foreach (var controller in _controllers)
             {
                 var methods = controller.GetType().GetMethods();
-                var withReadAll = methods.Where(x => x.CustomAttributes.Any(a => a.AttributeType.FullName == typeof(ReadAlways).FullName));
-                var withDiscordCommand = methods.Where(x => x.CustomAttributes.Any(a => a.AttributeType.FullName == typeof(DiscordCommand).FullName));
+                var withReadAlways = methods.Where(x => x.HasAttribute<ReadAlways>());
+                var withDiscordCommand = methods.Where(x => x.HasAttribute<DiscordCommand>());
 
-                foreach (var method in withReadAll)
+                this.RunWithReadAlwaysMethods(controller, message, contexts, withReadAlways);
+                this.RunWithDiscordCommandMethods(controller, message, contexts, withDiscordCommand);
+            }
+        }
+
+        private void RunWithReadAlwaysMethods(object controller, string message, Dictionary<string, IDiscordContext> contexts, IEnumerable<MethodInfo> methods)
+        {
+            foreach (var method in methods)
+            {
+                var arguments = method.HasParameter<DiscordCommand>() ? new object[] { message, contexts } : new object[] { };
+                method.Invoke(controller, arguments);
+            }
+        }
+
+        private void RunWithDiscordCommandMethods(object controller, string message, Dictionary<string, IDiscordContext> contexts, IEnumerable<MethodInfo> methods)
+        {
+            foreach (var method in methods)
+            {
+                var commandArguments = method.GetCustomAttributesData()
+                    .First(x => x.AttributeType.FullName == typeof(DiscordCommand).FullName)
+                    .ConstructorArguments.Select(x => x.Value).ToArray();
+
+                var command = (DiscordCommand)Activator.CreateInstance(typeof(DiscordCommand), commandArguments);
+                if (message.StartsWith(command.Command))
                 {
-                    //TODO copy to foreach with DiscordCommand
-                    if (method.GetParameters().Any(p => p.ParameterType.FullName == typeof(SocketMessage).FullName))
+                    if (method.HasAttribute<AdminCommand>() && !((UserContext)contexts[nameof(UserContext)]).IsAdmin)
                     {
-                        method.Invoke(controller, new object[] { message, contexts });
-                    }
-                    else
-                    {
-                        method.Invoke(controller, new object[] { });
-                    }
-                }
-
-                foreach (var method in withDiscordCommand)
-                {
-                    var commandArguments = method.GetCustomAttributesData()
-                        .First(x => x.AttributeType.FullName == typeof(DiscordCommand).FullName)
-                        .ConstructorArguments.Select(x => x.Value).ToArray();
-
-                    var command = (DiscordCommand)Activator.CreateInstance(typeof(DiscordCommand), commandArguments);
-
-                    if (message.StartsWith(command.Command))
-                    {
-                        bool isMethodAdminOnly = method.CustomAttributes.Any(a => a.AttributeType.FullName == typeof(AdminCommand).FullName);
-
-                        if (isMethodAdminOnly && !((UserContext)contexts[nameof(UserContext)]).IsAdmin)
-                        {
-                            break;
-                        }
-
-                        method.Invoke(controller, new object[] { message, contexts });
                         break;
                     }
+
+                    method.Invoke(controller, new object[] { message, contexts });
+                    break;
                 }
             }
         }
