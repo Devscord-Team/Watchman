@@ -37,7 +37,7 @@ namespace Watchman.Discord.Framework
         {
             var assembly = typeof(Workflow).Assembly;
             var controllers = assembly.GetTypes()
-                .Where(x => x.GetInterface("IController") != null)
+                .Where(x => x.GetInterface(nameof(IController)) != null)
                 .Select(x => Activator.CreateInstance(x));
             this._controllers.AddRange(controllers);
             return this;
