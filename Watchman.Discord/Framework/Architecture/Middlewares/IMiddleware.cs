@@ -8,6 +8,6 @@ namespace Watchman.Discord.Framework.Architecture.Middlewares
 {
     public interface IMiddleware<T> where T : IDiscordContext
     {
-        Task<IDiscordContext> Process(SocketMessage data);
+        Task<T> Process(SocketMessage data);
     }
 }

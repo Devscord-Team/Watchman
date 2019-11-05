@@ -8,7 +8,7 @@ namespace Watchman.Discord.Middlewares
 {
     public class ChannelMiddleware : IMiddleware<ChannelContext>
     {
-        public Task<IDiscordContext> Process(SocketMessage data)
+        public Task<ChannelContext> Process(SocketMessage data)
         {
             throw new NotImplementedException();
         }
