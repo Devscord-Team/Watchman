@@ -9,5 +9,11 @@ namespace Watchman.Discord.Contexts
     {
         public ulong Id { get; private set; }
         public string Name { get; private set; }
+
+        public UserContext(ulong id, string name)
+        {
+            this.Id = id;
+            this.Name = name;
+        }
     }
 }
