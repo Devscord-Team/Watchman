@@ -8,9 +8,10 @@ namespace Watchman.Discord.Middlewares
 {
     public class ChannelMiddleware : IMiddleware<ChannelContext>
     {
-        public Task<ChannelContext> Process(SocketMessage data)
+        public ChannelContext Process(SocketMessage data)
         {
-            throw new NotImplementedException();
+            var channelContext = new ChannelContext(data.Channel.Id, data.Channel.Name);
+            return channelContext;
         }
     }
 }

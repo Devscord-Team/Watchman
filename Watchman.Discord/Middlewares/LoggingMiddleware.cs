@@ -9,7 +9,7 @@ namespace Watchman.Discord.Middlewares
 {
     public class LoggingMiddleware : IMiddleware<EmptyContext>
     {
-        public Task<EmptyContext> Process(SocketMessage data)
+        public EmptyContext Process(SocketMessage data)
         {
             ///todo add serilog
             Console.WriteLine($"{DateTime.Now} {data.Author}: {data.Content}");

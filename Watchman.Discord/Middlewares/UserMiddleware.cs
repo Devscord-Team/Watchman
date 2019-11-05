@@ -10,7 +10,7 @@ namespace Watchman.Discord.Middlewares
 {
     public class UserMiddleware : IMiddleware<UserContext>
     {
-        public Task<IDiscordContext> Process(SocketMessage data)
+        public UserContext Process(SocketMessage data)
         {
             throw new NotImplementedException();
         }
