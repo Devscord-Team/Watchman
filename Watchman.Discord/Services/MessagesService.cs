@@ -19,9 +19,7 @@ namespace Watchman.Discord.Services
             }
 
             var channel = (ISocketMessageChannel)Server.GetChannel(channelId);
-            channel.SendMessageAsync(message);
-
-            return Task.CompletedTask;
+            return channel.SendMessageAsync(message);
         }
 
         public Task SendFile(string filePath, ulong channelId = 0)
@@ -32,9 +30,7 @@ namespace Watchman.Discord.Services
             }
 
             var channel = (ISocketMessageChannel)Server.GetChannel(channelId);
-            channel.SendFileAsync(filePath);
-
-            return Task.CompletedTask;
+            return channel.SendFileAsync(filePath);
         }
     }
 }
