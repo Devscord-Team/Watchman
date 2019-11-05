@@ -9,13 +9,13 @@ namespace Watchman.Discord.Services
 {
     public class MessagesService
     {
-        public ulong DefaultChannel { get; set; }
+        public ulong DefaultChannelId { get; set; }
 
         public Task SendMessage(string message, ulong channelId = 0)
         {
             if(channelId == 0)
             {
-                channelId = this.DefaultChannel;
+                channelId = this.DefaultChannelId;
             }
 
             var channel = (ISocketMessageChannel)Server.GetChannel(channelId);
@@ -26,7 +26,7 @@ namespace Watchman.Discord.Services
         {
             if (channelId == 0)
             {
-                channelId = this.DefaultChannel;
+                channelId = this.DefaultChannelId;
             }
 
             var channel = (ISocketMessageChannel)Server.GetChannel(channelId);

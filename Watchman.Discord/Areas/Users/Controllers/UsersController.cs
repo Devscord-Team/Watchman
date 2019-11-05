@@ -7,6 +7,8 @@ using System.Text;
 using Watchman.Discord.Framework;
 using Watchman.Discord.Framework.Architecture.Controllers;
 using Watchman.Discord.Framework.Architecture.Middlewares;
+using Watchman.Discord.Middlewares.Contexts;
+using Watchman.Discord.Services;
 
 namespace Watchman.Discord.Areas.Users.Controllers
 {
@@ -41,22 +43,37 @@ namespace Watchman.Discord.Areas.Users.Controllers
         [DiscordCommand("-add role")]
         public void AddRole(string message, Dictionary<string, IDiscordContext> contexts)
         {
-            var commandRole = message.Content.ToLowerInvariant().Replace("-add role ", string.Empty);
+            //TODO change Dictionary to many parameters => auto dependency injection
+            var user = (UserContext)contexts[nameof(UserContext)];
+            var channel = (ChannelContext)contexts[nameof(ChannelContext)];
+            var messagesService = new MessagesService { DefaultChannelId = channel.Id };
+
+            var commandRole = message.ToLowerInvariant().Replace("-add role ", string.Empty);
 
             var role = _safeRoles.FirstOrDefault(x => x.Name == commandRole);
             if(role == null)
             {
-                //todo message
-                message.Channel.SendMessageAsync($"Nie znaleziono roli {commandRole} lub wybrana rola musi być dodana ręcznie przez członka administracji");
+                messagesService.SendMessage($"Nie znaleziono roli {commandRole} lub wybrana rola musi być dodana ręcznie przez członka administracji");
                 return;
             }
-            var user = (SocketGuildUser) message.Author;
-            if(user.Roles.Any(x => x.Name == role.Name)) //todo change name to ID, but for that we need database
+
+            if(user.Roles.Any(x => x == role.Name))
             {
-                //todo message
-                message.Channel.SendMessageAsync($"Użytkownik {user.ToString()} posiada już role {commandRole}");
+                messagesService.SendMessage($"Użytkownik {user.ToString()} posiada już role {commandRole}");
                 return;
             }
+            //todo add UsersService in Watchman.Discord.Services, and add method 
+            //Task AddRole(ulong id)
+            //todo add role id to usercontext (as object in list of roles)
+
+            /*
+             * example:
+             * 
+             * var role = user.Roles.Where(x => x.Name == safeRole.Name)
+             * usersService.AddRole(role.Id)
+             * messagesService.SendMessage($"Dodano role {commandRole} użytkownikowi {user.ToString()}")
+             */
+
             var serverRole = Server.GetRoles(user.Guild.Id).First(x => x.Name == role.Name); // todo change name to id
 
             user.AddRoleAsync(serverRole).Wait();
