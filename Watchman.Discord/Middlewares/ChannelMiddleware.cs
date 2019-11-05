@@ -10,8 +10,7 @@ namespace Watchman.Discord.Middlewares
     {
         public ChannelContext Process(SocketMessage data)
         {
-            var channelContext = new ChannelContext(data.Channel.Id, data.Channel.Name);
-            return channelContext;
+            return new ChannelContext(data.Channel.Id, data.Channel.Name); ;
         }
     }
 }

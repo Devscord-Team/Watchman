@@ -12,7 +12,7 @@ namespace Watchman.Discord.Middlewares
     {
         public UserContext Process(SocketMessage data)
         {
-            throw new NotImplementedException();
+            return new UserContext(data.Author.Id, data.Author.ToString());
         }
     }
 }

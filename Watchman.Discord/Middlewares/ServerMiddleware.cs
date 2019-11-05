@@ -12,7 +12,8 @@ namespace Watchman.Discord.Middlewares
     {
         public DiscordServerContext Process(SocketMessage data)
         {
-            throw new NotImplementedException();
+            var serverInfo = ((SocketGuildChannel)data.Channel).Guild;
+            return new DiscordServerContext(serverInfo.Id, serverInfo.Name);
         }
     }
 }
