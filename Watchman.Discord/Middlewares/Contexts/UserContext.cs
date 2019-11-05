@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Watchman.Discord.Framework.Architecture.Middlewares;
 
-namespace Watchman.Discord.Contexts
+namespace Watchman.Discord.Middlewares.Contexts
 {
     public class UserContext : IDiscordContext
     {
@@ -12,8 +12,8 @@ namespace Watchman.Discord.Contexts
 
         public UserContext(ulong id, string name)
         {
-            this.Id = id;
-            this.Name = name;
+            Id = id;
+            Name = name;
         }
     }
 }

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Discord.WebSocket;
-using Watchman.Discord.Contexts;
 using Watchman.Discord.Framework.Architecture.Middlewares;
+using Watchman.Discord.Middlewares.Contexts;
 
 namespace Watchman.Discord.Middlewares
 {

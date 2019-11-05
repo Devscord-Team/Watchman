@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Watchman.Discord.Framework.Architecture.Middlewares;
+﻿using Watchman.Discord.Framework.Architecture.Middlewares;
 
-namespace Watchman.Discord.Contexts
+namespace Watchman.Discord.Middlewares.Contexts
 {
     public class DiscordServerContext : IDiscordContext
     {
@@ -12,8 +9,8 @@ namespace Watchman.Discord.Contexts
 
         public DiscordServerContext(ulong id, string name)
         {
-            this.Id = id;
-            this.Name = name;
+            Id = id;
+            Name = name;
         }
     }
 }
