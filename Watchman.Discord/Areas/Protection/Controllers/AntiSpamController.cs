@@ -17,7 +17,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         }
 
         [ReadAlways]
-        public void Scan(SocketMessage message)
+        public void Scan(string message, Dictionary<string, IDiscordContext> contexts)
         {
             var authorId = message.Author.Id;
 

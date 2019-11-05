@@ -27,7 +27,7 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         }
 
         [ReadAlways]
-        public void SaveMessage(SocketMessage message)
+        public void SaveMessage(string message, Dictionary<string, IDiscordContext> contexts)
         {
             var author = new MessageInformationAuthor
             {
@@ -71,7 +71,7 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
 
         [AdminCommand]
         [DiscordCommand("-stats")]
-        public void GetStatisticsPerPeriod(SocketMessage message)
+        public void GetStatisticsPerPeriod(string message, Dictionary<string, IDiscordContext> contexts)
         {
             var period = Period.Day;
             //todo other class in Commons

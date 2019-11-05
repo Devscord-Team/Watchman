@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using Watchman.Discord.Framework;
 using Watchman.Discord.Framework.Architecture.Controllers;
+using Watchman.Discord.Framework.Architecture.Middlewares;
 
 namespace Watchman.Discord.Areas.Users.Controllers
 {
@@ -38,7 +39,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
 
         //todo add system to messages management
         [DiscordCommand("-add role")]
-        public void AddRole(SocketMessage message)
+        public void AddRole(string message, Dictionary<string, IDiscordContext> contexts)
         {
             var commandRole = message.Content.ToLowerInvariant().Replace("-add role ", string.Empty);
 
@@ -64,7 +65,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
         }
 
         [DiscordCommand("-remove role")]
-        public void RemoveRole(SocketMessage message)
+        public void RemoveRole(string message, Dictionary<string, IDiscordContext> contexts)
         {
             var commandRole = message.Content.ToLowerInvariant().Replace("-remove role ", string.Empty);
             var role = _safeRoles.FirstOrDefault(x => x.Name == commandRole);
