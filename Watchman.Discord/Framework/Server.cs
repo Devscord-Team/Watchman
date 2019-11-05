@@ -24,6 +24,11 @@ namespace Watchman.Discord.Framework
             Initialized = true;
         }
 
+        public static SocketChannel GetChannel(ulong channelId)
+        {
+            return _client.GetChannel(channelId);
+        }
+
         //todo optimalize it by using field and delegates like _client.RoleCreated etc
         public static IReadOnlyCollection<SocketRole> GetRoles(ulong guildId)
         {
