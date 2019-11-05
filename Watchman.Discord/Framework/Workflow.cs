@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Watchman.Discord.Framework.Architecture.Controllers;
+using Watchman.Discord.Framework.Architecture.Middlewares;
+using Watchman.Discord.Middlewares.Contexts;
 
 namespace Watchman.Discord.Framework
 {
@@ -39,30 +41,25 @@ namespace Watchman.Discord.Framework
             return this;
         }
 
-        public async Task Run<T>(T data)
+        public async Task Run<T>(SocketMessage data)
         {
-            if(data is SocketMessage message) //todo make controllers generics, and change SocketMessage to DTO object
+            var contexts = this.RunMiddlewares(data);
+            this.RunControllers(data.Content, contexts);
+        }
+
+        private Dictionary<string, IDiscordContext> RunMiddlewares<T>(T data)
+        {
+            var contexts = new Dictionary<string, IDiscordContext>();
+            foreach (var middleware in this._middlewares)
             {
-                await this.RunMiddlewares(message);
-                await this.RunControllers(message);
+                var context = ((dynamic)middleware).Process(data);
+                contexts.Add(nameof(context), context);
             }
+            return contexts;
         }
 
-        private async Task RunMiddlewares<T>(T data)
+        private void RunControllers(string message, Dictionary<string, IDiscordContext> contexts)
         {
-            await Task.WhenAll(this._middlewares
-               .Where(x => x.GetType()
-                   .GetInterfaces().First()
-                   .GenericTypeArguments
-                   .First().FullName == typeof(T).FullName)
-               .ToList()
-               .Select(x => (Task)((dynamic)x).Process(data)));
-        }
-
-        private Task RunControllers(SocketMessage message)
-        {
-            //TODO create DTO objects -> we want to be independent from discord.net library
-            //TODO run controllers concurrently
             foreach (var controller in _controllers)
             {
                 var methods = controller.GetType().GetMethods();
@@ -74,7 +71,7 @@ namespace Watchman.Discord.Framework
                     //TODO copy to foreach with DiscordCommand
                     if (method.GetParameters().Any(p => p.ParameterType.FullName == typeof(SocketMessage).FullName))
                     {
-                        method.Invoke(controller, new object[] { message });
+                        method.Invoke(controller, new object[] { message, contexts });
                     }
                     else
                     {
@@ -90,26 +87,20 @@ namespace Watchman.Discord.Framework
 
                     var command = (DiscordCommand)Activator.CreateInstance(typeof(DiscordCommand), commandArguments);
 
-                    if (message.Content.ToLowerInvariant().StartsWith(command.Command))
+                    if (message.StartsWith(command.Command))
                     {
                         bool isMethodAdminOnly = method.CustomAttributes.Any(a => a.AttributeType.FullName == typeof(AdminCommand).FullName);
 
-                        if (isMethodAdminOnly && !HasAdminPermissions(message.Author))
+                        if (isMethodAdminOnly && !((UserContext)contexts[nameof(UserContext)]).IsAdmin)
                         {
                             break;
                         }
 
-                        method.Invoke(controller, new object[] { message });
+                        method.Invoke(controller, new object[] { message, contexts });
                         break;
                     }
                 }
             }
-            return Task.CompletedTask;
-        }
-        private bool HasAdminPermissions(SocketUser user)
-        {
-            var author = (SocketGuildUser)user;
-            return author.Roles.Any(r => r.Name.ToLowerInvariant() == "admin");
         }
     }
 }
