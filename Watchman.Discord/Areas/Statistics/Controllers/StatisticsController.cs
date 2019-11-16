@@ -11,6 +11,7 @@ using Watchman.Discord.Areas.Statistics.Services;
 using Watchman.Discord.Framework;
 using Watchman.Discord.Framework.Architecture.Controllers;
 using Watchman.Discord.Framework.Architecture.Middlewares;
+using Watchman.Discord.Middlewares.Contexts;
 using Watchman.Integrations.MongoDB;
 
 namespace Watchman.Discord.Areas.Statistics.Controllers
@@ -31,19 +32,22 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         [ReadAlways]
         public void SaveMessage(string message, Dictionary<string, IDiscordContext> contexts)
         {
+            var userContext = (UserContext) contexts[nameof(UserContext)];
+            var channelContext = (ChannelContext) contexts[nameof(ChannelContext)];
+
             var author = new MessageInformationAuthor
             {
-                Id = message.Author.Id,
-                Name = message.Author.ToString()
+                Id = userContext.Id,
+                Name = userContext.Name
             };
             var channel = new MessageInformationChannel
             {
-                Id = message.Channel.Id,
-                Name = message.Channel.Name
+                Id = channelContext.Id,
+                Name = channelContext.Name
             };
 
 
-            var serverInfo = ((SocketGuildChannel)message.Channel).Guild;
+            var serverInfo = ((SocketGuildChannel)Server.GetChannel(channelContext.Id)).Guild;
             
             var server = new MessageInformationServer
             {
@@ -56,7 +60,6 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
                 }
             };
 
-            var content = message.Content;
             var date = DateTime.UtcNow;
 
             var result = new MessageInformation
@@ -64,7 +67,7 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
                 Author = author,
                 Channel = channel,
                 Server = server,
-                Content = content,
+                Content = message,
                 Date = date
             };
 
@@ -77,19 +80,19 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         {
             var period = Period.Day;
             //todo other class in Commons
-            if (message.Content.ToLowerInvariant().Contains("hour"))
+            if (message.ToLowerInvariant().Contains("hour"))
             {
                 period = Period.Hour;
             }
-            else if (message.Content.ToLowerInvariant().Contains("day"))
+            else if (message.ToLowerInvariant().Contains("day"))
             {
                 period = Period.Day;
             }
-            else if (message.Content.ToLowerInvariant().Contains("week"))
+            else if (message.ToLowerInvariant().Contains("week"))
             {
                 period = Period.Week;
             }
-            else if (message.Content.ToLowerInvariant().Contains("month"))
+            else if (message.ToLowerInvariant().Contains("month"))
             {
                 period = Period.Month;
             }
@@ -98,13 +101,15 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
             var messages = this._session.Get<MessageInformation>().ToList();
             var report = _reportsService.CreateReport(messages, period);
 
+            var channelContext = (ChannelContext) contexts[nameof(ChannelContext)];
+            var channel = (ISocketMessageChannel) Server.GetChannel(channelContext.Id);
 #if DEBUG
 
             var dataToMessage = "```json\n" + JsonConvert.SerializeObject(report.StatisticsPerPeriod.Where(x => x.MessagesQuantity > 0), Formatting.Indented) + "\n```";
-            message.Channel.SendMessageAsync(dataToMessage);
+            channel.SendMessageAsync(dataToMessage);
 #endif
             var path = _chartsService.GetImageStatisticsPerPeriod(report);
-            message.Channel.SendFileAsync(path);
+            channel.SendFileAsync(path);
         }
 
         private Task SaveToDatabase(MessageInformation data)
