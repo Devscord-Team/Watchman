@@ -22,5 +22,9 @@ namespace Watchman.Discord.Middlewares.Contexts
             IsAdmin = roles.Any(x => x.ToLowerInvariant().Contains("admin")); //working with "administrator" etc
             AvatarUrl = avatarUrl;
         }
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }
