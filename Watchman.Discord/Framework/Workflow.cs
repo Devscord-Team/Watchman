@@ -43,7 +43,7 @@ namespace Watchman.Discord.Framework
             return this;
         }
 
-        public Task Run<T>(SocketMessage data)
+        public Task Run(SocketMessage data)
         {
             var contexts = this.RunMiddlewares(data);
             this.RunControllers(data.Content, contexts);

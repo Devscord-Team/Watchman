@@ -34,7 +34,7 @@ namespace Watchman.Discord
             });
             this._workflow = new Workflow();
             _client.MessageReceived += this.MessageReceived;
-            _client.Log += this.Log;
+            //_client.Log += this.Log;
         }
 
         public async Task Start()
@@ -62,10 +62,10 @@ namespace Watchman.Discord
             return this._workflow.Run(message);
         }
 
-        private Task Log(LogMessage msg)
-        {
-            return this._workflow.Run(msg);
-        }
+        //private Task Log(LogMessage msg)
+        //{
+        //    return this._workflow.Run(msg);
+        //}
 
         public void Dispose()
         {
