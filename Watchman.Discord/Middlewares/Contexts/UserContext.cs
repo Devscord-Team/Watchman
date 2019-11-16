@@ -12,13 +12,15 @@ namespace Watchman.Discord.Middlewares.Contexts
         public string Name { get; private set; }
         public bool IsAdmin { get; private set; }
         public IEnumerable<string> Roles { get; private set; }
+        public string AvatarUrl { get; private set; }
 
-        public UserContext(ulong id, string name, IEnumerable<string> roles)
+        public UserContext(ulong id, string name, IEnumerable<string> roles, string avatarUrl)
         {
             Id = id;
             Name = name;
             Roles = roles;
             IsAdmin = roles.Any(x => x.ToLowerInvariant().Contains("admin")); //working with "administrator" etc
+            AvatarUrl = avatarUrl;
         }
     }
 }

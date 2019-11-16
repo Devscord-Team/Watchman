@@ -15,11 +15,13 @@ namespace Watchman.Discord.Areas.Users.Controllers
     public class UsersController : IController
     {
         [DiscordCommand("-avatar")]
-        public void GetAvatar(SocketMessage message)
+        public void GetAvatar(string message, Dictionary<string, IDiscordContext> contexts)
         {
-            var avatar = message.Author.GetAvatarUrl(ImageFormat.Png, 2048);
-            //todo message
-            message.Channel.SendMessageAsync(avatar);
+            var user = (UserContext) contexts[nameof(UserContext)];
+            var channel = (ChannelContext) contexts[nameof(ChannelContext)];
+
+            var messageService = new MessagesService {DefaultChannelId = channel.Id};
+            messageService.SendFile(user.AvatarUrl);
         }
 
         //todo database
