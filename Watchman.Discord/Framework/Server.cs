@@ -35,6 +35,11 @@ namespace Watchman.Discord.Framework
             return _client.GetGuild(guildId).Roles;
         }
 
+        public static SocketUser GetUser(ulong userId)
+        {
+            return _client.GetUser(userId);
+        }
+
         public static IMongoDatabase GetDatabase()
         {
             return _database;
