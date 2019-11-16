@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Watchman.Discord.Framework.Architecture.Controllers;
+using Watchman.Discord.Framework.Architecture.Middlewares;
 
 namespace Watchman.Discord.Areas.Protection.Controllers
 {
