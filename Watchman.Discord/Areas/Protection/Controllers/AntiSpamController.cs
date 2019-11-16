@@ -2,8 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Watchman.Discord.Framework;
 using Watchman.Discord.Framework.Architecture.Controllers;
 using Watchman.Discord.Framework.Architecture.Middlewares;
+using Watchman.Discord.Middlewares.Contexts;
+using Watchman.Discord.Services;
 
 namespace Watchman.Discord.Areas.Protection.Controllers
 {
@@ -20,22 +23,28 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         [ReadAlways]
         public void Scan(string message, Dictionary<string, IDiscordContext> contexts)
         {
-            var authorId = message.Author.Id;
+            var userContext = (UserContext) contexts[nameof(UserContext)];
+
+            var author = Server.GetUser(userContext.Id);
+            var authorId = author.Id;
 
             _lastMessages.RemoveAll(x => x.MessageDateTime < DateTime.Now.AddSeconds(-10));
 
             var messagesInLastTime = _lastMessages.Where(x => x.AuthorId == authorId).Count();
             if (messagesInLastTime >= 5)
             {
+                var channelContext = (ChannelContext) contexts[nameof(ChannelContext)];
+                var channel = (ISocketMessageChannel) Server.GetChannel(channelContext.Id);
+
                 if (!_warns.Contains(authorId))
                 {
                     _warns.Add(authorId);
-                    message.Channel.SendMessageAsync($"Spam alert! Wykryto spam u użytkownika {message.Author} na kanale {message.Channel.Name}. Poczekaj chwile zanim coś napiszesz.").Wait();
+                    channel.SendMessageAsync($"Spam alert! Wykryto spam u użytkownika {author} na kanale {channel.Name}. Poczekaj chwile zanim coś napiszesz.").Wait();
                 }
                 else if (messagesInLastTime > 10)
                 {
                     //todo add role "mute", and add service to deleting it automatically
-                    message.Channel.SendMessageAsync($"Spam alert! Uzytkownik {message.Author} został zmutowany.").Wait();
+                    channel.SendMessageAsync($"Spam alert! Uzytkownik {author} został zmutowany.").Wait();
                 }
                 
             }
