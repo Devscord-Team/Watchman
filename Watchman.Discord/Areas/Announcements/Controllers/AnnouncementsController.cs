@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord.WebSocket;
+using Watchman.Discord.Framework;
 using Watchman.Discord.Framework.Architecture.Controllers;
 using Watchman.Discord.Framework.Architecture.Middlewares;
+using Watchman.Discord.Middlewares.Contexts;
 using Watchman.Integrations.Disboard;
 
 namespace Watchman.Discord.Areas.Announcements.Controllers
@@ -22,11 +24,12 @@ namespace Watchman.Discord.Areas.Announcements.Controllers
         [DiscordCommand("-autobump start")]
         public void AutoBumpStart(string message, Dictionary<string, IDiscordContext> contexts)
         {
-            var isStarted = _bumper.AddServerChannel(socketMessage.Channel);
+            var channel = GetChannel(contexts);
+            var isStarted = _bumper.AddServerChannel(channel);
 
             if (isStarted.Result)
             {
-                socketMessage.Channel.SendMessageAsync("Rozpoczęto automatyczne podbijanie.");
+                channel.SendMessageAsync("Rozpoczęto automatyczne podbijanie.");
             }
         }
 
@@ -34,12 +37,19 @@ namespace Watchman.Discord.Areas.Announcements.Controllers
         [DiscordCommand("-autobump stop")]
         public void AutoBumpStop(string message, Dictionary<string, IDiscordContext> contexts)
         {
-            var isStopped = _bumper.RemoveServerChannel(socketMessage.Channel);
+            var channel = GetChannel(contexts);
+            var isStopped = _bumper.RemoveServerChannel(channel);
 
             if (isStopped.Result)
             {
-                socketMessage.Channel.SendMessageAsync("Zatrzymano automatyczne podbijanie.");
+                channel.SendMessageAsync("Zatrzymano automatyczne podbijanie.");
             }
+        }
+
+        private ISocketMessageChannel GetChannel(Dictionary<string, IDiscordContext> contexts)
+        {
+            var channel = ((ChannelContext) contexts[nameof(ChannelContext)]);
+            return (ISocketMessageChannel)Server.GetChannel(channel.Id);
         }
     }
 }
