@@ -44,7 +44,10 @@ namespace Watchman.Discord
             
             
             this._workflow
+                .AddMiddleware<ChannelMiddleware>()
                 .AddMiddleware<LoggingMiddleware>()
+                .AddMiddleware<ServerMiddleware>()
+                .AddMiddleware<UserMiddleware>()
                 .AddControllers();
 
             await _client.LoginAsync(TokenType.Bot, this._configuration.Token);
