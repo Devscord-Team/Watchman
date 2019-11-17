@@ -21,7 +21,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
             var channel = (ChannelContext) contexts[nameof(ChannelContext)];
 
             var messageService = new MessagesService {DefaultChannelId = channel.Id};
-            messageService.SendFile(user.AvatarUrl);
+            messageService.SendMessage(user.AvatarUrl);
         }
 
         //todo database
@@ -107,7 +107,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
             var roleId = serverRoles.First(x => x.Name == role.Name).Id;
 
             var userService = new UserService();
-            userService.AddRole(roleId, contexts);
+            userService.RemoveRole(roleId, contexts);
 
             messagesService.SendMessage($"Usunięto role {commandRole} użytkownikowi {userContext}");
         }

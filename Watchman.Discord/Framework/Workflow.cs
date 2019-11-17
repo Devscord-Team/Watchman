@@ -56,7 +56,8 @@ namespace Watchman.Discord.Framework
             foreach (var middleware in this._middlewares)
             {
                 var context = ((dynamic)middleware).Process(data);
-                contexts.Add(nameof(context), context);
+                var contextName = ((object) context).GetType().Name;
+                contexts.Add(contextName, context);
             }
             return contexts;
         }
@@ -78,7 +79,8 @@ namespace Watchman.Discord.Framework
         {
             foreach (var method in methods)
             {
-                var arguments = method.HasParameter<DiscordCommand>() ? new object[] { message, contexts } : new object[] { };
+                //var arguments = method.HasParameter<DiscordCommand>() ? new object[] { message, contexts } : new object[] { };
+                var arguments = new object[] { message, contexts };
                 method.Invoke(controller, arguments);
             }
         }

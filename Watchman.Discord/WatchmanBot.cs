@@ -45,7 +45,7 @@ namespace Watchman.Discord
             
             this._workflow
                 .AddMiddleware<ChannelMiddleware>()
-                .AddMiddleware<LoggingMiddleware>()
+                //.AddMiddleware<LoggingMiddleware>()
                 .AddMiddleware<ServerMiddleware>()
                 .AddMiddleware<UserMiddleware>()
                 .AddControllers();

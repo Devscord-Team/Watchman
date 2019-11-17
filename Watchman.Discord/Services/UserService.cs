@@ -29,7 +29,9 @@ namespace Watchman.Discord.Services
         private SocketGuildUser GetUser(Dictionary<string, IDiscordContext> contexts)
         {
             var userId = ((UserContext) contexts[nameof(UserContext)]).Id;
-            return (SocketGuildUser)Server.GetUser(userId);
+            var guildId = ((DiscordServerContext) contexts[nameof(DiscordServerContext)]).Id;
+
+            return Server.GetGuildUser(userId, guildId);
         }
 
         private SocketRole GetRole(ulong roleId, SocketGuildUser user)
