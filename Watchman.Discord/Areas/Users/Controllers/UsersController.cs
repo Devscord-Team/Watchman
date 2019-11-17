@@ -53,7 +53,11 @@ namespace Watchman.Discord.Areas.Users.Controllers
             var channelContext = (ChannelContext)contexts[nameof(ChannelContext)];
             var messagesService = new MessagesService { DefaultChannelId = channelContext.Id };
             
-            if(role == null)
+            var guildChannel = ((SocketGuildChannel) Server.GetChannel(channelContext.Id));
+            var serverRoles = Server.GetRoles(guildChannel.Guild.Id);
+            var roleId = serverRoles.FirstOrDefault(x => x.Name == role?.Name)?.Id;
+
+            if(role == null || roleId == null)
             {
                 messagesService.SendMessage($"Nie znaleziono roli {commandRole} lub wybrana rola musi być dodana ręcznie przez członka administracji");
                 return;
@@ -67,12 +71,8 @@ namespace Watchman.Discord.Areas.Users.Controllers
                 return;
             }
 
-            var guildChannel = ((SocketGuildChannel) Server.GetChannel(channelContext.Id));
-            var serverRoles = Server.GetRoles(guildChannel.Guild.Id);
-            var roleId = serverRoles.First(x => x.Name == role.Name).Id;
-
             var userService = new UserService();
-            userService.AddRole(roleId, contexts);
+            userService.AddRole(roleId.Value, contexts);
 
             //todo add role id to usercontext (as object in list of roles)
 
