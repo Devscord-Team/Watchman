@@ -8,6 +8,7 @@ using Watchman.Common.Extensions;
 using Watchman.Discord.Framework.Architecture.Controllers;
 using Watchman.Discord.Framework.Architecture.Middlewares;
 using Watchman.Discord.Middlewares.Contexts;
+using Watchman.Discord.Services;
 
 namespace Watchman.Discord.Framework
 {
@@ -98,6 +99,9 @@ namespace Watchman.Discord.Framework
                 {
                     if (method.HasAttribute<AdminCommand>() && !((UserContext)contexts[nameof(UserContext)]).IsAdmin)
                     {
+                        var channelContext = (ChannelContext)contexts[nameof(ChannelContext)];
+                        var messageService = new MessagesService();
+                        messageService.SendMessage("Nie masz wystarczających uprawnień do wywołania tej komendy.", channelContext.Id);
                         break;
                     }
 
