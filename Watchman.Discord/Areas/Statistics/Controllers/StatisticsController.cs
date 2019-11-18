@@ -1,11 +1,10 @@
 ﻿using Discord.WebSocket;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Watchman.Common.Models;
+using Watchman.Discord.Areas.Statistics.Builders;
 using Watchman.Discord.Areas.Statistics.Models;
 using Watchman.Discord.Areas.Statistics.Services;
 using Watchman.Discord.Framework;
@@ -32,46 +31,14 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         [ReadAlways]
         public void SaveMessage(string message, Dictionary<string, IDiscordContext> contexts)
         {
-            var userContext = (UserContext) contexts[nameof(UserContext)];
-            var channelContext = (ChannelContext) contexts[nameof(ChannelContext)];
+            var messageBuilder = new MessageBuilder(message, contexts);
+            var messageInfo = messageBuilder
+                .SetAuthor()
+                .SetChannel()
+                .SetServerInfo()
+                .Build();
 
-            var author = new MessageInformationAuthor
-            {
-                Id = userContext.Id,
-                Name = userContext.Name
-            };
-            var channel = new MessageInformationChannel
-            {
-                Id = channelContext.Id,
-                Name = channelContext.Name
-            };
-
-
-            var serverInfo = ((SocketGuildChannel)Server.GetChannel(channelContext.Id)).Guild;
-            
-            var server = new MessageInformationServer
-            {
-                Id = serverInfo.Id,
-                Name = serverInfo.Name,
-                Owner = new MessageInformationAuthor
-                {
-                    Id = serverInfo.Owner.Id,
-                    Name = serverInfo.Owner.ToString()
-                }
-            };
-
-            var date = DateTime.UtcNow;
-
-            var result = new MessageInformation
-            {
-                Author = author,
-                Channel = channel,
-                Server = server,
-                Content = message,
-                Date = date
-            };
-
-            this.SaveToDatabase(result);
+            this.SaveToDatabase(messageInfo);
         }
 
         [AdminCommand]
