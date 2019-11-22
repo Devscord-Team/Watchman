@@ -1,4 +1,6 @@
-﻿using Discord.WebSocket;
+﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
+using Discord.WebSocket;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,10 +9,6 @@ using Watchman.Common.Models;
 using Watchman.Discord.Areas.Statistics.Builders;
 using Watchman.Discord.Areas.Statistics.Models;
 using Watchman.Discord.Areas.Statistics.Services;
-using Watchman.Discord.Framework;
-using Watchman.Discord.Framework.Architecture.Controllers;
-using Watchman.Discord.Framework.Architecture.Middlewares;
-using Watchman.Discord.Middlewares.Contexts;
 using Watchman.Integrations.MongoDB;
 
 namespace Watchman.Discord.Areas.Statistics.Controllers

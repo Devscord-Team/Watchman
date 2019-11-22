@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Devscord.DiscordFramework.Framework
 {
-    public static class Server
+    internal static class Server
     {
         private static DiscordSocketClient _client;
         private static IMongoDatabase _database;

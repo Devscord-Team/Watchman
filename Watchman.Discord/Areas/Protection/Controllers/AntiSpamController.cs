@@ -1,12 +1,11 @@
-﻿using Discord.WebSocket;
+﻿using Devscord.DiscordFramework.Framework;
+using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
+using Devscord.DiscordFramework.Middlewares.Contexts;
+using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Watchman.Discord.Framework;
-using Watchman.Discord.Framework.Architecture.Controllers;
-using Watchman.Discord.Framework.Architecture.Middlewares;
-using Watchman.Discord.Middlewares.Contexts;
-using Watchman.Discord.Services;
 
 namespace Watchman.Discord.Areas.Protection.Controllers
 {
