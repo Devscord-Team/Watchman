@@ -1,14 +1,12 @@
-﻿using Discord;
+﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
+using Devscord.DiscordFramework.Middlewares.Contexts;
+using Devscord.DiscordFramework.Services;
+using Discord;
 using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Watchman.Discord.Framework;
-using Watchman.Discord.Framework.Architecture.Controllers;
-using Watchman.Discord.Framework.Architecture.Middlewares;
-using Watchman.Discord.Middlewares.Contexts;
-using Watchman.Discord.Services;
 
 namespace Watchman.Discord.Areas.Users.Controllers
 {
@@ -20,7 +18,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
             var user = (UserContext) contexts[nameof(UserContext)];
             var channel = (ChannelContext) contexts[nameof(ChannelContext)];
 
-            var messageService = new MessagesService {DefaultChannelId = channel.Id};
+            var messageService = new MessagesService { DefaultChannelId = channel.Id };
             messageService.SendMessage(user.AvatarUrl);
         }
 
