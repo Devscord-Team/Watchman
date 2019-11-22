@@ -12,32 +12,38 @@ namespace Devscord.DiscordFramework.Services
 {
     public class UserService
     {
-        public Task AddRole(ulong roleId, Dictionary<string, IDiscordContext> contexts)
+        public Task AddRole(UserRole role, UserContext user, DiscordServerContext server)
         {
-            var user = GetUser(contexts);
-            var role = GetRole(roleId, user);
-            return user.AddRoleAsync(role);
+            var socketUser = GetUser(user, server);
+            var socketRole = GetRole(role.Id, server);
+            return socketUser.AddRoleAsync(socketRole);
         }
 
-        public Task RemoveRole(ulong roleId, Dictionary<string, IDiscordContext> contexts)
+        public Task RemoveRole(UserRole role, UserContext user, DiscordServerContext server)
         {
-            var user = GetUser(contexts);
-            var role = GetRole(roleId, user);
-            return user.RemoveRoleAsync(role);
+            var socketUser = GetUser(user, server);
+            var socketRole = GetRole(role.Id, server);
+            return socketUser.RemoveRoleAsync(socketRole);
         }
 
-
-        private SocketGuildUser GetUser(Dictionary<string, IDiscordContext> contexts)
+        public UserRole GetRoleByName(string name, DiscordServerContext server)
         {
-            var userId = ((UserContext)contexts[nameof(UserContext)]).Id;
-            var guildId = ((DiscordServerContext)contexts[nameof(DiscordServerContext)]).Id;
-
-            return Server.GetGuildUser(userId, guildId);
+            var role = Server.GetRoles(server.Id).FirstOrDefault(x => x.Name == name);
+            if(role == null)
+            {
+                return default;
+            }
+            return new UserRole(role.Id, role.Name);
         }
 
-        private SocketRole GetRole(ulong roleId, ChannelContext channel)
+        private SocketGuildUser GetUser(UserContext user, DiscordServerContext server)
         {
-            return Server.GetRoles(channel.Id).First(x => x.Id == roleId);
+            return Server.GetGuildUser(user.Id, server.Id);
+        }
+
+        private SocketRole GetRole(ulong roleId, DiscordServerContext server)
+        {
+            return Server.GetRoles(server.Id).First(x => x.Id == roleId);
         }
     }
 }
