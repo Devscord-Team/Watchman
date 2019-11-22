@@ -1,11 +1,4 @@
-﻿using Discord;
-using Discord.WebSocket;
-using Newtonsoft.Json;
-using System;
-using System.IO;
-using System.Threading.Tasks;
-using Watchman.Discord.Framework;
-
+﻿
 namespace Watchman.Discord
 {
     

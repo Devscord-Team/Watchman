@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Watchman.Common.Extensions
+namespace Devscord.DiscordFramework.Commons.Extensions
 {
     public static class StreamExtensions
     {

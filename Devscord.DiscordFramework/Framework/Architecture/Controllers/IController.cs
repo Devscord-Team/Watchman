@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Watchman.Discord.Framework.Architecture.Controllers
+namespace Devscord.DiscordFramework.Framework.Architecture.Controllers
 {
     public interface IController
     {

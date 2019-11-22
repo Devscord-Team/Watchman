@@ -1,8 +1,12 @@
-﻿using Discord.WebSocket;
+﻿using Devscord.DiscordFramework.Framework;
+using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
+using Devscord.DiscordFramework.Middlewares.Contexts;
+using Devscord.DiscordFramework.Services;
+using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Watchman.Discord.Framework.Architecture.Controllers;
 
 namespace Watchman.Discord.Areas.Protection.Controllers
 {
@@ -17,33 +21,35 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         }
 
         [ReadAlways]
-        public void Scan(SocketMessage message)
+        public void Scan(string message, Dictionary<string, IDiscordContext> contexts)
         {
-            var authorId = message.Author.Id;
+            var userContext = (UserContext) contexts[nameof(UserContext)];
 
             _lastMessages.RemoveAll(x => x.MessageDateTime < DateTime.Now.AddSeconds(-10));
 
-            var messagesInLastTime = _lastMessages.Where(x => x.AuthorId == authorId).Count();
+            var messagesInLastTime = _lastMessages.Where(x => x.AuthorId == userContext.Id).Count();
             if (messagesInLastTime >= 5)
             {
-                if (!_warns.Contains(authorId))
+                var channelContext = (ChannelContext) contexts[nameof(ChannelContext)];
+                var messagesService = new MessagesService { DefaultChannelId = channelContext.Id };
+                if (!_warns.Contains(userContext.Id))
                 {
-                    _warns.Add(authorId);
-                    message.Channel.SendMessageAsync($"Spam alert! Wykryto spam u użytkownika {message.Author} na kanale {message.Channel.Name}. Poczekaj chwile zanim coś napiszesz.").Wait();
+                    _warns.Add(userContext.Id);
+                    messagesService.SendMessage($"Spam alert! Wykryto spam u użytkownika {userContext.Name} na kanale {channelContext.Name}. Poczekaj chwile zanim coś napiszesz.").Wait();
                 }
                 else if (messagesInLastTime > 10)
                 {
                     //todo add role "mute", and add service to deleting it automatically
-                    message.Channel.SendMessageAsync($"Spam alert! Uzytkownik {message.Author} został zmutowany.").Wait();
+                    messagesService.SendMessage($"Spam alert! Uzytkownik {userContext.Name} został zmutowany.").Wait();
                 }
                 
             }
-            else if (_warns.Contains(authorId) && !_lastMessages.Any(x => x.AuthorId == authorId)) //todo optimalize
+            else if (_warns.Contains(userContext.Id) && !_lastMessages.Any(x => x.AuthorId == userContext.Id)) //todo optimalize
             {
-                _warns.Remove(authorId);
+                _warns.Remove(userContext.Id);
             }
 
-            _lastMessages.Add((authorId, DateTime.Now));
+            _lastMessages.Add((userContext.Id, DateTime.Now));
         }
     }
 }

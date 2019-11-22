@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Watchman.Discord.Framework.Architecture.Controllers
+namespace Devscord.DiscordFramework.Framework.Architecture.Controllers
 {
     [AttributeUsage(AttributeTargets.Method)]
     public class DiscordCommand : Attribute
@@ -10,7 +10,7 @@ namespace Watchman.Discord.Framework.Architecture.Controllers
         public string Command { get; private set; }
         public DiscordCommand(string command)
         {
-            this.Command = command;
+            Command = command;
         }
     }
 }

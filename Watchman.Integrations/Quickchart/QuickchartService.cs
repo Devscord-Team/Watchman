@@ -1,8 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
-using Watchman.Common.Utils;
 using Watchman.Integrations.Quickchart.Models;
 
 namespace Watchman.Integrations.Quickchart
