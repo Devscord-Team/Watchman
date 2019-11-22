@@ -61,7 +61,7 @@ namespace Watchman.Discord.Areas.Statistics.Services.Builders
                 Author = author,
                 Channel = channel,
                 Server = server,
-                Content = _message,
+                Content = message,
                 Date = date
             };
         }
