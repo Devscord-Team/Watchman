@@ -11,11 +11,11 @@ namespace Watchman.Discord.Areas.Statistics.Services.Builders
         private MessageInformationAuthor author;
         private MessageInformationChannel channel;
         private MessageInformationServer server;
-        private string _message;
+        private string message;
 
         public MessageInformationBuilder(string message)
         {
-            _message = message;
+            this.message = message;
         }
 
         public MessageInformationBuilder SetAuthor(UserContext user)
