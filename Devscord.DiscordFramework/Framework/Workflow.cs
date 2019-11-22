@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Watchman.Integrations.MongoDB;
 
 namespace Devscord.DiscordFramework.Framework
 {
@@ -16,11 +17,13 @@ namespace Devscord.DiscordFramework.Framework
     {
         private List<object> _middlewares;
         private List<object> _controllers;
+        private readonly Assembly _botAssembly;
 
-        public Workflow()
+        public Workflow(Assembly botAssembly)
         {
             _middlewares = new List<object>();
             _controllers = new List<object>();
+            _botAssembly = botAssembly;
         }
 
         public Workflow AddMiddleware<T>(object configuration = null /*TODO*/)
@@ -36,10 +39,18 @@ namespace Devscord.DiscordFramework.Framework
 
         public Workflow WithControllers(object configuration = null /*TODO*/)
         {
-            var assembly = typeof(Workflow).Assembly;
-            var controllers = assembly.GetTypes()
-                .Where(x => x.GetInterface(nameof(IController)) != null)
-                .Select(x => Activator.CreateInstance(x));
+            var sessionFactory = new SessionFactory(Server.GetDatabase());
+            var controllers = _botAssembly.GetTypes()
+                .Where(x => x.GetInterface("IController") != null)
+                .Select(x => 
+                {
+                    var arguments = new List<object>();
+                    if (x.HasConstructorParameter<SessionFactory>())
+                    {
+                        arguments.Add(sessionFactory);
+                    }
+                    return arguments.Any() ? Activator.CreateInstance(x, arguments.ToArray()) : Activator.CreateInstance(x);
+                });
             _controllers.AddRange(controllers);
             return this;
         }

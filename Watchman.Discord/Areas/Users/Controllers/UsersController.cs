@@ -67,7 +67,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
             var serverContext = (DiscordServerContext)contexts[nameof(DiscordServerContext)];
             var userService = new UserService();
             var serverRole = userService.GetRoleByName(commandRole, serverContext);
-            userService.RemoveRole(serverRole, userContext, serverContext);
+            userService.AddRole(serverRole, userContext, serverContext);
 
             messagesService.SendMessage($"Dodano role {commandRole} użytkownikowi {userContext}");
         }

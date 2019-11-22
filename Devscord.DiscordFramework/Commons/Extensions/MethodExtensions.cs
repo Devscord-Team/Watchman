@@ -17,5 +17,20 @@ namespace Devscord.DiscordFramework.Commons.Extensions
         {
             return method.GetParameters().Any(p => p.ParameterType.FullName == typeof(T).FullName);
         }
+
+        public static bool HasParameter<T>(this ConstructorInfo method)
+        {
+            return method.GetParameters().Any(p => p.ParameterType.FullName == typeof(T).FullName);
+        }
+
+        public static bool HasConstructorParameter<T>(this Type type)
+        {
+            var constructors = type.GetConstructors();
+            if (!constructors.Any())
+            {
+                return false;
+            }
+            return constructors.Any(c => c.HasParameter<T>());
+        }
     }
 }

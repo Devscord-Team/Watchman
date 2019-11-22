@@ -32,7 +32,7 @@ namespace Watchman.Discord
             {
                 TotalShards = 1
             });
-            this._workflow = new Workflow();
+            this._workflow = new Workflow(typeof(WatchmanBot).Assembly);
             _client.MessageReceived += this.MessageReceived;
             //_client.Log += this.Log;
         }
