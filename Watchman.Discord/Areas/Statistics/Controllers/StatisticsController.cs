@@ -1,5 +1,7 @@
 ﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
+using Devscord.DiscordFramework.Middlewares.Contexts;
+using Devscord.DiscordFramework.Services;
 using Discord.WebSocket;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -19,9 +21,9 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         private readonly ReportsService _reportsService;
         private readonly ChartsService _chartsService;
 
-        public StatisticsController()
+        public StatisticsController(SessionFactory sessionFactory)
         {
-            this._session = new SessionFactory(Server.GetDatabase()).Create(); //todo use IoC
+            this._session = sessionFactory.Create(); //todo use IoC
             this._reportsService = new ReportsService();
             this._chartsService = new ChartsService();
         }
@@ -29,7 +31,7 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         [ReadAlways]
         public void SaveMessage(string message, Dictionary<string, IDiscordContext> contexts)
         {
-            var messageBuilder = new MessageBuilder(message, contexts);
+            var messageBuilder = new MessageInformationBuilder(message, contexts);
             var messageInfo = messageBuilder
                 .SetAuthor()
                 .SetChannel()
@@ -67,14 +69,14 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
             var report = _reportsService.CreateReport(messages, period);
 
             var channelContext = (ChannelContext) contexts[nameof(ChannelContext)];
-            var channel = (ISocketMessageChannel) Server.GetChannel(channelContext.Id);
+            var messagesService = new MessagesService { DefaultChannelId = channelContext.Id };
 #if DEBUG
 
             var dataToMessage = "```json\n" + JsonConvert.SerializeObject(report.StatisticsPerPeriod.Where(x => x.MessagesQuantity > 0), Formatting.Indented) + "\n```";
-            channel.SendMessageAsync(dataToMessage);
+            messagesService.SendMessage(dataToMessage);
 #endif
             var path = _chartsService.GetImageStatisticsPerPeriod(report);
-            channel.SendFileAsync(path);
+            messagesService.SendFile(path);
         }
 
         private Task SaveToDatabase(MessageInformation data)

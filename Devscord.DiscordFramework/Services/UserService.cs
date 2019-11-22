@@ -10,7 +10,7 @@ using Discord.WebSocket;
 
 namespace Devscord.DiscordFramework.Services
 {
-    class UserService
+    public class UserService
     {
         public Task AddRole(ulong roleId, Dictionary<string, IDiscordContext> contexts)
         {
@@ -25,6 +25,7 @@ namespace Devscord.DiscordFramework.Services
             var role = GetRole(roleId, user);
             return user.RemoveRoleAsync(role);
         }
+
 
         private SocketGuildUser GetUser(Dictionary<string, IDiscordContext> contexts)
         {

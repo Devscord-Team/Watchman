@@ -1,58 +1,53 @@
-﻿using Discord.WebSocket;
+﻿using Devscord.DiscordFramework.Middlewares.Contexts;
+using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
 using Watchman.Discord.Areas.Statistics.Models;
 
 namespace Watchman.Discord.Areas.Statistics.Builders
 {
-    public class MessageBuilder
+    public class MessageInformationBuilder
     {
         private MessageInformationAuthor author;
         private MessageInformationChannel channel;
         private MessageInformationServer server;
-        private readonly string _message;
-        private readonly UserContext _userContext;
-        private readonly ChannelContext _channelContext;
+        private string _message;
 
-        public MessageBuilder(string message, Dictionary<string, IDiscordContext> contexts)
+        public MessageInformationBuilder(string message)
         {
             this._message = message;
-            this._userContext = (UserContext) contexts[nameof(UserContext)];
-            this._channelContext = (ChannelContext) contexts[nameof(ChannelContext)];
         }
 
-        public MessageBuilder SetAuthor()
+        public MessageInformationBuilder SetAuthor(UserContext user)
         {
             this.author = new MessageInformationAuthor
             {
-                Id = _userContext.Id,
-                Name = _userContext.Name
+                Id = user.Id,
+                Name = user.Name
             };
             return this;
         }
 
-        public MessageBuilder SetChannel()
+        public MessageInformationBuilder SetChannel(ChannelContext channel)
         {
             this.channel = new MessageInformationChannel
             {
-                Id = _channelContext.Id,
-                Name = _channelContext.Name
+                Id = channel.Id,
+                Name = channel.Name
             };
             return this;
         }
 
-        public MessageBuilder SetServerInfo()
+        public MessageInformationBuilder SetServerInfo(DiscordServerContext server)
         {
-            var serverInfo = ((SocketGuildChannel)Server.GetChannel(_channelContext.Id)).Guild;
-
             this.server = new MessageInformationServer
             {
-                Id = serverInfo.Id,
-                Name = serverInfo.Name,
+                Id = server.Id,
+                Name = server.Name,
                 Owner = new MessageInformationAuthor
                 {
-                    Id = serverInfo.Owner.Id,
-                    Name = serverInfo.Owner.ToString()
+                    Id = server.Owner.Id,
+                    Name = server.Owner.Name
                 }
             };
             return this;

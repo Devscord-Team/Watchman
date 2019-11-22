@@ -10,10 +10,20 @@ namespace Devscord.DiscordFramework.Middlewares
 {
     public class ServerMiddleware : IMiddleware<DiscordServerContext>
     {
+        private readonly UserContextsFactory userContextsFactory;
+
+        public ServerMiddleware()
+        {
+            this.userContextsFactory = new UserContextsFactory();
+        }
+
+
         public DiscordServerContext Process(SocketMessage data)
         {
             var serverInfo = ((SocketGuildChannel)data.Channel).Guild;
-            return new DiscordServerContext(serverInfo.Id, serverInfo.Name);
+            var owner = serverInfo.Owner;
+            var ownerContext =  userContextsFactory.Create((SocketGuildUser)owner);
+            return new DiscordServerContext(serverInfo.Id, serverInfo.Name, ownerContext);
         }
     }
 }
