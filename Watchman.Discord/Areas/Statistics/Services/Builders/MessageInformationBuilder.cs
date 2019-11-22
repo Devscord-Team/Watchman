@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using Watchman.Discord.Areas.Statistics.Models;
 
-namespace Watchman.Discord.Areas.Statistics.Builders
+namespace Watchman.Discord.Areas.Statistics.Services.Builders
 {
     public class MessageInformationBuilder
     {
@@ -15,12 +15,12 @@ namespace Watchman.Discord.Areas.Statistics.Builders
 
         public MessageInformationBuilder(string message)
         {
-            this._message = message;
+            _message = message;
         }
 
         public MessageInformationBuilder SetAuthor(UserContext user)
         {
-            this.author = new MessageInformationAuthor
+            author = new MessageInformationAuthor
             {
                 Id = user.Id,
                 Name = user.Name

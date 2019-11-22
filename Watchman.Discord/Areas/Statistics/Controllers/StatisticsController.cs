@@ -8,9 +8,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Watchman.Common.Models;
-using Watchman.Discord.Areas.Statistics.Builders;
 using Watchman.Discord.Areas.Statistics.Models;
 using Watchman.Discord.Areas.Statistics.Services;
+using Watchman.Discord.Areas.Statistics.Services.Builders;
 using Watchman.Integrations.MongoDB;
 
 namespace Watchman.Discord.Areas.Statistics.Controllers
