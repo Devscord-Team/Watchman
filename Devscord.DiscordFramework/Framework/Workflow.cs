@@ -23,7 +23,7 @@ namespace Devscord.DiscordFramework.Framework
             _controllers = new List<object>();
         }
 
-        public Workflow AddMiddleware<T>(object configuration = null /*TODO*/)
+        public Workflow WithMiddlewares<T>(object configuration = null /*TODO*/)
         {
             if (_middlewares.Any(x => x.GetType().FullName == typeof(T).FullName))
             {
@@ -34,7 +34,7 @@ namespace Devscord.DiscordFramework.Framework
             return this;
         }
 
-        public Workflow AddControllers(object configuration = null /*TODO*/)
+        public Workflow WithControllers(object configuration = null /*TODO*/)
         {
             var assembly = typeof(Workflow).Assembly;
             var controllers = assembly.GetTypes()
@@ -71,8 +71,8 @@ namespace Devscord.DiscordFramework.Framework
                 var withReadAlways = methods.Where(x => x.HasAttribute<ReadAlways>());
                 var withDiscordCommand = methods.Where(x => x.HasAttribute<DiscordCommand>());
 
-                RunWithReadAlwaysMethods(controller, message, contexts, withReadAlways);
-                RunWithDiscordCommandMethods(controller, message, contexts, withDiscordCommand);
+                this.RunWithReadAlwaysMethods(controller, message, contexts, withReadAlways);
+                this.RunWithDiscordCommandMethods(controller, message, contexts, withDiscordCommand);
             }
         }
 
