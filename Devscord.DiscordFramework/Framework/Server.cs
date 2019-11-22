@@ -6,11 +6,8 @@ using System.Text;
 
 namespace Devscord.DiscordFramework.Framework
 {
-    internal static class Server
+    public static class ServerInitializer
     {
-        private static DiscordSocketClient _client;
-        private static IMongoDatabase _database;
-
         public static bool Initialized = false;
 
         public static void Initialize(DiscordSocketClient client, string mongoDbConnectionString)
@@ -19,9 +16,21 @@ namespace Devscord.DiscordFramework.Framework
             {
                 return;
             }
+            Server.Initialize(client, mongoDbConnectionString);
+            Initialized = true;
+        }
+    }
+
+
+    internal static class Server
+    {
+        private static DiscordSocketClient _client;
+        private static IMongoDatabase _database;
+
+        public static void Initialize(DiscordSocketClient client, string mongoDbConnectionString)
+        {
             _client = client;
             _database = new MongoClient(mongoDbConnectionString).GetDatabase("devscord");
-            Initialized = true;
         }
 
         public static SocketChannel GetChannel(ulong channelId)

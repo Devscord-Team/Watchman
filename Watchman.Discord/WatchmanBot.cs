@@ -1,4 +1,6 @@
-﻿using Discord;
+﻿using Devscord.DiscordFramework.Framework;
+using Devscord.DiscordFramework.Middlewares;
+using Discord;
 using Discord.WebSocket;
 using Newtonsoft.Json;
 using System;
@@ -7,8 +9,6 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Watchman.Discord.Areas.Protection.Controllers;
-using Watchman.Discord.Framework;
-using Watchman.Discord.Middlewares;
 using Watchman.Integrations.MongoDB;
 
 namespace Watchman.Discord
@@ -40,15 +40,13 @@ namespace Watchman.Discord
         public async Task Start()
         {
             MongoConfiguration.Initialize();
-            Server.Initialize(this._client, this._configuration.MongoDbConnectionString);
-            
+            ServerInitializer.Initialize(this._client, this._configuration.MongoDbConnectionString);
             
             this._workflow
                 .AddMiddleware<ChannelMiddleware>()
-                //.AddMiddleware<LoggingMiddleware>()
                 .AddMiddleware<ServerMiddleware>()
                 .AddMiddleware<UserMiddleware>()
-                .AddControllers();
+                .WithControllers();
 
             await _client.LoginAsync(TokenType.Bot, this._configuration.Token);
 

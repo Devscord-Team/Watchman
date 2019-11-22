@@ -23,7 +23,7 @@ namespace Devscord.DiscordFramework.Framework
             _controllers = new List<object>();
         }
 
-        public Workflow WithMiddlewares<T>(object configuration = null /*TODO*/)
+        public Workflow AddMiddleware<T>(object configuration = null /*TODO*/)
         {
             if (_middlewares.Any(x => x.GetType().FullName == typeof(T).FullName))
             {

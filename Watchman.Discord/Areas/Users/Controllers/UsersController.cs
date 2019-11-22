@@ -50,29 +50,24 @@ namespace Watchman.Discord.Areas.Users.Controllers
 
             var channelContext = (ChannelContext)contexts[nameof(ChannelContext)];
             var messagesService = new MessagesService { DefaultChannelId = channelContext.Id };
-            
-            var guildChannel = ((SocketGuildChannel) Server.GetChannel(channelContext.Id));
-            var serverRoles = Server.GetRoles(guildChannel.Guild.Id);
-            var roleId = serverRoles.FirstOrDefault(x => x.Name == role?.Name)?.Id;
 
-            if(role == null || roleId == null)
+            if(role == null)
             {
                 messagesService.SendMessage($"Nie znaleziono roli {commandRole} lub wybrana rola musi być dodana ręcznie przez członka administracji");
                 return;
             }
 
             var userContext = (UserContext)contexts[nameof(UserContext)];
-
-            if(userContext.Roles.Any(x => x == role.Name))
+            if (userContext.Roles.Any(x => x.Name == role.Name))
             {
                 messagesService.SendMessage($"Użytkownik {userContext} posiada już role {commandRole}");
                 return;
             }
 
+            var serverContext = (DiscordServerContext)contexts[nameof(DiscordServerContext)];
             var userService = new UserService();
-            userService.AddRole(roleId.Value, contexts);
-
-            //todo add role id to usercontext (as object in list of roles)
+            var serverRole = userService.GetRoleByName(commandRole, serverContext);
+            userService.RemoveRole(serverRole, userContext, serverContext);
 
             messagesService.SendMessage($"Dodano role {commandRole} użytkownikowi {userContext}");
         }
@@ -93,19 +88,16 @@ namespace Watchman.Discord.Areas.Users.Controllers
             }
 
             var userContext = (UserContext)contexts[nameof(UserContext)];
-
-            if (userContext.Roles.All(x => x != role.Name)) //todo change name to ID, but for this we need database
+            if (userContext.Roles.All(x => x.Name != role.Name)) 
             {
                 messagesService.SendMessage($"Użytkownik {userContext} nie posiada roli {commandRole}");
                 return;
             }
 
-            var guildChannel = ((SocketGuildChannel) Server.GetChannel(channelContext.Id));
-            var serverRoles = Server.GetRoles(guildChannel.Guild.Id);
-            var roleId = serverRoles.First(x => x.Name == role.Name).Id;
-
+            var serverContext = (DiscordServerContext)contexts[nameof(DiscordServerContext)];
             var userService = new UserService();
-            userService.RemoveRole(roleId, contexts);
+            var serverRole = userService.GetRoleByName(commandRole, serverContext);
+            userService.RemoveRole(serverRole, userContext, serverContext);
 
             messagesService.SendMessage($"Usunięto role {commandRole} użytkownikowi {userContext}");
         }
