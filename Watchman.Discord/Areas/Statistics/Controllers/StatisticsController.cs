@@ -31,11 +31,11 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         [ReadAlways]
         public void SaveMessage(string message, Dictionary<string, IDiscordContext> contexts)
         {
-            var messageBuilder = new MessageInformationBuilder(message, contexts);
+            var messageBuilder = new MessageInformationBuilder(message);
             var messageInfo = messageBuilder
-                .SetAuthor()
-                .SetChannel()
-                .SetServerInfo()
+                .SetAuthor((UserContext)contexts[nameof(UserContext)])
+                .SetChannel((ChannelContext)contexts[nameof(ChannelContext)])
+                .SetServerInfo((DiscordServerContext)contexts[nameof(DiscordServerContext)])
                 .Build();
 
             this.SaveToDatabase(messageInfo);

@@ -35,9 +35,9 @@ namespace Devscord.DiscordFramework.Services
             return Server.GetGuildUser(userId, guildId);
         }
 
-        private SocketRole GetRole(ulong roleId, SocketGuildUser user)
+        private SocketRole GetRole(ulong roleId, ChannelContext channel)
         {
-            return Server.GetRoles(user.Guild.Id).First(x => x.Id == roleId);
+            return Server.GetRoles(channel.Id).First(x => x.Id == roleId);
         }
     }
 }

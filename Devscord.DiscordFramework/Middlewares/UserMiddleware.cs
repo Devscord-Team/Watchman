@@ -30,7 +30,7 @@ namespace Devscord.DiscordFramework.Middlewares
     {
         public UserContext Create(SocketGuildUser user)
         {
-            var roles = user.Roles.Select(x => x.Name);
+            var roles = user.Roles.Select(x => new UserRole(x.Id, x.Name));
             var avatarUrl = user.GetAvatarUrl(ImageFormat.Png, 2048);
             return new UserContext(user.Id, user.ToString(), roles, avatarUrl);
         }
