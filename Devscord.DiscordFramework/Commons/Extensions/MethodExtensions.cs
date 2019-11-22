@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace Watchman.Common.Extensions
+namespace Devscord.DiscordFramework.Commons.Extensions
 {
     public static class MethodExtensions
     {

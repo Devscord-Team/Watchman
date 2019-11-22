@@ -1,7 +1,7 @@
-﻿using System.IO;
-using Watchman.Common.Extensions;
+﻿using Devscord.DiscordFramework.Commons.Extensions;
+using System.IO;
 
-namespace Watchman.Common.Utils
+namespace Devscord.DiscordFramework.Commons.Utils
 {
     public static class StreamUtils
     {
