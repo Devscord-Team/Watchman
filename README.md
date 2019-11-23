@@ -20,7 +20,7 @@ Jeśli chcesz przyjrzeć się działaniu Watchmana z zewnątrz, wejdź na na ser
 ## Jak pomóc w rozwoju Watchamana?
 
 #### Jakich narzędzi potrzebuję aby zacząć współpracę?
-- .NET Core 2.2
+- .NET Core 3.0
 - Własna baza MongoDB
 - Konto GitHub
 - Konto Discord
