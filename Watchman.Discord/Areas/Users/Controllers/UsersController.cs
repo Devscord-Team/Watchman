@@ -67,9 +67,16 @@ namespace Watchman.Discord.Areas.Users.Controllers
             var serverContext = (DiscordServerContext)contexts[nameof(DiscordServerContext)];
             var userService = new UserService();
             var serverRole = userService.GetRoleByName(commandRole, serverContext);
-            userService.AddRole(serverRole, userContext, serverContext);
 
-            messagesService.SendMessage($"Dodano role {commandRole} użytkownikowi {userContext}");
+            try
+            {
+                userService.AddRole(serverRole, userContext, serverContext).Wait();
+                messagesService.SendMessage($"Dodano role {commandRole} użytkownikowi {userContext}");
+            }
+            catch
+            {
+                messagesService.SendMessage("Bot nie ma wystarczających uprawnień do zarządzania rolami użytkowników");
+            }
         }
 
         [DiscordCommand("-remove role")]
@@ -97,9 +104,16 @@ namespace Watchman.Discord.Areas.Users.Controllers
             var serverContext = (DiscordServerContext)contexts[nameof(DiscordServerContext)];
             var userService = new UserService();
             var serverRole = userService.GetRoleByName(commandRole, serverContext);
-            userService.RemoveRole(serverRole, userContext, serverContext);
 
-            messagesService.SendMessage($"Usunięto role {commandRole} użytkownikowi {userContext}");
+            try
+            {
+                userService.RemoveRole(serverRole, userContext, serverContext).Wait();
+                messagesService.SendMessage($"Usunięto role {commandRole} użytkownikowi {userContext}");
+            }
+            catch
+            {
+                messagesService.SendMessage("Bot nie ma wystarczających uprawnień do zarządzania rolami użytkowników");
+            }
         }
     }
 
