@@ -34,6 +34,7 @@ namespace Watchman.Discord
             });
             this._workflow = new Workflow(typeof(WatchmanBot).Assembly);
             _client.MessageReceived += this.MessageReceived;
+            _client.UserJoined += this.UserJoined;
             //_client.Log += this.Log;
         }
 
@@ -61,6 +62,12 @@ namespace Watchman.Discord
                 return Task.CompletedTask; 
             }
             return this._workflow.Run(message);
+        }
+
+        private Task UserJoined(SocketGuildUser user)
+        {
+            // todo: call method for welcoming user
+            return Task.CompletedTask;
         }
 
         //private Task Log(LogMessage msg)
