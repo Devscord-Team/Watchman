@@ -32,7 +32,7 @@ namespace Devscord.DiscordFramework.Middlewares
         {
             var roles = user.Roles.Select(x => new UserRole(x.Id, x.Name));
             var avatarUrl = user.GetAvatarUrl(ImageFormat.Png, 2048);
-            return new UserContext(user.Id, user.ToString(), roles, avatarUrl);
+            return new UserContext(user.Id, user.ToString(), roles, avatarUrl, user.Mention);
         }
     }
 }
