@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Middlewares.Contexts;
-using Discord;
 using Discord.WebSocket;
 
 namespace Devscord.DiscordFramework.Middlewares
@@ -23,16 +21,6 @@ namespace Devscord.DiscordFramework.Middlewares
         {
             var user = (SocketGuildUser)data.Author;
             return userContextsFactory.Create(user);
-        }
-    }
-
-    internal class UserContextsFactory
-    {
-        public UserContext Create(SocketGuildUser user)
-        {
-            var roles = user.Roles.Select(x => new UserRole(x.Id, x.Name));
-            var avatarUrl = user.GetAvatarUrl(ImageFormat.Png, 2048);
-            return new UserContext(user.Id, user.ToString(), roles, avatarUrl, user.Mention);
         }
     }
 }

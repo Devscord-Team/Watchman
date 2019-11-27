@@ -17,13 +17,11 @@ namespace Devscord.DiscordFramework.Middlewares
             this.userContextsFactory = new UserContextsFactory();
         }
 
-
         public DiscordServerContext Process(SocketMessage data)
         {
             var serverInfo = ((SocketGuildChannel)data.Channel).Guild;
-            var owner = serverInfo.Owner;
-            var ownerContext =  userContextsFactory.Create((SocketGuildUser)owner);
-            return new DiscordServerContext(serverInfo.Id, serverInfo.Name, ownerContext);
+            var discordFactory = new DiscordServerContextFactory();
+            return discordFactory.Create(serverInfo);
         }
     }
 }
