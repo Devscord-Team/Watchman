@@ -52,7 +52,7 @@ namespace Devscord.DiscordFramework.Services
             {
                 DefaultChannelId = channelContext.Id
             };
-            messageService.SendMessage($"Witaj {userContext.Name} na serwerze {serverContext.Name}");
+            messageService.SendMessage($"Witaj {userContext.Mention} na serwerze {serverContext.Name}");
             return Task.CompletedTask;
         }
     }
