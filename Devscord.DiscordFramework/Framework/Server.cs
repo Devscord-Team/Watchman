@@ -1,4 +1,5 @@
-﻿using Devscord.DiscordFramework.Services;
+﻿using Devscord.DiscordFramework.Middlewares;
+using Devscord.DiscordFramework.Services;
 using Discord.WebSocket;
 using MongoDB.Driver;
 using System;
@@ -64,9 +65,12 @@ namespace Devscord.DiscordFramework.Framework
 
         private static Task _client_UserJoined(SocketGuildUser guildUser)
         {
+            var channelContext = (new ChannelContextFactory()).Create(guildUser.Guild.DefaultChannel);
+            var userContext = (new UserContextsFactory()).Create(guildUser);
+            var discordServerContext = (new DiscordServerContextFactory()).Create(guildUser.Guild);
+
             var userService = new UserService();
-            return Task.CompletedTask;
-            //return userService.WelcomeUser();
+            return userService.WelcomeUser(channelContext, userContext, discordServerContext);
         }
     }
 }
