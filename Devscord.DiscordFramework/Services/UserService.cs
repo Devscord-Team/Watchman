@@ -45,5 +45,15 @@ namespace Devscord.DiscordFramework.Services
         {
             return Server.GetRoles(server.Id).First(x => x.Id == roleId);
         }
+
+        public Task WelcomeUser(ChannelContext channelContext, UserContext userContext, DiscordServerContext serverContext)
+        {
+            var messageService = new MessagesService()
+            {
+                DefaultChannelId = channelContext.Id
+            };
+            messageService.SendMessage($"Witaj {userContext.Name} na serwerze {serverContext.Name}");
+            return Task.CompletedTask;
+        }
     }
 }
