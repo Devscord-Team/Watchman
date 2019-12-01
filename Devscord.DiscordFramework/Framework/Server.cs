@@ -34,7 +34,7 @@ namespace Devscord.DiscordFramework.Framework
         {
             _client = client;
             _database = new MongoClient(mongoDbConnectionString).GetDatabase("devscord");
-            _client.UserJoined += _client_UserJoined;
+            _client.UserJoined += UserJoined;
         }
 
         public static SocketChannel GetChannel(ulong channelId)
