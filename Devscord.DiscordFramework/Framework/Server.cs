@@ -63,7 +63,7 @@ namespace Devscord.DiscordFramework.Framework
             return _database;
         }
 
-        private static Task _client_UserJoined(SocketGuildUser guildUser)
+        private static Task UserJoined(SocketGuildUser guildUser)
         {
             var channelContext = (new ChannelContextFactory()).Create(guildUser.Guild.DefaultChannel);
             var userContext = (new UserContextsFactory()).Create(guildUser);
