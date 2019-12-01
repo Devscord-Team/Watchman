@@ -1,0 +1,3 @@
+## Jak dołączyć do zespołu?
+
+tekst do uzupełnienia...
