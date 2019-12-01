@@ -102,11 +102,12 @@ namespace Devscord.DiscordFramework.Framework
             foreach (var method in methods)
             {
                 var commandArguments = method.GetCustomAttributesData()
-                    .First(x => x.AttributeType.FullName == typeof(DiscordCommand).FullName)
-                    .ConstructorArguments.Select(x => x.Value).ToArray();
+                    .Where(x => x.AttributeType.FullName == typeof(DiscordCommand).FullName)
+                    .SelectMany(x => x.ConstructorArguments, (x, arg) => arg.Value).ToArray();
 
-                var command = (DiscordCommand)Activator.CreateInstance(typeof(DiscordCommand), commandArguments);
-                if (message.StartsWith(command.Command))
+                var commands = commandArguments.Select(x => (DiscordCommand)Activator.CreateInstance(typeof(DiscordCommand), x));
+
+                if (commands.Any(x => message.StartsWith(x.Command)))
                 {
                     if (method.HasAttribute<AdminCommand>() && !((UserContext)contexts[nameof(UserContext)]).IsAdmin)
                     {
