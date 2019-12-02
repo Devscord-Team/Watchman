@@ -69,15 +69,8 @@ namespace Watchman.Discord.Areas.Users.Controllers
             var userService = new UserService();
             var serverRole = userService.GetRoleByName(commandRole, serverContext);
 
-            try
-            {
-                userService.AddRole(serverRole, userContext, serverContext).Wait();
-                messagesService.SendMessage($"Dodano role {commandRole} użytkownikowi {userContext}");
-            }
-            catch
-            {
-                messagesService.SendMessage("Bot nie ma wystarczających uprawnień do zarządzania rolami użytkowników");
-            }
+            userService.AddRole(serverRole, userContext, serverContext).Wait();
+            messagesService.SendMessage($"Dodano role {commandRole} użytkownikowi {userContext}");
         }
 
         [DiscordCommand("-remove role")]
