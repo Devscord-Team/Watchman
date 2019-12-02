@@ -16,22 +16,3 @@ Powiemy ci o tym. Jeśli spróbujesz zrobić coś, do czego Watchman nie ma upra
 
 ## Gdzie można spotkać Watchmana?
 Jeśli chcesz przyjrzeć się działaniu Watchmana z zewnątrz, wejdź na na serwer **Devscord** [ZAPROSZENIE](https://discord.gg/TZfg68D) i zobacz jak funkcjonuje w naturalnym środowisku.
-
-## Jak pomóc w rozwoju Watchamana?
-
-#### Jakich narzędzi potrzebuję aby zacząć współpracę?
-- .NET Core 2.2
-- Własna baza MongoDB
-- Konto GitHub
-- Konto Discord
-- Konto Trello
-
-#### Jak dołączyć do zespołu rozwijającego Watchmana?
-- Dołącz do serwera rekrutacyjnego [ZAPROSZENIE](https://discord.gg/9R3mUKd)
-- Na kanale #przedstaw-sie napisz
-     - Ile czasu w tygodniu jesteś w stanie poświęcić na rozwój bota
-     - Jakie masz doświadczenie w programowaniu i C# (hobbystyczne i komercyjne)
-     - Czy masz doświadczenie w tworzeniu botów discordowych
-     - Dlaczego chcesz pomóc w rozwijaniu bota? (opcjonalne)
-     - Podaj link do swojego githuba (lub innego repozytorium które jest twoim portfolio)
- - Czekaj na prywatną wiadomość od jednego z programistów
