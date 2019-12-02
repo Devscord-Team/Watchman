@@ -26,7 +26,7 @@ namespace Watchman.Discord
             this._configuration = configuration ?? JsonConvert
                 .DeserializeObject<DiscordConfiguration>(File.ReadAllText(configPath));
 
-            this._client = new DiscordSocketClient(new DiscordSocketConfig 
+            this._client = new DiscordSocketClient(new DiscordSocketConfig
             {
                 TotalShards = 1
             });
@@ -40,7 +40,7 @@ namespace Watchman.Discord
         {
             MongoConfiguration.Initialize();
             ServerInitializer.Initialize(this._client, this._configuration.MongoDbConnectionString);
-            
+
             this._workflow
                 .AddMiddleware<ChannelMiddleware>()
                 .AddMiddleware<ServerMiddleware>()
@@ -55,9 +55,9 @@ namespace Watchman.Discord
 
         private Task MessageReceived(SocketMessage message)
         {
-            if (message.Author.IsBot) 
-            { 
-                return Task.CompletedTask; 
+            if (message.Author.IsBot)
+            {
+                return Task.CompletedTask;
             }
             return this._workflow.Run(message);
         }
@@ -74,10 +74,15 @@ namespace Watchman.Discord
                 DefaultChannelId = socketMessage.Channel.Id
             };
 
-            if (e is Exception)
+            if (e is System.Reflection.TargetInvocationException)
             {
-                messagesService.SendMessage("Bot nie ma wystarczających uprawnień do zarządzania rolami użytkowników");
+                messagesService.SendMessage("Bot nie ma wystarczających uprawnień do wykonania tej akcji");
             }
+
+#if DEBUG
+            messagesService.SendMessage($"```Komenda: {socketMessage.Content}```");
+#endif
+
         }
 
         public void Dispose()
