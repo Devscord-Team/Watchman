@@ -4,11 +4,9 @@ using Discord;
 using Discord.WebSocket;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
-using Watchman.Discord.Areas.Protection.Controllers;
+using Devscord.DiscordFramework.Services;
 using Watchman.Integrations.MongoDB;
 
 namespace Watchman.Discord
@@ -34,6 +32,7 @@ namespace Watchman.Discord
             });
             this._workflow = new Workflow(typeof(WatchmanBot).Assembly);
             _client.MessageReceived += this.MessageReceived;
+            _workflow.WorkflowException += this.LogException;
             //_client.Log += this.Log;
         }
 
@@ -67,6 +66,19 @@ namespace Watchman.Discord
         //{
         //    return this._workflow.Run(msg);
         //}
+
+        private void LogException(Exception e, SocketMessage socketMessage)
+        {
+            var messagesService = new MessagesService()
+            {
+                DefaultChannelId = socketMessage.Channel.Id
+            };
+
+            if (e is Exception)
+            {
+                messagesService.SendMessage("Bot nie ma wystarczających uprawnień do zarządzania rolami użytkowników");
+            }
+        }
 
         public void Dispose()
         {
