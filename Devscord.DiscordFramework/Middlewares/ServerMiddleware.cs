@@ -11,17 +11,18 @@ namespace Devscord.DiscordFramework.Middlewares
     public class ServerMiddleware : IMiddleware<DiscordServerContext>
     {
         private readonly UserContextsFactory userContextsFactory;
+        private readonly DiscordServerContextFactory discordServerContextsFactory
 
         public ServerMiddleware()
         {
             this.userContextsFactory = new UserContextsFactory();
+            this.discordServerContextsFactory = new DiscordServerContextFactory();
         }
 
         public DiscordServerContext Process(SocketMessage data)
         {
             var serverInfo = ((SocketGuildChannel)data.Channel).Guild;
-            var discordFactory = new DiscordServerContextFactory();
-            return discordFactory.Create(serverInfo);
+            return this.discordServerContextsFactory.Create(serverInfo);
         }
     }
 }
