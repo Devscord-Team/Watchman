@@ -13,15 +13,18 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
         public bool IsAdmin { get; private set; }
         public IEnumerable<UserRole> Roles { get; private set; }
         public string AvatarUrl { get; private set; }
+        public string Mention { get; private set; }
 
-        public UserContext(ulong id, string name, IEnumerable<UserRole> roles, string avatarUrl)
+        public UserContext(ulong id, string name, IEnumerable<UserRole> roles, string avatarUrl, string mention)
         {
             Id = id;
             Name = name;
             Roles = roles;
             IsAdmin = roles.Any(x => x.Name.ToLowerInvariant().Contains("admin")); //working with "administrator" etc
             AvatarUrl = avatarUrl;
+            Mention = mention;
         }
+
         public override string ToString()
         {
             return Name;
