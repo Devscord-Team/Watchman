@@ -11,7 +11,7 @@ namespace Devscord.DiscordFramework.Middlewares
     public class ServerMiddleware : IMiddleware<DiscordServerContext>
     {
         private readonly UserContextsFactory userContextsFactory;
-        private readonly DiscordServerContextFactory discordServerContextsFactory
+        private readonly DiscordServerContextFactory discordServerContextsFactory;
 
         public ServerMiddleware()
         {
