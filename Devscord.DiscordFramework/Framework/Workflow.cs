@@ -15,6 +15,8 @@ namespace Devscord.DiscordFramework.Framework
 {
     public class Workflow
     {
+        public Action<Exception, SocketMessage> WorkflowException;
+
         private List<object> _middlewares;
         private List<object> _controllers;
         private readonly Assembly _botAssembly;
@@ -32,6 +34,7 @@ namespace Devscord.DiscordFramework.Framework
             {
                 return this;
             }
+
             var middleware = Activator.CreateInstance<T>();
             _middlewares.Add(middleware);
             return this;
@@ -57,8 +60,15 @@ namespace Devscord.DiscordFramework.Framework
 
         public Task Run(SocketMessage data)
         {
-            var contexts = this.RunMiddlewares(data);
-            this.RunControllers(data.Content, contexts);
+            try
+            {
+                var contexts = this.RunMiddlewares(data);
+                this.RunControllers(data.Content, contexts);
+            }
+            catch (Exception e)
+            {
+                WorkflowException.Invoke(e, data);
+            }
             return Task.CompletedTask;
         }
 
