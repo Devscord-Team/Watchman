@@ -99,15 +99,8 @@ namespace Watchman.Discord.Areas.Users.Controllers
             var userService = new UserService();
             var serverRole = userService.GetRoleByName(commandRole, serverContext);
 
-            try
-            {
-                userService.RemoveRole(serverRole, userContext, serverContext).Wait();
-                messagesService.SendMessage($"Usunięto role {commandRole} użytkownikowi {userContext}");
-            }
-            catch
-            {
-                messagesService.SendMessage("Bot nie ma wystarczających uprawnień do zarządzania rolami użytkowników");
-            }
+            userService.RemoveRole(serverRole, userContext, serverContext).Wait();
+            messagesService.SendMessage($"Usunięto role {commandRole} użytkownikowi {userContext}");
         }
 
         [DiscordCommand("-role list")]
