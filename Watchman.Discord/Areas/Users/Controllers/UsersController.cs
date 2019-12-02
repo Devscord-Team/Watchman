@@ -68,8 +68,8 @@ namespace Watchman.Discord.Areas.Users.Controllers
             var serverContext = (DiscordServerContext)contexts[nameof(DiscordServerContext)];
             var userService = new UserService();
             var serverRole = userService.GetRoleByName(commandRole, serverContext);
-            userService.AddRole(serverRole, userContext, serverContext);
 
+            userService.AddRole(serverRole, userContext, serverContext).Wait();
             messagesService.SendMessage($"Dodano role {commandRole} użytkownikowi {userContext}");
         }
 
@@ -98,8 +98,8 @@ namespace Watchman.Discord.Areas.Users.Controllers
             var serverContext = (DiscordServerContext)contexts[nameof(DiscordServerContext)];
             var userService = new UserService();
             var serverRole = userService.GetRoleByName(commandRole, serverContext);
-            userService.RemoveRole(serverRole, userContext, serverContext);
 
+            userService.RemoveRole(serverRole, userContext, serverContext).Wait();
             messagesService.SendMessage($"Usunięto role {commandRole} użytkownikowi {userContext}");
         }
 
