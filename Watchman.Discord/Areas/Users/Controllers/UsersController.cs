@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Watchman.Cqrs;
+using Watchman.DomainModel.DiscordServer;
+using Watchman.DomainModel.DiscordServer.Queries;
 
 namespace Watchman.Discord.Areas.Users.Controllers
 {
@@ -33,6 +35,8 @@ namespace Watchman.Discord.Areas.Users.Controllers
             var messageService = new MessagesService { DefaultChannelId = channel.Id };
             messageService.SendMessage(user.AvatarUrl);
         }
+
+        private IEnumerable<Role> _safeRoles => this.queryBus.Execute(new GetDiscordServerSafeRolesQuery()).SafeRoles;
 
         //todo add system to messages management
         [DiscordCommand("-add role")]
@@ -108,7 +112,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
 
             stringBuilder.AppendLine("Dostępne role:");
             stringBuilder.AppendLine("```");
-            _safeRoles.ForEach(x => stringBuilder.AppendLine(x.Name));
+            _safeRoles.ToList().ForEach(x => stringBuilder.AppendLine(x.Name));
             stringBuilder.Append("```");
 
             messageService.SendMessage(stringBuilder.ToString());
