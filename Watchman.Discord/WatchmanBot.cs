@@ -8,6 +8,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Services;
 using Watchman.Integrations.MongoDB;
+using Devscord.DiscordFramework;
 
 namespace Watchman.Discord
 {
