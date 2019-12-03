@@ -7,17 +7,23 @@ using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Watchman.Cqrs;
 
 namespace Watchman.Discord.Areas.Protection.Controllers
 {
     public class AntiSpamController : IController
     {
+        private readonly IQueryBus queryBus;
+        private readonly ICommandBus commandBus;
+
         //TODO balans
         private List<(ulong AuthorId, DateTime MessageDateTime)> _lastMessages = new List<(ulong, DateTime)>();
         private List<ulong> _warns = new List<ulong>();
 
-        public AntiSpamController()
+        public AntiSpamController(IQueryBus queryBus, ICommandBus commandBus)
         {
+            this.queryBus = queryBus;
+            this.commandBus = commandBus;
         }
 
         [ReadAlways]

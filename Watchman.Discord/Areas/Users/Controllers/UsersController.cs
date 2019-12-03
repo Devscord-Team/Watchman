@@ -8,11 +8,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Watchman.Cqrs;
 
 namespace Watchman.Discord.Areas.Users.Controllers
 {
     public class UsersController : IController
     {
+        private readonly IQueryBus queryBus;
+        private readonly ICommandBus commandBus;
+
+        public UsersController(IQueryBus queryBus, ICommandBus commandBus)
+        {
+            this.queryBus = queryBus;
+            this.commandBus = commandBus;
+        }
+
+
         [DiscordCommand("-avatar")]
         public void GetAvatar(string message, Dictionary<string, IDiscordContext> contexts)
         {

@@ -1,4 +1,5 @@
-﻿using Devscord.DiscordFramework.Commons.Extensions;
+﻿using Autofac;
+using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Framework;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
@@ -21,12 +22,14 @@ namespace Devscord.DiscordFramework
         private List<object> _middlewares;
         private List<object> _controllers;
         private readonly Assembly _botAssembly;
+        private readonly IComponentContext context;
 
-        public Workflow(Assembly botAssembly)
+        public Workflow(Assembly botAssembly, IComponentContext context)
         {
             _middlewares = new List<object>();
             _controllers = new List<object>();
             _botAssembly = botAssembly;
+            this.context = context;
         }
 
         public Workflow AddMiddleware<T>(object configuration = null /*TODO*/)
