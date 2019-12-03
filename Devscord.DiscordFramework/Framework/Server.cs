@@ -24,7 +24,6 @@ namespace Devscord.DiscordFramework.Framework
         }
     }
 
-
     internal static class Server
     {
         private static DiscordSocketClient _client;

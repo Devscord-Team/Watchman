@@ -49,7 +49,6 @@ namespace Watchman.Discord.Ioc.Modules
             builder.RegisterType<QueryBus>()
                 .As<IQueryBus>()
                 .InstancePerLifetimeScope();
-            
         }
         
     }

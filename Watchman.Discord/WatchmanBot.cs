@@ -12,6 +12,7 @@ using Watchman.Discord.Ioc;
 using Devscord.DiscordFramework;
 using Autofac.Core.Registration;
 using Autofac;
+using Watchman.Discord.Areas.Statistics.Controllers;
 
 namespace Watchman.Discord
 {
@@ -23,8 +24,17 @@ namespace Watchman.Discord
 
         public WatchmanBot(DiscordConfiguration configuration)
         {
-            this._client = GetDiscordClient();
+            this._configuration = configuration;
+            this._client = new DiscordSocketClient(new DiscordSocketConfig
+            {
+                TotalShards = 1
+            });
+            this._client.MessageReceived += this.MessageReceived;
+
             var autofacContainer = GetAutofacContainer(configuration);
+
+            var x = autofacContainer.Resolve<StatisticsController>();
+
             this._workflow = GetWorkflow(configuration, autofacContainer);
         }
 
@@ -67,16 +77,6 @@ namespace Watchman.Discord
                 .AddMiddleware<UserMiddleware>();
             workflow.WorkflowException += this.LogException;
             return workflow;
-        }
-
-        private DiscordSocketClient GetDiscordClient()
-        {
-            var client = new DiscordSocketClient(new DiscordSocketConfig
-            {
-                TotalShards = 1
-            });
-            client.MessageReceived += this.MessageReceived;
-            return client;
         }
 
         private IContainer GetAutofacContainer(DiscordConfiguration configuration)

@@ -70,8 +70,11 @@ namespace Devscord.DiscordFramework
 
         private void RunControllers(string message, Dictionary<string, IDiscordContext> contexts)
         {
-            var controllers = context.ComponentRegistry.Registrations
-                .SelectMany(x => x.Services.OfType<IController>());
+
+            //todo optimalize
+            var types = _botAssembly.GetTypes()
+                .Where(x => x.GetInterfaces().Any(i => i.FullName == typeof(IController).FullName)).ToList();
+            var controllers = types.Select(x => context.Resolve(x) as IController);
 
             foreach (var controller in controllers)
             {
