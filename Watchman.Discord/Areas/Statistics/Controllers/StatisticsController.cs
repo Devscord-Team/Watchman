@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Watchman.Common.Models;
+using Watchman.Cqrs;
 using Watchman.Discord.Areas.Statistics.Models;
 using Watchman.Discord.Areas.Statistics.Services;
 using Watchman.Discord.Areas.Statistics.Services.Builders;
@@ -20,9 +21,13 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         private readonly ISession _session;
         private readonly ReportsService _reportsService;
         private readonly ChartsService _chartsService;
+        private readonly IQueryBus queryBus;
+        private readonly ICommandBus commandBus;
 
-        public StatisticsController(SessionFactory sessionFactory)
+        public StatisticsController(IQueryBus queryBus, ICommandBus commandBus, SessionFactory sessionFactory)
         {
+            this.queryBus = queryBus;
+            this.commandBus = commandBus;
             this._session = sessionFactory.Create(); //todo use IoC
             this._reportsService = new ReportsService();
             this._chartsService = new ChartsService();

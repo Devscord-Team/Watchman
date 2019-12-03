@@ -13,27 +13,24 @@ namespace Devscord.DiscordFramework.Framework
     {
         public static bool Initialized = false;
 
-        public static void Initialize(DiscordSocketClient client, string mongoDbConnectionString)
+        public static void Initialize(DiscordSocketClient client)
         {
             if (Initialized)
             {
                 return;
             }
-            Server.Initialize(client, mongoDbConnectionString);
+            Server.Initialize(client);
             Initialized = true;
         }
     }
 
-
     internal static class Server
     {
         private static DiscordSocketClient _client;
-        private static IMongoDatabase _database;
 
-        public static void Initialize(DiscordSocketClient client, string mongoDbConnectionString)
+        public static void Initialize(DiscordSocketClient client)
         {
             _client = client;
-            _database = new MongoClient(mongoDbConnectionString).GetDatabase("devscord");
             _client.UserJoined += UserJoined;
         }
 
@@ -58,11 +55,7 @@ namespace Devscord.DiscordFramework.Framework
             return _client.GetGuild(guildId).GetUser(userId);
         }
 
-        public static IMongoDatabase GetDatabase()
-        {
-            return _database;
-        }
-
+        //todo there should be command (command handler)
         private static Task UserJoined(SocketGuildUser guildUser)
         {
             var channelContext = (new ChannelContextFactory()).Create(guildUser.Guild.DefaultChannel);

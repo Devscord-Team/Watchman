@@ -9,7 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Watchman.Integrations", "Wa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Watchman.Common", "Watchman.Common\Watchman.Common.csproj", "{DAAB36FA-4D5C-472B-A30B-568F04340271}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Devscord.DiscordFramework", "Devscord.DiscordFramework\Devscord.DiscordFramework.csproj", "{A97401B5-5435-42A1-AC4C-C6CC7BFF06CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Devscord.DiscordFramework", "Devscord.DiscordFramework\Devscord.DiscordFramework.csproj", "{A97401B5-5435-42A1-AC4C-C6CC7BFF06CF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watchman.DomainModel", "Watchman.DomainModel\Watchman.DomainModel.csproj", "{859EE782-6EEF-4EC1-B768-68092E0A7DAB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watchman.Cqrs", "Watchman.Cqrs\Watchman.Cqrs.csproj", "{21A62C63-0487-416F-818E-9E9020F92B95}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,14 @@ Global
 		{A97401B5-5435-42A1-AC4C-C6CC7BFF06CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A97401B5-5435-42A1-AC4C-C6CC7BFF06CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A97401B5-5435-42A1-AC4C-C6CC7BFF06CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{859EE782-6EEF-4EC1-B768-68092E0A7DAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{859EE782-6EEF-4EC1-B768-68092E0A7DAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{859EE782-6EEF-4EC1-B768-68092E0A7DAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{859EE782-6EEF-4EC1-B768-68092E0A7DAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21A62C63-0487-416F-818E-9E9020F92B95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21A62C63-0487-416F-818E-9E9020F92B95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21A62C63-0487-416F-818E-9E9020F92B95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21A62C63-0487-416F-818E-9E9020F92B95}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

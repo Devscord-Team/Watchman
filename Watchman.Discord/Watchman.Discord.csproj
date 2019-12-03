@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <None Remove="Areas\Statistics\Services\ChartsService.cs~RF1d33175.TMP" />
+    <None Remove="IoC\Modules\ServiceModule.cs~RF3633ec.TMP" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +31,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Devscord.DiscordFramework\Devscord.DiscordFramework.csproj" />
     <ProjectReference Include="..\Watchman.Common\Watchman.Common.csproj" />
+    <ProjectReference Include="..\Watchman.Cqrs\Watchman.Cqrs.csproj" />
+    <ProjectReference Include="..\Watchman.DomainModel\Watchman.DomainModel.csproj" />
     <ProjectReference Include="..\Watchman.Integrations\Watchman.Integrations.csproj" />
   </ItemGroup>
 

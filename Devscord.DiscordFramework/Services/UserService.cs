@@ -10,7 +10,7 @@ using Discord.WebSocket;
 
 namespace Devscord.DiscordFramework.Services
 {
-    public class UserService
+    public class UserService : IService
     {
         public Task AddRole(UserRole role, UserContext user, DiscordServerContext server)
         {

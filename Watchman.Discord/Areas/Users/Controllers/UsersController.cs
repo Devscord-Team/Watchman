@@ -8,11 +8,24 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Watchman.Cqrs;
+using Watchman.DomainModel.DiscordServer;
+using Watchman.DomainModel.DiscordServer.Queries;
 
 namespace Watchman.Discord.Areas.Users.Controllers
 {
     public class UsersController : IController
     {
+        private readonly IQueryBus queryBus;
+        private readonly ICommandBus commandBus;
+
+        public UsersController(IQueryBus queryBus, ICommandBus commandBus)
+        {
+            this.queryBus = queryBus;
+            this.commandBus = commandBus;
+        }
+
+
         [DiscordCommand("-avatar")]
         public void GetAvatar(string message, Dictionary<string, IDiscordContext> contexts)
         {
@@ -23,22 +36,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
             messageService.SendMessage(user.AvatarUrl);
         }
 
-        //todo database
-        private readonly List<Role> _safeRoles = new List<Role>
-        {
-            new Role("csharp"),
-            new Role("java"),
-            new Role("cpp"),
-            new Role("tester"),
-            new Role("javascript"),
-            new Role("python"),
-            new Role("php"),
-            new Role("functional master"),
-            new Role("rust"),
-            new Role("go"),
-            new Role("ruby"),
-            new Role("newbie"),
-        };
+        private IEnumerable<Role> _safeRoles => this.queryBus.Execute(new GetDiscordServerSafeRolesQuery()).SafeRoles;
 
         //todo add system to messages management
         [DiscordCommand("-add role")]
@@ -114,20 +112,12 @@ namespace Watchman.Discord.Areas.Users.Controllers
 
             stringBuilder.AppendLine("Dostępne role:");
             stringBuilder.AppendLine("```");
-            _safeRoles.ForEach(x => stringBuilder.AppendLine(x.Name));
+            _safeRoles.ToList().ForEach(x => stringBuilder.AppendLine(x.Name));
             stringBuilder.Append("```");
 
             messageService.SendMessage(stringBuilder.ToString());
         }
     }
 
-    public class Role
-    {
-        public string Name { get; private set; }
-
-        public Role(string name)
-        {
-            this.Name = name;
-        }
-    }
+    
 }
