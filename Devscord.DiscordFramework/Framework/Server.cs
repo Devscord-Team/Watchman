@@ -1,8 +1,11 @@
-﻿using Discord.WebSocket;
+﻿using Devscord.DiscordFramework.Middlewares;
+using Devscord.DiscordFramework.Services;
+using Discord.WebSocket;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework.Framework
 {
@@ -31,6 +34,7 @@ namespace Devscord.DiscordFramework.Framework
         {
             _client = client;
             _database = new MongoClient(mongoDbConnectionString).GetDatabase("devscord");
+            _client.UserJoined += UserJoined;
         }
 
         public static SocketChannel GetChannel(ulong channelId)
@@ -57,6 +61,16 @@ namespace Devscord.DiscordFramework.Framework
         public static IMongoDatabase GetDatabase()
         {
             return _database;
+        }
+
+        private static Task UserJoined(SocketGuildUser guildUser)
+        {
+            var channelContext = (new ChannelContextFactory()).Create(guildUser.Guild.DefaultChannel);
+            var userContext = (new UserContextsFactory()).Create(guildUser);
+            var discordServerContext = (new DiscordServerContextFactory()).Create(guildUser.Guild);
+
+            var userService = new UserService();
+            return userService.WelcomeUser(channelContext, userContext, discordServerContext);
         }
     }
 }

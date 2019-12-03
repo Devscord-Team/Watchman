@@ -7,6 +7,7 @@ using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Watchman.Discord.Areas.Users.Controllers
 {
@@ -67,8 +68,8 @@ namespace Watchman.Discord.Areas.Users.Controllers
             var serverContext = (DiscordServerContext)contexts[nameof(DiscordServerContext)];
             var userService = new UserService();
             var serverRole = userService.GetRoleByName(commandRole, serverContext);
-            userService.AddRole(serverRole, userContext, serverContext);
 
+            userService.AddRole(serverRole, userContext, serverContext).Wait();
             messagesService.SendMessage($"Dodano role {commandRole} użytkownikowi {userContext}");
         }
 
@@ -97,9 +98,26 @@ namespace Watchman.Discord.Areas.Users.Controllers
             var serverContext = (DiscordServerContext)contexts[nameof(DiscordServerContext)];
             var userService = new UserService();
             var serverRole = userService.GetRoleByName(commandRole, serverContext);
-            userService.RemoveRole(serverRole, userContext, serverContext);
 
+            userService.RemoveRole(serverRole, userContext, serverContext).Wait();
             messagesService.SendMessage($"Usunięto role {commandRole} użytkownikowi {userContext}");
+        }
+
+        [DiscordCommand("-role list")]
+        [DiscordCommand("-roles")]
+        public void PrintRoles(string message, Dictionary<string, IDiscordContext> contexts)
+        {
+            var channelContext = (ChannelContext)contexts[nameof(ChannelContext)];
+            var messageService = new MessagesService { DefaultChannelId = channelContext.Id };
+
+            var stringBuilder = new StringBuilder();
+
+            stringBuilder.AppendLine("Dostępne role:");
+            stringBuilder.AppendLine("```");
+            _safeRoles.ForEach(x => stringBuilder.AppendLine(x.Name));
+            stringBuilder.Append("```");
+
+            messageService.SendMessage(stringBuilder.ToString());
         }
     }
 
