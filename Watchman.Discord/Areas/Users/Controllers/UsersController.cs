@@ -23,23 +23,6 @@ namespace Watchman.Discord.Areas.Users.Controllers
             messageService.SendMessage(user.AvatarUrl);
         }
 
-        //todo database
-        private readonly List<Role> _safeRoles = new List<Role>
-        {
-            new Role("csharp"),
-            new Role("java"),
-            new Role("cpp"),
-            new Role("tester"),
-            new Role("javascript"),
-            new Role("python"),
-            new Role("php"),
-            new Role("functional master"),
-            new Role("rust"),
-            new Role("go"),
-            new Role("ruby"),
-            new Role("newbie"),
-        };
-
         //todo add system to messages management
         [DiscordCommand("-add role")]
         public void AddRole(string message, Dictionary<string, IDiscordContext> contexts)
@@ -121,13 +104,5 @@ namespace Watchman.Discord.Areas.Users.Controllers
         }
     }
 
-    public class Role
-    {
-        public string Name { get; private set; }
-
-        public Role(string name)
-        {
-            this.Name = name;
-        }
-    }
+    
 }

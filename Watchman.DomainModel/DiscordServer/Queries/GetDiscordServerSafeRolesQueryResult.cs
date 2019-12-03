@@ -7,5 +7,11 @@ namespace Watchman.DomainModel.DiscordServer.Queries
 {
     public class GetDiscordServerSafeRolesQueryResult : IQueryResult
     {
+        public IEnumerable<Role> SafeRoles { get; private set; }
+
+        public GetDiscordServerSafeRolesQueryResult(IEnumerable<Role> safeRoles)
+        {
+            this.SafeRoles = safeRoles;
+        }
     }
 }
