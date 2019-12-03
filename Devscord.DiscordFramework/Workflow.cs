@@ -1,4 +1,5 @@
 ﻿using Devscord.DiscordFramework.Commons.Extensions;
+using Devscord.DiscordFramework.Framework;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Middlewares.Contexts;
@@ -11,7 +12,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Watchman.Integrations.MongoDB;
 
-namespace Devscord.DiscordFramework.Framework
+namespace Devscord.DiscordFramework
 {
     public class Workflow
     {
