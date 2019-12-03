@@ -13,6 +13,9 @@ using Devscord.DiscordFramework;
 using Autofac.Core.Registration;
 using Autofac;
 using Watchman.Discord.Areas.Statistics.Controllers;
+using Watchman.Cqrs;
+using Watchman.DomainModel.Users.Commands;
+using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 
 namespace Watchman.Discord
 {
@@ -32,9 +35,6 @@ namespace Watchman.Discord
             this._client.MessageReceived += this.MessageReceived;
 
             var autofacContainer = GetAutofacContainer(configuration);
-
-            var x = autofacContainer.Resolve<StatisticsController>();
-
             this._workflow = GetWorkflow(configuration, autofacContainer);
         }
 

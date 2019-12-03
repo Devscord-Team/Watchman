@@ -21,7 +21,7 @@ namespace Watchman.Discord.Ioc.Modules
             {
                 var asm = stack.Pop();
 
-                if (asm.FullName.Contains("Watchman.ReadModel"))
+                if (asm.FullName.Contains("Watchman.DomainModel"))
                 {
                     var handlers = asm.GetTypes()
                         .Where(type => typeof(IQueryHandler).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)

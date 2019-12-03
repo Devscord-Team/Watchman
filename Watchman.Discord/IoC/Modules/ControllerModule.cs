@@ -33,7 +33,7 @@ namespace Watchman.Discord.IoC.Modules
                     foreach (var controller in controllers)
                     {
                         builder.RegisterType(controller)
-                            .As(controller.GetInterfaces().First())
+                            .As(controller)
                             .InstancePerLifetimeScope();
                     }
                 }
