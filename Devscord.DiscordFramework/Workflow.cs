@@ -20,14 +20,12 @@ namespace Devscord.DiscordFramework
         public Action<Exception, SocketMessage> WorkflowException;
 
         private List<object> _middlewares;
-        private List<object> _controllers;
         private readonly Assembly _botAssembly;
         private readonly IComponentContext context;
 
         public Workflow(Assembly botAssembly, IComponentContext context)
         {
             _middlewares = new List<object>();
-            _controllers = new List<object>();
             _botAssembly = botAssembly;
             this.context = context;
         }
@@ -41,24 +39,6 @@ namespace Devscord.DiscordFramework
 
             var middleware = Activator.CreateInstance<T>();
             _middlewares.Add(middleware);
-            return this;
-        }
-
-        public Workflow WithControllers(object configuration = null /*TODO*/)
-        {
-            var sessionFactory = new SessionFactory(Server.GetDatabase());
-            var controllers = _botAssembly.GetTypes()
-                .Where(x => x.GetInterface("IController") != null)
-                .Select(x => 
-                {
-                    var arguments = new List<object>();
-                    if (x.HasConstructorParameter<SessionFactory>())
-                    {
-                        arguments.Add(sessionFactory);
-                    }
-                    return arguments.Any() ? Activator.CreateInstance(x, arguments.ToArray()) : Activator.CreateInstance(x);
-                });
-            _controllers.AddRange(controllers);
             return this;
         }
 
@@ -90,7 +70,10 @@ namespace Devscord.DiscordFramework
 
         private void RunControllers(string message, Dictionary<string, IDiscordContext> contexts)
         {
-            foreach (var controller in _controllers)
+            var controllers = context.ComponentRegistry.Registrations
+                .SelectMany(x => x.Services.OfType<IController>());
+
+            foreach (var controller in controllers)
             {
                 var methods = controller.GetType().GetMethods();
                 var withReadAlways = methods.Where(x => x.HasAttribute<ReadAlways>());
@@ -101,17 +84,16 @@ namespace Devscord.DiscordFramework
             }
         }
 
-        private void RunWithReadAlwaysMethods(object controller, string message, Dictionary<string, IDiscordContext> contexts, IEnumerable<MethodInfo> methods)
+        private void RunWithReadAlwaysMethods(IController controller, string message, Dictionary<string, IDiscordContext> contexts, IEnumerable<MethodInfo> methods)
         {
             foreach (var method in methods)
             {
-                //var arguments = method.HasParameter<DiscordCommand>() ? new object[] { message, contexts } : new object[] { };
                 var arguments = new object[] { message, contexts };
                 method.Invoke(controller, arguments);
             }
         }
 
-        private void RunWithDiscordCommandMethods(object controller, string message, Dictionary<string, IDiscordContext> contexts, IEnumerable<MethodInfo> methods)
+        private void RunWithDiscordCommandMethods(IController controller, string message, Dictionary<string, IDiscordContext> contexts, IEnumerable<MethodInfo> methods)
         {
             foreach (var method in methods)
             {

@@ -8,6 +8,10 @@ using System.IO;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Services;
 using Watchman.Integrations.MongoDB;
+using Watchman.Discord.Ioc;
+using Devscord.DiscordFramework;
+using Autofac.Core.Registration;
+using Autofac;
 
 namespace Watchman.Discord
 {
@@ -17,23 +21,11 @@ namespace Watchman.Discord
         private Workflow _workflow;
         private DiscordConfiguration _configuration;
 
-        public WatchmanBot(DiscordConfiguration configuration = null)
+        public WatchmanBot(DiscordConfiguration configuration)
         {
-            var configPath = "config.json";
-#if RELEASE
-            configPath = "config-prod.json";
-#endif
-            this._configuration = configuration ?? JsonConvert
-                .DeserializeObject<DiscordConfiguration>(File.ReadAllText(configPath));
-
-            this._client = new DiscordSocketClient(new DiscordSocketConfig
-            {
-                TotalShards = 1
-            });
-            this._workflow = new Workflow(typeof(WatchmanBot).Assembly);
-            _client.MessageReceived += this.MessageReceived;
-            _workflow.WorkflowException += this.LogException;
-            //_client.Log += this.Log;
+            this._client = GetDiscordClient();
+            var autofacContainer = GetAutofacContainer(configuration);
+            this._workflow = GetWorkflow(configuration, autofacContainer);
         }
 
         public async Task Start()
@@ -41,31 +33,15 @@ namespace Watchman.Discord
             MongoConfiguration.Initialize();
             ServerInitializer.Initialize(this._client, this._configuration.MongoDbConnectionString);
 
-            this._workflow
-                .AddMiddleware<ChannelMiddleware>()
-                .AddMiddleware<ServerMiddleware>()
-                .AddMiddleware<UserMiddleware>()
-                .WithControllers();
-
             await _client.LoginAsync(TokenType.Bot, this._configuration.Token);
-
             await _client.StartAsync();
             await Task.Delay(-1);
         }
 
         private Task MessageReceived(SocketMessage message)
         {
-            if (message.Author.IsBot)
-            {
-                return Task.CompletedTask;
-            }
-            return this._workflow.Run(message);
+            return message.Author.IsBot ? Task.CompletedTask : this._workflow.Run(message);
         }
-
-        //private Task Log(LogMessage msg)
-        //{
-        //    return this._workflow.Run(msg);
-        //}
 
         private void LogException(Exception e, SocketMessage socketMessage)
         {
@@ -78,11 +54,36 @@ namespace Watchman.Discord
             {
                 messagesService.SendMessage("Bot nie ma wystarczających uprawnień do wykonania tej akcji");
             }
-
 #if DEBUG
             messagesService.SendMessage($"```Komenda: {socketMessage.Content}```");
 #endif
+        }
 
+        private Workflow GetWorkflow(DiscordConfiguration configuration, IContainer context)
+        {
+            var workflow = new Workflow(typeof(WatchmanBot).Assembly, context);
+            workflow.AddMiddleware<ChannelMiddleware>()
+                .AddMiddleware<ServerMiddleware>()
+                .AddMiddleware<UserMiddleware>();
+            workflow.WorkflowException += this.LogException;
+            return workflow;
+        }
+
+        private DiscordSocketClient GetDiscordClient()
+        {
+            var client = new DiscordSocketClient(new DiscordSocketConfig
+            {
+                TotalShards = 1
+            });
+            client.MessageReceived += this.MessageReceived;
+            return client;
+        }
+
+        private IContainer GetAutofacContainer(DiscordConfiguration configuration)
+        {
+            return new ContainerModule(configuration)
+                .GetBuilder()
+                .Build();
         }
 
         public void Dispose()

@@ -4,7 +4,7 @@ using Watchman.Discord.IoC.Modules;
 
 namespace Watchman.Discord.Ioc
 {
-    public class ContainerModule : Autofac.Module
+    public class ContainerModule
     {
         private readonly DiscordConfiguration configuration;
 
@@ -13,13 +13,15 @@ namespace Watchman.Discord.Ioc
             this.configuration = configuration;
         }
 
-        protected override void Load(ContainerBuilder builder)
+        public ContainerBuilder GetBuilder()
         {
+            var builder = new ContainerBuilder();
             builder.RegisterModule(new DatabaseModule(configuration));
             builder.RegisterModule<ServiceModule>();
             builder.RegisterModule<CommandModule>();
             builder.RegisterModule<QueryModule>();
             builder.RegisterModule<ControllerModule>();
+            return builder;
         }
     }
 }
