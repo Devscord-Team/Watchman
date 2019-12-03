@@ -4,4 +4,14 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Protection\Queries\Handlers\" />
+    <Folder Include="Statistics\Commands\Handlers\" />
+    <Folder Include="Statistics\Queries\Handlers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Watchman.Cqrs\Watchman.Cqrs.csproj" />
+  </ItemGroup>
+
 </Project>

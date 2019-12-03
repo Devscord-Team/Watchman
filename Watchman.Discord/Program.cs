@@ -11,7 +11,7 @@ namespace Watchman.Discord
         {
 #if DEBUG
             var configPath = "config.json";
-#if RELEASE
+#elif RELEASE
             configPath = "config-prod.json";
 #endif
             var configuration = JsonConvert.DeserializeObject<DiscordConfiguration>(File.ReadAllText(configPath));
