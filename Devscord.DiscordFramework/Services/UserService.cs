@@ -48,7 +48,7 @@ namespace Devscord.DiscordFramework.Services
 
         public Task WelcomeUser(UserContext userContext, DiscordServerContext serverContext)
         {
-            var messageService = new MessagesService() { DefaultChannelId = serverContext.DefaultChannel.Id };
+            var messageService = new MessagesService() { DefaultChannelId = serverContext.SystemChannel.Id };
 
             messageService.SendMessage($"Witaj {userContext.Mention} na serwerze {serverContext.Name}");
             return Task.CompletedTask;
