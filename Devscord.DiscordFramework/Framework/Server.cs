@@ -58,12 +58,11 @@ namespace Devscord.DiscordFramework.Framework
         //todo there should be command (command handler)
         private static Task UserJoined(SocketGuildUser guildUser)
         {
-            var channelContext = (new ChannelContextFactory()).Create(guildUser.Guild.DefaultChannel);
             var userContext = (new UserContextsFactory()).Create(guildUser);
             var discordServerContext = (new DiscordServerContextFactory()).Create(guildUser.Guild);
 
             var userService = new UserService();
-            return userService.WelcomeUser(channelContext, userContext, discordServerContext);
+            return userService.WelcomeUser(userContext, discordServerContext);
         }
     }
 }
