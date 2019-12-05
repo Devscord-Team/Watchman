@@ -24,7 +24,7 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         private readonly IQueryBus queryBus;
         private readonly ICommandBus commandBus;
 
-        public StatisticsController(IQueryBus queryBus, ICommandBus commandBus, SessionFactory sessionFactory)
+        public StatisticsController(IQueryBus queryBus, ICommandBus commandBus, ISessionFactory sessionFactory)
         {
             this.queryBus = queryBus;
             this.commandBus = commandBus;
