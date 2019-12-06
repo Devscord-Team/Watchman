@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Devscord.DiscordFramework.Middlewares.Contexts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Watchman.Common.Models;
@@ -9,8 +10,10 @@ namespace Watchman.Discord.Areas.Statistics.Services
     public class ReportsService
     {
         //TODO unit test
-        public StatisticsReport CreateReport(IEnumerable<MessageInformation> messages, Period period)
+        public StatisticsReport CreateReport(IEnumerable<MessageInformation> messages, Period period, DiscordServerContext serverContext)
         {
+            messages = messages.Where(x => x.Server.Id == serverContext.Id);
+
             if (!messages.Any())
             {
                 return default;
