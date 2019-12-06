@@ -11,7 +11,7 @@ using Watchman.Cqrs;
 
 namespace Watchman.Discord.Areas.BotSettings.Controllers
 {
-    class VersionController
+    public class VersionController : IController
     {
         private readonly IQueryBus queryBus;
         private readonly ICommandBus commandBus;
