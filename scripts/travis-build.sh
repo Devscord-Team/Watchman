@@ -1,4 +1,4 @@
 #!/bin/bash
 sudo snap alias dotnet-sdk.dotnet dotnet
 dotnet restore
-dotnet build
+dotnet build --configuration Release
