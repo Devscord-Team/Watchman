@@ -1,7 +1,7 @@
 ﻿using System;
 using Watchman.Cqrs;
 
-namespace Watchman.DomainModel.BotSettings.Queries
+namespace Watchman.DomainModel.Settings.Queries
 {
     public class GetBotVersionQueryResult : IQueryResult
     {

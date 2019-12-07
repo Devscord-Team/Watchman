@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using Watchman.Cqrs;
 
-namespace Watchman.DomainModel.BotSettings.Queries.Handlers
+namespace Watchman.DomainModel.Settings.Queries.Handlers
 {
     public class GetBotVersionQueryHandler : IQueryHandler<GetBotVersionQuery, GetBotVersionQueryResult>
     {
