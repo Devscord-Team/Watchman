@@ -14,5 +14,11 @@ Kliknij w [ZAPROSZENIE BOTA](https://discordapp.com/api/oauth2/authorize?client_
 #### Skąd dowiem się że nie mam konkretnego uprawnienia?
 Powiemy ci o tym. Jeśli spróbujesz zrobić coś, do czego Watchman nie ma uprawnienia, dostaniesz powiadomienie którego powiadomienia brakuje ci, aby wykonać tą akcję.
 
+#### Chcę pomóc w rozwoju bota. Gdzie zacząć?
+Zajrzyj do pliku [CONTRIBUTING](https://github.com/Devscord-Team/Watchman/blob/master/CONTRIBUTING.md), gdzie znajdziesz więcej informacji na temat rozwijania bota.
+
+#### W jaki sposób mogę uruchomić bota na swoim komputerze?
+Jeśli chcesz samodzielnie hostować bota, to zapoznaj się z instrukcją w naszym [Wiki](https://github.com/Devscord-Team/Watchman/wiki/Getting-Started).
+
 ## Gdzie można spotkać Watchmana?
 Jeśli chcesz przyjrzeć się działaniu Watchmana z zewnątrz, wejdź na na serwer **Devscord** [ZAPROSZENIE](https://discord.gg/TZfg68D) i zobacz jak funkcjonuje w naturalnym środowisku.
