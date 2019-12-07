@@ -8,6 +8,7 @@ using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Watchman.Cqrs;
+using Watchman.DomainModel.BotSettings.Queries;
 
 namespace Watchman.Discord.Areas.BotSettings.Controllers
 {
@@ -25,9 +26,11 @@ namespace Watchman.Discord.Areas.BotSettings.Controllers
         [DiscordCommand("-version")]
         public void PrintVersion(string message, Dictionary<string, IDiscordContext> contexts)
         {
-            var version = File.ReadAllText("version.txt");
+            var version = queryBus.Execute(new GetBotVersionQuery()).Version;
+
             var channel = (ChannelContext) contexts[nameof(ChannelContext)];
-            var messagesService = new MessagesService() { DefaultChannelId = channel.Id };
+            var messagesService = new MessagesService { DefaultChannelId = channel.Id };
+
             messagesService.SendMessage($"```Obecna wersja: {version}```");
         }
     }
