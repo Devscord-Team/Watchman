@@ -10,7 +10,7 @@ using Devscord.DiscordFramework.Services;
 using Watchman.Cqrs;
 using Watchman.DomainModel.BotSettings.Queries;
 
-namespace Watchman.Discord.Areas.BotSettings.Controllers
+namespace Watchman.Discord.Areas.Settings.Controllers
 {
     public class VersionController : IController
     {
