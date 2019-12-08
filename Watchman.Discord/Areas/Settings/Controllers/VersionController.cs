@@ -19,6 +19,7 @@ namespace Watchman.Discord.Areas.Settings.Controllers
             this.commandBus = commandBus;
         }
 
+        [AdminCommand]
         [DiscordCommand("-version")]
         public void PrintVersion(string message, Dictionary<string, IDiscordContext> contexts)
         {
