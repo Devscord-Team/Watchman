@@ -19,8 +19,8 @@ namespace Watchman.Discord.Areas.Statistics.Services
                 return default;
             }
 
-            var sortedMessages = messages.OrderByDescending(x => x.Date);
-            var latestDateBasedOnPeriod = this.GetLatestDateBasedOnPeriod(sortedMessages.First().Date, period);
+            var sortedMessages = messages.OrderByDescending(x => x.DateTime);
+            var latestDateBasedOnPeriod = this.GetLatestDateBasedOnPeriod(sortedMessages.First().DateTime, period);
 
             var statisticsPerPeriod = this.SplitMessagesToReportsPerPeriod(sortedMessages, latestDateBasedOnPeriod, period);
 
@@ -37,10 +37,9 @@ namespace Watchman.Discord.Areas.Statistics.Services
             var result = new List<StatisticsReportPeriod>();
 
             var currentPeriod = new TimeRange { Start = this.GetOldestMessageInCurrentPeriod(latestDate, period), End = latestDate };
-            var messagesInCurrentPeriod = new List<MessageInformation>();
             do
             {
-                messagesInCurrentPeriod = messages.Where(x => x.Date >= currentPeriod.Start && x.Date <= currentPeriod.End).ToList();
+                var messagesInCurrentPeriod = messages.Where(x => x.DateTime >= currentPeriod.Start && x.DateTime <= currentPeriod.End).ToList();
                 var statisticsInCurrentPeriod = new StatisticsReportPeriod
                 {
                     MessagesQuantity = messagesInCurrentPeriod.Count,
@@ -50,7 +49,7 @@ namespace Watchman.Discord.Areas.Statistics.Services
                 result.Add(statisticsInCurrentPeriod);
                 currentPeriod = this.TransferToPreviousPeriod(currentPeriod, period);
 
-            } while (currentPeriod.Start.Date >= messages.Last().Date.Date);
+            } while (currentPeriod.Start.Date >= messages.Last().DateTime.Date);
             var last = messages.Last();
             return result;
         }
@@ -66,34 +65,26 @@ namespace Watchman.Discord.Areas.Statistics.Services
 
         private DateTime GetOldestMessageInCurrentPeriod(DateTime endOfPeriod, Period period)
         {
-            switch (period)
+            return period switch
             {
-                case Period.Hour:
-                    return new DateTime(endOfPeriod.Year, endOfPeriod.Month, endOfPeriod.Day, endOfPeriod.Hour, 0, 0);
-                case Period.Day:
-                    return new DateTime(endOfPeriod.Year, endOfPeriod.Month, endOfPeriod.Day);
-                case Period.Week:
-                    return new DateTime(endOfPeriod.Year, endOfPeriod.Month, endOfPeriod.Day).AddDays(-6);
-                case Period.Month:
-                    return new DateTime(endOfPeriod.Year, endOfPeriod.Month, 1);
-            }
-            return default;
+                Period.Hour => new DateTime(endOfPeriod.Year, endOfPeriod.Month, endOfPeriod.Day, endOfPeriod.Hour, 0, 0),
+                Period.Day => new DateTime(endOfPeriod.Year, endOfPeriod.Month, endOfPeriod.Day),
+                Period.Week => new DateTime(endOfPeriod.Year, endOfPeriod.Month, endOfPeriod.Day).AddDays(-6),
+                Period.Month => new DateTime(endOfPeriod.Year, endOfPeriod.Month, 1),
+                _ => default
+            };
         }
 
         private DateTime GetLatestDateBasedOnPeriod(DateTime latestDate, Period period)
         {
-            switch (period)
+            return period switch
             {
-                case Period.Hour:
-                    return new DateTime(latestDate.Year, latestDate.Month, latestDate.Day, latestDate.Hour, 0, 0).AddHours(1).AddMilliseconds(-1);
-                case Period.Day:
-                    return new DateTime(latestDate.Year, latestDate.Month, latestDate.Day).AddDays(1).AddMilliseconds(-1);
-                case Period.Week:
-                    return new DateTime(latestDate.Year, latestDate.Month, latestDate.Day).AddDays(-(int)latestDate.DayOfWeek + 7).AddDays(1).AddMilliseconds(-1); //should be sunday
-                case Period.Month:
-                    return new DateTime(latestDate.Year, latestDate.Month, DateTime.DaysInMonth(latestDate.Year, latestDate.Month)).AddDays(1).AddMilliseconds(-1); //last day of current month
-            }
-            return default;
+                Period.Hour => new DateTime(latestDate.Year, latestDate.Month, latestDate.Day, latestDate.Hour, 0, 0).AddHours(1).AddMilliseconds(-1),
+                Period.Day => new DateTime(latestDate.Year, latestDate.Month, latestDate.Day).AddDays(1).AddMilliseconds(-1),
+                Period.Week => new DateTime(latestDate.Year, latestDate.Month, latestDate.Day).AddDays(-(int) latestDate.DayOfWeek + 7).AddDays(1).AddMilliseconds(-1), //should be sunday
+                Period.Month => new DateTime(latestDate.Year, latestDate.Month, DateTime.DaysInMonth(latestDate.Year, latestDate.Month)).AddDays(1).AddMilliseconds(-1), //last day of current month
+            _ => default
+            };
         }
     }
 }

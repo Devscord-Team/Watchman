@@ -11,16 +11,16 @@ namespace Devscord.DiscordFramework.Framework
 {
     public static class ServerInitializer
     {
-        public static bool Initialized = false;
+        private static bool _initialized = false;
 
         public static void Initialize(DiscordSocketClient client)
         {
-            if (Initialized)
+            if (_initialized)
             {
                 return;
             }
             Server.Initialize(client);
-            Initialized = true;
+            _initialized = true;
         }
     }
 

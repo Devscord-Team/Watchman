@@ -8,19 +8,19 @@ namespace Watchman.Discord.Areas.Statistics.Services.Builders
 {
     public class MessageInformationBuilder
     {
-        private MessageInformationAuthor author;
-        private MessageInformationChannel channel;
-        private MessageInformationServer server;
-        private string message;
+        private MessageInformationAuthor _author;
+        private MessageInformationChannel _channel;
+        private MessageInformationServer _server;
+        private readonly string _message;
 
         public MessageInformationBuilder(string message)
         {
-            this.message = message;
+            this._message = message;
         }
 
         public MessageInformationBuilder SetAuthor(UserContext user)
         {
-            author = new MessageInformationAuthor
+            _author = new MessageInformationAuthor
             {
                 Id = user.Id,
                 Name = user.Name
@@ -30,7 +30,7 @@ namespace Watchman.Discord.Areas.Statistics.Services.Builders
 
         public MessageInformationBuilder SetChannel(ChannelContext channel)
         {
-            this.channel = new MessageInformationChannel
+            this._channel = new MessageInformationChannel
             {
                 Id = channel.Id,
                 Name = channel.Name
@@ -40,7 +40,7 @@ namespace Watchman.Discord.Areas.Statistics.Services.Builders
 
         public MessageInformationBuilder SetServerInfo(DiscordServerContext server)
         {
-            this.server = new MessageInformationServer
+            this._server = new MessageInformationServer
             {
                 Id = server.Id,
                 Name = server.Name,
@@ -58,11 +58,11 @@ namespace Watchman.Discord.Areas.Statistics.Services.Builders
             var date = DateTime.UtcNow;
             return new MessageInformation
             {
-                Author = author,
-                Channel = channel,
-                Server = server,
-                Content = message,
-                Date = date
+                Author = _author,
+                Channel = _channel,
+                Server = _server,
+                Content = _message,
+                DateTime = date
             };
         }
     }
