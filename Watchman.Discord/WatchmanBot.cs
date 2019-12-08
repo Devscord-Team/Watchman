@@ -66,7 +66,7 @@ namespace Watchman.Discord
             }
 #if DEBUG
             messagesService.SendMessage($"```Komenda: {socketMessage.Content}```");
-            messagesService.SendMessage($"```Treść: {e.InnerException.Message}```");
+            messagesService.SendMessage($"```StackTrace: {e.StackTrace}```");
 #endif
         }
 
