@@ -17,7 +17,7 @@ namespace Watchman.Cqrs
             if (query == null)
             {
                 throw new ArgumentNullException(nameof(query),
-                    $"Query: '{nameof(query)}' can not be null.");
+                    $"Query: '{typeof(W)}' can not be null.");
             }
             var handlerType = typeof(IQueryHandler<,>)
                 .MakeGenericType(query.GetType(), typeof(W));
