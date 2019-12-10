@@ -6,7 +6,7 @@ using Watchman.Integrations.MongoDB;
 
 namespace Watchman.Discord
 {
-    class HelpGenerator
+    class HelpGenerator : IService
     {
         private readonly ISession _session;
 
@@ -15,6 +15,5 @@ namespace Watchman.Discord
             _session = sessionFactory.Create();
             //_session.Get<Role>()
         }
-
     }
 }
