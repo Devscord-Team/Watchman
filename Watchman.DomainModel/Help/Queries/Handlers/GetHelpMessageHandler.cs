@@ -12,10 +12,11 @@ namespace Watchman.DomainModel.Help.Queries.Handlers
 
         public GetHelpInformationQueryResult Handle(GetHelpInformationQuery query)
         {
-            using var helpFile = new StreamReader(_helpFileName);
+            var allText = File.ReadAllText(_helpFileName);
             var helpInfos = new List<HelpInformation>();
-            
-            throw new NotImplementedException();
+
+            // todo: parse json file to list
+
             return new GetHelpInformationQueryResult(helpInfos);
         }
     }
