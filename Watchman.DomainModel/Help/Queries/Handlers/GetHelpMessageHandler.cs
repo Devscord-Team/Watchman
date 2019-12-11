@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using Watchman.Cqrs;
 
 namespace Watchman.DomainModel.Help.Queries.Handlers
 {
-    public class GetHelpMessageQueryHandler : IQueryHandler<GetHelpMessageQuery, GetHelpMessageQueryResult>
+    public class GetHelpInformationsQueryHandler : IQueryHandler<GetHelpInformationQuery, GetHelpInformationQueryResult>
     {
-        public GetHelpMessageQueryResult Handle(GetHelpMessageQuery query)
-        {
+        private const string _helpFileName = "helpInformation.json";
 
-            var messageBuilder = new StringBuilder();
+        public GetHelpInformationQueryResult Handle(GetHelpInformationQuery query)
+        {
+            using var helpFile = new StreamReader(_helpFileName);
+            var helpInfos = new List<HelpInformation>();
+            
             throw new NotImplementedException();
-            return new GetHelpMessageQueryResult(messageBuilder.ToString());
+            return new GetHelpInformationQueryResult(helpInfos);
         }
     }
 }

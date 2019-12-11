@@ -27,11 +27,18 @@ namespace Watchman.Discord.Areas.Help.Controllers
         [DiscordCommand("-help")]
         public void PrintHelp(string message, Dictionary<string, IDiscordContext> contexts)
         {
-            var result = this._queryBus.Execute(new GetHelpMessageQuery(this._session));
+            var result = this._queryBus.Execute(new GetHelpInformationQuery(this._session));
             var channelContext = (ChannelContext)contexts[nameof(ChannelContext)];
 
             var messagesService = new MessagesService { DefaultChannelId = channelContext.Id };
-            messagesService.SendMessage(result.HelpMessage);
+
+            var messageBuilder = new StringBuilder();
+            foreach (var helpInfo in result.HelpInformations)
+            {
+                messageBuilder.AppendLine(helpInfo);
+            }
+
+            messagesService.SendMessage(messageBuilder.ToString());
         }
     }
 }

@@ -6,11 +6,11 @@ using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Help.Queries
 {
-    public class GetHelpMessageQuery : IQuery<GetHelpMessageQueryResult>
+    public class GetHelpInformationQuery : IQuery<GetHelpInformationQueryResult>
     {
         public ISession Session { get; }
 
-        public GetHelpMessageQuery(ISession session)
+        public GetHelpInformationQuery(ISession session)
         {
             this.Session = session;
         }

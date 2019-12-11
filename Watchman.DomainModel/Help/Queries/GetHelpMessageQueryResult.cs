@@ -1,14 +1,15 @@
-﻿using Watchman.Cqrs;
+﻿using System.Collections.Generic;
+using Watchman.Cqrs;
 
 namespace Watchman.DomainModel.Help.Queries
 {
-    public class GetHelpMessageQueryResult : IQueryResult
+    public class GetHelpInformationQueryResult : IQueryResult
     {
-        public string HelpMessage { get; }
+        public List<HelpInformation> HelpInformations { get; }
 
-        public GetHelpMessageQueryResult(string helpMessage)
+        public GetHelpInformationQueryResult(List<HelpInformation> helpInformations)
         {
-            this.HelpMessage = helpMessage;
+            this.HelpInformations = helpInformations;
         }
     }
 }

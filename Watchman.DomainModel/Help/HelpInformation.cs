@@ -5,14 +5,14 @@ using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Help
 {
-    struct Description
+    public struct Description
     {
         public string Name { get; }
         public bool IsDefault { get; }
         public string Details { get; }
     }
 
-    class HelpInformation : Entity
+    public class HelpInformation : Entity
     {
         public ulong ServerId { get; }
         public string MethodName { get; }
