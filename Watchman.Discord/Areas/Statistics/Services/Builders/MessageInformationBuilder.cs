@@ -62,7 +62,7 @@ namespace Watchman.Discord.Areas.Statistics.Services.Builders
                 Channel = _channel,
                 Server = _server,
                 Content = _message,
-                Date = date
+                SentAt = date
             };
         }
     }
