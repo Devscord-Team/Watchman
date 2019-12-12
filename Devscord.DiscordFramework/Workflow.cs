@@ -17,7 +17,7 @@ namespace Devscord.DiscordFramework
 {
     public class Workflow
     {
-        public Action<Exception, SocketMessage> WorkflowException;
+        public Action<Exception, SocketMessage> WorkflowException { get; set; }
 
         private List<object> _middlewares;
         private readonly Assembly _botAssembly;
