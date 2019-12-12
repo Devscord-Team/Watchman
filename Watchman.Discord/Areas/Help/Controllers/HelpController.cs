@@ -33,11 +33,14 @@ namespace Watchman.Discord.Areas.Help.Controllers
             var messagesService = new MessagesService { DefaultChannelId = channelContext.Id };
 
             var messageBuilder = new StringBuilder();
+            messageBuilder.AppendLine("```");
+
             foreach (var helpInfo in result.HelpInformations)
             {
-                messageBuilder.AppendLine(helpInfo);
+                messageBuilder.AppendLine(helpInfo.MethodName);
             }
 
+            messageBuilder.AppendLine("```");
             messagesService.SendMessage(messageBuilder.ToString());
         }
     }
