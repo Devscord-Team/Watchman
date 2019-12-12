@@ -7,15 +7,20 @@ namespace Watchman.DomainModel.Help
 {
     public struct Description
     {
-        public string Name { get; }
-        public bool IsDefault { get; }
-        public string Details { get; }
+        public string Name { get; set; }
+        public bool IsDefault { get; set; }
+        public string Details { get; set; }
     }
 
     public class HelpInformation : Entity
     {
-        public ulong ServerId { get; }
-        public string MethodName { get; }
+        public ulong ServerId { get; set; }
+        public string MethodName { get; set; }
         public List<Description> Descriptions { get; }
+
+        public HelpInformation()
+        {
+            this.Descriptions = new List<Description>();
+        }
     }
 }
