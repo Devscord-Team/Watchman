@@ -6,7 +6,7 @@ namespace Watchman.Cqrs
 {
     public class CommandBus : ICommandBus
     {
-        private IComponentContext _context;
+        private readonly IComponentContext _context;
 
         public CommandBus(IComponentContext context)
         {

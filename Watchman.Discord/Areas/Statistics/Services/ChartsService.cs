@@ -24,22 +24,14 @@ namespace Watchman.Discord.Areas.Statistics.Services
             var dates = report.StatisticsPerPeriod.Select(x => x.TimeRange.Start);
             var period = report.StatisticsPerPeriod.First().Period;
 
-            IEnumerable<string> labels = new List<string>();
-            switch (period)
+            var labels = period switch
             {
-                case Period.Hour:
-                    labels = dates.Select(x => x.ToString("yyyy-MM-dd HH"));
-                    break;
-                case Period.Day:
-                    labels = dates.Select(x => x.ToString("yyyy-MM-dd"));
-                    break;
-                case Period.Week:
-                    labels = dates.Select(x => x.ToString("yyyy-MM-dd"));
-                    break;
-                case Period.Month:
-                    labels = dates.Select(x => x.ToString("yyyy-MM"));
-                    break;
-            }
+                Period.Hour => dates.Select(x => x.ToString("yyyy-MM-dd HH")),
+                Period.Day => dates.Select(x => x.ToString("yyyy-MM-dd")),
+                Period.Week => dates.Select(x => x.ToString("yyyy-MM-dd")),
+                Period.Month => dates.Select(x => x.ToString("yyyy-MM")),
+                _ => new List<string>()
+            };
 
             var chart = new Chart
             {
@@ -56,7 +48,5 @@ namespace Watchman.Discord.Areas.Statistics.Services
 
             return imagePath;
         }
-
-
     }
 }
