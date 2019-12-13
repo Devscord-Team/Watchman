@@ -10,19 +10,19 @@ using Watchman.Cqrs;
 using Watchman.DomainModel.Help;
 using Watchman.DomainModel.Help.Queries;
 using Watchman.Integrations.MongoDB;
+using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 
 namespace Devscord.DiscordFramework.Services
 {
     public class DbHelpGenerator : IService
     {
-        private readonly IComponentContext _componentContext;
         private readonly ISession _session;
+        private readonly Assembly _assembly;
 
-        public DbHelpGenerator(IComponentContext componentContext)
+        public DbHelpGenerator(ISessionFactory sessionFactory, Assembly botAssembly)
         {
-            _componentContext = componentContext;
-            
-
+            this._session = sessionFactory.Create();
+            this._assembly = botAssembly;
         }
 
         public Task GenerateDefaultHelpDB()
@@ -34,6 +34,9 @@ namespace Devscord.DiscordFramework.Services
         private IEnumerable<HelpInformation> CreateHelpInformation()
         {
             var helpInformation = new List<HelpInformation>();
+
+            var contollers = _assembly.GetTypes()
+                .Where(x => x.GetInterfaces().Any(i => i.FullName == typeof(IController).FullName));
 
             var testHelp = new HelpInformation()
             {
