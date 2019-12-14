@@ -19,14 +19,12 @@ namespace Watchman.Discord.Areas.Users.Controllers
     {
         private readonly IQueryBus queryBus;
         private readonly ICommandBus commandBus;
-        private readonly ResponsesService responsesService;
         private readonly MessagesServiceFactory messagesServiceFactory;
 
-        public UsersController(IQueryBus queryBus, ICommandBus commandBus, ResponsesService responsesService, MessagesServiceFactory messagesServiceFactory)
+        public UsersController(IQueryBus queryBus, ICommandBus commandBus, MessagesServiceFactory messagesServiceFactory)
         {
             this.queryBus = queryBus;
             this.commandBus = commandBus;
-            this.responsesService = responsesService;
             this.messagesServiceFactory = messagesServiceFactory;
         }
 
@@ -46,7 +44,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
             var commandRole = message.ToLowerInvariant().Replace("-add role ", string.Empty);
             var role = _safeRoles.FirstOrDefault(x => x.Name == commandRole);
 
-            var messagesService = messagesServiceFactory.Create(contexts, this.responsesService);
+            var messagesService = messagesServiceFactory.Create(contexts);
 
             if (role == null)
             {
@@ -74,7 +72,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
             var commandRole = message.ToLowerInvariant().Replace("-remove role ", string.Empty);
             var role = _safeRoles.FirstOrDefault(x => x.Name == commandRole);
 
-            var messagesService = messagesServiceFactory.Create(contexts, this.responsesService);
+            var messagesService = messagesServiceFactory.Create(contexts);
 
             if (role == null)
             {
@@ -98,7 +96,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
         [DiscordCommand("-roles")]
         public void PrintRoles(string message, Contexts contexts)
         {
-            var messageService = messagesServiceFactory.Create(contexts, this.responsesService);
+            var messageService = messagesServiceFactory.Create(contexts);
             var stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("Dostępne role:");
             stringBuilder.AppendLine("```");

@@ -8,15 +8,15 @@ namespace Devscord.DiscordFramework.Services
 {
     public class MessagesServiceFactory : IService
     {
-        public MessagesService Create(Contexts contexts)
+        private readonly ResponsesService responsesService;
+
+        public MessagesServiceFactory(ResponsesService responsesService)
         {
-            return new MessagesService
-            {
-                ChannelId = contexts.Channel.Id
-            };
+            this.responsesService = responsesService;
         }
 
-        public MessagesService Create(Contexts contexts, ResponsesService responsesService)
+
+        public MessagesService Create(Contexts contexts)
         {
             return new MessagesService(responsesService)
             {
