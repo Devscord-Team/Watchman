@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Devscord.DiscordFramework.Middlewares.Contexts;
+using System.Collections.Generic;
 
 namespace Devscord.DiscordFramework.Framework.Commands.Responses
 {
@@ -30,6 +31,17 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             return responsesService.ProcessResponse("NewUserArrived",
                 new KeyValuePair<string, string>("user", user),
                 new KeyValuePair<string, string>("channel", channel));
+        }
+    }
+
+    public static class ContextsToResponseFields
+    {
+        public static IEnumerable<KeyValuePair<string, string>> ConvertToResponseFields(this Contexts contexts)
+        {
+            return new List<KeyValuePair<string, string>>
+            {
+                new KeyValuePair<string, string>("user", contexts.User.Name),
+            };
         }
     }
 }

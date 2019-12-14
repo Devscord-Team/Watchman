@@ -22,7 +22,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             {
                 pattern.Append($@".*(?<{param.Key}>{{{{{param.Key}}}}}).*");
             }
-            return Regex.Match(message, pattern.ToString(), RegexOptions.IgnoreCase);
+            return Regex.Match(message, pattern.ToString(), RegexOptions.Singleline | RegexOptions.IgnoreCase);
         }
 
         private string ReplaceMatched(string message, Match match, KeyValuePair<string, string>[] values)

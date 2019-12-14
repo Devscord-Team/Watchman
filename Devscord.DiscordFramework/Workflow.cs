@@ -56,19 +56,18 @@ namespace Devscord.DiscordFramework
             return Task.CompletedTask;
         }
 
-        private Dictionary<string, IDiscordContext> RunMiddlewares<T>(T data)
+        private Contexts RunMiddlewares<T>(T data)
         {
-            var contexts = new Dictionary<string, IDiscordContext>();
+            var contexts = new Contexts();
             foreach (var middleware in _middlewares)
             {
                 var context = ((dynamic)middleware).Process(data);
-                var contextName = ((object)context).GetType().Name;
-                contexts.Add(contextName, context);
+                contexts.SetContext(context);
             }
             return contexts;
         }
 
-        private void RunControllers(string message, Dictionary<string, IDiscordContext> contexts)
+        private void RunControllers(string message, Contexts contexts)
         {
             //todo maybe optimalize is possible
             var controllers = _botAssembly.GetTypes()
@@ -86,7 +85,7 @@ namespace Devscord.DiscordFramework
             }
         }
 
-        private void RunWithReadAlwaysMethods(IController controller, string message, Dictionary<string, IDiscordContext> contexts, IEnumerable<MethodInfo> methods)
+        private void RunWithReadAlwaysMethods(IController controller, string message, Contexts contexts, IEnumerable<MethodInfo> methods)
         {
             foreach (var method in methods)
             {
@@ -95,7 +94,7 @@ namespace Devscord.DiscordFramework
             }
         }
 
-        private void RunWithDiscordCommandMethods(IController controller, string message, Dictionary<string, IDiscordContext> contexts, IEnumerable<MethodInfo> methods)
+        private void RunWithDiscordCommandMethods(IController controller, string message, Contexts contexts, IEnumerable<MethodInfo> methods)
         {
             foreach (var method in methods)
             {
@@ -107,11 +106,10 @@ namespace Devscord.DiscordFramework
 
                 if (commands.Any(x => message.StartsWith(x.Command)))
                 {
-                    if (method.HasAttribute<AdminCommand>() && !((UserContext)contexts[nameof(UserContext)]).IsAdmin)
+                    if (method.HasAttribute<AdminCommand>() && !contexts.User.IsAdmin)
                     {
-                        var channelContext = (ChannelContext)contexts[nameof(ChannelContext)];
                         var messageService = new MessagesService();
-                        messageService.SendMessage("Nie masz wystarczających uprawnień do wywołania tej komendy.", channelContext.Id);
+                        messageService.SendMessage("Nie masz wystarczających uprawnień do wywołania tej komendy.", contexts.Channel.Id);
                         break;
                     }
 
