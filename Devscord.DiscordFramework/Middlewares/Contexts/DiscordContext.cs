@@ -13,7 +13,8 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
 
         public void SetContext<T>(T context) where T : IDiscordContext
         {
-            switch (context.GetType().Name)
+            var contextName = context.GetType().Name;
+            switch (contextName)
             {
                 case "DiscordServerContext":
                     Server = context as DiscordServerContext;
