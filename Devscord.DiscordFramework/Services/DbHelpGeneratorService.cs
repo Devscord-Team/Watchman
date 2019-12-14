@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Autofac;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
@@ -20,17 +21,17 @@ namespace Devscord.DiscordFramework.Services
             _session = sessionFactory.Create();
         }
 
-        public Task GenerateDefaultHelpDB()
+        public Task GenerateDefaultHelpDB(Assembly botAssembly)
         {
-            CreateHelpInformation().ToList().ForEach(x => _session.Add(x));
+            CreateHelpInformation(botAssembly).ToList().ForEach(x => _session.Add(x));
             return Task.CompletedTask;
         }
 
-        private IEnumerable<HelpInformation> CreateHelpInformation()
+        private IEnumerable<HelpInformation> CreateHelpInformation(Assembly botAssembly)
         {
             var helpInformation = new List<HelpInformation>();
 
-            var controllers = GetControllers();
+            var controllers = GetControllers(botAssembly);
 
             var testHelp = new HelpInformation
             {
@@ -50,9 +51,9 @@ namespace Devscord.DiscordFramework.Services
             return helpInformation;
         }
 
-        private IEnumerable<IController> GetControllers()
+        private IEnumerable<IController> GetControllers(Assembly botAssembly)
         {
-            var controllers = typeof(Workflow).Assembly.GetTypes()
+            var controllers = botAssembly.GetTypes()
                 .Where(x => x.GetInterfaces().Any(i => i.FullName == typeof(IController).FullName))
                 .Select(x => (IController) componentContext.Resolve(x));
 
