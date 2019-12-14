@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using Devscord.DiscordFramework.Services;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using Autofac;
-using MongoDB.Driver;
-using Watchman.Cqrs;
-using Watchman.DomainModel.Help;
-using Watchman.DomainModel.Help.Queries;
-using Watchman.Integrations.MongoDB;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+using Watchman.DomainModel.Help;
+using Watchman.Integrations.MongoDB;
 
 namespace Devscord.DiscordFramework.Services
 {
@@ -23,7 +17,7 @@ namespace Devscord.DiscordFramework.Services
         {
             this.componentContext = componentContext;
             var sessionFactory = componentContext.Resolve<ISessionFactory>();
-            this._session = sessionFactory.Create();
+            _session = sessionFactory.Create();
         }
 
         public Task GenerateDefaultHelpDB()
@@ -38,14 +32,19 @@ namespace Devscord.DiscordFramework.Services
 
             var controllers = GetControllers();
 
-            var testHelp = new HelpInformation()
+            var testHelp = new HelpInformation
             {
                 ServerId = 0,
                 MethodName = "testMethod"
             };
-            testHelp.Descriptions.Add(
-                new Description()
-                { IsDefault = true, Details = "Empty", Name = "EN" });
+
+            var descriptions = new List<Description>
+            {
+                new Description {IsDefault = true, Details = "Empty", Name = "EN"}
+            };
+
+            testHelp.Descriptions = descriptions;
+
             helpInformation.Add(testHelp);
 
             return helpInformation;
@@ -53,11 +52,11 @@ namespace Devscord.DiscordFramework.Services
 
         private IEnumerable<IController> GetControllers()
         {
-            var contollers = typeof(Workflow).Assembly.GetTypes()
+            var controllers = typeof(Workflow).Assembly.GetTypes()
                 .Where(x => x.GetInterfaces().Any(i => i.FullName == typeof(IController).FullName))
-                .Select(x => (IController)componentContext.Resolve(x));
+                .Select(x => (IController) componentContext.Resolve(x));
 
-            return contollers;
+            return controllers;
         }
     }
 }
