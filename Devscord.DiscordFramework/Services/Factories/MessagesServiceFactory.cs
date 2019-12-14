@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Devscord.DiscordFramework.Services
+namespace Devscord.DiscordFramework.Services.Factories
 {
     public class MessagesServiceFactory : IService
     {

@@ -2,7 +2,7 @@
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Middlewares.Contexts;
-using Devscord.DiscordFramework.Services;
+using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Settings.Queries;
 

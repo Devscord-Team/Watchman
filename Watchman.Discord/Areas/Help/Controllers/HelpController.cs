@@ -1,7 +1,7 @@
 ﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Middlewares.Contexts;
-using Devscord.DiscordFramework.Services;
+using Devscord.DiscordFramework.Services.Factories;
 using System;
 using System.Collections.Generic;
 using System.Text;

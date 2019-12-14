@@ -2,6 +2,7 @@
 using Devscord.DiscordFramework.Middlewares;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
+using Devscord.DiscordFramework.Services.Factories;
 using Discord.WebSocket;
 using MongoDB.Driver;
 using System;
