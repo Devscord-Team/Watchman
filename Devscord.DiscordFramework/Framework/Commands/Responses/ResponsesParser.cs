@@ -10,12 +10,6 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         public string Parse(Response response, IEnumerable<KeyValuePair<string, string>> values)
         {
             var message = response.Message;
-            var replaced = this.FindAndReplaceMatches(message, values);
-            return replaced;
-        }
-
-        private string FindAndReplaceMatches(string message, IEnumerable<KeyValuePair<string, string>> values)
-        {
             foreach (var param in values)
             {
                 var match = Regex.Match(message, $@".*(?<{param.Key}>{{{{{param.Key}}}}}).*", RegexOptions.Singleline | RegexOptions.IgnoreCase);
