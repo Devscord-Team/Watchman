@@ -1,0 +1,18 @@
+﻿[
+  {
+    "OnEvent": "RoleAddedToUser",
+    "Message": "Użytkownik: {{user}} dostał role: {{role}}"
+  },
+  {
+    "OnEvent": "RoleRemovedFromUser",
+    "Message": "Użytkownik: {{user}} nie posiada już roli: {{role}}"
+  },
+  {
+    "OnEvent": "SpamAlertRecognized",
+    "Message": "Spam alert! Wykryto spam u użytkownika {{user}} na kanale {{channel}}. Poczekaj chwile zanim coś napiszesz."
+  },
+  {
+    "OnEvent": "NewUserArrived",
+    "Message": "Cześć {{user}}! Witamy cie na serwerze {{server}}"
+  }
+]
