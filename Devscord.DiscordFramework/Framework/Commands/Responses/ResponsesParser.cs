@@ -11,11 +11,11 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             var message = response.Message;
             var match = this.FindMatches(message, values);
-
-            return message;
+            var replaced = this.ReplaceMatched(message, match, values);
+            return replaced;
         }
 
-        private Match FindMatches(string message, params KeyValuePair<string, string>[] values)
+        private Match FindMatches(string message, KeyValuePair<string, string>[] values)
         {
             var pattern = new StringBuilder();
             foreach (var param in values)
@@ -23,6 +23,16 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 pattern.Append($@".*(?<{param.Key}>{{{{{param.Key}}}}}).*");
             }
             return Regex.Match(message, pattern.ToString(), RegexOptions.IgnoreCase);
+        }
+
+        private string ReplaceMatched(string message, Match match, KeyValuePair<string, string>[] values)
+        {
+            foreach (var param in values)
+            {
+                var group = match.Groups[param.Key];
+                message = message.Replace(group.Value, param.Value);
+            }
+            return message;
         }
     }
 }

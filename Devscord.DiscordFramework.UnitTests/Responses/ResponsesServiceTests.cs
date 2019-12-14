@@ -20,16 +20,5 @@ namespace Devscord.DiscordFramework.UnitTests.Responses
             //Assert
             Assert.That(result, Is.GreaterThan(0)); 
         }
-
-        [Test]
-        public void ShouldProcessResponseCorrectly()
-        {
-            //Arrange
-            var responsesService = new ResponsesService();
-
-            //Act
-            var parsed = responsesService.RoleAddedToUser("TestUser", "TestRole");
-
-        }
     }
 }
