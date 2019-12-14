@@ -30,9 +30,10 @@ namespace Devscord.DiscordFramework.UnitTests.Responses
 
             //Act
             var fields = response.GetFields();
+            var result = fields.Count();
 
             //Assert
-            Assert.That(fields, Is.EqualTo(2)); 
+            Assert.That(result, Is.EqualTo(2)); 
         }
     }
 }

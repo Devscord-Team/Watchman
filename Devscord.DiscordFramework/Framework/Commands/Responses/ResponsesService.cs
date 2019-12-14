@@ -47,7 +47,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             var fields = contexts.ConvertToResponseFields(response.GetFields()).ToList();
             fields.AddRange(values);
-            return parser.Parse(response, values);
+            return parser.Parse(response, fields);
         }
     }
 }
