@@ -18,7 +18,7 @@ namespace Devscord.DiscordFramework.UnitTests.Responses
             //Arrange
             var responsesParser = new ResponsesParser();
             var response = new Response { Message = input };
-            var param = new List<KeyValuePair<string, string>>() { new KeyValuePair<string, string>(paramKey, paramValue) };
+            var param = new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>(paramKey, paramValue) };
 
             //Act
             var parsed = responsesParser.Parse(response, param);
