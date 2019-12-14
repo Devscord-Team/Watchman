@@ -27,6 +27,9 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
                 case "UserContext":
                     User = context as UserContext;
                     break;
+
+                default:
+                    throw new ArgumentException($"Context {contextName} not exists in {typeof(Contexts).FullName}");
             }
         }
     }
