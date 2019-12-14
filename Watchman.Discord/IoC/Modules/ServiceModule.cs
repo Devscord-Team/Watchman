@@ -19,6 +19,9 @@ namespace Watchman.Discord.IoC.Modules
                 .Where(x => x.IsAssignableTo<IService>())
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
+
+            builder.RegisterType(typeof(DbHelpGeneratorService))
+                .InstancePerLifetimeScope();
         }
     }
 }

@@ -46,6 +46,8 @@ namespace Devscord.DiscordFramework.Services
             testHelp.Descriptions.Add(
                 new Description()
                 { IsDefault = true, Details = "Empty", Name = "EN" });
+            helpInformation.Add(testHelp);
+
             return helpInformation;
         }
 
