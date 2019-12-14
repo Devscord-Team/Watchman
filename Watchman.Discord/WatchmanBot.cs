@@ -57,7 +57,7 @@ namespace Watchman.Discord
         {
             var messagesService = new MessagesService()
             {
-                DefaultChannelId = socketMessage.Channel.Id
+                ChannelId = socketMessage.Channel.Id
             };
 
             if (e is System.Reflection.TargetInvocationException)

@@ -108,8 +108,8 @@ namespace Devscord.DiscordFramework
                 {
                     if (method.HasAttribute<AdminCommand>() && !contexts.User.IsAdmin)
                     {
-                        var messageService = new MessagesService();
-                        messageService.SendMessage("Nie masz wystarczających uprawnień do wywołania tej komendy.", contexts.Channel.Id);
+                        var messageService = new MessagesServiceFactory().Create(contexts);
+                        messageService.SendMessage("Nie masz wystarczających uprawnień do wywołania tej komendy.");
                         break;
                     }
 
