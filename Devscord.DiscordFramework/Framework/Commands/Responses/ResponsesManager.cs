@@ -26,21 +26,23 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("channel", channel));
         }
         
-        public static string NewUserArrived(this ResponsesService responsesService, string user, string channel)
+        public static string NewUserArrived(this ResponsesService responsesService, string user, string server)
         {
             return responsesService.ProcessResponse("NewUserArrived",
                 new KeyValuePair<string, string>("user", user),
-                new KeyValuePair<string, string>("channel", channel));
+                new KeyValuePair<string, string>("server", server));
         }
     }
 
-    public static class ContextsToResponseFields
+    internal static class ContextsToResponseFields
     {
-        public static IEnumerable<KeyValuePair<string, string>> ConvertToResponseFields(this Contexts contexts)
+        internal static IEnumerable<KeyValuePair<string, string>> ConvertToResponseFields(this Contexts contexts)
         {
             return new List<KeyValuePair<string, string>>
             {
                 new KeyValuePair<string, string>("user", contexts.User.Name),
+                new KeyValuePair<string, string>("channel", contexts.Channel.Name),
+                new KeyValuePair<string, string>("server", contexts.Server.Name)
             };
         }
     }
