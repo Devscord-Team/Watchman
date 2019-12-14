@@ -10,7 +10,7 @@ namespace Devscord.DiscordFramework.Middlewares
     {
         public ChannelContext Process(SocketMessage data)
         {
-            return new ChannelContext(data.Channel.Id, data.Channel.Name); ;
+            return new ChannelContext(data.Channel.Id, data.Channel.Name);
         }
     }
 }

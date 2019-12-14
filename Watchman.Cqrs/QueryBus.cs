@@ -6,7 +6,7 @@ namespace Watchman.Cqrs
 {
     public class QueryBus : IQueryBus
     {
-        private IComponentContext _context;
+        private readonly IComponentContext _context;
         public QueryBus(IComponentContext context)
         {
             _context = context;
@@ -17,7 +17,7 @@ namespace Watchman.Cqrs
             if (query == null)
             {
                 throw new ArgumentNullException(nameof(query),
-                    $"Query: '{query.GetType().Name}' can not be null.");
+                    $"Query: '{typeof(W)}' can not be null.");
             }
             var handlerType = typeof(IQueryHandler<,>)
                 .MakeGenericType(query.GetType(), typeof(W));

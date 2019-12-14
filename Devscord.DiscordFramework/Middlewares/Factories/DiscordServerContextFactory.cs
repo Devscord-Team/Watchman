@@ -9,8 +9,12 @@ namespace Devscord.DiscordFramework.Middlewares
         public DiscordServerContext Create(SocketGuild socketGuild)
         {
             var userFactory = new UserContextsFactory();
+            var channelFactory = new ChannelContextFactory();
+
             var owner = userFactory.Create(socketGuild.Owner);
-            return new DiscordServerContext(socketGuild.Id, socketGuild.Name, owner);
+            var systemChannel = channelFactory.Create(socketGuild.SystemChannel);
+
+            return new DiscordServerContext(socketGuild.Id, socketGuild.Name, owner, systemChannel);
         }
     }
 }

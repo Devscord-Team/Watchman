@@ -24,7 +24,7 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         private readonly IQueryBus queryBus;
         private readonly ICommandBus commandBus;
 
-        public StatisticsController(IQueryBus queryBus, ICommandBus commandBus, SessionFactory sessionFactory)
+        public StatisticsController(IQueryBus queryBus, ICommandBus commandBus, ISessionFactory sessionFactory)
         {
             this.queryBus = queryBus;
             this.commandBus = commandBus;
@@ -68,10 +68,11 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
             {
                 period = Period.Month;
             }
-
             //todo set oldest possible based on period
+
+            var serverContext = (DiscordServerContext) contexts[nameof(DiscordServerContext)];
             var messages = this._session.Get<MessageInformation>().ToList();
-            var report = _reportsService.CreateReport(messages, period);
+            var report = _reportsService.CreateReport(messages, period, serverContext);
 
             var channelContext = (ChannelContext) contexts[nameof(ChannelContext)];
             var messagesService = new MessagesService { DefaultChannelId = channelContext.Id };

@@ -16,17 +16,20 @@ namespace Watchman.Discord.Areas.Protection.Controllers
     {
         private readonly IQueryBus queryBus;
         private readonly ICommandBus commandBus;
-        private readonly AntiSpamDomainStrategy strategy;
+        private readonly AntiSpamDomainStrategy _strategy;
 
         //TODO balans
-        private List<(ulong AuthorId, DateTime MessageDateTime)> _lastMessages = new List<(ulong, DateTime)>();
-        private List<ulong> _warns = new List<ulong>();
+        private readonly List<(ulong AuthorId, DateTime MessageDateTime)> _lastMessages;
+        private readonly List<ulong> _warns;
 
         public AntiSpamController(IQueryBus queryBus, ICommandBus commandBus)
         {
             this.queryBus = queryBus;
             this.commandBus = commandBus;
-            this.strategy = new AntiSpamDomainStrategy();
+            this._strategy = new AntiSpamDomainStrategy();
+            
+            this._lastMessages = new List<(ulong, DateTime)>();
+            this._warns = new List<ulong>();
         }
 
         [ReadAlways]
@@ -38,22 +41,22 @@ namespace Watchman.Discord.Areas.Protection.Controllers
 
             _lastMessages.RemoveAll(x => x.MessageDateTime < DateTime.Now.AddSeconds(-10));
 
-            var messagesInLastTime = _lastMessages.Where(x => x.AuthorId == userContext.Id).Count();
-            var punishment = strategy.SelectPunishment(_warns.Contains(userContext.Id), messagesInLastTime, 0);
+            var messagesInLastTime = _lastMessages.Count(x => x.AuthorId == userContext.Id);
+            var punishment = _strategy.SelectPunishment(_warns.Contains(userContext.Id), messagesInLastTime, 0);
 
             switch (punishment.Option)
             {
                 case DomainModel.Protection.ProtectionPunishmentOptions.Clear:
                         _warns.Remove(userContext.Id);
                     break;
+
                 case DomainModel.Protection.ProtectionPunishmentOptions.Alert:
                     _warns.Add(userContext.Id);
                     messagesService.SendMessage($"Spam alert! Wykryto spam u użytkownika {userContext.Name} na kanale {channelContext.Name}. Poczekaj chwile zanim coś napiszesz.").Wait();
                     break;
+
                 case DomainModel.Protection.ProtectionPunishmentOptions.Mute:
                     messagesService.SendMessage($"Spam alert! Uzytkownik {userContext.Name} został zmutowany.").Wait();
-                    break;
-                default:
                     break;
             }
 
