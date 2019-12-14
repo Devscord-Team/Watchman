@@ -1,5 +1,6 @@
 ﻿using Devscord.DiscordFramework.Framework.Commands.Responses;
 using NUnit.Framework;
+using System.Linq;
 
 namespace Devscord.DiscordFramework.UnitTests.Responses
 {
