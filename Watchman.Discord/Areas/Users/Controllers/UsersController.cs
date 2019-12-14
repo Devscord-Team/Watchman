@@ -63,8 +63,9 @@ namespace Watchman.Discord.Areas.Users.Controllers
             var serverRole = userService.GetRoleByName(commandRole, contexts.Server);
             userService.AddRole(serverRole, contexts.User, contexts.Server).Wait();
 
-            messagesService.SendResponse(x => x.RoleAddedToUser(contexts, commandRole));
-            messagesService.SendMessage($"Dodano role {commandRole} użytkownikowi {contexts.User.Name}");
+            //this is example of responsesService usage
+            //TODO - implement it in all controllers
+            messagesService.SendResponse(x => x.RoleAddedToUser(contexts, commandRole)); 
         }
 
         [DiscordCommand("-remove role")]
