@@ -18,7 +18,7 @@ namespace Devscord.DiscordFramework.UnitTests.Responses
             var result = responses.Count();
 
             //Assert
-            Assert.That(result, Is.GreaterThan(0));
+            Assert.That(result, Is.GreaterThan(0)); 
         }
     }
 }
