@@ -14,15 +14,16 @@ using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 
 namespace Devscord.DiscordFramework.Services
 {
-    public class DbHelpGenerator : IService
+    public class DbHelpGeneratorService : IService
     {
         private readonly ISession _session;
         private readonly IComponentContext componentContext;
 
-        public DbHelpGenerator(ISessionFactory sessionFactory, IComponentContext componentContext)
+        public DbHelpGeneratorService(IComponentContext componentContext)
         {
-            this._session = sessionFactory.Create();
             this.componentContext = componentContext;
+            var sessionFactory = componentContext.Resolve<ISessionFactory>();
+            this._session = sessionFactory.Create();
         }
 
         public Task GenerateDefaultHelpDB()
