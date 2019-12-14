@@ -17,12 +17,12 @@ namespace Devscord.DiscordFramework.Services
     public class DbHelpGenerator : IService
     {
         private readonly ISession _session;
-        private readonly Assembly _assembly;
+        private readonly IComponentContext componentContext;
 
-        public DbHelpGenerator(ISessionFactory sessionFactory, Assembly botAssembly)
+        public DbHelpGenerator(ISessionFactory sessionFactory, IComponentContext componentContext)
         {
             this._session = sessionFactory.Create();
-            this._assembly = botAssembly;
+            this.componentContext = componentContext;
         }
 
         public Task GenerateDefaultHelpDB()
@@ -35,8 +35,7 @@ namespace Devscord.DiscordFramework.Services
         {
             var helpInformation = new List<HelpInformation>();
 
-            var contollers = _assembly.GetTypes()
-                .Where(x => x.GetInterfaces().Any(i => i.FullName == typeof(IController).FullName));
+            var controllers = GetControllers();
 
             var testHelp = new HelpInformation()
             {
@@ -47,6 +46,15 @@ namespace Devscord.DiscordFramework.Services
                 new Description()
                 { IsDefault = true, Details = "Empty", Name = "EN" });
             return helpInformation;
+        }
+
+        private IEnumerable<IController> GetControllers()
+        {
+            var contollers = typeof(Workflow).Assembly.GetTypes()
+                .Where(x => x.GetInterfaces().Any(i => i.FullName == typeof(IController).FullName))
+                .Select(x => (IController)componentContext.Resolve(x));
+
+            return contollers;
         }
     }
 }
