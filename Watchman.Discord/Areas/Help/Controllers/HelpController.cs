@@ -15,12 +15,14 @@ namespace Watchman.Discord.Areas.Help.Controllers
     {
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
+        private readonly MessagesServiceFactory messagesServiceFactory;
         private readonly ISession _session;
 
-        public HelpController(IQueryBus queryBus, ICommandBus commandBus, ISessionFactory sessionFactory)
+        public HelpController(IQueryBus queryBus, ICommandBus commandBus, ISessionFactory sessionFactory, MessagesServiceFactory messagesServiceFactory)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;
+            this.messagesServiceFactory = messagesServiceFactory;
             this._session = sessionFactory.Create();
         }
 
@@ -28,7 +30,7 @@ namespace Watchman.Discord.Areas.Help.Controllers
         public void PrintHelp(string message, Contexts contexts)
         {
             var result = this._queryBus.Execute(new GetHelpMessageQuery(this._session));
-            var messagesService = new MessagesService { DefaultChannelId = contexts.Channel.Id };
+            var messagesService = messagesServiceFactory.Create(contexts);
             messagesService.SendMessage(result.HelpMessage);
         }
     }

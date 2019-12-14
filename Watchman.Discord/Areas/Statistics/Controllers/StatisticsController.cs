@@ -23,11 +23,13 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         private readonly ChartsService _chartsService;
         private readonly IQueryBus queryBus;
         private readonly ICommandBus commandBus;
+        private readonly MessagesServiceFactory messagesServiceFactory;
 
-        public StatisticsController(IQueryBus queryBus, ICommandBus commandBus, ISessionFactory sessionFactory)
+        public StatisticsController(IQueryBus queryBus, ICommandBus commandBus, ISessionFactory sessionFactory, MessagesServiceFactory messagesServiceFactory)
         {
             this.queryBus = queryBus;
             this.commandBus = commandBus;
+            this.messagesServiceFactory = messagesServiceFactory;
             this._session = sessionFactory.Create(); //todo use IoC
             this._reportsService = new ReportsService();
             this._chartsService = new ChartsService();
@@ -73,9 +75,8 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
             var messages = this._session.Get<MessageInformation>().ToList();
             var report = _reportsService.CreateReport(messages, period, contexts.Server);
 
-            var messagesService = new MessagesService { DefaultChannelId = contexts.Channel.Id };
+            var messagesService = messagesServiceFactory.Create(contexts);
 #if DEBUG
-
             var dataToMessage = "```json\n" + JsonConvert.SerializeObject(report.StatisticsPerPeriod.Where(x => x.MessagesQuantity > 0), Formatting.Indented) + "\n```";
             messagesService.SendMessage(dataToMessage);
 #endif

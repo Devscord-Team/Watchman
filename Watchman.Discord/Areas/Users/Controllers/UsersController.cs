@@ -1,5 +1,6 @@
 ﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
+using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Discord;
@@ -18,35 +19,36 @@ namespace Watchman.Discord.Areas.Users.Controllers
     {
         private readonly IQueryBus queryBus;
         private readonly ICommandBus commandBus;
+        private readonly ResponsesService responsesService;
+        private readonly MessagesServiceFactory messagesServiceFactory;
 
-        public UsersController(IQueryBus queryBus, ICommandBus commandBus)
+        public UsersController(IQueryBus queryBus, ICommandBus commandBus, ResponsesService responsesService, MessagesServiceFactory messagesServiceFactory)
         {
             this.queryBus = queryBus;
             this.commandBus = commandBus;
+            this.responsesService = responsesService;
+            this.messagesServiceFactory = messagesServiceFactory;
         }
 
 
         [DiscordCommand("-avatar")]
         public void GetAvatar(string message, Contexts contexts)
         {
-            var messageService = new MessagesService { DefaultChannelId = contexts.Channel.Id };
+            var messageService = messagesServiceFactory.Create(contexts);
             messageService.SendMessage(contexts.User.AvatarUrl);
         }
 
         private IEnumerable<Role> _safeRoles => this.queryBus.Execute(new GetDiscordServerSafeRolesQuery()).SafeRoles;
 
-        //todo add system to messages management
         [DiscordCommand("-add role")]
         public void AddRole(string message, Contexts contexts)
         {
-            //TODO change Dictionary to many parameters => auto dependency injection
-
             var commandRole = message.ToLowerInvariant().Replace("-add role ", string.Empty);
             var role = _safeRoles.FirstOrDefault(x => x.Name == commandRole);
 
-            var messagesService = new MessagesService { DefaultChannelId = contexts.Channel.Id };
+            var messagesService = messagesServiceFactory.Create(contexts, this.responsesService);
 
-            if(role == null)
+            if (role == null)
             {
                 messagesService.SendMessage($"Nie znaleziono roli {commandRole} lub wybrana rola musi być dodana ręcznie przez członka administracji");
                 return;
@@ -60,6 +62,8 @@ namespace Watchman.Discord.Areas.Users.Controllers
             var userService = new UserService();
             var serverRole = userService.GetRoleByName(commandRole, contexts.Server);
             userService.AddRole(serverRole, contexts.User, contexts.Server).Wait();
+
+            messagesService.SendResponse(x => x.RoleAddedToUser(contexts, commandRole));
             messagesService.SendMessage($"Dodano role {commandRole} użytkownikowi {contexts.User.Name}");
         }
 
@@ -69,7 +73,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
             var commandRole = message.ToLowerInvariant().Replace("-remove role ", string.Empty);
             var role = _safeRoles.FirstOrDefault(x => x.Name == commandRole);
 
-            var messagesService = new MessagesService { DefaultChannelId = contexts.Channel.Id };
+            var messagesService = messagesServiceFactory.Create(contexts, this.responsesService);
 
             if (role == null)
             {
@@ -93,7 +97,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
         [DiscordCommand("-roles")]
         public void PrintRoles(string message, Contexts contexts)
         {
-            var messageService = new MessagesService { DefaultChannelId = contexts.Channel.Id };
+            var messageService = messagesServiceFactory.Create(contexts, this.responsesService);
             var stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("Dostępne role:");
             stringBuilder.AppendLine("```");

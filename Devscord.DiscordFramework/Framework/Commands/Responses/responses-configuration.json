@@ -1,7 +1,7 @@
 ﻿[
   {
     "OnEvent": "RoleAddedToUser",
-    "Message": "Użytkownik: {{user}} dostał role: {{role}}"
+    "Message": "Dodano role: {{role}} użytkownikowi {{user}}"
   },
   {
     "OnEvent": "RoleRemovedFromUser",

@@ -12,11 +12,13 @@ namespace Watchman.Discord.Areas.Settings.Controllers
     {
         private readonly IQueryBus queryBus;
         private readonly ICommandBus commandBus;
+        private readonly MessagesServiceFactory messagesServiceFactory;
 
-        public VersionController(IQueryBus queryBus, ICommandBus commandBus)
+        public VersionController(IQueryBus queryBus, ICommandBus commandBus, MessagesServiceFactory messagesServiceFactory)
         {
             this.queryBus = queryBus;
             this.commandBus = commandBus;
+            this.messagesServiceFactory = messagesServiceFactory;
         }
 
         [AdminCommand]
@@ -25,7 +27,7 @@ namespace Watchman.Discord.Areas.Settings.Controllers
         {
             var version = queryBus.Execute(new GetBotVersionQuery()).Version;
 
-            var messagesService = new MessagesService { DefaultChannelId = contexts.Channel.Id };
+            var messagesService = messagesServiceFactory.Create(contexts);
 
             messagesService.SendMessage($"```Obecna wersja: {version}```");
         }

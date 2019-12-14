@@ -16,16 +16,18 @@ namespace Watchman.Discord.Areas.Protection.Controllers
     {
         private readonly IQueryBus queryBus;
         private readonly ICommandBus commandBus;
+        private readonly MessagesServiceFactory messagesServiceFactory;
         private readonly AntiSpamDomainStrategy _strategy;
 
         //TODO balans
         private readonly List<(ulong AuthorId, DateTime MessageDateTime)> _lastMessages;
         private readonly List<ulong> _warns;
 
-        public AntiSpamController(IQueryBus queryBus, ICommandBus commandBus)
+        public AntiSpamController(IQueryBus queryBus, ICommandBus commandBus, MessagesServiceFactory messagesServiceFactory)
         {
             this.queryBus = queryBus;
             this.commandBus = commandBus;
+            this.messagesServiceFactory = messagesServiceFactory;
             this._strategy = new AntiSpamDomainStrategy();
             
             this._lastMessages = new List<(ulong, DateTime)>();
@@ -35,7 +37,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         [ReadAlways]
         public void Scan(string message, Contexts contexts)
         {
-            var messagesService = new MessagesService { DefaultChannelId = contexts.Channel.Id };
+            var messagesService = messagesServiceFactory.Create(contexts);
 
             _lastMessages.RemoveAll(x => x.MessageDateTime < DateTime.Now.AddSeconds(-10));
 
