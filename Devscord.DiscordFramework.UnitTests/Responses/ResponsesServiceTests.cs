@@ -8,7 +8,7 @@ namespace Devscord.DiscordFramework.UnitTests.Responses
     public class ResponsesServiceTests
     {
         [Test]
-        public void ShouldFoundManyResponsesInFile()
+        public void ShouldFoundManyResponses()
         {
             //Arrange
             var responsesService = new ResponsesService();
@@ -19,6 +19,17 @@ namespace Devscord.DiscordFramework.UnitTests.Responses
 
             //Assert
             Assert.That(result, Is.GreaterThan(0)); 
+        }
+
+        [Test]
+        public void ShouldProcessResponseCorrectly()
+        {
+            //Arrange
+            var responsesService = new ResponsesService();
+
+            //Act
+            var parsed = responsesService.RoleAddedToUser("TestUser", "TestRole");
+
         }
     }
 }
