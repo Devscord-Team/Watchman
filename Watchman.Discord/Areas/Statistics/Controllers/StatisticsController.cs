@@ -34,13 +34,13 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         }
 
         [ReadAlways]
-        public void SaveMessage(string message, Dictionary<string, IDiscordContext> contexts)
+        public void SaveMessage(string message, Contexts contexts)
         {
             var messageBuilder = new MessageInformationBuilder(message);
             var messageInfo = messageBuilder
-                .SetAuthor((UserContext)contexts[nameof(UserContext)])
-                .SetChannel((ChannelContext)contexts[nameof(ChannelContext)])
-                .SetServerInfo((DiscordServerContext)contexts[nameof(DiscordServerContext)])
+                .SetAuthor(contexts.User)
+                .SetChannel(contexts.Channel)
+                .SetServerInfo(contexts.Server)
                 .Build();
 
             this.SaveToDatabase(messageInfo);
@@ -48,7 +48,7 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
 
         [AdminCommand]
         [DiscordCommand("-stats")]
-        public void GetStatisticsPerPeriod(string message, Dictionary<string, IDiscordContext> contexts)
+        public void GetStatisticsPerPeriod(string message, Contexts contexts)
         {
             var period = Period.Day;
             //todo other class in Commons
@@ -70,12 +70,10 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
             }
             //todo set oldest possible based on period
 
-            var serverContext = (DiscordServerContext) contexts[nameof(DiscordServerContext)];
             var messages = this._session.Get<MessageInformation>().ToList();
-            var report = _reportsService.CreateReport(messages, period, serverContext);
+            var report = _reportsService.CreateReport(messages, period, contexts.Server);
 
-            var channelContext = (ChannelContext) contexts[nameof(ChannelContext)];
-            var messagesService = new MessagesService { DefaultChannelId = channelContext.Id };
+            var messagesService = new MessagesService { DefaultChannelId = contexts.Channel.Id };
 #if DEBUG
 
             var dataToMessage = "```json\n" + JsonConvert.SerializeObject(report.StatisticsPerPeriod.Where(x => x.MessagesQuantity > 0), Formatting.Indented) + "\n```";

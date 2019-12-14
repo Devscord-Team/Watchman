@@ -5,45 +5,24 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
 {
     public static class ResponsesManager
     {
-        public static string RoleAddedToUser(this ResponsesService responsesService, string user, string role)
+        public static string RoleAddedToUser(this ResponsesService responsesService, Contexts contexts, string role)
         {
-            return responsesService.ProcessResponse("RoleAddedToUser",
-                new KeyValuePair<string, string>("user", user),
-                new KeyValuePair<string, string>("role", role));
+            return responsesService.ProcessResponse("RoleAddedToUser", contexts, new KeyValuePair<string, string>("role", role));
         }
 
-        public static string RoleRemovedFromUser(this ResponsesService responsesService, string user, string role)
+        public static string RoleRemovedFromUser(this ResponsesService responsesService, Contexts contexts, string role)
         {
-            return responsesService.ProcessResponse("RoleRemovedFromUser",
-                new KeyValuePair<string, string>("user", user),
-                new KeyValuePair<string, string>("role", role));
+            return responsesService.ProcessResponse("RoleRemovedFromUser", contexts);
         }
 
-        public static string SpamAlertRecognized(this ResponsesService responsesService, string user, string channel)
+        public static string SpamAlertRecognized(this ResponsesService responsesService, Contexts contexts)
         {
-            return responsesService.ProcessResponse("SpamAlertRecognized",
-                new KeyValuePair<string, string>("user", user),
-                new KeyValuePair<string, string>("channel", channel));
+            return responsesService.ProcessResponse("SpamAlertRecognized", contexts);
         }
         
-        public static string NewUserArrived(this ResponsesService responsesService, string user, string server)
+        public static string NewUserArrived(this ResponsesService responsesService, Contexts contexts)
         {
-            return responsesService.ProcessResponse("NewUserArrived",
-                new KeyValuePair<string, string>("user", user),
-                new KeyValuePair<string, string>("server", server));
-        }
-    }
-
-    internal static class ContextsToResponseFields
-    {
-        internal static IEnumerable<KeyValuePair<string, string>> ConvertToResponseFields(this Contexts contexts)
-        {
-            return new List<KeyValuePair<string, string>>
-            {
-                new KeyValuePair<string, string>("user", contexts.User.Name),
-                new KeyValuePair<string, string>("channel", contexts.Channel.Name),
-                new KeyValuePair<string, string>("server", contexts.Server.Name)
-            };
+            return responsesService.ProcessResponse("NewUserArrived", contexts);
         }
     }
 }

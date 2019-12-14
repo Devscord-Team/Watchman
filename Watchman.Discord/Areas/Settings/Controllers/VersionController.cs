@@ -21,12 +21,11 @@ namespace Watchman.Discord.Areas.Settings.Controllers
 
         [AdminCommand]
         [DiscordCommand("-version")]
-        public void PrintVersion(string message, Dictionary<string, IDiscordContext> contexts)
+        public void PrintVersion(string message, Contexts contexts)
         {
             var version = queryBus.Execute(new GetBotVersionQuery()).Version;
 
-            var channel = (ChannelContext) contexts[nameof(ChannelContext)];
-            var messagesService = new MessagesService { DefaultChannelId = channel.Id };
+            var messagesService = new MessagesService { DefaultChannelId = contexts.Channel.Id };
 
             messagesService.SendMessage($"```Obecna wersja: {version}```");
         }

@@ -1,4 +1,5 @@
-﻿using Devscord.DiscordFramework.Services;
+﻿using Devscord.DiscordFramework.Middlewares.Contexts;
+using Devscord.DiscordFramework.Services;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -28,12 +29,24 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             return ProcessResponse(GetResponse(response), values);
         }
 
+        public string ProcessResponse(string response, Contexts contexts, params KeyValuePair<string, string>[] values)
+        {
+            return ProcessResponse(GetResponse(response), contexts, values);
+        }
+
         public string ProcessResponse(Response response, params KeyValuePair<string, string>[] values)
         {
-            if(values.Count() == 0)
+            if(values.Count() != response.GetFields().Count())
             {
-                throw new ArgumentException($"Cannot process response {response.OnEvent}. Values must be set.");
+                throw new ArgumentException($"Cannot process response {response.OnEvent}. Values must be equal to required.");
             }
+            return parser.Parse(response, values);
+        }
+
+        public string ProcessResponse(Response response, Contexts contexts, params KeyValuePair<string, string>[] values)
+        {
+            var fields = contexts.ConvertToResponseFields(response.GetFields()).ToList();
+            fields.AddRange(values);
             return parser.Parse(response, values);
         }
     }
