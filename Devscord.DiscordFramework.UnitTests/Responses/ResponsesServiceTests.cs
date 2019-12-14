@@ -8,7 +8,7 @@ namespace Devscord.DiscordFramework.UnitTests.Responses
     public class ResponsesServiceTests
     {
         [Test]
-        public void ShouldFoundManyResponsesInFile(int a)
+        public void ShouldFoundManyResponsesInFile()
         {
             //Arrange
             var responsesService = new ResponsesService();
