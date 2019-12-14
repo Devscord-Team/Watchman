@@ -10,18 +10,28 @@ namespace Devscord.DiscordFramework.UnitTests.Responses
     public class ResponsesParserTests
     {
         [Test]
-        public void ShouldProcessResponseCorrectly()
+        [TestCase("a{{ToReplace}}a", "ToReplace", "a", "aaa", true)]
+        [TestCase("a{{ToReplace}}a", "ToReplace", "a", "abc", false)]
+        [TestCase("a{{_a_}}a", "_a_", "a", "aaa", true)]
+        public void ShouldProcessResponseCorrectly(string input, string paramKey, string paramValue, string expectedResult, bool shouldTrue)
         {
             //Arrange
             var responsesParser = new ResponsesParser();
-            var response = new Response { Message = "a{{ToReplace}}a" };
-            var param = new KeyValuePair<string, string>("ToReplace", "a");
+            var response = new Response { Message = input };
+            var param = new KeyValuePair<string, string>(paramKey, paramValue);
 
             //Act
             var parsed = responsesParser.Parse(response, param);
 
             //Assert
-            Assert.That(parsed, Is.EqualTo("aaa"));
+            if (shouldTrue)
+            {
+                Assert.That(parsed, Is.EqualTo(expectedResult));
+            }
+            else
+            {
+                Assert.That(parsed, Is.Not.EqualTo(expectedResult));
+            }
         }
     }
 }
