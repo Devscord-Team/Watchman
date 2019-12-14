@@ -1,9 +1,5 @@
 ﻿using Devscord.DiscordFramework.Framework.Commands.Responses;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Devscord.DiscordFramework.UnitTests.Responses
 {
@@ -11,7 +7,7 @@ namespace Devscord.DiscordFramework.UnitTests.Responses
     public class ResponsesServiceTests
     {
         [Test]
-        public void ShouldFoundManyResponsesInFile()
+        public void ShouldFoundManyResponsesInFile(int a)
         {
             //Arrange
             var responsesService = new ResponsesService();
