@@ -13,7 +13,7 @@ namespace Watchman.DomainModel.Help.Queries.Handlers
         public GetHelpInformationQueryResult Handle(GetHelpInformationQuery query)
         {
             var allText = File.ReadAllText(_helpFileName);
-            var helpInfos = new List<HelpInformation>();
+            var helpInfos = new List<ServerHelpInformation>();
 
             // todo: parse json file to list
 

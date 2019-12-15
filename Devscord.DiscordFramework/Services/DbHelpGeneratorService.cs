@@ -31,7 +31,7 @@ namespace Devscord.DiscordFramework.Services
         public Task GenerateDefaultHelpDB(Assembly botAssembly)
         {
             var controllers = GetControllers(botAssembly);
-            var helpInformationInDb = this._session.Get<HelpInformation>();
+            var helpInformationInDb = this._session.Get<DefaultHelpInformation>();
 
             var generatedHelpInformation = controllers.SelectMany(this.CreateHelpInformation);
             
@@ -59,19 +59,18 @@ namespace Devscord.DiscordFramework.Services
             return controllers;
         }
 
-        private IEnumerable<HelpInformation> CreateHelpInformation(IController controller)
+        private IEnumerable<DefaultHelpInformation> CreateHelpInformation(IController controller)
         {
-            var helpInformations = new List<HelpInformation>();
             var methods = controller.GetType().GetMethods()
                 .Where(x => x.CustomAttributes
                     .Any(a => a.AttributeType.Name == nameof(DiscordCommand)));
 
-            return methods.ToList().Select(x => new HelpInformation
+            return methods.ToList().Select(x => new DefaultHelpInformation
             {
                 Descriptions = new List<Description> { _defaultDescription },
-                ServerId = 0,
-                MethodNames = x.CustomAttributes.Where(x => x.AttributeType.Name == nameof(DiscordCommand))
-                .Select(x => x.ConstructorArguments.First().ToString())
+                MethodNames = x.CustomAttributes
+                    .Where(x => x.AttributeType.Name == nameof(DiscordCommand))
+                    .Select(x => x.ConstructorArguments.First().ToString())
             });
         }
     }

@@ -12,10 +12,14 @@ namespace Watchman.DomainModel.Help
         public string Details { get; set; }
     }
 
-    public class HelpInformation : Entity
+    public class DefaultHelpInformation : Entity
     {
-        public ulong ServerId { get; set; }
         public IEnumerable<string> MethodNames { get; set; }
         public IEnumerable<Description> Descriptions { get; set; }
+    }
+
+    public class ServerHelpInformation : DefaultHelpInformation
+    {
+        public ulong ServerId { get; set; }
     }
 }
