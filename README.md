@@ -8,6 +8,6 @@ Aby do niego dołączyć kliknij w to  [ZAPROSZENIE](https://discord.gg/TZfg68D)
 ### Jak mogę pomóc w rozwoju projektu?
 Zajrzyj do pliku [CONTRIBUTING](https://github.com/Devscord-Team/Watchman/blob/master/CONTRIBUTING.md), gdzie znajdziesz więcej informacji na temat rozwijania bota.
 
-## Najczęściej zadawane pytania (FAQ)
+### Najczęściej zadawane pytania (FAQ)
 Chciesz dowiedzieć się w jaki sposób dodać bota do swojego serwera, albo dlaczego wymaga od ciebie takich uprawnień?
 Przeczytaj najczęściej zadawane pytania w naszym [Wiki - FAQ](https://github.com/Devscord-Team/Watchman/wiki/Najcz%C4%99%C5%9Bciej-zadawane-pytania-(FAQ))
