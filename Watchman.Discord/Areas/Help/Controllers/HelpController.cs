@@ -4,6 +4,7 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Help.Queries;
@@ -24,6 +25,11 @@ namespace Watchman.Discord.Areas.Help.Controllers
             this._session = sessionFactory.Create();
         }
 
+        [DiscordCommand("-test")]
+        public void Test(string message, Dictionary<string, IDiscordContext> contexts)
+        {
+
+        }
         [DiscordCommand("-help")]
         public void PrintHelp(string message, Dictionary<string, IDiscordContext> contexts)
         {
@@ -37,7 +43,8 @@ namespace Watchman.Discord.Areas.Help.Controllers
 
             foreach (var helpInfo in result.HelpInformations)
             {
-                messageBuilder.AppendLine(helpInfo.MethodName);
+                helpInfo.MethodNames.ToList().ForEach(x => messageBuilder.Append(x).Append(" / "));
+                messageBuilder.Remove(messageBuilder.Length - 3, 3);
             }
 
             messageBuilder.AppendLine("```");

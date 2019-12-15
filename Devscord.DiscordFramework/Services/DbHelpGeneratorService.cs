@@ -11,6 +11,13 @@ namespace Devscord.DiscordFramework.Services
 {
     public class DbHelpGeneratorService : IService
     {
+        private Description _defaultDescription => new Description
+        {
+            IsDefault = true,
+            Name = "EN",
+            Details = "Default text"
+        };
+
         private readonly ISession _session;
         private readonly IComponentContext componentContext;
 
@@ -23,41 +30,49 @@ namespace Devscord.DiscordFramework.Services
 
         public Task GenerateDefaultHelpDB(Assembly botAssembly)
         {
-            CreateHelpInformation(botAssembly).ToList().ForEach(x => _session.Add(x));
-            return Task.CompletedTask;
-        }
-
-        private IEnumerable<HelpInformation> CreateHelpInformation(Assembly botAssembly)
-        {
-            var helpInformation = new List<HelpInformation>();
-
             var controllers = GetControllers(botAssembly);
+            var dbHelps = this._session.Get<HelpInformation>();
 
-            var testHelp = new HelpInformation
+            var helpsInfo = controllers.SelectMany(this.MakeHelpInformations);
+            
+            foreach (var helpInfo in helpsInfo)
             {
-                ServerId = 0,
-                MethodName = "testMethod"
-            };
+                if (!dbHelps.Any(x => x.MethodNames.Equals(helpInfo.MethodNames)))
+                    this._session.Add(helpInfo);
+            }
 
-            var descriptions = new List<Description>
+            foreach (var dbHelpInfo in dbHelps)
             {
-                new Description {IsDefault = true, Details = "Empty", Name = "EN"}
-            };
+                if (!helpsInfo.Any(x => x.MethodNames.Equals(dbHelpInfo.MethodNames)))
+                    this._session.Delete(dbHelpInfo);
+            }
 
-            testHelp.Descriptions = descriptions;
-
-            helpInformation.Add(testHelp);
-
-            return helpInformation;
+            return Task.CompletedTask;
         }
 
         private IEnumerable<IController> GetControllers(Assembly botAssembly)
         {
             var controllers = botAssembly.GetTypes()
                 .Where(x => x.GetInterfaces().Any(i => i.FullName == typeof(IController).FullName))
-                .Select(x => (IController) componentContext.Resolve(x));
+                .Select(x => (IController)componentContext.Resolve(x));
 
             return controllers;
+        }
+
+        private IEnumerable<HelpInformation> MakeHelpInformations(IController controller)
+        {
+            var helpInformations = new List<HelpInformation>();
+            var methods = controller.GetType().GetMethods()
+                .Where(x => x.CustomAttributes
+                    .Any(a => a.AttributeType.Name == nameof(DiscordCommand)));
+
+            return methods.ToList().Select(x => new HelpInformation
+            {
+                Descriptions = new List<Description> { _defaultDescription },
+                ServerId = 0,
+                MethodNames = x.CustomAttributes.Where(x => x.AttributeType.Name == nameof(DiscordCommand))
+                .Select(x => x.ConstructorArguments.First().ToString())
+            });
         }
     }
 }
