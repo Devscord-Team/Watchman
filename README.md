@@ -7,7 +7,16 @@ Aby do niego dołączyć kliknij w to  [ZAPROSZENIE](https://discord.gg/TZfg68D)
 
 Po doświadczeniu chaosu związanego z używaniem wielu botów na naszym serwerze uznaliśmy, że (skoro jesteśmy programistami) dużo lepszym rozwiązaniem będzie stworzenie własnego bota, który zastąpi wszystkie inne, które uważaliśmy za niezbędne.
 
-## Jak mogę dodać Watchmana do mojego serwera?
+### Jak mogę pomóc w rozwoju projektu?
+Zajrzyj do pliku [CONTRIBUTING](https://github.com/Devscord-Team/Watchman/blob/master/CONTRIBUTING.md), gdzie znajdziesz więcej informacji na temat rozwijania bota.
+
+### W jaki sposób mogę uruchomić bota na swoim komputerze?
+Jeśli chcesz samodzielnie hostować bota, to zapoznaj się z instrukcją w naszym [Wiki - Getting Started](https://github.com/Devscord-Team/Watchman/wiki/Getting-Started).
+
+### Gdzie można spotkać Watchmana?
+Jeśli chcesz przyjrzeć się działaniu Watchmana z zewnątrz, wejdź na na serwer **Devscord** [ZAPROSZENIE](https://discord.gg/TZfg68D) i zobacz jak funkcjonuje w naturalnym środowisku.
+
+### Jak mogę dodać Watchmana do mojego serwera?
 Kliknij w [ZAPROSZENIE BOTA](https://discordapp.com/api/oauth2/authorize?client_id=636274997786312723&permissions=2147483127&scope=bot) i wybierz z listy te uprawnienia, które chcesz żeby posiadał Watchman na twoim serwerze.
 
 #### Dlaczego domyślnie ustawione są wszystkie uprawnienia?
@@ -16,12 +25,3 @@ Kliknij w [ZAPROSZENIE BOTA](https://discordapp.com/api/oauth2/authorize?client_
 
 #### Skąd dowiem się że nie mam konkretnego uprawnienia?
 Powiemy ci o tym. Jeśli spróbujesz zrobić coś, do czego Watchman nie ma uprawnienia, dostaniesz powiadomienie którego uprawnienia brakuje ci, aby wykonać tą akcję.
-
-#### Chcę pomóc w rozwoju bota. Gdzie zacząć?
-Zajrzyj do pliku [CONTRIBUTING](https://github.com/Devscord-Team/Watchman/blob/master/CONTRIBUTING.md), gdzie znajdziesz więcej informacji na temat rozwijania bota.
-
-#### W jaki sposób mogę uruchomić bota na swoim komputerze?
-Jeśli chcesz samodzielnie hostować bota, to zapoznaj się z instrukcją w naszym [Wiki](https://github.com/Devscord-Team/Watchman/wiki/Getting-Started).
-
-## Gdzie można spotkać Watchmana?
-Jeśli chcesz przyjrzeć się działaniu Watchmana z zewnątrz, wejdź na na serwer **Devscord** [ZAPROSZENIE](https://discord.gg/TZfg68D) i zobacz jak funkcjonuje w naturalnym środowisku.
