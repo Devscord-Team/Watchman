@@ -19,11 +19,11 @@ namespace Devscord.DiscordFramework.Services
         };
 
         private readonly ISession _session;
-        private readonly IComponentContext componentContext;
+        private readonly IComponentContext _componentContext;
 
         public DbHelpGeneratorService(IComponentContext componentContext)
         {
-            this.componentContext = componentContext;
+            this._componentContext = componentContext;
             var sessionFactory = componentContext.Resolve<ISessionFactory>();
             _session = sessionFactory.Create();
         }
@@ -33,7 +33,7 @@ namespace Devscord.DiscordFramework.Services
             var controllers = GetControllers(botAssembly);
             var helpInformationInDb = this._session.Get<HelpInformation>();
 
-            var generatedHelpInformation = controllers.SelectMany(this.MakeHelpInformations);
+            var generatedHelpInformation = controllers.SelectMany(this.CreateHelpInformation);
             
             foreach (var generatedHelpInfo in generatedHelpInformation)
             {
@@ -54,12 +54,12 @@ namespace Devscord.DiscordFramework.Services
         {
             var controllers = botAssembly.GetTypes()
                 .Where(x => x.GetInterfaces().Any(i => i.FullName == typeof(IController).FullName))
-                .Select(x => (IController)componentContext.Resolve(x));
+                .Select(x => (IController)_componentContext.Resolve(x));
 
             return controllers;
         }
 
-        private IEnumerable<HelpInformation> MakeHelpInformations(IController controller)
+        private IEnumerable<HelpInformation> CreateHelpInformation(IController controller)
         {
             var helpInformations = new List<HelpInformation>();
             var methods = controller.GetType().GetMethods()
