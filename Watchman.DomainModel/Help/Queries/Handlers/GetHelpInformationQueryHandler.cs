@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using System.Linq;
 using Watchman.Cqrs;
+using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Help.Queries.Handlers
 {
@@ -12,17 +12,32 @@ namespace Watchman.DomainModel.Help.Queries.Handlers
 
         public GetHelpInformationQueryResult Handle(GetHelpInformationQuery query)
         {
-            if (!File.Exists(_helpFileName))
-            {
+            var helpInformation = GetHelpInformationFromFile(query.ServerId);
 
+            if ( !helpInformation.Any())
+            {
+                helpInformation = GetHelpInformationFromDb(query.Session, query.ServerId);
             }
 
+            return new GetHelpInformationQueryResult(helpInformation);
+        }
+
+        private IEnumerable<ServerHelpInformation> GetHelpInformationFromDb(ISession session, ulong serverId)
+        {
+            return session.Get<ServerHelpInformation>();
+        }
+
+        private IEnumerable<ServerHelpInformation> GetHelpInformationFromFile(ulong serverId)
+        {
+            if ( !File.Exists(_helpFileName))
+                return new List<ServerHelpInformation>();
+            
             var allText = File.ReadAllText(_helpFileName);
-            var helpInfos = new List<ServerHelpInformation>();
+            var helps = new List<ServerHelpInformation>();
 
             // todo: parse json file to list
 
-            return new GetHelpInformationQueryResult(helpInfos);
+            return helps;
         }
     }
 }
