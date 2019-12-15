@@ -1,5 +1,5 @@
 ### W jaki sposób mogę uruchomić bota na swoim komputerze?
-Jeśli chcesz samodzielnie hostować bota, to zapoznaj się z instrukcją w naszym [Wiki - Getting Started](https://github.com/Devscord-Team/Watchman/wiki/Getting-Started).
+Instrukcję uruchamiania bota lokalnie znajdziesz tutaj [Wiki - Getting Started](https://github.com/Devscord-Team/Watchman/wiki/Getting-Started).
 
 ### Lista narzędzi używanych przez zespół rozwijający watchmana
 - .NET Core 3.0
