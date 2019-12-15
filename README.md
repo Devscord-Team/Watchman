@@ -15,7 +15,7 @@ Kliknij w [ZAPROSZENIE BOTA](https://discordapp.com/api/oauth2/authorize?client_
 - Zdajemy sobie sprawę z tego, że różne serwery mają różną politykę funkcjonowania
 
 #### Skąd dowiem się że nie mam konkretnego uprawnienia?
-Powiemy ci o tym. Jeśli spróbujesz zrobić coś, do czego Watchman nie ma uprawnienia, dostaniesz powiadomienie którego powiadomienia brakuje ci, aby wykonać tą akcję.
+Powiemy ci o tym. Jeśli spróbujesz zrobić coś, do czego Watchman nie ma uprawnienia, dostaniesz powiadomienie którego uprawnienia brakuje ci, aby wykonać tą akcję.
 
 #### Chcę pomóc w rozwoju bota. Gdzie zacząć?
 Zajrzyj do pliku [CONTRIBUTING](https://github.com/Devscord-Team/Watchman/blob/master/CONTRIBUTING.md), gdzie znajdziesz więcej informacji na temat rozwijania bota.
