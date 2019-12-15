@@ -25,11 +25,6 @@ namespace Watchman.Discord.Areas.Help.Controllers
             this._session = sessionFactory.Create();
         }
 
-        [DiscordCommand("-test")]
-        public void Test(string message, Dictionary<string, IDiscordContext> contexts)
-        {
-
-        }
         [DiscordCommand("-help")]
         public void PrintHelp(string message, Dictionary<string, IDiscordContext> contexts)
         {

@@ -31,19 +31,19 @@ namespace Devscord.DiscordFramework.Services
         public Task GenerateDefaultHelpDB(Assembly botAssembly)
         {
             var controllers = GetControllers(botAssembly);
-            var dbHelps = this._session.Get<HelpInformation>();
+            var helpInformationInDb = this._session.Get<HelpInformation>();
 
-            var helpsInfo = controllers.SelectMany(this.MakeHelpInformations);
+            var generatedHelpInformation = controllers.SelectMany(this.MakeHelpInformations);
             
-            foreach (var helpInfo in helpsInfo)
+            foreach (var generatedHelpInfo in generatedHelpInformation)
             {
-                if (!dbHelps.Any(x => x.MethodNames.Equals(helpInfo.MethodNames)))
-                    this._session.Add(helpInfo);
+                if (!helpInformationInDb.Any(x => x.MethodNames.Equals(generatedHelpInfo.MethodNames)))
+                    this._session.Add(generatedHelpInfo);
             }
 
-            foreach (var dbHelpInfo in dbHelps)
+            foreach (var dbHelpInfo in helpInformationInDb)
             {
-                if (!helpsInfo.Any(x => x.MethodNames.Equals(dbHelpInfo.MethodNames)))
+                if (!generatedHelpInformation.Any(x => x.MethodNames.SequenceEqual(dbHelpInfo.MethodNames)))
                     this._session.Delete(dbHelpInfo);
             }
 
