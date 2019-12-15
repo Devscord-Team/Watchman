@@ -6,12 +6,17 @@ using Watchman.Cqrs;
 
 namespace Watchman.DomainModel.Help.Queries.Handlers
 {
-    public class GetHelpInformationsQueryHandler : IQueryHandler<GetHelpInformationQuery, GetHelpInformationQueryResult>
+    public class GetHelpInformationQueryHandler : IQueryHandler<GetHelpInformationQuery, GetHelpInformationQueryResult>
     {
         private const string _helpFileName = "helpInformation.json";
 
         public GetHelpInformationQueryResult Handle(GetHelpInformationQuery query)
         {
+            if (!File.Exists(_helpFileName))
+            {
+
+            }
+
             var allText = File.ReadAllText(_helpFileName);
             var helpInfos = new List<ServerHelpInformation>();
 
