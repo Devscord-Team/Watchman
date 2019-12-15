@@ -33,18 +33,9 @@ namespace Devscord.DiscordFramework.Services
             var helpInformationInDb = this._session.Get<DefaultHelpInformation>();
 
             var generatedHelpInformation = controllers.SelectMany(this.CreateHelpInformation);
-            
-            foreach (var generatedHelpInfo in generatedHelpInformation)
-            {
-                if (!helpInformationInDb.Any(x => x.MethodNames.Equals(generatedHelpInfo.MethodNames)))
-                    this._session.Add(generatedHelpInfo);
-            }
 
-            foreach (var dbHelpInfo in helpInformationInDb)
-            {
-                if (!generatedHelpInformation.Any(x => x.MethodNames.SequenceEqual(dbHelpInfo.MethodNames)))
-                    this._session.Delete(dbHelpInfo);
-            }
+            AddNewHelpInformation(helpInformationInDb, generatedHelpInformation);
+            RemoveOldHelpInformation(helpInformationInDb, generatedHelpInformation);
 
             return Task.CompletedTask;
         }
@@ -72,6 +63,24 @@ namespace Devscord.DiscordFramework.Services
                     .Where(x => x.AttributeType.Name == nameof(DiscordCommand))
                     .Select(x => x.ConstructorArguments.First().ToString())
             });
+        }
+
+        private void AddNewHelpInformation(IQueryable<DefaultHelpInformation> helpInformationInDb, IEnumerable<DefaultHelpInformation> generatedHelpInformation)
+        {
+            foreach (var generatedHelpInfo in generatedHelpInformation)
+            {
+                if (!helpInformationInDb.Any(x => x.MethodNames.Equals(generatedHelpInfo.MethodNames)))
+                    this._session.Add(generatedHelpInfo);
+            }
+        }
+
+        private void RemoveOldHelpInformation(IQueryable<DefaultHelpInformation> helpInformationInDb, IEnumerable<DefaultHelpInformation> generatedHelpInformation)
+        {
+            foreach (var dbHelpInfo in helpInformationInDb)
+            {
+                if (!generatedHelpInformation.Any(x => x.MethodNames.SequenceEqual(dbHelpInfo.MethodNames)))
+                    this._session.Delete(dbHelpInfo);
+            }
         }
     }
 }
