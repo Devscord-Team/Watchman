@@ -8,7 +8,6 @@ namespace Watchman.DomainModel.Help
     public class Description
     {
         public string Name { get; set; }
-        public bool IsDefault { get; set; }
         public string Details { get; set; }
     }
 
@@ -16,6 +15,7 @@ namespace Watchman.DomainModel.Help
     {
         public IEnumerable<string> MethodNames { get; set; }
         public IEnumerable<Description> Descriptions { get; set; }
+        public string DefaultDescriptionName { get; set; }
     }
 
     public class ServerHelpInformation : DefaultHelpInformation

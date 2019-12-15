@@ -13,7 +13,6 @@ namespace Devscord.DiscordFramework.Services
     {
         private Description _defaultDescription => new Description
         {
-            IsDefault = true,
             Name = "EN",
             Details = "Default text"
         };
@@ -68,6 +67,7 @@ namespace Devscord.DiscordFramework.Services
             return methods.ToList().Select(x => new DefaultHelpInformation
             {
                 Descriptions = new List<Description> { _defaultDescription },
+                DefaultDescriptionName = "EN",
                 MethodNames = x.CustomAttributes
                     .Where(x => x.AttributeType.Name == nameof(DiscordCommand))
                     .Select(x => x.ConstructorArguments.First().ToString())
