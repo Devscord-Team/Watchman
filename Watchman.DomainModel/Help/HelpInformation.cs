@@ -5,7 +5,7 @@ using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Help
 {
-    public class Description : Entity
+    public class Description
     {
         public string Name { get; set; }
         public bool IsDefault { get; set; }
@@ -15,7 +15,7 @@ namespace Watchman.DomainModel.Help
     public class HelpInformation : Entity
     {
         public ulong ServerId { get; set; }
-        public string MethodName { get; set; }
+        public IEnumerable<string> MethodNames { get; set; }
         public IEnumerable<Description> Descriptions { get; set; }
     }
 }
