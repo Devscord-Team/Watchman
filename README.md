@@ -5,8 +5,6 @@
 Watchman jest hobbystycznym botem rozwijanym przez właściciela oraz część administracji programistycznego serwera discord - **Devscord**.
 Aby do niego dołączyć kliknij w to  [ZAPROSZENIE](https://discord.gg/TZfg68D).
 
-Po doświadczeniu chaosu związanego z używaniem wielu botów na naszym serwerze uznaliśmy, że (skoro jesteśmy programistami) dużo lepszym rozwiązaniem będzie stworzenie własnego bota, który zastąpi wszystkie inne, które uważaliśmy za niezbędne.
-
 ### Jak mogę pomóc w rozwoju projektu?
 Zajrzyj do pliku [CONTRIBUTING](https://github.com/Devscord-Team/Watchman/blob/master/CONTRIBUTING.md), gdzie znajdziesz więcej informacji na temat rozwijania bota.
 
