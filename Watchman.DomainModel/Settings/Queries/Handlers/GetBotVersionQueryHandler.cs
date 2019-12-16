@@ -12,8 +12,15 @@ namespace Watchman.DomainModel.Settings.Queries.Handlers
 
         public GetBotVersionQueryResult Handle(GetBotVersionQuery query)
         {
-            var version = File.ReadAllText(_fileName);
-            return new GetBotVersionQueryResult(version);
+            try
+            {
+                var version = File.ReadAllText(_fileName);
+                return new GetBotVersionQueryResult(version);
+            }
+            catch
+            {
+                return new GetBotVersionQueryResult("Plik version.txt nie został utworzony");
+            }
         }
     }
 }
