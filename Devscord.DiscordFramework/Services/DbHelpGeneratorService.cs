@@ -61,7 +61,7 @@ namespace Devscord.DiscordFramework.Services
                 DefaultDescriptionName = "EN",
                 MethodNames = x.CustomAttributes
                     .Where(x => x.AttributeType.Name == nameof(DiscordCommand))
-                    .Select(x => x.ConstructorArguments.First().ToString().Replace("\"", "")
+                    .Select(x => x.ConstructorArguments.First().ToString().Replace("\"", ""))
             });
         }
 
