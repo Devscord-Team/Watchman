@@ -10,22 +10,22 @@ namespace Watchman.DomainModel.Protection.Services
         {
             if(!isAlerted && messagesInLast10Seconds >= 5)
             {
-                return new ProtectionPunishment(ProtectionPunishmentOptions.Alert);
+                return new ProtectionPunishment(ProtectionPunishmentOption.Alert);
             }
             if(isAlerted && messagesInLast10Seconds >= 10)
             {
                 if(mutesInPast > 4)
                 {
-                    return new ProtectionPunishment(ProtectionPunishmentOptions.Ban);
+                    return new ProtectionPunishment(ProtectionPunishmentOption.Ban);
                 }
-                return new ProtectionPunishment(ProtectionPunishmentOptions.Mute, TimeSpan.FromMinutes(15 * (mutesInPast + 1)));
+                return new ProtectionPunishment(ProtectionPunishmentOption.Mute, TimeSpan.FromMinutes(15 * (mutesInPast + 1)));
             }
             if(isAlerted && messagesInLast10Seconds == 0)
             {
-                return new ProtectionPunishment(ProtectionPunishmentOptions.Clear);
+                return new ProtectionPunishment(ProtectionPunishmentOption.Clear);
             }
 
-            return new ProtectionPunishment(ProtectionPunishmentOptions.Nothing);
+            return new ProtectionPunishment(ProtectionPunishmentOption.Nothing);
         }
     }
 }
