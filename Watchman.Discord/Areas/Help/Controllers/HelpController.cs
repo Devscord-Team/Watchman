@@ -39,10 +39,15 @@ namespace Watchman.Discord.Areas.Help.Controllers
 
             foreach (var helpInfo in result.HelpInformations)
             {
-                helpInfo.MethodNames.ToList().ForEach(x => messageBuilder.Append(x).Append(" / "));
+                var methodsNames = helpInfo.MethodNames.Select(x => x.Replace("\"", "")).ToList();
+                methodsNames.ForEach(x => messageBuilder.Append(x).Append(" / "));
                 messageBuilder.Remove(messageBuilder.Length - 3, 3);
-            }
+                
+                messageBuilder.Append(" => ");
 
+                messageBuilder.AppendLine(helpInfo.Descriptions.First(x => x.Name == helpInfo.DefaultDescriptionName).Details);
+            }
+            
             messageBuilder.AppendLine("```");
             messagesService.SendMessage(messageBuilder.ToString());
         }
