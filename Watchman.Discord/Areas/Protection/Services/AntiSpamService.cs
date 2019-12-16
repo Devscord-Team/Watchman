@@ -1,4 +1,5 @@
-﻿using Devscord.DiscordFramework.Middlewares.Contexts;
+﻿using Devscord.DiscordFramework.Framework.Commands.Responses;
+using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using System;
 using System.Collections.Generic;
@@ -45,11 +46,11 @@ namespace Watchman.Discord.Areas.Protection.Services
 
                 case ProtectionPunishmentOption.Alert:
                     _warns.Add(contexts.User.Id);
-                    messagesService.SendMessage($"Spam alert! Wykryto spam u użytkownika {contexts.User.Name} na kanale {contexts.User.Name}. Poczekaj chwile zanim coś napiszesz.").Wait();
+                    messagesService.SendResponse(x => x.SpamAlertRecognized(contexts));
                     break;
 
                 case ProtectionPunishmentOption.Mute:
-                    messagesService.SendMessage($"Spam alert! Uzytkownik {contexts.User.Name} został zmutowany.").Wait();
+                    messagesService.SendResponse(x => x.SpamAlertUserIsMuted(contexts));
                     break;
             }
         }

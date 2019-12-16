@@ -1,4 +1,5 @@
 ﻿using Devscord.DiscordFramework.Middlewares.Contexts;
+using Devscord.DiscordFramework.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using Watchman.Discord.Areas.Statistics.Models;
 
 namespace Watchman.Discord.Areas.Statistics.Services
 {
-    public class ReportsService
+    public class ReportsService : IService
     {
         public Period SelectPeriod(string period)
         {

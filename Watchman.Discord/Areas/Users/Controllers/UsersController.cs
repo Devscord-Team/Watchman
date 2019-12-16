@@ -45,25 +45,20 @@ namespace Watchman.Discord.Areas.Users.Controllers
         {
             var commandRole = message.ToLowerInvariant().Replace("-add role ", string.Empty);
             var role = _safeRoles.FirstOrDefault(x => x.Name == commandRole);
-
             var messagesService = messagesServiceFactory.Create(contexts);
-
             if (role == null)
             {
-                messagesService.SendMessage($"Nie znaleziono roli {commandRole} lub wybrana rola musi być dodana ręcznie przez członka administracji");
+                messagesService.SendResponse(x => x.RoleNotFoundOrIsNotSafe(contexts, commandRole));
                 return;
             }
-
             if (contexts.User.Roles.Any(x => x.Name == role.Name))
             {
-                messagesService.SendMessage($"Użytkownik {contexts.User.Name} posiada już role {commandRole}");
+                messagesService.SendResponse(x => x.RoleIsInUserAlready(contexts, commandRole));
                 return;
             }
             var serverRole = usersService.GetRoleByName(commandRole, contexts.Server);
             usersService.AddRole(serverRole, contexts.User, contexts.Server).Wait();
 
-            //this is example of responsesService usage
-            //TODO - implement it in all controllers
             messagesService.SendResponse(x => x.RoleAddedToUser(contexts, commandRole)); 
         }
 
@@ -77,18 +72,18 @@ namespace Watchman.Discord.Areas.Users.Controllers
 
             if (role == null)
             {
-                messagesService.SendMessage($"Nie znaleziono roli {commandRole} lub wybrana rola musi być usunięta ręcznie przez członka administracji");
+                messagesService.SendResponse(x => x.RoleNotFoundOrIsNotSafe(contexts, commandRole));
                 return;
             }
 
             if (contexts.User.Roles.All(x => x.Name != role.Name)) 
             {
-                messagesService.SendMessage($"Użytkownik {contexts.User} nie posiada roli {commandRole}");
+                messagesService.SendResponse(x => x.RoleNotFoundInUser(contexts, commandRole));
                 return;
             }
             var serverRole = usersService.GetRoleByName(commandRole, contexts.Server);
             usersService.RemoveRole(serverRole, contexts.User, contexts.Server).Wait();
-            messagesService.SendMessage($"Usunięto role {commandRole} użytkownikowi {contexts.User.Name}");
+            messagesService.SendResponse(x => x.RoleRemovedFromUser(contexts, commandRole));
         }
 
         [DiscordCommand("-role list")]
