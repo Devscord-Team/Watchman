@@ -11,17 +11,28 @@ namespace Watchman.Discord.IoC.Modules
     {
         protected override void Load(ContainerBuilder builder)
         {
-            var assembly = typeof(ServiceModule)
-                .GetTypeInfo()
-                .Assembly;
+            var list = new List<string>();
+            var stack = new Stack<Assembly>();
 
-            builder.RegisterAssemblyTypes(assembly)
-                .Where(x => x.IsAssignableTo<IService>())
-                .AsImplementedInterfaces()
-                .InstancePerLifetimeScope();
+            stack.Push(Assembly.GetEntryAssembly());
+            do
+            {
+                var asm = stack.Pop();
 
-            builder.RegisterType(typeof(DbHelpGeneratorService))
-                .InstancePerLifetimeScope();
+                builder.RegisterAssemblyTypes(asm)
+                    .Where(x => x.IsAssignableTo<IService>())
+                    .InstancePerLifetimeScope();
+
+                foreach (var reference in asm.GetReferencedAssemblies())
+                {
+                    if (!list.Contains(reference.FullName))
+                    {
+                        stack.Push(Assembly.Load(reference));
+                        list.Add(reference.FullName);
+                    }
+                }
+            }
+            while (stack.Count > 0);
         }
     }
 }

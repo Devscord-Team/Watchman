@@ -1,5 +1,8 @@
-﻿using Devscord.DiscordFramework.Middlewares;
+﻿using Devscord.DiscordFramework.Framework.Commands.Responses;
+using Devscord.DiscordFramework.Middlewares;
+using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
+using Devscord.DiscordFramework.Services.Factories;
 using Discord.WebSocket;
 using MongoDB.Driver;
 using System;
@@ -58,11 +61,16 @@ namespace Devscord.DiscordFramework.Framework
         //todo there should be command (command handler)
         private static Task UserJoined(SocketGuildUser guildUser)
         {
-            var userContext = (new UserContextsFactory()).Create(guildUser);
-            var discordServerContext = (new DiscordServerContextFactory()).Create(guildUser.Guild);
+            var userContext = new UserContextsFactory().Create(guildUser);
+            var discordServerContext = new DiscordServerContextFactory().Create(guildUser.Guild);
+            var contexts = new Contexts();
+            contexts.SetContext(userContext);
+            contexts.SetContext(discordServerContext);
 
-            var userService = new UserService();
-            return userService.WelcomeUser(userContext, discordServerContext);
+            var messagesService = new MessagesServiceFactory(new ResponsesService()).Create(contexts);
+            
+            var userService = new UsersService();
+            return userService.WelcomeUser(messagesService, contexts);
         }
     }
 }

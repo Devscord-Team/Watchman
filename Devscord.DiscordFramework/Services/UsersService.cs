@@ -10,7 +10,7 @@ using Discord.WebSocket;
 
 namespace Devscord.DiscordFramework.Services
 {
-    public class UserService : IService
+    public class UsersService : IService
     {
         public Task AddRole(UserRole role, UserContext user, DiscordServerContext server)
         {
@@ -46,11 +46,9 @@ namespace Devscord.DiscordFramework.Services
             return Server.GetRoles(server.Id).First(x => x.Id == roleId);
         }
 
-        public Task WelcomeUser(UserContext userContext, DiscordServerContext serverContext)
+        public Task WelcomeUser(MessagesService messagesService, Contexts contexts)
         {
-            var messageService = new MessagesService() { DefaultChannelId = serverContext.SystemChannel.Id };
-
-            messageService.SendMessage($"Witaj {userContext.Mention} na serwerze {serverContext.Name}");
+            messagesService.SendMessage($"Witaj {contexts.User.Mention} na serwerze {contexts.Server.Name}");
             return Task.CompletedTask;
         }
     }

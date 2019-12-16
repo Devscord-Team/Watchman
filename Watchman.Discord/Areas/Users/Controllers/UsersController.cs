@@ -1,7 +1,9 @@
 ﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
+using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
+using Devscord.DiscordFramework.Services.Factories;
 using Discord;
 using Discord.WebSocket;
 using System;
@@ -18,67 +20,61 @@ namespace Watchman.Discord.Areas.Users.Controllers
     {
         private readonly IQueryBus queryBus;
         private readonly ICommandBus commandBus;
+        private readonly MessagesServiceFactory messagesServiceFactory;
+        private readonly UsersService usersService;
 
-        public UsersController(IQueryBus queryBus, ICommandBus commandBus)
+        public UsersController(IQueryBus queryBus, ICommandBus commandBus, MessagesServiceFactory messagesServiceFactory, UsersService usersService)
         {
             this.queryBus = queryBus;
             this.commandBus = commandBus;
+            this.messagesServiceFactory = messagesServiceFactory;
+            this.usersService = usersService;
         }
 
 
         [DiscordCommand("-avatar")]
-        public void GetAvatar(string message, Dictionary<string, IDiscordContext> contexts)
+        public void GetAvatar(string message, Contexts contexts)
         {
-            var user = (UserContext) contexts[nameof(UserContext)];
-            var channel = (ChannelContext) contexts[nameof(ChannelContext)];
-
-            var messageService = new MessagesService { DefaultChannelId = channel.Id };
-            messageService.SendMessage(user.AvatarUrl);
+            var messageService = messagesServiceFactory.Create(contexts);
+            messageService.SendMessage(contexts.User.AvatarUrl);
         }
 
         private IEnumerable<Role> _safeRoles => this.queryBus.Execute(new GetDiscordServerSafeRolesQuery()).SafeRoles;
 
-        //todo add system to messages management
         [DiscordCommand("-add role")]
-        public void AddRole(string message, Dictionary<string, IDiscordContext> contexts)
+        public void AddRole(string message, Contexts contexts)
         {
-            //TODO change Dictionary to many parameters => auto dependency injection
-
             var commandRole = message.ToLowerInvariant().Replace("-add role ", string.Empty);
             var role = _safeRoles.FirstOrDefault(x => x.Name == commandRole);
 
-            var channelContext = (ChannelContext)contexts[nameof(ChannelContext)];
-            var messagesService = new MessagesService { DefaultChannelId = channelContext.Id };
+            var messagesService = messagesServiceFactory.Create(contexts);
 
-            if(role == null)
+            if (role == null)
             {
                 messagesService.SendMessage($"Nie znaleziono roli {commandRole} lub wybrana rola musi być dodana ręcznie przez członka administracji");
                 return;
             }
 
-            var userContext = (UserContext)contexts[nameof(UserContext)];
-            if (userContext.Roles.Any(x => x.Name == role.Name))
+            if (contexts.User.Roles.Any(x => x.Name == role.Name))
             {
-                messagesService.SendMessage($"Użytkownik {userContext} posiada już role {commandRole}");
+                messagesService.SendMessage($"Użytkownik {contexts.User.Name} posiada już role {commandRole}");
                 return;
             }
+            var serverRole = usersService.GetRoleByName(commandRole, contexts.Server);
+            usersService.AddRole(serverRole, contexts.User, contexts.Server).Wait();
 
-            var serverContext = (DiscordServerContext)contexts[nameof(DiscordServerContext)];
-            var userService = new UserService();
-            var serverRole = userService.GetRoleByName(commandRole, serverContext);
-
-            userService.AddRole(serverRole, userContext, serverContext).Wait();
-            messagesService.SendMessage($"Dodano role {commandRole} użytkownikowi {userContext}");
+            //this is example of responsesService usage
+            //TODO - implement it in all controllers
+            messagesService.SendResponse(x => x.RoleAddedToUser(contexts, commandRole)); 
         }
 
         [DiscordCommand("-remove role")]
-        public void RemoveRole(string message, Dictionary<string, IDiscordContext> contexts)
+        public void RemoveRole(string message, Contexts contexts)
         {
             var commandRole = message.ToLowerInvariant().Replace("-remove role ", string.Empty);
             var role = _safeRoles.FirstOrDefault(x => x.Name == commandRole);
 
-            var channelContext = (ChannelContext)contexts[nameof(ChannelContext)];
-            var messagesService = new MessagesService { DefaultChannelId = channelContext.Id };
+            var messagesService = messagesServiceFactory.Create(contexts);
 
             if (role == null)
             {
@@ -86,35 +82,26 @@ namespace Watchman.Discord.Areas.Users.Controllers
                 return;
             }
 
-            var userContext = (UserContext)contexts[nameof(UserContext)];
-            if (userContext.Roles.All(x => x.Name != role.Name)) 
+            if (contexts.User.Roles.All(x => x.Name != role.Name)) 
             {
-                messagesService.SendMessage($"Użytkownik {userContext} nie posiada roli {commandRole}");
+                messagesService.SendMessage($"Użytkownik {contexts.User} nie posiada roli {commandRole}");
                 return;
             }
-
-            var serverContext = (DiscordServerContext)contexts[nameof(DiscordServerContext)];
-            var userService = new UserService();
-            var serverRole = userService.GetRoleByName(commandRole, serverContext);
-
-            userService.RemoveRole(serverRole, userContext, serverContext).Wait();
-            messagesService.SendMessage($"Usunięto role {commandRole} użytkownikowi {userContext}");
+            var serverRole = usersService.GetRoleByName(commandRole, contexts.Server);
+            usersService.RemoveRole(serverRole, contexts.User, contexts.Server).Wait();
+            messagesService.SendMessage($"Usunięto role {commandRole} użytkownikowi {contexts.User.Name}");
         }
 
         [DiscordCommand("-role list")]
         [DiscordCommand("-roles")]
-        public void PrintRoles(string message, Dictionary<string, IDiscordContext> contexts)
+        public void PrintRoles(string message, Contexts contexts)
         {
-            var channelContext = (ChannelContext)contexts[nameof(ChannelContext)];
-            var messageService = new MessagesService { DefaultChannelId = channelContext.Id };
-
+            var messageService = messagesServiceFactory.Create(contexts);
             var stringBuilder = new StringBuilder();
-
             stringBuilder.AppendLine("Dostępne role:");
             stringBuilder.AppendLine("```");
             _safeRoles.ToList().ForEach(x => stringBuilder.AppendLine(x.Name));
             stringBuilder.Append("```");
-
             messageService.SendMessage(stringBuilder.ToString());
         }
     }
