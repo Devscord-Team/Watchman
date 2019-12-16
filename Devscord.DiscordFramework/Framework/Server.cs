@@ -69,7 +69,7 @@ namespace Devscord.DiscordFramework.Framework
 
             var messagesService = new MessagesServiceFactory(new ResponsesService()).Create(contexts);
             
-            var userService = new UserService();
+            var userService = new UsersService();
             return userService.WelcomeUser(messagesService, contexts);
         }
     }

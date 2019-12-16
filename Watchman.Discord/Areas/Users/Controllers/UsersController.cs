@@ -21,12 +21,14 @@ namespace Watchman.Discord.Areas.Users.Controllers
         private readonly IQueryBus queryBus;
         private readonly ICommandBus commandBus;
         private readonly MessagesServiceFactory messagesServiceFactory;
+        private readonly UsersService usersService;
 
-        public UsersController(IQueryBus queryBus, ICommandBus commandBus, MessagesServiceFactory messagesServiceFactory)
+        public UsersController(IQueryBus queryBus, ICommandBus commandBus, MessagesServiceFactory messagesServiceFactory, UsersService usersService)
         {
             this.queryBus = queryBus;
             this.commandBus = commandBus;
             this.messagesServiceFactory = messagesServiceFactory;
+            this.usersService = usersService;
         }
 
 
@@ -58,9 +60,8 @@ namespace Watchman.Discord.Areas.Users.Controllers
                 messagesService.SendMessage($"Użytkownik {contexts.User.Name} posiada już role {commandRole}");
                 return;
             }
-            var userService = new UserService();
-            var serverRole = userService.GetRoleByName(commandRole, contexts.Server);
-            userService.AddRole(serverRole, contexts.User, contexts.Server).Wait();
+            var serverRole = usersService.GetRoleByName(commandRole, contexts.Server);
+            usersService.AddRole(serverRole, contexts.User, contexts.Server).Wait();
 
             //this is example of responsesService usage
             //TODO - implement it in all controllers
@@ -86,10 +87,8 @@ namespace Watchman.Discord.Areas.Users.Controllers
                 messagesService.SendMessage($"Użytkownik {contexts.User} nie posiada roli {commandRole}");
                 return;
             }
-
-            var userService = new UserService();
-            var serverRole = userService.GetRoleByName(commandRole, contexts.Server);
-            userService.RemoveRole(serverRole, contexts.User, contexts.Server).Wait();
+            var serverRole = usersService.GetRoleByName(commandRole, contexts.Server);
+            usersService.RemoveRole(serverRole, contexts.User, contexts.Server).Wait();
             messagesService.SendMessage($"Usunięto role {commandRole} użytkownikowi {contexts.User.Name}");
         }
 
