@@ -39,8 +39,7 @@ namespace Watchman.Discord.Areas.Help.Controllers
 
             foreach (var helpInfo in result.HelpInformations)
             {
-                var methodsNames = helpInfo.MethodNames.Select(x => x.Replace("\"", "")).ToList();
-                methodsNames.ForEach(x => messageBuilder.Append(x).Append(" / "));
+                helpInfo.MethodNames.ToList().ForEach(x => messageBuilder.Append(x).Append(" / "));
                 messageBuilder.Remove(messageBuilder.Length - 3, 3);
                 
                 messageBuilder.Append(" => ");
