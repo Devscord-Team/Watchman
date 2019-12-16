@@ -9,6 +9,28 @@ namespace Watchman.Discord.Areas.Statistics.Services
 {
     public class ReportsService
     {
+        public Period SelectPeriod(string period)
+        {
+            if (period.ToLowerInvariant().Contains("hour"))
+            {
+               return Period.Hour;
+            }
+            else if (period.ToLowerInvariant().Contains("day"))
+            {
+                return Period.Day;
+            }
+            else if (period.ToLowerInvariant().Contains("week"))
+            {
+                return Period.Week;
+            }
+            else if (period.ToLowerInvariant().Contains("month"))
+            {
+                return Period.Month;
+            }
+            return Period.Day;
+        }
+
+
         //TODO unit test
         public StatisticsReport CreateReport(IEnumerable<MessageInformation> messages, Period period, DiscordServerContext serverContext)
         {
