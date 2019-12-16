@@ -26,9 +26,7 @@ namespace Watchman.Discord.Areas.Settings.Controllers
         public void PrintVersion(string message, Contexts contexts)
         {
             var version = queryBus.Execute(new GetBotVersionQuery()).Version;
-
             var messagesService = messagesServiceFactory.Create(contexts);
-
             messagesService.SendMessage($"```Obecna wersja: {version}```");
         }
     }

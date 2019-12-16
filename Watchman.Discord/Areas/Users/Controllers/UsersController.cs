@@ -31,7 +31,6 @@ namespace Watchman.Discord.Areas.Users.Controllers
             this.usersService = usersService;
         }
 
-
         [DiscordCommand("-avatar")]
         public void GetAvatar(string message, Contexts contexts)
         {
