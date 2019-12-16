@@ -2,7 +2,6 @@
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -47,6 +46,24 @@ namespace Watchman.Discord.Areas.Help.Controllers
                 messageBuilder.AppendLine(helpInfo.Descriptions.First(x => x.Name == helpInfo.DefaultDescriptionName).Details);
             }
             
+            messageBuilder.AppendLine("```");
+            messagesService.SendMessage(messageBuilder.ToString());
+        }
+
+        [DiscordCommand("-help json")]
+        public void PrintJsonHelp(string message, Dictionary<string, IDiscordContext> contexts)
+        {
+            var serverContext = (DiscordServerContext) contexts[nameof(DiscordServerContext)];
+            var channelContext = (ChannelContext)contexts[nameof(ChannelContext)];
+            var messagesService = new MessagesService { DefaultChannelId = channelContext.Id };
+
+            var result = this._queryBus.Execute(new GetHelpInformationQuery(this._session, serverContext.Id));
+
+            var messageBuilder = new StringBuilder();
+            messageBuilder.AppendLine("```");
+
+            // todo: parse helpInfos to json
+
             messageBuilder.AppendLine("```");
             messagesService.SendMessage(messageBuilder.ToString());
         }
