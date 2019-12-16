@@ -11,7 +11,7 @@ using Watchman.Integrations.MongoDB;
 
 namespace Watchman.Discord.Areas.Help.Controllers
 {
-    class HelpController
+    public class HelpController
     {
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
