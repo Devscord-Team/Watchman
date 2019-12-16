@@ -1,4 +1,5 @@
 ﻿using Devscord.DiscordFramework.Framework;
+using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
@@ -9,27 +10,34 @@ namespace Devscord.DiscordFramework.Services
 {
     public class MessagesService : IService
     {
-        public ulong DefaultChannelId { get; set; }
+        private readonly ResponsesService responsesService;
 
-        public Task SendMessage(string message, ulong channelId = 0)
+        public ulong ChannelId { get; set; }
+
+        public MessagesService()
         {
-            if (channelId == 0)
-            {
-                channelId = DefaultChannelId;
-            }
+        }
 
-            var channel = (ISocketMessageChannel)Server.GetChannel(channelId);
+        public MessagesService(ResponsesService responsesService)
+        {
+            this.responsesService = responsesService;
+        }
+
+        public Task SendMessage(string message)
+        {
+            var channel = (ISocketMessageChannel)Server.GetChannel(ChannelId);
             return channel.SendMessageAsync(message);
         }
 
-        public Task SendFile(string filePath, ulong channelId = 0)
+        public Task SendResponse(Func<ResponsesService, string> response)
         {
-            if (channelId == 0)
-            {
-                channelId = DefaultChannelId;
-            }
+            var message = response.Invoke(this.responsesService);
+            return this.SendMessage(message);
+        }
 
-            var channel = (ISocketMessageChannel)Server.GetChannel(channelId);
+        public Task SendFile(string filePath)
+        {
+            var channel = (ISocketMessageChannel)Server.GetChannel(ChannelId);
             return channel.SendFileAsync(filePath);
         }
     }

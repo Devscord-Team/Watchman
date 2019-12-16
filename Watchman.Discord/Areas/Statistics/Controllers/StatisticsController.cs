@@ -1,7 +1,7 @@
 ﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Middlewares.Contexts;
-using Devscord.DiscordFramework.Services;
+using Devscord.DiscordFramework.Services.Factories;
 using Discord.WebSocket;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -23,24 +23,26 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         private readonly ChartsService _chartsService;
         private readonly IQueryBus queryBus;
         private readonly ICommandBus commandBus;
+        private readonly MessagesServiceFactory messagesServiceFactory;
 
-        public StatisticsController(IQueryBus queryBus, ICommandBus commandBus, ISessionFactory sessionFactory)
+        public StatisticsController(IQueryBus queryBus, ICommandBus commandBus, ISessionFactory sessionFactory, MessagesServiceFactory messagesServiceFactory)
         {
             this.queryBus = queryBus;
             this.commandBus = commandBus;
+            this.messagesServiceFactory = messagesServiceFactory;
             this._session = sessionFactory.Create(); //todo use IoC
             this._reportsService = new ReportsService();
             this._chartsService = new ChartsService();
         }
 
         [ReadAlways]
-        public void SaveMessage(string message, Dictionary<string, IDiscordContext> contexts)
+        public void SaveMessage(string message, Contexts contexts)
         {
             var messageBuilder = new MessageInformationBuilder(message);
             var messageInfo = messageBuilder
-                .SetAuthor((UserContext)contexts[nameof(UserContext)])
-                .SetChannel((ChannelContext)contexts[nameof(ChannelContext)])
-                .SetServerInfo((DiscordServerContext)contexts[nameof(DiscordServerContext)])
+                .SetAuthor(contexts.User)
+                .SetChannel(contexts.Channel)
+                .SetServerInfo(contexts.Server)
                 .Build();
 
             this.SaveToDatabase(messageInfo);
@@ -48,7 +50,7 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
 
         [AdminCommand]
         [DiscordCommand("-stats")]
-        public void GetStatisticsPerPeriod(string message, Dictionary<string, IDiscordContext> contexts)
+        public void GetStatisticsPerPeriod(string message, Contexts contexts)
         {
             var period = Period.Day;
             //todo other class in Commons
@@ -70,14 +72,11 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
             }
             //todo set oldest possible based on period
 
-            var serverContext = (DiscordServerContext) contexts[nameof(DiscordServerContext)];
             var messages = this._session.Get<MessageInformation>().ToList();
-            var report = _reportsService.CreateReport(messages, period, serverContext);
+            var report = _reportsService.CreateReport(messages, period, contexts.Server);
 
-            var channelContext = (ChannelContext) contexts[nameof(ChannelContext)];
-            var messagesService = new MessagesService { DefaultChannelId = channelContext.Id };
+            var messagesService = messagesServiceFactory.Create(contexts);
 #if DEBUG
-
             var dataToMessage = "```json\n" + JsonConvert.SerializeObject(report.StatisticsPerPeriod.Where(x => x.MessagesQuantity > 0), Formatting.Indented) + "\n```";
             messagesService.SendMessage(dataToMessage);
 #endif
