@@ -52,7 +52,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
         [DiscordCommand("-remove role")]
         public void RemoveRole(string message, Contexts contexts)
         {
-            var commandRole = message.ToLowerInvariant().Replace("-add role ", string.Empty);
+            var commandRole = message.ToLowerInvariant().Replace("-remove role ", string.Empty);
             var safeRoles = this.queryBus.Execute(new GetDiscordServerSafeRolesQuery()).SafeRoles;
             var messagesService = messagesServiceFactory.Create(contexts);
             rolesService.DeleteRoleFromUser(safeRoles, messagesService, contexts, commandRole);
