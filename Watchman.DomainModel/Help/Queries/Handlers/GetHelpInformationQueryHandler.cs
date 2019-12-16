@@ -12,21 +12,32 @@ namespace Watchman.DomainModel.Help.Queries.Handlers
 
         public GetHelpInformationQueryResult Handle(GetHelpInformationQuery query)
         {
-            var helpInformation = GetHelpInformationFromFile(query.ServerId);
+            var serverHelpInformations = GetHelpInformationFromDb(query.Session, query.ServerId);
+            var defaultHelpInformations = GetDefaultHelpInformation(query.Session);
 
-            if ( !helpInformation.Any())
+            var helpInformations = new List<DefaultHelpInformation>();
+
+            foreach (var defaultHelp in defaultHelpInformations)
             {
-                helpInformation = GetHelpInformationFromDb(query.Session, query.ServerId);
+                var serverHelp = serverHelpInformations.FirstOrDefault(x => x.HelpId == defaultHelp.HelpId);
+                helpInformations.Add(serverHelp ?? defaultHelp);
             }
 
-            return new GetHelpInformationQueryResult(helpInformation);
+            return new GetHelpInformationQueryResult(helpInformations);
         }
 
         private IEnumerable<ServerHelpInformation> GetHelpInformationFromDb(ISession session, ulong serverId)
         {
-            return session.Get<ServerHelpInformation>();
+            return session.Get<ServerHelpInformation>()
+                .Where(x => x.ServerId == serverId);
         }
 
+        private IEnumerable<DefaultHelpInformation> GetDefaultHelpInformation(ISession session)
+        {
+            return session.Get<DefaultHelpInformation>();
+        }
+
+        // todo: na razie zostawiam, może się przydać ten skrawek, jak nie to do usunięcia
         private IEnumerable<ServerHelpInformation> GetHelpInformationFromFile(ulong serverId)
         {
             if ( !File.Exists(_helpFileName))

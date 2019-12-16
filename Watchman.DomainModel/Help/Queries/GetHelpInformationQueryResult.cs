@@ -5,9 +5,9 @@ namespace Watchman.DomainModel.Help.Queries
 {
     public class GetHelpInformationQueryResult : IQueryResult
     {
-        public IEnumerable<ServerHelpInformation> HelpInformations { get; }
+        public IEnumerable<DefaultHelpInformation> HelpInformations { get; }
 
-        public GetHelpInformationQueryResult(IEnumerable<ServerHelpInformation> helpInformations)
+        public GetHelpInformationQueryResult(IEnumerable<DefaultHelpInformation> helpInformations)
         {
             this.HelpInformations = helpInformations;
         }
