@@ -15,7 +15,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         private readonly ResponsesParser parser;
         public ResponsesService()
         {
-            this.Responses = JsonConvert.DeserializeObject<IEnumerable<Response>>(File.ReadAllText(@"Framework\Commands\Responses\responses-configuration.json"));
+            this.Responses = JsonConvert.DeserializeObject<IEnumerable<Response>>(File.ReadAllText(@"Framework/Commands/Responses/responses-configuration.json"));
             this.parser = new ResponsesParser();
         }
 
