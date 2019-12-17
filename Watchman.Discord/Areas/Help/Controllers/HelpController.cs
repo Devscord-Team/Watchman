@@ -55,14 +55,26 @@ namespace Watchman.Discord.Areas.Help.Controllers
         [DiscordCommand("-help json")]
         public void PrintJsonHelp(string message, Contexts contexts)
         {
-
             var result = this._queryBus.Execute(new GetHelpInformationQuery(this._session, contexts.Server.Id));
 
             var messageBuilder = new StringBuilder();
             messageBuilder.AppendLine("```");
 
             // todo: parse helpInfos to json
+            foreach (var helpInfo in result.HelpInformations)
+            {
+                messageBuilder.AppendLine("{");
 
+                messageBuilder.AppendLine($"\"commandId\" : \"{helpInfo.Id}\",");
+                messageBuilder.AppendLine($"\"serverId\"");
+                messageBuilder.AppendLine($"\"serverId\"");
+                messageBuilder.AppendLine($"\"serverId\"");
+                messageBuilder.AppendLine($"\"serverId\"");
+
+                messageBuilder.AppendLine("},");
+            }
+
+            messageBuilder.Remove(messageBuilder.Length - 1, 1);
             messageBuilder.AppendLine("```");
 
             var messagesService = _messagesServiceFactory.Create(contexts);
