@@ -15,13 +15,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         private readonly ResponsesParser parser;
         public ResponsesService()
         {
-            const string fileName = @"Framework\Commands\Responses\responses-configuration.json";
-
-            if (!File.Exists(fileName))
-                throw new FileNotFoundException(
-                    @"File: Framework\Commands\Responses\responses-configuration.json not found");
-
-            this.Responses = JsonConvert.DeserializeObject<IEnumerable<Response>>(File.ReadAllText(fileName));
+            this.Responses = JsonConvert.DeserializeObject<IEnumerable<Response>>(File.ReadAllText(@"Framework\Commands\Responses\responses-configuration.json"));
             this.parser = new ResponsesParser();
         }
 
