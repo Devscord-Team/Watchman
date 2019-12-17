@@ -17,25 +17,21 @@ namespace Watchman.Discord.Areas.Help.Controllers
     {
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
-        private readonly MessagesServiceFactory messagesServiceFactory;
+        private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly ISession _session;
 
         public HelpController(IQueryBus queryBus, ICommandBus commandBus, ISessionFactory sessionFactory, MessagesServiceFactory messagesServiceFactory)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;
-            this.messagesServiceFactory = messagesServiceFactory;
+            this._messagesServiceFactory = messagesServiceFactory;
             this._session = sessionFactory.Create();
         }
 
         [DiscordCommand("-help")]
         public void PrintHelp(string message, Contexts contexts)
         {
-            var serverContext = (DiscordServerContext) contexts[nameof(DiscordServerContext)];
-            var channelContext = (ChannelContext)contexts[nameof(ChannelContext)];
-            var messagesService = new MessagesService { DefaultChannelId = channelContext.Id };
-
-            var result = this._queryBus.Execute(new GetHelpInformationQuery(this._session, serverContext.Id));
+            var result = this._queryBus.Execute(new GetHelpInformationQuery(this._session, contexts.Server.Id));
 
             var messageBuilder = new StringBuilder();
             messageBuilder.AppendLine("```");
@@ -51,17 +47,16 @@ namespace Watchman.Discord.Areas.Help.Controllers
             }
             
             messageBuilder.AppendLine("```");
+
+            var messagesService = _messagesServiceFactory.Create(contexts);
             messagesService.SendMessage(messageBuilder.ToString());
         }
 
         [DiscordCommand("-help json")]
-        public void PrintJsonHelp(string message, Dictionary<string, IDiscordContext> contexts)
+        public void PrintJsonHelp(string message, Contexts contexts)
         {
-            var serverContext = (DiscordServerContext) contexts[nameof(DiscordServerContext)];
-            var channelContext = (ChannelContext)contexts[nameof(ChannelContext)];
-            var messagesService = new MessagesService { DefaultChannelId = channelContext.Id };
 
-            var result = this._queryBus.Execute(new GetHelpInformationQuery(this._session, serverContext.Id));
+            var result = this._queryBus.Execute(new GetHelpInformationQuery(this._session, contexts.Server.Id));
 
             var messageBuilder = new StringBuilder();
             messageBuilder.AppendLine("```");
@@ -69,6 +64,8 @@ namespace Watchman.Discord.Areas.Help.Controllers
             // todo: parse helpInfos to json
 
             messageBuilder.AppendLine("```");
+
+            var messagesService = _messagesServiceFactory.Create(contexts);
             messagesService.SendMessage(messageBuilder.ToString());
         }
     }
