@@ -25,14 +25,14 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         private readonly ICommandBus commandBus;
         private readonly MessagesServiceFactory messagesServiceFactory;
 
-        public StatisticsController(IQueryBus queryBus, ICommandBus commandBus, ISessionFactory sessionFactory, MessagesServiceFactory messagesServiceFactory)
+        public StatisticsController(IQueryBus queryBus, ICommandBus commandBus, ISessionFactory sessionFactory, MessagesServiceFactory messagesServiceFactory, ReportsService reportsService, ChartsService chartsService)
         {
             this.queryBus = queryBus;
             this.commandBus = commandBus;
             this.messagesServiceFactory = messagesServiceFactory;
-            this._session = sessionFactory.Create(); //todo use IoC
-            this._reportsService = new ReportsService();
-            this._chartsService = new ChartsService();
+            this._session = sessionFactory.Create();
+            this._reportsService = reportsService;
+            this._chartsService = chartsService;
         }
 
         [ReadAlways]
@@ -52,26 +52,7 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         [DiscordCommand("-stats")]
         public void GetStatisticsPerPeriod(string message, Contexts contexts)
         {
-            var period = Period.Day;
-            //todo other class in Commons
-            if (message.ToLowerInvariant().Contains("hour"))
-            {
-                period = Period.Hour;
-            }
-            else if (message.ToLowerInvariant().Contains("day"))
-            {
-                period = Period.Day;
-            }
-            else if (message.ToLowerInvariant().Contains("week"))
-            {
-                period = Period.Week;
-            }
-            else if (message.ToLowerInvariant().Contains("month"))
-            {
-                period = Period.Month;
-            }
-            //todo set oldest possible based on period
-
+            var period = _reportsService.SelectPeriod(message);
             var messages = this._session.Get<MessageInformation>().ToList();
             var report = _reportsService.CreateReport(messages, period, contexts.Server);
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Devscord.DiscordFramework.Services;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -10,7 +11,7 @@ using Watchman.Integrations.Quickchart.Models;
 
 namespace Watchman.Discord.Areas.Statistics.Services
 {
-    public class ChartsService
+    public class ChartsService : IService
     {
         private readonly QuickchartService _quickchartService;
 

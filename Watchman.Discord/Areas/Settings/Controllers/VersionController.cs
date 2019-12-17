@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
+using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Cqrs;
@@ -26,10 +27,8 @@ namespace Watchman.Discord.Areas.Settings.Controllers
         public void PrintVersion(string message, Contexts contexts)
         {
             var version = queryBus.Execute(new GetBotVersionQuery()).Version;
-
             var messagesService = messagesServiceFactory.Create(contexts);
-
-            messagesService.SendMessage($"```Obecna wersja: {version}```");
+            messagesService.SendResponse(x => x.CurrentVersion(contexts, version));
         }
     }
 }

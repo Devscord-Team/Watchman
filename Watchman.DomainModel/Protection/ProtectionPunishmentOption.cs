@@ -1,6 +1,6 @@
 ﻿namespace Watchman.DomainModel.Protection
 {
-    public enum ProtectionPunishmentOptions
+    public enum ProtectionPunishmentOption
     {
         Nothing,
         Clear,

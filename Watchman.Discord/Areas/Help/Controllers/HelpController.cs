@@ -13,7 +13,7 @@ using Watchman.Integrations.MongoDB;
 
 namespace Watchman.Discord.Areas.Help.Controllers
 {
-    class HelpController : IController
+    public class HelpController : IController
     {
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;

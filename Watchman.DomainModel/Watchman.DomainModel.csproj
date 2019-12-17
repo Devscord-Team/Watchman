@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Devscord.DiscordFramework\Devscord.DiscordFramework.csproj" />
     <ProjectReference Include="..\Watchman.Cqrs\Watchman.Cqrs.csproj" />
     <ProjectReference Include="..\Watchman.Integrations\Watchman.Integrations.csproj" />
   </ItemGroup>
