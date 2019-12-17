@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Watchman.Cqrs\Watchman.Cqrs.csproj" />
-    <ProjectReference Include="..\Watchman.DomainModel\Watchman.DomainModel.csproj" />
     <ProjectReference Include="..\Watchman.Integrations\Watchman.Integrations.csproj" />
   </ItemGroup>
 

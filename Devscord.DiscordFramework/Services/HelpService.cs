@@ -9,7 +9,7 @@ using Watchman.Integrations.MongoDB;
 
 namespace Devscord.DiscordFramework.Services
 {
-    public class DbHelpGeneratorService : IService
+    public class HelpService : IService
     {
         private Description _defaultDescription => new Description
         {
@@ -20,7 +20,7 @@ namespace Devscord.DiscordFramework.Services
         private readonly ISession _session;
         private readonly IComponentContext _componentContext;
 
-        public DbHelpGeneratorService(IComponentContext componentContext)
+        public HelpService(IComponentContext componentContext)
         {
             this._componentContext = componentContext;
             var sessionFactory = componentContext.Resolve<ISessionFactory>();
