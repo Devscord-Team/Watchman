@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Help
 {
-    public class Description
-    {
-        public string Name { get; set; }
-        public string Details { get; set; }
-    }
-
     public class DefaultHelpInformation : Entity
     {
         public ulong HelpId { get; set; }
@@ -20,10 +12,5 @@ namespace Watchman.DomainModel.Help
 
         private static ulong _lastId;
         public DefaultHelpInformation() => HelpId = _lastId++;
-    }
-
-    public class ServerHelpInformation : DefaultHelpInformation
-    {
-        public ulong ServerId { get; set; }
     }
 }
