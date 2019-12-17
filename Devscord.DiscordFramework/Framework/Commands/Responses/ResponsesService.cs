@@ -15,7 +15,17 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         private readonly ResponsesParser parser;
         public ResponsesService()
         {
-            this.Responses = JsonConvert.DeserializeObject<IEnumerable<Response>>(File.ReadAllText(@"Framework/Commands/Responses/responses-configuration.json"));
+            const string filePathForVS = @"Framework/Commands/Responses/responses-configuration.json";
+            const string filePathForCLI = @"bin/Debug/netcoreapp3.0/Framework/Commands/Responses/responses-configuration.json";
+
+            string allText;
+
+            if (File.Exists(filePathForVS))
+                allText = File.ReadAllText(filePathForVS);
+            else
+                allText = File.ReadAllText(filePathForCLI);
+
+            this.Responses = JsonConvert.DeserializeObject<IEnumerable<Response>>(allText);
             this.parser = new ResponsesParser();
         }
 
