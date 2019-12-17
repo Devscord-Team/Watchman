@@ -68,6 +68,7 @@ namespace Watchman.Discord
             messagesService.SendMessage($"```Komenda: {socketMessage.Content}```");
             messagesService.SendMessage($"```Message: {e.Message}```");
             messagesService.SendMessage($"```InnerException message: {e.InnerException.Message}```");
+            messagesService.SendMessage($"```InnerException2 message: {e.InnerException?.InnerException.Message}```");
 #endif
         }
 
