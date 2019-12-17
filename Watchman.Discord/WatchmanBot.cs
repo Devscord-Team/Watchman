@@ -62,11 +62,13 @@ namespace Watchman.Discord
 
             if (e is System.Reflection.TargetInvocationException)
             {
-                messagesService.SendMessage("Bot nie ma wystarczających uprawnień do wykonania tej akcji");
+                messagesService.SendMessage("Wystąpił wyjątek");
             }
 #if DEBUG
             messagesService.SendMessage($"```Komenda: {socketMessage.Content}```");
-            messagesService.SendMessage($"```StackTrace: {e.StackTrace}```");
+            messagesService.SendMessage($"```Message: {e.Message}```");
+            messagesService.SendMessage($"```InnerException message: {e.InnerException.Message}```");
+            messagesService.SendMessage($"```InnerException2 message: {e.InnerException?.InnerException.Message}```");
 #endif
         }
 
