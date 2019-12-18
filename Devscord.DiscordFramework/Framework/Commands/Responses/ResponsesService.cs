@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Devscord.DiscordFramework.Framework.Commands.Responses
@@ -15,8 +16,22 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         private readonly ResponsesParser parser;
         public ResponsesService()
         {
-            const string filePathForVS = @"Framework/Commands/Responses/responses-configuration.json";
-            const string filePathForCLI = @"bin/Debug/netcoreapp3.0/Framework/Commands/Responses/responses-configuration.json";
+            string filePathForVS;
+            string filePathForCLI;
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                filePathForVS = @"Framework\\Commands\\Responses\\responses-configuration.json";
+                filePathForCLI = @"bin\\Debug\\netcoreapp3.0\\Framework\\Commands\\Responses\\responses-configuration.json";
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
+            {
+                filePathForVS = @"Framework/Commands/Responses/responses-configuration.json";
+                filePathForCLI = @"bin/Debug/netcoreapp3.0/Framework/Commands/Responses/responses-configuration.json";
+            }
+            else
+            {
+                throw new Exception("Unrecognized operating system.");
+            }
 
             string allText;
 
