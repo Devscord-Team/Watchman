@@ -66,14 +66,14 @@ namespace Watchman.Discord.Areas.Help.Controllers
                 messageBuilder.AppendLine("{");
 
                 messageBuilder.AppendLine($"\t\"commandId\" : \"{helpInfo.Id}\",");
-                messageBuilder.AppendLine($"\t\"name\" : {helpInfo.Name},");
-                messageBuilder.AppendLine($"\t\"descriptions : [\"");
+                messageBuilder.AppendLine($"\t\"name\" : \"{helpInfo.Name}\",");
+                messageBuilder.AppendLine($"\t\"descriptions\" : [");
 
                 foreach (var description in helpInfo.Descriptions)
                 {
                     messageBuilder.AppendLine("\t\t{");
-                    messageBuilder.AppendLine($"\t\t\"name\" : {description.Name},");
-                    messageBuilder.AppendLine($"\t\t\"description\" : {description.Details}");
+                    messageBuilder.AppendLine($"\t\t\t\"name\" : \"{description.Name}\",");
+                    messageBuilder.AppendLine($"\t\t\t\"description\" : \"{description.Details}\"");
                     messageBuilder.AppendLine("\t\t},");
                 }
                 messageBuilder.Remove(messageBuilder.Length - 1, 1);
