@@ -97,6 +97,10 @@ namespace Devscord.DiscordFramework
 
         private void RunWithDiscordCommandMethods(IController controller, string message, Contexts contexts, IEnumerable<MethodInfo> methods)
         {
+            // potencjalne miejsce błędu - błąd może wystąpić jeśli dana metoda będzie miała więcej niż jeden atrybut z różną liczbą znaków
+            // ten błąd jednak jest dość mało prawdopodobny, więc można się nad nim pochylić później
+            methods = methods.OrderByDescending(x => x.GetCustomAttributes<DiscordCommand>().OrderByDescending(x => x.Command.Length).First().Command.Length);
+
             foreach (var method in methods)
             {
                 var commandArguments = method.GetCustomAttributesData()
@@ -118,6 +122,17 @@ namespace Devscord.DiscordFramework
                     break;
                 }
             }
+        }
+
+        private bool IsItCommand(string command, IEnumerable<DiscordCommand> allCommands)
+        {
+            var allSplittedCommands = allCommands.Select(x => x.Command.Split());
+            var commandSplitted = command.Split();
+
+            if (allSplittedCommands.Any(x => x.SequenceEqual(commandSplitted)))
+                return true;
+
+            return false;
         }
     }
 }
