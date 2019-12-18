@@ -58,7 +58,7 @@ namespace Watchman.Discord.Areas.Help.Controllers
             var result = this._queryBus.Execute(new GetHelpInformationQuery(this._session, contexts.Server.Id));
 
             var messageBuilder = new StringBuilder();
-            messageBuilder.AppendLine("```");
+            messageBuilder.AppendLine("```json");
 
             // todo: parse helpInfos to json
             foreach (var helpInfo in result.HelpInformations)
