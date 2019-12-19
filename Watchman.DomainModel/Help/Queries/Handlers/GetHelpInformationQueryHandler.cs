@@ -19,7 +19,8 @@ namespace Watchman.DomainModel.Help.Queries.Handlers
 
             foreach (var defaultHelp in defaultHelpInformations)
             {
-                var serverHelp = serverHelpInformations.FirstOrDefault(x => x.HelpId == defaultHelp.HelpId);
+                // todo: check SequenceEqual or Equals
+                var serverHelp = serverHelpInformations.FirstOrDefault(x => x.MethodNames.SequenceEqual(defaultHelp.MethodNames));
                 helpInformations.Add(serverHelp ?? defaultHelp);
             }
 
