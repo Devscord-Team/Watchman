@@ -30,9 +30,9 @@ namespace Devscord.DiscordFramework.Services
         public Task GenerateDefaultHelpDB(Assembly botAssembly)
         {
             var controllers = GetControllers(botAssembly);
-            var helpInformationInDb = this._session.Get<DefaultHelpInformation>();
+            var helpInformationInDb = this._session.Get<DefaultHelpInformation>().ToList();
 
-            var generatedHelpInformation = controllers.SelectMany(this.CreateHelpInformation);
+            var generatedHelpInformation = controllers.SelectMany(this.CreateHelpInformation).ToList();
 
             AddNewDefaultHelpInformation(helpInformationInDb, generatedHelpInformation);
             RemoveOldDefaultHelpInformation(helpInformationInDb, generatedHelpInformation);
@@ -69,7 +69,7 @@ namespace Devscord.DiscordFramework.Services
             });
         }
 
-        private void AddNewDefaultHelpInformation(IQueryable<DefaultHelpInformation> helpInformationInDb, IEnumerable<DefaultHelpInformation> generatedHelpInformation)
+        private void AddNewDefaultHelpInformation(IEnumerable<DefaultHelpInformation> helpInformationInDb, IEnumerable<DefaultHelpInformation> generatedHelpInformation)
         {
             foreach (var generatedHelpInfo in generatedHelpInformation)
             {
@@ -78,7 +78,7 @@ namespace Devscord.DiscordFramework.Services
             }
         }
 
-        private void RemoveOldDefaultHelpInformation<T>(IQueryable<T> helpInformationInDb, IEnumerable<DefaultHelpInformation> generatedHelpInformation) where T : DefaultHelpInformation
+        private void RemoveOldDefaultHelpInformation<T>(IEnumerable<T> helpInformationInDb, IEnumerable<DefaultHelpInformation> generatedHelpInformation) where T : DefaultHelpInformation
         {
             foreach (var dbHelpInfo in helpInformationInDb)
             {

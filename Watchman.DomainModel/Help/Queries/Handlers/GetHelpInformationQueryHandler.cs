@@ -12,14 +12,14 @@ namespace Watchman.DomainModel.Help.Queries.Handlers
 
         public GetHelpInformationQueryResult Handle(GetHelpInformationQuery query)
         {
-            var serverHelpInformations = GetHelpInformationFromDb(query.Session, query.ServerId);
+            var serverHelpInformations = GetHelpInformationFromDb(query.Session, query.ServerId).ToList();
             var defaultHelpInformations = GetDefaultHelpInformation(query.Session);
 
             var helpInformations = new List<DefaultHelpInformation>();
 
             foreach (var defaultHelp in defaultHelpInformations)
             {
-                // todo: check SequenceEqual or Equals
+                // todo: check what is better: SequenceEqual or Equals
                 var serverHelp = serverHelpInformations.FirstOrDefault(x => x.MethodNames.SequenceEqual(defaultHelp.MethodNames));
                 helpInformations.Add(serverHelp ?? defaultHelp);
             }
@@ -38,7 +38,7 @@ namespace Watchman.DomainModel.Help.Queries.Handlers
             return session.Get<DefaultHelpInformation>();
         }
 
-        // todo: na razie zostawiam, może się przydać ten skrawek, jak nie to do usunięcia
+        // todo: na razie zostawiam, może się przydać ten skrawek, jak nie to do usunięcia (usunąć przed ostatecznym mergem do mastera)
         private IEnumerable<ServerHelpInformation> GetHelpInformationFromFile(ulong serverId)
         {
             if ( !File.Exists(_helpFileName))
