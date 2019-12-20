@@ -20,7 +20,7 @@ namespace Devscord.DiscordFramework
     {
         public Action<Exception, SocketMessage> WorkflowException { get; set; }
 
-        private List<object> _middlewares;
+        private readonly List<object> _middlewares;
         private readonly Assembly _botAssembly;
         private readonly IComponentContext _context;
 
