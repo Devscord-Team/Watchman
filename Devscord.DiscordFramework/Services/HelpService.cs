@@ -11,7 +11,7 @@ namespace Devscord.DiscordFramework.Services
 {
     public class HelpService : IService
     {
-        private static Description _defaultDescription => new Description
+        private static Description _defaultDescription = new Description
         {
             Name = "EN",
             Details = "Default text"
