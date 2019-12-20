@@ -13,35 +13,17 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
     public class ResponsesService : IService
     {
         public IEnumerable<Response> Responses { get; set; }
-        private readonly ResponsesParser parser;
+        private readonly ResponsesParser _parser;
+
         public ResponsesService()
         {
-            string filePathForVS;
-            string filePathForCLI;
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                filePathForVS = @"Framework\\Commands\\Responses\\responses-configuration.json";
-                filePathForCLI = @"bin\\Debug\\netcoreapp3.0\\Framework\\Commands\\Responses\\responses-configuration.json";
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
-            {
-                filePathForVS = @"Framework/Commands/Responses/responses-configuration.json";
-                filePathForCLI = @"bin/Debug/netcoreapp3.0/Framework/Commands/Responses/responses-configuration.json";
-            }
-            else
-            {
-                throw new Exception("Unrecognized operating system.");
-            }
+            const string filePathForVS = @"Framework/Commands/Responses/responses-configuration.json";
+            const string filePathForCLI = @"bin/Debug/netcoreapp3.0/Framework/Commands/Responses/responses-configuration.json";
 
-            string allText;
-
-            if (File.Exists(filePathForVS))
-                allText = File.ReadAllText(filePathForVS);
-            else
-                allText = File.ReadAllText(filePathForCLI);
+            var allText = File.ReadAllText(File.Exists(filePathForVS) ? filePathForVS : filePathForCLI);
 
             this.Responses = JsonConvert.DeserializeObject<IEnumerable<Response>>(allText);
-            this.parser = new ResponsesParser();
+            this._parser = new ResponsesParser();
         }
 
         public Response GetResponse(string name)
@@ -65,14 +47,14 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             {
                 throw new ArgumentException($"Cannot process response {response.OnEvent}. Values must be equal to required.");
             }
-            return parser.Parse(response, values);
+            return _parser.Parse(response, values);
         }
 
         public string ProcessResponse(Response response, Contexts contexts, params KeyValuePair<string, string>[] values)
         {
             var fields = contexts.ConvertToResponseFields(response.GetFields()).ToList();
             fields.AddRange(values);
-            return parser.Parse(response, fields);
+            return _parser.Parse(response, fields);
         }
     }
 }
