@@ -27,7 +27,7 @@ namespace Devscord.DiscordFramework.Services
             _session = sessionFactory.Create();
         }
 
-        public Task GenerateDefaultHelpDB(Assembly botAssembly)
+        public Task GenerateDefaultHelpDbCollection(Assembly botAssembly)
         {
             var controllers = GetControllers(botAssembly);
             var helpInformationInDb = this._session.Get<DefaultHelpInformation>().ToList();
