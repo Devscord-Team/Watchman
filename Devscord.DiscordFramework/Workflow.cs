@@ -22,13 +22,13 @@ namespace Devscord.DiscordFramework
 
         private List<object> _middlewares;
         private readonly Assembly _botAssembly;
-        private readonly IComponentContext context;
+        private readonly IComponentContext _context;
 
         public Workflow(Assembly botAssembly, IComponentContext context)
         {
             _middlewares = new List<object>();
             _botAssembly = botAssembly;
-            this.context = context;
+            this._context = context;
         }
 
         public Workflow AddMiddleware<T>(object configuration = null /*TODO*/)
@@ -73,7 +73,7 @@ namespace Devscord.DiscordFramework
             //todo maybe optimalize is possible
             var controllers = _botAssembly.GetTypes()
                 .Where(x => x.GetInterfaces().Any(i => i.FullName == typeof(IController).FullName))
-                .Select(x => (IController)context.Resolve(x));
+                .Select(x => (IController)_context.Resolve(x));
 
             foreach (var controller in controllers)
             {
@@ -122,17 +122,6 @@ namespace Devscord.DiscordFramework
                     break;
                 }
             }
-        }
-
-        private bool IsItCommand(string command, IEnumerable<DiscordCommand> allCommands)
-        {
-            var allSplittedCommands = allCommands.Select(x => x.Command.Split());
-            var commandSplitted = command.Split();
-
-            if (allSplittedCommands.Any(x => x.SequenceEqual(commandSplitted)))
-                return true;
-
-            return false;
         }
     }
 }
