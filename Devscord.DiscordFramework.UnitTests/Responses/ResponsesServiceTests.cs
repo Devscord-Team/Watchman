@@ -8,21 +8,6 @@ namespace Devscord.DiscordFramework.UnitTests.Responses
     public class ResponsesServiceTests
     {
         [Test]
-        [Ignore("CI have problems with move .json to output directory - ")]
-        public void ShouldFoundManyResponses()
-        {
-            //Arrange
-            var responsesService = new ResponsesService();
-
-            //Act
-            var responses = responsesService.Responses;
-            var result = responses.Count();
-
-            //Assert
-            Assert.That(result, Is.GreaterThan(0)); 
-        }
-
-        [Test]
         public void ShouldFindManyFieldsInResponse()
         {
             //Arrange

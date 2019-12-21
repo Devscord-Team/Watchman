@@ -1,5 +1,6 @@
 ﻿using Devscord.DiscordFramework.Framework;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
+using Devscord.DiscordFramework.Middlewares.Contexts;
 using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
@@ -29,8 +30,9 @@ namespace Devscord.DiscordFramework.Services
             return channel.SendMessageAsync(message);
         }
 
-        public Task SendResponse(Func<ResponsesService, string> response)
+        public Task SendResponse(Func<ResponsesService, string> response, Contexts contexts)
         {
+            responsesService.RefreshResponses(contexts);
             var message = response.Invoke(this.responsesService);
             return this.SendMessage(message);
         }

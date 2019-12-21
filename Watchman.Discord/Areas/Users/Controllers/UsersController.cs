@@ -1,5 +1,6 @@
 ﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
+using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
@@ -12,6 +13,7 @@ using System.Linq;
 using System.Text;
 using Watchman.Common.Strings;
 using Watchman.Cqrs;
+using Watchman.Discord.Areas.Commons;
 using Watchman.Discord.Areas.Users.Services;
 using Watchman.DomainModel.DiscordServer;
 using Watchman.DomainModel.DiscordServer.Queries;
@@ -33,34 +35,33 @@ namespace Watchman.Discord.Areas.Users.Controllers
             this.rolesService = rolesService;
         }
 
-        [DiscordCommand("-avatar")]
-        public void GetAvatar(string message, Contexts contexts)
+        [DiscordCommand("avatar")]
+        public void GetAvatar(DiscordRequest request, Contexts contexts)
         {
             var messageService = messagesServiceFactory.Create(contexts);
             messageService.SendMessage(contexts.User.AvatarUrl);
         }
 
-        [DiscordCommand("-add role")]
-        public void AddRole(string message, Contexts contexts)
+        [DiscordCommand("add role")] //todo
+        public void AddRole(DiscordRequest request, Contexts contexts)
         {
-            var commandRole = message.ToLowerInvariant().Replace("-add role ", string.Empty);
+            var commandRole = request.OriginalMessage.ToLowerInvariant().Replace("-add role ", string.Empty); //TODO use DiscordRequest properties
             var safeRoles = this.queryBus.Execute(new GetDiscordServerSafeRolesQuery()).SafeRoles;
             var messagesService = messagesServiceFactory.Create(contexts);
             rolesService.AddRoleToUser(safeRoles, messagesService, contexts, commandRole);
         }
 
-        [DiscordCommand("-remove role")]
-        public void RemoveRole(string message, Contexts contexts)
+        [DiscordCommand("remove role")] //todo
+        public void RemoveRole(DiscordRequest request, Contexts contexts)
         {
-            var commandRole = message.ToLowerInvariant().Replace("-remove role ", string.Empty);
+            var commandRole = request.OriginalMessage.ToLowerInvariant().Replace("-remove role ", string.Empty); //TODO use DiscordRequest properties
             var safeRoles = this.queryBus.Execute(new GetDiscordServerSafeRolesQuery()).SafeRoles;
             var messagesService = messagesServiceFactory.Create(contexts);
             rolesService.DeleteRoleFromUser(safeRoles, messagesService, contexts, commandRole);
         }
 
-        [DiscordCommand("-role list")]
-        [DiscordCommand("-roles")]
-        public void PrintRoles(string message, Contexts contexts)
+        [DiscordCommand("roles")]
+        public void PrintRoles(DiscordRequest request, Contexts contexts)
         {
             var messageService = messagesServiceFactory.Create(contexts);
             var safeRoles = this.queryBus.Execute(new GetDiscordServerSafeRolesQuery()).SafeRoles;
@@ -69,6 +70,4 @@ namespace Watchman.Discord.Areas.Users.Controllers
             messageService.SendMessage(output.ToString());
         }
     }
-
-    
 }

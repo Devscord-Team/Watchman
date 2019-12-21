@@ -1,5 +1,6 @@
 ﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
+using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
@@ -28,8 +29,8 @@ namespace Watchman.Discord.Areas.Help.Controllers
             this._session = sessionFactory.Create();
         }
 
-        [DiscordCommand("-help")]
-        public void PrintHelp(string message, Contexts contexts)
+        [DiscordCommand("help")]
+        public void PrintHelp(DiscordRequest request, Contexts contexts)
         {
             if (message.Contains("json"))
                 PrintJsonHelp(message, contexts);

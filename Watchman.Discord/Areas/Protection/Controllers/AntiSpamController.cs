@@ -1,4 +1,5 @@
 ﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
 using System;
@@ -27,7 +28,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         }
 
         [ReadAlways]
-        public void Scan(string message, Contexts contexts)
+        public void Scan(DiscordRequest request, Contexts contexts)
         {
             var messagesService = messagesServiceFactory.Create(contexts);
             antiSpamService.ClearOldMessages(10);

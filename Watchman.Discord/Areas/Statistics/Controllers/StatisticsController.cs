@@ -1,5 +1,6 @@
 ﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
+using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
 using Discord.WebSocket;
@@ -36,9 +37,9 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         }
 
         [ReadAlways]
-        public void SaveMessage(string message, Contexts contexts)
+        public void SaveMessage(DiscordRequest request, Contexts contexts)
         {
-            var messageBuilder = new MessageInformationBuilder(message);
+            var messageBuilder = new MessageInformationBuilder(request.OriginalMessage);
             var messageInfo = messageBuilder
                 .SetAuthor(contexts.User)
                 .SetChannel(contexts.Channel)
@@ -49,10 +50,10 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         }
 
         [AdminCommand]
-        [DiscordCommand("-stats")]
-        public void GetStatisticsPerPeriod(string message, Contexts contexts)
+        [DiscordCommand("stats")]
+        public void GetStatisticsPerPeriod(DiscordRequest request, Contexts contexts)
         {
-            var period = _reportsService.SelectPeriod(message);
+            var period = _reportsService.SelectPeriod(request.OriginalMessage); //TODO use DiscordRequest properties
             var messages = this._session.Get<MessageInformation>().ToList();
             var report = _reportsService.CreateReport(messages, period, contexts.Server);
 

@@ -46,11 +46,11 @@ namespace Watchman.Discord.Areas.Protection.Services
 
                 case ProtectionPunishmentOption.Alert:
                     _warns.Add(contexts.User.Id);
-                    messagesService.SendResponse(x => x.SpamAlertRecognized(contexts));
+                    messagesService.SendResponse(x => x.SpamAlertRecognized(contexts), contexts);
                     break;
 
                 case ProtectionPunishmentOption.Mute:
-                    messagesService.SendResponse(x => x.SpamAlertUserIsMuted(contexts));
+                    messagesService.SendResponse(x => x.SpamAlertUserIsMuted(contexts), contexts);
                     break;
             }
         }

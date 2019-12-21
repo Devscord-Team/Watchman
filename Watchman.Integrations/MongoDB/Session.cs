@@ -30,6 +30,11 @@ namespace Watchman.Integrations.MongoDB
             this.GetCollection<T>().InsertOne(entity);
         }
 
+        public void Add<T>(IEnumerable<T> entities) where T : Entity
+        {
+            this.GetCollection<T>().InsertMany(entities);
+        }
+
         public void AddOrUpdate<T>(T entity) where T : Entity
         {
             if (this.Get<T>(entity.Id) != null)
