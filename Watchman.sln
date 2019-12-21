@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Watchman.DomainModel", "Wat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Watchman.Cqrs", "Watchman.Cqrs\Watchman.Cqrs.csproj", "{21A62C63-0487-416F-818E-9E9020F92B95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Devscord.DiscordFramework.UnitTests", "Devscord.DiscordFramework.UnitTests\Devscord.DiscordFramework.UnitTests.csproj", "{BA52AB41-7C8F-4970-BEB7-F87DD7215FB4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Devscord.DiscordFramework.UnitTests", "Devscord.DiscordFramework.UnitTests\Devscord.DiscordFramework.UnitTests.csproj", "{BA52AB41-7C8F-4970-BEB7-F87DD7215FB4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watchman.Web", "Watchman.Web\Watchman.Web.csproj", "{B587B2FB-47C5-4C2C-A543-837550C15E76}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{BA52AB41-7C8F-4970-BEB7-F87DD7215FB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA52AB41-7C8F-4970-BEB7-F87DD7215FB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA52AB41-7C8F-4970-BEB7-F87DD7215FB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B587B2FB-47C5-4C2C-A543-837550C15E76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B587B2FB-47C5-4C2C-A543-837550C15E76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B587B2FB-47C5-4C2C-A543-837550C15E76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B587B2FB-47C5-4C2C-A543-837550C15E76}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
