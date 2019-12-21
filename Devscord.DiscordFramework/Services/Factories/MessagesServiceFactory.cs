@@ -1,9 +1,5 @@
 ﻿using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Watchman.Cqrs;
 
 namespace Devscord.DiscordFramework.Services.Factories
 {
@@ -15,7 +11,6 @@ namespace Devscord.DiscordFramework.Services.Factories
         {
             this.responsesService = responsesService;
         }
-
 
         public MessagesService Create(Contexts contexts)
         {

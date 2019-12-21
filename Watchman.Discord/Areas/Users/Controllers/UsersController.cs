@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text;
 using Watchman.Common.Strings;
 using Watchman.Cqrs;
+using Watchman.Discord.Areas.Commons;
 using Watchman.Discord.Areas.Users.Services;
 using Watchman.DomainModel.DiscordServer;
 using Watchman.DomainModel.DiscordServer.Queries;
@@ -69,6 +70,4 @@ namespace Watchman.Discord.Areas.Users.Controllers
             messageService.SendMessage(output.ToString());
         }
     }
-
-    
 }
