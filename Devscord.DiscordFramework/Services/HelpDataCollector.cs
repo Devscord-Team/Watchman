@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Autofac;
+using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Services.Models;
 
@@ -17,9 +18,14 @@ namespace Devscord.DiscordFramework.Services
             this._componentContext = componentContext;
         }
 
-        public Task GenerateDefaultHelpDbCollection(Assembly botAssembly)
+        public IEnumerable<CommandInfo> GenerateDefaultHelpDbCollection(Assembly botAssembly)
         {
-            var controllers = GetControllers(botAssembly);
+            var controllers = botAssembly.GetTypesByInterface<IController>();
+
+            // get controllers
+            // make commandInfo from them
+            // return the list
+
             var helpInformationInDb = this._session.Get<DefaultHelpInformation>().ToList();
 
             var generatedHelpInformation = controllers.SelectMany(this.CreateHelpInformation).ToList();

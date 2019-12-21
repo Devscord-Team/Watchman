@@ -67,10 +67,8 @@ namespace Devscord.DiscordFramework
 
         private void RunControllers(string message, Contexts contexts)
         {
-            //todo maybe optimalize is possible
-            var controllers = _botAssembly.GetTypes()
-                .Where(x => x.GetInterfaces().Any(i => i.FullName == typeof(IController).FullName))
-                .Select(x => (IController)_context.Resolve(x));
+            var controllers = _botAssembly.GetTypesByInterface<IController>()
+                .Select(x => (IController) _context.Resolve(x));
 
             foreach (var controller in controllers)
             {
