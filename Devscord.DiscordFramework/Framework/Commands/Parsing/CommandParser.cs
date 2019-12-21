@@ -25,7 +25,6 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
             message = message.CutStart(name);
 
             var arguments = this.GetArguments(message);
-
             return new DiscordRequest
             {
                 Prefix = prefix,
