@@ -10,7 +10,7 @@ using System.Text;
 
 namespace Devscord.DiscordFramework.Framework.Commands.Responses
 {
-    public class ResponsesService : IService
+    public class ResponsesService
     {
         public IEnumerable<Response> Responses { get; set; }
         private readonly ResponsesParser _parser;

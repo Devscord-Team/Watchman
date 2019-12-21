@@ -1,4 +1,5 @@
-﻿using Devscord.DiscordFramework.Services;
+﻿using Devscord.DiscordFramework.Framework.Commands.Responses;
+using Devscord.DiscordFramework.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +11,9 @@ namespace Watchman.Discord.Areas.Commons
 {
     public static class ResponsesExtensions
     {
-        public static MessagesService SetGetResponsesFromDatabase(this MessagesService service, IQueryBus queryBus)
+        public static ResponsesService SetGetResponsesFromDatabase(this ResponsesService service, IQueryBus queryBus)
         {
-            service.SetGetResponsesFunc(x =>
+            service.GetResponsesFunc = x =>
             {
                 var responsesInBase = queryBus.Execute(new GetResponsesQuery()).Responses;
                 var mapped = responsesInBase.Select(x => new Devscord.DiscordFramework.Framework.Commands.Responses.Response
@@ -21,7 +22,7 @@ namespace Watchman.Discord.Areas.Commons
                     Message = x.Message
                 });
                 return mapped;
-            });
+            };
             return service;
         }
     }

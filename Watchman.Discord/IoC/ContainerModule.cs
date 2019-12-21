@@ -17,9 +17,9 @@ namespace Watchman.Discord.Ioc
         {
             var builder = new ContainerBuilder();
             builder.RegisterModule(new DatabaseModule(configuration));
-            builder.RegisterModule<ServiceModule>();
             builder.RegisterModule<CommandModule>();
             builder.RegisterModule<QueryModule>();
+            builder.RegisterModule<ServiceModule>();
             builder.RegisterModule<ControllerModule>();
             return builder;
         }

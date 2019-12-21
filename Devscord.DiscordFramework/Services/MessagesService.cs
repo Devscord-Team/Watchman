@@ -24,11 +24,6 @@ namespace Devscord.DiscordFramework.Services
             this.responsesService = responsesService;
         }
 
-        public void SetGetResponsesFunc(Func<Contexts, IEnumerable<Response>> func)
-        {
-            responsesService.GetResponsesFunc = func;
-        }
-
         public Task SendMessage(string message)
         {
             var channel = (ISocketMessageChannel)Server.GetChannel(ChannelId);

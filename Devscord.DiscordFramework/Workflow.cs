@@ -111,7 +111,8 @@ namespace Devscord.DiscordFramework
 
                 var commands = commandArguments.Select(x => (DiscordCommand)Activator.CreateInstance(typeof(DiscordCommand), x));
 
-                if (commands.Any(x => request.Name == x.Command))
+                //todo fix. this version is for usersController but should be changed
+                if (commands.Any(x => request.Name == x.Command || request.OriginalMessage.TrimStart(request.Prefix.ToCharArray()).StartsWith(x.Command))) 
                 {
                     if (method.HasAttribute<AdminCommand>() && !contexts.User.IsAdmin)
                     {

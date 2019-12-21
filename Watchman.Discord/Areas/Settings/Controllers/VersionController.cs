@@ -28,7 +28,7 @@ namespace Watchman.Discord.Areas.Settings.Controllers
         {
             var version = queryBus.Execute(new GetBotVersionQuery()).Version;
             var messagesService = messagesServiceFactory.Create(contexts);
-            messagesService.SendResponse(x => x.CurrentVersion(contexts, version));
+            messagesService.SendResponse(x => x.CurrentVersion(contexts, version), contexts);
         }
     }
 }
