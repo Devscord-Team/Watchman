@@ -13,7 +13,12 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
 
         public DiscordRequest Parse(string message)
         {
+            var original = (string)message.Clone();
             var prefix = this.GetPrefix(message);
+            if(string.IsNullOrWhiteSpace(prefix))
+            {
+                return new DiscordRequest { OriginalMessage = original };
+            }
             message = message.CutStart(prefix);
 
             var name = this.GetName(message);
@@ -26,7 +31,8 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
                 Prefix = prefix,
                 Name = name,
                 ArgumentsPrefix = arguments?.FirstOrDefault()?.Prefix,
-                Arguments = arguments
+                Arguments = arguments,
+                OriginalMessage = original
             };
         }
 

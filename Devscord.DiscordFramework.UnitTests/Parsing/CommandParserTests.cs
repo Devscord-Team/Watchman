@@ -40,7 +40,7 @@ namespace Devscord.DiscordFramework.UnitTests.Parsing
 
         [Test]
         [TestCase("-help", "help", true)]
-        [TestCase("help", "help", true)]
+        [TestCase("help", "help", false)]
         [TestCase("!roles", "roles", true)]
         [TestCase("-good", "bad", false)]
         public void ShouldFoundName(string message, string name, bool shouldTrue)
@@ -99,6 +99,23 @@ namespace Devscord.DiscordFramework.UnitTests.Parsing
 
             //Assert
             Assert.That(result, Is.EqualTo(argumentsAmount));
+        }
+
+        [Test]
+        [TestCase("normal message")]
+        [TestCase("not command!")]
+        [TestCase("???")]
+        [TestCase("-for example")]
+        public void ShouldWorksWithNormalMessages(string message)
+        {
+            //Arrange
+            var commandParser = new CommandParser();
+
+            //Act
+            var result = commandParser.Parse(message);
+
+            //Assert
+            Assert.That(result.OriginalMessage, Is.EqualTo(message));
         }
     }
 }

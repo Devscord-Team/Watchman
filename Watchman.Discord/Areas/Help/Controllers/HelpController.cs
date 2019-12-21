@@ -1,5 +1,6 @@
 ﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
+using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
 using System;
@@ -26,8 +27,8 @@ namespace Watchman.Discord.Areas.Help.Controllers
             this._session = sessionFactory.Create();
         }
 
-        [DiscordCommand("-help")]
-        public void PrintHelp(string message, Contexts contexts)
+        [DiscordCommand("help")]
+        public void PrintHelp(DiscordRequest request, Contexts contexts)
         {
             var result = this._queryBus.Execute(new GetHelpMessageQuery(this._session));
             var messagesService = messagesServiceFactory.Create(contexts);

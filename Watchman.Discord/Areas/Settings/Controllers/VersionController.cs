@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
+using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
@@ -23,8 +24,8 @@ namespace Watchman.Discord.Areas.Settings.Controllers
         }
 
         [AdminCommand]
-        [DiscordCommand("-version")]
-        public void PrintVersion(string message, Contexts contexts)
+        [DiscordCommand("version")]
+        public void PrintVersion(DiscordRequest request, Contexts contexts)
         {
             var version = queryBus.Execute(new GetBotVersionQuery()).Version;
             var messagesService = messagesServiceFactory.Create(contexts);
