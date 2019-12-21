@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
-using Devscord.DiscordFramework.Services.Models;
 using Watchman.Cqrs;
+using Watchman.DomainModel.Help.Models;
 
 namespace Watchman.DomainModel.Help.Queries
 {
     public class GetHelpInformationQueryResult : IQueryResult
     {
-        public IEnumerable<DefaultHelpInformation> HelpInformations { get; }
+        public IEnumerable<HelpInformation> HelpInformations { get; }
 
-        public GetHelpInformationQueryResult(IEnumerable<DefaultHelpInformation> helpInformations)
+        public GetHelpInformationQueryResult(IEnumerable<HelpInformation> helpInformations)
         {
             this.HelpInformations = helpInformations;
         }

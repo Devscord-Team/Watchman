@@ -37,7 +37,7 @@ namespace Watchman.Discord
             var autofacContainer = GetAutofacContainer(configuration);
             this._workflow = GetWorkflow(configuration, autofacContainer);
 
-            var dbHelpGenerator = autofacContainer.Resolve<HelpService>();
+            var dbHelpGenerator = autofacContainer.Resolve<HelpDataCollector>();
             dbHelpGenerator.GenerateDefaultHelpDbCollection(typeof(WatchmanBot).Assembly);
         }
 

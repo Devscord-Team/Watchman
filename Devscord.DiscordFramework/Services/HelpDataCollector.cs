@@ -8,17 +8,11 @@ using Devscord.DiscordFramework.Services.Models;
 
 namespace Devscord.DiscordFramework.Services
 {
-    public class HelpService : IService
+    public class HelpDataCollector : IService
     {
-        private static Description _defaultDescription = new Description
-        {
-            Name = "EN",
-            Details = "Default text"
-        };
-
         private readonly IComponentContext _componentContext;
 
-        public HelpService(IComponentContext componentContext)
+        public HelpDataCollector(IComponentContext componentContext)
         {
             this._componentContext = componentContext;
         }

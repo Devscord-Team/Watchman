@@ -34,7 +34,7 @@ namespace Watchman.Discord.Areas.Help.Controllers
             if (message.Contains("json"))
                 PrintJsonHelp(message, contexts);
 
-            var result = this._queryBus.Execute(new GetHelpInformationQuery(this._session, contexts.Server.Id));
+            var result = this._queryBus.Execute(new GetHelpInformationQuery(contexts.Server.Id));
 
             var messageBuilder = new StringBuilder();
             messageBuilder.AppendLine("```");
@@ -57,7 +57,7 @@ namespace Watchman.Discord.Areas.Help.Controllers
 
         public void PrintJsonHelp(string message, Contexts contexts)
         {
-            var result = this._queryBus.Execute(new GetHelpInformationQuery(this._session, contexts.Server.Id));
+            var result = this._queryBus.Execute(new GetHelpInformationQuery(contexts.Server.Id));
 
             var messageBuilder = new StringBuilder();
             messageBuilder.AppendLine("```json");
