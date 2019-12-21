@@ -3,6 +3,7 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Watchman.Cqrs;
 
 namespace Devscord.DiscordFramework.Services.Factories
 {
