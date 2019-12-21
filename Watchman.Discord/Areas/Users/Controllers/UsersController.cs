@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text;
 using Watchman.Common.Strings;
 using Watchman.Cqrs;
+using Watchman.Discord.Areas.Commons;
 using Watchman.Discord.Areas.Users.Services;
 using Watchman.DomainModel.DiscordServer;
 using Watchman.DomainModel.DiscordServer.Queries;
@@ -41,7 +42,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
             messageService.SendMessage(contexts.User.AvatarUrl);
         }
 
-        [DiscordCommand("add role")]
+        [DiscordCommand("add role")] //todo
         public void AddRole(DiscordRequest request, Contexts contexts)
         {
             var commandRole = request.OriginalMessage.ToLowerInvariant().Replace("-add role ", string.Empty); //TODO use DiscordRequest properties
@@ -50,7 +51,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
             rolesService.AddRoleToUser(safeRoles, messagesService, contexts, commandRole);
         }
 
-        [DiscordCommand("remove role")]
+        [DiscordCommand("remove role")] //todo
         public void RemoveRole(DiscordRequest request, Contexts contexts)
         {
             var commandRole = request.OriginalMessage.ToLowerInvariant().Replace("-remove role ", string.Empty); //TODO use DiscordRequest properties
@@ -69,6 +70,4 @@ namespace Watchman.Discord.Areas.Users.Controllers
             messageService.SendMessage(output.ToString());
         }
     }
-
-    
 }

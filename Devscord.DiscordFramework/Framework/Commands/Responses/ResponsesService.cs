@@ -10,20 +10,21 @@ using System.Text;
 
 namespace Devscord.DiscordFramework.Framework.Commands.Responses
 {
-    public class ResponsesService : IService
+    public class ResponsesService
     {
         public IEnumerable<Response> Responses { get; set; }
         private readonly ResponsesParser _parser;
 
+        public Func<Contexts, IEnumerable<Response>> GetResponsesFunc { get; set; } = x => throw new NotImplementedException();
+
         public ResponsesService()
         {
-            const string filePathForVS = @"Framework/Commands/Responses/responses-configuration.json";
-            const string filePathForCLI = @"bin/Debug/netcoreapp3.0/Framework/Commands/Responses/responses-configuration.json";
-
-            var allText = File.ReadAllText(File.Exists(filePathForVS) ? filePathForVS : filePathForCLI);
-
-            this.Responses = JsonConvert.DeserializeObject<IEnumerable<Response>>(allText);
             this._parser = new ResponsesParser();
+        }
+
+        public void RefreshResponses(Contexts contexts)
+        {
+            this.Responses = this.GetResponsesFunc(contexts);
         }
 
         public Response GetResponse(string name)

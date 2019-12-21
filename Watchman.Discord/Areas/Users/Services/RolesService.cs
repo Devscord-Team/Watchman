@@ -23,17 +23,17 @@ namespace Watchman.Discord.Areas.Users.Services
             var role = safeRoles.FirstOrDefault(x => x.Name == commandRole);
             if (role == null)
             {
-                messagesService.SendResponse(x => x.RoleNotFoundOrIsNotSafe(contexts, commandRole));
+                messagesService.SendResponse(x => x.RoleNotFoundOrIsNotSafe(contexts, commandRole), contexts);
                 return;
             }
             if (contexts.User.Roles.Any(x => x.Name == role.Name))
             {
-                messagesService.SendResponse(x => x.RoleIsInUserAlready(contexts, commandRole));
+                messagesService.SendResponse(x => x.RoleIsInUserAlready(contexts, commandRole), contexts);
                 return;
             }
             var serverRole = usersService.GetRoleByName(commandRole, contexts.Server);
             usersService.AddRole(serverRole, contexts.User, contexts.Server).Wait();
-            messagesService.SendResponse(x => x.RoleAddedToUser(contexts, commandRole));
+            messagesService.SendResponse(x => x.RoleAddedToUser(contexts, commandRole), contexts);
         }
 
         public void DeleteRoleFromUser(IEnumerable<Role> safeRoles, MessagesService messagesService, Contexts contexts, string commandRole)
@@ -41,17 +41,17 @@ namespace Watchman.Discord.Areas.Users.Services
             var role = safeRoles.FirstOrDefault(x => x.Name == commandRole);
             if (role == null)
             {
-                messagesService.SendResponse(x => x.RoleNotFoundOrIsNotSafe(contexts, commandRole));
+                messagesService.SendResponse(x => x.RoleNotFoundOrIsNotSafe(contexts, commandRole), contexts);
                 return;
             }
             if (contexts.User.Roles.All(x => x.Name != role.Name))
             {
-                messagesService.SendResponse(x => x.RoleNotFoundInUser(contexts, commandRole));
+                messagesService.SendResponse(x => x.RoleNotFoundInUser(contexts, commandRole), contexts);
                 return;
             }
             var serverRole = usersService.GetRoleByName(commandRole, contexts.Server);
             usersService.RemoveRole(serverRole, contexts.User, contexts.Server).Wait();
-            messagesService.SendResponse(x => x.RoleRemovedFromUser(contexts, commandRole));
+            messagesService.SendResponse(x => x.RoleRemovedFromUser(contexts, commandRole), contexts);
         }
     }
 }

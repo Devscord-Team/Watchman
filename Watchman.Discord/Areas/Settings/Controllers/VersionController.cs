@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
-using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
@@ -29,7 +28,7 @@ namespace Watchman.Discord.Areas.Settings.Controllers
         {
             var version = queryBus.Execute(new GetBotVersionQuery()).Version;
             var messagesService = messagesServiceFactory.Create(contexts);
-            messagesService.SendResponse(x => x.CurrentVersion(contexts, version));
+            messagesService.SendResponse(x => x.CurrentVersion(contexts, version), contexts);
         }
     }
 }
