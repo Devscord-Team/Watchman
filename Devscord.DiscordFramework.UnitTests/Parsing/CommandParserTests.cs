@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Devscord.DiscordFramework.UnitTests.Parsing
@@ -59,6 +60,27 @@ namespace Devscord.DiscordFramework.UnitTests.Parsing
             {
                 Assert.That(result.Name, Is.Not.EqualTo(name));
             }
+        }
+
+        [Test]
+        [TestCase("!help -format json", "-", "format", "json")]
+        [TestCase("!help -format xml", "-", "format", "xml")]
+        [TestCase("!help !format xml", "!", "format", "xml")]
+        [TestCase("!help json", null, null, "json")]
+        public void ShouldFoundArgument(string message, string argumentPrefix, string name, string value)
+        {
+            //Arrange
+            var commandParser = new CommandParser();
+
+            //Act
+            var parsed = commandParser.Parse(message);
+            var argument = parsed.Arguments.First();
+
+            //Assert
+            Assert.That(parsed.ArgumentsPrefix, Is.EqualTo(argument.Prefix));
+            Assert.That(argument.Prefix, Is.EqualTo(argumentPrefix));
+            Assert.That(argument.Name, Is.EqualTo(name));
+            Assert.That(argument.Values.First(), Is.EqualTo(value));
         }
     }
 }
