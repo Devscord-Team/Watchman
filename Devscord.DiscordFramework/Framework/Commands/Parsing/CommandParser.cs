@@ -32,7 +32,8 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
 
         private string GetPrefix(string message)
         {
-            return possiblePrefixes.FirstOrDefault(x => message.StartsWith(x));
+            var withoutWhitespaces = message.Trim();
+            return possiblePrefixes.FirstOrDefault(x => withoutWhitespaces.StartsWith(x));
         }
 
         private string GetName(string message)
@@ -42,7 +43,26 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
 
         private IEnumerable<DiscordRequestArgument> GetArguments(string message)
         {
-            return default;
+            var prefix = this.GetPrefix(message);
+            var splitted = message.Split(prefix)
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .Select(x => x.Trim());
+            return splitted.Select(x => this.GetArgument(x, prefix));
+        }
+
+        private DiscordRequestArgument GetArgument(string message, string prefix)
+        {
+            var prefixExists = !string.IsNullOrWhiteSpace(prefix);
+            var splitted = message.Split(' ');
+            var parameter = prefixExists ? splitted.First() : null;
+            var values = splitted.Skip(prefixExists ? 1 : 0);
+
+            return new DiscordRequestArgument
+            {
+                Name = parameter,
+                Prefix = prefixExists ? prefix : null,
+                Values = values
+            };
         }
     }
 }

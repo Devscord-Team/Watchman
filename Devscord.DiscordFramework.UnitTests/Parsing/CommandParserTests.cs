@@ -82,5 +82,23 @@ namespace Devscord.DiscordFramework.UnitTests.Parsing
             Assert.That(argument.Name, Is.EqualTo(name));
             Assert.That(argument.Values.First(), Is.EqualTo(value));
         }
+
+        [Test]
+        [TestCase("!help -format json -for admins", 2)]
+        [TestCase("!help -format json !for admins", 1)]
+        [TestCase("!help -format json !for admins -tested true", 2)]
+        [TestCase("!help -format json", 1)]
+        public void ShouldFoundManyArguments(string message, int argumentsAmount)
+        {
+            //Arrange
+            var commandParser = new CommandParser();
+
+            //Act
+            var parsed = commandParser.Parse(message);
+            var result = parsed.Arguments.Count();
+
+            //Assert
+            Assert.That(result, Is.EqualTo(argumentsAmount));
+        }
     }
 }
