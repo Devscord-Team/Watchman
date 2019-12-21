@@ -27,6 +27,7 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
             this.messagesServiceFactory = messagesServiceFactory;
         }
 
+        [AdminCommand]
         [DiscordCommand("init")]
         //[IgnoreForHelp] TODO
         public void Init(DiscordRequest request, Contexts contexts)
