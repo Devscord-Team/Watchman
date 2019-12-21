@@ -16,14 +16,11 @@ namespace Devscord.DiscordFramework.Services
             Details = "Default text"
         };
 
-        private readonly ISession _session;
         private readonly IComponentContext _componentContext;
 
         public HelpService(IComponentContext componentContext)
         {
             this._componentContext = componentContext;
-            var sessionFactory = componentContext.Resolve<ISessionFactory>();
-            _session = sessionFactory.Create();
         }
 
         public Task GenerateDefaultHelpDbCollection(Assembly botAssembly)
@@ -36,7 +33,7 @@ namespace Devscord.DiscordFramework.Services
             AddNewDefaultHelpInformation(helpInformationInDb, generatedHelpInformation);
             RemoveOldDefaultHelpInformation(helpInformationInDb, generatedHelpInformation);
 
-            var serverHelpInformationInDb = this._session.Get<ServerHelpInformation>();
+            var serverHelpInformationInDb = this._session.Get<DefaultHelpInformation>();
             RemoveOldDefaultHelpInformation(serverHelpInformationInDb, generatedHelpInformation);
 
             return Task.CompletedTask;

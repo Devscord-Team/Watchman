@@ -9,12 +9,19 @@ namespace Watchman.DomainModel.Help.Queries.Handlers
 {
     public class GetHelpInformationQueryHandler : IQueryHandler<GetHelpInformationQuery, GetHelpInformationQueryResult>
     {
+        private readonly ISessionFactory _sessionFactory;
         private const string _helpFileName = "helpInformation.json";
+
+        public GetHelpInformationQueryHandler(ISessionFactory sessionFactory)
+        {
+            _sessionFactory = sessionFactory;
+        }
 
         public GetHelpInformationQueryResult Handle(GetHelpInformationQuery query)
         {
-            var serverHelpInformations = GetHelpInformationFromDb(query.Session, query.ServerId).ToList();
-            var defaultHelpInformations = GetDefaultHelpInformation(query.Session);
+            var session = _sessionFactory.Create();
+
+            var helpInfos = session.Get<DefaultHelpInformation>().Where(x => x.)
 
             var helpInformations = new List<DefaultHelpInformation>();
 
