@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Devscord.DiscordFramework.Services.Models;
 using Watchman.Cqrs;
 using Watchman.Integrations.MongoDB;
 

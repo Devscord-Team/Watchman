@@ -1,4 +1,4 @@
-﻿namespace Watchman.DomainModel.Help
+﻿namespace Devscord.DiscordFramework.Services.Models
 {
     public class ServerHelpInformation : DefaultHelpInformation
     {

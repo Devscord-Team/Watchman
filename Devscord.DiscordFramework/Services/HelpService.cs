@@ -4,8 +4,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Autofac;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
-using Watchman.DomainModel.Help;
-using Watchman.Integrations.MongoDB;
+using Devscord.DiscordFramework.Services.Models;
 
 namespace Devscord.DiscordFramework.Services
 {

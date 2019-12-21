@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using Watchman.Integrations.MongoDB;
 
-namespace Watchman.DomainModel.Help
+namespace Devscord.DiscordFramework.Services.Models
 {
     public class DefaultHelpInformation : Entity
     {

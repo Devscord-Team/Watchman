@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Devscord.DiscordFramework.Services.Models;
 using Watchman.Cqrs;
 
 namespace Watchman.DomainModel.Help.Queries

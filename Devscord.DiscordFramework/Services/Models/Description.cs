@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Watchman.DomainModel.Help
+namespace Devscord.DiscordFramework.Services.Models
 {
     public class Description
     {
