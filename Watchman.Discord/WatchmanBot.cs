@@ -16,6 +16,7 @@ using Watchman.Discord.Areas.Statistics.Controllers;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Users.Commands;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+using Watchman.Discord.Areas.Help.Services;
 
 namespace Watchman.Discord
 {
@@ -37,8 +38,11 @@ namespace Watchman.Discord
             var autofacContainer = GetAutofacContainer(configuration);
             this._workflow = GetWorkflow(configuration, autofacContainer);
 
-            var dbHelpGenerator = autofacContainer.Resolve<HelpDataCollector>();
-            dbHelpGenerator.GetCommandsInfo(typeof(WatchmanBot).Assembly);
+            var dataCollector = autofacContainer.Resolve<HelpDataCollector>();
+            var helpService = autofacContainer.Resolve<HelpService>();
+
+            helpService.FillDatabaseWithNewMethods(
+                dataCollector.GetCommandsInfo(typeof(WatchmanBot).Assembly));
         }
 
         public async Task Start()

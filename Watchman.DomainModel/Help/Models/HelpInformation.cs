@@ -12,5 +12,6 @@ namespace Watchman.DomainModel.Help.Models
         public IEnumerable<Description> Descriptions { get; set; }
         public string DefaultDescriptionName { get; set; }
         public ulong ServerId { get; set; }
+        public bool IsDefault => ServerId == 0;
     }
 }

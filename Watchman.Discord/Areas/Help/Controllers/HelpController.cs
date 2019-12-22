@@ -32,8 +32,9 @@ namespace Watchman.Discord.Areas.Help.Controllers
         [DiscordCommand("help")]
         public void PrintHelp(DiscordRequest request, Contexts contexts)
         {
-            if (message.Contains("json"))
-                PrintJsonHelp(message, contexts);
+            // todo: dostosować do requestu
+            if (request.OriginalMessage.Contains("json"))
+                PrintJsonHelp(request, contexts);
 
             var result = this._queryBus.Execute(new GetHelpInformationQuery(contexts.Server.Id));
 
@@ -42,7 +43,7 @@ namespace Watchman.Discord.Areas.Help.Controllers
 
             foreach (var helpInfo in result.HelpInformations)
             {
-                helpInfo.MethodNames.ToList().ForEach(x => messageBuilder.Append(x).Append(" / "));
+                helpInfo.Names.ToList().ForEach(x => messageBuilder.Append(x).Append(" / "));
                 messageBuilder.Remove(messageBuilder.Length - 3, 3);
                 
                 messageBuilder.Append(" => ");
@@ -56,7 +57,7 @@ namespace Watchman.Discord.Areas.Help.Controllers
             messagesService.SendMessage(messageBuilder.ToString());
         }
 
-        public void PrintJsonHelp(string message, Contexts contexts)
+        public void PrintJsonHelp(DiscordRequest request, Contexts contexts)
         {
             var result = this._queryBus.Execute(new GetHelpInformationQuery(contexts.Server.Id));
 
@@ -68,7 +69,7 @@ namespace Watchman.Discord.Areas.Help.Controllers
                 messageBuilder.AppendLine("{");
 
                 messageBuilder.AppendLine($"\t\"commandId\" : \"{helpInfo.Id}\",");
-                messageBuilder.AppendLine($"\t\"name\" : \"{helpInfo.Name}\",");
+                messageBuilder.AppendLine($"\t\"methodName\" : \"{helpInfo.MethodName}\",");
                 messageBuilder.AppendLine($"\t\"descriptions\" : [");
 
                 foreach (var description in helpInfo.Descriptions)

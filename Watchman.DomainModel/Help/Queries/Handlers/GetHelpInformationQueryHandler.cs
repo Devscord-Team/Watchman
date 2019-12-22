@@ -22,7 +22,7 @@ namespace Watchman.DomainModel.Help.Queries.Handlers
 
             var allHelpInfos = session.Get<HelpInformation>().ToList();
 
-            var defaultHelpInfos = allHelpInfos.Where(x => x.ServerId == 0);
+            var defaultHelpInfos = allHelpInfos.Where(x => x.IsDefault);
             var customHelpInfos = allHelpInfos.Where(x => x.ServerId == query.ServerId).ToList();
 
             customHelpInfos.AddRange(defaultHelpInfos.Where(x => customHelpInfos.All(c => c.MethodName != x.MethodName)));
