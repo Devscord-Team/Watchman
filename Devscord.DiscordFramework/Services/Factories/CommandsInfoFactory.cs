@@ -15,15 +15,17 @@ namespace Devscord.DiscordFramework.Services.Factories
             var methods = controller.GetMethods().GetMethodsByAttribute<DiscordCommand>();
             return methods.Select(x => new CommandInfo
             {
-                // todo: sprawdzić jeszcze raz
                 Prefix = "-",
                 Names = x.CustomAttributes.GetAttributes<DiscordCommand>().Select(x => x.ConstructorArguments.First().ToString().Replace("\"", "")),
                 MethodName = x.Name,
-                CommandArgumentInfos = x.CustomAttributes.Select(x => new CommandArgumentInfo
+                CommandArgumentInfos = new List<CommandArgumentInfo>
                 {
-                    ArgumentPrefix = "",
-                    Name = "Default"
-                })
+                    new CommandArgumentInfo
+                    {
+                        ArgumentPrefix = "",
+                        Name = "Default"
+                    }
+                }
             });
         }
     }
