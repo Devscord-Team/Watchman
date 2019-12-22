@@ -8,7 +8,7 @@ using Devscord.DiscordFramework.Services.Models;
 
 namespace Devscord.DiscordFramework.Services.Factories
 {
-    class CommandsInfoFactory
+    public class CommandsInfoFactory
     {
         public IEnumerable<CommandInfo> Create(Type controller)
         {
@@ -16,8 +16,8 @@ namespace Devscord.DiscordFramework.Services.Factories
             return methods.Select(x => new CommandInfo
             {
                 // todo: sprawdzić jeszcze raz
-                Prefix = x.CustomAttributes.GetAttributes<DiscordCommand>().First().ConstructorArguments.First().ToString()[0].ToString(),
-                Names = x.CustomAttributes.GetAttributes<DiscordCommand>().Select(x => x.ConstructorArguments.First().ToString()),
+                Prefix = "-",
+                Names = x.CustomAttributes.GetAttributes<DiscordCommand>().Select(x => x.ConstructorArguments.First().ToString().Replace("\"", "")),
                 MethodName = x.Name,
                 CommandArgumentInfos = x.CustomAttributes.Select(x => new CommandArgumentInfo
                 {

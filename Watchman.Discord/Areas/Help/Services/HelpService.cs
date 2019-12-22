@@ -29,7 +29,8 @@ namespace Watchman.Discord.Areas.Help.Services
 
         private IEnumerable<CommandInfo> FindNewCommands(IEnumerable<CommandInfo> commandInfosFromAssembly)
         {
-            var defaultHelpInfosInDb = _session.Get<HelpInformation>().Where(x => x.IsDefault).ToList();
+            var helpInfos = _session.Get<HelpInformation>().ToList();
+            var defaultHelpInfosInDb = helpInfos.Where(x => x.IsDefault).ToList(); // for optimize checking only defaults
             return commandInfosFromAssembly.Where(x => defaultHelpInfosInDb.All(h => h.MethodName != x.MethodName));
         }
 
