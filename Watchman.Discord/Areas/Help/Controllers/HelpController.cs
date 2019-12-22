@@ -34,7 +34,10 @@ namespace Watchman.Discord.Areas.Help.Controllers
         {
             // todo: dostosować do requestu
             if (request.OriginalMessage.Contains("json"))
+            {
                 PrintJsonHelp(request, contexts);
+                return;
+            }
 
             var result = this._queryBus.Execute(new GetHelpInformationQuery(contexts.Server.Id));
 
