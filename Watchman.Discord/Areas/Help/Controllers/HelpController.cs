@@ -6,6 +6,7 @@ using Devscord.DiscordFramework.Services.Factories;
 using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
+using Watchman.Common.Strings;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Help.Queries;
 using Watchman.Integrations.MongoDB;
@@ -26,7 +27,7 @@ namespace Watchman.Discord.Areas.Help.Controllers
         [DiscordCommand("help")]
         public void PrintHelp(DiscordRequest request, Contexts contexts)
         {
-            if (request.Arguments.First().Values.Any(x => x == "json"))
+            if (request.Arguments.Any() && request.Arguments.First().Values.Any(x => x == "json"))
             { 
                 PrintJsonHelp(request, contexts);
                 return;
@@ -34,21 +35,17 @@ namespace Watchman.Discord.Areas.Help.Controllers
             
             var result = this._queryBus.Execute(new GetHelpInformationQuery(contexts.Server.Id));
 
-            var messageBuilder = new StringBuilder();
-            messageBuilder.AppendLine("```");
-
+            var lines = new List<string>();
             foreach (var helpInfo in result.HelpInformations)
             {
-                helpInfo.Names.ToList().ForEach(x => messageBuilder.Append(x).Append(" / "));
-                messageBuilder.Remove(messageBuilder.Length - 3, 3);
-                
-                messageBuilder.Append(" => ");
+                var line = new StringBuilder("-" + helpInfo.Names.Aggregate((x, y) => x + " / -" + y));
 
-                messageBuilder.AppendLine(helpInfo.Descriptions.First(x => x.Name == helpInfo.DefaultDescriptionName).Details);
+                line.Append(" => ");
+                line.Append(helpInfo.Descriptions.First(x => x.Name == helpInfo.DefaultDescriptionName).Details);
+                lines.Add(line.ToString());
             }
-            
-            messageBuilder.AppendLine("```");
 
+            var messageBuilder = new StringBuilder().PrintManyLines("Dostępne komendy:", lines.ToArray());
             var messagesService = _messagesServiceFactory.Create(contexts);
             messagesService.SendMessage(messageBuilder.ToString());
         }
@@ -58,6 +55,7 @@ namespace Watchman.Discord.Areas.Help.Controllers
             var result = this._queryBus.Execute(new GetHelpInformationQuery(contexts.Server.Id));
 
             var serialized = JsonConvert.SerializeObject(result.HelpInformations, Formatting.Indented);
+
             var messageBuilder = new StringBuilder();
             messageBuilder.AppendLine("```json");
             messageBuilder.AppendLine(serialized);
