@@ -26,13 +26,12 @@ namespace Watchman.Discord.Areas.Help.Controllers
         [DiscordCommand("help")]
         public void PrintHelp(DiscordRequest request, Contexts contexts)
         {
-            // todo: dostosować do requestu
-            if (request.OriginalMessage.Contains("json"))
-            {
+            if (request.Arguments.First().Values.Any(x => x == "json"))
+            { 
                 PrintJsonHelp(request, contexts);
                 return;
             }
-
+            
             var result = this._queryBus.Execute(new GetHelpInformationQuery(contexts.Server.Id));
 
             var messageBuilder = new StringBuilder();
