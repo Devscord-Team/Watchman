@@ -19,25 +19,43 @@ namespace Watchman.Discord.Areas.Help.Services
 
         public void FillDatabaseWithNewMethods(IEnumerable<CommandInfo> commandInfosFromAssembly)
         {
-            var newCommands = FindNewCommands(commandInfosFromAssembly).ToList();
-            var oldCommands = FindOldHelps(commandInfosFromAssembly).ToList();
+            var helpInfosInDb = _session.Get<HelpInformation>().ToList();
+
+            var newCommands = FindNewCommands(commandInfosFromAssembly, helpInfosInDb).ToList();
+            var oldCommands = FindOldHelps(commandInfosFromAssembly, helpInfosInDb).ToList();
+            var changedCommands = FindChangedHelps(commandInfosFromAssembly, helpInfosInDb).ToList();
 
             var helpInfoFactory = new HelpInformationFactory();
             newCommands.ForEach(x => _session.Add(helpInfoFactory.Create(x)));
             oldCommands.ForEach(x => _session.Delete(x));
+            changedCommands.ForEach(x => _session.Update(UpdateHelpInfo(x, commandInfosFromAssembly)));
         }
 
-        private IEnumerable<CommandInfo> FindNewCommands(IEnumerable<CommandInfo> commandInfosFromAssembly)
+        private IEnumerable<CommandInfo> FindNewCommands(IEnumerable<CommandInfo> commandInfosFromAssembly, IEnumerable<HelpInformation> helpInfosInDb)
         {
-            var helpInfos = _session.Get<HelpInformation>().ToList();
-            var defaultHelpInfosInDb = helpInfos.Where(x => x.IsDefault).ToList(); // for optimize checking only defaults
+            var defaultHelpInfosInDb = helpInfosInDb.Where(x => x.IsDefault).ToList(); // for optimize checking only defaults
             return commandInfosFromAssembly.Where(x => defaultHelpInfosInDb.All(h => h.MethodName != x.MethodName));
         }
 
-        private IEnumerable<HelpInformation> FindOldHelps(IEnumerable<CommandInfo> commandInfosFromAssembly)
+        private IEnumerable<HelpInformation> FindOldHelps(IEnumerable<CommandInfo> commandInfosFromAssembly, IEnumerable<HelpInformation> helpInfosInDb)
         {
-            var helpInfosInDb = _session.Get<HelpInformation>().ToList();
             return helpInfosInDb.Where(x => commandInfosFromAssembly.All(c => c.MethodName != x.MethodName));
+        }
+
+        private IEnumerable<HelpInformation> FindChangedHelps(IEnumerable<CommandInfo> commandInfosFromAssembly, IEnumerable<HelpInformation> helpInfosInDb)
+        {
+            var allCommandsNamesInAssembly = commandInfosFromAssembly.SelectMany(x => x.Names);
+            return helpInfosInDb.Where(x =>
+            {
+                return !x.Names.All(n => allCommandsNamesInAssembly.Contains(n))
+                    || !allCommandsNamesInAssembly.All(n => x.Names.Contains(n));
+            });
+        }
+
+        private HelpInformation UpdateHelpInfo(HelpInformation help, IEnumerable<CommandInfo> commandInfosFromAssembly)
+        {
+            help.Names = commandInfosFromAssembly.First(x => x.MethodName == help.MethodName).Names;
+            return help;
         }
     }
 }
