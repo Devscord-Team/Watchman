@@ -10,6 +10,7 @@ using Watchman.Common.Strings;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Help.Queries;
 using Watchman.Integrations.MongoDB;
+using Devscord.DiscordFramework.Framework.Commands.Responses;
 
 namespace Watchman.Discord.Areas.Help.Controllers
 {
@@ -45,9 +46,9 @@ namespace Watchman.Discord.Areas.Help.Controllers
                 lines.Add(line.ToString());
             }
 
-            var messageBuilder = new StringBuilder().PrintManyLines("Dostępne komendy:", lines.ToArray());
+            var messageBuilder = new StringBuilder().PrintManyLines(lines.ToArray());
             var messagesService = _messagesServiceFactory.Create(contexts);
-            messagesService.SendMessage(messageBuilder.ToString());
+            messagesService.SendResponse(x => x.PrintHelp(messageBuilder.ToString()), contexts);
         }
 
         public void PrintJsonHelp(DiscordRequest request, Contexts contexts)

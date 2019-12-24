@@ -49,5 +49,10 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("CurrentVersion", contexts, new KeyValuePair<string, string>("version", version));
         }
+
+        public static string PrintHelp(this ResponsesService responsesService, string help)
+        {
+            return responsesService.ProcessResponse("PrintHelp", new KeyValuePair<string, string>("help", help));
+        }
     }
 }

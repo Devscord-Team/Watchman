@@ -9,6 +9,12 @@ namespace Watchman.Common.Strings
         public static StringBuilder PrintManyLines(this StringBuilder builder, string header, string[] lines, bool contentStyleBox = true)
         {
             builder.AppendLine(header);
+            PrintManyLines(builder, lines, contentStyleBox);
+            return builder;
+        }
+
+        public static StringBuilder PrintManyLines(this StringBuilder builder, string[] lines, bool contentStyleBox = true)
+        {
             if(contentStyleBox)
             {
                 builder.AppendLine("```");

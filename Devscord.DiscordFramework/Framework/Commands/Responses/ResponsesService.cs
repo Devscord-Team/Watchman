@@ -44,7 +44,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
 
         public string ProcessResponse(Response response, params KeyValuePair<string, string>[] values)
         {
-            if(values.Count() != response.GetFields().Count())
+            if(values.Length != response.GetFields().Count())
             {
                 throw new ArgumentException($"Cannot process response {response.OnEvent}. Values must be equal to required.");
             }
