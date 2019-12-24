@@ -35,14 +35,14 @@ namespace Watchman.Discord.Areas.Statistics.Services
         //TODO unit test
         public StatisticsReport CreateReport(IEnumerable<MessageInformation> messages, Period period, DiscordServerContext serverContext)
         {
-            messages = messages.Where(x => x.Server.Id == serverContext.Id);
+            var serverMessages = messages.Where(x => x.Server.Id == serverContext.Id).ToList();
 
-            if (!messages.Any())
+            if (!serverMessages.Any())
             {
                 return default;
             }
 
-            var sortedMessages = messages.OrderByDescending(x => x.SentAt);
+            var sortedMessages = serverMessages.OrderByDescending(x => x.SentAt).ToList();
             var latestDateBasedOnPeriod = this.GetLatestDateBasedOnPeriod(sortedMessages.First().SentAt, period);
 
             var statisticsPerPeriod = this.SplitMessagesToReportsPerPeriod(sortedMessages, latestDateBasedOnPeriod, period);
@@ -55,25 +55,25 @@ namespace Watchman.Discord.Areas.Statistics.Services
             };
         }
 
-        private IEnumerable<StatisticsReportPeriod> SplitMessagesToReportsPerPeriod(IEnumerable<MessageInformation> messages, DateTime latestDate, Period period)
+        private IEnumerable<StatisticsReportPeriod> SplitMessagesToReportsPerPeriod(List<MessageInformation> messages, DateTime latestDate, Period period)
         {
             var result = new List<StatisticsReportPeriod>();
+            var lastMessageDate = messages.Last().SentAt.Date;
 
             var currentPeriod = new TimeRange { Start = this.GetOldestMessageInCurrentPeriod(latestDate, period), End = latestDate };
             do
             {
-                var messagesInCurrentPeriod = messages.Where(x => x.SentAt >= currentPeriod.Start && x.SentAt <= currentPeriod.End).ToList();
+                var messagesInCurrentPeriod = messages.Where(x => x.SentAt >= currentPeriod.Start && x.SentAt <= currentPeriod.End);
                 var statisticsInCurrentPeriod = new StatisticsReportPeriod
                 {
-                    MessagesQuantity = messagesInCurrentPeriod.Count,
+                    MessagesQuantity = messagesInCurrentPeriod.Count(),
                     Period = period,
                     TimeRange = currentPeriod
                 };
                 result.Add(statisticsInCurrentPeriod);
                 currentPeriod = this.TransferToPreviousPeriod(currentPeriod, period);
 
-            } while (currentPeriod.Start.Date >= messages.Last().SentAt.Date);
-            var last = messages.Last();
+            } while (currentPeriod.Start.Date >= lastMessageDate);
             return result;
         }
 
