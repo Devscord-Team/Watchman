@@ -9,7 +9,6 @@ using Newtonsoft.Json;
 using Watchman.Common.Strings;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Help.Queries;
-using Watchman.Integrations.MongoDB;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 
 namespace Watchman.Discord.Areas.Help.Controllers

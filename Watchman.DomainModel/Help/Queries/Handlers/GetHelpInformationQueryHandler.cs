@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Help.Models;
 using Watchman.Integrations.MongoDB;
