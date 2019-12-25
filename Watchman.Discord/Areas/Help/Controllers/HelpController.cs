@@ -63,8 +63,7 @@ namespace Watchman.Discord.Areas.Help.Controllers
             messageBuilder.AppendLine("```");
 
             var messagesService = _messagesServiceFactory.Create(contexts);
-            var message = messageBuilder.ToString();
-            messagesService.SendMessage(message);
+            messagesService.SendResponse(x => x.PrintHelp(messageBuilder.ToString()), contexts);
         }
     }
 }
