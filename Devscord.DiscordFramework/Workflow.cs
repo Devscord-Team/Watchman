@@ -77,6 +77,9 @@ namespace Devscord.DiscordFramework
                 .Select(x => (IController) _context.Resolve(x));
 
             var discordRequest = commandParser.Parse(message);
+            
+            if (discordRequest.IsCommandForBot() == false)
+                return;
 
             foreach (var controller in controllers)
             {

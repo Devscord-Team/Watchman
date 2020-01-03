@@ -16,5 +16,10 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing.Models
         {
             return OriginalMessage;
         }
+
+        public bool IsCommandForBot()
+        {
+            return Name != null;
+        }
     }
 }
