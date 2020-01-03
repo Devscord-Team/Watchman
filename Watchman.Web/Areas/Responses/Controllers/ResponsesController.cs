@@ -9,9 +9,7 @@ using Watchman.Web.Areas.Responses.Models.Dtos;
 
 namespace Watchman.Web.Areas.Responses.Controllers
 {
-    [ApiController]
-    [Route("[controller]/[method]")]
-    public class ResponsesController : ControllerBase
+    public class ResponsesController : Controller
     {
         private readonly IQueryBus queryBus;
 
@@ -26,6 +24,12 @@ namespace Watchman.Web.Areas.Responses.Controllers
             var query = new GetResponsesQuery();
             var responses = queryBus.Execute(query).Responses.Select(x => new ResponseDto(x));
             return new GetResponsesResponse { Responses = responses };
+        }
+
+        [HttpGet]
+        public string Ping()
+        {
+            return "pong";
         }
 
     }

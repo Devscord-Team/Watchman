@@ -7,9 +7,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Watchman.Web.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
+    //[ApiController]
+    //[Route("[controller]")]
+    public class WeatherForecastController : Controller
     {
         private static readonly string[] Summaries = new[]
         {
