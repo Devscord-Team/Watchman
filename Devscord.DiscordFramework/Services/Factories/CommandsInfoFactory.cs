@@ -12,11 +12,11 @@ namespace Devscord.DiscordFramework.Services.Factories
     {
         public IEnumerable<CommandInfo> Create(Type controller)
         {
-            var methods = controller.GetMethods().GetMethodsByAttribute<DiscordCommand>();
+            var methods = controller.GetMethods().FilterMethodsByAttribute<DiscordCommand>();
             return methods.Select(x => new CommandInfo
             {
                 Prefix = "-",
-                Names = x.CustomAttributes.GetAttributes<DiscordCommand>().Select(x => x.ConstructorArguments.First().ToString().Replace("\"", "")),
+                Names = x.CustomAttributes.FilterAttributes<DiscordCommand>().Select(x => x.ConstructorArguments.First().ToString().Replace("\"", "")),
                 MethodName = x.Name,
                 CommandArgumentInfos = new List<CommandArgumentInfo>
                 {
