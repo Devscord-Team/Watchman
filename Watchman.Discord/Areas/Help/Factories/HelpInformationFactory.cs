@@ -1,23 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Models;
 using Watchman.DomainModel.Help.Models;
 
 namespace Watchman.Discord.Areas.Help.Factories
 {
-    class HelpInformationFactory
+    public class HelpInformationFactory : IService
     {
+        private readonly ArgumentInfoFactory _argumentInfoFactory;
+
+        public HelpInformationFactory(ArgumentInfoFactory argumentInfoFactory)
+        {
+            _argumentInfoFactory = argumentInfoFactory;
+        }
+
         public HelpInformation Create(CommandInfo commandInfo)
         {
-            var argumentFactory = new ArgumentInfoFactory();
             return new HelpInformation
             {
                 Prefix = commandInfo.Prefix,
                 MethodName = commandInfo.MethodName,
                 Names = commandInfo.Names,
-                ArgumentInfos = commandInfo.CommandArgumentInfos.Select(x => argumentFactory.Create(x)),
+                ArgumentInfos = commandInfo.CommandArgumentInfos.Select(this._argumentInfoFactory.Create),
                 ServerId = 0,
                 DefaultDescriptionName = "EN",
                 Descriptions = new List<Description>

@@ -10,6 +10,7 @@ using Watchman.Common.Strings;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Help.Queries;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
+using Watchman.Discord.Areas.Help.Services;
 
 namespace Watchman.Discord.Areas.Help.Controllers
 {
@@ -17,52 +18,25 @@ namespace Watchman.Discord.Areas.Help.Controllers
     {
         private readonly IQueryBus _queryBus;
         private readonly MessagesServiceFactory _messagesServiceFactory;
+        private readonly HelpService _helpService;
 
-        public HelpController(IQueryBus queryBus, MessagesServiceFactory messagesServiceFactory)
+        public HelpController(IQueryBus queryBus, MessagesServiceFactory messagesServiceFactory, HelpService helpService)
         {
             this._queryBus = queryBus;
             this._messagesServiceFactory = messagesServiceFactory;
+            _helpService = helpService;
         }
 
         [DiscordCommand("help")]
         public void PrintHelp(DiscordRequest request, Contexts contexts)
         {
-            if (request.Arguments.Any() && request.Arguments.First().Values.Any(x => x == "json"))
-            { 
-                PrintJsonHelp(request, contexts);
-                return;
-            }
-            
-            var result = this._queryBus.Execute(new GetHelpInformationQuery(contexts.Server.Id));
+            var helpMessage = request.Arguments.Any(arg => arg.Values.Any(v => v == "json"))
+                ? this._helpService.GenerateJsonHelp(contexts)
+                : this._helpService.GenerateHelp(contexts);
 
-            var lines = new List<string>();
-            foreach (var helpInfo in result.HelpInformations)
-            {
-                var line = new StringBuilder("-" + helpInfo.Names.Aggregate((x, y) => x + " / -" + y));
-
-                line.Append(" => ");
-                line.Append(helpInfo.Descriptions.First(x => x.Name == helpInfo.DefaultDescriptionName).Details);
-                lines.Add(line.ToString());
-            }
-
-            var messageBuilder = new StringBuilder().PrintManyLines(lines.ToArray());
-            var messagesService = _messagesServiceFactory.Create(contexts);
-            messagesService.SendResponse(x => x.PrintHelp(messageBuilder.ToString()), contexts);
-        }
-
-        public void PrintJsonHelp(DiscordRequest request, Contexts contexts)
-        {
-            var result = this._queryBus.Execute(new GetHelpInformationQuery(contexts.Server.Id));
-
-            var serialized = JsonConvert.SerializeObject(result.HelpInformations, Formatting.Indented);
-
-            var messageBuilder = new StringBuilder();
-            messageBuilder.AppendLine("```json");
-            messageBuilder.AppendLine(serialized);
-            messageBuilder.AppendLine("```");
 
             var messagesService = _messagesServiceFactory.Create(contexts);
-            messagesService.SendResponse(x => x.PrintHelp(messageBuilder.ToString()), contexts);
+            messagesService.SendResponse(x => x.PrintHelp(helpMessage), contexts);
         }
     }
 }
