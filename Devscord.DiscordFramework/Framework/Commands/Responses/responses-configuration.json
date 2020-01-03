@@ -37,6 +37,6 @@
   },
   {
     "OnEvent": "PrintHelp",
-    "Message": "Dostępny komendy: {{help}}" 
+    "Message": "Dostępne komendy: {{help}}" 
   }
 ]

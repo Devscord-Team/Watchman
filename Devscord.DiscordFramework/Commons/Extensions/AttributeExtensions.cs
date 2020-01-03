@@ -9,7 +9,7 @@ namespace Devscord.DiscordFramework.Commons.Extensions
 {
     public static class AttributeExtensions
     {
-        public static IEnumerable<CustomAttributeData> GetAttributes<T>(this IEnumerable<CustomAttributeData> customAttributes) where T : Attribute
+        public static IEnumerable<CustomAttributeData> FilterAttributes<T>(this IEnumerable<CustomAttributeData> customAttributes) where T : Attribute
         {
             return customAttributes.Where(x => x.AttributeType.FullName == typeof(T).FullName);
         }
