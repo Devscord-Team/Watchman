@@ -1,0 +1,34 @@
+﻿@page "/responses"
+
+@using Watchman.Web.Areas.Responses.Services
+@using Watchman.Web.Areas.Responses.Models
+@inject ResponsesService ResponsesService
+
+<h1>Responses</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>On Event</th>
+            <th>Message</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var response in responses)
+        {
+            <tr>
+                <td>@response.OnEvent</td>
+                <td>@response.Message</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private IEnumerable<ResponseDto> responses;
+
+    protected override void OnInitialized()
+    {
+        responses = ResponsesService.GetResponses();
+    }
+}

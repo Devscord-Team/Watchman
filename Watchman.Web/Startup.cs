@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Watchman.Integrations.MongoDB;
 using Watchman.Web.Data;
 
 namespace Watchman.Web
@@ -39,6 +40,8 @@ namespace Watchman.Web
                 }) // from v0.6.0-preview4
                 .AddBulmaProviders()
                 .AddFontAwesomeIcons();
+
+            MongoConfiguration.Initialize();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

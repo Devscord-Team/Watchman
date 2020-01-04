@@ -1,11 +1,7 @@
 ﻿@inherits LayoutComponentBase
 
-<div>
-    <NavMenu />
-</div>
 
-<div class="main">
-    <div class="content px-4">
-        @Body
-    </div>
+<div class="columns">
+    <div class="column is-one-fifth"><NavMenu /></div>
+    <div class="column">@Body</div>
 </div>
