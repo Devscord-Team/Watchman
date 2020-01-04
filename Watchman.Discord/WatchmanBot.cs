@@ -2,29 +2,22 @@
 using Devscord.DiscordFramework.Middlewares;
 using Discord;
 using Discord.WebSocket;
-using Newtonsoft.Json;
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Services;
 using Watchman.Integrations.MongoDB;
 using Watchman.Discord.Ioc;
 using Devscord.DiscordFramework;
-using Autofac.Core.Registration;
 using Autofac;
-using Watchman.Discord.Areas.Statistics.Controllers;
-using Watchman.Cqrs;
-using Watchman.DomainModel.Users.Commands;
-using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Watchman.Discord.Areas.Help.Services;
 
 namespace Watchman.Discord
 {
     public class WatchmanBot : IDisposable
     {
-        private DiscordSocketClient _client;
-        private Workflow _workflow;
-        private DiscordConfiguration _configuration;
+        private readonly DiscordSocketClient _client;
+        private readonly Workflow _workflow;
+        private readonly DiscordConfiguration _configuration;
 
         public WatchmanBot(DiscordConfiguration configuration)
         {
@@ -39,9 +32,9 @@ namespace Watchman.Discord
             this._workflow = GetWorkflow(configuration, autofacContainer);
 
             var dataCollector = autofacContainer.Resolve<HelpDataCollector>();
-            var helpService = autofacContainer.Resolve<HelpService>();
+            var helpService = autofacContainer.Resolve<HelpDBGeneratorService>();
 
-            helpService.FillDatabaseWithNewMethods(
+            helpService.SyncDatabaseWithCode(
                 dataCollector.GetCommandsInfo(typeof(WatchmanBot).Assembly));
         }
 

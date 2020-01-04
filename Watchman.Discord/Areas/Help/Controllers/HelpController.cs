@@ -1,10 +1,8 @@
-﻿using System;
-using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
 using System.Linq;
-using Watchman.Cqrs;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Watchman.Discord.Areas.Help.Services;
 
@@ -12,15 +10,13 @@ namespace Watchman.Discord.Areas.Help.Controllers
 {
     public class HelpController : IController
     {
-        private readonly IQueryBus _queryBus;
         private readonly MessagesServiceFactory _messagesServiceFactory;
-        private readonly HelpService _helpService;
+        private readonly HelpMessageGeneratorService _helpMessageGenerator;
 
-        public HelpController(IQueryBus queryBus, MessagesServiceFactory messagesServiceFactory, HelpService helpService)
+        public HelpController(MessagesServiceFactory messagesServiceFactory, HelpMessageGeneratorService messageGeneratorService)
         {
-            this._queryBus = queryBus;
             this._messagesServiceFactory = messagesServiceFactory;
-            _helpService = helpService;
+            _helpMessageGenerator = messageGeneratorService;
         }
 
         [DiscordCommand("help")]
@@ -28,15 +24,21 @@ namespace Watchman.Discord.Areas.Help.Controllers
         {
             var messagesService = _messagesServiceFactory.Create(contexts);
 
-            if (!request.Arguments.Any(arg => arg.Values.Any(v => v == "json")))
+            if (AskedForJsonOutput(request))
             {
-                var helpMessage = this._helpService.GenerateHelp(contexts);
-                messagesService.SendResponse(x => x.PrintHelp(helpMessage), contexts);
-                return;
+                var helpMessages = this._helpMessageGenerator.GenerateJsonHelp(contexts);
+                helpMessages.ToList().ForEach(x => messagesService.SendMessage(x));
             }
+            else
+            {
+                var helpMessage = this._helpMessageGenerator.GenerateHelp(contexts);
+                messagesService.SendResponse(x => x.PrintHelp(helpMessage), contexts);
+            }
+        }
 
-            var helpMessages = this._helpService.GenerateJsonHelp(contexts);
-            helpMessages.ToList().ForEach(x => messagesService.SendMessage(x));
+        private bool AskedForJsonOutput(DiscordRequest request)
+        {
+            return request.Arguments.Any(arg => arg.Values.Any(v => v == "json"));
         }
     }
 }
