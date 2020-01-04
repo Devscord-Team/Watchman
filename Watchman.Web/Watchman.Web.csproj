@@ -4,4 +4,9 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Blazorise.Bulma" Version="0.8.7.2" />
+    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.8.7.2" />
+  </ItemGroup>
+
 </Project>
