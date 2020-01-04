@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Models;
 using Newtonsoft.Json;
-using Watchman.Common.Strings;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Help.Factories;
 using Watchman.DomainModel.Help.Models;
@@ -27,36 +27,55 @@ namespace Watchman.Discord.Areas.Help.Services
             _session = sessionFactory.Create();
         }
 
+        //todo: tutaj myślę czy nie wydzielić generateHelp i generateJsonHelp do osobnej klasy
         public string GenerateHelp(Contexts contexts)
         {
             var result = this._queryBus.Execute(new GetHelpInformationQuery(contexts.Server.Id));
 
-            var lines = new List<string>();
+            var messageBuilder = new StringBuilder();
             foreach (var helpInfo in result.HelpInformations)
             {
                 var line = new StringBuilder("-" + helpInfo.Names.Aggregate((x, y) => $"{x} / -{y}"));
 
                 line.Append(" => ");
                 line.Append(helpInfo.Descriptions.First(x => x.Name == helpInfo.DefaultDescriptionName).Details);
-                lines.Add(line.ToString());
+                messageBuilder.AppendLine(line.ToString());
             }
 
-            var messageBuilder = new StringBuilder().PrintManyLines(lines.ToArray());
             return messageBuilder.ToString();
         }
 
-        public string GenerateJsonHelp(Contexts contexts)
+        public IEnumerable<string> GenerateJsonHelp(Contexts contexts)
         {
             var result = this._queryBus.Execute(new GetHelpInformationQuery(contexts.Server.Id));
 
             var serialized = JsonConvert.SerializeObject(result.HelpInformations, Formatting.Indented);
 
-            var messageBuilder = new StringBuilder();
-            messageBuilder.AppendLine("```json");
-            messageBuilder.AppendLine(serialized);
-            messageBuilder.AppendLine("```");
+            var smallerMessages = SplitJsonToSmallerMessages(serialized);
 
-            return messageBuilder.ToString();
+            foreach (var sm in smallerMessages)
+            {
+                var messageBuilder = new StringBuilder();
+
+                messageBuilder.AppendLine("```json");
+                messageBuilder.AppendLine(sm);
+                messageBuilder.AppendLine("```");
+
+                yield return messageBuilder.ToString();
+            }
+        }
+
+        private IEnumerable<string> SplitJsonToSmallerMessages(string message)
+        {
+            const int MAX_MESSAGE_LENGTH = 1998; // for safety reason I made it smaller
+
+            while (message.Length > MAX_MESSAGE_LENGTH)
+            {
+                var cutIndex = message.Substring(0, MAX_MESSAGE_LENGTH).LastIndexOf("},", StringComparison.Ordinal) + 2;
+                yield return message.Substring(0, cutIndex);
+                message = message.Remove(0, cutIndex);
+            }
+            yield return message;
         }
 
         public void FillDatabaseWithNewMethods(IEnumerable<CommandInfo> commandInfosFromAssembly)
