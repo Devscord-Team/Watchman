@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Newtonsoft.Json;
+using PCRE;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Help.Queries;
 
@@ -40,10 +40,12 @@ namespace Watchman.Discord.Areas.Help.Services
         public IEnumerable<string> GenerateJsonHelp(Contexts contexts)
         {
             var result = this._queryBus.Execute(new GetHelpInformationQuery(contexts.Server.Id));
-            var serialized = JsonConvert.SerializeObject(result.HelpInformations, Formatting.Indented);
-            var smallerMessages = SplitJsonToSmallerMessages(serialized);
 
-            foreach (var sm in smallerMessages)
+            var serialized = JsonConvert.SerializeObject(result.HelpInformations, Formatting.Indented);
+            serialized = RemoveFirstAndLastBracket(serialized);
+            serialized = TrimUselessWhitespaceFromBeginning(serialized);
+
+            foreach (var sm in SplitJsonToSmallerMessages(serialized))
             {
                 var messageBuilder = new StringBuilder();
                 messageBuilder.AppendLine("```json");
@@ -53,15 +55,35 @@ namespace Watchman.Discord.Areas.Help.Services
             }
         }
 
-        private IEnumerable<string> SplitJsonToSmallerMessages(string message)
+        private string RemoveFirstAndLastBracket(string fullMessage)
         {
-            while (message.Length > MAX_MESSAGE_LENGTH)
+            return fullMessage[3..^3];
+        }
+
+        private string TrimUselessWhitespaceFromBeginning(string fullMessage)
+        {
+            var lines = fullMessage.Split('\n');
+            var howManyWhitespaces = lines.First().IndexOf('{');
+
+            return lines.Aggregate((sum, next) => sum + next.Remove(0, howManyWhitespaces));
+        }
+
+        private IEnumerable<string> SplitJsonToSmallerMessages(string fullMessage)
+        {
+            var matched = new PcreRegex(@"{(?>[^{}]|(?R))*}").Matches(fullMessage).Select(x => x.Value);
+
+            var oneMessage = new StringBuilder();
+            foreach (var jsonElement in matched)
             {
-                var cutIndex = message.Substring(0, MAX_MESSAGE_LENGTH).LastIndexOf("},", StringComparison.Ordinal) + 2;
-                yield return message.Substring(0, cutIndex);
-                message = message.Remove(0, cutIndex);
+                if (jsonElement.Length + oneMessage.Length > MAX_MESSAGE_LENGTH)
+                {
+                    yield return oneMessage.ToString();
+                    oneMessage.Clear();
+                }
+                oneMessage.AppendLine(jsonElement + ',');
             }
-            yield return message;
+
+            yield return oneMessage.ToString()[..^3]; // skip last ",\n"
         }
 
     }

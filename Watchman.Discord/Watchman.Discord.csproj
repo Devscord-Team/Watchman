@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="Discord.Net" Version="2.1.1" />
+    <PackageReference Include="PCRE.NET" Version="0.11.0" />
   </ItemGroup>
 
   <ItemGroup>
