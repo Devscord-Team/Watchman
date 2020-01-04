@@ -19,7 +19,7 @@ namespace Watchman.Discord.Areas.Help.Services
             _session = sessionFactory.Create();
         }
 
-        public void SyncDatabaseWithCode(IEnumerable<CommandInfo> commandInfosFromAssembly)
+        public void SyncDatabase(IEnumerable<CommandInfo> commandInfosFromAssembly)
         {
             var commandInfosFromAssemblyList = commandInfosFromAssembly.ToList(); // for not multiple enumerating
             var helpInfosInDb = _session.Get<HelpInformation>().ToList();
