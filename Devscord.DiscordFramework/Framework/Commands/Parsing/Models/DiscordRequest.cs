@@ -11,15 +11,12 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing.Models
         public string ArgumentsPrefix { get; set; }
         public IEnumerable<DiscordRequestArgument> Arguments { get; set; }
         public string OriginalMessage { get; set; }
+        public bool IsCommandForBot() => !string.IsNullOrEmpty(this.Prefix);
 
         public override string ToString()
         {
             return OriginalMessage;
         }
 
-        public bool IsCommandForBot()
-        {
-            return Name != null;
-        }
     }
 }

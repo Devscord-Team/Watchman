@@ -36,7 +36,6 @@ namespace Watchman.Discord.Areas.Help.Services
             foreach (var helpInfo in result.HelpInformations)
             {
                 var line = new StringBuilder("-" + helpInfo.Names.Aggregate((x, y) => $"{x} / -{y}"));
-
                 line.Append(" => ");
                 line.Append(helpInfo.Descriptions.First(x => x.Name == helpInfo.DefaultDescriptionName).Details);
                 messageBuilder.AppendLine(line.ToString());
@@ -48,19 +47,15 @@ namespace Watchman.Discord.Areas.Help.Services
         public IEnumerable<string> GenerateJsonHelp(Contexts contexts)
         {
             var result = this._queryBus.Execute(new GetHelpInformationQuery(contexts.Server.Id));
-
             var serialized = JsonConvert.SerializeObject(result.HelpInformations, Formatting.Indented);
-
             var smallerMessages = SplitJsonToSmallerMessages(serialized);
 
             foreach (var sm in smallerMessages)
             {
                 var messageBuilder = new StringBuilder();
-
                 messageBuilder.AppendLine("```json");
                 messageBuilder.AppendLine(sm);
                 messageBuilder.AppendLine("```");
-
                 yield return messageBuilder.ToString();
             }
         }
