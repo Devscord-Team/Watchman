@@ -34,7 +34,7 @@ namespace Watchman.Discord
             var dataCollector = autofacContainer.Resolve<HelpDataCollector>();
             var helpService = autofacContainer.Resolve<HelpDBGeneratorService>();
 
-            helpService.SyncDatabaseWithCode(
+            helpService.SyncDatabase(
                 dataCollector.GetCommandsInfo(typeof(WatchmanBot).Assembly));
         }
 
