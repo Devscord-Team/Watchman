@@ -22,7 +22,7 @@ namespace Watchman.Discord.Areas.Help.Factories
                 Prefix = commandInfo.Prefix,
                 MethodName = commandInfo.MethodName,
                 Names = commandInfo.Names,
-                ArgumentInfos = commandInfo.CommandArgumentInfos.Select(this._argumentInfoFactory.Create),
+                ArgumentInfos = commandInfo.CommandArgumentInfos.Select(x => _argumentInfoFactory.Create(x)),
                 ServerId = 0,
                 DefaultDescriptionName = "EN",
                 Descriptions = new List<Description>
