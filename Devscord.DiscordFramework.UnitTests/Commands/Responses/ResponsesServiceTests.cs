@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using System.Linq;
 
-namespace Devscord.DiscordFramework.UnitTests.Responses
+namespace Devscord.DiscordFramework.UnitTests.Commands.Responses
 {
     [TestFixture]
     public class ResponsesServiceTests

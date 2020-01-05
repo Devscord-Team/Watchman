@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Devscord.DiscordFramework.UnitTests.Parsing
+namespace Devscord.DiscordFramework.UnitTests.Commands.Parsing
 {
     [TestFixture]
     public class CommandParserTests
