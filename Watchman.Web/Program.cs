@@ -15,6 +15,7 @@ using MongoDB.Driver;
 using Watchman.Cqrs;
 using Watchman.Integrations.MongoDB;
 using Watchman.Web.Areas.Responses.Services;
+using Watchman.Web.Areas.Statistics.Services;
 
 namespace Watchman.Web
 {
@@ -90,6 +91,10 @@ namespace Watchman.Web
 
             builder.RegisterType<ResponsesService>()
                 .As<ResponsesService>()
+                .InstancePerLifetimeScope();            
+            
+            builder.RegisterType<StatisticsService>()
+                .As<StatisticsService>()
                 .InstancePerLifetimeScope();
         }
     }

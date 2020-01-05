@@ -21,17 +21,17 @@ namespace Watchman.Web.Areas.Statistics.Services
 
         public IEnumerable<StatisticsPerChannelDto> GetStatisticsPerChannel()
         {
-            return default;
+            return TestDataStatisticsPerChannels();
         }
 
         public IEnumerable<StatisticsPerPeriodAndChannelDto> GetStatisticsPerPeriodAndChannel()
         {
-            return default;
+            return TestDataStatisticsPerPeriodAndChannel();
         }
 
         public IEnumerable<StatisticsPerPeriodDto> GetStatisticsPerPeriod()
         {
-            return default;
+            return TestDataStatisticsPerPeriod();
         }
 
         public IEnumerable<StatisticsPerUserDto> GetStatisticsPerUser()
@@ -81,12 +81,12 @@ namespace Watchman.Web.Areas.Statistics.Services
             {
                 var statsPerPeriod = new StatisticsPerPeriodDto
                 {
-                    Period = Period.Day,
+                    Period = Period.Month,
                     TotalMessages = new Random().Next(0, 200),
                     TimeRange = new TimeRange 
                     { 
-                        Start = DateTime.Now.Date.AddDays(-i),
-                        End = DateTime.Now.Date.AddDays(-i - 1)
+                        Start = DateTime.Now.Date.AddMonths(-i),
+                        End = DateTime.Now.Date.AddMonths(-i - 1)
                     }
                 };
                 result.Add(statsPerPeriod);
@@ -99,18 +99,22 @@ namespace Watchman.Web.Areas.Statistics.Services
             var result = new List<StatisticsPerPeriodAndChannelDto>();
             for (var i = 0; i < 5; i++)
             {
-                var statsPerPeriodAndChannel = new StatisticsPerPeriodAndChannelDto
+                var timeRange = new TimeRange
                 {
-                    Channel = "TestPeriodChannel" + i,
-                    Period = Period.Day,
-                    TimeRange = new TimeRange
-                    {
-                        Start = DateTime.Now.Date.AddDays(-i),
-                        End = DateTime.Now.Date.AddDays(-i - 1)
-                    },
-                    TotalMessages = new Random().Next(0, 200)
+                    Start = DateTime.Now.Date.AddDays(-i),
+                    End = DateTime.Now.Date.AddDays(-i - 1)
                 };
-                result.Add(statsPerPeriodAndChannel);
+                for (var channelIndex = 0; channelIndex < 3; channelIndex++)
+                {
+                    var statsPerPeriodAndChannel = new StatisticsPerPeriodAndChannelDto
+                    {
+                        Channel = "TestPeriodChannel" + channelIndex,
+                        Period = Period.Day,
+                        TimeRange = timeRange,
+                        TotalMessages = new Random().Next(0, 200)
+                    };
+                    result.Add(statsPerPeriodAndChannel);
+                }
             }
             return result;
         }

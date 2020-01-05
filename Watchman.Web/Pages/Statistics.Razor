@@ -3,3 +3,96 @@
 @using Watchman.Web.Areas.Statistics.Services
 @using Watchman.Web.Areas.Statistics.Models
 @inject StatisticsService statisticsService
+
+
+
+@foreach (var statisticsPerUser in statisticsPerUsers)
+{
+    <div class="box">
+        <article class="media">
+            <div class="media-content">
+                <div class="content">
+                    <div>
+                        <strong>@statisticsPerUser.User</strong> <small>Total messages: @statisticsPerUser.TotalMessages</small>
+                        <br>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Channel</th>
+                                    <th>Messages</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var statisticsPerChannel in statisticsPerUser.StatisticsPerChannel)
+                                {
+                                <tr>
+                                    <td>@statisticsPerChannel.Channel</td>
+                                    <td>@statisticsPerChannel.TotalMessages</td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Time Range</th>
+                                    <th>Messages</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var statisticsPerPeriod in statisticsPerUser.StatisticsPerPeriod)
+                                {
+                                    <tr>
+                                        <td>@statisticsPerPeriod.TimeRange.Start.ToShortDateString() - @statisticsPerPeriod.TimeRange.End.ToShortDateString()</td>
+                                        <td>@statisticsPerPeriod.TotalMessages</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Channel</th>
+                                    <th>Time Range</th>
+                                    <th>Messages</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var statisticsPerPeriodAndChannel in statisticsPerUser.StatisticsPerPeriodAndChannel)
+                                {
+                                <tr>
+                                    <td>@statisticsPerPeriodAndChannel.Channel</td>
+                                    <td>@statisticsPerPeriodAndChannel.TimeRange.Start.ToShortDateString() - @statisticsPerPeriodAndChannel.TimeRange.End.ToShortDateString()</td>
+                                    <td>@statisticsPerPeriodAndChannel.TotalMessages</td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <nav class="level is-mobile">
+                    <div class="level-left">
+                        <button class="level-item button is-link">Save</button>
+                    </div>
+                </nav>
+            </div>
+        </article>
+    </div>
+}
+
+@code {
+    private IEnumerable<StatisticsPerPeriodDto> statisticsPerPeriods;
+    private IEnumerable<StatisticsPerChannelDto> statisticsPerChannels;
+    private IEnumerable<StatisticsPerPeriodAndChannelDto> statisticsPerPeriodsAndChannels;
+    private IEnumerable<StatisticsPerUserDto> statisticsPerUsers;
+
+    protected override void OnInitialized()
+    {
+        statisticsPerPeriods = statisticsService.GetStatisticsPerPeriod();
+        statisticsPerChannels = statisticsService.GetStatisticsPerChannel();
+        statisticsPerPeriodsAndChannels = statisticsService.GetStatisticsPerPeriodAndChannel();
+        statisticsPerUsers = statisticsService.GetStatisticsPerUser();
+    }
+}
