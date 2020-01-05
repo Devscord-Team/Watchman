@@ -42,7 +42,7 @@ namespace Watchman.Web
             stack.Push(Assembly.GetEntryAssembly());
             do
             {
-                //TODO move to IoC namespace with modules, normal configuration etc etc
+                //TODO move to IoC namespace with modules, normal configuration etc
                 builder.Register((c, p) => new MongoClient("mongodb://localhost:27017").GetDatabase("devscord"))
                     .As<IMongoDatabase>()
                     .InstancePerLifetimeScope();
