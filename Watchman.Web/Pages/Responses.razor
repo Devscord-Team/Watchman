@@ -4,25 +4,29 @@
 @using Watchman.Web.Areas.Responses.Models
 @inject ResponsesService ResponsesService
 
-<h1>Responses</h1>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>On Event</th>
-            <th>Message</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var response in responses)
-        {
-            <tr>
-                <td>@response.OnEvent</td>
-                <td>@response.Message</td>
-            </tr>
-        }
-    </tbody>
-</table>
+@foreach (var response in responses)
+{
+    <div class="box">
+        <article class="media">
+            <div class="media-content">
+                <div class="content">
+                    <p>
+                        <strong>On Event:</strong> <small>@response.OnEvent</small>
+                        <br>
+                        <div class="control">
+                            <textarea class="textarea has-fixed-size" placeholder="Fixed size textarea" rows="@CountRows(response.Message)" value="@response.Message"></textarea>
+                        </div>
+                    </p>
+                </div>
+                <nav class="level is-mobile">
+                    <div class="level-left">
+                        <button class="level-item button is-link">Save</button>
+                    </div>
+                </nav>
+            </div>
+        </article>
+    </div>
+}
 
 @code {
     private IEnumerable<ResponseDto> responses;
@@ -30,5 +34,10 @@
     protected override void OnInitialized()
     {
         responses = ResponsesService.GetResponses();
+    }
+
+    private int CountRows(string message)
+    {
+        return message.Count(x => x == '\n') + 1;
     }
 }
