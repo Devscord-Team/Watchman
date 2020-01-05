@@ -24,7 +24,7 @@ namespace Watchman.Discord.Areas.Help.Controllers
         {
             var messagesService = _messagesServiceFactory.Create(contexts);
 
-            if (AskedForJsonOutput(request))
+            if (request.HasArgument("", "json"))
             {
                 var helpMessages = this._helpMessageGenerator.GenerateJsonHelp(contexts);
                 helpMessages.ToList().ForEach(x => messagesService.SendMessage(x));
@@ -34,11 +34,6 @@ namespace Watchman.Discord.Areas.Help.Controllers
                 var helpMessage = this._helpMessageGenerator.GenerateHelp(contexts);
                 messagesService.SendResponse(x => x.PrintHelp(helpMessage), contexts);
             }
-        }
-
-        private bool AskedForJsonOutput(DiscordRequest request)
-        {
-            return request.Arguments.Any(arg => arg.Values.Any(v => v == "json"));
         }
     }
 }
