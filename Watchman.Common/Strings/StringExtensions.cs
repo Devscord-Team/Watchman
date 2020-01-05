@@ -29,5 +29,22 @@ namespace Watchman.Common.Strings
             }
             return builder;
         }
+
+        public static StringBuilder FormatOneMessage(this StringBuilder builder, string message, bool contentStyleBox = true, string formatName = "")
+        {
+            if (contentStyleBox)
+            {
+                builder.AppendLine($"```{formatName}");
+            }
+
+            builder.AppendLine(message);
+
+            if (contentStyleBox)
+            {
+                builder.AppendLine("```");
+            }
+
+            return builder;
+        }
     }
 }

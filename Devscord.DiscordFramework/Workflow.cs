@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Devscord.DiscordFramework.Services;
 
 namespace Devscord.DiscordFramework
 {
@@ -116,7 +117,7 @@ namespace Devscord.DiscordFramework
                 {
                     if (method.HasAttribute<AdminCommand>() && !contexts.User.IsAdmin)
                     {
-                        var messageService = new MessagesServiceFactory(new ResponsesService()).Create(contexts);
+                        var messageService = new MessagesServiceFactory(new ResponsesService(), new MessageSplittingService()).Create(contexts);
                         messageService.SendMessage("Nie masz wystarczających uprawnień do wywołania tej komendy.");
                         break;
                     }

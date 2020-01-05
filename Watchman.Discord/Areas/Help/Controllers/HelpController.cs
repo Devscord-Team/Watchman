@@ -2,8 +2,8 @@
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
-using System.Linq;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
+using Devscord.DiscordFramework.Services;
 using Watchman.Discord.Areas.Help.Services;
 
 namespace Watchman.Discord.Areas.Help.Controllers
@@ -26,8 +26,8 @@ namespace Watchman.Discord.Areas.Help.Controllers
 
             if (request.HasArgument("", "json"))
             {
-                var helpMessages = this._helpMessageGenerator.GenerateJsonHelp(contexts);
-                helpMessages.ToList().ForEach(x => messagesService.SendMessage(x));
+                var helpMessage = this._helpMessageGenerator.GenerateJsonHelp(contexts);
+                messagesService.SendMessage(helpMessage, MessageType.Json);
             }
             else
             {
