@@ -8,7 +8,7 @@ namespace Watchman.Web.Areas.Statistics.Models
 {
     public class StatisticsPerChannelDto
     {
-        public string Channel { get; set; };
+        public string Channel { get; set; }
         public int TotalMessages { get; set; }
     }
 }
