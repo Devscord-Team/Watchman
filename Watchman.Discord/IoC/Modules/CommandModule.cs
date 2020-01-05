@@ -35,7 +35,8 @@ namespace Watchman.Discord.Ioc.Modules
                 foreach (var reference in asm.GetReferencedAssemblies())
                 {
                     if (!list.Contains(reference.FullName))
-                    { stack.Push(Assembly.Load(reference));
+                    { 
+                        stack.Push(Assembly.Load(reference));
                         list.Add(reference.FullName);
                     }
                 }
