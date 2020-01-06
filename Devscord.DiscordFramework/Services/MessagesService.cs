@@ -1,4 +1,5 @@
-﻿using Devscord.DiscordFramework.Framework;
+﻿using Devscord.DiscordFramework.Commons;
+using Devscord.DiscordFramework.Framework;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Discord.WebSocket;
@@ -7,12 +8,6 @@ using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework.Services
 {
-    public enum MessageType
-    {
-        NormalText,
-        Json
-    }
-
     public class MessagesService : IService
     {
         public ulong ChannelId { get; set; }
