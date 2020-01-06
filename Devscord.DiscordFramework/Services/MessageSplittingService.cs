@@ -14,15 +14,14 @@ namespace Devscord.DiscordFramework.Services
         {
             switch (messageType)
             {
-                case MessageType.NormalText:
-                    return SplitNormalMessage(fullMessage);
-                    
                 case MessageType.Json:
                     fullMessage = TrimUselessWhitespaceFromBeginning(fullMessage);
                     return SplitJsonMessage(fullMessage);
-            }
 
-            return new List<string>();
+                case MessageType.NormalText:
+                default:
+                    return SplitNormalMessage(fullMessage);
+            }
         }
 
         private IEnumerable<string> SplitNormalMessage(string fullMessage)
