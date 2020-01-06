@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Devscord.DiscordFramework.Commons.Extensions;
-using Devscord.DiscordFramework.Framework;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Framework.Commands.Parsing;
@@ -14,7 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Watchman.Integrations.MongoDB;
+using Devscord.DiscordFramework.Services;
 
 namespace Devscord.DiscordFramework
 {
@@ -22,16 +21,17 @@ namespace Devscord.DiscordFramework
     {
         public Action<Exception, SocketMessage> WorkflowException { get; set; }
 
-        private List<object> _middlewares;
+        private readonly List<object> _middlewares;
         private readonly Assembly _botAssembly;
-        private readonly IComponentContext context;
+        private readonly IComponentContext _context;
         private readonly CommandParser commandParser;
 
         public Workflow(Assembly botAssembly, IComponentContext context)
         {
             _middlewares = new List<object>();
             _botAssembly = botAssembly;
-            this.context = context;
+            this._context = context;
+
             this.commandParser = new CommandParser();//todo maybe autofac
         }
 
@@ -74,12 +74,13 @@ namespace Devscord.DiscordFramework
 
         private void RunControllers(string message, Contexts contexts)
         {
-            //todo maybe optimalize is possible
-            var controllers = _botAssembly.GetTypes()
-                .Where(x => x.GetInterfaces().Any(i => i.FullName == typeof(IController).FullName))
-                .Select(x => (IController)context.Resolve(x));
+            var controllers = _botAssembly.GetTypesByInterface<IController>()
+                .Select(x => (IController) _context.Resolve(x));
 
             var discordRequest = commandParser.Parse(message);
+            
+            if (!discordRequest.IsCommandForBot)
+                return;
 
             foreach (var controller in controllers)
             {
@@ -116,7 +117,7 @@ namespace Devscord.DiscordFramework
                 {
                     if (method.HasAttribute<AdminCommand>() && !contexts.User.IsAdmin)
                     {
-                        var messageService = new MessagesServiceFactory(new ResponsesService()).Create(contexts);
+                        var messageService = new MessagesServiceFactory(new ResponsesService(), new MessageSplittingService()).Create(contexts);
                         messageService.SendMessage("Nie masz wystarczających uprawnień do wywołania tej komendy.");
                         break;
                     }

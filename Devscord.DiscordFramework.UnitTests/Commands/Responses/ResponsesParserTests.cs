@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Devscord.DiscordFramework.UnitTests.Responses
+namespace Devscord.DiscordFramework.UnitTests.Commands.Responses
 {
     [TestFixture]
     public class ResponsesParserTests

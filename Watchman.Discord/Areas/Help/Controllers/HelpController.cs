@@ -1,38 +1,39 @@
 ﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
-using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Watchman.Cqrs;
-using Watchman.DomainModel.Help.Queries;
-using Watchman.Integrations.MongoDB;
+using Devscord.DiscordFramework.Framework.Commands.Responses;
+using Watchman.Discord.Areas.Help.Services;
+using Devscord.DiscordFramework.Commons;
 
 namespace Watchman.Discord.Areas.Help.Controllers
 {
-    public class HelpController
+    public class HelpController : IController
     {
-        private readonly IQueryBus _queryBus;
-        private readonly ICommandBus _commandBus;
-        private readonly MessagesServiceFactory messagesServiceFactory;
-        private readonly ISession _session;
+        private readonly MessagesServiceFactory _messagesServiceFactory;
+        private readonly HelpMessageGeneratorService _helpMessageGenerator;
 
-        public HelpController(IQueryBus queryBus, ICommandBus commandBus, ISessionFactory sessionFactory, MessagesServiceFactory messagesServiceFactory)
+        public HelpController(MessagesServiceFactory messagesServiceFactory, HelpMessageGeneratorService messageGeneratorService)
         {
-            this._queryBus = queryBus;
-            this._commandBus = commandBus;
-            this.messagesServiceFactory = messagesServiceFactory;
-            this._session = sessionFactory.Create();
+            this._messagesServiceFactory = messagesServiceFactory;
+            _helpMessageGenerator = messageGeneratorService;
         }
 
         [DiscordCommand("help")]
         public void PrintHelp(DiscordRequest request, Contexts contexts)
         {
-            var result = this._queryBus.Execute(new GetHelpMessageQuery(this._session));
-            var messagesService = messagesServiceFactory.Create(contexts);
-            messagesService.SendMessage(result.HelpMessage);
+            var messagesService = _messagesServiceFactory.Create(contexts);
+
+            if (request.HasArgument(null, "json"))
+            {
+                var helpMessage = this._helpMessageGenerator.GenerateJsonHelp(contexts);
+                messagesService.SendMessage(helpMessage, MessageType.Json);
+            }
+            else
+            {
+                var helpMessage = this._helpMessageGenerator.GenerateHelp(contexts);
+                messagesService.SendResponse(x => x.PrintHelp(helpMessage), contexts);
+            }
         }
     }
 }

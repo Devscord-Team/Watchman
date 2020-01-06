@@ -11,23 +11,23 @@ namespace Watchman.Discord.Areas.Settings.Controllers
 {
     public class VersionController : IController
     {
-        private readonly IQueryBus queryBus;
-        private readonly ICommandBus commandBus;
-        private readonly MessagesServiceFactory messagesServiceFactory;
+        private readonly IQueryBus _queryBus;
+        private readonly ICommandBus _commandBus;
+        private readonly MessagesServiceFactory _messagesServiceFactory;
 
         public VersionController(IQueryBus queryBus, ICommandBus commandBus, MessagesServiceFactory messagesServiceFactory)
         {
-            this.queryBus = queryBus;
-            this.commandBus = commandBus;
-            this.messagesServiceFactory = messagesServiceFactory;
+            this._queryBus = queryBus;
+            this._commandBus = commandBus;
+            this._messagesServiceFactory = messagesServiceFactory;
         }
 
         [AdminCommand]
         [DiscordCommand("version")]
         public void PrintVersion(DiscordRequest request, Contexts contexts)
         {
-            var version = queryBus.Execute(new GetBotVersionQuery()).Version;
-            var messagesService = messagesServiceFactory.Create(contexts);
+            var version = _queryBus.Execute(new GetBotVersionQuery()).Version;
+            var messagesService = _messagesServiceFactory.Create(contexts);
             messagesService.SendResponse(x => x.CurrentVersion(contexts, version), contexts);
         }
     }

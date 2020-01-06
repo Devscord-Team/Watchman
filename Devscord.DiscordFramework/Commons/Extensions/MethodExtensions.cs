@@ -32,5 +32,10 @@ namespace Devscord.DiscordFramework.Commons.Extensions
             }
             return constructors.Any(c => c.HasParameter<T>());
         }
+
+        public static IEnumerable<MethodInfo> FilterMethodsByAttribute<T>(this IEnumerable<MethodInfo> methods)
+        {
+            return methods.Where(x => x.CustomAttributes.Any(a => a.AttributeType.FullName == typeof(T).FullName));
+        }
     }
 }

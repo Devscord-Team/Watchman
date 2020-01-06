@@ -34,5 +34,9 @@
   {
     "OnEvent": "CurrentVersion",
     "Message": "```Obecna wersja: {{version}}```"
+  },
+  {
+    "OnEvent": "PrintHelp",
+    "Message": "Dostępne komendy: ```{{help}}```" 
   }
 ]

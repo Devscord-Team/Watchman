@@ -16,7 +16,7 @@ namespace Watchman.Discord.Areas.Commons
             service.GetResponsesFunc = x =>
             {
                 var responsesInBase = queryBus.Execute(new GetResponsesQuery()).Responses;
-                var mapped = responsesInBase.Select(x => new Devscord.DiscordFramework.Framework.Commands.Responses.Response
+                var mapped = responsesInBase.Select(x => new Response
                 {
                     OnEvent = x.OnEvent,
                     Message = x.Message

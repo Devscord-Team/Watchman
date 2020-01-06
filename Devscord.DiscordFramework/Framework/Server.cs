@@ -69,8 +69,9 @@ namespace Devscord.DiscordFramework.Framework
             contexts.SetContext(userContext);
             contexts.SetContext(discordServerContext);
             contexts.SetContext(systemChannel);
-            var messagesService = new MessagesServiceFactory(new ResponsesService()).Create(contexts);
-            
+          
+            var messagesService = new MessagesServiceFactory(new ResponsesService(), new MessageSplittingService()).Create(contexts);
+
             var userService = new UsersService();
             return userService.WelcomeUser(messagesService, contexts);
         }

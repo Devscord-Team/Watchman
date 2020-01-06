@@ -13,23 +13,22 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
 
         public void SetContext<T>(T context) where T : IDiscordContext
         {
-            var contextName = context.GetType().Name;
-            switch (contextName)
+            switch (context)
             {
-                case "DiscordServerContext":
-                    Server = context as DiscordServerContext;
+                case DiscordServerContext discordServerContext:
+                    Server = discordServerContext;
                     break;
 
-                case "ChannelContext":
-                    Channel = context as ChannelContext;
+                case ChannelContext channelContext:
+                    Channel = channelContext;
                     break;
 
-                case "UserContext":
-                    User = context as UserContext;
+                case UserContext userContext:
+                    User = userContext;
                     break;
 
                 default:
-                    throw new ArgumentException($"Context {contextName} not exists in {typeof(Contexts).FullName}");
+                    throw new ArgumentException($"Context {context.GetType().Name} not exists in {typeof(Contexts).FullName}");
             }
         }
     }
