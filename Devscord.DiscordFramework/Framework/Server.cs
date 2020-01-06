@@ -63,12 +63,15 @@ namespace Devscord.DiscordFramework.Framework
         {
             var userContext = new UserContextsFactory().Create(guildUser);
             var discordServerContext = new DiscordServerContextFactory().Create(guildUser.Guild);
+            var systemChannel = new ChannelContextFactory().Create(guildUser.Guild.SystemChannel);
+
             var contexts = new Contexts();
             contexts.SetContext(userContext);
             contexts.SetContext(discordServerContext);
-
+            contexts.SetContext(systemChannel);
+          
             var messagesService = new MessagesServiceFactory(new ResponsesService(), new MessageSplittingService()).Create(contexts);
-            
+
             var userService = new UsersService();
             return userService.WelcomeUser(messagesService, contexts);
         }
