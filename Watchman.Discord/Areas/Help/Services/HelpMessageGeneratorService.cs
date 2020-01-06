@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using System.Text;
+using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Newtonsoft.Json;
-using Watchman.Common.Strings;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Help.Queries;
 
@@ -41,10 +41,6 @@ namespace Watchman.Discord.Areas.Help.Services
             var serialized = JsonConvert.SerializeObject(result.HelpInformations, Formatting.Indented);
             serialized = RemoveFirstAndLastBracket(serialized);
             return serialized;
-
-            var messageBuilder = new StringBuilder();
-            messageBuilder.FormatOneMessage(serialized, true, "json");
-            return messageBuilder.ToString();
         }
 
         private string RemoveFirstAndLastBracket(string fullMessage) // '[' & ']'

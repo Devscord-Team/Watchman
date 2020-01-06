@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 
-namespace Watchman.Common.Strings
+namespace Devscord.DiscordFramework.Commons.Extensions
 {
-    public static class StringExtensions
+    public static class StringBuilderExtensions
     {
         public static StringBuilder PrintManyLines(this StringBuilder builder, string header, string[] lines, bool contentStyleBox = true, string formatName = "")
         {
@@ -30,20 +28,10 @@ namespace Watchman.Common.Strings
             return builder;
         }
 
-        public static StringBuilder FormatOneMessage(this StringBuilder builder, string message, bool contentStyleBox = true, string formatName = "")
+        public static StringBuilder FormatMessageIntoBlock(this StringBuilder builder, string formatName = "")
         {
-            if (contentStyleBox)
-            {
-                builder.AppendLine($"```{formatName}");
-            }
-
-            builder.AppendLine(message);
-
-            if (contentStyleBox)
-            {
-                builder.AppendLine("```");
-            }
-
+            builder.Insert(0, $"```{formatName}\n");
+            builder.AppendLine("```");
             return builder;
         }
     }

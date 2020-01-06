@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Devscord.DiscordFramework.Commons.Extensions;
 using PCRE;
 
 namespace Devscord.DiscordFramework.Services
@@ -61,13 +62,14 @@ namespace Devscord.DiscordFramework.Services
             {
                 if (jsonElement.Length + oneMessage.Length > MAX_MESSAGE_LENGTH)
                 {
-                    yield return oneMessage.ToString();
+                    yield return oneMessage.FormatMessageIntoBlock("json").ToString();
                     oneMessage.Clear();
                 }
                 oneMessage.AppendLine(jsonElement + ',');
             }
 
-            yield return oneMessage.ToString()[..^3]; // skip last ",\n"
+            var lastMessage = oneMessage.FormatMessageIntoBlock("json").ToString();
+            yield return lastMessage.Remove(lastMessage.LastIndexOf(','), 1); // remove the last comma - ','
         }
     }
 }
