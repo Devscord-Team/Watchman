@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Watchman.Integrations.MongoDB;
 
-namespace Watchman.DomainModel.Help.Models
+namespace Watchman.DomainModel.Help
 {
     public class HelpInformation : Entity
     {

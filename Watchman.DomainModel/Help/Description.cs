@@ -1,4 +1,4 @@
-﻿namespace Watchman.DomainModel.Help.Models
+﻿namespace Watchman.DomainModel.Help
 {
     public class Description
     {

@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using Watchman.Cqrs;
-using Watchman.DomainModel.Help.Models;
 using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Help.Queries.Handlers

@@ -3,7 +3,7 @@ using System.Linq;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Models;
 using Watchman.Discord.Areas.Help.Factories;
-using Watchman.DomainModel.Help.Models;
+using Watchman.DomainModel.Help;
 using Watchman.Integrations.MongoDB;
 
 namespace Watchman.Discord.Areas.Help.Services

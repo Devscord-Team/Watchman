@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Watchman.DomainModel.Help.Models
+﻿namespace Watchman.DomainModel.Help
 {
     public class ArgumentInfo
     {
