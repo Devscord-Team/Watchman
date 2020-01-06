@@ -24,7 +24,7 @@ namespace Watchman.Discord.Areas.Help.Controllers
         {
             var messagesService = _messagesServiceFactory.Create(contexts);
 
-            if (request.HasArgument("", "json"))
+            if (request.HasArgument(null, "json"))
             {
                 var helpMessage = this._helpMessageGenerator.GenerateJsonHelp(contexts);
                 messagesService.SendMessage(helpMessage, MessageType.Json);
