@@ -18,7 +18,7 @@ namespace Watchman.DomainModel.Help.Models
 
         public HelpInformation()
         {
-            HelpId = new Guid();
+            HelpId = Guid.NewGuid();
         }
     }
 }
