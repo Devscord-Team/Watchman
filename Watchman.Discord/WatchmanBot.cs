@@ -31,7 +31,7 @@ namespace Watchman.Discord
             var autofacContainer = GetAutofacContainer(configuration);
             this._workflow = GetWorkflow(configuration, autofacContainer);
 
-            var dataCollector = autofacContainer.Resolve<HelpDataCollector>();
+            var dataCollector = autofacContainer.Resolve<HelpDataCollectorService>();
             var helpService = autofacContainer.Resolve<HelpDBGeneratorService>();
 
             helpService.SyncDatabase(

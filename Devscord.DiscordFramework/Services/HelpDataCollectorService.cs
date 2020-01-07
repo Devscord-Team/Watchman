@@ -10,11 +10,11 @@ using Devscord.DiscordFramework.Services.Models;
 
 namespace Devscord.DiscordFramework.Services
 {
-    public class HelpDataCollector : IService
+    public class HelpDataCollectorService : IService
     {
         private readonly CommandsInfoFactory _commandsInfoFactory;
 
-        public HelpDataCollector()
+        public HelpDataCollectorService()
         {
             this._commandsInfoFactory = new CommandsInfoFactory();
         }
