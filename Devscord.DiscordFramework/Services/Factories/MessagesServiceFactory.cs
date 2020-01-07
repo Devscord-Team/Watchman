@@ -3,7 +3,7 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 
 namespace Devscord.DiscordFramework.Services.Factories
 {
-    public class MessagesServiceFactory : IService
+    public class MessagesServiceFactory
     {
         private readonly ResponsesService _responsesService;
         private readonly MessageSplittingService _splittingService;

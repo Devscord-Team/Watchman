@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Models;
 using Watchman.Discord.Areas.Help.Factories;
 using Watchman.DomainModel.Help;
@@ -8,7 +7,7 @@ using Watchman.Integrations.MongoDB;
 
 namespace Watchman.Discord.Areas.Help.Services
 {
-    public class HelpDBGeneratorService : IService
+    public class HelpDBGeneratorService
     {
         private readonly HelpInformationFactory _helpInformationFactory;
         private readonly ISession _session;

@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Models;
 using Watchman.DomainModel.Help;
 
 namespace Watchman.Discord.Areas.Help.Factories
 {
-    public class HelpInformationFactory : IService
+    public class HelpInformationFactory
     {
         private readonly ArgumentInfoFactory _argumentInfoFactory;
 
