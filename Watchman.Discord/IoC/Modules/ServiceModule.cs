@@ -28,7 +28,8 @@ namespace Watchman.Discord.IoC.Modules
                 var asm = stack.Pop();
 
                 builder.RegisterAssemblyTypes(asm)
-                    .Where(x => x.IsAssignableTo<IService>())
+                    .Where(x => x.Name.EndsWith("Service") || x.Name.EndsWith("Factory"))
+                    .PreserveExistingDefaults()
                     .InstancePerLifetimeScope();
 
                 foreach (var reference in asm.GetReferencedAssemblies())

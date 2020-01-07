@@ -4,12 +4,11 @@ using Devscord.DiscordFramework.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Watchman.DomainModel.Protection;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {
-    public class AntiSpamService : IService
+    public class AntiSpamService
     {
         private readonly List<(ulong AuthorId, DateTime MessageDateTime)> _lastMessages = new List<(ulong AuthorId, DateTime MessageDateTime)>();
         private readonly List<ulong> _warns = new List<ulong>();

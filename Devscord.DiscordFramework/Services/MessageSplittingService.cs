@@ -7,7 +7,7 @@ using PCRE;
 
 namespace Devscord.DiscordFramework.Services
 {
-    public class MessageSplittingService : IService
+    public class MessageSplittingService
     {
         const int MAX_MESSAGE_LENGTH = 1990; // for safety reason I made it smaller than 2000
 

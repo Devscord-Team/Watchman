@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Framework;
-using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Discord.WebSocket;
 
 namespace Devscord.DiscordFramework.Services
 {
-    public class UsersService : IService
+    public class UsersService
     {
         public Task AddRole(UserRole role, UserContext user, DiscordServerContext server)
         {

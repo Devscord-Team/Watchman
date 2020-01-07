@@ -31,11 +31,10 @@ namespace Watchman.Discord
             var autofacContainer = GetAutofacContainer(configuration);
             this._workflow = GetWorkflow(configuration, autofacContainer);
 
-            var dataCollector = autofacContainer.Resolve<HelpDataCollector>();
+            var dataCollector = autofacContainer.Resolve<HelpDataCollectorService>();
             var helpService = autofacContainer.Resolve<HelpDBGeneratorService>();
 
-            helpService.SyncDatabase(
-                dataCollector.GetCommandsInfo(typeof(WatchmanBot).Assembly));
+            helpService.FillDatabase(dataCollector.GetCommandsInfo(typeof(WatchmanBot).Assembly));
         }
 
         public async Task Start()
@@ -65,7 +64,7 @@ namespace Watchman.Discord
                 messagesService.SendMessage("Wystąpił wyjątek");
             }
 #if DEBUG
-            messagesService.SendMessage($"```Komenda: {socketMessage.Content}```");
+            messagesService.SendMessage($"```Command: {socketMessage.Content}```");
             messagesService.SendMessage($"```Message: {e.Message}```");
             messagesService.SendMessage($"```InnerException message: {e.InnerException?.Message}```");
             messagesService.SendMessage($"```InnerException2 message: {e.InnerException?.InnerException?.Message}```");

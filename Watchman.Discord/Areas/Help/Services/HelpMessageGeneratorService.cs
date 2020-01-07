@@ -1,15 +1,13 @@
 ﻿using System.Linq;
 using System.Text;
-using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Middlewares.Contexts;
-using Devscord.DiscordFramework.Services;
 using Newtonsoft.Json;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Help.Queries;
 
 namespace Watchman.Discord.Areas.Help.Services
 {
-    public class HelpMessageGeneratorService : IService
+    public class HelpMessageGeneratorService
     {
         private readonly IQueryBus _queryBus;
 

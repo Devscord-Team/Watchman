@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework.Services
 {
-    public class MessagesService : IService
+    public class MessagesService
     {
         public ulong ChannelId { get; set; }
 
