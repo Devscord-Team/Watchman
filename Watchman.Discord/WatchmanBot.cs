@@ -49,6 +49,10 @@ namespace Watchman.Discord
 
         private Task MessageReceived(SocketMessage message)
         {
+#if DEBUG
+            if (!message.Channel.Name.Contains("test"))
+                return Task.CompletedTask;
+#endif
             return message.Author.IsBot ? Task.CompletedTask : this._workflow.Run(message);
         }
 
