@@ -10,6 +10,7 @@ using Watchman.Discord.Ioc;
 using Devscord.DiscordFramework;
 using Autofac;
 using Watchman.Discord.Areas.Help.Services;
+using System.Text;
 
 namespace Watchman.Discord
 {
@@ -68,10 +69,12 @@ namespace Watchman.Discord
                 messagesService.SendMessage("Wystąpił wyjątek");
             }
 #if DEBUG
-            messagesService.SendMessage($"```Command: {socketMessage.Content}```");
-            messagesService.SendMessage($"```Message: {e.Message}```");
-            messagesService.SendMessage($"```InnerException message: {e.InnerException?.Message}```");
-            messagesService.SendMessage($"```InnerException2 message: {e.InnerException?.InnerException?.Message}```");
+            var exceptionMessageBuilder = new StringBuilder();
+            exceptionMessageBuilder.AppendLine($"```Command: {socketMessage.Content}```");
+            exceptionMessageBuilder.AppendLine($"```Message: {e.Message}```");
+            exceptionMessageBuilder.AppendLine($"```InnerException message: {e.InnerException?.Message}```");
+            exceptionMessageBuilder.AppendLine($"```InnerException2 message: {e.InnerException?.InnerException?.Message}```");
+            messagesService.SendMessage(exceptionMessageBuilder.ToString());
 #endif
         }
 
