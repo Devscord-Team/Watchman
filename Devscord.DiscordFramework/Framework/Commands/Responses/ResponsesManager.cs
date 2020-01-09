@@ -54,5 +54,10 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("PrintHelp", new KeyValuePair<string, string>("help", help));
         }
+
+        public static string UserIsNotAdmin(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("UserIsNotAdmin");
+        }
     }
 }

@@ -24,7 +24,7 @@ namespace Devscord.DiscordFramework
         private readonly List<object> _middlewares;
         private readonly Assembly _botAssembly;
         private readonly IComponentContext _context;
-        private readonly CommandParser commandParser;
+        private readonly CommandParser _commandParser;
 
         public Workflow(Assembly botAssembly, IComponentContext context)
         {
@@ -32,7 +32,7 @@ namespace Devscord.DiscordFramework
             _botAssembly = botAssembly;
             this._context = context;
 
-            this.commandParser = new CommandParser();//todo maybe autofac
+            this._commandParser = new CommandParser();//todo maybe autofac
         }
 
         public Workflow AddMiddleware<T>(object configuration = null /*TODO*/)
@@ -77,7 +77,7 @@ namespace Devscord.DiscordFramework
             var controllers = _botAssembly.GetTypesByInterface<IController>()
                 .Select(x => (IController) _context.Resolve(x));
 
-            var discordRequest = commandParser.Parse(message);
+            var discordRequest = _commandParser.Parse(message);
             
             if (!discordRequest.IsCommandForBot)
                 return;
@@ -118,7 +118,7 @@ namespace Devscord.DiscordFramework
                     if (method.HasAttribute<AdminCommand>() && !contexts.User.IsAdmin)
                     {
                         var messageService = new MessagesServiceFactory(new ResponsesService(), new MessageSplittingService()).Create(contexts);
-                        messageService.SendMessage("Nie masz wystarczających uprawnień do wywołania tej komendy.");
+                        messageService.SendResponse(x => x.UserIsNotAdmin(), contexts);
                         break;
                     }
 
