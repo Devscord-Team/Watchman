@@ -63,6 +63,7 @@ namespace Watchman.Discord
             if (e is NotAdminPermissionsException)
             {
                 messagesService.SendResponse(x => x.UserIsNotAdmin(), contexts);
+                return;
             }
             else
             {
