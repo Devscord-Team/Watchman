@@ -19,12 +19,12 @@ namespace Devscord.DiscordFramework
 {
     public class Workflow
     {
-        public Action<Exception, SocketMessage> WorkflowException { get; set; }
+        public Action<Exception, Contexts> WorkflowException { get; set; }
 
         private readonly List<object> _middlewares;
         private readonly Assembly _botAssembly;
         private readonly IComponentContext _context;
-        private readonly CommandParser commandParser;
+        private readonly CommandParser _commandParser;
 
         public Workflow(Assembly botAssembly, IComponentContext context)
         {
@@ -32,7 +32,7 @@ namespace Devscord.DiscordFramework
             _botAssembly = botAssembly;
             this._context = context;
 
-            this.commandParser = new CommandParser();//todo maybe autofac
+            this._commandParser = new CommandParser();//todo maybe autofac
         }
 
         public Workflow AddMiddleware<T>(object configuration = null /*TODO*/)
@@ -49,15 +49,15 @@ namespace Devscord.DiscordFramework
 
         public Task Run(SocketMessage data)
         {
+            var contexts = this.RunMiddlewares(data);
             try
             {
                 throw new Exception("test catching");
-                var contexts = this.RunMiddlewares(data);
                 this.RunControllers(data.Content, contexts);
             }
             catch (Exception e)
             {
-                WorkflowException.Invoke(e, data);
+                WorkflowException.Invoke(e, contexts);
             }
             return Task.CompletedTask;
         }
@@ -78,7 +78,7 @@ namespace Devscord.DiscordFramework
             var controllers = _botAssembly.GetTypesByInterface<IController>()
                 .Select(x => (IController) _context.Resolve(x));
 
-            var discordRequest = commandParser.Parse(message);
+            var discordRequest = _commandParser.Parse(message);
             
             if (!discordRequest.IsCommandForBot)
                 return;
@@ -118,9 +118,7 @@ namespace Devscord.DiscordFramework
                 {
                     if (method.HasAttribute<AdminCommand>() && !contexts.User.IsAdmin)
                     {
-                        var messageService = new MessagesServiceFactory(new ResponsesService(), new MessageSplittingService()).Create(contexts);
-                        messageService.SendMessage("Nie masz wystarczających uprawnień do wywołania tej komendy.");
-                        break;
+                        throw new NotAdminPermissionsException();
                     }
 
                     method.Invoke(controller, new object[] { request, contexts });
