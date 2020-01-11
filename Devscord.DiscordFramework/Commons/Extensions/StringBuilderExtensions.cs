@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 
 namespace Devscord.DiscordFramework.Commons.Extensions
 {
@@ -20,6 +21,23 @@ namespace Devscord.DiscordFramework.Commons.Extensions
             foreach (var line in lines)
             {
                 builder.AppendLine(line);
+            }
+            if (contentStyleBox)
+            {
+                builder.AppendLine("```");
+            }
+            return builder;
+        }
+
+        public static StringBuilder PrintManyLines(this StringBuilder builder, Dictionary<string, string> lines, bool contentStyleBox = true)
+        {
+            if (contentStyleBox)
+            {
+                builder.AppendLine("```");
+            }
+            foreach (var line in lines)
+            {
+                builder.Append(line.Key).Append(" => ").AppendLine(line.Value);
             }
             if (contentStyleBox)
             {

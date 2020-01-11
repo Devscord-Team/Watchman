@@ -13,6 +13,9 @@ using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Discord.Areas.Help.Services;
+using System.Text;
+using System.Collections.Generic;
+using Devscord.DiscordFramework.Commons.Extensions;
 
 namespace Watchman.Discord
 {
@@ -53,6 +56,10 @@ namespace Watchman.Discord
 
         private Task MessageReceived(SocketMessage message)
         {
+#if DEBUG
+            if (!message.Channel.Name.Contains("test"))
+                return Task.CompletedTask;
+#endif
             return message.Author.IsBot ? Task.CompletedTask : this._workflow.Run(message);
         }
 
@@ -70,9 +77,16 @@ namespace Watchman.Discord
                 messagesService.SendMessage("Wystąpił nieznany wyjątek");
             }
 #if DEBUG
-            messagesService.SendMessage($"```Message: {e.Message}```");
-            messagesService.SendMessage($"```InnerException message: {e.InnerException?.Message}```");
-            messagesService.SendMessage($"```InnerException2 message: {e.InnerException?.InnerException?.Message}```");
+            var lines = new Dictionary<string, string>()
+            {
+                { "Message", e.Message },
+                { "InnerException message", e.InnerException?.Message },
+                { "InnerException2 message", e.InnerException?.InnerException?.Message }
+            };
+
+            var exceptionMessageBuilder = new StringBuilder();
+            exceptionMessageBuilder.PrintManyLines(lines);
+            messagesService.SendMessage(exceptionMessageBuilder.ToString());
 #endif
         }
 

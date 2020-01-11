@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Newtonsoft.Json;
 using Watchman.Cqrs;
@@ -20,15 +22,17 @@ namespace Watchman.Discord.Areas.Help.Services
         {
             var result = this._queryBus.Execute(new GetHelpInformationQuery(contexts.Server.Id));
 
-            var messageBuilder = new StringBuilder();
+            var lines = new Dictionary<string, string>();
             foreach (var helpInfo in result.HelpInformations)
             {
-                var line = new StringBuilder("-" + helpInfo.Names.Aggregate((x, y) => $"{x} / -{y}"));
-                line.Append(" => ");
-                line.Append(helpInfo.Descriptions.First(x => x.Name == helpInfo.DefaultDescriptionName).Details);
-                messageBuilder.AppendLine(line.ToString());
+                var names = helpInfo.Names.Aggregate((x, y) => $"{x} / -{y}");
+                var description = helpInfo.Descriptions.First(x => x.Name == helpInfo.DefaultDescriptionName).Details;
+
+                lines.Add(names, description);
             }
 
+            var messageBuilder = new StringBuilder();
+            messageBuilder.PrintManyLines(lines, false);
             return messageBuilder.ToString();
         }
 
