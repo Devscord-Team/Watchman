@@ -52,7 +52,6 @@ namespace Devscord.DiscordFramework
             var contexts = this.RunMiddlewares(data);
             try
             {
-                throw new Exception("test catching");
                 this.RunControllers(data.Content, contexts);
             }
             catch (Exception e)
