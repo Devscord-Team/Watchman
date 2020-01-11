@@ -9,6 +9,9 @@ using Watchman.Integrations.MongoDB;
 using Watchman.Discord.Ioc;
 using Devscord.DiscordFramework;
 using Autofac;
+using Devscord.DiscordFramework.Framework.Commands.Responses;
+using Devscord.DiscordFramework.Middlewares.Contexts;
+using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Discord.Areas.Help.Services;
 
 namespace Watchman.Discord
@@ -18,6 +21,7 @@ namespace Watchman.Discord
         private readonly DiscordSocketClient _client;
         private readonly Workflow _workflow;
         private readonly DiscordConfiguration _configuration;
+        private readonly IContainer _container;
 
         public WatchmanBot(DiscordConfiguration configuration)
         {
@@ -28,11 +32,11 @@ namespace Watchman.Discord
             });
             this._client.MessageReceived += this.MessageReceived;
 
-            var autofacContainer = GetAutofacContainer(configuration);
-            this._workflow = GetWorkflow(configuration, autofacContainer);
+            this._container = GetAutofacContainer(configuration);
+            this._workflow = GetWorkflow(configuration, _container);
 
-            var dataCollector = autofacContainer.Resolve<HelpDataCollectorService>();
-            var helpService = autofacContainer.Resolve<HelpDBGeneratorService>();
+            var dataCollector = _container.Resolve<HelpDataCollectorService>();
+            var helpService = _container.Resolve<HelpDBGeneratorService>();
 
             helpService.FillDatabase(dataCollector.GetCommandsInfo(typeof(WatchmanBot).Assembly));
         }
@@ -52,19 +56,20 @@ namespace Watchman.Discord
             return message.Author.IsBot ? Task.CompletedTask : this._workflow.Run(message);
         }
 
-        private void LogException(Exception e, SocketMessage socketMessage)
+        private void LogException(Exception e, Contexts contexts)
         {
-            var messagesService = new MessagesService()
-            {
-                ChannelId = socketMessage.Channel.Id
-            };
+            var messagesService = _container.Resolve<MessagesServiceFactory>().Create(contexts);
 
-            if (e is System.Reflection.TargetInvocationException)
+            if (e is NotAdminPermissionsException)
             {
-                messagesService.SendMessage("Wystąpił wyjątek");
+                messagesService.SendResponse(x => x.UserIsNotAdmin(), contexts);
+                return;
+            }
+            else
+            {
+                messagesService.SendMessage("Wystąpił nieznany wyjątek");
             }
 #if DEBUG
-            messagesService.SendMessage($"```Command: {socketMessage.Content}```");
             messagesService.SendMessage($"```Message: {e.Message}```");
             messagesService.SendMessage($"```InnerException message: {e.InnerException?.Message}```");
             messagesService.SendMessage($"```InnerException2 message: {e.InnerException?.InnerException?.Message}```");

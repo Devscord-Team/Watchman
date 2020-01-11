@@ -19,7 +19,7 @@ namespace Devscord.DiscordFramework
 {
     public class Workflow
     {
-        public Action<Exception, SocketMessage> WorkflowException { get; set; }
+        public Action<Exception, Contexts> WorkflowException { get; set; }
 
         private readonly List<object> _middlewares;
         private readonly Assembly _botAssembly;
@@ -49,14 +49,14 @@ namespace Devscord.DiscordFramework
 
         public Task Run(SocketMessage data)
         {
+            var contexts = this.RunMiddlewares(data);
             try
             {
-                var contexts = this.RunMiddlewares(data);
                 this.RunControllers(data.Content, contexts);
             }
             catch (Exception e)
             {
-                WorkflowException.Invoke(e, data);
+                WorkflowException.Invoke(e, contexts);
             }
             return Task.CompletedTask;
         }
@@ -117,9 +117,7 @@ namespace Devscord.DiscordFramework
                 {
                     if (method.HasAttribute<AdminCommand>() && !contexts.User.IsAdmin)
                     {
-                        var messageService = new MessagesServiceFactory(new ResponsesService(), new MessageSplittingService()).Create(contexts);
-                        messageService.SendResponse(x => x.UserIsNotAdmin(), contexts);
-                        break;
+                        throw new NotAdminPermissionsException();
                     }
 
                     method.Invoke(controller, new object[] { request, contexts });
