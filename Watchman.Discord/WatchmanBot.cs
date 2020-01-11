@@ -11,6 +11,8 @@ using Devscord.DiscordFramework;
 using Autofac;
 using Watchman.Discord.Areas.Help.Services;
 using System.Text;
+using System.Collections.Generic;
+using Devscord.DiscordFramework.Commons.Extensions;
 
 namespace Watchman.Discord
 {
@@ -69,11 +71,16 @@ namespace Watchman.Discord
                 messagesService.SendMessage("Wystąpił wyjątek");
             }
 #if DEBUG
+            var lines = new Dictionary<string, string>()
+            {
+                { "Command", socketMessage.Content },
+                { "Message", e.Message },
+                { "InnerException message", e.InnerException?.Message },
+                { "InnerException2 message", e.InnerException?.InnerException?.Message }
+            };
+
             var exceptionMessageBuilder = new StringBuilder();
-            exceptionMessageBuilder.AppendLine($"```Command: {socketMessage.Content}```");
-            exceptionMessageBuilder.AppendLine($"```Message: {e.Message}```");
-            exceptionMessageBuilder.AppendLine($"```InnerException message: {e.InnerException?.Message}```");
-            exceptionMessageBuilder.AppendLine($"```InnerException2 message: {e.InnerException?.InnerException?.Message}```");
+            exceptionMessageBuilder.PrintManyLines(lines);
             messagesService.SendMessage(exceptionMessageBuilder.ToString());
 #endif
         }
