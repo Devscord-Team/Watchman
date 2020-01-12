@@ -75,5 +75,14 @@ namespace Devscord.DiscordFramework.Framework
             var userService = new UsersService();
             return userService.WelcomeUser(messagesService, contexts);
         }
+
+        public static Task CreateNewRole(UserRole role, DiscordServerContext discordServer)
+        {
+            const ulong ONLY_READ_MESSAGES_PERMISSIONS = 1049600;
+
+            var permissions = new Discord.GuildPermissions(ONLY_READ_MESSAGES_PERMISSIONS);
+            return _client.GetGuild(discordServer.Id)
+                .CreateRoleAsync(role.Name, permissions);
+        }
     }
 }
