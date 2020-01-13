@@ -8,6 +8,7 @@ using Discord.WebSocket;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Devscord.DiscordFramework.Middlewares.Factories;
 
 namespace Devscord.DiscordFramework.Framework
 {
@@ -57,6 +58,11 @@ namespace Devscord.DiscordFramework.Framework
             return _client.GetGuild(guildId).GetUser(userId);
         }
 
+        public static IReadOnlyCollection<SocketGuildUser> GetGuildUsers(ulong guildId)
+        {
+            return _client.GetGuild(guildId).Users;
+        }
+
         //todo there should be command (command handler)
         private static Task UserJoined(SocketGuildUser guildUser)
         {
@@ -75,7 +81,7 @@ namespace Devscord.DiscordFramework.Framework
             return userService.WelcomeUser(messagesService, contexts);
         }
 
-        public static Task CreateNewRole(UserRole role, DiscordServerContext discordServer)
+        public static Task CreateNewRole(UserRole role, DiscordServerContext discordServer) //todo: bla bla
         {
             var permissionsValue = (ulong)role.Permissions.Sum(x => (long)x);
 

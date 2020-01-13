@@ -54,7 +54,7 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
 
         private void CreateMuteRole(Contexts contexts)
         {
-            var onlyReadPermission = new List<Permission>() { Permission.ReadMessages };
+            var onlyReadPermission = new List<Permission> { Permission.ReadMessages };
             var mutedRole = new UserRole("muted", onlyReadPermission);
             _rolesService.CreateNewRole(contexts, mutedRole);
         }
