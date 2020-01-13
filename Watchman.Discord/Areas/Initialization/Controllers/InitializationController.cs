@@ -51,7 +51,9 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
 
         private void CreateMuteRole()
         {
-            
+            const ulong ONLY_READ_MESSAGES_PERMISSIONS = 1049600;
+            var noPermissions = new List<Permission>();
+            var mutedRole = new UserRole(null, "muted", noPermissions);
         }
 
         private void SetChannelsPermissions()

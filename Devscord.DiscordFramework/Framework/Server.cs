@@ -3,11 +3,10 @@ using Devscord.DiscordFramework.Middlewares;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
+using Discord;
 using Discord.WebSocket;
-using MongoDB.Driver;
-using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework.Framework
@@ -78,11 +77,10 @@ namespace Devscord.DiscordFramework.Framework
 
         public static Task CreateNewRole(UserRole role, DiscordServerContext discordServer)
         {
-            const ulong ONLY_READ_MESSAGES_PERMISSIONS = 1049600;
+            var permissionsValue = (ulong)role.Permissions.Sum(x => (long)x);
 
-            var permissions = new Discord.GuildPermissions(ONLY_READ_MESSAGES_PERMISSIONS);
             return _client.GetGuild(discordServer.Id)
-                .CreateRoleAsync(role.Name, permissions);
+                .CreateRoleAsync(role.Name, new GuildPermissions(permissionsValue));
         }
     }
 }
