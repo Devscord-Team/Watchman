@@ -14,7 +14,7 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
         public string AvatarUrl { get; private set; }
         public string Mention { get; private set; }
 
-        public bool IsAdmin => Roles.Any(x => x.Permissions.Any(x => x.HasFlag(Permission.Admin)));
+        public bool IsAdmin => Roles.Any(x => x.Permissions.Any(x => x.HasFlag(Permission.Administrator)));
         public bool IsMuted => Roles.Any(x => x.Name == "muted");
 
         public UserContext(ulong id, string name, IEnumerable<UserRole> roles, string avatarUrl, string mention)
@@ -37,6 +37,18 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
         public ulong Id { get; private set; }
         public string Name { get; private set; }
         public IEnumerable<Permission> Permissions { get; private set; }
+
+        public UserRole(string name)
+        {
+            this.Name = name;
+            this.Permissions = new List<Permission>();
+        }
+
+        public UserRole(string name, IEnumerable<Permission> permissions)
+        {
+            this.Name = name;
+            this.Permissions = permissions;
+        }
 
         public UserRole(ulong id, string name, IEnumerable<Permission> permissions)
         {

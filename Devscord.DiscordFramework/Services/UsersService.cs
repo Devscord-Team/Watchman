@@ -29,7 +29,8 @@ namespace Devscord.DiscordFramework.Services
             {
                 return default;
             }
-            return new UserRole(role.Id, role.Name);
+            var permissions = role.Permissions.ToList().Select(x => (Permission)x);
+            return new UserRole(role.Id, role.Name, permissions);
         }
 
         private SocketGuildUser GetUser(UserContext user, DiscordServerContext server)

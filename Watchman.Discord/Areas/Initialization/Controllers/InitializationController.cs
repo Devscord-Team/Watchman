@@ -1,6 +1,7 @@
 ﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
+using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -17,12 +18,14 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
         private readonly MessagesServiceFactory _messagesServiceFactory;
+        private readonly RolesService _rolesService;
 
-        public InitializationController(IQueryBus queryBus, ICommandBus commandBus, MessagesServiceFactory messagesServiceFactory)
+        public InitializationController(IQueryBus queryBus, ICommandBus commandBus, MessagesServiceFactory messagesServiceFactory, RolesService rolesService)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;
             this._messagesServiceFactory = messagesServiceFactory;
+            this._rolesService = rolesService;
         }
 
         [AdminCommand]
@@ -31,8 +34,8 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
         public void Init(DiscordRequest request, Contexts contexts)
         {
             ResponsesInit();
-            CreateMuteRole();
-            SetChannelsPermissions();
+            CreateMuteRole(contexts);
+            SetChannelsPermissions(contexts);
         }
 
         private void ResponsesInit()
@@ -49,16 +52,16 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
             }
         }
 
-        private void CreateMuteRole()
+        private void CreateMuteRole(Contexts contexts)
         {
-            const ulong ONLY_READ_MESSAGES_PERMISSIONS = 1049600;
-            var noPermissions = new List<Permission>();
-            var mutedRole = new UserRole(null, "muted", noPermissions);
+            var onlyReadPermission = new List<Permission>() { Permission.ReadMessages };
+            var mutedRole = new UserRole("muted", onlyReadPermission);
+            _rolesService.CreateNewRole(contexts, mutedRole);
         }
 
-        private void SetChannelsPermissions()
+        private void SetChannelsPermissions(Contexts contexts)
         {
-
+            
         }
     }
 }
