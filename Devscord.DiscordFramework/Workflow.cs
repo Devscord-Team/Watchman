@@ -1,19 +1,15 @@
 ﻿using Autofac;
 using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
-using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Framework.Commands.Parsing;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
-using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
-using Devscord.DiscordFramework.Services.Factories;
 using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Devscord.DiscordFramework.Services;
 
 namespace Devscord.DiscordFramework
 {
