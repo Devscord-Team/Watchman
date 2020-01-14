@@ -9,18 +9,19 @@ using Watchman.Cqrs;
 
 namespace Watchman.Discord.Areas.Protection.Controllers
 {
-    class MuteUserController
+    class MuteUserController : IController
     {
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
+        private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly UsersRolesService _usersRolesService;
         private readonly UsersService _usersService;
-        private readonly MessagesService _messageService;
 
-        public MuteUserController(IQueryBus queryBus, ICommandBus commandBus, MessagesServiceFactory messageServiceFactory, UsersRolesService usersRolesService, UsersService usersService)
+        public MuteUserController(IQueryBus queryBus, ICommandBus commandBus, MessagesServiceFactory messagesServiceFactory, UsersRolesService usersRolesService, UsersService usersService)
         {
             _queryBus = queryBus;
             _commandBus = commandBus;
+            _messagesServiceFactory = messagesServiceFactory;
             _usersRolesService = usersRolesService;
             _usersService = usersService;
         }
@@ -33,12 +34,14 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             contexts.SetContext(userToMute);
             var muteRole = GetMuteRole(contexts);
 
+            var messagesService = _messagesServiceFactory.Create(contexts);
+
             MuteUser(contexts, muteRole);
-            _messageService.SendMessage("Użytkownik został zmutowany");
+            messagesService.SendMessage("Użytkownik został zmutowany");
             Task.Delay(10000).Wait();
 
             UnmuteUser(contexts, muteRole);
-            _messageService.SendMessage("Użytkownik może pisać ponownie");
+            messagesService.SendMessage("Użytkownik może pisać ponownie");
         }
 
         private UserContext FindUserByMention(string mention, DiscordServerContext server)
