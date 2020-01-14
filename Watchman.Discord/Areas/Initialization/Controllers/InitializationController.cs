@@ -18,14 +18,14 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
         private readonly MessagesServiceFactory _messagesServiceFactory;
-        private readonly RolesService _rolesService;
+        private readonly UsersRolesService _usersRolesService;
 
-        public InitializationController(IQueryBus queryBus, ICommandBus commandBus, MessagesServiceFactory messagesServiceFactory, RolesService rolesService)
+        public InitializationController(IQueryBus queryBus, ICommandBus commandBus, MessagesServiceFactory messagesServiceFactory, UsersRolesService usersRolesService)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;
             this._messagesServiceFactory = messagesServiceFactory;
-            this._rolesService = rolesService;
+            this._usersRolesService = usersRolesService;
         }
 
         [AdminCommand]
@@ -56,7 +56,7 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
         {
             var onlyReadPermission = new List<Permission> { Permission.ReadMessages };
             var mutedRole = new UserRole("muted", onlyReadPermission);
-            _rolesService.CreateNewRole(contexts, mutedRole);
+            _usersRolesService.CreateNewRole(contexts, mutedRole);
         }
 
         private void SetChannelsPermissions(Contexts contexts)

@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Framework;
 using Devscord.DiscordFramework.Middlewares.Contexts;
-using Discord.WebSocket;
 
 namespace Devscord.DiscordFramework.Services
 {
-    public class RolesService
+    public class UsersRolesService
     {
         public Task CreateNewRole(Contexts contexts, UserRole userRole)
         {
