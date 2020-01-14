@@ -23,7 +23,8 @@ namespace Watchman.ScheduleRunner
 
         public Task Run(ScheduleTask scheduleTask)
         {
-            var commandType = this.assembly.GetTypes().FirstOrDefault(x => x.FullName == scheduleTask.CommandName);
+            var commandType = this.assembly.GetTypes()
+                .FirstOrDefault(x => x.FullName == scheduleTask.CommandName || x.Name == scheduleTask.CommandName);
             if(scheduleTask == null)
             {
                 throw new ArgumentException($"Not found {scheduleTask.CommandName} command");
