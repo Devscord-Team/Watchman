@@ -16,7 +16,7 @@ namespace Watchman.ScheduleRunner.IoC.Modules
                 .GetTypeInfo()
                 .Assembly;
 
-            builder.Register((c, p) => new MongoClient("").GetDatabase("devscord"))
+            builder.Register((c, p) => new MongoClient("mongodb://localhost:27017").GetDatabase("devscord"))
                 .As<IMongoDatabase>()
                 .InstancePerLifetimeScope();
 

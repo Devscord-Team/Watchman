@@ -26,7 +26,7 @@ namespace Watchman.DomainModel.ScheduleTasks.Queries.Handlers
                 {
                     results = results.Where(x => !x.IsExecuted);
                 }
-                return new GetScheduleTasksQueryResult(results);
+                return new GetScheduleTasksQueryResult(results.ToList());
             }
         }
     }

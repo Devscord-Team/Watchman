@@ -36,7 +36,7 @@ namespace Watchman.ScheduleRunner.IoC.Modules
 
             builder.Register((c, p) =>
             {
-                var assembly = Assembly.LoadFrom("Watchman.DomainModel");
+                var assembly = Assembly.LoadFrom("Watchman.DomainModel.dll");
                 var commandBus = c.Resolve<ICommandBus>();
                 return new ScheduleTasksRunner(commandBus, assembly);
             }).As<ScheduleTasksRunner>()

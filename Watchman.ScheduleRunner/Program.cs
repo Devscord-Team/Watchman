@@ -14,8 +14,6 @@ namespace Watchman.ScheduleRunner
 
             var schedulerService = autofac.Resolve<SchedulerService>();
             schedulerService.RunScheduledTasks();
-
-            Console.WriteLine("Hello World!");
         }
     }
 }
