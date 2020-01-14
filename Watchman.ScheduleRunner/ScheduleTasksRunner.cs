@@ -10,12 +10,12 @@ using Watchman.DomainModel.Tasks;
 
 namespace Watchman.ScheduleRunner
 {
-    public class Runner
+    public class ScheduleTasksRunner
     {
         private readonly ICommandBus commandBus;
         private readonly Assembly assembly;
 
-        public Runner(ICommandBus commandBus, Assembly assembly)
+        public ScheduleTasksRunner(ICommandBus commandBus, Assembly assembly)
         {
             this.commandBus = commandBus;
             this.assembly = assembly;

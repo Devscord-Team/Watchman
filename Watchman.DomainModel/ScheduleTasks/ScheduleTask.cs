@@ -9,5 +9,7 @@ namespace Watchman.DomainModel.Tasks
     {
         public string CommandName { get; set; }
         public IEnumerable<object> Arguments { get; set; }
+        public DateTime ExecutionDate { get; set; }
+        public bool IsExecuted { get; set; }
     }
 }
