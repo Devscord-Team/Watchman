@@ -11,5 +11,21 @@ namespace Watchman.DomainModel.Tasks
         public IEnumerable<object> Arguments { get; set; }
         public DateTime ExecutionDate { get; set; }
         public bool IsExecuted { get; set; }
+
+        public ScheduleTask()
+        {
+        }
+
+        public ScheduleTask(string commandName, IEnumerable<object> arguments, DateTime executionDate)
+        {
+            this.CommandName = commandName;
+            this.Arguments = arguments;
+            this.ExecutionDate = executionDate;
+        }
+
+        public void SetAsExecuted()
+        {
+            this.IsExecuted = true;
+        }
     }
 }

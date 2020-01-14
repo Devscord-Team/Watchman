@@ -8,21 +8,22 @@ using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.ScheduleTasks.Commands.Handlers
 {
-    public class AddScheduleTaskCommandHandler : ICommandHandler<AddScheduleTaskCommand>
+    public class SetAsExecutedScheduleTaskCommandHandler : ICommandHandler<SetAsExecutedScheduleTaskCommand>
     {
         private readonly ISessionFactory sessionFactory;
 
-        public AddScheduleTaskCommandHandler(ISessionFactory sessionFactory)
+        public SetAsExecutedScheduleTaskCommandHandler(ISessionFactory sessionFactory)
         {
             this.sessionFactory = sessionFactory;
         }
 
-        public Task HandleAsync(AddScheduleTaskCommand command)
+        public Task HandleAsync(SetAsExecutedScheduleTaskCommand command)
         {
-            var scheduleTask = new ScheduleTask(command.CommandName, command.Arguments, command.ExecutionDate);
             using (var session = sessionFactory.Create())
             {
-                session.Add(scheduleTask);
+                var scheduleTask = session.Get<ScheduleTask>(command.ScheduleTaskId);
+                scheduleTask.SetAsExecuted();
+                session.Update(scheduleTask);
             }
             return Task.CompletedTask;
         }
