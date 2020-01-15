@@ -89,11 +89,11 @@ namespace Devscord.DiscordFramework.Framework
                 .CreateRoleAsync(role.Name, new GuildPermissions(permissionsValue));
         }
 
-        public static Task SetPermissions(ChannelContext channelContext, Permissions permissions, UserRole muteRole)
+        public static Task SetPermissions(ChannelContext channelContext, ChangedPermissions permissions, UserRole muteRole)
         {
             var channelSocket = (IGuildChannel)GetChannel(channelContext.Id);
             var socketRole = GetRoles(channelSocket.Id).FirstOrDefault(x => x.Id == muteRole.Id);
-            var channelPermissions = new OverwritePermissions(permissions.RawValue);
+            var channelPermissions = new OverwritePermissions(permissions.AllowPermissions.RawValue, permissions.DenyPermissions.RawValue);
 
             return channelSocket.AddPermissionOverwriteAsync(socketRole, channelPermissions);
         }
