@@ -29,12 +29,32 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         [DiscordCommand("mute")]
         public void MuteUser(DiscordRequest request, Contexts contexts)
         {
-            var userToMute = FindUserByMention(request.Arguments.First().Values.First(), contexts.Server);
+            var mention = request.Arguments.FirstOrDefault()?.Values.FirstOrDefault();
+
+            var messagesService = _messagesServiceFactory.Create(contexts);
+
+            if (string.IsNullOrWhiteSpace(mention))
+            {
+                messagesService.SendMessage("Musisz wskazać użytkownika do zmutowania");
+                return;
+            }
+
+            var userToMute = FindUserByMention(mention, contexts.Server);
+
+            if (userToMute == null)
+            {
+                messagesService.SendMessage("Użytkownik nie istnieje");
+                return;
+            }
 
             contexts.SetContext(userToMute);
             var muteRole = GetMuteRole(contexts);
 
-            var messagesService = _messagesServiceFactory.Create(contexts);
+            if (muteRole == null)
+            {
+                messagesService.SendMessage("Rola muted nie istnieje");
+                return;
+            }
 
             MuteUser(contexts, muteRole);
             messagesService.SendMessage("Użytkownik został zmutowany");
