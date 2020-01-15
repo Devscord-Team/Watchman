@@ -69,9 +69,9 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
 
         private void SetChannelsPermissions(Contexts contexts, UserRole mutedRole, ChangedPermissions changedPermissions)
         {
-            foreach (var channel in contexts.Server.ServerChannels)
+            foreach (var channel in contexts.Server.TextChannels)
             {
-                _channelsService.SetPermissions(channel, changedPermissions, mutedRole);
+                _channelsService.SetPermissions(contexts.Server, channel, changedPermissions, mutedRole);
             }
         }
 

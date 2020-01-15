@@ -89,10 +89,10 @@ namespace Devscord.DiscordFramework.Framework
                 .CreateRoleAsync(role.Name, new GuildPermissions(permissionsValue));
         }
 
-        public static Task SetPermissions(ChannelContext channelContext, ChangedPermissions permissions, UserRole muteRole)
+        public static Task SetPermissions(DiscordServerContext serverContext, ChannelContext channel, ChangedPermissions permissions, UserRole muteRole)
         {
-            var channelSocket = (IGuildChannel)GetChannel(channelContext.Id);
-            var socketRole = GetRoles(channelSocket.Id).FirstOrDefault(x => x.Id == muteRole.Id);
+            var channelSocket = (IGuildChannel)GetChannel(channel.Id);
+            var socketRole = GetRoles(serverContext.Id).FirstOrDefault(x => x.Name == muteRole.Name); // role id is 0 bcs, the role hasn't been gotten from discord server
             var channelPermissions = new OverwritePermissions(permissions.AllowPermissions.RawValue, permissions.DenyPermissions.RawValue);
 
             return channelSocket.AddPermissionOverwriteAsync(socketRole, channelPermissions);
