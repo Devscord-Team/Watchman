@@ -19,13 +19,16 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
         private readonly ICommandBus _commandBus;
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly UsersRolesService _usersRolesService;
+        private readonly ChannelsService _channelsService;
 
-        public InitializationController(IQueryBus queryBus, ICommandBus commandBus, MessagesServiceFactory messagesServiceFactory, UsersRolesService usersRolesService)
+        public InitializationController(IQueryBus queryBus, ICommandBus commandBus, MessagesServiceFactory messagesServiceFactory,
+                                        UsersRolesService usersRolesService, ChannelsService channelsService)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;
             this._messagesServiceFactory = messagesServiceFactory;
             this._usersRolesService = usersRolesService;
+            this._channelsService = channelsService;
         }
 
         [AdminCommand]
@@ -34,8 +37,10 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
         public void Init(DiscordRequest request, Contexts contexts)
         {
             ResponsesInit();
-            CreateMuteRole(contexts);
-            SetChannelsPermissions(contexts);
+            var changedPermissions = CreateChangedPermissions();
+            var mutedRole = CreateMuteRole(changedPermissions.AllowPermissions);
+            SetRoleToServer(contexts, mutedRole);
+            SetChannelsPermissions(contexts, mutedRole, changedPermissions);
         }
 
         private void ResponsesInit()
@@ -52,16 +57,29 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
             }
         }
 
-        private void CreateMuteRole(Contexts contexts)
+        private UserRole CreateMuteRole(Permissions permissions)
         {
-            var onlyReadPermission = new List<Permission> { Permission.ReadMessages };
-            var mutedRole = new UserRole("muted", onlyReadPermission);
+            return new UserRole("muted", permissions.ToList());
+        }
+
+        private void SetRoleToServer(Contexts contexts, UserRole mutedRole)
+        {
             _usersRolesService.CreateNewRole(contexts, mutedRole);
         }
 
-        private void SetChannelsPermissions(Contexts contexts)
+        private void SetChannelsPermissions(Contexts contexts, UserRole mutedRole, ChangedPermissions changedPermissions)
         {
-            
+            foreach (var channel in contexts.Server.ServerChannels)
+            {
+                _channelsService.SetPermissions(channel, changedPermissions, mutedRole);
+            }
+        }
+
+        private ChangedPermissions CreateChangedPermissions()
+        {
+            var onlyReadPermission = new List<Permission> { Permission.ReadMessages };
+            var denyPermissions = new List<Permission> { Permission.SendMessages, Permission.SendTTSMessages, Permission.CreateInstantInvite };
+            return new ChangedPermissions(onlyReadPermission, denyPermissions);
         }
     }
 }
