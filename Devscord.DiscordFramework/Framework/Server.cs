@@ -81,12 +81,21 @@ namespace Devscord.DiscordFramework.Framework
             return userService.WelcomeUser(messagesService, contexts);
         }
 
-        public static Task CreateNewRole(UserRole role, DiscordServerContext discordServer) //todo: bla bla
+        public static Task CreateNewRole(UserRole role, DiscordServerContext discordServer)
         {
-            var permissionsValue = (ulong)role.Permissions.Sum(x => (long)x);
+            var permissionsValue = role.Permissions.RawValue;
 
             return _client.GetGuild(discordServer.Id)
                 .CreateRoleAsync(role.Name, new GuildPermissions(permissionsValue));
+        }
+
+        public static Task SetPermissions(ChannelContext channelContext, Permissions permissions, UserRole muteRole)
+        {
+            var channelSocket = (IGuildChannel)GetChannel(channelContext.Id);
+            var socketRole = GetRoles(channelSocket.Id).FirstOrDefault(x => x.Id == muteRole.Id);
+            var channelPermissions = new OverwritePermissions(permissions.RawValue);
+
+            return channelSocket.AddPermissionOverwriteAsync(socketRole, channelPermissions);
         }
     }
 }

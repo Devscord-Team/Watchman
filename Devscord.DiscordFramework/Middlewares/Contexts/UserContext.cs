@@ -36,25 +36,46 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
     {
         public ulong Id { get; private set; }
         public string Name { get; private set; }
-        public IEnumerable<Permission> Permissions { get; private set; }
+        public Permissions Permissions { get; private set; }
 
         public UserRole(string name)
         {
             this.Name = name;
-            this.Permissions = new List<Permission>();
+            this.Permissions = new Permissions();
         }
 
         public UserRole(string name, IEnumerable<Permission> permissions)
         {
             this.Name = name;
-            this.Permissions = permissions;
+            this.Permissions = new Permissions(permissions);
         }
 
         public UserRole(ulong id, string name, IEnumerable<Permission> permissions)
         {
             this.Id = id;
             this.Name = name;
-            this.Permissions = permissions;
+            this.Permissions = new Permissions(permissions);
+        }
+    }
+
+    public class Permissions
+    {
+        private readonly IEnumerable<Permission> _permissions;
+        public ulong RawValue => (ulong)_permissions.Sum(x => (long)x);
+
+        public Permissions()
+        {
+            this._permissions = new List<Permission>();
+        }
+
+        public Permissions(IEnumerable<Permission> permissions)
+        {
+            this._permissions = permissions;
+        }
+
+        public List<Permission> ToList()
+        {
+            return _permissions.ToList();
         }
     }
 
