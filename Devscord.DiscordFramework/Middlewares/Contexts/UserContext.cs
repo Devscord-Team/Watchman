@@ -79,6 +79,18 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
         }
     }
 
+    public class ChangedPermissions
+    {
+        public Permissions AllowPermissions { get; }
+        public Permissions DenyPermissions { get; }
+
+        public ChangedPermissions(IEnumerable<Permission> allowPermissions, IEnumerable<Permission> denyPermissions)
+        {
+            AllowPermissions = new Permissions(allowPermissions);
+            DenyPermissions = new Permissions(denyPermissions);
+        }
+    }
+
     public enum Permission
     {
         CreateInstantInvite = 1,
