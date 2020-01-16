@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Responses.Commands;
 using Watchman.DomainModel.Responses.Queries;
@@ -39,8 +40,15 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
             ResponsesInit();
             var changedPermissions = CreateChangedPermissions();
             var mutedRole = CreateMuteRole(changedPermissions.AllowPermissions);
-            SetRoleToServer(contexts, mutedRole);
-            SetChannelsPermissions(contexts, mutedRole, changedPermissions);
+
+            var rolesBeforeCount = _usersRolesService.GetRoles(contexts.Server).Count();
+
+            var createdRole = SetRoleToServer(contexts, mutedRole);
+
+            while (rolesBeforeCount == _usersRolesService.GetRoles(contexts.Server).Count())
+                Thread.Sleep(100);
+
+            SetChannelsPermissions(contexts, createdRole, changedPermissions);
         }
 
         private void ResponsesInit()
@@ -62,9 +70,9 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
             return new UserRole("muted", permissions.ToList());
         }
 
-        private void SetRoleToServer(Contexts contexts, UserRole mutedRole)
+        private UserRole SetRoleToServer(Contexts contexts, UserRole mutedRole)
         {
-            _usersRolesService.CreateNewRole(contexts, mutedRole);
+            return _usersRolesService.CreateNewRole(contexts, mutedRole);
         }
 
         private void SetChannelsPermissions(Contexts contexts, UserRole mutedRole, ChangedPermissions changedPermissions)

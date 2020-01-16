@@ -8,9 +8,9 @@ namespace Devscord.DiscordFramework.Services
 {
     public class UsersRolesService
     {
-        public Task CreateNewRole(Contexts contexts, UserRole userRole)
+        public UserRole CreateNewRole(Contexts contexts, UserRole userRole)
         {
-            return Server.CreateNewRole(userRole, contexts.Server);
+            return Server.CreateNewRole(userRole, contexts.Server).Result;
         }
 
         public UserRole GetRoleByName(string name, DiscordServerContext server)

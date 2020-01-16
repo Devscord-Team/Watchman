@@ -1,9 +1,7 @@
-﻿using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
-using Devscord.DiscordFramework.Middlewares.Contexts;
-using Devscord.DiscordFramework.Middlewares.Factories;
+﻿using Devscord.DiscordFramework.Middlewares.Contexts;
 using Discord.WebSocket;
 
-namespace Devscord.DiscordFramework.Middlewares
+namespace Devscord.DiscordFramework.Middlewares.Factories
 {
     internal class ChannelContextFactory : IContextFactory<ISocketMessageChannel, ChannelContext>
     {

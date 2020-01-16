@@ -9,13 +9,11 @@ namespace Devscord.DiscordFramework.Middlewares.Factories
     {
         public UserContext Create(SocketGuildUser user)
         {
-            var roles = user.Roles.Select(x =>
-            {
-                var permissions = x.Permissions.ToList().Select(x => (Permission) x);
-                return new UserRole(x.Id, x.Name, permissions);
-            });
+            var userRoleFactory = new UserRoleFactory();
 
+            var roles = user.Roles.Select(x => userRoleFactory.Create(x));
             var avatarUrl = user.GetAvatarUrl(ImageFormat.Png, 2048);
+
             return new UserContext(user.Id, user.ToString(), roles, avatarUrl, user.Mention);
         }
     }
