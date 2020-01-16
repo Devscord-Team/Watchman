@@ -30,22 +30,43 @@ namespace Devscord.DiscordFramework.Framework
     internal static class Server
     {
         private static DiscordSocketClient _client;
+        private static List<SocketRole> _roles;
+
+        public static IEnumerable<SocketRole> GetRoles(ulong guildId)
+        {
+            return _roles.Where(x => x.Guild.Id == guildId);
+        }
+
+        private static Task AddRole(SocketRole role)
+        {
+            _roles.Add(role);
+            return Task.CompletedTask;
+        }
+
+        private static Task RemoveRole(SocketRole role)
+        {
+            _roles.Remove(role);
+            return Task.CompletedTask;
+        }
 
         public static void Initialize(DiscordSocketClient client)
         {
             _client = client;
             _client.UserJoined += UserJoined;
+
+            client.Ready += () =>
+            {
+                _roles = client.Guilds.SelectMany(x => x.Roles).ToList();
+                return Task.CompletedTask;
+            };
+
+            _client.RoleCreated += (newRole) => AddRole(newRole);
+            _client.RoleDeleted += (deletedRole) => RemoveRole(deletedRole);
         }
 
         public static SocketChannel GetChannel(ulong channelId)
         {
             return _client.GetChannel(channelId);
-        }
-
-        //todo optimalize it by using field and delegates like _client.RoleCreated etc
-        public static IReadOnlyCollection<SocketRole> GetRoles(ulong guildId)
-        {
-            return _client.GetGuild(guildId).Roles;
         }
 
         public static SocketUser GetUser(ulong userId)
@@ -81,18 +102,23 @@ namespace Devscord.DiscordFramework.Framework
             return userService.WelcomeUser(messagesService, contexts);
         }
 
-        public static Task CreateNewRole(UserRole role, DiscordServerContext discordServer)
+        public static Task<UserRole> CreateNewRole(UserRole role, DiscordServerContext discordServer)
         {
             var permissionsValue = role.Permissions.RawValue;
 
-            return _client.GetGuild(discordServer.Id)
+            var createRoleTask = _client.GetGuild(discordServer.Id)
                 .CreateRoleAsync(role.Name, new GuildPermissions(permissionsValue));
+
+            var restRole = createRoleTask.Result;
+            var userRole = new UserRoleFactory().Create(restRole);
+
+            return Task.FromResult(userRole);
         }
 
         public static Task SetPermissions(DiscordServerContext serverContext, ChannelContext channel, ChangedPermissions permissions, UserRole muteRole)
         {
             var channelSocket = (IGuildChannel)GetChannel(channel.Id);
-            var socketRole = GetRoles(serverContext.Id).FirstOrDefault(x => x.Name == muteRole.Name); // role id is 0 bcs, the role hasn't been gotten from discord server
+            var socketRole = GetRoles(serverContext.Id).FirstOrDefault(x => x.Id == muteRole.Id); // role id is 0 bcs, the role hasn't been gotten from discord server
             var channelPermissions = new OverwritePermissions(permissions.AllowPermissions.RawValue, permissions.DenyPermissions.RawValue);
 
             return channelSocket.AddPermissionOverwriteAsync(socketRole, channelPermissions);
