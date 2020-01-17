@@ -2,7 +2,6 @@
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
-using Devscord.DiscordFramework.Services.Factories;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
@@ -18,16 +17,13 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
     {
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
-        private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly UsersRolesService _usersRolesService;
         private readonly ChannelsService _channelsService;
 
-        public InitializationController(IQueryBus queryBus, ICommandBus commandBus, MessagesServiceFactory messagesServiceFactory,
-                                        UsersRolesService usersRolesService, ChannelsService channelsService)
+        public InitializationController(IQueryBus queryBus, ICommandBus commandBus, UsersRolesService usersRolesService, ChannelsService channelsService)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;
-            this._messagesServiceFactory = messagesServiceFactory;
             this._usersRolesService = usersRolesService;
             this._channelsService = channelsService;
         }
@@ -40,8 +36,6 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
             ResponsesInit();
             var changedPermissions = CreateChangedPermissions();
             var mutedRole = CreateMuteRole(changedPermissions.AllowPermissions);
-
-            var rolesBeforeCount = _usersRolesService.GetRoles(contexts.Server).Count();
 
             var createdRole = SetRoleToServer(contexts, mutedRole);
 
@@ -82,7 +76,7 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
 
         private ChangedPermissions CreateChangedPermissions()
         {
-            var onlyReadPermission = new List<Permission> { Permission.ReadMessages };
+            var onlyReadPermission = new List<Permission>();
             var denyPermissions = new List<Permission> { Permission.SendMessages, Permission.SendTTSMessages, Permission.CreateInstantInvite };
             return new ChangedPermissions(onlyReadPermission, denyPermissions);
         }

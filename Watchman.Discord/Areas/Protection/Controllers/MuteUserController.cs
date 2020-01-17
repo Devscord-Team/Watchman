@@ -29,11 +29,11 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         [DiscordCommand("mute")]
         public void MuteUser(DiscordRequest request, Contexts contexts)
         {
-            var mention = request.Arguments.FirstOrDefault()?.Values.FirstOrDefault();
-
             var messagesService = _messagesServiceFactory.Create(contexts);
 
-            if (string.IsNullOrWhiteSpace(mention))
+            var mention = request.Arguments.FirstOrDefault()?.Values.FirstOrDefault();
+
+            if (string.IsNullOrWhiteSpace(mention)) //todo: przenieść do responseService
             {
                 messagesService.SendMessage("Musisz wskazać użytkownika do zmutowania");
                 return;
@@ -58,6 +58,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
 
             MuteUser(contexts, muteRole);
             messagesService.SendMessage("Użytkownik został zmutowany");
+
             Task.Delay(10000).Wait();
 
             UnmuteUser(contexts, muteRole);
