@@ -9,6 +9,8 @@ namespace Devscord.DiscordFramework.Services
 {
     public class UsersRolesService
     {
+        public static readonly string MUTED_ROLE_NAME = "muted";
+
         public UserRole CreateNewRole(Contexts contexts, UserRole userRole)
         {
             return Server.CreateNewRole(userRole, contexts.Server).Result;

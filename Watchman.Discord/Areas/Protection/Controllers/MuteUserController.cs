@@ -72,7 +72,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
 
         private UserRole GetMuteRole(Contexts contexts)
         {
-            return _usersRolesService.GetRoleByName("muted", contexts.Server);
+            return _usersRolesService.GetRoleByName(UsersRolesService.MUTED_ROLE_NAME, contexts.Server);
         }
 
         private Task MuteUser(Contexts contexts, UserRole muteRole)

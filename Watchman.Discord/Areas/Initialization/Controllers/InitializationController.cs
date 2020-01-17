@@ -58,7 +58,7 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
 
         private UserRole CreateMuteRole(Permissions permissions)
         {
-            return new UserRole("muted", permissions.ToList());
+            return new UserRole(UsersRolesService.MUTED_ROLE_NAME, permissions.ToList());
         }
 
         private UserRole SetRoleToServer(Contexts contexts, UserRole mutedRole)
