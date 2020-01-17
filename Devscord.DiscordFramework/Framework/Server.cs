@@ -1,4 +1,5 @@
-﻿using Devscord.DiscordFramework.Framework.Commands.Responses;
+﻿using System;
+using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
@@ -115,13 +116,22 @@ namespace Devscord.DiscordFramework.Framework
             return Task.FromResult(userRole);
         }
 
-        public static Task SetPermissions(DiscordServerContext serverContext, ChannelContext channel, ChangedPermissions permissions, UserRole muteRole)
+        public static Task SetPermissions(ChannelContext channel, ChangedPermissions permissions, UserRole muteRole)
         {
             var channelSocket = (IGuildChannel)GetChannel(channel.Id);
-            var socketRole = GetRoles(serverContext.Id).FirstOrDefault(x => x.Id == muteRole.Id); // role id is 0 bcs, the role hasn't been gotten from discord server
             var channelPermissions = new OverwritePermissions(permissions.AllowPermissions.RawValue, permissions.DenyPermissions.RawValue);
 
-            return channelSocket.AddPermissionOverwriteAsync(socketRole, channelPermissions);
+            Task SetPerms(SocketRole createdRole)
+            {
+                if (createdRole.Id != muteRole.Id)
+                    return Task.CompletedTask;
+
+                _client.RoleCreated -= SetPerms;
+                return channelSocket.AddPermissionOverwriteAsync(createdRole, channelPermissions);
+            }
+            _client.RoleCreated += SetPerms;
+
+            return Task.CompletedTask;
         }
     }
 }

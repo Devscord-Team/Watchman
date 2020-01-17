@@ -45,9 +45,6 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
 
             var createdRole = SetRoleToServer(contexts, mutedRole);
 
-            while (rolesBeforeCount == _usersRolesService.GetRoles(contexts.Server).Count())
-                Thread.Sleep(100);
-
             SetChannelsPermissions(contexts, createdRole, changedPermissions);
         }
 

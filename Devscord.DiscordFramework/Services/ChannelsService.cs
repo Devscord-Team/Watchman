@@ -8,7 +8,7 @@ namespace Devscord.DiscordFramework.Services
     {
         public Task SetPermissions(DiscordServerContext serverContext, ChannelContext channel, ChangedPermissions permissions, UserRole userRole)
         {
-            return Server.SetPermissions(serverContext, channel, permissions, userRole);
+            return Server.SetPermissions(channel, permissions, userRole);
         }
     }
 }
