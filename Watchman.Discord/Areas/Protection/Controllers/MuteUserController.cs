@@ -9,7 +9,7 @@ using Watchman.Cqrs;
 
 namespace Watchman.Discord.Areas.Protection.Controllers
 {
-    class MuteUserController : IController
+    public class MuteUserController : IController
     {
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
