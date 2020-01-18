@@ -1,13 +1,13 @@
 ﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
-using Devscord.DiscordFramework.Services;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using Watchman.Cqrs;
+using Watchman.Discord.Areas.Initialization.Services;
 using Watchman.DomainModel.Responses.Commands;
 using Watchman.DomainModel.Responses.Queries;
 
@@ -17,15 +17,13 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
     {
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
-        private readonly UsersRolesService _usersRolesService;
-        private readonly ChannelsService _channelsService;
+        private readonly MutedRoleInitService _mutedRoleInitService;
 
-        public InitializationController(IQueryBus queryBus, ICommandBus commandBus, UsersRolesService usersRolesService, ChannelsService channelsService)
+        public InitializationController(IQueryBus queryBus, ICommandBus commandBus, MutedRoleInitService mutedRoleInitService)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;
-            this._usersRolesService = usersRolesService;
-            this._channelsService = channelsService;
+            _mutedRoleInitService = mutedRoleInitService;
         }
 
         [AdminCommand]
@@ -34,12 +32,7 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
         public void Init(DiscordRequest request, Contexts contexts)
         {
             ResponsesInit();
-            var changedPermissions = CreateChangedPermissions();
-            var mutedRole = CreateMuteRole(changedPermissions.AllowPermissions);
-
-            var createdRole = SetRoleToServer(contexts, mutedRole);
-
-            SetChannelsPermissions(contexts, createdRole, changedPermissions);
+            _mutedRoleInitService.InitForServer(contexts);
         }
 
         private void ResponsesInit()
@@ -54,31 +47,6 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
                 var command = new AddResponsesCommand(responsesToAdd);
                 _commandBus.ExecuteAsync(command);
             }
-        }
-
-        private UserRole CreateMuteRole(Permissions permissions)
-        {
-            return new UserRole(UsersRolesService.MUTED_ROLE_NAME, permissions.ToList());
-        }
-
-        private UserRole SetRoleToServer(Contexts contexts, UserRole mutedRole)
-        {
-            return _usersRolesService.CreateNewRole(contexts, mutedRole);
-        }
-
-        private void SetChannelsPermissions(Contexts contexts, UserRole mutedRole, ChangedPermissions changedPermissions)
-        {
-            foreach (var channel in contexts.Server.TextChannels)
-            {
-                _channelsService.SetPermissions(contexts.Server, channel, changedPermissions, mutedRole);
-            }
-        }
-
-        private ChangedPermissions CreateChangedPermissions()
-        {
-            var onlyReadPermission = new List<Permission>();
-            var denyPermissions = new List<Permission> { Permission.SendMessages, Permission.SendTTSMessages, Permission.CreateInstantInvite };
-            return new ChangedPermissions(onlyReadPermission, denyPermissions);
         }
     }
 }
