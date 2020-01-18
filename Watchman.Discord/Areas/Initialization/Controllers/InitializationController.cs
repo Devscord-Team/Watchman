@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using Devscord.DiscordFramework.Services;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Initialization.Services;
 using Watchman.DomainModel.Responses.Commands;
@@ -18,12 +19,14 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
         private readonly MutedRoleInitService _mutedRoleInitService;
+        private readonly UsersRolesService _usersRolesService;
 
-        public InitializationController(IQueryBus queryBus, ICommandBus commandBus, MutedRoleInitService mutedRoleInitService)
+        public InitializationController(IQueryBus queryBus, ICommandBus commandBus, MutedRoleInitService mutedRoleInitService, UsersRolesService usersRolesService)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;
             _mutedRoleInitService = mutedRoleInitService;
+            _usersRolesService = usersRolesService;
         }
 
         [AdminCommand]
@@ -32,7 +35,7 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
         public void Init(DiscordRequest request, Contexts contexts)
         {
             ResponsesInit();
-            _mutedRoleInitService.InitForServer(contexts);
+            MutedRoleInit(contexts);
         }
 
         private void ResponsesInit()
@@ -46,6 +49,16 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
                 var responsesToAdd = JsonConvert.DeserializeObject<IEnumerable<DomainModel.Responses.Response>>(fileContent);
                 var command = new AddResponsesCommand(responsesToAdd);
                 _commandBus.ExecuteAsync(command);
+            }
+        }
+
+        private void MutedRoleInit(Contexts contexts)
+        {
+            var mutedRole = _usersRolesService.GetRoleByName(UsersRolesService.MUTED_ROLE_NAME, contexts.Server);
+
+            if (mutedRole == null)
+            {
+                _mutedRoleInitService.InitForServer(contexts);
             }
         }
     }
