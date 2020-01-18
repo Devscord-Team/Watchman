@@ -6,16 +6,17 @@ namespace Watchman.DomainModel.Mute.Commands.Handlers
 {
     public class AddMuteInfoToDbCommandHandler : ICommandHandler<AddMuteInfoToDbCommand>
     {
-        private readonly ISession _session;
+        private readonly ISessionFactory _sessionFactory;
 
         public AddMuteInfoToDbCommandHandler(ISessionFactory sessionFactory)
         {
-            this._session = sessionFactory.Create();
+            this._sessionFactory = sessionFactory;
         }
 
         public Task HandleAsync(AddMuteInfoToDbCommand command)
         {
-            _session.Add(command.MuteEvent);
+            using var session = _sessionFactory.Create();
+            session.Add(command.MuteEvent);
             return Task.CompletedTask;
         }
     }

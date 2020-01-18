@@ -25,7 +25,7 @@ namespace Devscord.DiscordFramework.Services
 
         public IEnumerable<UserRole> GetRoles(DiscordServerContext server)
         {
-            var roles = Server.GetRoles(server.Id);
+            var roles = Server.GetRoles(server.Id).ToList();
 
             if (!roles.Any())
                 return default;

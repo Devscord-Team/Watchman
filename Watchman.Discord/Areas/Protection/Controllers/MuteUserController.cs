@@ -1,11 +1,15 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
+using Watchman.Common.Models;
 using Watchman.Cqrs;
+using Watchman.DomainModel.Mute;
+using Watchman.DomainModel.Mute.Commands;
 
 namespace Watchman.Discord.Areas.Protection.Controllers
 {
@@ -56,10 +60,14 @@ namespace Watchman.Discord.Areas.Protection.Controllers
                 return;
             }
 
-            MuteUser(contexts, muteRole);
-            messagesService.SendMessage("Użytkownik został zmutowany");
+            var muteEvent = CreateMuteEvent(contexts.User.Id, request);
 
-            Task.Delay(10000).Wait();
+            MuteUser(contexts, muteRole);
+            messagesService.SendMessage($"Użytkownik został zmutowany do {muteEvent.TimeRange.End}");
+
+            _commandBus.ExecuteAsync(new AddMuteInfoToDbCommand(muteEvent));
+
+            Task.Delay(muteEvent.TimeRange.End - muteEvent.TimeRange.Start).Wait();
 
             UnmuteUser(contexts, muteRole);
             messagesService.SendMessage("Użytkownik może pisać ponownie");
@@ -73,6 +81,43 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         private UserRole GetMuteRole(Contexts contexts)
         {
             return _usersRolesService.GetRoleByName(UsersRolesService.MUTED_ROLE_NAME, contexts.Server);
+        }
+
+        private MuteEvent CreateMuteEvent(ulong userId, DiscordRequest request)
+        {
+            var reason = request.Arguments.FirstOrDefault(x => x.Name == "reason")?.Values.FirstOrDefault();
+            var forTime = request.Arguments.FirstOrDefault(x => x.Name == "time")?.Values.FirstOrDefault();
+
+            var timeRange = new TimeRange()
+            {
+                Start = DateTime.UtcNow,
+                End = DateTime.UtcNow + ParseToTimeSpan(forTime)
+            };
+
+            return new MuteEvent(userId, timeRange, reason);
+        }
+
+        private TimeSpan ParseToTimeSpan(string time)
+        {
+            var defaultTime = TimeSpan.FromHours(1);
+
+            if (string.IsNullOrWhiteSpace(time))
+                return defaultTime;
+
+            var lastChar = time[^1];
+            time = time[..^1];
+
+            switch (lastChar)
+            {
+                case 'm':
+                    double.TryParse(time, out var minutes);
+                    return TimeSpan.FromMinutes(minutes);
+                case 'h':
+                    double.TryParse(time, out var hours);
+                    return TimeSpan.FromHours(hours);
+                default:
+                    return defaultTime;
+            }
         }
 
         private Task MuteUser(Contexts contexts, UserRole muteRole)

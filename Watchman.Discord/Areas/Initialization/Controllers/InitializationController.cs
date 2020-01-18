@@ -5,7 +5,6 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using Devscord.DiscordFramework.Services;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Initialization.Services;
