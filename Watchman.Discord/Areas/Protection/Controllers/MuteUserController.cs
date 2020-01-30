@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
+using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
@@ -38,9 +39,9 @@ namespace Watchman.Discord.Areas.Protection.Controllers
 
             var mention = request.Arguments.ToList().FirstOrDefault()?.Values.FirstOrDefault();
 
-            if (string.IsNullOrWhiteSpace(mention)) //todo: przenieść do responseService
+            if (string.IsNullOrWhiteSpace(mention))
             {
-                messagesService.SendMessage("Musisz wskazać użytkownika do zmutowania");
+                messagesService.SendResponse(x => x.UserDidntMentionedAnyUserToMute(), contexts);
                 return;
             }
 
@@ -48,7 +49,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
 
             if (userToMute == null)
             {
-                messagesService.SendMessage("Użytkownik nie istnieje");
+                messagesService.SendResponse(x => x.UserNotFound(mention), contexts);
                 return;
             }
 
@@ -57,7 +58,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
 
             if (muteRole == null)
             {
-                messagesService.SendMessage("Rola muted nie istnieje");
+                messagesService.SendResponse(x => x.RoleNotFound("muted"), contexts);
                 return;
             }
 
@@ -65,7 +66,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
 
             MuteUser(contexts, muteRole);
             _commandBus.ExecuteAsync(new AddMuteInfoToDbCommand(muteEvent));
-            messagesService.SendMessage($"Użytkownik został zmutowany do {muteEvent.TimeRange.End}");
+            messagesService.SendResponse(x => x.MutedUser(contexts.User, muteEvent.TimeRange.End), contexts);
 
             UnmuteUserAfterSomeTime(contexts, muteEvent.TimeRange, muteRole);
         }
@@ -75,7 +76,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             await Task.Delay(timeRange.End - timeRange.Start);
             UnmuteUser(contexts, muteRole);
             var messagesService = _messagesServiceFactory.Create(contexts);
-            await messagesService.SendMessage("Użytkownik może pisać ponownie");
+            await messagesService.SendResponse(x => x.UnmutedUser(contexts.User), contexts);
         }
 
         private UserContext FindUserByMention(string mention, DiscordServerContext server)

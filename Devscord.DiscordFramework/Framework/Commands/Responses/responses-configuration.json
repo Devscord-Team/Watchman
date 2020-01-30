@@ -42,5 +42,25 @@
   {
     "OnEvent": "UserIsNotAdmin",
     "Message": "Nie masz wystarczających uprawnień do wywołania tej komendy."
+  },
+  {
+    "OnEvent": "UserDidntMentionedAnyUserToMute",
+    "Message": "Musisz wskazać użytkownika do zmutowania."
+  },
+  {
+    "OnEvent": "UserNotFound",
+    "Message": "Użytkownik {{user}} nie istnieje."
+  },
+  {
+    "OnEvent": "RoleNotFound",
+    "Message": "Nie znaleziono roli {{role}}."
+  },
+  {
+    "OnEvent": "MutedUser",
+    "Message": "Użytkownik {{user}} został zmutowany do {{timeEnd}}"
+  },
+  {
+    "OnEvent": "UnmutedUser",
+    "Message": "Użytkownik {{user}} może pisać ponownie." 
   }
 ]

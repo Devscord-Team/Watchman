@@ -1,5 +1,7 @@
-﻿using Devscord.DiscordFramework.Middlewares.Contexts;
+﻿using System;
+using Devscord.DiscordFramework.Middlewares.Contexts;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Devscord.DiscordFramework.Framework.Commands.Responses
 {
@@ -58,6 +60,33 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         public static string UserIsNotAdmin(this ResponsesService responsesService)
         {
             return responsesService.ProcessResponse("UserIsNotAdmin");
+        }
+
+        public static string UserDidntMentionedAnyUserToMute(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("UserDidntMentionedAnyUserToMute");
+        }  
+        
+        public static string UserNotFound(this ResponsesService responsesService, string userNotFound)
+        {
+            return responsesService.ProcessResponse("UserNotFound", new KeyValuePair<string, string>("user", userNotFound));
+        }
+
+        public static string RoleNotFound(this ResponsesService responsesService, string roleNotFound)
+        {
+            return responsesService.ProcessResponse("RoleNotFound", new KeyValuePair<string, string>("role", roleNotFound));
+        }
+
+        public static string MutedUser(this ResponsesService responsesService, UserContext mutedUser, DateTime timeEnd)
+        {
+            return responsesService.ProcessResponse("MutedUser", 
+                new KeyValuePair<string, string>("user", mutedUser.Name),
+                new KeyValuePair<string, string>("timeEnd", timeEnd.ToString(CultureInfo.InvariantCulture)));
+        }
+
+        public static string UnmutedUser(this ResponsesService responsesService, UserContext unmutedUser)
+        {
+            return responsesService.ProcessResponse("UnmutedUser", new KeyValuePair<string, string>("user", unmutedUser.Name));
         }
     }
 }
