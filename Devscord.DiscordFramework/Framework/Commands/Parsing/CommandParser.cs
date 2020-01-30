@@ -37,8 +37,8 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
 
         private string GetPrefix(string message)
         {
-            var withoutWhitespaces = message.Trim();
-            return possiblePrefixes.FirstOrDefault(x => withoutWhitespaces.StartsWith(x));
+            var withoutWhitespaces = message.Trim().Split(' ');
+            return possiblePrefixes.FirstOrDefault(x => withoutWhitespaces.Any(word => word.StartsWith(x)));
         }
 
         private string GetName(string message)
@@ -57,15 +57,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
 
         private DiscordRequestArgument GetArgument(string message, string prefix)
         {
-            var prefixExists = !string.IsNullOrWhiteSpace(prefix);
+            var isArgumentNotValue = message.Split().Length > 1;
             var splitted = message.Split(' ');
-            var parameter = prefixExists ? splitted.First() : null;
-            var values = splitted.Skip(prefixExists ? 1 : 0);
+            var parameter = isArgumentNotValue ? splitted.First() : null;
+            var values = splitted.Skip(isArgumentNotValue ? 1 : 0);
 
             return new DiscordRequestArgument
             {
                 Name = parameter,
-                Prefix = prefixExists ? prefix : null,
+                Prefix = prefix,
                 Values = values
             };
         }

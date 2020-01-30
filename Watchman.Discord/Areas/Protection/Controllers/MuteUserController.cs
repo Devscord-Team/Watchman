@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
@@ -35,7 +36,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         {
             var messagesService = _messagesServiceFactory.Create(contexts);
 
-            var mention = request.Arguments.FirstOrDefault()?.Values.FirstOrDefault();
+            var mention = request.Arguments.ToList().FirstOrDefault()?.Values.FirstOrDefault();
 
             if (string.IsNullOrWhiteSpace(mention)) //todo: przenieść do responseService
             {
@@ -106,28 +107,25 @@ namespace Watchman.Discord.Areas.Protection.Controllers
 
             var lastChar = time[^1];
             time = time[..^1];
+            time = time.Replace(',', '.');
+            double.TryParse(time, NumberStyles.Any, CultureInfo.InvariantCulture, out var asNumber);
 
-            switch (lastChar)
+            return lastChar switch
             {
-                case 'm':
-                    double.TryParse(time, out var minutes);
-                    return TimeSpan.FromMinutes(minutes);
-                case 'h':
-                    double.TryParse(time, out var hours);
-                    return TimeSpan.FromHours(hours);
-                default:
-                    return defaultTime;
-            }
+                'm' => TimeSpan.FromMinutes(asNumber),
+                'h' => TimeSpan.FromHours(asNumber),
+                _ => defaultTime,
+            };
         }
 
-        private Task MuteUser(Contexts contexts, UserRole muteRole)
+        private void MuteUser(Contexts contexts, UserRole muteRole)
         {
-            return _usersService.AddRole(muteRole, contexts.User, contexts.Server);
+            _usersService.AddRole(muteRole, contexts.User, contexts.Server);
         }
 
-        private Task UnmuteUser(Contexts contexts, UserRole muteRole)
+        private void UnmuteUser(Contexts contexts, UserRole muteRole)
         {
-            return _usersService.RemoveRole(muteRole, contexts.User, contexts.Server);
+            _usersService.RemoveRole(muteRole, contexts.User, contexts.Server);
         }
     }
 }

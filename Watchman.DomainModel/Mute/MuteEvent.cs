@@ -5,7 +5,7 @@ namespace Watchman.DomainModel.Mute
 {
     public class MuteEvent : Entity
     {
-        public ulong UserId { get; }
+        public ulong UserId { get; set; }
         public TimeRange TimeRange { get; }
         public string Reason { get; }
 
