@@ -64,14 +64,18 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             var muteEvent = CreateMuteEvent(contexts.User.Id, request);
 
             MuteUser(contexts, muteRole);
+            _commandBus.ExecuteAsync(new AddMuteInfoToDbCommand(muteEvent));
             messagesService.SendMessage($"Użytkownik został zmutowany do {muteEvent.TimeRange.End}");
 
-            _commandBus.ExecuteAsync(new AddMuteInfoToDbCommand(muteEvent));
+            UnmuteUserAfterSomeTime(contexts, muteEvent.TimeRange, muteRole);
+        }
 
-            Task.Delay(muteEvent.TimeRange.End - muteEvent.TimeRange.Start).Wait();
-
+        private async void UnmuteUserAfterSomeTime(Contexts contexts, TimeRange timeRange, UserRole muteRole)
+        {
+            await Task.Delay(timeRange.End - timeRange.Start);
             UnmuteUser(contexts, muteRole);
-            messagesService.SendMessage("Użytkownik może pisać ponownie");
+            var messagesService = _messagesServiceFactory.Create(contexts);
+            await messagesService.SendMessage("Użytkownik może pisać ponownie");
         }
 
         private UserContext FindUserByMention(string mention, DiscordServerContext server)
