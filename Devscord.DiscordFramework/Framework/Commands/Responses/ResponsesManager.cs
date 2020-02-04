@@ -67,14 +67,14 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             return responsesService.ProcessResponse("UserDidntMentionedAnyUserToMute");
         }  
         
-        public static string UserNotFound(this ResponsesService responsesService, string userNotFound)
+        public static string UserNotFound(this ResponsesService responsesService, string userMention)
         {
-            return responsesService.ProcessResponse("UserNotFound", new KeyValuePair<string, string>("user", userNotFound));
+            return responsesService.ProcessResponse("UserNotFound", new KeyValuePair<string, string>("user", userMention));
         }
 
-        public static string RoleNotFound(this ResponsesService responsesService, string roleNotFound)
+        public static string RoleNotFound(this ResponsesService responsesService, string roleName)
         {
-            return responsesService.ProcessResponse("RoleNotFound", new KeyValuePair<string, string>("role", roleNotFound));
+            return responsesService.ProcessResponse("RoleNotFound", new KeyValuePair<string, string>("role", roleName));
         }
 
         public static string MutedUser(this ResponsesService responsesService, UserContext mutedUser, DateTime timeEnd)

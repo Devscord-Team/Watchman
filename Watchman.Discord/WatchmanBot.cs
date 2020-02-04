@@ -16,6 +16,7 @@ using Watchman.Discord.Areas.Help.Services;
 using System.Text;
 using System.Collections.Generic;
 using Devscord.DiscordFramework.Commons.Extensions;
+using Watchman.Common.Exceptions;
 
 namespace Watchman.Discord
 {
@@ -63,20 +64,45 @@ namespace Watchman.Discord
             return message.Author.IsBot ? Task.CompletedTask : this._workflow.Run(message);
         }
 
+        private Workflow GetWorkflow(DiscordConfiguration configuration, IContainer context)
+        {
+            var workflow = new Workflow(typeof(WatchmanBot).Assembly, context);
+            workflow.AddMiddleware<ChannelMiddleware>()
+                .AddMiddleware<ServerMiddleware>()
+                .AddMiddleware<UserMiddleware>();
+            workflow.WorkflowException += this.LogException;
+#if DEBUG
+            workflow.WorkflowException += this.PrintDebugExceptionInfo;
+#endif
+            return workflow;
+        }
+
         private void LogException(Exception e, Contexts contexts)
         {
             var messagesService = _container.Resolve<MessagesServiceFactory>().Create(contexts);
 
-            if (e is NotAdminPermissionsException)
+            switch (e)
             {
-                messagesService.SendResponse(x => x.UserIsNotAdmin(), contexts);
-                return;
-            }
-            else
-            {
+                case NotAdminPermissionsException _:
+                    messagesService.SendResponse(x => x.UserIsNotAdmin(), contexts);
+                    break;
+                case RoleNotFoundException roleExc:
+                    messagesService.SendResponse(x => x.RoleNotFound(roleExc.RoleName), contexts);
+                    break;
+                case UserDidntMentionedAnyUserToMuteException _:
+                    messagesService.SendResponse(x => x.UserDidntMentionedAnyUserToMute(), contexts);
+                    break;
+                case UserNotFoundException notFoundExc:
+                    messagesService.SendResponse(x => x.UserNotFound(notFoundExc.Mention), contexts);
+                    break;
+                default:
                 messagesService.SendMessage("Wystąpił nieznany wyjątek");
+                    break;
             }
-#if DEBUG
+        }
+
+        private void PrintDebugExceptionInfo(Exception e, Contexts contexts)
+        {
             var lines = new Dictionary<string, string>()
             {
                 { "Message", e.Message },
@@ -86,18 +112,10 @@ namespace Watchman.Discord
 
             var exceptionMessageBuilder = new StringBuilder();
             exceptionMessageBuilder.PrintManyLines(lines);
-            messagesService.SendMessage(exceptionMessageBuilder.ToString());
-#endif
-        }
 
-        private Workflow GetWorkflow(DiscordConfiguration configuration, IContainer context)
-        {
-            var workflow = new Workflow(typeof(WatchmanBot).Assembly, context);
-            workflow.AddMiddleware<ChannelMiddleware>()
-                .AddMiddleware<ServerMiddleware>()
-                .AddMiddleware<UserMiddleware>();
-            workflow.WorkflowException += this.LogException;
-            return workflow;
+            var messagesService = _container.Resolve<MessagesServiceFactory>().Create(contexts);
+            messagesService.SendMessage(exceptionMessageBuilder.ToString());
+            Console.WriteLine(exceptionMessageBuilder.ToString());
         }
 
         private IContainer GetAutofacContainer(DiscordConfiguration configuration)
