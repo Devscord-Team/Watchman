@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Watchman.Cqrs;
 using Watchman.DomainModel.ScheduleTasks.Queries;
 
@@ -9,20 +6,20 @@ namespace Watchman.ScheduleRunner
 {
     public class SchedulerService
     {
-        private readonly IQueryBus queryBus;
-        private readonly ScheduleTasksRunner tasksRunner;
+        private readonly IQueryBus _queryBus;
+        private readonly ScheduleTasksRunner _tasksRunner;
 
         public SchedulerService(IQueryBus queryBus, ScheduleTasksRunner tasksRunner)
         {
-            this.queryBus = queryBus;
-            this.tasksRunner = tasksRunner;
+            this._queryBus = queryBus;
+            this._tasksRunner = tasksRunner;
         }
 
         public void RunScheduledTasks()
         {
-            var query = new GetScheduleTasksQuery(true);
-            var scheduleTasks = this.queryBus.Execute(query).ScheduleTasks;
-            Parallel.ForEach(scheduleTasks, x => this.tasksRunner.Run(x).Wait());
+            var query = new GetScheduleTasksQuery(loadOnlyActive: true);
+            var scheduleTasks = this._queryBus.Execute(query).ScheduleTasks;
+            Parallel.ForEach(scheduleTasks, x => this._tasksRunner.Run(x).Wait());
         }
     }
 }
