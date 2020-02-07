@@ -1,4 +1,5 @@
-﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+﻿using System.Threading;
+using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
@@ -28,12 +29,13 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             var messagesService = _messagesServiceFactory.Create(contexts);
             var muteService = _muteServiceFactory.Create(request, contexts);
 
-
             muteService.MuteUser().Wait();
-            _commandBus.ExecuteAsync(new AddMuteInfoToDbCommand(muteService.MuteEvent));
+            _commandBus.ExecuteAsync(new AddMuteEventToBaseCommand(muteService.MuteEvent));
             messagesService.SendResponse(x => x.MutedUser(muteService.MutedUser, muteService.MuteEvent.TimeRange.End), contexts);
 
-            //todo:delay
+            var timeRange = muteService.MuteEvent.TimeRange;
+            Thread.Sleep(timeRange.End - timeRange.Start);
+
             muteService.UnmuteUser().Wait();
             messagesService.SendResponse(x => x.UnmutedUser(contexts.User), contexts);
         }

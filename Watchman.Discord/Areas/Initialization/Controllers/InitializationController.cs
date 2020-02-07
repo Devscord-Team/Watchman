@@ -16,6 +16,8 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
 {
     public class InitializationController : IController
     {
+        private const string PATH_TO_RESPONSES_FILE = @"Framework/Commands/Responses/responses-configuration.json";
+
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
         private readonly MutedRoleInitService _mutedRoleInitService;
@@ -48,7 +50,6 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
             
             var command = new AddResponsesCommand(responsesToAdd);
             _commandBus.ExecuteAsync(command);
-            
         }
 
         private IEnumerable<DomainModel.Responses.Response> GetResponsesFromBase()
@@ -60,7 +61,7 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
 
         private IEnumerable<DomainModel.Responses.Response> GetResponsesFromFile()
         {
-            var fileContent = File.ReadAllText(@"Framework/Commands/Responses/responses-configuration.json");
+            var fileContent = File.ReadAllText(PATH_TO_RESPONSES_FILE);
             var defaultResponses = JsonConvert.DeserializeObject<IEnumerable<DomainModel.Responses.Response>>(fileContent);
             return defaultResponses;
         }
