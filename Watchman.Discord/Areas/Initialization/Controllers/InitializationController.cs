@@ -10,6 +10,7 @@ using Watchman.Cqrs;
 using Watchman.Discord.Areas.Initialization.Services;
 using Watchman.DomainModel.Responses.Commands;
 using Watchman.DomainModel.Responses.Queries;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Watchman.Discord.Areas.Initialization.Controllers
 {
@@ -35,20 +36,33 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
         {
             ResponsesInit();
             MutedRoleInit(contexts);
+            UnmuteUsersInit(contexts);
         }
 
         private void ResponsesInit()
         {
+            var responsesInBase = GetResponsesFromBase();
+            var defaultResponses = GetResponsesFromFile();
+
+            var responsesToAdd = defaultResponses.Where(d => responsesInBase.All(b => b.Id != d.Id));
+            
+            var command = new AddResponsesCommand(responsesToAdd);
+            _commandBus.ExecuteAsync(command);
+            
+        }
+
+        private IEnumerable<DomainModel.Responses.Response> GetResponsesFromBase()
+        {
             var query = new GetResponsesQuery();
             var responsesInBase = _queryBus.Execute(query).Responses;
+            return responsesInBase;
+        }
 
-            if (!responsesInBase.Any())
-            {
-                var fileContent = File.ReadAllText(@"Framework/Commands/Responses/responses-configuration.json");
-                var responsesToAdd = JsonConvert.DeserializeObject<IEnumerable<DomainModel.Responses.Response>>(fileContent);
-                var command = new AddResponsesCommand(responsesToAdd);
-                _commandBus.ExecuteAsync(command);
-            }
+        private IEnumerable<DomainModel.Responses.Response> GetResponsesFromFile()
+        {
+            var fileContent = File.ReadAllText(@"Framework/Commands/Responses/responses-configuration.json");
+            var defaultResponses = JsonConvert.DeserializeObject<IEnumerable<DomainModel.Responses.Response>>(fileContent);
+            return defaultResponses;
         }
 
         private void MutedRoleInit(Contexts contexts)
@@ -59,6 +73,11 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
             {
                 _mutedRoleInitService.InitForServer(contexts);
             }
+        }
+
+        private void UnmuteUsersInit(Contexts contexts)
+        {
+
         }
     }
 }
