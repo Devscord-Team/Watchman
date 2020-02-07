@@ -2,40 +2,33 @@
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
-using System;
-using System.Linq;
-using Watchman.Cqrs;
 using Watchman.Discord.Areas.Protection.Services;
-using Watchman.DomainModel.Protection.Services;
+using Watchman.DomainModel.Mute;
 
 namespace Watchman.Discord.Areas.Protection.Controllers
 {
     public class AntiSpamController : IController
     {
-        private readonly IQueryBus queryBus;
-        private readonly ICommandBus commandBus;
-        private readonly MessagesServiceFactory messagesServiceFactory;
-        private readonly AntiSpamService antiSpamService;
-        private readonly AntiSpamDomainStrategy _strategy;
+        private readonly MessagesServiceFactory _messagesServiceFactory;
+        private readonly AntiSpamService _antiSpamService;
+        private readonly SpamDetectingStrategy _strategy;
 
-        public AntiSpamController(IQueryBus queryBus, ICommandBus commandBus, MessagesServiceFactory messagesServiceFactory, AntiSpamService antiSpamService)
+        public AntiSpamController(MessagesServiceFactory messagesServiceFactory, AntiSpamService antiSpamService)
         {
-            this.queryBus = queryBus;
-            this.commandBus = commandBus;
-            this.messagesServiceFactory = messagesServiceFactory;
-            this.antiSpamService = antiSpamService;
-            this._strategy = new AntiSpamDomainStrategy();
+            this._messagesServiceFactory = messagesServiceFactory;
+            this._antiSpamService = antiSpamService;
+            this._strategy = new SpamDetectingStrategy();
         }
 
         [ReadAlways]
         public void Scan(DiscordRequest request, Contexts contexts)
         {
-            var messagesService = messagesServiceFactory.Create(contexts);
-            antiSpamService.ClearOldMessages(10);
-            var messagesInLastTime = antiSpamService.CountUserMessages(contexts, 10);
-            var userIsWarned = antiSpamService.IsWarned(contexts);
+            var messagesService = _messagesServiceFactory.Create(contexts);
+            _antiSpamService.ClearOldMessages(10);
+            var messagesInLastTime = _antiSpamService.CountUserMessages(contexts, 10);
+            var userIsWarned = _antiSpamService.IsWarned(contexts);
             var punishment = _strategy.SelectPunishment(userIsWarned, messagesInLastTime, 0);
-            antiSpamService.SetPunishment(contexts, messagesService, punishment);
+            _antiSpamService.SetPunishment(contexts, messagesService, punishment);
         }
     }
 }

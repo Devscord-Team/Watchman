@@ -90,7 +90,7 @@ namespace Watchman.Discord.Areas.Protection.Services
                 End = DateTime.UtcNow + ParseToTimeSpan(forTime)
             };
 
-            return new MuteEvent(userId, timeRange, reason);
+            return new MuteEvent(userId, timeRange, reason, _contexts.Server.Id);
         }
 
         private static TimeSpan ParseToTimeSpan(string time)
