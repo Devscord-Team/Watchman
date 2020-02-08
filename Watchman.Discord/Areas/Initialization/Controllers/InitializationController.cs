@@ -48,7 +48,7 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
             var responsesInBase = GetResponsesFromBase();
             var defaultResponses = GetResponsesFromFile();
 
-            var responsesToAdd = defaultResponses.Where(def => responsesInBase.All(@base => @base.Id != def.Id));
+            var responsesToAdd = defaultResponses.Where(def => responsesInBase.All(@base => @base.OnEvent != def.OnEvent));
 
             var command = new AddResponsesCommand(responsesToAdd);
             _commandBus.ExecuteAsync(command);

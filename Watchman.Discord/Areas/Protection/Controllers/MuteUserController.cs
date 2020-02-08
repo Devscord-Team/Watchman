@@ -23,6 +23,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             this._muteServiceFactory = muteServiceFactory;
         }
 
+        //[IgnoreForHelp] todo:
         [DiscordCommand("mute")]
         public void MuteUser(DiscordRequest request, Contexts contexts)
         {

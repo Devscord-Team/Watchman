@@ -59,6 +59,10 @@ namespace Watchman.Discord
             var servers = await serversService.GetDiscordServers();
             servers.ToList().ForEach(x => unmutingService.UnmuteUsersInit(x));
 
+#if DEBUG
+            Console.WriteLine("Started...");
+#endif
+
             await Task.Delay(-1);
         }
 
@@ -103,7 +107,7 @@ namespace Watchman.Discord
                     messagesService.SendResponse(x => x.UserNotFound(notFoundExc.Mention), contexts);
                     break;
                 default:
-                messagesService.SendMessage("Wystąpił nieznany wyjątek");
+                    messagesService.SendMessage("Wystąpił nieznany wyjątek");
                     break;
             }
         }
