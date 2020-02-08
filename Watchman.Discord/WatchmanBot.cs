@@ -54,16 +54,21 @@ namespace Watchman.Discord
             await _client.LoginAsync(TokenType.Bot, this._configuration.Token);
             await _client.StartAsync();
 
-            var unmutingService = _container.Resolve<UnmutingExpiredMuteEventsService>();
-            var serversService = _container.Resolve<DiscordServersService>();
-            var servers = await serversService.GetDiscordServers();
-            servers.ToList().ForEach(x => unmutingService.UnmuteUsersInit(x));
+            _client.Ready += () => UnmuteUsers();
 
 #if DEBUG
             Console.WriteLine("Started...");
 #endif
 
             await Task.Delay(-1);
+        }
+
+        private async Task UnmuteUsers()
+        {
+            var unmutingService = _container.Resolve<UnmutingExpiredMuteEventsService>();
+            var serversService = _container.Resolve<DiscordServersService>();
+            var servers = (await serversService.GetDiscordServers()).ToList();
+            servers.ForEach(x => unmutingService.UnmuteUsersInit(x));
         }
 
         private Task MessageReceived(SocketMessage message)
