@@ -9,7 +9,7 @@ namespace Watchman.DomainModel.Mute
         public string Reason { get; private set; }
         public TimeRange TimeRange { get; private set; }
         public ulong ServerId { get; private set; }
-        public bool Unmuted { get; private set; } = false;
+        public bool Unmuted { get; set; } = false;
 
         public MuteEvent(ulong userId, TimeRange timeRange, string reason, ulong serverId)
         {

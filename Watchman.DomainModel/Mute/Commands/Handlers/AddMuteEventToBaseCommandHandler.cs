@@ -13,11 +13,10 @@ namespace Watchman.DomainModel.Mute.Commands.Handlers
             this._sessionFactory = sessionFactory;
         }
 
-        public Task HandleAsync(AddMuteEventToBaseCommand command)
+        public async Task HandleAsync(AddMuteEventToBaseCommand command)
         {
             using var session = _sessionFactory.Create();
-            session.Add(command.MuteEvent);
-            return Task.CompletedTask;
+            await Task.Run(() => session.Add(command.MuteEvent));
         }
     }
 }

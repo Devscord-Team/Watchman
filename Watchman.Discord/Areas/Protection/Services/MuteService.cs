@@ -4,8 +4,10 @@ using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Watchman.Common.Exceptions;
+using Watchman.Cqrs;
 using Watchman.Discord.Areas.Initialization.Services;
 using Watchman.DomainModel.Mute;
+using Watchman.DomainModel.Mute.Commands;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {
@@ -15,13 +17,15 @@ namespace Watchman.Discord.Areas.Protection.Services
         public UserContext MutedUser { get; private set; }
         public MuteEvent MuteEvent { get; private set; }
 
+        private readonly ICommandBus _commandBus;
         private readonly UsersService _usersService;
         private readonly UsersRolesService _usersRolesService;
         private readonly Contexts _contexts;
         private readonly DiscordRequest _request;
 
-        public MuteService(UsersService usersService, UsersRolesService usersRolesService, Contexts contexts, DiscordRequest request)
+        public MuteService(ICommandBus commandBus, UsersService usersService, UsersRolesService usersRolesService, Contexts contexts, DiscordRequest request)
         {
+            this._commandBus = commandBus;
             this._usersService = usersService;
             this._usersRolesService = usersRolesService;
             this._contexts = contexts;
@@ -42,6 +46,7 @@ namespace Watchman.Discord.Areas.Protection.Services
         public async Task UnmuteUser()
         {
             await RemoveMuteRoleAsync(MuteRole, MutedUser);
+            await MarkAsUnmuted(MuteEvent);
         }
 
         private UserContext FindUserByMention(string mention)
@@ -75,6 +80,12 @@ namespace Watchman.Discord.Areas.Protection.Services
         private async Task RemoveMuteRoleAsync(UserRole muteRole, UserContext userToUnmute)
         {
             await _usersService.RemoveRole(muteRole, userToUnmute, _contexts.Server);
+        }
+
+        private async Task MarkAsUnmuted(MuteEvent muteEvent)
+        {
+            var command = new MarkMuteEventAsUnmutedCommand(muteEvent);
+            await _commandBus.ExecuteAsync(command);
         }
     }
 }
