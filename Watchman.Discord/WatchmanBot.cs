@@ -17,6 +17,7 @@ using System.Text;
 using System.Collections.Generic;
 using Devscord.DiscordFramework.Commons.Extensions;
 using Watchman.Common.Exceptions;
+using System.Linq;
 
 namespace Watchman.Discord
 {
@@ -52,6 +53,12 @@ namespace Watchman.Discord
 
             await _client.LoginAsync(TokenType.Bot, this._configuration.Token);
             await _client.StartAsync();
+
+            var unmutingService = _container.Resolve<UnmutingExpiredMuteEventsService>();
+            var serversService = _container.Resolve<DiscordServersService>();
+            var servers = await serversService.GetDiscordServers();
+            servers.ToList().ForEach(x => unmutingService.UnmuteUsersInit(x));
+
             await Task.Delay(-1);
         }
 

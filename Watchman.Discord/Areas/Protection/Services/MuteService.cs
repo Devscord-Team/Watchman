@@ -1,12 +1,10 @@
-﻿using System;
-using System.Globalization;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Watchman.Common.Exceptions;
-using Watchman.Common.Models;
+using Watchman.Discord.Areas.Initialization.Services;
 using Watchman.DomainModel.Mute;
 
 namespace Watchman.Discord.Areas.Protection.Services
@@ -32,10 +30,11 @@ namespace Watchman.Discord.Areas.Protection.Services
 
         public async Task MuteUser()
         {
-            var mention = GetMention();
+            var requestParser = new MuteRequestParser(_request);
+            var mention = requestParser.GetMention();
             MutedUser = FindUserByMention(mention);
             MuteRole = GetMuteRole();
-            MuteEvent = CreateMuteEvent(MutedUser.Id);
+            MuteEvent = requestParser.GetMuteEvent(MutedUser.Id, _contexts);
 
             await AssignMuteRoleAsync(MuteRole, MutedUser);
         }
@@ -43,17 +42,6 @@ namespace Watchman.Discord.Areas.Protection.Services
         public async Task UnmuteUser()
         {
             await RemoveMuteRoleAsync(MuteRole, MutedUser);
-        }
-
-        private string GetMention()
-        {
-            var mention = _request.Arguments.FirstOrDefault()?.Values.FirstOrDefault();
-
-            if (string.IsNullOrWhiteSpace(mention))
-            {
-                throw new UserDidntMentionedAnyUserToMuteException();
-            }
-            return mention;
         }
 
         private UserContext FindUserByMention(string mention)
@@ -77,40 +65,6 @@ namespace Watchman.Discord.Areas.Protection.Services
                 throw new RoleNotFoundException(UsersRolesService.MUTED_ROLE_NAME);
             }
             return muteRole;
-        }
-
-        private MuteEvent CreateMuteEvent(ulong userId)
-        {
-            var reason = _request.Arguments.FirstOrDefault(x => x.Name == "reason")?.Values.FirstOrDefault();
-            var forTime = _request.Arguments.FirstOrDefault(x => x.Name == "time")?.Values.FirstOrDefault();
-
-            var timeRange = new TimeRange()
-            {
-                Start = DateTime.UtcNow,
-                End = DateTime.UtcNow + ParseToTimeSpan(forTime)
-            };
-
-            return new MuteEvent(userId, timeRange, reason, _contexts.Server.Id);
-        }
-
-        private static TimeSpan ParseToTimeSpan(string time)
-        {
-            var defaultTime = TimeSpan.FromHours(1);
-
-            if (string.IsNullOrWhiteSpace(time))
-                return defaultTime;
-
-            var lastChar = time[^1];
-            time = time[..^1];
-            time = time.Replace(',', '.');
-            double.TryParse(time, NumberStyles.Any, CultureInfo.InvariantCulture, out var asNumber);
-
-            return lastChar switch
-            {
-                'm' => TimeSpan.FromMinutes(asNumber),
-                'h' => TimeSpan.FromHours(asNumber),
-                _ => defaultTime,
-            };
         }
 
         private async Task AssignMuteRoleAsync(UserRole muteRole, UserContext userToMute)

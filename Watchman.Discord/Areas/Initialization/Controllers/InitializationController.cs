@@ -1,4 +1,5 @@
-﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+﻿using System;
+using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Newtonsoft.Json;
@@ -10,7 +11,7 @@ using Watchman.Cqrs;
 using Watchman.Discord.Areas.Initialization.Services;
 using Watchman.DomainModel.Responses.Commands;
 using Watchman.DomainModel.Responses.Queries;
-using System.Security.Cryptography.X509Certificates;
+using Watchman.DomainModel.Mute.Queries;
 
 namespace Watchman.Discord.Areas.Initialization.Controllers
 {
@@ -20,15 +21,17 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
 
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
-        private readonly MutedRoleInitService _mutedRoleInitService;
+        private readonly MuteRoleInitService _muteRoleInitService;
         private readonly UsersRolesService _usersRolesService;
+        private readonly UsersService _usersService;
 
-        public InitializationController(IQueryBus queryBus, ICommandBus commandBus, MutedRoleInitService mutedRoleInitService, UsersRolesService usersRolesService)
+        public InitializationController(IQueryBus queryBus, ICommandBus commandBus, MuteRoleInitService muteRoleInitService, UsersRolesService usersRolesService, UsersService usersService)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;
-            _mutedRoleInitService = mutedRoleInitService;
+            _muteRoleInitService = muteRoleInitService;
             _usersRolesService = usersRolesService;
+            _usersService = usersService;
         }
 
         [AdminCommand]
@@ -37,8 +40,7 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
         public void Init(DiscordRequest request, Contexts contexts)
         {
             ResponsesInit();
-            MutedRoleInit(contexts);
-            UnmuteUsersInit(contexts);
+            MuteRoleInit(contexts);
         }
 
         private void ResponsesInit()
@@ -46,8 +48,8 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
             var responsesInBase = GetResponsesFromBase();
             var defaultResponses = GetResponsesFromFile();
 
-            var responsesToAdd = defaultResponses.Where(d => responsesInBase.All(b => b.Id != d.Id));
-            
+            var responsesToAdd = defaultResponses.Where(def => responsesInBase.All(@base => @base.Id != def.Id));
+
             var command = new AddResponsesCommand(responsesToAdd);
             _commandBus.ExecuteAsync(command);
         }
@@ -66,19 +68,14 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
             return defaultResponses;
         }
 
-        private void MutedRoleInit(Contexts contexts)
+        private void MuteRoleInit(Contexts contexts)
         {
             var mutedRole = _usersRolesService.GetRoleByName(UsersRolesService.MUTED_ROLE_NAME, contexts.Server);
 
             if (mutedRole == null)
             {
-                _mutedRoleInitService.InitForServer(contexts);
+                _muteRoleInitService.InitForServer(contexts);
             }
-        }
-
-        private void UnmuteUsersInit(Contexts contexts)
-        {
-
         }
     }
 }

@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 
 namespace Watchman.Discord.Areas.Initialization.Services
 {
-    public class MutedRoleInitService
+    public class MuteRoleInitService
     {
         private readonly UsersRolesService _usersRolesService;
         private readonly ChannelsService _channelsService;
 
-        public MutedRoleInitService(UsersRolesService usersRolesService, ChannelsService channelsService)
+        public MuteRoleInitService(UsersRolesService usersRolesService, ChannelsService channelsService)
         {
             _usersRolesService = usersRolesService;
             _channelsService = channelsService;
@@ -40,15 +38,15 @@ namespace Watchman.Discord.Areas.Initialization.Services
         {
             foreach (var channel in contexts.Server.TextChannels)
             {
-                _channelsService.SetPermissions(contexts.Server, channel, changedPermissions, mutedRole);
+                _channelsService.SetPermissions(channel, changedPermissions, mutedRole);
             }
         }
 
         private ChangedPermissions CreateChangedPermissions()
         {
-            var onlyReadPermission = new List<Permission>();
+            var noPermissions = new List<Permission>();
             var denyPermissions = new List<Permission> { Permission.SendMessages, Permission.SendTTSMessages, Permission.CreateInstantInvite };
-            return new ChangedPermissions(onlyReadPermission, denyPermissions);
+            return new ChangedPermissions(noPermissions, denyPermissions);
         }
     }
 }

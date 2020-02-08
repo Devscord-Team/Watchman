@@ -133,5 +133,12 @@ namespace Devscord.DiscordFramework.Framework
 
             return Task.CompletedTask;
         }
+
+        public static Task<IEnumerable<DiscordServerContext>> GetDiscordServers()
+        {
+            var serverContextFactory = new DiscordServerContextFactory();
+            var serverContexts = _client.Guilds.Select(x => serverContextFactory.Create(x));
+            return Task.FromResult(serverContexts);
+        }
     }
 }
