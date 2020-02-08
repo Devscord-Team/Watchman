@@ -1,11 +1,8 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
+﻿using System.Threading.Tasks;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Watchman.Common.Exceptions;
 using Watchman.Cqrs;
-using Watchman.Discord.Areas.Initialization.Services;
 using Watchman.DomainModel.Mute;
 using Watchman.DomainModel.Mute.Commands;
 
@@ -13,57 +10,33 @@ namespace Watchman.Discord.Areas.Protection.Services
 {
     public class MuteService
     {
-        public UserRole MuteRole { get; private set; }
-        public UserContext MutedUser { get; private set; }
-        public MuteEvent MuteEvent { get; private set; }
-
         private readonly ICommandBus _commandBus;
         private readonly UsersService _usersService;
         private readonly UsersRolesService _usersRolesService;
-        private readonly Contexts _contexts;
-        private readonly DiscordRequest _request;
 
-        public MuteService(ICommandBus commandBus, UsersService usersService, UsersRolesService usersRolesService, Contexts contexts, DiscordRequest request)
+        public MuteService(ICommandBus commandBus, UsersService usersService, UsersRolesService usersRolesService)
         {
             this._commandBus = commandBus;
             this._usersService = usersService;
             this._usersRolesService = usersRolesService;
-            this._contexts = contexts;
-            this._request = request;
         }
 
-        public async Task MuteUser()
+        public async Task MuteUser(UserContext userToMute, DiscordServerContext serverContext)
         {
-            var requestParser = new MuteRequestParser(_request);
-            var mention = requestParser.GetMention();
-            MutedUser = FindUserByMention(mention);
-            MuteRole = GetMuteRole();
-            MuteEvent = requestParser.GetMuteEvent(MutedUser.Id, _contexts);
-
-            await AssignMuteRoleAsync(MuteRole, MutedUser);
+            var muteRole = GetMuteRole(serverContext);
+            await AssignMuteRoleAsync(muteRole, userToMute, serverContext);
         }
 
-        public async Task UnmuteUser()
+        public async Task UnmuteUser(UserContext mutedUser, MuteEvent muteEvent, DiscordServerContext serverContext)
         {
-            await RemoveMuteRoleAsync(MuteRole, MutedUser);
-            await MarkAsUnmuted(MuteEvent);
+            var muteRole = GetMuteRole(serverContext);
+            await RemoveMuteRoleAsync(muteRole, mutedUser, serverContext);
+            await MarkAsUnmuted(muteEvent);
         }
 
-        private UserContext FindUserByMention(string mention)
+        private UserRole GetMuteRole(DiscordServerContext server)
         {
-            var userToMute = _usersService.GetUsers(_contexts.Server)
-                .FirstOrDefault(x => x.Mention == mention);
-
-            if (userToMute == null)
-            {
-                throw new UserNotFoundException(mention);
-            }
-            return userToMute;
-        }
-
-        private UserRole GetMuteRole()
-        {
-            var muteRole = _usersRolesService.GetRoleByName(UsersRolesService.MUTED_ROLE_NAME, _contexts.Server);
+            var muteRole = _usersRolesService.GetRoleByName(UsersRolesService.MUTED_ROLE_NAME, server);
 
             if (muteRole == null)
             {
@@ -72,14 +45,14 @@ namespace Watchman.Discord.Areas.Protection.Services
             return muteRole;
         }
 
-        private async Task AssignMuteRoleAsync(UserRole muteRole, UserContext userToMute)
+        private async Task AssignMuteRoleAsync(UserRole muteRole, UserContext userToMute, DiscordServerContext server)
         {
-            await _usersService.AddRole(muteRole, userToMute, _contexts.Server);
+            await _usersService.AddRole(muteRole, userToMute, server);
         }
 
-        private async Task RemoveMuteRoleAsync(UserRole muteRole, UserContext userToUnmute)
+        private async Task RemoveMuteRoleAsync(UserRole muteRole, UserContext userToUnmute, DiscordServerContext server)
         {
-            await _usersService.RemoveRole(muteRole, userToUnmute, _contexts.Server);
+            await _usersService.RemoveRole(muteRole, userToUnmute, server);
         }
 
         private async Task MarkAsUnmuted(MuteEvent muteEvent)

@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
+using Devscord.DiscordFramework.Services;
 using Watchman.Common.Exceptions;
 using Watchman.Common.Models;
 using Watchman.DomainModel.Mute;
@@ -12,21 +13,28 @@ namespace Watchman.Discord.Areas.Initialization.Services
     public class MuteRequestParser
     {
         private readonly DiscordRequest _request;
+        private readonly UsersService _usersService;
+        private readonly Contexts _contexts;
 
-        public MuteRequestParser(DiscordRequest request)
+        public MuteRequestParser(DiscordRequest request, UsersService usersService, Contexts contexts)
         {
             _request = request;
+            _usersService = usersService;
+            _contexts = contexts;
         }
 
-        public string GetMention()
+        public UserContext GetUser()
         {
-            var mention = _request.Arguments.FirstOrDefault()?.Values.FirstOrDefault();
+            var mention = GetMention();
 
-            if (string.IsNullOrWhiteSpace(mention))
+            var userToMute = _usersService.GetUsers(_contexts.Server)
+                .FirstOrDefault(x => x.Mention == mention);
+
+            if (userToMute == null)
             {
-                throw new UserDidntMentionedAnyUserToMuteException();
+                throw new UserNotFoundException(mention);
             }
-            return mention;
+            return userToMute;
         }
 
         public MuteEvent GetMuteEvent(ulong userId, Contexts contexts)
@@ -41,6 +49,17 @@ namespace Watchman.Discord.Areas.Initialization.Services
             };
 
             return new MuteEvent(userId, timeRange, reason, contexts.Server.Id);
+        }
+
+        private string GetMention()
+        {
+            var mention = _request.Arguments.FirstOrDefault()?.Values.FirstOrDefault();
+
+            if (string.IsNullOrWhiteSpace(mention))
+            {
+                throw new UserDidntMentionedAnyUserToMuteException();
+            }
+            return mention;
         }
 
         private static TimeSpan ParseToTimeSpan(string time)
