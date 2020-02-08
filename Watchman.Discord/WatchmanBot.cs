@@ -53,13 +53,10 @@ namespace Watchman.Discord
 
             await _client.LoginAsync(TokenType.Bot, this._configuration.Token);
             await _client.StartAsync();
-
-            _client.Ready += () => UnmuteUsers();
-
+            _client.Ready += UnmuteUsers;
 #if DEBUG
             Console.WriteLine("Started...");
 #endif
-
             await Task.Delay(-1);
         }
 

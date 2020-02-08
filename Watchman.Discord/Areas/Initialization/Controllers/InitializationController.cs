@@ -1,5 +1,4 @@
-﻿using System;
-using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Newtonsoft.Json;
@@ -11,7 +10,6 @@ using Watchman.Cqrs;
 using Watchman.Discord.Areas.Initialization.Services;
 using Watchman.DomainModel.Responses.Commands;
 using Watchman.DomainModel.Responses.Queries;
-using Watchman.DomainModel.Mute.Queries;
 
 namespace Watchman.Discord.Areas.Initialization.Controllers
 {
