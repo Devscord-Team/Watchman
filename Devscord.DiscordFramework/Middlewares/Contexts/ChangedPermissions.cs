@@ -8,7 +8,7 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
         public Permissions AllowPermissions { get; private set; }
         public Permissions DenyPermissions { get; private set; }
 
-        public ChangedPermissions(IEnumerable<Permission> allowPermissions, IEnumerable<Permission> denyPermissions)
+        public ChangedPermissions(ICollection<Permission> allowPermissions, ICollection<Permission> denyPermissions)
         {
             AllowPermissions = new Permissions(allowPermissions);
             DenyPermissions = new Permissions(denyPermissions);

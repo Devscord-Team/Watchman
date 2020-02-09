@@ -21,15 +21,13 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
         private readonly ICommandBus _commandBus;
         private readonly MuteRoleInitService _muteRoleInitService;
         private readonly UsersRolesService _usersRolesService;
-        private readonly UsersService _usersService;
 
         public InitializationController(IQueryBus queryBus, ICommandBus commandBus, MuteRoleInitService muteRoleInitService, UsersRolesService usersRolesService, UsersService usersService)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;
-            _muteRoleInitService = muteRoleInitService;
-            _usersRolesService = usersRolesService;
-            _usersService = usersService;
+            this._muteRoleInitService = muteRoleInitService;
+            this._usersRolesService = usersRolesService;
         }
 
         [AdminCommand]

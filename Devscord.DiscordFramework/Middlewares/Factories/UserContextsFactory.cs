@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Discord;
 using Discord.WebSocket;
+using Watchman.Common.Models;
 
 namespace Devscord.DiscordFramework.Middlewares.Factories
 {

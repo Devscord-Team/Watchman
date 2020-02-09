@@ -15,13 +15,13 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
             this.Permissions = new Permissions();
         }
 
-        public UserRole(string name, IEnumerable<Permission> permissions)
+        public UserRole(string name, ICollection<Permission> permissions)
         {
             this.Name = name;
             this.Permissions = new Permissions(permissions);
         }
 
-        public UserRole(ulong id, string name, IEnumerable<Permission> permissions)
+        public UserRole(ulong id, string name, ICollection<Permission> permissions)
         {
             this.Id = id;
             this.Name = name;

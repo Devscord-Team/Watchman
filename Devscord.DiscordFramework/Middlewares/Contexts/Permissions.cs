@@ -5,9 +5,9 @@ using Watchman.Common.Models;
 
 namespace Devscord.DiscordFramework.Middlewares.Contexts
 {
-    public class Permissions
+    public class Permissions : ICollection<Permission>
     {
-        private readonly IEnumerable<Permission> _permissions;
+        private readonly ICollection<Permission> _permissions;
         public ulong RawValue => (ulong)_permissions.Sum(x => (long)x);
 
         public Permissions()
@@ -15,14 +15,20 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
             this._permissions = new List<Permission>();
         }
 
-        public Permissions(IEnumerable<Permission> permissions)
+        public Permissions(ICollection<Permission> permissions)
         {
             this._permissions = permissions;
         }
 
-        public List<Permission> ToList()
-        {
-            return _permissions.ToList();
-        }
+        public List<Permission> ToList() => _permissions.ToList();
+        public IEnumerator<Permission> GetEnumerator() => _permissions.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        public void Add(Permission permission) => _permissions.Add(permission);
+        public void Clear() => _permissions.Clear();
+        public bool Contains(Permission permission) => _permissions.Contains(permission);
+        public void CopyTo(Permission[] array, int arrayIndex) => _permissions.CopyTo(array, arrayIndex);
+        public bool Remove(Permission permission) => _permissions.Remove(permission);
+        public int Count => _permissions.Count;
+        public bool IsReadOnly => _permissions.IsReadOnly;
     }
 }
