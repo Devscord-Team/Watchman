@@ -46,7 +46,7 @@ namespace Devscord.DiscordFramework.Services
 
         private SocketRole GetRole(ulong roleId, DiscordServerContext server)
         {
-            return Server.GetRoles(server.Id).First(x => x.Id == roleId);
+            return Server.GetSocketRoles(server.Id).First(x => x.Id == roleId);
         }
     }
 }

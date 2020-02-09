@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
+using Watchman.Common.Models;
 
 namespace Watchman.Discord.Areas.Initialization.Services
 {
