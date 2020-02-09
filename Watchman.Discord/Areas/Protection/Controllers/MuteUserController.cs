@@ -108,7 +108,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         private async void UnmuteUserOnlyIfMuted(Contexts contexts, UserContext userToUnmute)
         {
             var muteEventToUnmute = GetNotUnmutedUserMuteEvent(contexts.Server, userToUnmute);
-            if (muteEventToUnmute?.Unmuted != true)
+            if (muteEventToUnmute == null)
             {
                 return;
             }

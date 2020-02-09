@@ -81,7 +81,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("MutedUser", 
                 new KeyValuePair<string, string>("user", mutedUser.Name),
-                new KeyValuePair<string, string>("timeEnd", timeEnd.ToString(CultureInfo.InvariantCulture)));
+                new KeyValuePair<string, string>("timeEnd", timeEnd.ToString("dd.MM.yyyy")));
         }
 
         public static string UnmutedUser(this ResponsesService responsesService, UserContext unmutedUser)
