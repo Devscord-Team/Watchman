@@ -2,7 +2,6 @@
 using System.Linq;
 using Devscord.DiscordFramework.Framework;
 using Devscord.DiscordFramework.Middlewares.Contexts;
-using Devscord.DiscordFramework.Middlewares.Factories;
 
 namespace Devscord.DiscordFramework.Services
 {
@@ -17,20 +16,12 @@ namespace Devscord.DiscordFramework.Services
 
         public UserRole GetRoleByName(string name, DiscordServerContext server)
         {
-            var role = Server.GetRoles(server.Id).FirstOrDefault(x => x.Name == name);
-
-            return role == null ? default : new UserRoleFactory().Create(role);
+            return Server.GetRoles(server.Id).FirstOrDefault(x => x.Name == name);
         }
 
         public IEnumerable<UserRole> GetRoles(DiscordServerContext server)
         {
-            var roles = Server.GetRoles(server.Id).ToList();
-
-            if (!roles.Any())
-                return default;
-
-            var userRoles = roles.Select(x => new UserRoleFactory().Create(x));
-            return userRoles;
+            return Server.GetRoles(server.Id).ToList();
         }
     }
 }

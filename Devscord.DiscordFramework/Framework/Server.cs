@@ -31,9 +31,10 @@ namespace Devscord.DiscordFramework.Framework
         private static DiscordSocketClient _client;
         private static List<SocketRole> _roles;
 
-        public static IEnumerable<SocketRole> GetRoles(ulong guildId)
+        public static IEnumerable<UserRole> GetRoles(ulong guildId)
         {
-            return _roles.Where(x => x.Guild.Id == guildId);
+            var roleFactory = new UserRoleFactory();
+            return _roles.Where(x => x.Guild.Id == guildId).Select(x => roleFactory.Create(x));
         }
 
         private static Task AddRole(SocketRole role)
