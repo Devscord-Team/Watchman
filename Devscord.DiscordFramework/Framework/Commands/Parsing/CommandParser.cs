@@ -57,10 +57,10 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
 
         private DiscordRequestArgument GetArgument(string message, string prefix)
         {
-            var isArgumentNotValue = message.Split().Length > 1;
+            var isParameter = message.Split().Length > 1;
             var splitted = message.Split(' ');
-            var parameter = isArgumentNotValue ? splitted.First() : null;
-            var values = splitted.Skip(isArgumentNotValue ? 1 : 0);
+            var parameter = isParameter ? splitted.First() : null;
+            var values = splitted.Skip(isParameter ? 1 : 0);
 
             return new DiscordRequestArgument
             {
