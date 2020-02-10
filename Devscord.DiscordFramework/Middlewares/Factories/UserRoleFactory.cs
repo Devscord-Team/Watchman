@@ -1,8 +1,8 @@
 ﻿using System.Linq;
+using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Discord.Rest;
 using Discord.WebSocket;
-using Watchman.Common.Models;
 
 namespace Devscord.DiscordFramework.Middlewares.Factories
 {

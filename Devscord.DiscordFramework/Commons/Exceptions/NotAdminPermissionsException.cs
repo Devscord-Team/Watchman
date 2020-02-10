@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Watchman.Common.Exceptions
+namespace Devscord.DiscordFramework.Commons.Exceptions
 {
     public class NotAdminPermissionsException : Exception
     {

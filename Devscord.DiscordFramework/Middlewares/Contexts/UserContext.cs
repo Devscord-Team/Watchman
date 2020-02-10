@@ -1,7 +1,7 @@
-﻿using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
+﻿using Devscord.DiscordFramework.Commons;
+using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using System.Collections.Generic;
 using System.Linq;
-using Watchman.Common.Models;
 
 namespace Devscord.DiscordFramework.Middlewares.Contexts
 {

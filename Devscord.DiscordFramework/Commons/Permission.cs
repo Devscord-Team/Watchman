@@ -1,4 +1,4 @@
-﻿namespace Watchman.Common.Models
+﻿namespace Devscord.DiscordFramework.Commons
 {
     public enum Permission
     {

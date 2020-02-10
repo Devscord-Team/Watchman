@@ -12,10 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Watchman.Common\Watchman.Common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="Framework\Commands\Responses\responses-configuration.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

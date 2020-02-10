@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Parsing;
@@ -10,7 +11,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Watchman.Common.Exceptions;
 
 namespace Devscord.DiscordFramework
 {

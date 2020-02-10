@@ -16,8 +16,8 @@ using Watchman.Discord.Areas.Help.Services;
 using System.Text;
 using System.Collections.Generic;
 using Devscord.DiscordFramework.Commons.Extensions;
-using Watchman.Common.Exceptions;
 using System.Linq;
+using Devscord.DiscordFramework.Commons.Exceptions;
 
 namespace Watchman.Discord
 {

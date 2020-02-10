@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
+using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
-using Watchman.Common.Exceptions;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Mute;
 using Watchman.DomainModel.Mute.Commands;
