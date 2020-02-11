@@ -54,9 +54,8 @@ namespace Watchman.Discord
             await _client.LoginAsync(TokenType.Bot, this._configuration.Token);
             await _client.StartAsync();
             _client.Ready += UnmuteUsers;
-#if DEBUG
+
             Console.WriteLine("Started...");
-#endif
             await Task.Delay(-1);
         }
 
@@ -84,6 +83,7 @@ namespace Watchman.Discord
                 .AddMiddleware<ServerMiddleware>()
                 .AddMiddleware<UserMiddleware>();
             workflow.WorkflowException += this.LogException;
+            workflow.WorkflowException += this.PrintExceptionOnConsole;
 #if DEBUG
             workflow.WorkflowException += this.PrintDebugExceptionInfo;
 #endif
@@ -116,6 +116,20 @@ namespace Watchman.Discord
 
         private void PrintDebugExceptionInfo(Exception e, Contexts contexts)
         {
+            var exceptionMessage = BuildExceptionMessage(e).ToString();
+
+            var messagesService = _container.Resolve<MessagesServiceFactory>().Create(contexts);
+            messagesService.SendMessage(exceptionMessage);
+        }
+
+        private void PrintExceptionOnConsole(Exception e, Contexts contexts)
+        {
+            var exceptionMessage = BuildExceptionMessage(e).ToString();
+            Console.WriteLine(exceptionMessage);
+        }
+
+        private StringBuilder BuildExceptionMessage(Exception e)
+        {
             var lines = new Dictionary<string, string>()
             {
                 { "Message", e.Message },
@@ -125,10 +139,7 @@ namespace Watchman.Discord
 
             var exceptionMessageBuilder = new StringBuilder();
             exceptionMessageBuilder.PrintManyLines(lines);
-
-            var messagesService = _container.Resolve<MessagesServiceFactory>().Create(contexts);
-            messagesService.SendMessage(exceptionMessageBuilder.ToString());
-            Console.WriteLine(exceptionMessageBuilder.ToString());
+            return exceptionMessageBuilder;
         }
 
         private IContainer GetAutofacContainer(DiscordConfiguration configuration)
