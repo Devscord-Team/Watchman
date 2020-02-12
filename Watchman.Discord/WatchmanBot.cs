@@ -94,7 +94,14 @@ namespace Watchman.Discord
         {
             var messagesService = _container.Resolve<MessagesServiceFactory>().Create(contexts);
 
-            switch (e.InnerException)
+            var mostInnerException = e.InnerException ?? e;
+            
+            while (mostInnerException.InnerException != null)
+            {
+                mostInnerException = mostInnerException.InnerException;
+            }
+
+            switch (mostInnerException)
             {
                 case NotAdminPermissionsException _:
                     messagesService.SendResponse(x => x.UserIsNotAdmin(), contexts);

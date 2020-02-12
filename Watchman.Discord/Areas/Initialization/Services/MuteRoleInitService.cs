@@ -3,7 +3,7 @@ using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 
-namespace Watchman.Discord.Areas.Initialization.Services
+namespace Watchman.Discord.Areas.Protection.Services
 {
     public class MuteRoleInitService
     {

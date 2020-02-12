@@ -9,7 +9,7 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Cqrs;
-using Watchman.Discord.Areas.Initialization.Services;
+using Watchman.Discord.Areas.Protection.Services;
 using Watchman.Discord.Areas.Protection.Services;
 using Watchman.DomainModel.Mute;
 using Watchman.DomainModel.Mute.Commands;
@@ -42,7 +42,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             var userToMute = requestParser.GetUser();
             var muteEvent = requestParser.GetMuteEvent(userToMute.Id, contexts);
 
-            MuteUserOrOverwrite(contexts, muteEvent, userToMute);
+            MuteUserOrOverwrite(contexts, muteEvent, userToMute).Wait();
             UnmuteInFuture(contexts, muteEvent, userToMute);
         }
 
@@ -56,7 +56,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             UnmuteUserOnlyIfMuted(contexts, userToUnmute);
         }
 
-        private async void MuteUserOrOverwrite(Contexts contexts, MuteEvent muteEvent, UserContext userToMute)
+        private async Task MuteUserOrOverwrite(Contexts contexts, MuteEvent muteEvent, UserContext userToMute)
         {
             var possiblePreviousUserMuteEvent = GetNotUnmutedUserMuteEvent(contexts.Server, userToMute);
             if (possiblePreviousUserMuteEvent != null)

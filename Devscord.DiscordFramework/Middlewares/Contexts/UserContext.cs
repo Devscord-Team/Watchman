@@ -13,7 +13,7 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
         public string AvatarUrl { get; private set; }
         public string Mention { get; private set; }
 
-        public bool IsAdmin => Roles.Any(x => x.Permissions.ToList().Any(x => x.HasFlag(Permission.Administrator)));
+        public bool IsAdmin => Roles.Any(x => x.Permissions.Any(x => x.HasFlag(Permission.ManageGuild)));
         public bool IsMuted => Roles.Any(x => x.Name == "muted");
 
         public UserContext(ulong id, string name, IEnumerable<UserRole> roles, string avatarUrl, string mention)

@@ -8,7 +8,7 @@ using Devscord.DiscordFramework.Services;
 using Watchman.Common.Models;
 using Watchman.DomainModel.Mute;
 
-namespace Watchman.Discord.Areas.Initialization.Services
+namespace Watchman.Discord.Areas.Protection.Services
 {
     public class MuteRequestParser
     {

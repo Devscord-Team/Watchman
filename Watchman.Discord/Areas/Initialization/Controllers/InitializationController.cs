@@ -7,11 +7,11 @@ using System.IO;
 using System.Linq;
 using Devscord.DiscordFramework.Services;
 using Watchman.Cqrs;
-using Watchman.Discord.Areas.Initialization.Services;
+using Watchman.Discord.Areas.Protection.Services;
 using Watchman.DomainModel.Responses.Commands;
 using Watchman.DomainModel.Responses.Queries;
 
-namespace Watchman.Discord.Areas.Initialization.Controllers
+namespace Watchman.Discord.Areas.Protection.Controllers
 {
     public class InitializationController : IController
     {
