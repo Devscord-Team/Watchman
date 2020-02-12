@@ -2,14 +2,23 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Framework;
+using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Middlewares.Factories;
+using Devscord.DiscordFramework.Services.Factories;
 using Discord.WebSocket;
 
 namespace Devscord.DiscordFramework.Services
 {
     public class UsersService
     {
+        private readonly MessagesServiceFactory _messagesServiceFactory;
+
+        public UsersService(MessagesServiceFactory messagesServiceFactory)
+        {
+            _messagesServiceFactory = messagesServiceFactory;
+        }
+
         public Task AddRole(UserRole role, UserContext user, DiscordServerContext server)
         {
             var socketUser = GetUser(user, server);
@@ -33,9 +42,10 @@ namespace Devscord.DiscordFramework.Services
             return userContexts;
         }
 
-        public Task WelcomeUser(MessagesService messagesService, Contexts contexts)
+        public Task WelcomeUser(Contexts contexts)
         {
-            messagesService.SendMessage($"Witaj {contexts.User.Mention} na serwerze {contexts.Server.Name}");
+            var messagesService = _messagesServiceFactory.Create(contexts);
+            messagesService.SendResponse(x => x.NewUserArrived(contexts), contexts);
             return Task.CompletedTask;
         }
 

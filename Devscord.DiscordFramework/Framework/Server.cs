@@ -7,6 +7,7 @@ using Discord.WebSocket;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
 using Devscord.DiscordFramework.Middlewares.Factories;
 
 namespace Devscord.DiscordFramework.Framework
@@ -15,13 +16,13 @@ namespace Devscord.DiscordFramework.Framework
     {
         public static bool Initialized { get; private set; }
 
-        public static void Initialize(DiscordSocketClient client)
+        public static void Initialize(DiscordSocketClient client, IContainer container)
         {
             if (Initialized)
             {
                 return;
             }
-            Server.Initialize(client);
+            Server.Initialize(client, container);
             Initialized = true;
         }
     }
@@ -30,7 +31,7 @@ namespace Devscord.DiscordFramework.Framework
     {
         private static DiscordSocketClient _client;
         private static List<SocketRole> _roles;
-
+        
         public static IEnumerable<SocketRole> GetSocketRoles(ulong guildId)
         {
             return _roles.Where(x => x.Guild.Id == guildId);
@@ -54,10 +55,10 @@ namespace Devscord.DiscordFramework.Framework
             return Task.CompletedTask;
         }
 
-        public static void Initialize(DiscordSocketClient client)
+        public static void Initialize(DiscordSocketClient client, IContainer container)
         {
             _client = client;
-            _client.UserJoined += UserJoined;
+            _client.UserJoined += user => UserJoined(user, container);
 
             client.Ready += () =>
             {
@@ -90,7 +91,7 @@ namespace Devscord.DiscordFramework.Framework
         }
 
         //todo there should be command (command handler)
-        private static Task UserJoined(SocketGuildUser guildUser)
+        private static Task UserJoined(SocketGuildUser guildUser, IContainer container)
         {
             var userContext = new UserContextsFactory().Create(guildUser);
             var discordServerContext = new DiscordServerContextFactory().Create(guildUser.Guild);
@@ -100,11 +101,10 @@ namespace Devscord.DiscordFramework.Framework
             contexts.SetContext(userContext);
             contexts.SetContext(discordServerContext);
             contexts.SetContext(systemChannel);
-          
-            var messagesService = new MessagesServiceFactory(new ResponsesService(), new MessageSplittingService()).Create(contexts);
 
-            var userService = new UsersService();
-            return userService.WelcomeUser(messagesService, contexts);
+            var messagesServiceFactory = container.Resolve<MessagesServiceFactory>();
+            var userService = new UsersService(messagesServiceFactory);
+            return userService.WelcomeUser(contexts);
         }
 
         public static Task<UserRole> CreateNewRole(UserRole role, DiscordServerContext discordServer)

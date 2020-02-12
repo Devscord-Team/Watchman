@@ -15,10 +15,6 @@ namespace Devscord.DiscordFramework.Services
         private readonly ResponsesService _responsesService;
         private readonly MessageSplittingService _splittingService;
 
-        public MessagesService()
-        {
-        }
-
         public MessagesService(ResponsesService responsesService, MessageSplittingService splittingService)
         {
             this._responsesService = responsesService;

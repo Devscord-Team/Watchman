@@ -44,7 +44,9 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         
         public static string NewUserArrived(this ResponsesService responsesService, Contexts contexts)
         {
-            return responsesService.ProcessResponse("NewUserArrived", contexts);
+            return responsesService.ProcessResponse("NewUserArrived", 
+                new KeyValuePair<string, string>("user", contexts.User.Mention),
+                new KeyValuePair<string, string>("server", contexts.Server.Name));
         }
 
         public static string CurrentVersion(this ResponsesService responsesService, Contexts contexts, string version)
