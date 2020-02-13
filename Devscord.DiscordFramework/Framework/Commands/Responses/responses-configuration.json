@@ -57,7 +57,7 @@
   },
   {
     "OnEvent": "MutedUser",
-    "Message": "Użytkownik {{user}} został zmutowany do {{timeEnd}}"
+    "Message": "Użytkownik {{user}} został zmutowany do {{timeEnd}}UTC"
   },
   {
     "OnEvent": "UnmutedUser",
