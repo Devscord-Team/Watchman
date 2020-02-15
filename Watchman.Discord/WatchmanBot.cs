@@ -49,7 +49,7 @@ namespace Watchman.Discord
         public async Task Start()
         {
             MongoConfiguration.Initialize();
-            ServerInitializer.Initialize(_client, _container);
+            ServerInitializer.Initialize(_client, _container.Resolve<MessagesServiceFactory>());
 
             await _client.LoginAsync(TokenType.Bot, this._configuration.Token);
             await _client.StartAsync();

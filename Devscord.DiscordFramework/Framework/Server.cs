@@ -1,5 +1,4 @@
-﻿using Devscord.DiscordFramework.Framework.Commands.Responses;
-using Devscord.DiscordFramework.Middlewares.Contexts;
+﻿using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
 using Discord;
@@ -7,7 +6,6 @@ using Discord.WebSocket;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Autofac;
 using Devscord.DiscordFramework.Middlewares.Factories;
 
 namespace Devscord.DiscordFramework.Framework
@@ -16,13 +14,13 @@ namespace Devscord.DiscordFramework.Framework
     {
         public static bool Initialized { get; private set; }
 
-        public static void Initialize(DiscordSocketClient client, IContainer container)
+        public static void Initialize(DiscordSocketClient client, MessagesServiceFactory messagesServiceFactory)
         {
             if (Initialized)
             {
                 return;
             }
-            Server.Initialize(client, container);
+            Server.Initialize(client, messagesServiceFactory);
             Initialized = true;
         }
     }
@@ -43,22 +41,10 @@ namespace Devscord.DiscordFramework.Framework
             return GetSocketRoles(guildId).Select(x => roleFactory.Create(x));
         }
 
-        private static Task AddRole(SocketRole role)
-        {
-            _roles.Add(role);
-            return Task.CompletedTask;
-        }
-
-        private static Task RemoveRole(SocketRole role)
-        {
-            _roles.Remove(role);
-            return Task.CompletedTask;
-        }
-
-        public static void Initialize(DiscordSocketClient client, IContainer container)
+        public static void Initialize(DiscordSocketClient client, MessagesServiceFactory messagesServiceFactory)
         {
             _client = client;
-            _client.UserJoined += user => UserJoined(user, container);
+            _client.UserJoined += user => UserJoined(user, messagesServiceFactory);
 
             client.Ready += () =>
             {
@@ -66,8 +52,8 @@ namespace Devscord.DiscordFramework.Framework
                 return Task.CompletedTask;
             };
 
-            _client.RoleCreated += (newRole) => AddRole(newRole);
-            _client.RoleDeleted += (deletedRole) => RemoveRole(deletedRole);
+            _client.RoleCreated += newRole => AddRole(newRole);
+            _client.RoleDeleted += deletedRole => RemoveRole(deletedRole);
         }
 
         public static SocketChannel GetChannel(ulong channelId)
@@ -90,8 +76,20 @@ namespace Devscord.DiscordFramework.Framework
             return _client.GetGuild(guildId).Users;
         }
 
+        private static Task AddRole(SocketRole role)
+        {
+            _roles.Add(role);
+            return Task.CompletedTask;
+        }
+
+        private static Task RemoveRole(SocketRole role)
+        {
+            _roles.Remove(role);
+            return Task.CompletedTask;
+        }
+
         //todo there should be command (command handler)
-        private static Task UserJoined(SocketGuildUser guildUser, IContainer container)
+        private static Task UserJoined(SocketGuildUser guildUser, MessagesServiceFactory messagesServiceFactory)
         {
             var userContext = new UserContextsFactory().Create(guildUser);
             var discordServerContext = new DiscordServerContextFactory().Create(guildUser.Guild);
@@ -102,7 +100,6 @@ namespace Devscord.DiscordFramework.Framework
             contexts.SetContext(discordServerContext);
             contexts.SetContext(systemChannel);
 
-            var messagesServiceFactory = container.Resolve<MessagesServiceFactory>();
             var userService = new UsersService(messagesServiceFactory);
             return userService.WelcomeUser(contexts);
         }
