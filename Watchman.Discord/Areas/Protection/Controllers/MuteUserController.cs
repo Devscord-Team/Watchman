@@ -60,7 +60,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             var possiblePreviousUserMuteEvent = GetNotUnmutedUserMuteEvent(contexts.Server, userToMute);
             if (possiblePreviousUserMuteEvent != null)
             {
-                var markAsUnmuted = new MarkMuteEventAsUnmutedCommand(possiblePreviousUserMuteEvent);
+                var markAsUnmuted = new MarkMuteEventAsUnmutedCommand(possiblePreviousUserMuteEvent.Id);
                 await _commandBus.ExecuteAsync(markAsUnmuted);
             }
 

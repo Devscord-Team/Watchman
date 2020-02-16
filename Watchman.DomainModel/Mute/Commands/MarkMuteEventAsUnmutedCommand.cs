@@ -1,14 +1,15 @@
-﻿using Watchman.Cqrs;
+﻿using System;
+using Watchman.Cqrs;
 
 namespace Watchman.DomainModel.Mute.Commands
 {
     public class MarkMuteEventAsUnmutedCommand : ICommand
     {
-        public MuteEvent MuteEvent { get; private set; }
+        public Guid MuteEventGuid { get; }
 
-        public MarkMuteEventAsUnmutedCommand(MuteEvent muteEvent)
+        public MarkMuteEventAsUnmutedCommand(Guid muteEventGuid)
         {
-            MuteEvent = muteEvent;
+            MuteEventGuid = muteEventGuid;
         }
     }
 }

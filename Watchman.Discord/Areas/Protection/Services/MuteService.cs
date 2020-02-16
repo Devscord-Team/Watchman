@@ -57,7 +57,7 @@ namespace Watchman.Discord.Areas.Protection.Services
 
         private async Task MarkAsUnmuted(MuteEvent muteEvent)
         {
-            var command = new MarkMuteEventAsUnmutedCommand(muteEvent);
+            var command = new MarkMuteEventAsUnmutedCommand(muteEvent.Id);
             await _commandBus.ExecuteAsync(command);
         }
     }

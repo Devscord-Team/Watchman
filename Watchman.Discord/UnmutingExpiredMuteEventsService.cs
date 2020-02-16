@@ -63,7 +63,7 @@ namespace Watchman.Discord
             }
             
             await _usersService.RemoveRole(muteRole, user, server);
-            var command = new MarkMuteEventAsUnmutedCommand(muteEvent);
+            var command = new MarkMuteEventAsUnmutedCommand(muteEvent.Id);
             await _commandBus.ExecuteAsync(command);
         }
 
