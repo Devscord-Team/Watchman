@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Framework;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 
@@ -9,7 +10,7 @@ namespace Devscord.DiscordFramework.Services
     {
         public const string MUTED_ROLE_NAME = "muted";
 
-        public UserRole CreateNewRole(Contexts contexts, UserRole userRole)
+        public UserRole CreateNewRole(Contexts contexts, NewUserRole userRole)
         {
             return Server.CreateNewRole(userRole, contexts.Server).Result;
         }

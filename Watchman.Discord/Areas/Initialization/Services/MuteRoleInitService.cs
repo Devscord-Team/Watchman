@@ -25,12 +25,12 @@ namespace Watchman.Discord.Areas.Initialization.Services
             SetChannelsPermissions(contexts, createdRole, changedPermissions);
         }
 
-        private UserRole CreateMuteRole(ICollection<Permission> permissions)
+        private NewUserRole CreateMuteRole(ICollection<Permission> permissions)
         {
-            return new UserRole(UsersRolesService.MUTED_ROLE_NAME, permissions);
+            return new NewUserRole(UsersRolesService.MUTED_ROLE_NAME, permissions);
         }
 
-        private UserRole SetRoleToServer(Contexts contexts, UserRole mutedRole)
+        private UserRole SetRoleToServer(Contexts contexts, NewUserRole mutedRole)
         {
             return _usersRolesService.CreateNewRole(contexts, mutedRole);
         }

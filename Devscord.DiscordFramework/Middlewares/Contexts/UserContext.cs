@@ -12,8 +12,7 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
         public IEnumerable<UserRole> Roles { get; private set; }
         public string AvatarUrl { get; private set; }
         public string Mention { get; private set; }
-
-        public bool IsAdmin => Roles.Any(x => x.Permissions.Any(x => x.HasFlag(Permission.ManageGuild)));
+        public bool IsAdmin { get; private set; }
         public bool IsMuted => Roles.Any(x => x.Name == "muted");
 
         public UserContext(ulong id, string name, IEnumerable<UserRole> roles, string avatarUrl, string mention)
@@ -23,6 +22,7 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
             Roles = roles;
             AvatarUrl = avatarUrl;
             Mention = mention;
+            IsAdmin = Roles.Any(x => x.Permissions.Any(x => x.HasFlag(Permission.ManageGuild)));
         }
 
         public override string ToString()

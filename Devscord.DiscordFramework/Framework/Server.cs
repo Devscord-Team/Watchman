@@ -106,7 +106,7 @@ namespace Devscord.DiscordFramework.Framework
             return userService.WelcomeUser(contexts);
         }
 
-        public static Task<UserRole> CreateNewRole(UserRole role, DiscordServerContext discordServer)
+        public static Task<UserRole> CreateNewRole(NewUserRole role, DiscordServerContext discordServer)
         {
             var permissionsValue = role.Permissions.GetRawValue();
 
