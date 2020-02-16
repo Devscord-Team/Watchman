@@ -85,8 +85,8 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.Parsing
 
         [Test]
         [TestCase("!help -format json -for admins", 2)]
-        [TestCase("!help -format json !for admins", 1)]
-        [TestCase("!help -format json !for admins -tested true", 2)]
+        [TestCase("!help -format json !for admins", 2)]
+        [TestCase("!help -format json !for admins -tested true", 3)]
         [TestCase("!help -format json", 1)]
         public void ShouldFoundManyArguments(string message, int argumentsAmount)
         {

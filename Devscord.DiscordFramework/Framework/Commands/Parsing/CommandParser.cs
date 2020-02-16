@@ -9,7 +9,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
 {
     public class CommandParser
     {
-        private readonly string[] possiblePrefixes = new string[] { "!", "--", "-", "^", "$", "%" };
+        private readonly string[] _possiblePrefixes = { "!", "--", "-", "^", "$", "%" };
 
         public DiscordRequest Parse(string message)
         {
@@ -38,7 +38,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
         private string GetPrefix(string message)
         {
             var withoutWhitespaces = message.Trim().Split(' ');
-            return possiblePrefixes.FirstOrDefault(x => withoutWhitespaces.Any(word => word.StartsWith(x)));
+            return _possiblePrefixes.FirstOrDefault(x => withoutWhitespaces.Any(word => word.StartsWith(x)));
         }
 
         private string GetName(string message)
@@ -48,26 +48,28 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
 
         private IEnumerable<DiscordRequestArgument> GetArguments(string message)
         {
-            var prefix = this.GetPrefix(message);
-            var splitted = message.Split(prefix)
-                .Where(x => !string.IsNullOrWhiteSpace(x))
-                .Select(x => x.Trim());
-            return splitted.Select(x => this.GetArgument(x, prefix));
-        }
+            throw new NotImplementedException();
+            var arguments = new List<DiscordRequestArgument>();
 
-        private DiscordRequestArgument GetArgument(string message, string prefix)
-        {
-            var isParameter = message.Split().Length > 1;
-            var splitted = message.Split(' ');
-            var parameter = isParameter ? splitted.First() : null;
-            var values = splitted.Skip(isParameter ? 1 : 0);
-
-            return new DiscordRequestArgument
+            //todo przypadek value przed argumentem
+            for (var i = 0; i < message.Length; i++)
             {
-                Name = parameter,
-                Prefix = prefix,
-                Values = values
-            };
+                foreach (var prefix in _possiblePrefixes)
+                {
+                    var lastPossiblePrefixIndex = i + prefix.Length;
+                    if (lastPossiblePrefixIndex > message.Length)
+                    {
+                        continue;
+                    }
+
+                    if (prefix == message[i..lastPossiblePrefixIndex])
+                    {
+                        
+                    }
+                }
+            }
+
+            return arguments;
         }
     }
 }
