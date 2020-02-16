@@ -16,7 +16,8 @@ namespace Watchman.DomainModel.Mute.Commands.Handlers
         public async Task HandleAsync(AddMuteEventCommand command)
         {
             using var session = _sessionFactory.Create();
-            await Task.Run(() => session.Add(command.MuteEvent));
+            session.Add(command.MuteEvent);
+            await Task.CompletedTask;
         }
     }
 }

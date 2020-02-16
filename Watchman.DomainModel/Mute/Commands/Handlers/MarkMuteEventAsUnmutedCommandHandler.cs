@@ -19,6 +19,7 @@ namespace Watchman.DomainModel.Mute.Commands.Handlers
             var muteEvent = session.Get<MuteEvent>(command.MuteEventGuid);
             muteEvent.Unmuted = true;
             session.Update(muteEvent);
+            await Task.CompletedTask;
         }
     }
 }
