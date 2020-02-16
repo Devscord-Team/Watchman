@@ -10,7 +10,6 @@ using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Protection.Services;
-using Watchman.Discord.Areas.Protection.Services;
 using Watchman.DomainModel.Mute;
 using Watchman.DomainModel.Mute.Commands;
 using Watchman.DomainModel.Mute.Queries;

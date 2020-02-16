@@ -1,17 +1,17 @@
-﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
-using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
-using Devscord.DiscordFramework.Middlewares.Contexts;
-using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
+using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
+using Newtonsoft.Json;
 using Watchman.Cqrs;
-using Watchman.Discord.Areas.Protection.Services;
+using Watchman.Discord.Areas.Initialization.Services;
 using Watchman.DomainModel.Responses.Commands;
 using Watchman.DomainModel.Responses.Queries;
 
-namespace Watchman.Discord.Areas.Protection.Controllers
+namespace Watchman.Discord.Areas.Initialization.Controllers
 {
     public class InitializationController : IController
     {

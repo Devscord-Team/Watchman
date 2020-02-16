@@ -3,7 +3,7 @@ using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 
-namespace Watchman.Discord.Areas.Protection.Services
+namespace Watchman.Discord.Areas.Initialization.Services
 {
     public class MuteRoleInitService
     {
@@ -25,9 +25,9 @@ namespace Watchman.Discord.Areas.Protection.Services
             SetChannelsPermissions(contexts, createdRole, changedPermissions);
         }
 
-        private UserRole CreateMuteRole(Permissions permissions)
+        private UserRole CreateMuteRole(ICollection<Permission> permissions)
         {
-            return new UserRole(UsersRolesService.MUTED_ROLE_NAME, permissions.ToList());
+            return new UserRole(UsersRolesService.MUTED_ROLE_NAME, permissions);
         }
 
         private UserRole SetRoleToServer(Contexts contexts, UserRole mutedRole)

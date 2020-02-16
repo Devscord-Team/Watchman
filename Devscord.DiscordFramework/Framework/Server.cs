@@ -6,6 +6,8 @@ using Discord.WebSocket;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Devscord.DiscordFramework.Commons;
+using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Middlewares.Factories;
 
 namespace Devscord.DiscordFramework.Framework
@@ -93,12 +95,12 @@ namespace Devscord.DiscordFramework.Framework
         {
             var userContext = new UserContextsFactory().Create(guildUser);
             var discordServerContext = new DiscordServerContextFactory().Create(guildUser.Guild);
-            var systemChannel = new ChannelContextFactory().Create(guildUser.Guild.SystemChannel);
+            var landingChannel = discordServerContext.LandingChannel;
 
             var contexts = new Contexts();
             contexts.SetContext(userContext);
             contexts.SetContext(discordServerContext);
-            contexts.SetContext(systemChannel);
+            contexts.SetContext(landingChannel);
 
             var userService = new UsersService(messagesServiceFactory);
             return userService.WelcomeUser(contexts);
@@ -106,7 +108,7 @@ namespace Devscord.DiscordFramework.Framework
 
         public static Task<UserRole> CreateNewRole(UserRole role, DiscordServerContext discordServer)
         {
-            var permissionsValue = role.Permissions.RawValue;
+            var permissionsValue = role.Permissions.GetRawValue();
 
             var createRoleTask = _client.GetGuild(discordServer.Id)
                 .CreateRoleAsync(role.Name, new GuildPermissions(permissionsValue));
@@ -120,7 +122,7 @@ namespace Devscord.DiscordFramework.Framework
         public static Task SetPermissions(ChannelContext channel, ChangedPermissions permissions, UserRole muteRole)
         {
             var channelSocket = (IGuildChannel)GetChannel(channel.Id);
-            var channelPermissions = new OverwritePermissions(permissions.AllowPermissions.RawValue, permissions.DenyPermissions.RawValue);
+            var channelPermissions = new OverwritePermissions(permissions.AllowPermissions.GetRawValue(), permissions.DenyPermissions.GetRawValue());
 
             Task SetPerms(SocketRole createdRole)
             {
