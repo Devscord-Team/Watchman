@@ -65,7 +65,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             }
 
             await _muteService.MuteUser(userToMute, contexts.Server);
-            await _commandBus.ExecuteAsync(new AddMuteEventToBaseCommand(muteEvent));
+            await _commandBus.ExecuteAsync(new AddMuteEventCommand(muteEvent));
 
             var messagesService = _messagesServiceFactory.Create(contexts);
             await messagesService.SendResponse(x => x.MutedUser(userToMute, muteEvent.TimeRange.End), contexts);
@@ -80,7 +80,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
 
         private IEnumerable<MuteEvent> GetMuteEvents(DiscordServerContext server, ulong userId)
         {
-            var getMuteEvents = new GetMuteEventsFromBaseQuery(server.Id);
+            var getMuteEvents = new GetMuteEventsQuery(server.Id);
             var allServerMuteEvents = _queryBus.Execute(getMuteEvents).MuteEvents;
 
             var userMuteEvents = allServerMuteEvents.Where(x => x.UserId == userId);

@@ -36,7 +36,7 @@ namespace Watchman.Discord
                 return;
             }
 
-            var query = new GetMuteEventsFromBaseQuery(server.Id);
+            var query = new GetMuteEventsQuery(server.Id);
             var notUnmutedEvents = _queryBus.Execute(query).MuteEvents
                 .Where(x => x.Unmuted == false)
                 .ToList();

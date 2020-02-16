@@ -2,11 +2,11 @@
 
 namespace Watchman.DomainModel.Mute.Commands
 {
-    public class AddMuteEventToBaseCommand : ICommand
+    public class AddMuteEventCommand : ICommand
     {
         public MuteEvent MuteEvent { get; }
 
-        public AddMuteEventToBaseCommand(MuteEvent muteEvent)
+        public AddMuteEventCommand(MuteEvent muteEvent)
         {
             MuteEvent = muteEvent;
         }

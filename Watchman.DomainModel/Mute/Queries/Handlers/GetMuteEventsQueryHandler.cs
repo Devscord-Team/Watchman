@@ -4,23 +4,23 @@ using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Mute.Queries.Handlers
 {
-    public class GetMuteEventsFromBaseQueryHandler : IQueryHandler<GetMuteEventsFromBaseQuery, GetMuteEventsFromBaseQueryResult>
+    public class GetMuteEventsQueryHandler : IQueryHandler<GetMuteEventsQuery, GetMuteEventsQueryResult>
     {
         private readonly ISessionFactory _sessionFactory;
 
-        public GetMuteEventsFromBaseQueryHandler(ISessionFactory sessionFactory)
+        public GetMuteEventsQueryHandler(ISessionFactory sessionFactory)
         {
             _sessionFactory = sessionFactory;
         }
 
-        public GetMuteEventsFromBaseQueryResult Handle(GetMuteEventsFromBaseQuery query)
+        public GetMuteEventsQueryResult Handle(GetMuteEventsQuery query)
         {
             using var session = _sessionFactory.Create();
             
             var muteEvents = session.Get<MuteEvent>()
                 .Where(x => x.ServerId == query.ServerId);
 
-            return new GetMuteEventsFromBaseQueryResult(muteEvents);
+            return new GetMuteEventsQueryResult(muteEvents);
         }
     }
 }

@@ -4,16 +4,16 @@ using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Mute.Commands.Handlers
 {
-    public class AddMuteEventToBaseCommandHandler : ICommandHandler<AddMuteEventToBaseCommand>
+    public class AddMuteEventCommandHandler : ICommandHandler<AddMuteEventCommand>
     {
         private readonly ISessionFactory _sessionFactory;
 
-        public AddMuteEventToBaseCommandHandler(ISessionFactory sessionFactory)
+        public AddMuteEventCommandHandler(ISessionFactory sessionFactory)
         {
             this._sessionFactory = sessionFactory;
         }
 
-        public async Task HandleAsync(AddMuteEventToBaseCommand command)
+        public async Task HandleAsync(AddMuteEventCommand command)
         {
             using var session = _sessionFactory.Create();
             await Task.Run(() => session.Add(command.MuteEvent));

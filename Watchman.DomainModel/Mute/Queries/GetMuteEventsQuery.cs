@@ -2,11 +2,11 @@
 
 namespace Watchman.DomainModel.Mute.Queries
 {
-    public class GetMuteEventsFromBaseQuery : IQuery<GetMuteEventsFromBaseQueryResult>
+    public class GetMuteEventsQuery : IQuery<GetMuteEventsQueryResult>
     {
         public ulong ServerId { get; }
 
-        public GetMuteEventsFromBaseQuery(ulong serverId)
+        public GetMuteEventsQuery(ulong serverId)
         {
             ServerId = serverId;
         }
