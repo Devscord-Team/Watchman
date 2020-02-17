@@ -15,6 +15,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.Parsing.Models
         [TestCase("-add", "role", false)]
         [TestCase("-add role", "role", false)]
         [TestCase("-add -role", "role", true)]
+        [TestCase("-mute @test -time 1h", "time", true)]
         public void ShouldFoundName(string message, string name, bool shouldTrue)
         {
             //Arrange
@@ -35,6 +36,10 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.Parsing.Models
         [TestCase("-add tester", null, "csharp", false)]
         [TestCase("-help xml format", "format", "xml", false)]
         [TestCase("-help format xml", "format", "json", false)]
+        [TestCase("-mute val1 val2 val3", null, "val2", true)]
+        [TestCase("-mute val1 val2 val3", null, "val3", true)]
+        [TestCase("-mute val1 val2 val3", null, "val4", false)]
+        [TestCase("-mute val1 val2 val3", null, "val1", true)]
         public void ShouldFoundNameAndValue(string message, string name, string value, bool shouldTrue)
         {
             //Arrange

@@ -77,7 +77,6 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.Parsing
             var argument = parsed.Arguments.First();
 
             //Assert
-            Assert.That(parsed.ArgumentsPrefix, Is.EqualTo(argument.Prefix));
             Assert.That(argument.Prefix, Is.EqualTo(argumentPrefix));
             Assert.That(argument.Name, Is.EqualTo(name));
             Assert.That(argument.Values.First(), Is.EqualTo(value));
