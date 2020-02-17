@@ -26,6 +26,18 @@ namespace Watchman.Web.Server
 
         public void ConfigureServices(IServiceCollection services)
         {
+            //services.AddCors(options =>
+            //{
+            //    options.AddPolicy("AllowAny",
+            //        x =>
+            //        {
+            //            x.AllowAnyOrigin();
+            //            x.AllowAnyMethod();
+            //            x.AllowAnyHeader();
+            //            x.AllowCredentials();
+            //        });
+            //});
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Watchman API", Description = "Watchman management tool", Version = "Alpha 1.0" });
@@ -54,6 +66,7 @@ namespace Watchman.Web.Server
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();
+            //app.UseCors("AllowAny");
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

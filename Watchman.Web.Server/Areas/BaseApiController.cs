@@ -10,7 +10,7 @@ namespace Watchman.Web.Server.Areas
     [ApiController]
     [Produces("application/json")]
     [Route("[controller]")]
-    [EnableCors("AllowAny")]
+    //[EnableCors("AllowAny")]
     public class BaseApiController : ControllerBase
     {
     }
