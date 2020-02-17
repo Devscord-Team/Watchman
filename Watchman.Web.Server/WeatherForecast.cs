@@ -1,6 +1,6 @@
 using System;
 
-namespace Watchman.Web.Data
+namespace Watchman.Web.Server
 {
     public class WeatherForecast
     {

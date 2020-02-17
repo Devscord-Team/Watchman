@@ -2,20 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Blazorise;
-using Blazorise.Bulma;
-using Blazorise.Icons.FontAwesome;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Watchman.Integrations.MongoDB;
-using Watchman.Web.Data;
+using Microsoft.Extensions.Logging;
 
-namespace Watchman.Web
+namespace Watchman.Web.Server
 {
     public class Startup
     {
@@ -27,21 +23,9 @@ namespace Watchman.Web
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddRazorPages();
-            services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
-            services
-                .AddBlazorise(options =>
-                {
-                    options.ChangeTextOnKeyPress = true;
-                }) // from v0.6.0-preview4
-                .AddBulmaProviders()
-                .AddFontAwesomeIcons();
-
-            MongoConfiguration.Initialize();
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,25 +35,16 @@ namespace Watchman.Web
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-                app.UseHsts();
-            }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
 
             app.UseRouting();
-            
-            app.ApplicationServices
-                .UseBulmaProviders()
-                .UseFontAwesomeIcons();
+
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapBlazorHub();
-                endpoints.MapFallbackToPage("/_Host");
+                endpoints.MapControllers();
             });
         }
     }

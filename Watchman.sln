@@ -17,9 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Watchman.Cqrs", "Watchman.C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Devscord.DiscordFramework.UnitTests", "Devscord.DiscordFramework.UnitTests\Devscord.DiscordFramework.UnitTests.csproj", "{BA52AB41-7C8F-4970-BEB7-F87DD7215FB4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Watchman.Web", "Watchman.Web\Watchman.Web.csproj", "{E1BB6F9C-42F9-47A1-8A01-6F1549D0EA2F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Watchman.ScheduleRunner", "Watchman.ScheduleRunner\Watchman.ScheduleRunner.csproj", "{229B6DE5-DA83-4B16-866C-9856375C37A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watchman.ScheduleRunner", "Watchman.ScheduleRunner\Watchman.ScheduleRunner.csproj", "{229B6DE5-DA83-4B16-866C-9856375C37A5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watchman.Web.Server", "Watchman.Web.Server\Watchman.Web.Server.csproj", "{6BF62D5D-800D-498D-8871-83EFEEE22E27}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,14 +55,14 @@ Global
 		{BA52AB41-7C8F-4970-BEB7-F87DD7215FB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA52AB41-7C8F-4970-BEB7-F87DD7215FB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA52AB41-7C8F-4970-BEB7-F87DD7215FB4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E1BB6F9C-42F9-47A1-8A01-6F1549D0EA2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E1BB6F9C-42F9-47A1-8A01-6F1549D0EA2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E1BB6F9C-42F9-47A1-8A01-6F1549D0EA2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E1BB6F9C-42F9-47A1-8A01-6F1549D0EA2F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{229B6DE5-DA83-4B16-866C-9856375C37A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{229B6DE5-DA83-4B16-866C-9856375C37A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{229B6DE5-DA83-4B16-866C-9856375C37A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{229B6DE5-DA83-4B16-866C-9856375C37A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BF62D5D-800D-498D-8871-83EFEEE22E27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BF62D5D-800D-498D-8871-83EFEEE22E27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BF62D5D-800D-498D-8871-83EFEEE22E27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BF62D5D-800D-498D-8871-83EFEEE22E27}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
