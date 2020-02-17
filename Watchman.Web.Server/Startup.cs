@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
+using Watchman.Integrations.MongoDB;
 
 namespace Watchman.Web.Server
 {
@@ -26,6 +27,7 @@ namespace Watchman.Web.Server
 
         public void ConfigureServices(IServiceCollection services)
         {
+            MongoConfiguration.Initialize();
             //services.AddCors(options =>
             //{
             //    options.AddPolicy("AllowAny",
