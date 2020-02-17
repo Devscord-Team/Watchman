@@ -20,7 +20,7 @@ namespace Watchman.Web.Server
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .UseServiceProviderFactory(new AutofacServiceProviderFactory(ContainerConfigurator.ConfigureContainer))
+            .UseServiceProviderFactory(new AutofacServiceProviderFactory(ContainerConfigurator.ConfigureContainer))
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

@@ -1,25 +1,36 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using RestSharp;
-using System.Net.Http;
+using Watchman.Cqrs;
+using Watchman.Web.Server.IoC;
 
 namespace Watchman.Web.Server.Tests.Integration
 {
-    public class Configurator
+    public static class Configurator
     {
-        private readonly TestServer server;
-        private readonly RestClient client;
+        private static TestServer server;
+        private static object spinLock = new object();
 
-        public Configurator()
+        public static RestClient GetClient()
         {
-            server = new TestServer(new WebHostBuilder()
-                .UseStartup<Startup>());
-            client = new RestClient(server.BaseAddress);
-        }
+            lock (spinLock)
+            {
+                var webHostBuilder = new WebHostBuilder()
+                    .ConfigureTestContainer<ContainerBuilder>(x => ContainerConfigurator.ConfigureContainer(x)) 
+                    .ConfigureServices(services => services.AddAutofac())
+                    .UseStartup<Startup>();
+                server = new TestServer(webHostBuilder);
+                var test = server.Host.Services.GetRequiredService<IQueryBus>();
+            }
 
-        public RestClient GetClient()
-        {
-            return client;
+            var client = server.CreateClient();
+            //var test = client.GetAsync("/Responses/GetResponses").Result;
+            return new RestClient(server.BaseAddress);
         }
     }
 }

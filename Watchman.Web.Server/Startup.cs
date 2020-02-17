@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -13,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 using Watchman.Integrations.MongoDB;
+using Watchman.Web.Server.IoC;
 
 namespace Watchman.Web.Server
 {
@@ -39,7 +42,6 @@ namespace Watchman.Web.Server
             //            x.AllowCredentials();
             //        });
             //});
-
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Watchman API", Description = "Watchman management tool", Version = "Alpha 1.0" });
@@ -57,7 +59,6 @@ namespace Watchman.Web.Server
             {
                 app.UseDeveloperExceptionPage();
             }
-
             app.UseSwagger();
             app.UseSwaggerUI(c => 
             {
