@@ -39,8 +39,8 @@ namespace Watchman.Discord.Areas.Protection.Services
 
         public MuteEvent GetMuteEvent(ulong userId, Contexts contexts)
         {
-            var reason = _request.Arguments.FirstOrDefault(x => x.Name == "reason")?.Values.FirstOrDefault();
-            var forTime = _request.Arguments.FirstOrDefault(x => x.Name == "time")?.Values.FirstOrDefault();
+            var reason = _request.Arguments.FirstOrDefault(x => x.Name == "reason")?.Value;
+            var forTime = _request.Arguments.FirstOrDefault(x => x.Name == "time")?.Value;
 
             var timeRange = new TimeRange()
             {
@@ -53,7 +53,7 @@ namespace Watchman.Discord.Areas.Protection.Services
 
         private string GetMention()
         {
-            var mention = _request.Arguments.FirstOrDefault()?.Values.FirstOrDefault();
+            var mention = _request.Arguments.FirstOrDefault()?.Value;
 
             if (string.IsNullOrWhiteSpace(mention))
             {

@@ -6,6 +6,6 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing.Models
     {
         public string Prefix { get; set; }
         public string Name { get; set; }
-        public IEnumerable<string> Values { get; set; }
+        public string Value { get; set; }
     }
 }

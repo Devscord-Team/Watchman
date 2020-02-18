@@ -85,9 +85,9 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
             {
                 Prefix = null,
                 Name = null,
-                Values = GetValues(trimmedMessage, out var lastValuesIndex)
+                Value = GetValue(trimmedMessage, out var nextIndexAfterValue)
             };
-            trimmedMessage = trimmedMessage.Remove(0, lastValuesIndex).TrimStart();
+            trimmedMessage = trimmedMessage.Remove(0, nextIndexAfterValue).TrimStart();
             return arg;
         }
 
@@ -108,46 +108,39 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
             arg.Name = trimmedMessage[..lastArgNameIndex];
 
             trimmedMessage = trimmedMessage.CutStart(arg.Name).TrimStart();
-            arg.Values = GetValues(trimmedMessage, out var lastValuesIndex);
+            arg.Value = GetValue(trimmedMessage, out var nextIndexAfterValue);
 
-            trimmedMessage = trimmedMessage.Remove(0, lastValuesIndex).TrimStart();
+            trimmedMessage = trimmedMessage[nextIndexAfterValue..].TrimStart();
             return arg;
         }
 
-        private IEnumerable<string> GetValues(string valuesSegment, out int lastValuesIndex)
+        private string GetValue(string valuesSegment, out int nextIndexAfterValue)
         {
             //value ...
             // or
             //"value val2" ...
-            var hasMultiValues = valuesSegment[0] == '\"';
+            var isLongValue = valuesSegment[0] == '\"';
 
-            var values = new List<string>();
-            if (hasMultiValues)
-            {
-                values = GetMultiValues(valuesSegment, out lastValuesIndex).ToList();
-            }
-            else
-            {
-                var value = GetSingleValue(valuesSegment, out lastValuesIndex);
-                values.Add(value);
-            }
-            return values;
+            return isLongValue 
+                ? GetLongValue(valuesSegment, out nextIndexAfterValue) 
+                : GetSingleValue(valuesSegment, out nextIndexAfterValue);
         }
 
-        private IEnumerable<string> GetMultiValues(string valuesSegment, out int lastValuesIndex)
+        private string GetLongValue(string valuesSegment, out int nextIndexAfterValue)
         {
-            lastValuesIndex = valuesSegment[1..].IndexOf('\"');
-            var valuesString = valuesSegment[1..lastValuesIndex];
-            return valuesString.Split(' ');
+            var lastValuesIndex = valuesSegment[1..].IndexOf('\"') + 1; // adding 1 bcs [1..]
+            var valueString = valuesSegment[1..lastValuesIndex];
+            nextIndexAfterValue = lastValuesIndex + 1;
+            return valueString;
         }
 
-        private string GetSingleValue(string valueSegment, out int lastValuesIndex)
+        private string GetSingleValue(string valueSegment, out int nextIndexAfterValue)
         {
-            lastValuesIndex = valueSegment.Contains(' ')
+            nextIndexAfterValue = valueSegment.Contains(' ')
                 ? valueSegment.IndexOf(' ')
                 : valueSegment.Length;
 
-            var value = valueSegment[..lastValuesIndex];
+            var value = valueSegment[..nextIndexAfterValue];
             return value;
         }
     }

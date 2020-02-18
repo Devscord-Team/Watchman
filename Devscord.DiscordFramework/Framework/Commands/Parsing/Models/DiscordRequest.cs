@@ -19,11 +19,12 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing.Models
         public bool HasArgument(string name, string value)
         {
             if (string.IsNullOrEmpty(name))
-                return Arguments.Any(a => a.Values.Any(v => v == value));
+            {
+                return Arguments.Any(a => a.Value == value);
+            }
 
             var argumentsWithCorrectName = Arguments.Where(x => x.Name == name);
-
-            return argumentsWithCorrectName.Any(a => a.Values.Any(v => v == value));
+            return argumentsWithCorrectName.Any(a => a.Value == value);
         }
 
         public override string ToString()
