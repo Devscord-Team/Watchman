@@ -3,8 +3,8 @@ using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Watchman.Cqrs;
-using Watchman.DomainModel.Mute;
-using Watchman.DomainModel.Mute.Commands;
+using Watchman.DomainModel.Users;
+using Watchman.DomainModel.Users.Commands;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {

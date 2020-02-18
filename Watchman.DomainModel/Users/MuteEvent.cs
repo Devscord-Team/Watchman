@@ -1,7 +1,7 @@
 ﻿using Watchman.Common.Models;
 using Watchman.Integrations.MongoDB;
 
-namespace Watchman.DomainModel.Mute
+namespace Watchman.DomainModel.Users
 {
     public class MuteEvent : Entity
     {

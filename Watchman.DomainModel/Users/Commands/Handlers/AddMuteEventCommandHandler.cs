@@ -2,7 +2,7 @@
 using Watchman.Cqrs;
 using Watchman.Integrations.MongoDB;
 
-namespace Watchman.DomainModel.Mute.Commands.Handlers
+namespace Watchman.DomainModel.Users.Commands.Handlers
 {
     public class AddMuteEventCommandHandler : ICommandHandler<AddMuteEventCommand>
     {

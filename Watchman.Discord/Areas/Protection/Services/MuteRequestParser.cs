@@ -6,7 +6,7 @@ using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Watchman.Common.Models;
-using Watchman.DomainModel.Mute;
+using Watchman.DomainModel.Users;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {

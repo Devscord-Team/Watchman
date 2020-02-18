@@ -3,7 +3,7 @@ using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Discord.Areas.Protection.Services;
-using Watchman.DomainModel.Mute;
+using Watchman.DomainModel.Users;
 
 namespace Watchman.Discord.Areas.Protection.Controllers
 {

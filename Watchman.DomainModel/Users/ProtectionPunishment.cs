@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Watchman.DomainModel.Mute
+namespace Watchman.DomainModel.Users
 {
     public class ProtectionPunishment
     {

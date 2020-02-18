@@ -1,6 +1,6 @@
 ﻿using Watchman.Cqrs;
 
-namespace Watchman.DomainModel.Mute.Commands
+namespace Watchman.DomainModel.Users.Commands
 {
     public class AddMuteEventCommand : ICommand
     {

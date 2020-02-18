@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Watchman.Cqrs;
-using Watchman.DomainModel.Mute;
-using Watchman.DomainModel.Mute.Commands;
-using Watchman.DomainModel.Mute.Queries;
+using Watchman.DomainModel.Users;
+using Watchman.DomainModel.Users.Commands;
+using Watchman.DomainModel.Users.Queries;
 
 namespace Watchman.Discord
 {
