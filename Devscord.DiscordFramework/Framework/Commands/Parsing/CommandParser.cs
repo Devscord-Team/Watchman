@@ -50,65 +50,68 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
 
         private IEnumerable<DiscordRequestArgument> GetArguments(string message)
         {
+            // possible messages:
+            // ... -arg val1 val2
+            // ... val1 -arg val
+            // ... val1 val2 val3
+            // ... -arg
+            // ... 
+            // ... -arg "long value" val2 -arg2
+
             var arguments = new List<DiscordRequestArgument>();
             var trimmedMess = message.Trim();
 
-            for (var i = 0; i < trimmedMess.Length; i++)
+            while (trimmedMess.Length > 0)
             {
-                var startsWithArg = _possiblePrefixes.Any(x => trimmedMess[i..].TrimStart().StartsWith(x));
-                if (!startsWithArg)
+                var prefix = _possiblePrefixes.FirstOrDefault(x => trimmedMess.StartsWith(x));
+                var isStartingWithValue = prefix == null;
+
+                if (isStartingWithValue)
                 {
-                    var arg = new DiscordRequestArgument
-                    {
-                        Prefix = null,
-                        Name = null,
-                        Values = GetValues(trimmedMess[i..], out var lastValuesIndex)
-                    };
-                    i += lastValuesIndex;
-                    arguments.Add(arg);
+                    var onlyValueArg = GetJustValue(ref trimmedMess);
+                    arguments.Add(onlyValueArg);
                     continue;
                 }
 
-                foreach (var prefix in _possiblePrefixes)
-                {
-                    var lastPossiblePrefixIndex = i + prefix.Length;
-                    if (lastPossiblePrefixIndex > trimmedMess.Length || prefix != trimmedMess[i..lastPossiblePrefixIndex])
-                    {
-                        continue;
-                    }
-
-                    var arg = new DiscordRequestArgument { Prefix = prefix };
-
-                    // ... --argName value ...
-                    // or
-                    // 
-                    var firstArgNameIndex = lastPossiblePrefixIndex;
-
-                    if (!trimmedMess.Contains(' '))
-                    {
-                        arg.Name = trimmedMess[firstArgNameIndex..];
-                        arguments.Add(arg);
-
-                        i = trimmedMess.Length;
-                        break;
-                    }
-
-                    var lastArgNameIndex = trimmedMess[firstArgNameIndex..].IndexOf(' ') + firstArgNameIndex;
-                    //argName value ...
-                    arg.Name = trimmedMess[firstArgNameIndex..lastArgNameIndex];
-
-                    var afterArg = trimmedMess[(lastArgNameIndex + 1)..].TrimStart();
-                    arg.Values = GetValues(afterArg, out var lastIndex);
-                    arguments.Add(arg);
-
-                    i += lastIndex + 1; // add 1 bcs of space after values
-                    if (arg.Name != null)
-                    {
-                        i += arg.Name.Length + 1; // add 1 bcs of space after name
-                    }
-                }
+                var arg = GetOneArg(ref trimmedMess, prefix);
+                arguments.Add(arg);
             }
             return arguments;
+        }
+
+        private DiscordRequestArgument GetJustValue(ref string trimmedMessage)
+        {
+            var arg = new DiscordRequestArgument
+            {
+                Prefix = null,
+                Name = null,
+                Values = GetValues(trimmedMessage, out var lastValuesIndex)
+            };
+            trimmedMessage = trimmedMessage.Remove(0, lastValuesIndex).TrimStart();
+            return arg;
+        }
+
+        private DiscordRequestArgument GetOneArg(ref string trimmedMessage, string prefix)
+        {
+            var arg = new DiscordRequestArgument { Prefix = prefix };
+                    
+            trimmedMessage = trimmedMessage.CutStart(prefix);
+            var isTheOnlyArg = !trimmedMessage.Contains(' ');
+
+            if (isTheOnlyArg)
+            {
+                arg.Name = trimmedMessage;
+                return arg;
+            }
+
+            var lastArgNameIndex = trimmedMessage.IndexOf(' ');
+            arg.Name = trimmedMessage[..lastArgNameIndex];
+
+            trimmedMessage = trimmedMessage.CutStart(arg.Name).TrimStart();
+            arg.Values = GetValues(trimmedMessage, out var lastValuesIndex);
+
+            trimmedMessage = trimmedMessage.Remove(0, lastValuesIndex).TrimStart();
+            return arg;
         }
 
         private IEnumerable<string> GetValues(string valuesSegment, out int lastValuesIndex)
@@ -121,25 +124,31 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
             var values = new List<string>();
             if (hasMultiValues)
             {
-                lastValuesIndex = valuesSegment[1..].IndexOf('\"');
-                var valuesString = valuesSegment[1..lastValuesIndex];
-                valuesString.Split(' ')
-                    .ToList()
-                    .ForEach(x => values.Add(x));
+                values = GetMultiValues(valuesSegment, out lastValuesIndex).ToList();
             }
             else
             {
-                lastValuesIndex = valuesSegment.Contains(' ')
-                    ? valuesSegment.IndexOf(' ')
-                    : valuesSegment.Length - 1;
-                
-                var value = valuesSegment.Contains(' ') 
-                    ? valuesSegment[..lastValuesIndex] 
-                    : valuesSegment;
-
+                var value = GetSingleValue(valuesSegment, out lastValuesIndex);
                 values.Add(value);
             }
             return values;
+        }
+
+        private IEnumerable<string> GetMultiValues(string valuesSegment, out int lastValuesIndex)
+        {
+            lastValuesIndex = valuesSegment[1..].IndexOf('\"');
+            var valuesString = valuesSegment[1..lastValuesIndex];
+            return valuesString.Split(' ');
+        }
+
+        private string GetSingleValue(string valueSegment, out int lastValuesIndex)
+        {
+            lastValuesIndex = valueSegment.Contains(' ')
+                ? valueSegment.IndexOf(' ')
+                : valueSegment.Length;
+
+            var value = valueSegment[..lastValuesIndex];
+            return value;
         }
     }
 }
