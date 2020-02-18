@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿#nullable enable
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
@@ -27,11 +30,14 @@ namespace Watchman.Discord.Areas.Protection.Services
             await AssignMuteRoleAsync(muteRole, userToMute, serverContext);
         }
 
-        public async Task UnmuteUser(UserContext mutedUser, MuteEvent muteEvent, DiscordServerContext serverContext)
+        public async Task UnmuteIfNeeded(DiscordServerContext server, UserContext userToUnmute, IEnumerable<MuteEvent> userMuteEvents)
         {
-            var muteRole = GetMuteRole(serverContext);
-            await RemoveMuteRoleAsync(muteRole, mutedUser, serverContext);
-            await MarkAsUnmuted(muteEvent);
+            var eventToUnmute = GetNotUnmutedEvent(userMuteEvents);
+            if (eventToUnmute == null)
+            {
+                return;
+            }
+            await UnmuteUser(userToUnmute, eventToUnmute, server);
         }
 
         private UserRole GetMuteRole(DiscordServerContext server)
@@ -48,6 +54,17 @@ namespace Watchman.Discord.Areas.Protection.Services
         private async Task AssignMuteRoleAsync(UserRole muteRole, UserContext userToMute, DiscordServerContext server)
         {
             await _usersService.AddRole(muteRole, userToMute, server);
+        }
+        private MuteEvent? GetNotUnmutedEvent(IEnumerable<MuteEvent> userMuteEvents)
+        {
+            return userMuteEvents.FirstOrDefault(x => x.Unmuted == false);
+        }
+
+        private async Task UnmuteUser(UserContext mutedUser, MuteEvent muteEvent, DiscordServerContext serverContext)
+        {
+            var muteRole = GetMuteRole(serverContext);
+            await RemoveMuteRoleAsync(muteRole, mutedUser, serverContext);
+            await MarkAsUnmuted(muteEvent);
         }
 
         private async Task RemoveMuteRoleAsync(UserRole muteRole, UserContext userToUnmute, DiscordServerContext server)

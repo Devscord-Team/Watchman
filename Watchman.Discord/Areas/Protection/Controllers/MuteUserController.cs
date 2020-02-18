@@ -52,7 +52,11 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             var requestParser = new MuteRequestParser(request, _usersService, contexts);
             var userToUnmute = requestParser.GetUser();
 
-            UnmuteUserOnlyIfMuted(contexts, userToUnmute);
+            var userMuteEvents = GetMuteEvents(contexts.Server, userToUnmute.Id);
+            _muteService.UnmuteIfNeeded(contexts.Server, userToUnmute, userMuteEvents).Wait();
+
+            var messagesService = _messagesServiceFactory.Create(contexts);
+            messagesService.SendResponse(x => x.UnmutedUser(userToUnmute), contexts);
         }
 
         private async Task MuteUserOrOverwrite(Contexts contexts, MuteEvent muteEvent, UserContext userToMute)
@@ -92,27 +96,8 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             var timeRange = muteEvent.TimeRange;
             await Task.Delay(timeRange.End - timeRange.Start);
 
-            if (IsStillMuted(contexts.Server, muteEvent))
-            {
-                UnmuteUserOnlyIfMuted(contexts, userToUnmute);
-            }
-        }
-
-        private bool IsStillMuted(DiscordServerContext server, MuteEvent muteEvent)
-        {
-            var userMuteEvents = GetMuteEvents(server, muteEvent.UserId);
-            return userMuteEvents.Any(x => x.Unmuted == false);
-        }
-
-        private async void UnmuteUserOnlyIfMuted(Contexts contexts, UserContext userToUnmute)
-        {
-            var muteEventToUnmute = GetNotUnmutedUserMuteEvent(contexts.Server, userToUnmute);
-            if (muteEventToUnmute == null)
-            {
-                return;
-            }
-
-            await _muteService.UnmuteUser(userToUnmute, muteEventToUnmute, contexts.Server);
+            var userMuteEvents = GetMuteEvents(contexts.Server, userToUnmute.Id);
+            await _muteService.UnmuteIfNeeded(contexts.Server, userToUnmute, userMuteEvents);
 
             var messagesService = _messagesServiceFactory.Create(contexts);
             await messagesService.SendResponse(x => x.UnmutedUser(userToUnmute), contexts);
