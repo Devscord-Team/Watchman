@@ -9,7 +9,7 @@ using Watchman.DomainModel.Help.Queries;
 
 namespace Watchman.Web.Server.Areas.Helps.Controllers
 {
-    public class HelpsController
+    public class HelpsController : BaseApiController
     {
         private readonly IQueryBus queryBus;
 
