@@ -1,4 +1,6 @@
-﻿namespace Devscord.DiscordFramework.Commons.Extensions
+﻿using System.Text.RegularExpressions;
+
+namespace Devscord.DiscordFramework.Commons.Extensions
 {
     public static class StringExtensions
     {
@@ -6,7 +8,7 @@
         {
             return string.IsNullOrEmpty(toCut) 
                 ? value
-                : value[toCut.Length..];
+                : Regex.Replace(value, $@"^{toCut}", string.Empty, RegexOptions.Compiled);
         }
     }
 }
