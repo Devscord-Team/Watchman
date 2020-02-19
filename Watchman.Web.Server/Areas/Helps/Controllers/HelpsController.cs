@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Watchman.Cqrs;
-using Watchman.DomainModel.Help;
 using Watchman.DomainModel.Help.Queries;
+using Watchman.Web.Server.Areas.Helps.Models.Dtos;
 
 namespace Watchman.Web.Server.Areas.Helps.Controllers
 {
@@ -19,10 +18,10 @@ namespace Watchman.Web.Server.Areas.Helps.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<HelpInformation> GetHelpInformations(ulong serverId = 0)
+        public IEnumerable<HelpInformationDto> GetHelpInformations(ulong serverId = 0)
         {
             var query = new GetHelpInformationQuery(serverId);
-            var responses = queryBus.Execute(query).HelpInformations;
+            var responses = queryBus.Execute(query).HelpInformations.Select(x => new HelpInformationDto(x));
             return responses;
         }
     }
