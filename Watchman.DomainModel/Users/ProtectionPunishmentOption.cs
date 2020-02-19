@@ -1,4 +1,4 @@
-﻿namespace Watchman.DomainModel.Protection
+﻿namespace Watchman.DomainModel.Users
 {
     public enum ProtectionPunishmentOption
     {

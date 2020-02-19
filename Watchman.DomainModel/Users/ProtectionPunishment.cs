@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Watchman.DomainModel.Protection
+namespace Watchman.DomainModel.Users
 {
     public class ProtectionPunishment
     {

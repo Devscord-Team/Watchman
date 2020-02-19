@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Watchman.Cqrs;
 using Watchman.DomainModel.ScheduleTasks.Commands;
-using Watchman.DomainModel.Tasks;
 
 namespace Watchman.DomainModel.ScheduleTasks.Services
 {

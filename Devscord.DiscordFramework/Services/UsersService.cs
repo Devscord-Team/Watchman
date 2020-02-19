@@ -1,13 +1,24 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Framework;
+using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
+using Devscord.DiscordFramework.Middlewares.Factories;
+using Devscord.DiscordFramework.Services.Factories;
 using Discord.WebSocket;
 
 namespace Devscord.DiscordFramework.Services
 {
     public class UsersService
     {
+        private readonly MessagesServiceFactory _messagesServiceFactory;
+
+        public UsersService(MessagesServiceFactory messagesServiceFactory)
+        {
+            _messagesServiceFactory = messagesServiceFactory;
+        }
+
         public Task AddRole(UserRole role, UserContext user, DiscordServerContext server)
         {
             var socketUser = GetUser(user, server);
@@ -22,14 +33,20 @@ namespace Devscord.DiscordFramework.Services
             return socketUser.RemoveRoleAsync(socketRole);
         }
 
-        public UserRole GetRoleByName(string name, DiscordServerContext server)
+        public IEnumerable<UserContext> GetUsers(DiscordServerContext server)
         {
-            var role = Server.GetRoles(server.Id).FirstOrDefault(x => x.Name == name);
-            if(role == null)
-            {
-                return default;
-            }
-            return new UserRole(role.Id, role.Name);
+            var guildUsers = Server.GetGuildUsers(server.Id);
+
+            var userContextFactory = new UserContextsFactory();
+            var userContexts = guildUsers.Select(x => userContextFactory.Create(x));
+            return userContexts;
+        }
+
+        public Task WelcomeUser(Contexts contexts)
+        {
+            var messagesService = _messagesServiceFactory.Create(contexts);
+            messagesService.SendResponse(x => x.NewUserArrived(contexts), contexts);
+            return Task.CompletedTask;
         }
 
         private SocketGuildUser GetUser(UserContext user, DiscordServerContext server)
@@ -39,13 +56,7 @@ namespace Devscord.DiscordFramework.Services
 
         private SocketRole GetRole(ulong roleId, DiscordServerContext server)
         {
-            return Server.GetRoles(server.Id).First(x => x.Id == roleId);
-        }
-
-        public Task WelcomeUser(MessagesService messagesService, Contexts contexts)
-        {
-            messagesService.SendMessage($"Witaj {contexts.User.Mention} na serwerze {contexts.Server.Name}");
-            return Task.CompletedTask;
+            return Server.GetSocketRoles(server.Id).First(x => x.Id == roleId);
         }
     }
 }

@@ -1,8 +1,8 @@
-﻿using Devscord.DiscordFramework.Middlewares.Contexts;
-using Devscord.DiscordFramework.Middlewares.Factories;
+﻿using System.Linq;
+using Devscord.DiscordFramework.Middlewares.Contexts;
 using Discord.WebSocket;
 
-namespace Devscord.DiscordFramework.Middlewares
+namespace Devscord.DiscordFramework.Middlewares.Factories
 {
     internal class DiscordServerContextFactory : IContextFactory<SocketGuild, DiscordServerContext>
     {
@@ -13,8 +13,9 @@ namespace Devscord.DiscordFramework.Middlewares
 
             var owner = userFactory.Create(socketGuild.Owner);
             var systemChannel = channelFactory.Create(socketGuild.SystemChannel);
+            var textChannels = socketGuild.TextChannels.Select(x => channelFactory.Create(x));
 
-            return new DiscordServerContext(socketGuild.Id, socketGuild.Name, owner, systemChannel);
+            return new DiscordServerContext(socketGuild.Id, socketGuild.Name, owner, systemChannel, textChannels);
         }
     }
 }

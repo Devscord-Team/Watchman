@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Watchman.Cqrs;
-using Watchman.DomainModel.Tasks;
 
 namespace Watchman.DomainModel.ScheduleTasks.Queries
 {

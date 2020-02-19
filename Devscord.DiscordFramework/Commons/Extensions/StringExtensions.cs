@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text.RegularExpressions;
 
 namespace Devscord.DiscordFramework.Commons.Extensions
 {
@@ -8,11 +6,9 @@ namespace Devscord.DiscordFramework.Commons.Extensions
     {
         public static string CutStart(this string value, string toCut)
         {
-            if(string.IsNullOrEmpty(toCut))
-            {
-                return value;
-            }
-            return value.Substring(toCut.Length, value.Length - toCut.Length);
+            return string.IsNullOrEmpty(toCut) 
+                ? value
+                : Regex.Replace(value, $@"^{toCut}", string.Empty, RegexOptions.Compiled);
         }
     }
 }

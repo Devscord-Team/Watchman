@@ -4,12 +4,19 @@ using Devscord.DiscordFramework.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Watchman.DomainModel.Protection;
+using Watchman.DomainModel.Users;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {
     public class AntiSpamService
     {
+        private readonly MuteService _muteService;
+
+        public AntiSpamService(MuteService muteService)
+        {
+            _muteService = muteService;
+        }
+
         private readonly List<(ulong AuthorId, DateTime MessageDateTime)> _lastMessages = new List<(ulong AuthorId, DateTime MessageDateTime)>();
         private readonly List<ulong> _warns = new List<ulong>();
 
@@ -49,6 +56,7 @@ namespace Watchman.Discord.Areas.Protection.Services
                     break;
 
                 case ProtectionPunishmentOption.Mute:
+                    //todo:auto muting
                     messagesService.SendResponse(x => x.SpamAlertUserIsMuted(contexts), contexts);
                     break;
             }

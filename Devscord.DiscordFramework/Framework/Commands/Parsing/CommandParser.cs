@@ -9,13 +9,13 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
 {
     public class CommandParser
     {
-        private readonly string[] possiblePrefixes = new string[] { "!", "--", "-", "^", "$", "%" };
+        private readonly string[] _possiblePrefixes = { "!", "--", "-", "^", "$", "%" };
 
         public DiscordRequest Parse(string message)
         {
             var original = (string)message.Clone();
             var prefix = this.GetPrefix(message);
-            if(string.IsNullOrWhiteSpace(prefix))
+            if (string.IsNullOrWhiteSpace(prefix))
             {
                 return new DiscordRequest { OriginalMessage = original };
             }
@@ -24,12 +24,14 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
             var name = this.GetName(message);
             message = message.CutStart(name);
 
-            var arguments = this.GetArguments(message);
+            var arguments = string.IsNullOrWhiteSpace(message)
+                ? new List<DiscordRequestArgument>()
+                : this.GetArguments(message);
+
             return new DiscordRequest
             {
                 Prefix = prefix,
                 Name = name,
-                ArgumentsPrefix = arguments?.FirstOrDefault()?.Prefix,
                 Arguments = arguments,
                 OriginalMessage = original
             };
@@ -37,8 +39,8 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
 
         private string GetPrefix(string message)
         {
-            var withoutWhitespaces = message.Trim();
-            return possiblePrefixes.FirstOrDefault(x => withoutWhitespaces.StartsWith(x));
+            var withoutWhitespaces = message.Trim().Split(' ');
+            return _possiblePrefixes.FirstOrDefault(x => withoutWhitespaces.Any(word => word.StartsWith(x)));
         }
 
         private string GetName(string message)
@@ -48,26 +50,98 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
 
         private IEnumerable<DiscordRequestArgument> GetArguments(string message)
         {
-            var prefix = this.GetPrefix(message);
-            var splitted = message.Split(prefix)
-                .Where(x => !string.IsNullOrWhiteSpace(x))
-                .Select(x => x.Trim());
-            return splitted.Select(x => this.GetArgument(x, prefix));
+            // possible messages:
+            // ... -arg val1 val2
+            // ... val1 -arg val
+            // ... val1 val2 val3
+            // ... -arg
+            // ... 
+            // ... -arg "long value" val2 -arg2
+
+            var arguments = new List<DiscordRequestArgument>();
+            var trimmedMess = message.Trim();
+
+            while (trimmedMess.Length > 0)
+            {
+                var prefix = _possiblePrefixes.FirstOrDefault(x => trimmedMess.StartsWith(x));
+                var isStartingWithValue = prefix == null;
+
+                if (isStartingWithValue)
+                {
+                    var onlyValueArg = GetJustValue(ref trimmedMess);
+                    arguments.Add(onlyValueArg);
+                    continue;
+                }
+
+                var arg = GetOneArg(ref trimmedMess, prefix);
+                arguments.Add(arg);
+            }
+            return arguments;
         }
 
-        private DiscordRequestArgument GetArgument(string message, string prefix)
+        private DiscordRequestArgument GetJustValue(ref string trimmedMessage)
         {
-            var prefixExists = !string.IsNullOrWhiteSpace(prefix);
-            var splitted = message.Split(' ');
-            var parameter = prefixExists ? splitted.First() : null;
-            var values = splitted.Skip(prefixExists ? 1 : 0);
-
-            return new DiscordRequestArgument
+            var arg = new DiscordRequestArgument
             {
-                Name = parameter,
-                Prefix = prefixExists ? prefix : null,
-                Values = values
+                Prefix = null,
+                Name = null,
+                Value = GetValue(trimmedMessage, out var nextIndexAfterValue)
             };
+            trimmedMessage = trimmedMessage.Remove(0, nextIndexAfterValue).TrimStart();
+            return arg;
+        }
+
+        private DiscordRequestArgument GetOneArg(ref string trimmedMessage, string prefix)
+        {
+            var arg = new DiscordRequestArgument { Prefix = prefix };
+                    
+            trimmedMessage = trimmedMessage.CutStart(prefix);
+            var isTheOnlyArg = !trimmedMessage.Contains(' ');
+
+            if (isTheOnlyArg)
+            {
+                arg.Name = trimmedMessage;
+                return arg;
+            }
+
+            var lastArgNameIndex = trimmedMessage.IndexOf(' ');
+            arg.Name = trimmedMessage[..lastArgNameIndex];
+
+            trimmedMessage = trimmedMessage.CutStart(arg.Name).TrimStart();
+            arg.Value = GetValue(trimmedMessage, out var nextIndexAfterValue);
+
+            trimmedMessage = trimmedMessage[nextIndexAfterValue..].TrimStart();
+            return arg;
+        }
+
+        private string GetValue(string valuesSegment, out int nextIndexAfterValue)
+        {
+            //value ...
+            // or
+            //"value val2" ...
+            var isLongValue = valuesSegment[0] == '\"';
+
+            return isLongValue 
+                ? GetLongValue(valuesSegment, out nextIndexAfterValue) 
+                : GetSingleValue(valuesSegment, out nextIndexAfterValue);
+        }
+
+        private string GetLongValue(string valuesSegment, out int nextIndexAfterValue)
+        {
+            var lastValuesIndex = valuesSegment[1..].IndexOf('\"') + 1; // adding 1 bcs [1..]
+            var valueString = valuesSegment[1..lastValuesIndex];
+            nextIndexAfterValue = lastValuesIndex + 1;
+            return valueString;
+        }
+
+        private string GetSingleValue(string valueSegment, out int nextIndexAfterValue)
+        {
+            nextIndexAfterValue = valueSegment.Contains(' ')
+                ? valueSegment.IndexOf(' ')
+                : valueSegment.Length;
+
+            var value = valueSegment[..nextIndexAfterValue];
+            return value;
         }
     }
 }

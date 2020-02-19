@@ -5,7 +5,7 @@
   },
   {
     "OnEvent": "RoleRemovedFromUser",
-    "Message": "Usunięto już role {{role}} użytkownikowi {{user}}"
+    "Message": "Usunięto role {{role}} użytkownikowi {{user}}"
   },
   {
     "OnEvent": "RoleNotFoundInUser",
@@ -29,7 +29,7 @@
   },
   {
     "OnEvent": "NewUserArrived",
-    "Message": "Cześć {{user}}! Witamy cie na serwerze {{server}}"
+    "Message": "Cześć {{user}}! Witamy cię na serwerze {{server}}"
   },
   {
     "OnEvent": "CurrentVersion",
@@ -42,5 +42,25 @@
   {
     "OnEvent": "UserIsNotAdmin",
     "Message": "Nie masz wystarczających uprawnień do wywołania tej komendy."
+  },
+  {
+    "OnEvent": "UserDidntMentionedAnyUserToMute",
+    "Message": "Musisz wskazać użytkownika do zmutowania."
+  },
+  {
+    "OnEvent": "UserNotFound",
+    "Message": "Użytkownik {{user}} nie istnieje."
+  },
+  {
+    "OnEvent": "RoleNotFound",
+    "Message": "Nie znaleziono roli {{role}}."
+  },
+  {
+    "OnEvent": "MutedUser",
+    "Message": "Użytkownik {{user}} został zmutowany do {{timeEnd}}UTC"
+  },
+  {
+    "OnEvent": "UnmutedUser",
+    "Message": "Użytkownik {{user}} może pisać ponownie." 
   }
 ]
