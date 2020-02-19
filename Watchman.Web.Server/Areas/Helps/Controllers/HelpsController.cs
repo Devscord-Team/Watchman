@@ -19,7 +19,7 @@ namespace Watchman.Web.Server.Areas.Helps.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<HelpInformation> GetHelpInformations(ulong serverId = )
+        public IEnumerable<HelpInformation> GetHelpInformations(ulong serverId = 0)
         {
             var query = new GetHelpInformationQuery(serverId);
             var responses = queryBus.Execute(query).HelpInformations;
