@@ -7,7 +7,6 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing.Models
     {
         public string Prefix { get; set; }
         public string Name { get; set; }
-        public string ArgumentsPrefix { get; set; }
         public IEnumerable<DiscordRequestArgument> Arguments { get; set; }
         public string OriginalMessage { get; set; }
         public bool IsCommandForBot => !string.IsNullOrEmpty(this.Prefix);
@@ -19,12 +18,9 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing.Models
 
         public bool HasArgument(string name, string value)
         {
-            if (string.IsNullOrEmpty(name))
-                return Arguments.Any(a => a.Values.Any(v => v == value));
-
-            var argumentsWithCorrectName = Arguments.Where(x => x.Name == name);
-
-            return argumentsWithCorrectName.Any(a => a.Values.Any(v => v == value));
+            return string.IsNullOrEmpty(name)
+                ? Arguments.Any(a => a.Value == value)
+                : this.Arguments.Any(x => x.Name == name && x.Value == value);
         }
 
         public override string ToString()

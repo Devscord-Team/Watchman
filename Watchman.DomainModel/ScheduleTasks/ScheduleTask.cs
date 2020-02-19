@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Watchman.Integrations.MongoDB;
 
-namespace Watchman.DomainModel.Tasks
+namespace Watchman.DomainModel.ScheduleTasks
 {
     public class ScheduleTask : Entity
     {

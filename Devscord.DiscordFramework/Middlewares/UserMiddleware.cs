@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Middlewares.Contexts;
+using Devscord.DiscordFramework.Middlewares.Factories;
 using Discord.WebSocket;
 
 namespace Devscord.DiscordFramework.Middlewares

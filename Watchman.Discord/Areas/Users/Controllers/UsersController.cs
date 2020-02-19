@@ -1,22 +1,13 @@
 ﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
-using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
-using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
-using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
-using Discord;
-using Discord.WebSocket;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Devscord.DiscordFramework.Commons.Extensions;
 using Watchman.Cqrs;
-using Watchman.Discord.Areas.Commons;
-using Watchman.Discord.Areas.Users.Services;
-using Watchman.DomainModel.DiscordServer;
 using Watchman.DomainModel.DiscordServer.Queries;
+using Watchman.Discord.Areas.Users.Services;
 
 namespace Watchman.Discord.Areas.Users.Controllers
 {

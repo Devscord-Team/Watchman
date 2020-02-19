@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Devscord.DiscordFramework
+namespace Devscord.DiscordFramework.Commons.Exceptions
 {
     public class NotAdminPermissionsException : Exception
     {

@@ -77,16 +77,15 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.Parsing
             var argument = parsed.Arguments.First();
 
             //Assert
-            Assert.That(parsed.ArgumentsPrefix, Is.EqualTo(argument.Prefix));
             Assert.That(argument.Prefix, Is.EqualTo(argumentPrefix));
             Assert.That(argument.Name, Is.EqualTo(name));
-            Assert.That(argument.Values.First(), Is.EqualTo(value));
+            Assert.That(argument.Value, Is.EqualTo(value));
         }
 
         [Test]
         [TestCase("!help -format json -for admins", 2)]
-        [TestCase("!help -format json !for admins", 1)]
-        [TestCase("!help -format json !for admins -tested true", 2)]
+        [TestCase("!help -format json !for admins", 2)]
+        [TestCase("!help -format json !for admins -tested true", 3)]
         [TestCase("!help -format json", 1)]
         public void ShouldFoundManyArguments(string message, int argumentsAmount)
         {
@@ -116,6 +115,20 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.Parsing
 
             //Assert
             Assert.That(result.OriginalMessage, Is.EqualTo(message));
+        }
+
+        [Test]
+        [TestCase("-mute @test -time 1m -reason \"long val 1\"", "long val 1")]
+        public void ShouldFindValue(string message, string expectedValue)
+        {
+            //Arrange
+            var commandParser = new CommandParser();
+
+            //Act
+            var result = commandParser.Parse(message);
+
+            //Assert
+            Assert.That(result.HasArgument(null, expectedValue));
         }
     }
 }
