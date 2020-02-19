@@ -20,10 +20,21 @@ namespace Watchman.Web.Server
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-            .UseServiceProviderFactory(new AutofacServiceProviderFactory(ContainerConfigurator.ConfigureContainer))
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+            .UseServiceProviderFactory(new AutofacServiceProviderFactory(x => x.ConfigureContainer(GetConfiguration())))
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseStartup<Startup>();
+            });
+
+        public static IConfiguration GetConfiguration()
+        {
+            var builder = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+#if DEBUG
+                .AddJsonFile($"appsettings.Development.json", optional: true)
+#endif
+                .AddEnvironmentVariables();
+            return builder.Build();
+        }
     }
 }

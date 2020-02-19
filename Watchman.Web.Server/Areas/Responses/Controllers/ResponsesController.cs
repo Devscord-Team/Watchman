@@ -18,7 +18,6 @@ namespace Watchman.Web.Server.Areas.Responses.Controllers
             this.queryBus = queryBus;
         }
 
-
         [HttpGet]
         public IEnumerable<ResponseDto> GetResponses()
         {

@@ -31,6 +31,7 @@ namespace Watchman.Web.Server
         public void ConfigureServices(IServiceCollection services)
         {
             MongoConfiguration.Initialize();
+            //TODO allow
             //services.AddCors(options =>
             //{
             //    options.AddPolicy("AllowAny",

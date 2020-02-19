@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,13 @@ namespace Watchman.Web.Server.IoC.Modules
 {
     public class DatabaseModule : Autofac.Module
     {
+        private readonly IConfiguration configuration;
+
+        public DatabaseModule(IConfiguration configuration)
+        {
+            this.configuration = configuration;
+        }
+
         protected override void Load(ContainerBuilder builder)
         {
             var assembly = typeof(DatabaseModule)
