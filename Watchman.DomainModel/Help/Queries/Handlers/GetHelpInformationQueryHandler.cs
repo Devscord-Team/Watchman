@@ -16,14 +16,11 @@ namespace Watchman.DomainModel.Help.Queries.Handlers
         public GetHelpInformationQueryResult Handle(GetHelpInformationQuery query)
         {
             var session = _sessionFactory.Create();
-
             var allHelpInfos = session.Get<HelpInformation>().ToList();
-
             var defaultHelpInfos = allHelpInfos.Where(x => x.IsDefault);
             var customHelpInfos = allHelpInfos.Where(x => x.ServerId == query.ServerId).ToList();
 
             customHelpInfos.AddRange(defaultHelpInfos.Where(x => customHelpInfos.All(c => c.MethodName != x.MethodName)));
-
             return new GetHelpInformationQueryResult(customHelpInfos);
         }
     }
