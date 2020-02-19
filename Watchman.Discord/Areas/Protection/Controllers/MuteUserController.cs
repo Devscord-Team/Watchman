@@ -35,6 +35,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
 
         //[IgnoreForHelp] todo:
         [DiscordCommand("mute")]
+        [AdminCommand]
         public void MuteUser(DiscordRequest request, Contexts contexts)
         {
             var requestParser = new MuteRequestParser(request, _usersService, contexts);
@@ -47,6 +48,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
 
         //[IgnoreForHelp] todo:
         [DiscordCommand("unmute")]
+        [AdminCommand]
         public void UnmuteUser(DiscordRequest request, Contexts contexts)
         {
             var requestParser = new MuteRequestParser(request, _usersService, contexts);
