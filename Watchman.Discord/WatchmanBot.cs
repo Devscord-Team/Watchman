@@ -39,11 +39,6 @@ namespace Watchman.Discord
 
             this._container = GetAutofacContainer(configuration);
             this._workflow = GetWorkflow(configuration, _container);
-
-            var dataCollector = _container.Resolve<HelpDataCollectorService>();
-            var helpService = _container.Resolve<HelpDBGeneratorService>();
-
-            helpService.FillDatabase(dataCollector.GetCommandsInfo(typeof(WatchmanBot).Assembly));
         }
 
         public async Task Start()
@@ -51,12 +46,22 @@ namespace Watchman.Discord
             MongoConfiguration.Initialize();
             ServerInitializer.Initialize(_client, _container.Resolve<MessagesServiceFactory>());
 
+            DefaultHelpInit();
+            
             await _client.LoginAsync(TokenType.Bot, this._configuration.Token);
             await _client.StartAsync();
             _client.Ready += UnmuteUsers;
 
             Console.WriteLine("Started...");
             await Task.Delay(-1);
+        }
+
+        private async void DefaultHelpInit()
+        {
+            var dataCollector = _container.Resolve<HelpDataCollectorService>();
+            var helpService = _container.Resolve<HelpDBGeneratorService>();
+
+            await Task.Run(() => helpService.FillDatabase(dataCollector.GetCommandsInfo(typeof(WatchmanBot).Assembly)));
         }
 
         private async Task UnmuteUsers()

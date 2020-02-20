@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Help.Queries;
@@ -10,19 +9,20 @@ namespace Watchman.Web.Server.Areas.Helps.Controllers
 {
     public class HelpsController : BaseApiController
     {
-        private readonly IQueryBus queryBus;
+        private readonly IQueryBus _queryBus;
 
         public HelpsController(IQueryBus queryBus)
         {
-            this.queryBus = queryBus;
+            this._queryBus = queryBus;
         }
 
         [HttpGet]
         public IEnumerable<HelpInformationDto> GetHelpInformations(ulong serverId = 0)
         {
             var query = new GetHelpInformationQuery(serverId);
-            var responses = queryBus.Execute(query).HelpInformations.Select(x => new HelpInformationDto(x));
-            return responses;
+            var responses = _queryBus.Execute(query).HelpInformations;
+            var helpInformation = responses.Select(x => new HelpInformationDto(x));
+            return helpInformation;
         }
     }
 }
