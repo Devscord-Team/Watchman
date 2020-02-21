@@ -56,12 +56,12 @@ namespace Watchman.Discord
             await Task.Delay(-1);
         }
 
-        private async void DefaultHelpInit()
+        private Task DefaultHelpInit()
         {
             var dataCollector = _container.Resolve<HelpDataCollectorService>();
             var helpService = _container.Resolve<HelpDBGeneratorService>();
-
-            await Task.Run(() => helpService.FillDatabase(dataCollector.GetCommandsInfo(typeof(WatchmanBot).Assembly)));
+            helpService.FillDatabase(dataCollector.GetCommandsInfo(typeof(WatchmanBot).Assembly));
+            return Task.CompletedTask;
         }
 
         private async Task UnmuteUsers()
