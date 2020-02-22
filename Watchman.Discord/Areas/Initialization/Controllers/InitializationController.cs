@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
+using Devscord.DiscordFramework.Properties;
 using Devscord.DiscordFramework.Services;
-using Newtonsoft.Json;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Initialization.Services;
 using Watchman.DomainModel.Responses.Commands;
@@ -16,8 +15,6 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
 {
     public class InitializationController : IController
     {
-        private const string PATH_TO_RESPONSES_FILE = @"Framework/Commands/Responses/responses-configuration.json";
-
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
         private readonly MuteRoleInitService _muteRoleInitService;
@@ -43,7 +40,7 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
         private async Task ResponsesInit()
         {
             var responsesInBase = GetResponsesFromBase();
-            var defaultResponses = GetResponsesFromFile();
+            var defaultResponses = GetResponsesFromResources();
 
             var responsesToAdd = defaultResponses.Where(def => responsesInBase.All(@base => @base.OnEvent != def.OnEvent));
 
@@ -58,10 +55,21 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
             return responsesInBase;
         }
 
-        private IEnumerable<DomainModel.Responses.Response> GetResponsesFromFile()
+        private IEnumerable<DomainModel.Responses.Response> GetResponsesFromResources()
         {
-            var fileContent = File.ReadAllText(PATH_TO_RESPONSES_FILE);
-            var defaultResponses = JsonConvert.DeserializeObject<IEnumerable<DomainModel.Responses.Response>>(fileContent);
+            var defaultResponses = typeof(Responses).GetProperties()
+                .Where(x => x.PropertyType.Name == "String")
+                .Select(prop =>
+                {
+                    var name = prop.Name;
+                    var value = prop.GetValue(prop).ToString();
+                    return new DomainModel.Responses.Response
+                    {
+                        OnEvent = name,
+                        Message = value
+                    };
+                });
+
             return defaultResponses;
         }
 
