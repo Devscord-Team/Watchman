@@ -12,6 +12,10 @@ export class ResponsesService {
   getResponses(): Observable<ResponseDto[]> {
     return this.http.get<ResponseDto[]>('https://localhost:44300/Responses/GetResponses');
   }
+
+  changeResponse(response: ResponseDto) {
+
+  }
 }
 
 export interface ResponseDto {

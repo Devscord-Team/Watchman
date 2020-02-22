@@ -1,5 +1,24 @@
 
 
-<p *ngFor="let response of responses | async" >
-  {{ response.message }}
-</p>
+
+
+
+
+
+
+
+
+
+
+
+  <form *ngFor="let response of responses | async" #f="ngForm" (ngSubmit)="onSubmit(f)">
+    <p>
+        <mat-form-field style="width: 1000px !important" appearance="outline" >
+            <mat-label>{{ response.onEvent }}</mat-label>
+            <input name="onEvent" ngModel [value]="response.onEvent" hidden>
+            <input name="message" matInput ngModel [value]="response.message" >
+            <button mat-raised-button style="margin: 10px; margin-top: 25px;" color="primary">Save</button>
+          </mat-form-field>
+    </p>
+  </form>
+
