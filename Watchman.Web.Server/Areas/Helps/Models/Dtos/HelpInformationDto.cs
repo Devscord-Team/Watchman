@@ -9,7 +9,7 @@ namespace Watchman.Web.Server.Areas.Helps.Models.Dtos
     public class HelpInformationDto
     {
         public string Name { get; set; }
-        public string Method { get; set; }
+        public string MethodFullName { get; set; }
         public IEnumerable<ArgumentInfoDto> Arguments { get; set; }
         public IEnumerable<DescriptionDto> Descriptions { get; set; }
         public bool IsDefault { get; set; }
@@ -17,7 +17,7 @@ namespace Watchman.Web.Server.Areas.Helps.Models.Dtos
         public HelpInformationDto(HelpInformation helpInformation)
         {
             Name = helpInformation.Names.First();
-            Method = helpInformation.MethodName;
+            MethodFullName = helpInformation.MethodFullName;
             Arguments = helpInformation.ArgumentInfos.Select(x => new ArgumentInfoDto(x));
             Descriptions = helpInformation.Descriptions.Select(x => new DescriptionDto(x));
             IsDefault = helpInformation.IsDefault;

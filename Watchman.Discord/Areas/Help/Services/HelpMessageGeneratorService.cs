@@ -26,7 +26,7 @@ namespace Watchman.Discord.Areas.Help.Services
             foreach (var helpInfo in result.HelpInformations)
             {
                 var names = helpInfo.Names.Aggregate((x, y) => $"{x} / -{y}");
-                var description = helpInfo.Descriptions.First(x => x.Name == helpInfo.DefaultDescriptionName).Details;
+                var description = helpInfo.Descriptions.First().Details;
 
                 lines.Add(names, description);
             }

@@ -18,12 +18,10 @@ namespace Watchman.Discord.Areas.Help.Factories
         {
             return new HelpInformation
             {
-                Prefix = commandInfo.Prefix,
-                MethodName = commandInfo.MethodName,
+                MethodFullName = commandInfo.MethodFullName,
                 Names = commandInfo.Names,
                 ArgumentInfos = commandInfo.CommandArgumentInfos.Select(x => _argumentInfoFactory.Create(x)),
                 ServerId = 0,
-                DefaultDescriptionName = "EN",
                 Descriptions = new List<Description>
                 {
                     new Description
