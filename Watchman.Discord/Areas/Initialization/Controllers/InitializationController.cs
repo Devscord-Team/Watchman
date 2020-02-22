@@ -32,7 +32,7 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
 
         [AdminCommand]
         [DiscordCommand("init")]
-        //[IgnoreForHelp] TODO
+        //[IgnoreForHelp] TODO //TODO co to za TODO?
         public void Init(DiscordRequest request, Contexts contexts)
         {
             ResponsesInit();
