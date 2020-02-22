@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
@@ -16,13 +17,14 @@ namespace Watchman.Discord.Areas.Initialization.Services
             _channelsService = channelsService;
         }
 
-        public void InitForServer(Contexts contexts)
+        public Task InitForServer(Contexts contexts)
         {
             var changedPermissions = CreateChangedPermissions();
             var mutedRole = CreateMuteRole(changedPermissions.AllowPermissions);
 
             var createdRole = SetRoleToServer(contexts, mutedRole);
             SetChannelsPermissions(contexts, createdRole, changedPermissions);
+            return Task.CompletedTask;
         }
 
         private NewUserRole CreateMuteRole(ICollection<Permission> permissions)
@@ -35,12 +37,11 @@ namespace Watchman.Discord.Areas.Initialization.Services
             return _usersRolesService.CreateNewRole(contexts, mutedRole);
         }
 
-        private void SetChannelsPermissions(Contexts contexts, UserRole mutedRole, ChangedPermissions changedPermissions)
+        private Task SetChannelsPermissions(Contexts contexts, UserRole mutedRole, ChangedPermissions changedPermissions)
         {
-            foreach (var channel in contexts.Server.TextChannels)
-            {
-                _channelsService.SetPermissions(channel, changedPermissions, mutedRole);
-            }
+            Parallel.ForEach(contexts.Server.TextChannels,
+                channel => _channelsService.SetPermissions(channel, changedPermissions, mutedRole));
+            return Task.CompletedTask;
         }
 
         private ChangedPermissions CreateChangedPermissions()

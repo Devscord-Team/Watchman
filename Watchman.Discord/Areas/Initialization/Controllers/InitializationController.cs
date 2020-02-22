@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
@@ -35,11 +36,11 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
         //[IgnoreForHelp] TODO //TODO co to za TODO?
         public void Init(DiscordRequest request, Contexts contexts)
         {
-            ResponsesInit();
-            MuteRoleInit(contexts);
+            _ = ResponsesInit();
+            _ = MuteRoleInit(contexts);
         }
 
-        private void ResponsesInit()
+        private async Task ResponsesInit()
         {
             var responsesInBase = GetResponsesFromBase();
             var defaultResponses = GetResponsesFromFile();
@@ -47,7 +48,7 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
             var responsesToAdd = defaultResponses.Where(def => responsesInBase.All(@base => @base.OnEvent != def.OnEvent));
 
             var command = new AddResponsesCommand(responsesToAdd);
-            _commandBus.ExecuteAsync(command);
+            await _commandBus.ExecuteAsync(command);
         }
 
         private IEnumerable<DomainModel.Responses.Response> GetResponsesFromBase()
@@ -64,13 +65,13 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
             return defaultResponses;
         }
 
-        private void MuteRoleInit(Contexts contexts)
+        private async Task MuteRoleInit(Contexts contexts)
         {
             var mutedRole = _usersRolesService.GetRoleByName(UsersRolesService.MUTED_ROLE_NAME, contexts.Server);
 
             if (mutedRole == null)
             {
-                _muteRoleInitService.InitForServer(contexts);
+                await _muteRoleInitService.InitForServer(contexts);
             }
         }
     }
