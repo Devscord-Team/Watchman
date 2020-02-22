@@ -28,8 +28,7 @@ namespace Watchman.Web.Server
             var builder = new ConfigurationBuilder()
 #if RELEASE
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-#endif
-#if DEBUG
+#else
                 .AddJsonFile("appsettings.Development.json", optional: true)
 #endif
                 .AddEnvironmentVariables();
