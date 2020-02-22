@@ -32,17 +32,17 @@ namespace Watchman.Web.Server
         {
             MongoConfiguration.Initialize();
             //TODO allow
-            //services.AddCors(options =>
-            //{
-            //    options.AddPolicy("AllowAny",
-            //        x =>
-            //        {
-            //            x.AllowAnyOrigin();
-            //            x.AllowAnyMethod();
-            //            x.AllowAnyHeader();
-            //            x.AllowCredentials();
-            //        });
-            //});
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAny",
+                    x =>
+                    {
+                        x.AllowAnyOrigin();
+                        //x.AllowAnyMethod();
+                        //x.AllowAnyHeader();
+                        //x.AllowCredentials();
+                    });
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Watchman API", Description = "Watchman management tool", Version = "Alpha 1.0" });
@@ -60,17 +60,16 @@ namespace Watchman.Web.Server
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseCors("AllowAny");
             app.UseSwagger();
             app.UseSwaggerUI(c => 
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Watchman API");
                 c.RoutePrefix = "";
             });
-
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();
-            //app.UseCors("AllowAny");
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
