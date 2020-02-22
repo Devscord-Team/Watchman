@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,14 +31,15 @@ namespace Watchman.Discord.Areas.Protection.Services
             await AssignMuteRoleAsync(muteRole, userToMute, serverContext);
         }
 
-        public async Task UnmuteIfNeeded(DiscordServerContext server, UserContext userToUnmute, IEnumerable<MuteEvent> userMuteEvents)
+        public async Task<bool> UnmuteIfNeeded(DiscordServerContext server, UserContext userToUnmute, IEnumerable<MuteEvent> userMuteEvents)
         {
             var eventToUnmute = GetNotUnmutedEvent(userMuteEvents);
-            if (eventToUnmute == null)
+            if (eventToUnmute == null || eventToUnmute.TimeRange.End > DateTime.UtcNow)
             {
-                return;
+                return false;
             }
             await UnmuteUser(userToUnmute, eventToUnmute, server);
+            return true;
         }
 
         private UserRole GetMuteRole(DiscordServerContext server)
