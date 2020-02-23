@@ -31,7 +31,7 @@ namespace Watchman.Web.Server.Areas.Responses.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateResponse(ResponseDto request)
+        public async Task<IActionResult> UpdateResponse([FromBody] ResponseDto request)
         {
             var command = new UpdateResponseCommand(request.Id, request.Message);
             await this.commandBus.ExecuteAsync(command);
