@@ -57,20 +57,8 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
 
         private IEnumerable<DomainModel.Responses.Response> GetResponsesFromResources()
         {
-            var defaultResponses = typeof(Responses).GetProperties()
-                .Where(x => x.PropertyType.Name == "String")
-                .Select(prop =>
-                {
-                    var name = prop.Name;
-                    var value = prop.GetValue(prop).ToString();
-                    return new DomainModel.Responses.Response
-                    {
-                        OnEvent = name,
-                        Message = value
-                    };
-                });
 
-            return defaultResponses;
+
         }
 
         private async Task MuteRoleInit(Contexts contexts)

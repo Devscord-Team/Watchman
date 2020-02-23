@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Devscord.DiscordFramework.Properties {
+namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Devscord.DiscordFramework.Properties {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Devscord.DiscordFramework.Properties.Responses", typeof(Responses).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Devscord.DiscordFramework.Framework.Commands.Responses.Resources.Responses", typeof(Responses).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
