@@ -21,12 +21,15 @@ export class ResponsesComponent implements OnInit {
     if (!f.valid) {
       return;
     }
-    const response = this.responses.filter(x => x.id === f.value.id)[0];
+    const response = this.responses.find(x => x.id === f.value.id);
     response.message = f.value.message;
     this.responsesService.updateResponse(response);
   }
 
   isSaveButtonDisabled(f: NgForm): boolean {
+    if (!f.valid) {
+      return false;
+    }
     return this.responses.some(x => x.id === f.value.id && x.message === f.value.message);
   }
 }
