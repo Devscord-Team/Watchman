@@ -71,37 +71,50 @@ namespace Devscord.DiscordFramework
 
         private void RunControllers(string message, Contexts contexts)
         {
-            var controllers = _botAssembly.GetTypesByInterface<IController>()
-                .Select(x => (IController) _context.Resolve(x));
-
             var discordRequest = _commandParser.Parse(message);
-            
+            var controllersWithMethods = GetControllersWithMethods();
+
+            var methodsWithReadAlways = controllersWithMethods.Where(x => x.method.HasAttribute<ReadAlways>());
+            this.RunWithReadAlwaysMethods(discordRequest, contexts, methodsWithReadAlways);
+
             if (!discordRequest.IsCommandForBot)
                 return;
 
+            var withDiscordCommand = controllersWithMethods.Where(x => x.method.HasAttribute<DiscordCommand>());
+            this.RunWithDiscordCommandMethods(discordRequest, contexts, withDiscordCommand);
+        }
+
+        private List<(IController controller, MethodInfo method)> GetControllersWithMethods()
+        {
+            var controllers = _botAssembly.GetTypesByInterface<IController>()
+                .Select(x => (IController) _context.Resolve(x));
+
+            var controllersWithMethods = new List<(IController, MethodInfo)>();
             foreach (var controller in controllers)
             {
                 var methods = controller.GetType().GetMethods();
-                var withReadAlways = methods.Where(x => x.HasAttribute<ReadAlways>());
-                var withDiscordCommand = methods.Where(x => x.HasAttribute<DiscordCommand>());
 
-                this.RunWithReadAlwaysMethods(controller, discordRequest, contexts, withReadAlways);
-                this.RunWithDiscordCommandMethods(controller, discordRequest, contexts, withDiscordCommand);
+                methods.ToList().ForEach(method =>
+                {
+                    controllersWithMethods.Add((controller, method));
+                });
             }
+            return controllersWithMethods;
         }
 
-        private void RunWithReadAlwaysMethods(IController controller, DiscordRequest request, Contexts contexts, IEnumerable<MethodInfo> methods)
+        private Task RunWithReadAlwaysMethods(DiscordRequest request, Contexts contexts, IEnumerable<(IController, MethodInfo)> controllersWithMethods)
         {
-            foreach (var method in methods)
+            foreach (var (controller, method) in controllersWithMethods)
             {
                 var arguments = new object[] { request, contexts };
                 method.Invoke(controller, arguments);
             }
+            return Task.CompletedTask;
         }
 
-        private void RunWithDiscordCommandMethods(IController controller, DiscordRequest request, Contexts contexts, IEnumerable<MethodInfo> methods)
+        private Task RunWithDiscordCommandMethods(DiscordRequest request, Contexts contexts, IEnumerable<(IController, MethodInfo)> controllersWithMethods)
         {
-            foreach (var method in methods)
+            foreach (var (controller, method) in controllersWithMethods)
             {
                 var commandArguments = method.GetCustomAttributesData()
                     .Where(x => x.AttributeType.FullName == typeof(DiscordCommand).FullName)
@@ -121,6 +134,7 @@ namespace Devscord.DiscordFramework
                     break;
                 }
             }
+            return Task.CompletedTask;
         }
     }
 }
