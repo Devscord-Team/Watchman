@@ -21,7 +21,10 @@ namespace Watchman.DomainModel.Responses.Commands.Handlers
             using (var session = sessionFactory.Create())
             {
                 var response = session.Get<Response>(command.Id);
+                response.SetMessage(command.Message);
+                session.Update(response);
             }
+            return Task.CompletedTask;
         }
     }
 }

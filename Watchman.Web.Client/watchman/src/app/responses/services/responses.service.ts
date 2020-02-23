@@ -19,6 +19,7 @@ export class ResponsesService {
 }
 
 export interface ResponseDto {
+  id: string;
   onEvent: string;
   message: string;
 }

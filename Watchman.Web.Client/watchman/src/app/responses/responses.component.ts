@@ -18,7 +18,7 @@ export class ResponsesComponent implements OnInit {
   }
 
   onSubmit(f: NgForm) {
-    console.log(f.value);
+
   }
 
   isSaveButtonDisabled(f: NgForm): boolean {
