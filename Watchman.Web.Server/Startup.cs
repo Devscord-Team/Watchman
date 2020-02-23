@@ -38,8 +38,8 @@ namespace Watchman.Web.Server
                     x =>
                     {
                         x.AllowAnyOrigin();
-                        //x.AllowAnyMethod();
-                        //x.AllowAnyHeader();
+                        x.AllowAnyMethod();
+                        x.AllowAnyHeader();
                         //x.AllowCredentials();
                     });
             });
