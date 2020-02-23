@@ -23,12 +23,11 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         private readonly ICommandBus commandBus;
         private readonly MessagesServiceFactory messagesServiceFactory;
 
-        public StatisticsController(IQueryBus queryBus, ICommandBus commandBus, ISessionFactory sessionFactory, MessagesServiceFactory messagesServiceFactory, ReportsService reportsService, ChartsService chartsService)
+        public StatisticsController(IQueryBus queryBus, ICommandBus commandBus, MessagesServiceFactory messagesServiceFactory, ReportsService reportsService, ChartsService chartsService)
         {
             this.queryBus = queryBus;
             this.commandBus = commandBus;
             this.messagesServiceFactory = messagesServiceFactory;
-            this._session = sessionFactory.Create();
             this._reportsService = reportsService;
             this._chartsService = chartsService;
         }
