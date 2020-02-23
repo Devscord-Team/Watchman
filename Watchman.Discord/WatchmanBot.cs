@@ -46,7 +46,7 @@ namespace Watchman.Discord
             MongoConfiguration.Initialize();
             ServerInitializer.Initialize(_client, _container.Resolve<MessagesServiceFactory>());
 
-            DefaultHelpInit();
+            await DefaultHelpInit();
             
             await _client.LoginAsync(TokenType.Bot, this._configuration.Token);
             await _client.StartAsync();
