@@ -22,7 +22,7 @@ namespace Watchman.DomainModel.Commons.Calculators.Statistics
             var splitted = splitter.Split(collection);
             foreach (var singlePeriod in splitted)
             {
-                yield return new PeriodStatistic(singlePeriod.Key, singlePeriod.Count());
+                yield return new PeriodStatistic(singlePeriod.Key, singlePeriod.Value.Count());
             }
         }
 
