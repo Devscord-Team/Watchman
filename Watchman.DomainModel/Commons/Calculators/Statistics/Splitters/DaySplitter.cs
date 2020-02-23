@@ -11,8 +11,11 @@ namespace Watchman.DomainModel.Commons.Calculators.Statistics.Splitters
     {
         public IEnumerable<IGrouping<TimeRange, T>> Split<T>(IEnumerable<T> collection) where T : Entity
         {
-            var latestDate = collection.First().CreatedAt;
-            var oldestDate = collection.Last().CreatedAt;
+            var fullRange = TimeRange.Create(collection.First().CreatedAt.Date, collection.Last().CreatedAt.Date);
+            foreach (var index in Enumerable.Range(0, fullRange.DaysBetween))
+            {
+
+            }
             return default;
         }
     }
