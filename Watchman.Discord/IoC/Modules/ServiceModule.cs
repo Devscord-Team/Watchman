@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Commons;
+using Watchman.DomainModel.Commons.Calculators.Statistics;
 
 namespace Watchman.Discord.IoC.Modules
 {
@@ -18,6 +19,10 @@ namespace Watchman.Discord.IoC.Modules
                 .As<ResponsesService>()
                 .InstancePerLifetimeScope();
 
+            builder.RegisterType<StatisticsCalculator>()
+                .As<IStatisticsCalculator>()
+                .InstancePerLifetimeScope();
+                
 
             var list = new List<string>();
             var stack = new Stack<Assembly>();

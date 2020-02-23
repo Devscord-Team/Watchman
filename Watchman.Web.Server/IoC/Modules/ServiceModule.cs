@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using Watchman.Cqrs;
+using Watchman.DomainModel.Commons.Calculators.Statistics;
 
 namespace Watchman.Web.Server.IoC.Modules
 {
@@ -33,6 +34,10 @@ namespace Watchman.Web.Server.IoC.Modules
                 }
             }
             while (stack.Count > 0);
+
+            builder.RegisterType<StatisticsCalculator>()
+                .As<IStatisticsCalculator>()
+                .InstancePerLifetimeScope();
         }
     }
 }
