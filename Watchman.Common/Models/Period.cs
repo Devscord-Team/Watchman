@@ -2,9 +2,9 @@
 {
     public enum Period
     {
-        Hour,
-        Day,
-        Week,
-        Month
+        Hour = 1,
+        Day = 2,
+        Week = 4,
+        Month = 8
     }
 }
