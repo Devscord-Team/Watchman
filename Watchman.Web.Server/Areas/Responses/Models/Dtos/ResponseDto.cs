@@ -8,13 +8,19 @@ namespace Watchman.Web.Server.Areas.Responses.Models.Dtos
 {
     public class ResponseDto
     {
+        public Guid Id { get; set; }
         public string OnEvent { get; set; }
         public string Message { get; set; }
 
+        public ResponseDto()
+        {
+        }
+
         public ResponseDto(Response response)
         {
-            OnEvent = response.OnEvent;
-            Message = response.Message;
+            this.Id = response.Id;
+            this.OnEvent = response.OnEvent;
+            this.Message = response.Message;
         }
     }
 }
