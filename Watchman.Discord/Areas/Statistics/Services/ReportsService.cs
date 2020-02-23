@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Watchman.Common.Models;
 using Watchman.Discord.Areas.Statistics.Models;
+using Watchman.DomainModel.Messages;
 
 namespace Watchman.Discord.Areas.Statistics.Services
 {
@@ -32,7 +33,7 @@ namespace Watchman.Discord.Areas.Statistics.Services
 
 
         //TODO unit test
-        public StatisticsReport CreateReport(IEnumerable<MessageInformation> messages, Period period, DiscordServerContext serverContext)
+        public StatisticsReport CreateReport(IEnumerable<Message> messages, Period period, DiscordServerContext serverContext)
         {
             var serverMessages = messages.Where(x => x.Server.Id == serverContext.Id).ToList();
 
@@ -41,8 +42,8 @@ namespace Watchman.Discord.Areas.Statistics.Services
                 return default;
             }
 
-            var sortedMessages = serverMessages.OrderByDescending(x => x.SentAt).ToList();
-            var latestDateBasedOnPeriod = this.GetLatestDateBasedOnPeriod(sortedMessages.First().SentAt, period);
+            var sortedMessages = serverMessages.OrderByDescending(x => x.CreatedAt).ToList();
+            var latestDateBasedOnPeriod = this.GetLatestDateBasedOnPeriod(sortedMessages.First().CreatedAt, period);
 
             var statisticsPerPeriod = this.SplitMessagesToReportsPerPeriod(sortedMessages, latestDateBasedOnPeriod, period);
 
@@ -54,15 +55,15 @@ namespace Watchman.Discord.Areas.Statistics.Services
             };
         }
 
-        private IEnumerable<StatisticsReportPeriod> SplitMessagesToReportsPerPeriod(List<MessageInformation> messages, DateTime latestDate, Period period)
+        private IEnumerable<StatisticsReportPeriod> SplitMessagesToReportsPerPeriod(List<Message> messages, DateTime latestDate, Period period)
         {
             var result = new List<StatisticsReportPeriod>();
-            var lastMessageDate = messages.Last().SentAt.Date;
+            var lastMessageDate = messages.Last().CreatedAt.Date;
 
             var currentPeriod = new TimeRange { Start = this.GetOldestMessageInCurrentPeriod(latestDate, period), End = latestDate };
             do
             {
-                var messagesInCurrentPeriod = messages.Where(x => x.SentAt >= currentPeriod.Start && x.SentAt <= currentPeriod.End);
+                var messagesInCurrentPeriod = messages.Where(x => x.CreatedAt >= currentPeriod.Start && x.CreatedAt <= currentPeriod.End);
                 var statisticsInCurrentPeriod = new StatisticsReportPeriod
                 {
                     MessagesQuantity = messagesInCurrentPeriod.Count(),
