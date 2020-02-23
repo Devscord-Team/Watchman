@@ -27,6 +27,6 @@ export class ResponsesComponent implements OnInit {
   }
 
   isSaveButtonDisabled(f: NgForm): boolean {
-    return this.responses.some(x => x.onEvent === f.value.onEvent && x.message === f.value.message);
+    return this.responses.some(x => x.id === f.value.id && x.message === f.value.message);
   }
 }
