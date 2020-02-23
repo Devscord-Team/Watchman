@@ -17,8 +17,13 @@ export class ResponsesComponent implements OnInit {
     this.responsesService.getResponses().subscribe(x => this.responses = x);
   }
 
-  onSubmit(f: NgForm) {
-
+  updateResponse(f: NgForm) {
+    if (!f.valid) {
+      return;
+    }
+    const response = this.responses.filter(x => x.id === f.value.id)[0];
+    response.message = f.value.message;
+    this.responsesService.updateResponse(response);
   }
 
   isSaveButtonDisabled(f: NgForm): boolean {

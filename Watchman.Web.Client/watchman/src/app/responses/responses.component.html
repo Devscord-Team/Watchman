@@ -1,11 +1,11 @@
 
 
-<form *ngFor="let response of responses" #f="ngForm" (ngSubmit)="onSubmit(f)">
+<form *ngFor="let response of responses" #f="ngForm" (ngSubmit)="updateResponse(f)">
   <p>
       <mat-form-field style="width: 1000px !important" appearance="outline" >
           <mat-label>{{ response.onEvent }}</mat-label>
-          <input name="id" [ngModel]="response.id" hidden>
-          <input name="message" matInput [ngModel]="response.message">
+          <input name="id" [ngModel]="response.id" hidden required>
+          <input name="message" matInput [ngModel]="response.message" required>
           <button mat-raised-button style="margin: 10px; margin-top: 25px;" color="primary" [disabled]="isSaveButtonDisabled(f)">Save</button>
         </mat-form-field>
   </p>

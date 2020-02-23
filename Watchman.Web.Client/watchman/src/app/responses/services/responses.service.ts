@@ -13,7 +13,7 @@ export class ResponsesService {
     return this.http.get<ResponseDto[]>('https://localhost:44300/Responses/GetResponses');
   }
 
-  changeResponse(response: ResponseDto) {
+  updateResponse(response: ResponseDto) {
 
   }
 }
