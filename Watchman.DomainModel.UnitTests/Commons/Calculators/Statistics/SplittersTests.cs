@@ -23,7 +23,7 @@ namespace Watchman.DomainModel.UnitTests.Commons.Calculators.Statistics
             //Arrange
             var splitter = new DaySplitter();
             var testCollection = TestEntityGenerator
-                .Generate(TimeRange.Create(DateTime.Now.Date.AddHours(12).AddDays(-items), DateTime.Now.Date.AddHours(12)), days);
+                .Generate(TimeRange.Create(DateTime.Now.Date.AddHours(12).AddDays(-days), DateTime.Now.Date.AddHours(12)), items);
 
             //Act
             var splitted = splitter.Split(testCollection);

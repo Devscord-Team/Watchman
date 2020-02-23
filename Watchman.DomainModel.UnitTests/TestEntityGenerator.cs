@@ -10,15 +10,18 @@ namespace Watchman.DomainModel.UnitTests
     {
         public static IEnumerable<TestEntity> Generate(TimeRange timeRange, int quantity)
         {
-            var ticksBetweenTimes = timeRange.End.Ticks - timeRange.Start.Ticks;
-            var ticksPerItem = (long)Math.Truncate((decimal)ticksBetweenTimes / quantity);
-            foreach (var index in Enumerable.Range(0, quantity))
+            var days = timeRange.DaysBetween;
+            var itemsPerDay = quantity / days;
+            foreach (var dayIndex in Enumerable.Range(0, days))
             {
-                var item = new TestEntity();
-                var time = timeRange.Start.AddTicks(ticksPerItem * index);
-                item.SetCreatedAt(time);
-                item.SetUpdatedAt(time);
-                yield return item;
+                var time = timeRange.Start.AddDays(dayIndex);
+                foreach(var itemIndex in Enumerable.Range(0, itemsPerDay))
+                {
+                    var item = new TestEntity();
+                    item.SetCreatedAt(time);
+                    item.SetUpdatedAt(time);
+                    yield return item;
+                }
             }
         }
     }
