@@ -30,8 +30,8 @@ namespace Watchman.DomainModel.UnitTests.Commons.Calculators.Statistics
 
             //Assert
             var timeRanges = splitted.Select(x => x.Key);
-            var itemsPerDay = splitted.First().Count();
-            var daysAreEqual = splitted.All(x => x.Count() == itemsPerDay);
+            var itemsPerDay = splitted.First().Value.Count();
+            var daysAreEqual = splitted.All(x => x.Value.Count() == itemsPerDay);
 
             Assert.That(timeRanges.Count(), Is.EqualTo(days));
             Assert.That(itemsPerDay, Is.EqualTo(shouldItemsPerDay));
