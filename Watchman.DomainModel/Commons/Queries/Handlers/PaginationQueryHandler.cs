@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Commons.Queries.Handlers
 {
     public abstract class PaginationQueryHandler
     {
-        public IEnumerable<T> Paginate<T>(PaginationQuery<T> paginationQuery, IEnumerable<T> collection)
+        public IEnumerable<T> Paginate<T>(PaginationQuery<T> paginationQuery, IEnumerable<T> collection) where T : Entity
         {
             if(paginationQuery.Filter != null)
             {
@@ -16,11 +17,21 @@ namespace Watchman.DomainModel.Commons.Queries.Handlers
             return this.Paginate((PaginationQuery)paginationQuery, collection);
         }
 
-        public IEnumerable<T> Paginate<T>(PaginationQuery paginationQuery, IEnumerable<T> collection)
+        public IEnumerable<T> Paginate<T>(PaginationQuery paginationQuery, IEnumerable<T> collection) where T : Entity
         {
-            if(paginationQuery.StartFrom.HasValue)
+            if(paginationQuery.CreatedDate != null)
             {
-                collection = collection.Skip(paginationQuery.StartFrom.Value);
+                var timeRange = paginationQuery.CreatedDate;
+                collection = collection.Where(x => x.CreatedAt <= timeRange.Start && x.CreatedAt >= timeRange.End);
+            }
+            if(paginationQuery.UpdatedDate != null)
+            {
+                var timeRange = paginationQuery.UpdatedDate;
+                collection = collection.Where(x => x.UpdatedAt <= timeRange.Start && x.UpdatedAt >= timeRange.End);
+            }
+            if(paginationQuery.Skip.HasValue)
+            {
+                collection = collection.Skip(paginationQuery.Skip.Value);
             }
             if(paginationQuery.Quantity.HasValue)
             {
