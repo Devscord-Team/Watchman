@@ -50,8 +50,7 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         {
             //TODO it doesn't looks clear...
             var period = _reportsService.SelectPeriod(request.OriginalMessage); //TODO use DiscordRequest properties
-            var getMessagesQuery = new GetMessagesQuery();
-            var messages = this.queryBus.Execute(getMessagesQuery).Messages;
+            var messages = this.queryBus.Execute(new GetMessagesQuery()).Messages;
             var report = _reportsService.CreateReport(messages, period, contexts.Server);
 
             var messagesService = messagesServiceFactory.Create(contexts);
