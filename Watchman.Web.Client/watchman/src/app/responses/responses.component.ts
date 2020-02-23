@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ResponsesService, ResponseDto } from './services/responses.service';
-import { Observable } from 'rxjs';
 import { NgForm } from '@angular/forms';
 
 @Component({
@@ -10,15 +9,19 @@ import { NgForm } from '@angular/forms';
 })
 export class ResponsesComponent implements OnInit {
 
-  responses: Observable<ResponseDto[]>;
+  responses: ResponseDto[];
 
   constructor(private responsesService: ResponsesService) { }
 
   ngOnInit() {
-    this.responses = this.responsesService.getResponses();
+    this.responsesService.getResponses().subscribe(x => this.responses = x);
   }
 
   onSubmit(f: NgForm) {
     console.log(f.value);
+  }
+
+  isSaveButtonDisabled(f: NgForm): boolean {
+    return this.responses.some(x => x.onEvent === f.value.onEvent && x.message === f.value.message);
   }
 }

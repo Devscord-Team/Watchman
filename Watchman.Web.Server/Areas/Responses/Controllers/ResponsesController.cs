@@ -26,5 +26,10 @@ namespace Watchman.Web.Server.Areas.Responses.Controllers
             var responsesDto = responses.Select(x => new ResponseDto(x));
             return responsesDto;
         }
+
+        public IActionResult UpdateResponse(ResponseDto request)
+        {
+            var command = new 
+        }
     }
 }
