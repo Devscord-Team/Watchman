@@ -9,7 +9,8 @@ using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Commons.Calculators.Statistics
 {
-    public class StatisticsCalculator
+
+    public class StatisticsCalculator : IStatisticsCalculator
     {
         public IEnumerable<PeriodStatistic> GetStatisticsPerPeriod<T>(IEnumerable<T> collection, Period period) where T : Entity
         {
