@@ -5,7 +5,6 @@ using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Framework.Commands.Responses.Resources;
 using Devscord.DiscordFramework.Middlewares.Contexts;
-using Devscord.DiscordFramework.Properties;
 using Devscord.DiscordFramework.Services;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Initialization.Services;
@@ -62,13 +61,9 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
                 .Where(x => x.PropertyType.Name == "String")
                 .Select(prop =>
                 {
-                    var name = prop.Name;
-                    var value = prop.GetValue(prop).ToString();
-                    return new DomainModel.Responses.Response
-                    {
-                        OnEvent = name,
-                        Message = value
-                    };
+                    var onEvent = prop.Name;
+                    var message = prop.GetValue(prop).ToString();
+                    return new DomainModel.Responses.Response(onEvent, message);
                 });
 
             return defaultResponses;
