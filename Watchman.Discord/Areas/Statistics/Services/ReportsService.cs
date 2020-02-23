@@ -51,7 +51,7 @@ namespace Watchman.Discord.Areas.Statistics.Services
             {
                 AllMessages = statisticsPerPeriod.Sum(x => x.MessagesQuantity),
                 StatisticsPerPeriod = statisticsPerPeriod,
-                TimeRange = new TimeRange { Start = statisticsPerPeriod.First().TimeRange.Start, End = latestDateBasedOnPeriod }
+                TimeRange = TimeRange.Create(statisticsPerPeriod.First().TimeRange.Start, latestDateBasedOnPeriod)
             };
         }
 
@@ -60,7 +60,7 @@ namespace Watchman.Discord.Areas.Statistics.Services
             var result = new List<StatisticsReportPeriod>();
             var lastMessageDate = messages.Last().CreatedAt.Date;
 
-            var currentPeriod = new TimeRange { Start = this.GetOldestMessageInCurrentPeriod(latestDate, period), End = latestDate };
+            var currentPeriod = TimeRange.Create(this.GetOldestMessageInCurrentPeriod(latestDate, period), latestDate);
             do
             {
                 var messagesInCurrentPeriod = messages.Where(x => x.CreatedAt >= currentPeriod.Start && x.CreatedAt <= currentPeriod.End);
@@ -79,11 +79,8 @@ namespace Watchman.Discord.Areas.Statistics.Services
 
         private TimeRange TransferToPreviousPeriod(TimeRange currentPeriod, Period period)
         {
-            return new TimeRange
-            {
-                Start = this.GetOldestMessageInCurrentPeriod(currentPeriod.Start.AddMinutes(-1), period),
-                End = this.GetLatestDateBasedOnPeriod(currentPeriod.Start.AddMinutes(-1), period),
-            };
+            return TimeRange.Create(this.GetOldestMessageInCurrentPeriod(currentPeriod.Start.AddMinutes(-1), period),
+                this.GetLatestDateBasedOnPeriod(currentPeriod.Start.AddMinutes(-1), period));
         }
 
         private DateTime GetOldestMessageInCurrentPeriod(DateTime endOfPeriod, Period period)

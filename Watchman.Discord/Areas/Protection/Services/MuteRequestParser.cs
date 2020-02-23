@@ -42,12 +42,7 @@ namespace Watchman.Discord.Areas.Protection.Services
             var reason = _request.Arguments.FirstOrDefault(x => x.Name == "reason")?.Value;
             var forTime = _request.Arguments.FirstOrDefault(x => x.Name == "time")?.Value;
 
-            var timeRange = new TimeRange()
-            {
-                Start = DateTime.UtcNow,
-                End = DateTime.UtcNow + ParseToTimeSpan(forTime)
-            };
-
+            var timeRange = TimeRange.Create(DateTime.UtcNow, DateTime.UtcNow + ParseToTimeSpan(forTime));
             return new MuteEvent(userId, timeRange, reason, contexts.Server.Id);
         }
 
