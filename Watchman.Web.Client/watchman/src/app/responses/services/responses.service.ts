@@ -14,7 +14,7 @@ export class ResponsesService {
   }
 
   updateResponse(request: ResponseDto) {
-    return this.http.post('https://localhost:44300/Responses/UpdateResponse', request);
+    return this.http.post('https://localhost:44300/Responses/UpdateResponse', request).subscribe();
   }
 }
 
