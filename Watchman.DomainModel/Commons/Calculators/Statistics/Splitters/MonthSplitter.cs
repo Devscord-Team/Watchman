@@ -9,7 +9,7 @@ namespace Watchman.DomainModel.Commons.Calculators.Statistics.Splitters
 {
     public class MonthSplitter : ISplitter
     {
-        public IEnumerable<IGrouping<TimeRange, T>> Split<T>(IEnumerable<T> collection) where T : Entity
+        public IEnumerable<KeyValuePair<TimeRange, IEnumerable<T>>> Split<T>(IEnumerable<T> collection) where T : Entity
         {
             throw new NotImplementedException();
         }
