@@ -12,13 +12,14 @@ namespace Watchman.DomainModel.Messages
         public Server Server { get; private set; }
         public string Content { get; private set; }
 
-        private Message()
+        private Message(string content)
         {
+            this.Content = content;
         }
 
-        public static MessageBuilder Create()
+        public static MessageBuilder Create(string content)
         {
-            return new MessageBuilder(new Message());
+            return new MessageBuilder(new Message(content));
         }
 
         public void SetAuthor(User author)
