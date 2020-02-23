@@ -6,20 +6,18 @@ namespace Watchman.DomainModel.Responses.Queries.Handlers
 {
     public class GetResponsesQueryHandler : IQueryHandler<GetResponsesQuery, GetResponsesQueryResult>
     {
-        private readonly ISessionFactory sessionFactory;
+        private readonly ISessionFactory _sessionFactory;
 
         public GetResponsesQueryHandler(ISessionFactory sessionFactory)
         {
-            this.sessionFactory = sessionFactory;
+            this._sessionFactory = sessionFactory;
         }
 
         public GetResponsesQueryResult Handle(GetResponsesQuery query)
         {
-            using (var session = sessionFactory.Create())
-            {
-                var responses = session.Get<Response>().ToList();
-                return new GetResponsesQueryResult(responses);
-            }
+            using var session = _sessionFactory.Create();
+            var responses = session.Get<Response>().ToList();
+            return new GetResponsesQueryResult(responses);
         }
     }
 }

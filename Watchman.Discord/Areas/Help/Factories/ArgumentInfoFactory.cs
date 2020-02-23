@@ -9,8 +9,9 @@ namespace Watchman.Discord.Areas.Help.Factories
         {
             return new ArgumentInfo
             {
-                ArgumentPrefix = argument.ArgumentPrefix,
-                Name = argument.Name
+                Name = argument.Name,
+                Description = "Empty",
+                ExampleValues = "Empty"
             };
         }
     }

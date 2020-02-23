@@ -99,10 +99,13 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             await Task.Delay(timeRange.End - timeRange.Start);
 
             var userMuteEvents = GetMuteEvents(contexts.Server, userToUnmute.Id);
-            await _muteService.UnmuteIfNeeded(contexts.Server, userToUnmute, userMuteEvents);
+            var wasNeededToUnmute = await _muteService.UnmuteIfNeeded(contexts.Server, userToUnmute, userMuteEvents);
 
-            var messagesService = _messagesServiceFactory.Create(contexts);
-            await messagesService.SendResponse(x => x.UnmutedUser(userToUnmute), contexts);
+            if (wasNeededToUnmute)
+            {
+                var messagesService = _messagesServiceFactory.Create(contexts);
+                await messagesService.SendResponse(x => x.UnmutedUser(userToUnmute), contexts);
+            }
         }
     }
 }
