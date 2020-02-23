@@ -7,19 +7,16 @@ using Discord.WebSocket;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Watchman.Common.Models;
 using Watchman.Cqrs;
-using Watchman.Discord.Areas.Statistics.Models;
 using Watchman.Discord.Areas.Statistics.Services;
-using Watchman.Discord.Areas.Statistics.Services.Builders;
+using Watchman.DomainModel.Messages.Commands;
+using Watchman.DomainModel.Messages.Queries;
 using Watchman.Integrations.MongoDB;
 
 namespace Watchman.Discord.Areas.Statistics.Controllers
 {
     public class StatisticsController : IController
     {
-        private readonly ISession _session;
         private readonly ReportsService _reportsService;
         private readonly ChartsService _chartsService;
         private readonly IQueryBus queryBus;
@@ -39,37 +36,33 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         [ReadAlways]
         public void SaveMessage(DiscordRequest request, Contexts contexts)
         {
-            var messageBuilder = new MessageInformationBuilder(request.OriginalMessage);
-            var messageInfo = messageBuilder
-                .SetAuthor(contexts.User)
-                .SetChannel(contexts.Channel)
-                .SetServerInfo(contexts.Server)
-                .Build();
-
-            this.SaveToDatabase(messageInfo);
+            //TODO maybe there should be builder... but it doesn't looks very bad
+            var command = new AddMessageCommand(request.OriginalMessage,
+                contexts.User.Id, contexts.User.Name,
+                contexts.Channel.Id, contexts.Channel.Name,
+                contexts.Server.Id, contexts.Server.Name,
+                contexts.Server.Owner.Id, contexts.Server.Owner.Name);
+            this.commandBus.ExecuteAsync(command); //TODO fire and forget is not the best option, controller methods should be async Tasks
         }
 
         [AdminCommand]
         [DiscordCommand("stats")]
         public void GetStatisticsPerPeriod(DiscordRequest request, Contexts contexts)
         {
+            //TODO it doesn't looks clear...
             var period = _reportsService.SelectPeriod(request.OriginalMessage); //TODO use DiscordRequest properties
-            var messages = this._session.Get<MessageInformation>().ToList();
+            var getMessagesQuery = new GetMessagesQuery();
+            var messages = this.queryBus.Execute(getMessagesQuery).Messages;
             var report = _reportsService.CreateReport(messages, period, contexts.Server);
 
             var messagesService = messagesServiceFactory.Create(contexts);
 #if DEBUG
+            //TODO it should be inside messages service... or responses service
             var dataToMessage = "```json\n" + JsonConvert.SerializeObject(report.StatisticsPerPeriod.Where(x => x.MessagesQuantity > 0), Formatting.Indented) + "\n```";
             messagesService.SendMessage(dataToMessage);
 #endif
             var path = _chartsService.GetImageStatisticsPerPeriod(report);
             messagesService.SendFile(path);
-        }
-
-        private Task SaveToDatabase(MessageInformation data)
-        {
-            Task.Factory.StartNew(() => _session.Add(data));
-            return Task.CompletedTask;
         }
     }
 }
