@@ -25,8 +25,6 @@
     <Folder Include="Areas\Schedules\Controllers\" />
     <Folder Include="Areas\Schedules\Models\" />
     <Folder Include="Areas\Schedules\Services\" />
-    <Folder Include="Areas\Statistics\Controllers\" />
-    <Folder Include="Areas\Statistics\Models\" />
     <Folder Include="Areas\Statistics\Services\" />
   </ItemGroup>
 

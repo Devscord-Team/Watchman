@@ -7,8 +7,6 @@
   <ItemGroup>
     <Folder Include="Help\Commands\" />
     <Folder Include="Settings\Commands\Handlers\" />
-    <Folder Include="Statistics\Commands\Handlers\" />
-    <Folder Include="Statistics\Queries\Handlers\" />
   </ItemGroup>
 
   <ItemGroup>

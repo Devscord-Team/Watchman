@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using Watchman.Cqrs;
+using Watchman.DomainModel.Commons.Calculators.Statistics;
 
 namespace Watchman.ScheduleRunner.IoC.Modules
 {
@@ -41,6 +42,10 @@ namespace Watchman.ScheduleRunner.IoC.Modules
                 return new ScheduleTasksRunner(commandBus, assembly);
             }).As<ScheduleTasksRunner>()
             .InstancePerLifetimeScope();
+
+            builder.RegisterType<StatisticsCalculator>()
+                .As<IStatisticsCalculator>()
+                .InstancePerLifetimeScope();
         }
     }
 }

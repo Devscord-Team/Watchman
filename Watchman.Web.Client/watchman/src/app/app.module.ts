@@ -38,11 +38,16 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatTableModule} from '@angular/material/table';
 import {MatSortModule} from '@angular/material/sort';
 import {MatPaginatorModule} from '@angular/material/paginator';
+import { StatisticsComponent } from './statistics/statistics.component';
+
+// Charts
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ResponsesComponent
+    ResponsesComponent,
+    StatisticsComponent
   ],
   imports: [
     BrowserModule,
@@ -79,7 +84,8 @@ import {MatPaginatorModule} from '@angular/material/paginator';
     MatSnackBarModule,
     MatTableModule,
     MatSortModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    NgxChartsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

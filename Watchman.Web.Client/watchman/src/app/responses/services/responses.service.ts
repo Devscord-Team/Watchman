@@ -10,11 +10,13 @@ export class ResponsesService {
   constructor(private http: HttpClient) { }
 
   getResponses(): Observable<ResponseDto[]> {
+    // TODO base URL
     return this.http.get<ResponseDto[]>('https://localhost:44300/Responses/GetResponses');
   }
 
   updateResponse(request: ResponseDto) {
-    return this.http.post('https://localhost:44300/Responses/UpdateResponse', request).subscribe();
+    // TODO base URL
+    return this.http.post('https://localhost:44300/Responses/UpdateResponse', request);
   }
 }
 
