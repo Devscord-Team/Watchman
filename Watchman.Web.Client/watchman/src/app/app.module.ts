@@ -40,9 +40,6 @@ import {MatSortModule} from '@angular/material/sort';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import { StatisticsComponent } from './statistics/statistics.component';
 
-// Charts
-import { ChartsModule } from 'ng2-charts';
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -84,8 +81,7 @@ import { ChartsModule } from 'ng2-charts';
     MatSnackBarModule,
     MatTableModule,
     MatSortModule,
-    MatPaginatorModule,
-    ChartsModule
+    MatPaginatorModule
   ],
   providers: [],
   bootstrap: [AppComponent]
