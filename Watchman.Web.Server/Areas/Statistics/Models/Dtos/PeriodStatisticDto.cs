@@ -4,12 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Watchman.Common.Models;
 using Watchman.DomainModel.Messages.Services;
+using Watchman.Web.Server.Areas.Commons.Models.Dtos;
 
 namespace Watchman.Web.Server.Areas.Statistics.Models.Dtos
 {
     public class PeriodStatisticDto
     {
-        public TimeRange TimeRange { get; set; }
+        public TimeRangeDto TimeRange { get; set; }
         public int Count { get; set; }
 
         public PeriodStatisticDto()
@@ -18,7 +19,7 @@ namespace Watchman.Web.Server.Areas.Statistics.Models.Dtos
 
         public PeriodStatisticDto(PeriodStatistic periodStatistic)
         {
-            this.TimeRange = periodStatistic.TimeRange;
+            this.TimeRange = new TimeRangeDto(periodStatistic.TimeRange);
             this.Count = periodStatistic.Count;
         }
     }
