@@ -9,17 +9,18 @@ namespace Devscord.DiscordFramework
 {
     internal class ControllersContainer
     {
-        private IEnumerable<ControllerInfo> _controllers;
+        public IReadOnlyList<ControllerInfo> WithReadAlways { get; private set; }
+        public IReadOnlyList<ControllerInfo> WithDiscordCommand { get; private set; }
 
         public ControllersContainer(IEnumerable<ControllerInfo> controllers)
         {
-            this._controllers = controllers;
+            this.WithReadAlways = controllers
+                .Select(x => new ControllerInfo(x.Controller, x.Methods.Where(m => m.HasAttribute<ReadAlways>())))
+                .Where(x => x.Methods.Any()).ToList();
+
+            this.WithDiscordCommand = controllers
+                .Select(x => new ControllerInfo(x.Controller, x.Methods.Where(m => m.HasAttribute<DiscordCommand>())))
+                .Where(x => x.Methods.Any()).ToList();
         }
-
-        public IEnumerable<ControllerInfo> WithReadAlways
-            => this._controllers.Select(x => new ControllerInfo(x.Controller, x.Methods.Where(m => m.HasAttribute<ReadAlways>())));
-
-        public IEnumerable<ControllerInfo> WithDiscordCommand
-            => this._controllers.Select(x => new ControllerInfo(x.Controller, x.Methods.Where(m => m.HasAttribute<DiscordCommand>())));
     }
 }

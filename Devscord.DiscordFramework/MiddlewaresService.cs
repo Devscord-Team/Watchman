@@ -21,7 +21,7 @@ namespace Devscord.DiscordFramework
             {
                 return;
             }
-            var instance = Activator.CreateInstance<IMiddleware<W>>();
+            var instance = Activator.CreateInstance<T>();
             this._middlewares.Add(instance);
         }
 
