@@ -13,9 +13,9 @@
   "dependencies": {
     "@angular/animations": "^6.1.0",
     "@angular/cdk": "^6.2.0",
-    "@angular/common": "^6.1.0",
+    "@angular/common": "^8.0.0",
     "@angular/compiler": "^6.1.0",
-    "@angular/core": "^6.1.0",
+    "@angular/core": "^8.0.0",
     "@angular/forms": "^6.1.0",
     "@angular/http": "^6.1.0",
     "@angular/material": "^6.4.7",
@@ -26,8 +26,9 @@
     "chartjs-plugin-datalabels": "^0.6.0",
     "core-js": "^2.5.4",
     "ng2-charts": "^2.3.0",
-    "rxjs": "~6.2.0",
-    "zone.js": "~0.8.26"
+    "rxjs": "^6.4.0",
+    "zone.js": "~0.8.26",
+    "ajv": "^6.9.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.8.0",
