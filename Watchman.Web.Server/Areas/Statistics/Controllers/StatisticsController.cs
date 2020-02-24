@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Watchman.Common.Models;
 using Watchman.Cqrs;
+using Watchman.DomainModel.Messages.Commands;
 using Watchman.DomainModel.Messages.Queries;
 using Watchman.DomainModel.Messages.Services;
 using Watchman.Web.Server.Areas.Statistics.Models.Dtos;
