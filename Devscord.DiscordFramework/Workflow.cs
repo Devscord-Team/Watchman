@@ -2,6 +2,7 @@
 using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Framework.Commands.Parsing;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
@@ -16,37 +17,29 @@ namespace Devscord.DiscordFramework
 {
     public class Workflow
     {
-        public Action<Exception, Contexts> WorkflowException { get; set; }
+        private readonly CommandParser _commandParser = new CommandParser();
+        private readonly MiddlewaresService _middlewaresService = new MiddlewaresService();
 
-        private readonly List<object> _middlewares;
         private readonly Assembly _botAssembly;
         private readonly IComponentContext _context;
-        private readonly CommandParser _commandParser;
+
+        public Action<Exception, Contexts> WorkflowException { get; set; }
 
         public Workflow(Assembly botAssembly, IComponentContext context)
         {
-            _middlewares = new List<object>();
             _botAssembly = botAssembly;
             this._context = context;
-
-            this._commandParser = new CommandParser();//todo maybe autofac
         }
 
-        public Workflow AddMiddleware<T>(object configuration = null /*TODO*/)
+        public Workflow AddMiddleware<T>() where T : IMiddleware<IDiscordContext>
         {
-            if (_middlewares.Any(x => x.GetType().FullName == typeof(T).FullName))
-            {
-                return this;
-            }
-
-            var middleware = Activator.CreateInstance<T>();//todo autofac
-            _middlewares.Add(middleware);
+            this._middlewaresService.AddMiddleware<T>();
             return this;
         }
 
         public Task Run(SocketMessage data)
         {
-            var contexts = this.RunMiddlewares(data);
+            var contexts = this._middlewaresService.RunMiddlewares(data);
             try
             {
                 this.RunControllers(data.Content, contexts);
@@ -56,17 +49,6 @@ namespace Devscord.DiscordFramework
                 WorkflowException.Invoke(e, contexts);
             }
             return Task.CompletedTask;
-        }
-
-        private Contexts RunMiddlewares<T>(T data)
-        {
-            var contexts = new Contexts();
-            foreach (var middleware in _middlewares)
-            {
-                var context = ((dynamic)middleware).Process(data);
-                contexts.SetContext(context);
-            }
-            return contexts;
         }
 
         private void RunControllers(string message, Contexts contexts)
