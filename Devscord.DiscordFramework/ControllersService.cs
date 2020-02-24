@@ -45,15 +45,15 @@ namespace Devscord.DiscordFramework
 
         private void RunMethods(DiscordRequest request, Contexts contexts, IEnumerable<ControllerInfo> controllers, bool isReadAlways)
         {
-            foreach (var controller in controllers)
+            foreach (var controllerInfo in controllers)
             {
-                foreach (var method in controller.Methods)
+                foreach (var method in controllerInfo.Methods)
                 {
                     if (!isReadAlways && !IsValid(request, contexts, method))
                     {
                         continue;
                     }
-                    method.Invoke(controller, new object[] { request, contexts });
+                    method.Invoke(controllerInfo.Controller, new object[] { request, contexts });
                 }
             }
         }
