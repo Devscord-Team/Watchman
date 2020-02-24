@@ -43,6 +43,7 @@ namespace Devscord.DiscordFramework
             RunMethods(request, contexts, discordCommandMethods, false);
         }
 
+        //todo parallel and async
         private void RunMethods(DiscordRequest request, Contexts contexts, IEnumerable<ControllerInfo> controllers, bool isReadAlways)
         {
             foreach (var controllerInfo in controllers)
