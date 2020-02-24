@@ -8,6 +8,6 @@ namespace Devscord.DiscordFramework.Framework.Architecture.Middlewares
 {
     public interface IMiddleware<T> where T : IDiscordContext
     {
-        IDiscordContext Process(SocketMessage data);
+        T Process(SocketMessage data);
     }
 }
