@@ -31,9 +31,11 @@ namespace Devscord.DiscordFramework
             this._context = context;
         }
 
-        public Workflow AddMiddleware<T>() where T : IMiddleware<IDiscordContext>
+        public Workflow AddMiddleware<T, W>() 
+            where T : IMiddleware<W>
+            where W : IDiscordContext
         {
-            this._middlewaresService.AddMiddleware<T>();
+            this._middlewaresService.AddMiddleware<T, W>();
             return this;
         }
 

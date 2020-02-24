@@ -84,9 +84,9 @@ namespace Watchman.Discord
         private Workflow GetWorkflow(DiscordConfiguration configuration, IContainer context)
         {
             var workflow = new Workflow(typeof(WatchmanBot).Assembly, context);
-            workflow.AddMiddleware<ChannelMiddleware>()
-                .AddMiddleware<ServerMiddleware>()
-                .AddMiddleware<UserMiddleware>();
+            workflow.AddMiddleware<ChannelMiddleware, ChannelContext>()
+                .AddMiddleware<ServerMiddleware, DiscordServerContext>()
+                .AddMiddleware<UserMiddleware, UserContext>();
             workflow.WorkflowException += this.LogException;
             workflow.WorkflowException += this.PrintExceptionOnConsole;
 #if DEBUG

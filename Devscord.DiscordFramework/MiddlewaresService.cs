@@ -12,7 +12,9 @@ namespace Devscord.DiscordFramework
         private List<IMiddleware<IDiscordContext>> _middlewares = new List<IMiddleware<IDiscordContext>>();
         public IEnumerable<IMiddleware<IDiscordContext>> Middlewares => _middlewares;
 
-        public void AddMiddleware<T>() where T : IMiddleware<IDiscordContext>
+        public void AddMiddleware<T, W>()
+            where T : IMiddleware<W>
+            where W : IDiscordContext
         {
             if (this._middlewares.Any(x => x.GetType().FullName == typeof(T).FullName))
             {

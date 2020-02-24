@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework.Framework.Architecture.Middlewares
 {
-    public interface IMiddleware<IDiscordContext>
+    public interface IMiddleware<T> where T : IDiscordContext
     {
         IDiscordContext Process(SocketMessage data);
     }
