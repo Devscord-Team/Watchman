@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Autofac;
+using Serilog;
 
 namespace Watchman.Cqrs
 {
@@ -15,6 +16,7 @@ namespace Watchman.Cqrs
 
         public async Task ExecuteAsync<T>(T command) where T : ICommand
         {
+            Log.Debug("Command: {command}", command);
             if (command == null)
             {
                 throw new ArgumentNullException(nameof(command),

@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using Devscord.DiscordFramework.Commons.Extensions;
 using System.Linq;
 using Devscord.DiscordFramework.Commons.Exceptions;
+using Watchman.Integrations.Logging;
 
 namespace Watchman.Discord
 {
@@ -30,6 +31,9 @@ namespace Watchman.Discord
 
         public WatchmanBot(DiscordConfiguration configuration)
         {
+            SerilogInitializer.Initialize(configuration.MongoDbConnectionString);
+
+
             this._configuration = configuration;
             this._client = new DiscordSocketClient(new DiscordSocketConfig
             {
