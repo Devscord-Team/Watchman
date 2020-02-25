@@ -8,6 +8,7 @@ using Serilog;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework
 {
@@ -23,14 +24,6 @@ namespace Devscord.DiscordFramework
             this._assembly = assembly;
         }
 
-        private void LoadControllers()
-        {
-            var controllers = _assembly.GetTypesByInterface<IController>()
-                .Select(x => (IController)_context.Resolve(x))
-                .Select(x => new ControllerInfo(x));
-            this._controllersContainer = new ControllersContainer(controllers);
-        }
-
         public void Run(DiscordRequest request, Contexts contexts)
         {
             if(this._controllersContainer == null)
@@ -38,19 +31,26 @@ namespace Devscord.DiscordFramework
                 this.LoadControllers();
             }
             var readAlwaysMethods = this._controllersContainer.WithReadAlways;
-            RunMethods(request, contexts, readAlwaysMethods, true);
+            Task.Run(() => RunMethods(request, contexts, readAlwaysMethods, true));
             if(!request.IsCommandForBot)
             {
                 var discordCommandMethods = this._controllersContainer.WithDiscordCommand;
                 RunMethods(request, contexts, discordCommandMethods, false);
             }
-            
         }
 
-        //todo parallel and async
+        private void LoadControllers()
+        {
+            var controllers = _assembly.GetTypesByInterface<IController>()
+                .Select(x => (IController)_context.Resolve(x))
+                .Select(x => new ControllerInfo(x))
+                .ToList();
+            this._controllersContainer = new ControllersContainer(controllers);
+        }
+
         private void RunMethods(DiscordRequest request, Contexts contexts, IEnumerable<ControllerInfo> controllers, bool isReadAlways)
         {
-            foreach (var controllerInfo in controllers)
+            Parallel.ForEach(controllers, controllerInfo =>
             {
                 foreach (var method in controllerInfo.Methods)
                 {
@@ -61,7 +61,7 @@ namespace Devscord.DiscordFramework
                     Log.Information("Invoke in controller {controller} method {method}", nameof(controllerInfo.Controller), method.Name);
                     method.Invoke(controllerInfo.Controller, new object[] { request, contexts });
                 }
-            }
+            });
         }
 
         private bool IsValid(DiscordRequest request, Contexts contexts, MethodInfo method)
@@ -88,6 +88,5 @@ namespace Devscord.DiscordFramework
                 throw new NotAdminPermissionsException();
             }
         }
-
     }
 }

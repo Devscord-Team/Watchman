@@ -32,9 +32,6 @@ namespace Watchman.Discord
 
         public WatchmanBot(DiscordConfiguration configuration)
         {
-            
-
-
             this._configuration = configuration;
             this._client = new DiscordSocketClient(new DiscordSocketConfig
             {
@@ -52,7 +49,7 @@ namespace Watchman.Discord
             MongoConfiguration.Initialize();
             ServerInitializer.Initialize(_client, _container.Resolve<MessagesServiceFactory>());
 
-            DefaultHelpInit();
+            _ = Task.Run(DefaultHelpInit);
             
             await _client.LoginAsync(TokenType.Bot, this._configuration.Token);
             await _client.StartAsync();
@@ -62,12 +59,11 @@ namespace Watchman.Discord
             await Task.Delay(-1);
         }
 
-        private Task DefaultHelpInit()
+        private void DefaultHelpInit()
         {
             var dataCollector = _container.Resolve<HelpDataCollectorService>();
             var helpService = _container.Resolve<HelpDBGeneratorService>();
             helpService.FillDatabase(dataCollector.GetCommandsInfo(typeof(WatchmanBot).Assembly));
-            return Task.CompletedTask;
         }
 
         private async Task UnmuteUsers()

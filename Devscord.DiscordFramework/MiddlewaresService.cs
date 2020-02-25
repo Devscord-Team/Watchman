@@ -10,7 +10,7 @@ namespace Devscord.DiscordFramework
     internal class MiddlewaresService
     {
         // dynamic = IMiddleware<T> where T : IDiscordContext
-        private List<dynamic> _middlewares = new List<dynamic>();
+        private readonly List<dynamic> _middlewares = new List<dynamic>();
         public IEnumerable<dynamic> Middlewares => _middlewares;
 
         public void AddMiddleware<T, W>()
