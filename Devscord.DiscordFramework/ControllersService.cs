@@ -5,6 +5,7 @@ using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Serilog;
+using Serilog.Context;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,19 +28,25 @@ namespace Devscord.DiscordFramework
 
         public void Run(DiscordRequest request, Contexts contexts)
         {
-            Log.ForContext("MessageId", Guid.NewGuid());
-            Log.ForContext("Request", request);
-            Log.ForContext("Contexts", contexts);
             if(this._controllersContainer == null)
             {
                 this.LoadControllers();
             }
-            var readAlwaysMethods = this._controllersContainer.WithReadAlways;
-            RunMethods(request, contexts, readAlwaysMethods, true);
-            if(request.IsCommandForBot)
+            using (LogContext.PushProperty("MessageId", Guid.NewGuid()))
             {
-                var discordCommandMethods = this._controllersContainer.WithDiscordCommand;
-                RunMethods(request, contexts, discordCommandMethods, false);
+                using (LogContext.PushProperty("Request", request))
+                {
+                    using (LogContext.PushProperty("Contexts", contexts))
+                    {
+                        var readAlwaysMethods = this._controllersContainer.WithReadAlways;
+                        Task.Run(() => RunMethods(request, contexts, readAlwaysMethods, true));
+                        if (request.IsCommandForBot)
+                        {
+                            var discordCommandMethods = this._controllersContainer.WithDiscordCommand;
+                            Task.Run(() => RunMethods(request, contexts, discordCommandMethods, false));
+                        }
+                    }
+                }
             }
         }
 
@@ -54,18 +61,25 @@ namespace Devscord.DiscordFramework
 
         private void RunMethods(DiscordRequest request, Contexts contexts, IEnumerable<ControllerInfo> controllers, bool isReadAlways)
         {
-            foreach (var controllerInfo in controllers)
+            Parallel.ForEach(controllers, controllerInfo => 
             {
-                foreach (var method in controllerInfo.Methods)
+                using (LogContext.PushProperty("Controller", controllerInfo.Controller.GetType().Name))
                 {
-                    if (!isReadAlways && (!IsValid(request, contexts, method) || !IsMatchedCommand(method.GetAttributeInstances<DiscordCommand>(), request)))
+                    Parallel.ForEach(controllerInfo.Methods, method =>
                     {
-                        continue;
-                    }
-                    Log.Information("Invoke in controller {controller} method {method}", controllerInfo.Controller.GetType().Name, method.Name);
-                    method.Invoke(controllerInfo.Controller, new object[] { request, contexts });
+                        if (!isReadAlways && (!IsValid(request, contexts, method) || !IsMatchedCommand(method.GetAttributeInstances<DiscordCommand>(), request)))
+                        {
+                            return;
+                        }
+                        Log.Information("Invoke in controller {controller} method {method}", controllerInfo.Controller.GetType().Name, method.Name);
+
+                        using (LogContext.PushProperty("Method", method.Name))
+                        {
+                            method.Invoke(controllerInfo.Controller, new object[] { request, contexts });
+                        }
+                    });
                 }
-            }
+            });
         }
 
         private bool IsValid(DiscordRequest request, Contexts contexts, MethodInfo method)

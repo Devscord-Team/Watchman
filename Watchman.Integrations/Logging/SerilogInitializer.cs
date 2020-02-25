@@ -25,11 +25,16 @@ namespace Watchman.Integrations.Logging
 
             var formatter = new CompactJsonFormatter(new Serilog.Formatting.Json.JsonValueFormatter());
             var logger = new LoggerConfiguration()
+                .Enrich.FromLogContext()
+                .Enrich.WithThreadId()
+                .Enrich.WithMachineName()
+                .Enrich.WithEnvironmentUserName()
                 .WriteTo.RollingFile(formatter, "logs/log-{Date}.json", buffered: true)
                 .WriteTo.MongoDB(mongoDatabase,
                     restrictedToMinimumLevel: LogEventLevel.Verbose,
-                    collectionName: "Logs",
-                    mongoDBJsonFormatter: new MongoDBJsonFormatter(omitEnclosingObject: false, renderMessage: true))
+                    collectionName: "Logs"
+                    //mongoDBJsonFormatter: new MongoDBJsonFormatter())
+                    )
                 .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Verbose)
                 .WriteTo.Debug(restrictedToMinimumLevel: LogEventLevel.Verbose)
                 .WriteTo.Discord(formatter, discordLog)
