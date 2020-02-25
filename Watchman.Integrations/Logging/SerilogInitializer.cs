@@ -29,12 +29,10 @@ namespace Watchman.Integrations.Logging
                 .Enrich.WithThreadId()
                 .Enrich.WithMachineName()
                 .Enrich.WithEnvironmentUserName()
-                .WriteTo.RollingFile(formatter, "logs/log-{Date}.json", buffered: true)
-                .WriteTo.MongoDB(mongoDatabase,
+                .WriteTo.RollingFile(formatter, "logs/log-{Date}.json", retainedFileCountLimit: 7)
+                .WriteTo.MongoDBCapped(mongoDatabase,
                     restrictedToMinimumLevel: LogEventLevel.Verbose,
-                    collectionName: "Logs"
-                    //mongoDBJsonFormatter: new MongoDBJsonFormatter())
-                    )
+                    collectionName: "Logs", cappedMaxSizeMb: 200)
                 .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Verbose)
                 .WriteTo.Debug(restrictedToMinimumLevel: LogEventLevel.Verbose)
                 .WriteTo.Discord(formatter, discordLog)
