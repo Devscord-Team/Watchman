@@ -21,7 +21,7 @@ namespace Watchman.Integrations.Logging
 
             var formatter = new CompactJsonFormatter();
             Log.Logger = new LoggerConfiguration()
-                .WriteTo.RollingFile(formatter, "log-{Date}.txt", buffered: true)
+                .WriteTo.RollingFile(formatter, "logs/log-{Date}.txt", buffered: true)
                 .WriteTo.MongoDBCapped(databaseUrl: mongoDbConnectionString,
                     restrictedToMinimumLevel: LogEventLevel.Debug,
                     period: TimeSpan.Zero,

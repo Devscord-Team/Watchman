@@ -6,6 +6,7 @@ using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Framework.Commands.Responses.Resources;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
+using Serilog;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Initialization.Services;
 using Watchman.DomainModel.Responses.Commands;
@@ -34,7 +35,9 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
         public void Init(DiscordRequest request, Contexts contexts)
         {
             _ = ResponsesInit();
+            Log.Debug("Responses initialized");
             _ = MuteRoleInit(contexts);
+            Log.Debug("Mute role initialized");
         }
 
         private async Task ResponsesInit()

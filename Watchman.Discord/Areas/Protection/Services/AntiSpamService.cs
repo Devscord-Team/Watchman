@@ -1,6 +1,7 @@
 ﻿using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,6 +45,11 @@ namespace Watchman.Discord.Areas.Protection.Services
 
         public void SetPunishment(Contexts contexts, MessagesService messagesService, ProtectionPunishment punishment)
         {
+            if(punishment.Option != ProtectionPunishmentOption.Clear && punishment.Option != ProtectionPunishmentOption.Nothing)
+            {
+                Log.Information("Spam recognized! User: {user} on channel: {channel} server: {server}",
+                contexts.User.Name, contexts.Channel.Name, contexts.Server.Name);
+            }
             switch (punishment.Option)
             {
                 case ProtectionPunishmentOption.Clear:

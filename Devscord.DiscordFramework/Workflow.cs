@@ -7,6 +7,7 @@ using Devscord.DiscordFramework.Framework.Commands.Parsing;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Discord.WebSocket;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,11 +34,13 @@ namespace Devscord.DiscordFramework
             where W : IDiscordContext
         {
             this._middlewaresService.AddMiddleware<T, W>();
+            Log.Debug("Added Middleware: {middlewareName} with DiscordContext: {contextName}", nameof(T), nameof(W));
             return this;
         }
 
         public Task Run(SocketMessage socketMessage)
         {
+            Log.Information("Processing message: {content} from user {user} started.", socketMessage.Content, socketMessage.Author);
             var request = _commandParser.Parse(socketMessage.Content);
             var contexts = this._middlewaresService.RunMiddlewares(socketMessage);
             try
