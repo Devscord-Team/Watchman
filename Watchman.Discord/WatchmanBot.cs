@@ -105,7 +105,12 @@ namespace Watchman.Discord
             {
                 try
                 {
+#if DEBUG
                     this._workflow.LogOnChannel(message, 681974777686261802);
+#else
+                    this._workflow.LogOnChannel(message, 681974777686261802);
+                    this._workflow.LogOnChannel(message, 681990585837813796);
+#endif
                 }
                 catch (Exception ex)
                 {
