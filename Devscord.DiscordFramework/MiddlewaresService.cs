@@ -1,0 +1,44 @@
+﻿using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
+using Devscord.DiscordFramework.Middlewares.Contexts;
+using Discord.WebSocket;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Devscord.DiscordFramework
+{
+    internal class MiddlewaresService
+    {
+        // dynamic = IMiddleware<T> where T : IDiscordContext
+        private List<dynamic> _middlewares = new List<dynamic>();
+        public IEnumerable<dynamic> Middlewares => _middlewares;
+
+        public void AddMiddleware<T, W>()
+            where T : IMiddleware<W>
+            where W : IDiscordContext
+        {
+            if (this._middlewares.Any(x => x.GetType().FullName == typeof(T).FullName))
+            {
+                return;
+            }
+            var instance = Activator.CreateInstance<T>();
+            this._middlewares.Add(instance);
+        }
+
+        public Contexts RunMiddlewares(SocketMessage socketMessage)
+        {
+            var contextsInstance = new Contexts();
+            var discordContexts = this.GetMiddlewaresOutput(socketMessage);
+            foreach (var discordContext in discordContexts)
+            {
+                contextsInstance.SetContext(discordContext);
+            }
+            return contextsInstance;
+        }
+
+        private IEnumerable<IDiscordContext> GetMiddlewaresOutput(SocketMessage socketMessage)
+        {
+            return this._middlewares.Select(x => (IDiscordContext) x.Process(socketMessage));
+        }
+    }
+}

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -36,6 +37,14 @@ namespace Devscord.DiscordFramework.Commons.Extensions
         public static IEnumerable<MethodInfo> FilterMethodsByAttribute<T>(this IEnumerable<MethodInfo> methods)
         {
             return methods.Where(x => x.CustomAttributes.Any(a => a.AttributeType.FullName == typeof(T).FullName));
+        }
+
+        public static IEnumerable<T> GetAttributeInstances<T>(this MethodInfo method) where T : Attribute
+        {
+            var commandArguments = method.GetCustomAttributesData()
+                .Where(x => x.AttributeType.FullName == typeof(T).FullName)
+                .SelectMany(x => x.ConstructorArguments, (x, arg) => arg.Value).ToArray();
+            return commandArguments.Select(x => (T)Activator.CreateInstance(typeof(T), x));
         }
     }
 }
