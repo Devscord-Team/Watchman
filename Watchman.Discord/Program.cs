@@ -1,13 +1,14 @@
 ﻿
 using Newtonsoft.Json;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Watchman.Discord
 {
     
     class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
 #if DEBUG
             var configPath = "config.json";
@@ -15,8 +16,9 @@ namespace Watchman.Discord
             var configPath = "config-prod.json";
 #endif
             var configuration = JsonConvert.DeserializeObject<DiscordConfiguration>(File.ReadAllText(configPath));
+            
             var watchman = new WatchmanBot(configuration);
-            watchman.Start().GetAwaiter().GetResult();
+            await watchman.Start();
         }
     }
 }
