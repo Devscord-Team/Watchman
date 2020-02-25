@@ -5,6 +5,7 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
 using Discord.WebSocket;
 using Newtonsoft.Json;
+using Serilog;
 using System.Collections.Generic;
 using System.Linq;
 using Watchman.Cqrs;
@@ -52,7 +53,7 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
             var period = _reportsService.SelectPeriod(request.OriginalMessage); //TODO use DiscordRequest properties
             var messages = this.queryBus.Execute(new GetMessagesQuery()).Messages;
             var report = _reportsService.CreateReport(messages, period, contexts.Server);
-
+            Log.Information("Generated statistics for time range {start} {end}", report.TimeRange.Start, report.TimeRange.End);
             var messagesService = messagesServiceFactory.Create(contexts);
 #if DEBUG
             //TODO it should be inside messages service... or responses service

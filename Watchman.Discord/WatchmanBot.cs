@@ -18,6 +18,9 @@ using System.Collections.Generic;
 using Devscord.DiscordFramework.Commons.Extensions;
 using System.Linq;
 using Devscord.DiscordFramework.Commons.Exceptions;
+using Watchman.Integrations.Logging;
+using MongoDB.Driver;
+using Serilog;
 
 namespace Watchman.Discord
 {
@@ -38,6 +41,8 @@ namespace Watchman.Discord
             this._client.MessageReceived += this.MessageReceived;
 
             this._container = GetAutofacContainer(configuration);
+            Log.Logger = SerilogInitializer.Initialize(this._container.Resolve<IMongoDatabase>(), this.LogOnChannel);
+            Log.Information("Bot started...");
             this._workflow = GetWorkflow(configuration, _container);
         }
 
@@ -46,7 +51,7 @@ namespace Watchman.Discord
             MongoConfiguration.Initialize();
             ServerInitializer.Initialize(_client, _container.Resolve<MessagesServiceFactory>());
 
-            await DefaultHelpInit();
+            _ = Task.Run(DefaultHelpInit);
             
             await _client.LoginAsync(TokenType.Bot, this._configuration.Token);
             await _client.StartAsync();
@@ -56,12 +61,11 @@ namespace Watchman.Discord
             await Task.Delay(-1);
         }
 
-        private Task DefaultHelpInit()
+        private void DefaultHelpInit()
         {
             var dataCollector = _container.Resolve<HelpDataCollectorService>();
             var helpService = _container.Resolve<HelpDBGeneratorService>();
             helpService.FillDatabase(dataCollector.GetCommandsInfo(typeof(WatchmanBot).Assembly));
-            return Task.CompletedTask;
         }
 
         private async Task UnmuteUsers()
@@ -93,6 +97,26 @@ namespace Watchman.Discord
             workflow.WorkflowException += this.PrintDebugExceptionInfo;
 #endif
             return workflow;
+        }
+
+        private void LogOnChannel(string message)
+        {
+            if(this._workflow != null)
+            {
+                try
+                {
+#if DEBUG
+                    this._workflow.LogOnChannel(message, 681974777686261802);
+#else
+                    this._workflow.LogOnChannel(message, 681974777686261802);
+                    this._workflow.LogOnChannel(message, 681990585837813796);
+#endif
+                }
+                catch (Exception ex)
+                {
+                    Log.Warning(ex, "Cannot find logs channel");
+                }
+            }
         }
 
         private void LogException(Exception e, Contexts contexts)
@@ -142,16 +166,7 @@ namespace Watchman.Discord
 
         private StringBuilder BuildExceptionMessage(Exception e)
         {
-            var lines = new Dictionary<string, string>()
-            {
-                { "Message", e.Message },
-                { "InnerException message", e.InnerException?.Message },
-                { "InnerException2 message", e.InnerException?.InnerException?.Message }
-            };
-
-            var exceptionMessageBuilder = new StringBuilder();
-            exceptionMessageBuilder.PrintManyLines(lines);
-            return exceptionMessageBuilder;
+            return new StringBuilder($"{e.Message}\r\n\r\n{e.InnerException}\r\n\r\n{e.StackTrace}").FormatMessageIntoBlock();
         }
 
         private IContainer GetAutofacContainer(DiscordConfiguration configuration)

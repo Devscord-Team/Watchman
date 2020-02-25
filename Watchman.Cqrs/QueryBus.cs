@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Core;
+using Serilog;
 
 namespace Watchman.Cqrs
 {
@@ -15,6 +16,7 @@ namespace Watchman.Cqrs
 
         public W Execute<W>(IQuery<W> query) where W : IQueryResult
         {
+            Log.Debug("Query: {query}", query);
             if (query == null)
             {
                 throw new ArgumentNullException(nameof(query),

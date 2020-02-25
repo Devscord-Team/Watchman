@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
+using Serilog;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Users;
 using Watchman.DomainModel.Users.Commands;
@@ -56,6 +57,7 @@ namespace Watchman.Discord.Areas.Protection.Services
         private async Task AssignMuteRoleAsync(UserRole muteRole, UserContext userToMute, DiscordServerContext server)
         {
             await _usersService.AddRole(muteRole, userToMute, server);
+            Log.Information("User {user} has been muted on server {server}", userToMute.ToString(), server.Name);
         }
         private MuteEvent? GetNotUnmutedEvent(IEnumerable<MuteEvent> userMuteEvents)
         {
@@ -67,6 +69,7 @@ namespace Watchman.Discord.Areas.Protection.Services
             var muteRole = GetMuteRole(serverContext);
             await RemoveMuteRoleAsync(muteRole, mutedUser, serverContext);
             await MarkAsUnmuted(muteEvent);
+            Log.Information("User {user} has been unmuted on server {server}", mutedUser.ToString(), serverContext.Name);
         }
 
         private async Task RemoveMuteRoleAsync(UserRole muteRole, UserContext userToUnmute, DiscordServerContext server)

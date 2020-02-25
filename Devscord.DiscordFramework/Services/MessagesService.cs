@@ -3,6 +3,7 @@ using Devscord.DiscordFramework.Framework;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Discord.WebSocket;
+using Serilog;
 using System;
 using System.Threading.Tasks;
 
@@ -28,6 +29,7 @@ namespace Devscord.DiscordFramework.Services
             foreach (var mess in _splittingService.SplitMessage(message, messageType))
             {
                 channel.SendMessageAsync(mess);
+                Log.Information("Bot sent message {splitted} {message}", mess, messageType != MessageType.NormalText ? "splitted" : string.Empty);
             }
 
             return Task.CompletedTask;

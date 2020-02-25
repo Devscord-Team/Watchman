@@ -1,7 +1,5 @@
-﻿using Autofac;
-using Devscord.DiscordFramework.Commons.Extensions;
+﻿using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
-
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,7 +10,7 @@ namespace Devscord.DiscordFramework
         public IReadOnlyList<ControllerInfo> WithReadAlways { get; private set; }
         public IReadOnlyList<ControllerInfo> WithDiscordCommand { get; private set; }
 
-        public ControllersContainer(IEnumerable<ControllerInfo> controllers)
+        public ControllersContainer(IReadOnlyList<ControllerInfo> controllers)
         {
             this.WithReadAlways = controllers
                 .Select(x => new ControllerInfo(x.Controller, x.Methods.Where(m => m.HasAttribute<ReadAlways>())))
