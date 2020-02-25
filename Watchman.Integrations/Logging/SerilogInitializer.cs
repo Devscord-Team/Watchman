@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using MongoDB.Driver;
+using Serilog;
 using Serilog.Events;
 using Serilog.Formatting.Compact;
 using Serilog.Sinks.MongoDB;
@@ -12,7 +13,7 @@ namespace Watchman.Integrations.Logging
     {
         private static bool initialized;
 
-        public static void Initialize(string mongoDbConnectionString)
+        public static void Initialize(IMongoDatabase mongoDatabase)
         {
             if(initialized)
             {
@@ -22,12 +23,12 @@ namespace Watchman.Integrations.Logging
             var formatter = new CompactJsonFormatter();
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.RollingFile(formatter, "logs/log-{Date}.txt", buffered: true)
-                .WriteTo.MongoDBCapped(databaseUrl: mongoDbConnectionString,
+                .WriteTo.MongoDBCapped(mongoDatabase,
                     restrictedToMinimumLevel: LogEventLevel.Debug,
                     period: TimeSpan.Zero,
                     collectionName: "logs",
-                    cappedMaxSizeMb: 150,
-                    cappedMaxDocuments: 50000,
+                    cappedMaxSizeMb: 100,
+                    cappedMaxDocuments: 5000,
                     mongoDBJsonFormatter: new MongoDBJsonFormatter(omitEnclosingObject: false, renderMessage: true))
                 .WriteTo.Console(formatter)
                 .CreateLogger();

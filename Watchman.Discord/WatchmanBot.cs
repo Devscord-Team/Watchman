@@ -19,6 +19,7 @@ using Devscord.DiscordFramework.Commons.Extensions;
 using System.Linq;
 using Devscord.DiscordFramework.Commons.Exceptions;
 using Watchman.Integrations.Logging;
+using MongoDB.Driver;
 
 namespace Watchman.Discord
 {
@@ -31,7 +32,7 @@ namespace Watchman.Discord
 
         public WatchmanBot(DiscordConfiguration configuration)
         {
-            SerilogInitializer.Initialize(configuration.MongoDbConnectionString);
+            
 
 
             this._configuration = configuration;
@@ -42,6 +43,7 @@ namespace Watchman.Discord
             this._client.MessageReceived += this.MessageReceived;
 
             this._container = GetAutofacContainer(configuration);
+            SerilogInitializer.Initialize(this._container.Resolve<IMongoDatabase>());
             this._workflow = GetWorkflow(configuration, _container);
         }
 
@@ -50,7 +52,7 @@ namespace Watchman.Discord
             MongoConfiguration.Initialize();
             ServerInitializer.Initialize(_client, _container.Resolve<MessagesServiceFactory>());
 
-            await DefaultHelpInit();
+            DefaultHelpInit();
             
             await _client.LoginAsync(TokenType.Bot, this._configuration.Token);
             await _client.StartAsync();
