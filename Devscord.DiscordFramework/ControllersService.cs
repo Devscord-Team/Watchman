@@ -58,7 +58,7 @@ namespace Devscord.DiscordFramework
                     {
                         continue;
                     }
-                    Log.Information("Invoke in controller {controller} method {method}", nameof(controllerInfo.Controller), method.Name);
+                    Log.Information("Invoke in controller {controller} method {method}", controllerInfo.Controller.GetType().Name, method.Name);
                     method.Invoke(controllerInfo.Controller, new object[] { request, contexts });
                 }
             });
@@ -68,7 +68,7 @@ namespace Devscord.DiscordFramework
         {
             if (!IsMatchedCommand(method.GetAttributeInstances<DiscordCommand>(), request))
             {
-                Log.Warning("Command {command} is parsed correctly, but not recognized as a command", request.OriginalMessage);
+                Log.Warning("Command {command} is not recognized as a command", request.OriginalMessage);
                 return false;
             }
             CheckPermissions(method, contexts);

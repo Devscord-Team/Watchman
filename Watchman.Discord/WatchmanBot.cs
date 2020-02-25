@@ -20,6 +20,7 @@ using System.Linq;
 using Devscord.DiscordFramework.Commons.Exceptions;
 using Watchman.Integrations.Logging;
 using MongoDB.Driver;
+using Serilog;
 
 namespace Watchman.Discord
 {
@@ -40,7 +41,8 @@ namespace Watchman.Discord
             this._client.MessageReceived += this.MessageReceived;
 
             this._container = GetAutofacContainer(configuration);
-            SerilogInitializer.Initialize(this._container.Resolve<IMongoDatabase>());
+            Log.Logger = SerilogInitializer.Initialize(this._container.Resolve<IMongoDatabase>());
+            Log.Information("Bot started...");
             this._workflow = GetWorkflow(configuration, _container);
         }
 
