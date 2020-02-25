@@ -41,7 +41,7 @@ namespace Watchman.Discord
             this._client.MessageReceived += this.MessageReceived;
 
             this._container = GetAutofacContainer(configuration);
-            Log.Logger = SerilogInitializer.Initialize(this._container.Resolve<IMongoDatabase>());
+            Log.Logger = SerilogInitializer.Initialize(this._container.Resolve<IMongoDatabase>(), this.LogOnChannel);
             Log.Information("Bot started...");
             this._workflow = GetWorkflow(configuration, _container);
         }
@@ -99,6 +99,21 @@ namespace Watchman.Discord
             return workflow;
         }
 
+        private void LogOnChannel(string message)
+        {
+            if(this._workflow != null)
+            {
+                try
+                {
+                    this._workflow.LogOnChannel(message, 681974777686261802);
+                }
+                catch (Exception ex)
+                {
+                    Log.Warning(ex, "Cannot find logs channel");
+                }
+            }
+        }
+
         private void LogException(Exception e, Contexts contexts)
         {
             var messagesService = _container.Resolve<MessagesServiceFactory>().Create(contexts);
@@ -146,16 +161,7 @@ namespace Watchman.Discord
 
         private StringBuilder BuildExceptionMessage(Exception e)
         {
-            var lines = new Dictionary<string, string>()
-            {
-                { "Message", e.Message },
-                { "InnerException message", e.InnerException?.Message },
-                { "InnerException2 message", e.InnerException?.InnerException?.Message }
-            };
-
-            var exceptionMessageBuilder = new StringBuilder();
-            exceptionMessageBuilder.PrintManyLines(lines);
-            return exceptionMessageBuilder;
+            return new StringBuilder($"{e.Message}\r\n\r\n{e.InnerException}\r\n\r\n{e.StackTrace}").FormatMessageIntoBlock();
         }
 
         private IContainer GetAutofacContainer(DiscordConfiguration configuration)

@@ -5,6 +5,7 @@ using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Serilog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -26,13 +27,16 @@ namespace Devscord.DiscordFramework
 
         public void Run(DiscordRequest request, Contexts contexts)
         {
+            Log.ForContext("MessageId", Guid.NewGuid());
+            Log.ForContext("Request", request);
+            Log.ForContext("Contexts", contexts);
             if(this._controllersContainer == null)
             {
                 this.LoadControllers();
             }
             var readAlwaysMethods = this._controllersContainer.WithReadAlways;
-            Task.Run(() => RunMethods(request, contexts, readAlwaysMethods, true));
-            if(!request.IsCommandForBot)
+            RunMethods(request, contexts, readAlwaysMethods, true);
+            if(request.IsCommandForBot)
             {
                 var discordCommandMethods = this._controllersContainer.WithDiscordCommand;
                 RunMethods(request, contexts, discordCommandMethods, false);
@@ -50,27 +54,22 @@ namespace Devscord.DiscordFramework
 
         private void RunMethods(DiscordRequest request, Contexts contexts, IEnumerable<ControllerInfo> controllers, bool isReadAlways)
         {
-            Parallel.ForEach(controllers, controllerInfo =>
+            foreach (var controllerInfo in controllers)
             {
                 foreach (var method in controllerInfo.Methods)
                 {
-                    if (!isReadAlways && !IsValid(request, contexts, method))
+                    if (!isReadAlways && (!IsValid(request, contexts, method) || !IsMatchedCommand(method.GetAttributeInstances<DiscordCommand>(), request)))
                     {
                         continue;
                     }
                     Log.Information("Invoke in controller {controller} method {method}", controllerInfo.Controller.GetType().Name, method.Name);
                     method.Invoke(controllerInfo.Controller, new object[] { request, contexts });
                 }
-            });
+            }
         }
 
         private bool IsValid(DiscordRequest request, Contexts contexts, MethodInfo method)
         {
-            if (!IsMatchedCommand(method.GetAttributeInstances<DiscordCommand>(), request))
-            {
-                Log.Warning("Command {command} is not recognized as a command", request.OriginalMessage);
-                return false;
-            }
             CheckPermissions(method, contexts);
             return true;
         }
@@ -82,11 +81,12 @@ namespace Devscord.DiscordFramework
 
         private void CheckPermissions(MethodInfo method, Contexts contexts)
         {
-            Log.Information("Checking permissions for user {user}", contexts.User.ToString());
+            Log.Information("Checking permissions for user {user} for method {method}", contexts.User.ToString(), method.Name);
             if (method.HasAttribute<AdminCommand>() && !contexts.User.IsAdmin)
             {
                 throw new NotAdminPermissionsException();
             }
+            Log.Information("User {user} have permissions for method {method}", contexts.User.ToString(), method.Name);
         }
     }
 }

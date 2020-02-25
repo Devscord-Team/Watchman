@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Commons.Extensions;
+using Devscord.DiscordFramework.Framework;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Framework.Commands.Parsing;
@@ -12,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework
@@ -40,7 +42,7 @@ namespace Devscord.DiscordFramework
 
         public Task Run(SocketMessage socketMessage)
         {
-            Log.Information("Processing message: {content} from user {user} started.", socketMessage.Content, socketMessage.Author);
+            Log.Information("Processing message: {content} from user {user} started", socketMessage.Content, socketMessage.Author);
             var request = _commandParser.Parse(socketMessage.Content);
             var contexts = this._middlewaresService.RunMiddlewares(socketMessage);
             try
@@ -49,10 +51,17 @@ namespace Devscord.DiscordFramework
             }
             catch (Exception e)
             {
+                Log.Error(e, e.StackTrace);
                 WorkflowException.Invoke(e, contexts);
             }
             return Task.CompletedTask;
         }
 
+        public void LogOnChannel(string message, ulong channelId)
+        {
+            var channel = (ISocketMessageChannel)Server.GetChannel(channelId);
+            message = new StringBuilder(message).FormatMessageIntoBlock("json").ToString();
+            channel.SendMessageAsync(message);
+        }
     }
 }
