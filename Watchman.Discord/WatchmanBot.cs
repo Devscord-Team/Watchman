@@ -42,7 +42,7 @@ namespace Watchman.Discord
 
             this._container = GetAutofacContainer(configuration);
             Log.Logger = SerilogInitializer.Initialize(this._container.Resolve<IMongoDatabase>(), this.LogOnChannel);
-            Log.Information("Bot started...");
+            Log.Information("Bot created...");
             this._workflow = GetWorkflow(configuration, _container);
         }
 
@@ -56,8 +56,8 @@ namespace Watchman.Discord
             await _client.LoginAsync(TokenType.Bot, this._configuration.Token);
             await _client.StartAsync();
             _client.Ready += UnmuteUsers;
+            _client.Ready += () => Task.Run(() => Log.Information("Bot started and logged in..."));
 
-            Console.WriteLine("Started...");
             await Task.Delay(-1);
         }
 
@@ -106,7 +106,7 @@ namespace Watchman.Discord
                 try
                 {
 #if DEBUG
-                    this._workflow.LogOnChannel(message, 681974777686261802);
+                    this._workflow.LogOnChannel(message, 684119569962631249);
 #else
                     this._workflow.LogOnChannel(message, 681974777686261802);
                     this._workflow.LogOnChannel(message, 681990585837813796);
