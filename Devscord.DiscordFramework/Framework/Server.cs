@@ -119,22 +119,28 @@ namespace Devscord.DiscordFramework.Framework
             return Task.FromResult(userRole);
         }
 
-        public static Task SetPermissions(ChannelContext channel, ChangedPermissions permissions, UserRole muteRole)
+        public static async Task SetPermissions(ChannelContext channel, DiscordServerContext server, ChangedPermissions permissions, UserRole muteRole)
         {
+            await Task.Delay(1000);
+
             var channelSocket = (IGuildChannel)GetChannel(channel.Id);
             var channelPermissions = new OverwritePermissions(permissions.AllowPermissions.GetRawValue(), permissions.DenyPermissions.GetRawValue());
+            var createdRole = Server.GetSocketRoles(channelSocket.GuildId).FirstOrDefault(x => x.Id == muteRole.Id);
 
-            Task SetPerms(SocketRole createdRole)
+            await channelSocket.AddPermissionOverwriteAsync(createdRole, channelPermissions);
+        }
+
+        public static async Task SetPermissions(IEnumerable<ChannelContext> channels, DiscordServerContext server, ChangedPermissions permissions, UserRole muteRole)
+        {
+            await Task.Delay(1000);
+            var createdRole = Server.GetSocketRoles(server.Id).FirstOrDefault(x => x.Id == muteRole.Id);
+            var channelPermissions = new OverwritePermissions(permissions.AllowPermissions.GetRawValue(), permissions.DenyPermissions.GetRawValue());
+
+            Parallel.ForEach(channels, c =>
             {
-                if (createdRole.Id != muteRole.Id)
-                    return Task.CompletedTask;
-
-                _client.RoleCreated -= SetPerms;
-                return channelSocket.AddPermissionOverwriteAsync(createdRole, channelPermissions);
-            }
-            _client.RoleCreated += SetPerms;
-
-            return Task.CompletedTask;
+                var channelSocket = (IGuildChannel)GetChannel(c.Id);
+                channelSocket.AddPermissionOverwriteAsync(createdRole, channelPermissions);
+            });
         }
 
         public static Task<IEnumerable<DiscordServerContext>> GetDiscordServers()
