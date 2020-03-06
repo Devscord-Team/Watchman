@@ -1,34 +1,25 @@
-﻿using System;
-
-namespace Watchman.DomainModel.Users
+﻿namespace Watchman.DomainModel.Users
 {
     public class SpamDetectingStrategy
     {
-        public ProtectionPunishment SelectPunishment(bool isAlerted, int messagesInLast10Seconds, int mutesInPast)
+        public ProtectionPunishment SelectPunishment(int warnsInLastFewMinutes, int warnsInLastFewHours, int messagesInLastFewSeconds, int messagesInLastFewMinutes)
         {
-            if (!isAlerted && messagesInLast10Seconds >= 5)
+            if (messagesInLastFewSeconds >= 5 && messagesInLastFewMinutes >= 50)
             {
-                return new ProtectionPunishment(ProtectionPunishmentOption.Alert);
-            }
-
-            if (isAlerted && messagesInLast10Seconds >= 10)
-            {
-                if (mutesInPast > 4)
+                if (warnsInLastFewHours == 0)
                 {
-                    return new ProtectionPunishment(ProtectionPunishmentOption.Ban);
+                    return new ProtectionPunishment(ProtectionPunishmentOption.Warn);
                 }
 
-                return new ProtectionPunishment(ProtectionPunishmentOption.Mute,
-                    TimeSpan.FromMinutes(15 * (mutesInPast + 1)));
-            }
+                if (warnsInLastFewMinutes > 1 && warnsInLastFewHours > 3)
+                {
+                    return new ProtectionPunishment(ProtectionPunishmentOption.Mute);
+                }
 
-            if (isAlerted && messagesInLast10Seconds == 0)
-            {
-                return new ProtectionPunishment(ProtectionPunishmentOption.Clear);
+                return new ProtectionPunishment(ProtectionPunishmentOption.LongMute);
             }
 
             return new ProtectionPunishment(ProtectionPunishmentOption.Nothing);
         }
-
     }
 }

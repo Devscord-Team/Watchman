@@ -35,8 +35,13 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         public static string SpamAlertRecognized(this ResponsesService responsesService, Contexts contexts)
         {
             return responsesService.ProcessResponse("SpamAlertRecognized", contexts);
-        }        
-        
+        }
+
+        public static string SpamAlertUserIsMutedForLong(this ResponsesService responsesService, Contexts contexts)
+        {
+            return responsesService.ProcessResponse("SpamAlertUserIsMutedForLong", contexts);
+        }
+
         public static string SpamAlertUserIsMuted(this ResponsesService responsesService, Contexts contexts)
         {
             return responsesService.ProcessResponse("SpamAlertUserIsMuted", contexts);
