@@ -49,15 +49,18 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         //[IgnoreForHelp] todo:
         [DiscordCommand("unmute")]
         [AdminCommand]
-        public void UnmuteUser(DiscordRequest request, Contexts contexts)
+        public async void UnmuteUserAsync(DiscordRequest request, Contexts contexts)
         {
             var requestParser = new MuteRequestParser(request, _usersService, contexts);
             var userToUnmute = requestParser.GetUser();
 
-            _muteService.UnmuteIfNeeded(contexts.Server, userToUnmute).Wait();
+            var wasMuted = await _muteService.UnmuteIfNeeded(contexts.Server, userToUnmute);
 
-            var messagesService = _messagesServiceFactory.Create(contexts);
-            messagesService.SendResponse(x => x.UnmutedUser(userToUnmute), contexts);
+            if (wasMuted)
+            {
+                var messagesService = _messagesServiceFactory.Create(contexts);
+                await messagesService.SendResponse(x => x.UnmutedUser(userToUnmute), contexts);
+            }
         }
     }
 }
