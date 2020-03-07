@@ -1,4 +1,5 @@
-﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+﻿using System.Collections.Generic;
+using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
@@ -8,6 +9,7 @@ using Devscord.DiscordFramework.Commons.Extensions;
 using Watchman.Cqrs;
 using Watchman.DomainModel.DiscordServer.Queries;
 using Watchman.Discord.Areas.Users.Services;
+using Watchman.DomainModel.DiscordServer;
 
 namespace Watchman.Discord.Areas.Users.Controllers
 {
@@ -60,5 +62,22 @@ namespace Watchman.Discord.Areas.Users.Controllers
             output.PrintManyLines("Dostępne role:", safeRoles.Select(x => x.Name).ToArray(), true);
             messageService.SendMessage(output.ToString());
         }
+
+#if DEBUG
+        [DiscordCommand("admin")]
+        public void AddOrRemoveAdmin(DiscordRequest request, Contexts contexts)
+        {
+            var roles = new List<Role> {new Role("admin")};
+            var messagesService = messagesServiceFactory.Create(contexts);
+            if (contexts.User.IsAdmin)
+            {
+                rolesService.DeleteRoleFromUser(roles, messagesService, contexts, "admin");
+            }
+            else
+            {
+                rolesService.AddRoleToUser(roles, messagesService, contexts, "admin");
+            }
+        }
+#endif
     }
 }

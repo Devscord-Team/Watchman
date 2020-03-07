@@ -5,6 +5,7 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Common.Models;
 using Watchman.DomainModel.Users;
@@ -17,6 +18,7 @@ namespace Watchman.Discord.Areas.Protection.Services
         private const int SHORTER_TIME = 10;
         private const int WARNS_SHORT_EXPIRATION = 600;
         private const int WARNS_LONG_EXPIRATION = 3600 * 6;
+        private const int MUTES_EXPIRATION = 3600 * 12;
         private const int FIRST_MUTE_LENGTH = 600;
         private const int SECOND_MUTE_LENGTH = 3600 * 24 * 7;
 
@@ -31,6 +33,7 @@ namespace Watchman.Discord.Areas.Protection.Services
 
         private readonly List<(ulong AuthorId, DateTime SentAt)> _lastMessages = new List<(ulong, DateTime)>();
         private readonly List<(ulong AuthorId, DateTime WarnedAt)> _warns = new List<(ulong, DateTime)>();
+        private readonly List<(ulong AuthorId, DateTime MutedAt)> _mutes = new List<(ulong, DateTime)>();
 
         public void AddUserMessage(Contexts contexts)
         {
@@ -64,6 +67,12 @@ namespace Watchman.Discord.Areas.Protection.Services
             return _warns.Count(x => x.AuthorId == userId);
         }
 
+        public int CountUserMutesInLongTime(ulong userId)
+        {
+            ClearOldMutes();
+            return _mutes.Count(x => x.AuthorId == userId);
+        }
+
         public void SetPunishment(Contexts contexts, ProtectionPunishment punishment)
         {
             if (punishment.Option == ProtectionPunishmentOption.Nothing)
@@ -83,12 +92,13 @@ namespace Watchman.Discord.Areas.Protection.Services
                     break;
 
                 case ProtectionPunishmentOption.Mute:
-                    MuteUserForSpam(contexts, FIRST_MUTE_LENGTH);
+                    _mutes.Add((contexts.User.Id, DateTime.UtcNow));
+                    MuteUserForSpam(contexts, FIRST_MUTE_LENGTH).Wait();
                     messagesService.SendResponse(x => x.SpamAlertUserIsMuted(contexts), contexts);
                     break;
                     
                 case ProtectionPunishmentOption.LongMute:
-                    MuteUserForSpam(contexts, SECOND_MUTE_LENGTH);
+                    MuteUserForSpam(contexts, SECOND_MUTE_LENGTH).Wait();
                     messagesService.SendResponse(x => x.SpamAlertUserIsMutedForLong(contexts), contexts);
                     break;
             }
@@ -104,11 +114,17 @@ namespace Watchman.Discord.Areas.Protection.Services
             _warns.RemoveAll(x => x.WarnedAt < DateTime.UtcNow.AddSeconds(-WARNS_LONG_EXPIRATION));
         }
 
-        private void MuteUserForSpam(Contexts contexts, int lengthInSeconds)
+        private void ClearOldMutes()
+        {
+            _mutes.RemoveAll(x => x.MutedAt < DateTime.UtcNow.AddSeconds(-MUTES_EXPIRATION));
+        }
+
+        private async Task MuteUserForSpam(Contexts contexts, int lengthInSeconds)
         {
             var timeRange = new TimeRange(DateTime.UtcNow, DateTime.UtcNow.AddSeconds(lengthInSeconds));
             var muteEvent = new MuteEvent(contexts.User.Id, timeRange, "Spam detected (by bot)", contexts.Server.Id);
-            _ = _muteService.MuteUserOrOverwrite(contexts, muteEvent, contexts.User);
+            await _muteService.MuteUserOrOverwrite(contexts, muteEvent, contexts.User);
+            _muteService.UnmuteInFuture(contexts, muteEvent, contexts.User);
         }
     }
 }
