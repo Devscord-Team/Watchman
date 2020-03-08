@@ -10,11 +10,13 @@ namespace Watchman.Discord.Areas.Protection.Controllers
     public class AntiSpamController : IController
     {
         private readonly AntiSpamService _antiSpamService;
+        private readonly UserMessagesCountService _userMessagesCountService;
         private readonly SpamDetectingStrategy _strategy;
 
-        public AntiSpamController(AntiSpamService antiSpamService)
+        public AntiSpamController(AntiSpamService antiSpamService, UserMessagesCountService userMessagesCountService)
         {
             this._antiSpamService = antiSpamService;
+            _userMessagesCountService = userMessagesCountService;
             this._strategy = new SpamDetectingStrategy();
         }
 
@@ -27,11 +29,12 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             var userWarnsInLastFewMinutes = _antiSpamService.CountUserWarnsInShortTime(contexts.User.Id);
             var userWarnsInLastFewHours = _antiSpamService.CountUserWarnsInLongTime(contexts.User.Id);
             var userMutesInLastFewHours = _antiSpamService.CountUserMutesInLongTime(contexts.User.Id);
+            var userMessages = _userMessagesCountService.CountMessages(contexts);
 
             Log.Information($"Warns in few minutes: {userWarnsInLastFewMinutes}; in few hours: {userWarnsInLastFewHours}");
             Log.Information($"Mutes in few hours: {userMutesInLastFewHours}");
 
-            var punishment = _strategy.SelectPunishment(userWarnsInLastFewMinutes, userWarnsInLastFewHours, userMutesInLastFewHours, messagesInShortTime, messagesInLongTime);
+            var punishment = _strategy.SelectPunishment(userWarnsInLastFewMinutes, userWarnsInLastFewHours, userMutesInLastFewHours, messagesInShortTime, messagesInLongTime, userMessages);
             _antiSpamService.SetPunishment(contexts, punishment);
         }
     }
