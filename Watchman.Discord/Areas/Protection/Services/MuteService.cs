@@ -53,7 +53,7 @@ namespace Watchman.Discord.Areas.Protection.Services
         {
             var userMuteEvents = GetMuteEvents(server, userToUnmute.Id);
             var eventToUnmute = GetNotUnmutedEvent(userMuteEvents);
-            if (eventToUnmute == null || eventToUnmute.TimeRange.End > DateTime.UtcNow)
+            if (eventToUnmute == null)
             {
                 return false;
             }
