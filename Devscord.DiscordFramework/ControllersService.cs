@@ -62,7 +62,7 @@ namespace Devscord.DiscordFramework
             {
                 using (LogContext.PushProperty("Controller", controllerInfo.Controller.GetType().Name))
                 {
-                    Parallel.ForEach(controllerInfo.Methods, method =>
+                    foreach(var method in controllerInfo.Methods)
                     {
                         if (isReadAlways)
                         {
@@ -75,7 +75,7 @@ namespace Devscord.DiscordFramework
                         {
                             InvokeMethod(request, contexts, controllerInfo, method);
                         }
-                    });
+                    }
                 }
             });
         }
