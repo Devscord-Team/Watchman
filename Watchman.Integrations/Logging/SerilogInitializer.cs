@@ -20,12 +20,8 @@ namespace Watchman.Integrations.Logging
                 .Enrich.WithThreadId()
                 .Enrich.WithMachineName()
                 .Enrich.WithEnvironmentUserName()
-                .WriteTo.MongoDBCapped(mongoDatabase,
-                    restrictedToMinimumLevel: LogEventLevel.Verbose,
-                    collectionName: "Logs", cappedMaxSizeMb: 200)
                 .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Verbose)
                 .WriteTo.Debug(restrictedToMinimumLevel: LogEventLevel.Verbose)
-                .WriteTo.Discord(discordLog)
                 .CreateLogger();
             return logger;
         }

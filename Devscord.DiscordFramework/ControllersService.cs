@@ -32,20 +32,17 @@ namespace Devscord.DiscordFramework
             {
                 this.LoadControllers();
             }
+
             using (LogContext.PushProperty("MessageId", Guid.NewGuid()))
+            using (LogContext.PushProperty("Request", request))
+            using (LogContext.PushProperty("Contexts", contexts))
             {
-                using (LogContext.PushProperty("Request", request))
+                var readAlwaysMethods = this._controllersContainer.WithReadAlways;
+                Task.Run(() => RunMethods(request, contexts, readAlwaysMethods, true));
+                if (request.IsCommandForBot)
                 {
-                    using (LogContext.PushProperty("Contexts", contexts))
-                    {
-                        var readAlwaysMethods = this._controllersContainer.WithReadAlways;
-                        Task.Run(() => RunMethods(request, contexts, readAlwaysMethods, true));
-                        if (request.IsCommandForBot)
-                        {
-                            var discordCommandMethods = this._controllersContainer.WithDiscordCommand;
-                            Task.Run(() => RunMethods(request, contexts, discordCommandMethods, false));
-                        }
-                    }
+                    var discordCommandMethods = this._controllersContainer.WithDiscordCommand;
+                    Task.Run(() => RunMethods(request, contexts, discordCommandMethods, false));
                 }
             }
         }
@@ -65,24 +62,25 @@ namespace Devscord.DiscordFramework
             {
                 using (LogContext.PushProperty("Controller", controllerInfo.Controller.GetType().Name))
                 {
-                    Parallel.ForEach(controllerInfo.Methods, method =>
+                    foreach(var method in controllerInfo.Methods)
                     {
-                        if (!isReadAlways && (!IsValid(request, contexts, method) || !IsMatchedCommand(method.GetAttributeInstances<DiscordCommand>(), request)))
+                        if (isReadAlways)
                         {
+                            InvokeMethod(request, contexts, controllerInfo, method);
                             return;
                         }
-                        Log.Information("Invoke in controller {controller} method {method}", controllerInfo.Controller.GetType().Name, method.Name);
 
-                        using (LogContext.PushProperty("Method", method.Name))
+                        var command = method.GetAttributeInstances<DiscordCommand>();
+                        if (IsValid(contexts, method) && IsMatchedCommand(command, request))
                         {
-                            method.Invoke(controllerInfo.Controller, new object[] { request, contexts });
+                            InvokeMethod(request, contexts, controllerInfo, method);
                         }
-                    });
+                    }
                 }
             });
         }
 
-        private bool IsValid(DiscordRequest request, Contexts contexts, MethodInfo method)
+        private bool IsValid(Contexts contexts, MethodInfo method)
         {
             CheckPermissions(method, contexts);
             return true;
@@ -101,6 +99,16 @@ namespace Devscord.DiscordFramework
                 throw new NotAdminPermissionsException();
             }
             Log.Information("User {user} have permissions for method {method}", contexts.User.ToString(), method.Name);
+        }
+
+        private static void InvokeMethod(DiscordRequest request, Contexts contexts, ControllerInfo controllerInfo, MethodInfo method)
+        {
+            Log.Information("Invoke in controller {controller} method {method}", controllerInfo.Controller.GetType().Name, method.Name);
+
+            using (LogContext.PushProperty("Method", method.Name))
+            {
+                method.Invoke(controllerInfo.Controller, new object[] { request, contexts });
+            }
         }
     }
 }

@@ -153,6 +153,9 @@
   <data name="SpamAlertUserIsMuted" xml:space="preserve">
     <value>Spam alert! Uzytkownik {{user}} został zmutowany.</value>
   </data>
+  <data name="SpamAlertUserIsMutedForLong" xml:space="preserve">
+    <value>Spam alert! Użytkownik {{user}} został zmutowany na dłużej</value>
+  </data>
   <data name="UnmutedUser" xml:space="preserve">
     <value>Użytkownik {{user}} może pisać ponownie.</value>
   </data>

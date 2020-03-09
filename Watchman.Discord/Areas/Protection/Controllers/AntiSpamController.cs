@@ -1,7 +1,7 @@
 ﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
-using Devscord.DiscordFramework.Services.Factories;
+using Serilog;
 using Watchman.Discord.Areas.Protection.Services;
 using Watchman.DomainModel.Users;
 
@@ -9,26 +9,33 @@ namespace Watchman.Discord.Areas.Protection.Controllers
 {
     public class AntiSpamController : IController
     {
-        private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly AntiSpamService _antiSpamService;
+        private readonly UserMessagesCountService _userMessagesCountService;
         private readonly SpamDetectingStrategy _strategy;
 
-        public AntiSpamController(MessagesServiceFactory messagesServiceFactory, AntiSpamService antiSpamService)
+        public AntiSpamController(AntiSpamService antiSpamService, UserMessagesCountService userMessagesCountService)
         {
-            this._messagesServiceFactory = messagesServiceFactory;
             this._antiSpamService = antiSpamService;
+            _userMessagesCountService = userMessagesCountService;
             this._strategy = new SpamDetectingStrategy();
         }
 
         [ReadAlways]
         public void Scan(DiscordRequest request, Contexts contexts)
         {
-            var messagesService = _messagesServiceFactory.Create(contexts);
-            _antiSpamService.ClearOldMessages(10);
-            var messagesInLastTime = _antiSpamService.CountUserMessages(contexts, 10);
-            var userIsWarned = _antiSpamService.IsWarned(contexts);
-            var punishment = _strategy.SelectPunishment(userIsWarned, messagesInLastTime, 0);
-            _antiSpamService.SetPunishment(contexts, messagesService, punishment);
+            this._antiSpamService.AddUserMessage(contexts);
+            var messagesInShortTime = _antiSpamService.CountUserMessagesShorterTime(contexts.User.Id);
+            var messagesInLongTime = _antiSpamService.CountUserMessagesLongerTime(contexts.User.Id);
+            var userWarnsInLastFewMinutes = _antiSpamService.CountUserWarnsInShortTime(contexts.User.Id);
+            var userWarnsInLastFewHours = _antiSpamService.CountUserWarnsInLongTime(contexts.User.Id);
+            var userMutesInLastFewHours = _antiSpamService.CountUserMutesInLongTime(contexts.User.Id);
+            var userMessages = _userMessagesCountService.CountMessages(contexts);
+
+            Log.Information($"Warns in few minutes: {userWarnsInLastFewMinutes}; in few hours: {userWarnsInLastFewHours}");
+            Log.Information($"Mutes in few hours: {userMutesInLastFewHours}");
+
+            var punishment = _strategy.SelectPunishment(userWarnsInLastFewMinutes, userWarnsInLastFewHours, userMutesInLastFewHours, messagesInShortTime, messagesInLongTime, userMessages);
+            _antiSpamService.SetPunishment(contexts, punishment);
         }
     }
 }

@@ -42,66 +42,21 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             var userToMute = requestParser.GetUser();
             var muteEvent = requestParser.GetMuteEvent(userToMute.Id, contexts);
 
-            MuteUserOrOverwrite(contexts, muteEvent, userToMute).Wait();
-            UnmuteInFuture(contexts, muteEvent, userToMute);
+            _muteService.MuteUserOrOverwrite(contexts, muteEvent, userToMute).Wait();
+            _muteService.UnmuteInFuture(contexts, muteEvent, userToMute);
         }
 
         //[IgnoreForHelp] todo:
         [DiscordCommand("unmute")]
         [AdminCommand]
-        public void UnmuteUser(DiscordRequest request, Contexts contexts)
+        public async void UnmuteUserAsync(DiscordRequest request, Contexts contexts)
         {
             var requestParser = new MuteRequestParser(request, _usersService, contexts);
             var userToUnmute = requestParser.GetUser();
 
-            var userMuteEvents = GetMuteEvents(contexts.Server, userToUnmute.Id);
-            _muteService.UnmuteIfNeeded(contexts.Server, userToUnmute, userMuteEvents).Wait();
+            var wasMuted = await _muteService.UnmuteIfNeeded(contexts.Server, userToUnmute);
 
-            var messagesService = _messagesServiceFactory.Create(contexts);
-            messagesService.SendResponse(x => x.UnmutedUser(userToUnmute), contexts);
-        }
-
-        private async Task MuteUserOrOverwrite(Contexts contexts, MuteEvent muteEvent, UserContext userToMute)
-        {
-            var possiblePreviousUserMuteEvent = GetNotUnmutedUserMuteEvent(contexts.Server, userToMute);
-            if (possiblePreviousUserMuteEvent != null)
-            {
-                var markAsUnmuted = new MarkMuteEventAsUnmutedCommand(possiblePreviousUserMuteEvent.Id);
-                await _commandBus.ExecuteAsync(markAsUnmuted);
-            }
-
-            await _muteService.MuteUser(userToMute, contexts.Server);
-            await _commandBus.ExecuteAsync(new AddMuteEventCommand(muteEvent));
-
-            var messagesService = _messagesServiceFactory.Create(contexts);
-            await messagesService.SendResponse(x => x.MutedUser(userToMute, muteEvent.TimeRange.End), contexts);
-        }
-
-        private MuteEvent? GetNotUnmutedUserMuteEvent(DiscordServerContext server, UserContext userContext)
-        {
-            var userMuteEvents = GetMuteEvents(server, userContext.Id);
-            // in the same time there should exists only one MUTED MuteEvent per user per server
-            return userMuteEvents.FirstOrDefault(x => x.Unmuted == false);
-        }
-
-        private IEnumerable<MuteEvent> GetMuteEvents(DiscordServerContext server, ulong userId)
-        {
-            var getMuteEvents = new GetMuteEventsQuery(server.Id);
-            var allServerMuteEvents = _queryBus.Execute(getMuteEvents).MuteEvents;
-
-            var userMuteEvents = allServerMuteEvents.Where(x => x.UserId == userId);
-            return userMuteEvents;
-        }
-
-        private async void UnmuteInFuture(Contexts contexts, MuteEvent muteEvent, UserContext userToUnmute)
-        {
-            var timeRange = muteEvent.TimeRange;
-            await Task.Delay(timeRange.End - timeRange.Start);
-
-            var userMuteEvents = GetMuteEvents(contexts.Server, userToUnmute.Id);
-            var wasNeededToUnmute = await _muteService.UnmuteIfNeeded(contexts.Server, userToUnmute, userMuteEvents);
-
-            if (wasNeededToUnmute)
+            if (wasMuted)
             {
                 var messagesService = _messagesServiceFactory.Create(contexts);
                 await messagesService.SendResponse(x => x.UnmutedUser(userToUnmute), contexts);
