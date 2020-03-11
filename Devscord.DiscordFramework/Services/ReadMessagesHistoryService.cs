@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Framework;
@@ -17,15 +18,15 @@ namespace Devscord.DiscordFramework.Services
 
         public async Task<IEnumerable<(Contexts contexts, DiscordRequest request)>> ReadMessagesAsync(DiscordServerContext server)
         {
-            var messages = new List<(Contexts, DiscordRequest)>();
+            var messages = new List<IEnumerable<(Contexts, DiscordRequest)>>();
             var textChannels = server.TextChannels;
 
             foreach (var channel in textChannels)
             {
                 var channelMessages = await Server.GetMessages(server, channel);
-                messages.AddRange(channelMessages);
+                messages.Add(channelMessages);
             }
-            return messages;
+            return messages.SelectMany(x => x);
         }
     }
 }

@@ -153,7 +153,7 @@ namespace Devscord.DiscordFramework.Framework
             return Task.FromResult(serverContexts);
         }
 
-        public static async Task<List<(Contexts contexts, DiscordRequest request)>> GetMessages(DiscordServerContext server, ChannelContext channel)
+        public static async Task<IEnumerable<(Contexts contexts, DiscordRequest request)>> GetMessages(DiscordServerContext server, ChannelContext channel)
         {
             var textChannel = (SocketTextChannel)Server.GetChannel(channel.Id);
             var channelMessages = await textChannel.GetMessagesAsync(int.MaxValue).ToList();
@@ -171,8 +171,7 @@ namespace Devscord.DiscordFramework.Framework
                 var request = commandParser.Parse(message.Content);
                 return (contexts, request);
             }));
-
-            return messages.ToList();
+            return messages;
         }
     }
 }
