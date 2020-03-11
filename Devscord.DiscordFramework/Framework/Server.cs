@@ -1,4 +1,5 @@
-﻿using Devscord.DiscordFramework.Middlewares.Contexts;
+﻿using System;
+using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
 using Discord;
@@ -8,6 +9,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Commons.Extensions;
+using Devscord.DiscordFramework.Framework.Commands.Parsing;
+using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Factories;
 
 namespace Devscord.DiscordFramework.Framework
@@ -148,6 +151,28 @@ namespace Devscord.DiscordFramework.Framework
             var serverContextFactory = new DiscordServerContextFactory();
             var serverContexts = _client.Guilds.Select(x => serverContextFactory.Create(x));
             return Task.FromResult(serverContexts);
+        }
+
+        public static async Task<List<(Contexts contexts, DiscordRequest request)>> GetMessages(DiscordServerContext server, ChannelContext channel)
+        {
+            var textChannel = (SocketTextChannel)Server.GetChannel(channel.Id);
+            var channelMessages = await textChannel.GetMessagesAsync(int.MaxValue).ToList();
+            var userFactory = new UserContextsFactory();
+
+            var messages = channelMessages.SelectMany(x => x.Select(message =>
+            {
+                var user = userFactory.Create((SocketGuildUser)message.Author);
+                var contexts = new Contexts();
+                contexts.SetContext(server);
+                contexts.SetContext(channel);
+                contexts.SetContext(user);
+
+                var commandParser = new CommandParser();
+                var request = commandParser.Parse(message.Content);
+                return (contexts, request);
+            }));
+
+            return messages.ToList();
         }
     }
 }

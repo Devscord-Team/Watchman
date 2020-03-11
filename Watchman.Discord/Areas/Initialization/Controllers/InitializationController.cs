@@ -20,13 +20,15 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
         private readonly ICommandBus _commandBus;
         private readonly MuteRoleInitService _muteRoleInitService;
         private readonly UsersRolesService _usersRolesService;
+        private readonly ReadMessagesHistoryService _readMessagesHistoryService;
 
-        public InitializationController(IQueryBus queryBus, ICommandBus commandBus, MuteRoleInitService muteRoleInitService, UsersRolesService usersRolesService, UsersService usersService)
+        public InitializationController(IQueryBus queryBus, ICommandBus commandBus, MuteRoleInitService muteRoleInitService, UsersRolesService usersRolesService, ReadMessagesHistoryService readMessagesHistoryService)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;
             this._muteRoleInitService = muteRoleInitService;
             this._usersRolesService = usersRolesService;
+            _readMessagesHistoryService = readMessagesHistoryService;
         }
 
         [AdminCommand]
@@ -35,9 +37,8 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
         public void Init(DiscordRequest request, Contexts contexts)
         {
             _ = ResponsesInit();
-            Log.Debug("Responses initialized");
             _ = MuteRoleInit(contexts);
-            Log.Debug("Mute role initialized");
+            _ = ReadMessagesHistory(contexts.Server);
         }
 
         private async Task ResponsesInit()
@@ -49,6 +50,7 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
 
             var command = new AddResponsesCommand(responsesToAdd);
             await _commandBus.ExecuteAsync(command);
+            Log.Debug("Responses initialized");
         }
 
         private IEnumerable<DomainModel.Responses.Response> GetResponsesFromBase()
@@ -80,6 +82,14 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
             {
                 await _muteRoleInitService.InitForServer(contexts);
             }
+            Log.Debug("Mute role initialized");
+        }
+
+        private async Task ReadMessagesHistory(DiscordServerContext server)
+        {
+            var messages = await _readMessagesHistoryService.ReadMessagesAsync(server);
+            // todo: add messages to db
+            Log.Debug("Read messages history");
         }
     }
 }
