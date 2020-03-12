@@ -1,4 +1,5 @@
-﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+﻿using System;
+using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
@@ -41,7 +42,8 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
                 contexts.User.Id, contexts.User.Name,
                 contexts.Channel.Id, contexts.Channel.Name,
                 contexts.Server.Id, contexts.Server.Name,
-                contexts.Server.Owner.Id, contexts.Server.Owner.Name);
+                contexts.Server.Owner.Id, contexts.Server.Owner.Name,
+                DateTime.UtcNow);
             this.commandBus.ExecuteAsync(command); //TODO fire and forget is not the best option, controller methods should be async Tasks
         }
 

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Watchman.Cqrs;
 using Watchman.Integrations.MongoDB;
 
@@ -9,11 +6,11 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
 {
     public class AddMessageCommandHandler : ICommandHandler<AddMessageCommand>
     {
-        private readonly ISessionFactory sessionFactory;
+        private readonly ISessionFactory _sessionFactory;
 
         public AddMessageCommandHandler(ISessionFactory sessionFactory)
         {
-            this.sessionFactory = sessionFactory;
+            this._sessionFactory = sessionFactory;
         }
 
         public Task HandleAsync(AddMessageCommand command)
@@ -22,9 +19,10 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
                 .WithAuthor(command.AuthorId, command.AuthorName)
                 .WithChannel(command.ChannelId, command.ChannelName)
                 .WithServer(command.ServerId, command.ServerName, command.ServerOwnerId, command.ServerOwnerName)
+                .WithSentAtDate(command.SentAt)
                 .Build();
 
-            using(var session = this.sessionFactory.Create())
+            using(var session = this._sessionFactory.Create())
             {
                 session.Add(message);
             }

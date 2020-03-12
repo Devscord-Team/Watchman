@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Messages
@@ -11,6 +9,7 @@ namespace Watchman.DomainModel.Messages
         public Channel Channel { get; private set; }
         public Server Server { get; private set; }
         public string Content { get; private set; }
+        public DateTime SentAt { get; private set; }
 
         private Message(string content)
         {
@@ -61,6 +60,15 @@ namespace Watchman.DomainModel.Messages
             this.Content = content;
             this.Update();
         }
-    }
 
+        public void SetSentAt(DateTime sentAt)
+        {
+            if (sentAt == this.SentAt)
+            {
+                return;
+            }
+            this.SentAt = sentAt;
+            this.Update();
+        }
+    }
 }
