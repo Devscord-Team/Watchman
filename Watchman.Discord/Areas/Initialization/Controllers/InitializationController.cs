@@ -9,6 +9,8 @@ using Devscord.DiscordFramework.Services;
 using Serilog;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Initialization.Services;
+using Watchman.DomainModel.Messages;
+using Watchman.DomainModel.Messages.Commands;
 using Watchman.DomainModel.Responses.Commands;
 using Watchman.DomainModel.Responses.Queries;
 
@@ -67,7 +69,7 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
                 .Select(prop =>
                 {
                     var onEvent = prop.Name;
-                    var message = prop.GetValue(prop).ToString();
+                    var message = prop.GetValue(prop)?.ToString();
                     return new DomainModel.Responses.Response(onEvent, message);
                 });
 
@@ -87,8 +89,20 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
 
         private async Task ReadMessagesHistory(DiscordServerContext server)
         {
-            var messages = await _readMessagesHistoryService.ReadMessagesAsync(server);
-            // todo: add messages to db
+            var messages = (await _readMessagesHistoryService.ReadMessagesAsync(server))
+                .Select(x =>
+                {
+                    var (contexts, request, sentAt) = x;
+                    var builder = Message.Create(request.OriginalMessage);
+                    builder.WithAuthor(contexts.User.Id, contexts.User.Name);
+                    builder.WithChannel(contexts.Channel.Id, contexts.Channel.Name);
+                    builder.WithServer(contexts.Server.Id, contexts.Server.Name, contexts.Server.Owner.Id, contexts.Server.Owner.Name);
+                    builder.WithSentAtDate(sentAt);
+                    return builder.Build();
+                });
+
+            var command = new AddMessagesCommand(messages);
+            await _commandBus.ExecuteAsync(command);
             Log.Debug("Read messages history");
         }
     }
