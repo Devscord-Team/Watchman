@@ -122,7 +122,7 @@ namespace Devscord.DiscordFramework.Framework
             return Task.FromResult(userRole);
         }
 
-        public static async Task SetPermissions(ChannelContext channel, DiscordServerContext server, ChangedPermissions permissions, UserRole muteRole)
+        public static async Task SetPermissions(ChannelContext channel, ChangedPermissions permissions, UserRole muteRole)
         {
             await Task.Delay(1000);
 
