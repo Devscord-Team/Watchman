@@ -19,13 +19,16 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
         {
             var newMessages = await Task.Run(() => GetOnlyNewMessages(command.Messages));
             using var session = _sessionFactory.Create();
-            session.Add(newMessages);
+            foreach (var message in newMessages)
+            {
+                session.Add(message);
+            }
         }
 
         private IEnumerable<Message> GetOnlyNewMessages(IEnumerable<Message> messages)
         {
             using var session = _sessionFactory.Create();
-            var allMessages = session.Get<Message>().ToList();
+            var allMessages = session.Get<Message>();
             var allIds = allMessages.Select(x => x.Id.GetHashCode());
             var existingMessagesIds = allIds
                 .OrderBy(x => x)
