@@ -169,7 +169,7 @@ namespace Devscord.DiscordFramework.Framework
 
                 var commandParser = new CommandParser();
                 var request = commandParser.Parse(message.Content);
-                return (contexts, request, message.CreatedAt.UtcDateTime);
+                return (contexts, request, message.Timestamp.UtcDateTime);
             }));
             return messages;
         }
