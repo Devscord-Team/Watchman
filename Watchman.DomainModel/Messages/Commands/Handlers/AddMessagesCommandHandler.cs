@@ -25,8 +25,9 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
         private IEnumerable<Message> GetOnlyNewMessages(IEnumerable<Message> messages)
         {
             using var session = _sessionFactory.Create();
-            var existingMessagesIds = session.Get<Message>()
-                .Select(x => x.Id.GetHashCode())
+            var allMessages = session.Get<Message>().ToList();
+            var allIds = allMessages.Select(x => x.Id.GetHashCode());
+            var existingMessagesIds = allIds
                 .OrderBy(x => x)
                 .ToList();
 

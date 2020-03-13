@@ -130,6 +130,8 @@ namespace Watchman.Discord
                 mostInnerException = mostInnerException.InnerException;
             }
 
+            Log.Error(mostInnerException.ToString());
+
             switch (mostInnerException)
             {
                 case NotAdminPermissionsException _:

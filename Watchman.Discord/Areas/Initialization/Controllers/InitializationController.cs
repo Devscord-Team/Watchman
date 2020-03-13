@@ -90,6 +90,7 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
         private async Task ReadMessagesHistory(DiscordServerContext server)
         {
             var messages = (await _readMessagesHistoryService.ReadMessagesAsync(server))
+                .Where(x => !x.contexts.Channel.Name.Contains("logs"))
                 .Select(x =>
                 {
                     var (contexts, request, sentAt) = x;
