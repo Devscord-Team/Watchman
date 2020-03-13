@@ -156,10 +156,10 @@ namespace Devscord.DiscordFramework.Framework
         public static async Task<IEnumerable<(Contexts contexts, DiscordRequest request, DateTime createdAt)>> GetMessages(DiscordServerContext server, ChannelContext channel)
         {
             var textChannel = (SocketTextChannel)Server.GetChannel(channel.Id);
-            var channelMessages = await textChannel.GetMessagesAsync(int.MaxValue).ToList();
+            var channelMessages = await textChannel.GetMessagesAsync(int.MaxValue).FlattenAsync();
             var userFactory = new UserContextsFactory();
 
-            var messages = channelMessages.SelectMany(x => x.Select(message =>
+            var messages = channelMessages.Select(message =>
             {
                 var user = userFactory.Create((SocketGuildUser)message.Author);
                 var contexts = new Contexts();
@@ -170,7 +170,7 @@ namespace Devscord.DiscordFramework.Framework
                 var commandParser = new CommandParser();
                 var request = commandParser.Parse(message.Content);
                 return (contexts, request, message.Timestamp.UtcDateTime);
-            }));
+            });
             return messages;
         }
     }
