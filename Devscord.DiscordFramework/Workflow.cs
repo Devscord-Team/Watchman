@@ -40,21 +40,20 @@ namespace Devscord.DiscordFramework
             return this;
         }
 
-        public Task Run(SocketMessage socketMessage)
+        public async Task Run(SocketMessage socketMessage)
         {
             Log.Information("Processing message: {content} from user {user} started", socketMessage.Content, socketMessage.Author);
             var request = _commandParser.Parse(socketMessage.Content);
             var contexts = this._middlewaresService.RunMiddlewares(socketMessage);
             try
             {
-                this._controllersService.Run(request, contexts);
+                await this._controllersService.Run(request, contexts);
             }
             catch (Exception e)
             {
                 Log.Error(e, e.StackTrace);
                 WorkflowException.Invoke(e, contexts);
             }
-            return Task.CompletedTask;
         }
 
         public void LogOnChannel(string message, ulong channelId)

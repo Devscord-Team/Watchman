@@ -26,7 +26,7 @@ namespace Devscord.DiscordFramework
             this._assembly = assembly;
         }
 
-        public void Run(DiscordRequest request, Contexts contexts)
+        public async Task Run(DiscordRequest request, Contexts contexts)
         {
             if(this._controllersContainer == null)
             {
@@ -38,11 +38,20 @@ namespace Devscord.DiscordFramework
             using (LogContext.PushProperty("Contexts", contexts))
             {
                 var readAlwaysMethods = this._controllersContainer.WithReadAlways;
-                Task.Run(() => RunMethods(request, contexts, readAlwaysMethods, true));
+                var readAlwaysTask = Task.Run(() => RunMethods(request, contexts, readAlwaysMethods, true));
+                
+                Task commandsTask = null;
                 if (request.IsCommandForBot)
                 {
                     var discordCommandMethods = this._controllersContainer.WithDiscordCommand;
-                    Task.Run(() => RunMethods(request, contexts, discordCommandMethods, false));
+                    commandsTask = Task.Run(() => RunMethods(request, contexts, discordCommandMethods, false));
+                }
+
+                // ReadAlwaysMethods should be first in throwing exception, bcs every ReadAlways exception is Error
+                await readAlwaysTask;
+                if (commandsTask != null)
+                {
+                    await commandsTask;
                 }
             }
         }
