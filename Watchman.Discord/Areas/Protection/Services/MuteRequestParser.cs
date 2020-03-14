@@ -69,6 +69,16 @@ namespace Watchman.Discord.Areas.Protection.Services
             time = time.Replace(',', '.');
             double.TryParse(time, NumberStyles.Any, CultureInfo.InvariantCulture, out var asNumber);
 
+            if (asNumber <= 0)
+            {
+                throw new TimeCannotBeNegativeException();
+            }
+
+            if (asNumber >= int.MaxValue)
+            {
+                throw new TimeIsTooBigException();
+            }
+
             return lastChar switch
             {
                 'm' => TimeSpan.FromMinutes(asNumber),

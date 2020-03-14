@@ -71,7 +71,8 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
                     var onEvent = prop.Name;
                     var message = prop.GetValue(prop)?.ToString();
                     return new DomainModel.Responses.Response(onEvent, message);
-                });
+                })
+                .ToList();
 
             return defaultResponses;
         }

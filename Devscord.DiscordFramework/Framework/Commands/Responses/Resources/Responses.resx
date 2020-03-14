@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CurrentVersion" xml:space="preserve">
-    <value>```Obecna wersja: {{version}}```</value>
-  </data>
   <data name="MutedUser" xml:space="preserve">
     <value>Użytkownik {{user}} został zmutowany do {{timeEnd}}UTC</value>
   </data>
@@ -155,6 +152,12 @@
   </data>
   <data name="SpamAlertUserIsMutedForLong" xml:space="preserve">
     <value>Spam alert! Użytkownik {{user}} został zmutowany na dłużej</value>
+  </data>
+  <data name="TimeCannotBeNegative" xml:space="preserve">
+    <value>Czas nie może być ujemny!</value>
+  </data>
+  <data name="TimeIsTooBig" xml:space="preserve">
+    <value>Podano za dużą wartość czasu!</value>
   </data>
   <data name="UnmutedUser" xml:space="preserve">
     <value>Użytkownik {{user}} może pisać ponownie.</value>

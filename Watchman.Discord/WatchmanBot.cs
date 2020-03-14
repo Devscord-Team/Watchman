@@ -14,7 +14,6 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Discord.Areas.Help.Services;
 using System.Text;
-using System.Collections.Generic;
 using Devscord.DiscordFramework.Commons.Extensions;
 using System.Linq;
 using Devscord.DiscordFramework.Commons.Exceptions;
@@ -52,7 +51,7 @@ namespace Watchman.Discord
             ServerInitializer.Initialize(_client, _container.Resolve<MessagesServiceFactory>());
 
             _ = Task.Run(DefaultHelpInit);
-            
+
             await _client.LoginAsync(TokenType.Bot, this._configuration.Token);
             await _client.StartAsync();
             _client.Ready += UnmuteUsers;
@@ -101,7 +100,7 @@ namespace Watchman.Discord
 
         private void LogOnChannel(string message)
         {
-            if(this._workflow != null)
+            if (this._workflow != null)
             {
                 try
                 {
@@ -124,7 +123,7 @@ namespace Watchman.Discord
             var messagesService = _container.Resolve<MessagesServiceFactory>().Create(contexts);
 
             var mostInnerException = e.InnerException ?? e;
-            
+
             while (mostInnerException.InnerException != null)
             {
                 mostInnerException = mostInnerException.InnerException;
@@ -145,6 +144,12 @@ namespace Watchman.Discord
                     break;
                 case UserNotFoundException notFoundExc:
                     messagesService.SendResponse(x => x.UserNotFound(notFoundExc.Mention), contexts);
+                    break;
+                case TimeCannotBeNegativeException _:
+                    messagesService.SendResponse(x => x.TimeCannotBeNegative(), contexts);
+                    break;
+                case TimeIsTooBigException _:
+                    messagesService.SendResponse(x => x.TimeIsTooBig(), contexts);
                     break;
                 default:
                     messagesService.SendMessage("Wystąpił nieznany wyjątek");
