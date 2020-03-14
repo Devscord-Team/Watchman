@@ -15,7 +15,7 @@ namespace Devscord.DiscordFramework.Services.Factories
             return methods.Select(x => new CommandInfo
             {
                 Names = x.CustomAttributes.FilterAttributes<DiscordCommand>().Select(x => x.ConstructorArguments.First().ToString().Replace("\"", "")),
-                MethodFullName = x.ReflectedType?.FullName + x.Name,
+                MethodFullName = x.ReflectedType?.FullName + '.' + x.Name,
                 CommandArgumentInfos = new List<CommandArgumentInfo>
                 {
                     new CommandArgumentInfo
