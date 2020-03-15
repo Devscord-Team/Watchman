@@ -9,7 +9,7 @@ using Watchman.DomainModel.Users;
 using Watchman.DomainModel.Users.Commands;
 using Watchman.DomainModel.Users.Queries;
 
-namespace Watchman.Discord
+namespace Watchman.Discord.Areas.Protection.Services
 {
     public class UnmutingExpiredMuteEventsService
     {
@@ -61,7 +61,7 @@ namespace Watchman.Discord
             {
                 return;
             }
-            
+
             await _usersService.RemoveRole(muteRole, user, server);
             var command = new MarkMuteEventAsUnmutedCommand(muteEvent.Id);
             await _commandBus.ExecuteAsync(command);
