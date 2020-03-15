@@ -1,24 +1,19 @@
 ﻿using Autofac;
-using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Framework;
-using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Framework.Commands.Parsing;
-using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Discord.WebSocket;
 using Serilog;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework
 {
-    public class Workflow
+    public class Workflow : Delegates
     {
         private readonly CommandParser _commandParser = new CommandParser();
         private readonly MiddlewaresService _middlewaresService = new MiddlewaresService();

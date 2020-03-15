@@ -20,6 +20,8 @@ using Devscord.DiscordFramework.Commons.Exceptions;
 using Watchman.Integrations.Logging;
 using MongoDB.Driver;
 using Serilog;
+using Watchman.Discord.Areas.Protection.Services;
+using Watchman.Discord.Areas.Users.Services;
 
 namespace Watchman.Discord
 {
@@ -38,7 +40,7 @@ namespace Watchman.Discord
                 TotalShards = 1
             });
             this._client.MessageReceived += this.MessageReceived;
-
+            
             this._container = GetAutofacContainer(configuration);
             Log.Logger = SerilogInitializer.Initialize(this._container.Resolve<IMongoDatabase>(), this.LogOnChannel);
             Log.Information("Bot created...");
@@ -48,15 +50,13 @@ namespace Watchman.Discord
         public async Task Start()
         {
             MongoConfiguration.Initialize();
-            ServerInitializer.Initialize(_client, _container.Resolve<MessagesServiceFactory>());
+            ServerInitializer.Initialize(_client);
 
             _ = Task.Run(DefaultHelpInit);
+            AssignEvents();
 
             await _client.LoginAsync(TokenType.Bot, this._configuration.Token);
             await _client.StartAsync();
-            _client.Ready += UnmuteUsers;
-            _client.Ready += () => Task.Run(() => Log.Information("Bot started and logged in..."));
-
             await Task.Delay(-1);
         }
 
@@ -65,6 +65,14 @@ namespace Watchman.Discord
             var dataCollector = _container.Resolve<HelpDataCollectorService>();
             var helpService = _container.Resolve<HelpDBGeneratorService>();
             helpService.FillDatabase(dataCollector.GetCommandsInfo(typeof(WatchmanBot).Assembly));
+        }
+
+        private void AssignEvents()
+        {
+            _client.Ready += UnmuteUsers;
+            _client.Ready += () => Task.Run(() => Log.Information("Bot started and logged in..."));
+            _workflow.UserJoined += _container.Resolve<WelcomeUserService>().WelcomeUser;
+            _workflow.UserJoined += _container.Resolve<MutingRejoinedUsersService>().MuteAgainIfNeeded;
         }
 
         private async Task UnmuteUsers()
