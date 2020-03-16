@@ -90,21 +90,25 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
 
         private async Task ReadMessagesHistory(DiscordServerContext server)
         {
-            var messages = (await _readMessagesHistoryService.ReadMessagesAsync(server))
-                .Where(x => !x.contexts.Channel.Name.Contains("logs"))
-                .Select(x =>
-                {
-                    var (contexts, request, sentAt) = x;
-                    var builder = Message.Create(request.OriginalMessage);
-                    builder.WithAuthor(contexts.User.Id, contexts.User.Name);
-                    builder.WithChannel(contexts.Channel.Id, contexts.Channel.Name);
-                    builder.WithServer(contexts.Server.Id, contexts.Server.Name, contexts.Server.Owner.Id, contexts.Server.Owner.Name);
-                    builder.WithSentAtDate(sentAt);
-                    return builder.Build();
-                });
+            Log.Debug("Reading messages started");
+            foreach (var channel in server.TextChannels)
+            {
+                var messages = (await _readMessagesHistoryService.ReadMessagesAsync(server, channel))
+                    .Where(x => !x.contexts.Channel.Name.Contains("logs"))
+                    .Select(x =>
+                    {
+                        var (contexts, request, sentAt) = x;
+                        var builder = Message.Create(request.OriginalMessage);
+                        builder.WithAuthor(contexts.User.Id, contexts.User.Name);
+                        builder.WithChannel(contexts.Channel.Id, contexts.Channel.Name);
+                        builder.WithServer(contexts.Server.Id, contexts.Server.Name, contexts.Server.Owner.Id, contexts.Server.Owner.Name);
+                        builder.WithSentAtDate(sentAt);
+                        return builder.Build();
+                    });
 
-            var command = new AddMessagesCommand(messages);
-            await _commandBus.ExecuteAsync(command);
+                var command = new AddMessagesCommand(messages);
+                await _commandBus.ExecuteAsync(command);
+            }
             Log.Debug("Read messages history");
         }
     }
