@@ -43,7 +43,7 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
 
         private int GetHash(Message message)
         {
-            return (message.SentAt.Ticks, message.Author, message.Content).GetHashCode();
+            return (message.SentAt, message.Author, message.Content).GetHashCode();
         }
     }
 }

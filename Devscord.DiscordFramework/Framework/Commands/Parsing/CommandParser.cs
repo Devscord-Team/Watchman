@@ -17,7 +17,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
             var prefix = this.GetPrefix(message);
             if (string.IsNullOrWhiteSpace(prefix))
             {
-                return new DiscordRequest { OriginalMessage = original };
+                return new DiscordRequest { OriginalMessage = original, SentAt = sentAt };
             }
             message = message.CutStart(prefix);
 
