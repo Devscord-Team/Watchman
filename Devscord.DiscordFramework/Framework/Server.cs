@@ -1,6 +1,5 @@
 ﻿using System;
 using Devscord.DiscordFramework.Middlewares.Contexts;
-using Devscord.DiscordFramework.Services;
 using Discord;
 using Discord.WebSocket;
 using System.Collections.Generic;
@@ -146,7 +145,7 @@ namespace Devscord.DiscordFramework.Framework
 
             var messages = channelMessages.Select(message =>
             {
-                var user = userFactory.Create((SocketGuildUser)message.Author);
+                var user = userFactory.Create(message.Author);
                 var contexts = new Contexts();
                 contexts.SetContext(server);
                 contexts.SetContext(channel);
