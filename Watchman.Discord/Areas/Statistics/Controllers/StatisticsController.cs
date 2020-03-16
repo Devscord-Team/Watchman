@@ -35,7 +35,7 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         }
 
         [ReadAlways]
-        public void SaveMessage(DiscordRequest request, Contexts contexts)
+        public async void SaveMessageAsync(DiscordRequest request, Contexts contexts)
         {
             //TODO maybe there should be builder... but it doesn't looks very bad
             var command = new AddMessageCommand(request.OriginalMessage,
@@ -44,7 +44,9 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
                 contexts.Server.Id, contexts.Server.Name,
                 contexts.Server.Owner.Id, contexts.Server.Owner.Name,
                 DateTime.UtcNow);
-            this.commandBus.ExecuteAsync(command); //TODO fire and forget is not the best option, controller methods should be async Tasks
+
+            await this.commandBus.ExecuteAsync(command);
+            Log.Information("Message saved");
         }
 
         [AdminCommand]

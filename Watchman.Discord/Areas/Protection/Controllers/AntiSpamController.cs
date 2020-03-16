@@ -36,6 +36,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
 
             var punishment = _strategy.SelectPunishment(userWarnsInLastFewMinutes, userWarnsInLastFewHours, userMutesInLastFewHours, messagesInShortTime, messagesInLongTime, userMessages);
             _antiSpamService.SetPunishment(contexts, punishment);
+            Log.Information("Scanned");
         }
     }
 }
