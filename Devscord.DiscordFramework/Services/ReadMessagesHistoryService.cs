@@ -9,7 +9,7 @@ namespace Devscord.DiscordFramework.Services
 {
     public class ReadMessagesHistoryService
     {
-        public async Task<IEnumerable<(Contexts contexts, DiscordRequest request, DateTime createdAt)>> ReadMessagesAsync(DiscordServerContext server, ChannelContext channelContext)
+        public async Task<IEnumerable<(Contexts contexts, DiscordRequest request)>> ReadMessagesAsync(DiscordServerContext server, ChannelContext channelContext)
         {
             var channelMessages = await Server.GetMessages(server, channelContext);
             return channelMessages;

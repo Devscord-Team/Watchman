@@ -22,23 +22,28 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
             foreach (var message in newMessages)
             {
                 session.Add(message);
-            }
+            };
         }
 
         private IEnumerable<Message> GetOnlyNewMessages(IEnumerable<Message> messages)
         {
             using var session = _sessionFactory.Create();
             var allMessages = session.Get<Message>().ToList(); // ToList must be here
-            var allIds = allMessages.Select(x => x.Id.GetHashCode());
+            var allIds = allMessages.Select(GetHash);
             var existingMessagesIds = allIds
                 .OrderBy(x => x)
                 .ToList();
 
             return messages.Where(x =>
             {
-                var isMessageNew = existingMessagesIds.BinarySearch(x.Id.GetHashCode()) == -1;
+                var isMessageNew = existingMessagesIds.BinarySearch(GetHash(x)) < 0;
                 return isMessageNew;
             });
+        }
+
+        private int GetHash(Message message)
+        {
+            return (message.SentAt.Ticks, message.Author, message.Content).GetHashCode();
         }
     }
 }

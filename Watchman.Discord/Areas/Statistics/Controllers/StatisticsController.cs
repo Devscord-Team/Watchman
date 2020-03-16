@@ -43,7 +43,7 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
                 contexts.Channel.Id, contexts.Channel.Name,
                 contexts.Server.Id, contexts.Server.Name,
                 contexts.Server.Owner.Id, contexts.Server.Owner.Name,
-                DateTime.UtcNow);
+                request.SentAt);
 
             await this.commandBus.ExecuteAsync(command);
             Log.Information("Message saved");

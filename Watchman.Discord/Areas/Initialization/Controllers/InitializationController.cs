@@ -97,12 +97,12 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
                     .Where(x => !x.contexts.Channel.Name.Contains("logs"))
                     .Select(x =>
                     {
-                        var (contexts, request, sentAt) = x;
+                        var (contexts, request) = x;
                         var builder = Message.Create(request.OriginalMessage);
                         builder.WithAuthor(contexts.User.Id, contexts.User.Name);
                         builder.WithChannel(contexts.Channel.Id, contexts.Channel.Name);
                         builder.WithServer(contexts.Server.Id, contexts.Server.Name, contexts.Server.Owner.Id, contexts.Server.Owner.Name);
-                        builder.WithSentAtDate(sentAt);
+                        builder.WithSentAtDate(request.SentAt);
                         return builder.Build();
                     });
 

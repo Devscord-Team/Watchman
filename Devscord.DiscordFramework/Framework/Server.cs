@@ -137,7 +137,7 @@ namespace Devscord.DiscordFramework.Framework
             return Task.FromResult(serverContexts);
         }
 
-        public static async Task<IEnumerable<(Contexts contexts, DiscordRequest request, DateTime createdAt)>> GetMessages(DiscordServerContext server, ChannelContext channel)
+        public static async Task<IEnumerable<(Contexts contexts, DiscordRequest request)>> GetMessages(DiscordServerContext server, ChannelContext channel)
         {
             var textChannel = (SocketTextChannel)Server.GetChannel(channel.Id);
             var channelMessages = await textChannel.GetMessagesAsync(int.MaxValue).FlattenAsync();
@@ -152,8 +152,8 @@ namespace Devscord.DiscordFramework.Framework
                 contexts.SetContext(user);
 
                 var commandParser = new CommandParser();
-                var request = commandParser.Parse(message.Content);
-                return (contexts, request, message.Timestamp.UtcDateTime);
+                var request = commandParser.Parse(message.Content, message.Timestamp.UtcDateTime);
+                return (contexts, request);
             });
             return messages;
         }

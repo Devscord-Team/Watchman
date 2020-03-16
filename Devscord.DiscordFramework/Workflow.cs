@@ -38,7 +38,7 @@ namespace Devscord.DiscordFramework
         public async Task Run(SocketMessage socketMessage)
         {
             Log.Information("Processing message: {content} from user {user} started", socketMessage.Content, socketMessage.Author);
-            var request = _commandParser.Parse(socketMessage.Content);
+            var request = _commandParser.Parse(socketMessage.Content, socketMessage.Timestamp.UtcDateTime);
             var contexts = this._middlewaresService.RunMiddlewares(socketMessage);
             try
             {

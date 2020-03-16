@@ -25,7 +25,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.Parsing
             var commandParser = new CommandParser();
 
             //Act
-            var result = commandParser.Parse(message);
+            var result = commandParser.Parse(message, DateTime.UtcNow);
 
             //Assert
             if (shouldTrue)
@@ -49,7 +49,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.Parsing
             var commandParser = new CommandParser();
 
             //Act
-            var result = commandParser.Parse(message);
+            var result = commandParser.Parse(message, DateTime.UtcNow);
 
             //Assert
             if (shouldTrue)
@@ -73,7 +73,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.Parsing
             var commandParser = new CommandParser();
 
             //Act
-            var parsed = commandParser.Parse(message);
+            var parsed = commandParser.Parse(message, DateTime.UtcNow);
             var argument = parsed.Arguments.First();
 
             //Assert
@@ -93,7 +93,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.Parsing
             var commandParser = new CommandParser();
 
             //Act
-            var parsed = commandParser.Parse(message);
+            var parsed = commandParser.Parse(message, DateTime.UtcNow);
             var result = parsed.Arguments.Count();
 
             //Assert
@@ -111,7 +111,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.Parsing
             var commandParser = new CommandParser();
 
             //Act
-            var result = commandParser.Parse(message);
+            var result = commandParser.Parse(message, DateTime.UtcNow);
 
             //Assert
             Assert.That(result.OriginalMessage, Is.EqualTo(message));
@@ -125,7 +125,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.Parsing
             var commandParser = new CommandParser();
 
             //Act
-            var result = commandParser.Parse(message);
+            var result = commandParser.Parse(message, DateTime.UtcNow);
 
             //Assert
             Assert.That(result.HasArgument(null, expectedValue));

@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using System;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
@@ -29,7 +30,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         {
             var requestParser = new MuteRequestParser(request, _usersService, contexts);
             var userToMute = requestParser.GetUser();
-            var muteEvent = requestParser.GetMuteEvent(userToMute.Id, contexts);
+            var muteEvent = requestParser.GetMuteEvent(userToMute.Id, contexts, request.SentAt);
 
             _muteService.MuteUserOrOverwrite(contexts, muteEvent, userToMute).Wait();
             _muteService.UnmuteInFuture(contexts, muteEvent, userToMute);
