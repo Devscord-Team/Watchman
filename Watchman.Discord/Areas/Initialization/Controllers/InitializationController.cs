@@ -52,7 +52,7 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
 
             var command = new AddResponsesCommand(responsesToAdd);
             await _commandBus.ExecuteAsync(command);
-            Log.Debug("Responses initialized");
+            Log.Information("Responses initialized");
         }
 
         private IEnumerable<DomainModel.Responses.Response> GetResponsesFromBase()
@@ -85,12 +85,12 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
             {
                 await _muteRoleInitService.InitForServer(contexts);
             }
-            Log.Debug("Mute role initialized");
+            Log.Information("Mute role initialized");
         }
 
         private async Task ReadMessagesHistory(DiscordServerContext server)
         {
-            Log.Debug("Reading messages started");
+            Log.Information("Reading messages started");
             foreach (var channel in server.TextChannels)
             {
                 var messages = (await _readMessagesHistoryService.ReadMessagesAsync(server, channel))
@@ -109,7 +109,7 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
                 var command = new AddMessagesCommand(messages);
                 await _commandBus.ExecuteAsync(command);
             }
-            Log.Debug("Read messages history");
+            Log.Information("Read messages history");
         }
     }
 }

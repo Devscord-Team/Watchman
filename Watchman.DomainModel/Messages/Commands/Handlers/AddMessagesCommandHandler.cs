@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
 using Watchman.Integrations.MongoDB;
@@ -41,9 +43,19 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
             });
         }
 
-        private int GetHash(Message message)
+        private string GetHash(Message message)
         {
-            return (message.SentAt, message.Author, message.Content).GetHashCode();
+            var stringToMd5 = message.SentAt.Ticks.ToString() + message.Author;
+            var bytes = Encoding.ASCII.GetBytes(stringToMd5);
+            using var md5 = MD5.Create();
+            var hashed = md5.ComputeHash(bytes);
+
+            var builder = new StringBuilder();
+            foreach (var b in hashed)
+            {
+                builder.Append(b.ToString("x2"));
+            }
+            return builder.ToString();
         }
     }
 }
