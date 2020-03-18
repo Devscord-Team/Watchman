@@ -10,6 +10,9 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
 {
     public class AddMessagesCommandHandler : ICommandHandler<AddMessagesCommand>
     {
+        private List<string> _cashedExistingMessagesHashes;
+        private ulong _cashedChannelId;
+
         private readonly ISessionFactory _sessionFactory;
 
         public AddMessagesCommandHandler(ISessionFactory sessionFactory)
@@ -19,7 +22,7 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
 
         public async Task HandleAsync(AddMessagesCommand command)
         {
-            var newMessages = await Task.Run(() => GetOnlyNewMessages(command.Messages));
+            var newMessages = await Task.Run(() => GetOnlyNewMessages(command.Messages, command.ChannelId));
             using var session = _sessionFactory.Create();
             foreach (var message in newMessages)
             {
@@ -27,20 +30,37 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
             };
         }
 
-        private IEnumerable<Message> GetOnlyNewMessages(IEnumerable<Message> messages)
+        private IEnumerable<Message> GetOnlyNewMessages(IEnumerable<Message> messages, ulong channelId)
         {
             using var session = _sessionFactory.Create();
-            var allMessages = session.Get<Message>().ToList(); // ToList must be here
-            var allIds = allMessages.Select(GetHash);
-            var existingMessagesIds = allIds
-                .OrderBy(x => x)
-                .ToList();
+            var existingHashes = GetExistingHashes(channelId);
 
             return messages.Where(x =>
             {
-                var isMessageNew = existingMessagesIds.BinarySearch(GetHash(x)) < 0;
+                var isMessageNew = existingHashes.BinarySearch(GetHash(x)) < 0;
                 return isMessageNew;
             });
+        }
+
+        private List<string> GetExistingHashes(ulong channelId)
+        {
+            if (_cashedChannelId == channelId)
+            {
+                return _cashedExistingMessagesHashes;
+            }
+
+            using var session = _sessionFactory.Create();
+            var channelMessagesHashes = session.Get<Message>()
+                .Where(x => x.Channel.Id == channelId)
+                .AsEnumerable()
+                .Select(GetHash)
+                .ToList() // ToList must be here
+                .OrderBy(x => x)
+                .ToList(); 
+
+            _cashedChannelId = channelId;
+            _cashedExistingMessagesHashes = channelMessagesHashes;
+            return channelMessagesHashes;
         }
 
         private string GetHash(Message message)

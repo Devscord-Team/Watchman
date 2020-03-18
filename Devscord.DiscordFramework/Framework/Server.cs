@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Discord;
 using Discord.WebSocket;
@@ -137,12 +138,20 @@ namespace Devscord.DiscordFramework.Framework
             return Task.FromResult(serverContexts);
         }
 
-        public static async Task<IEnumerable<(Contexts contexts, DiscordRequest request)>> GetMessages(DiscordServerContext server, ChannelContext channel)
+        public static async Task<IEnumerable<(Contexts contexts, DiscordRequest request, ulong messageId)>> GetMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong fromMessageId = 0, bool goBefore = true)
         {
             var textChannel = (SocketTextChannel)Server.GetChannel(channel.Id);
-            var channelMessages = await textChannel.GetMessagesAsync(int.MaxValue).FlattenAsync();
-            var userFactory = new UserContextsFactory();
+            IEnumerable<IMessage> channelMessages;
+            if (fromMessageId == 0)
+            {
+                channelMessages = await textChannel.GetMessagesAsync(limit).FlattenAsync();
+            }
+            else
+            {
+                channelMessages = await textChannel.GetMessagesAsync(fromMessageId, goBefore ? Direction.Before : Direction.After, limit).FlattenAsync();
+            }
 
+            var userFactory = new UserContextsFactory();
             var messages = channelMessages.Select(message =>
             {
                 var user = userFactory.Create(message.Author);
@@ -153,7 +162,7 @@ namespace Devscord.DiscordFramework.Framework
 
                 var commandParser = new CommandParser();
                 var request = commandParser.Parse(message.Content, message.Timestamp.UtcDateTime);
-                return (contexts, request);
+                return (contexts, request, message.Id);
             });
             return messages;
         }

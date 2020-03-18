@@ -91,25 +91,59 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
         private async Task ReadMessagesHistory(DiscordServerContext server)
         {
             Log.Information("Reading messages started");
+            const int LIMIT = 1000;
+
             foreach (var channel in server.TextChannels)
             {
-                var messages = (await _readMessagesHistoryService.ReadMessagesAsync(server, channel))
-                    .Where(x => !x.contexts.Channel.Name.Contains("logs"))
-                    .Select(x =>
-                    {
-                        var (contexts, request) = x;
-                        var builder = Message.Create(request.OriginalMessage);
-                        builder.WithAuthor(contexts.User.Id, contexts.User.Name);
-                        builder.WithChannel(contexts.Channel.Id, contexts.Channel.Name);
-                        builder.WithServer(contexts.Server.Id, contexts.Server.Name, contexts.Server.Owner.Id, contexts.Server.Owner.Name);
-                        builder.WithSentAtDate(request.SentAt);
-                        return builder.Build();
-                    });
+                if (channel.Name.Contains("logs"))
+                    continue;
 
-                var command = new AddMessagesCommand(messages);
-                await _commandBus.ExecuteAsync(command);
+                var messages = (await _readMessagesHistoryService.ReadMessagesAsync(server, channel, LIMIT)).ToList();
+                if (messages.Count == 0)
+                {
+                    continue;
+                }
+
+                var lastMessageId = messages.Last().messageId;
+                await SaveMessages(messages, channel.Id);
+
+                while (true)
+                {
+                    messages = (await _readMessagesHistoryService.ReadMessagesAsync(server, channel, LIMIT, lastMessageId, goBefore: true)).ToList();
+                    if (messages.Count == 0)
+                    {
+                        break;
+                    }
+
+                    await SaveMessages(messages, channel.Id);
+                    if (messages.Count < LIMIT)
+                    {
+                        break;
+                    }
+                    lastMessageId = messages.Last().messageId;
+                }
             }
             Log.Information("Read messages history");
+        }
+        private async Task SaveMessages(IEnumerable<(Contexts, DiscordRequest, ulong)> messages, ulong channelId)
+        {
+            var convertedMessages = ConvertToMessages(messages);
+            var command = new AddMessagesCommand(convertedMessages, channelId);
+            await _commandBus.ExecuteAsync(command);
+        }
+        
+        private IEnumerable<Message> ConvertToMessages(IEnumerable<(Contexts contexts, DiscordRequest request, ulong)> messages)
+        {
+            return messages.Select(x =>
+            {
+                var (contexts, request, _) = x;
+                var builder = Message.Create(request.OriginalMessage);
+                builder.WithAuthor(contexts.User.Id, contexts.User.Name);
+                builder.WithChannel(contexts.Channel.Id, contexts.Channel.Name);
+                builder.WithServer(contexts.Server.Id, contexts.Server.Name, contexts.Server.Owner.Id, contexts.Server.Owner.Name);
+                builder.WithSentAtDate(request.SentAt);
+                return builder.Build();
+            });
         }
     }
 }
