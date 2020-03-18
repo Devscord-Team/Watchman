@@ -42,8 +42,8 @@ namespace Watchman.Discord.Areas.Statistics.Services
                 return default;
             }
 
-            var sortedMessages = serverMessages.OrderByDescending(x => x.CreatedAt).ToList();
-            var latestDateBasedOnPeriod = this.GetLatestDateBasedOnPeriod(sortedMessages.First().CreatedAt, period);
+            var sortedMessages = serverMessages.OrderByDescending(x => x.SentAt).ToList();
+            var latestDateBasedOnPeriod = this.GetLatestDateBasedOnPeriod(sortedMessages.First().SentAt, period);
 
             var statisticsPerPeriod = this.SplitMessagesToReportsPerPeriod(sortedMessages, latestDateBasedOnPeriod, period);
 
@@ -58,12 +58,12 @@ namespace Watchman.Discord.Areas.Statistics.Services
         private IEnumerable<StatisticsReportPeriod> SplitMessagesToReportsPerPeriod(List<Message> messages, DateTime latestDate, Period period)
         {
             var result = new List<StatisticsReportPeriod>();
-            var lastMessageDate = messages.Last().CreatedAt.Date;
+            var lastMessageDate = messages.Last().SentAt.Date;
 
             var currentPeriod = TimeRange.Create(this.GetOldestMessageInCurrentPeriod(latestDate, period), latestDate);
             do
             {
-                var messagesInCurrentPeriod = messages.Where(x => x.CreatedAt >= currentPeriod.Start && x.CreatedAt <= currentPeriod.End);
+                var messagesInCurrentPeriod = messages.Where(x => x.SentAt >= currentPeriod.Start && x.SentAt <= currentPeriod.End);
                 var statisticsInCurrentPeriod = new StatisticsReportPeriod
                 {
                     MessagesQuantity = messagesInCurrentPeriod.Count(),

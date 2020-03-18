@@ -62,7 +62,7 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
 #if DEBUG
             //TODO it should be inside messages service... or responses service
             var dataToMessage = "```json\n" + JsonConvert.SerializeObject(report.StatisticsPerPeriod.Where(x => x.MessagesQuantity > 0), Formatting.Indented) + "\n```";
-            messagesService.SendMessage(dataToMessage);
+            Log.Information(dataToMessage);
 #endif
             var path = _chartsService.GetImageStatisticsPerPeriod(report);
             messagesService.SendFile(path);
