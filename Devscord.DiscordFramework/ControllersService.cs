@@ -28,7 +28,7 @@ namespace Devscord.DiscordFramework
 
         public async Task Run(DiscordRequest request, Contexts contexts)
         {
-            if(this._controllersContainer == null)
+            if (this._controllersContainer == null)
             {
                 this.LoadControllers();
             }
@@ -39,7 +39,7 @@ namespace Devscord.DiscordFramework
             {
                 var readAlwaysMethods = this._controllersContainer.WithReadAlways;
                 var readAlwaysTask = Task.Run(() => RunMethods(request, contexts, readAlwaysMethods, true));
-                
+
                 Task commandsTask = null;
                 if (request.IsCommandForBot)
                 {
@@ -67,11 +67,11 @@ namespace Devscord.DiscordFramework
 
         private void RunMethods(DiscordRequest request, Contexts contexts, IEnumerable<ControllerInfo> controllers, bool isReadAlways)
         {
-            Parallel.ForEach(controllers, controllerInfo => 
+            foreach (var controllerInfo in controllers)
             {
                 using (LogContext.PushProperty("Controller", controllerInfo.Controller.GetType().Name))
                 {
-                    foreach(var method in controllerInfo.Methods)
+                    foreach (var method in controllerInfo.Methods)
                     {
                         if (isReadAlways)
                         {
@@ -86,7 +86,7 @@ namespace Devscord.DiscordFramework
                         }
                     }
                 }
-            });
+            }
         }
 
         private bool IsValid(Contexts contexts, MethodInfo method)
