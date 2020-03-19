@@ -1,5 +1,4 @@
-﻿using Devscord.DiscordFramework.Middlewares.Contexts;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Watchman.Common.Models;
@@ -33,10 +32,8 @@ namespace Watchman.Discord.Areas.Statistics.Services
 
 
         //TODO unit test
-        public StatisticsReport CreateReport(IEnumerable<Message> messages, Period period, DiscordServerContext serverContext)
+        public StatisticsReport CreateReport(List<Message> serverMessages, Period period)
         {
-            var serverMessages = messages.Where(x => x.Server.Id == serverContext.Id).ToList();
-
             if (!serverMessages.Any())
             {
                 return default;
@@ -45,7 +42,7 @@ namespace Watchman.Discord.Areas.Statistics.Services
             var sortedMessages = serverMessages.OrderByDescending(x => x.SentAt).ToList();
             var latestDateBasedOnPeriod = this.GetLatestDateBasedOnPeriod(sortedMessages.First().SentAt, period);
 
-            var statisticsPerPeriod = this.SplitMessagesToReportsPerPeriod(sortedMessages, latestDateBasedOnPeriod, period);
+            var statisticsPerPeriod = this.SplitMessagesToReportsPerPeriod(sortedMessages, latestDateBasedOnPeriod, period).ToList();
 
             return new StatisticsReport
             {

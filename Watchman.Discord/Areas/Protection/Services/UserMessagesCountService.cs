@@ -4,6 +4,7 @@ using System.Linq;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Protection.Models;
+using Watchman.DomainModel.Messages;
 using Watchman.DomainModel.Messages.Queries;
 
 namespace Watchman.Discord.Areas.Protection.Services
@@ -12,7 +13,7 @@ namespace Watchman.Discord.Areas.Protection.Services
     {
         private readonly IQueryBus _queryBus;
         private DateTime _lastUpdated;
-        private List<ServerMessagesCount> _serverMessagesQuantity;
+        private List<ServerMessagesCount> _everyServersMessagesQuantity;
 
         public UserMessagesCountService(IQueryBus queryBus)
         {
@@ -21,24 +22,45 @@ namespace Watchman.Discord.Areas.Protection.Services
 
         public int CountMessages(Contexts contexts)
         {
-            if (_serverMessagesQuantity == null || _lastUpdated.AddHours(12) < DateTime.UtcNow)
+            if (ShouldReloadCache())
             {
-                _lastUpdated = DateTime.UtcNow;
-
-                var query = new GetMessagesQuery();
-                var messages = _queryBus.Execute(query).Messages.ToList();
-
-                var serversMessages = messages
-                    .GroupBy(x => x.Server.Id)
-                    .ToList();
-
-                this._serverMessagesQuantity = serversMessages
-                    .Select(x => new ServerMessagesCount(x.ToList(), x.Key))
-                    .ToList();
+                ReloadCache();
             }
 
-            var userCount = _serverMessagesQuantity?.FirstOrDefault(x => x.ServerId == contexts.Server.Id)?
-                .UsersMessagesQuantity.FirstOrDefault(x => x.UserId == contexts.User.Id);
+            return GetOneUserFromOneServerCount(contexts.User.Id, contexts.Server.Id);
+        }
+
+        private bool ShouldReloadCache()
+        {
+            return _everyServersMessagesQuantity == null || _lastUpdated.AddHours(12) < DateTime.UtcNow;
+        }
+
+        private void ReloadCache()
+        {
+            _lastUpdated = DateTime.UtcNow;
+
+            var getAllMessages = new GetMessagesQuery(0);
+            var messages = _queryBus.Execute(getAllMessages).Messages.ToList();
+            var groupedServerMessages = GroupMessagesIntoServers(messages);
+            MakeServerMessagesCounts(groupedServerMessages);
+        }
+
+        private IEnumerable<IGrouping<ulong, Message>> GroupMessagesIntoServers(List<Message> messages)
+        {
+            return messages.GroupBy(x => x.Server.Id);
+        }
+
+        private void MakeServerMessagesCounts(IEnumerable<IGrouping<ulong, Message>> groups)
+        {
+            this._everyServersMessagesQuantity = groups
+                .Select(x => new ServerMessagesCount(x.ToList(), x.Key))
+                .ToList();
+        }
+
+        private int GetOneUserFromOneServerCount(ulong userId, ulong serverId)
+        {
+            var userCount = _everyServersMessagesQuantity?.FirstOrDefault(x => x.ServerId == serverId)?
+                .UsersMessagesQuantity.FirstOrDefault(x => x.UserId == userId);
 
             return userCount?.messagesQuantity ?? 0;
         }
