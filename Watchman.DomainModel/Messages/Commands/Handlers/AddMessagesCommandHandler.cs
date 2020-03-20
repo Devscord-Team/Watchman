@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
+using Watchman.DomainModel.Messages.Services;
 using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Messages.Commands.Handlers
@@ -14,10 +13,12 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
         private ulong _cashedChannelId;
 
         private readonly ISessionFactory _sessionFactory;
+        private readonly Md5HashService _md5HashService;
 
-        public AddMessagesCommandHandler(ISessionFactory sessionFactory)
+        public AddMessagesCommandHandler(ISessionFactory sessionFactory, Md5HashService md5HashService)
         {
             _sessionFactory = sessionFactory;
+            _md5HashService = md5HashService;
         }
 
         public async Task HandleAsync(AddMessagesCommand command)
@@ -37,7 +38,7 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
 
             return messages.Where(x =>
             {
-                var isMessageNew = existingHashes.BinarySearch(GetHash(x)) < 0;
+                var isMessageNew = existingHashes.BinarySearch(_md5HashService.GetHash(x)) < 0;
                 return isMessageNew;
             });
         }
@@ -53,7 +54,7 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
             var channelMessagesHashes = session.Get<Message>()
                 .Where(x => x.Channel.Id == channelId)
                 .AsEnumerable()
-                .Select(GetHash)
+                .Select(_md5HashService.GetHash)
                 .ToList() // ToList must be here
                 .OrderBy(x => x)
                 .ToList(); 
@@ -61,21 +62,6 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
             _cashedChannelId = channelId;
             _cashedExistingMessagesHashes = channelMessagesHashes;
             return channelMessagesHashes;
-        }
-
-        private string GetHash(Message message)
-        {
-            var stringToMd5 = message.SentAt.Ticks.ToString() + message.Author;
-            var bytes = Encoding.ASCII.GetBytes(stringToMd5);
-            using var md5 = MD5.Create();
-            var hashed = md5.ComputeHash(bytes);
-
-            var builder = new StringBuilder();
-            foreach (var b in hashed)
-            {
-                builder.Append(b.ToString("x2"));
-            }
-            return builder.ToString();
         }
     }
 }
