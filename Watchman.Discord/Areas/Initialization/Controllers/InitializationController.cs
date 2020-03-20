@@ -9,8 +9,6 @@ using Devscord.DiscordFramework.Services;
 using Serilog;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Initialization.Services;
-using Watchman.DomainModel.Messages;
-using Watchman.DomainModel.Messages.Commands;
 using Watchman.DomainModel.Responses.Commands;
 using Watchman.DomainModel.Responses.Queries;
 
@@ -22,15 +20,15 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
         private readonly ICommandBus _commandBus;
         private readonly MuteRoleInitService _muteRoleInitService;
         private readonly UsersRolesService _usersRolesService;
-        private readonly ReadMessagesHistoryService _readMessagesHistoryService;
+        private readonly ScanMessagesHistoryService _scanMessagesHistoryService;
 
-        public InitializationController(IQueryBus queryBus, ICommandBus commandBus, MuteRoleInitService muteRoleInitService, UsersRolesService usersRolesService, ReadMessagesHistoryService readMessagesHistoryService)
+        public InitializationController(IQueryBus queryBus, ICommandBus commandBus, MuteRoleInitService muteRoleInitService, UsersRolesService usersRolesService, ScanMessagesHistoryService scanMessagesHistoryService)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;
             this._muteRoleInitService = muteRoleInitService;
             this._usersRolesService = usersRolesService;
-            _readMessagesHistoryService = readMessagesHistoryService;
+            _scanMessagesHistoryService = scanMessagesHistoryService;
         }
 
         [AdminCommand]
@@ -40,7 +38,7 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
         {
             _ = ResponsesInit();
             _ = MuteRoleInit(contexts);
-            _ = ReadMessagesHistory(contexts.Server);
+            _ = ReadServerMessagesHistory(contexts.Server);
         }
 
         private async Task ResponsesInit()
@@ -88,61 +86,15 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
             Log.Information("Mute role initialized");
         }
 
-        private async Task ReadMessagesHistory(DiscordServerContext server)
+        private async Task ReadServerMessagesHistory(DiscordServerContext server)
         {
             Log.Information("Reading messages started");
-            const int LIMIT = 1000;
 
-            foreach (var channel in server.TextChannels)
+            foreach (var textChannel in server.TextChannels)
             {
-                if (channel.Name.Contains("logs"))
-                    continue;
-
-                var messages = (await _readMessagesHistoryService.ReadMessagesAsync(server, channel, LIMIT)).ToList();
-                if (messages.Count == 0)
-                {
-                    continue;
-                }
-
-                var lastMessageId = messages.Last().Id;
-                await SaveMessages(messages, channel.Id);
-
-                while (true)
-                {
-                    messages = (await _readMessagesHistoryService.ReadMessagesAsync(server, channel, LIMIT, lastMessageId, goBefore: true)).ToList();
-                    if (messages.Count == 0)
-                    {
-                        break;
-                    }
-
-                    await SaveMessages(messages, channel.Id);
-                    if (messages.Count < LIMIT)
-                    {
-                        break;
-                    }
-                    lastMessageId = messages.Last().Id;
-                }
+                await _scanMessagesHistoryService.ScanChannelHistory(server, textChannel);
             }
             Log.Information("Read messages history");
-        }
-        private async Task SaveMessages(IEnumerable<Devscord.DiscordFramework.Services.Models.Message> messages, ulong channelId)
-        {
-            var convertedMessages = ConvertToMessages(messages);
-            var command = new AddMessagesCommand(convertedMessages, channelId);
-            await _commandBus.ExecuteAsync(command);
-        }
-        
-        private IEnumerable<Message> ConvertToMessages(IEnumerable<Devscord.DiscordFramework.Services.Models.Message> messages)
-        {
-            return messages.Select(x =>
-            {
-                var builder = Message.Create(x.Request.OriginalMessage);
-                builder.WithAuthor(x.Contexts.User.Id, x.Contexts.User.Name);
-                builder.WithChannel(x.Contexts.Channel.Id, x.Contexts.Channel.Name);
-                builder.WithServer(x.Contexts.Server.Id, x.Contexts.Server.Name, x.Contexts.Server.Owner.Id, x.Contexts.Server.Owner.Name);
-                builder.WithSentAtDate(x.Request.SentAt);
-                return builder.Build();
-            });
         }
     }
 }
