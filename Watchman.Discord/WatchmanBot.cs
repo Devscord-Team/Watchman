@@ -44,7 +44,7 @@ namespace Watchman.Discord
             this._container = GetAutofacContainer(configuration);
             Log.Logger = SerilogInitializer.Initialize(this._container.Resolve<IMongoDatabase>(), this.LogOnChannel);
             Log.Information("Bot created...");
-            this._workflow = GetWorkflow(configuration, _container);
+            this._workflow = GetWorkflow(configuration);
         }
 
         public async Task Start()
@@ -92,13 +92,14 @@ namespace Watchman.Discord
             return message.Author.IsBot ? Task.CompletedTask : this._workflow.Run(message);
         }
 
-        private Workflow GetWorkflow(DiscordConfiguration configuration, IContainer context)
+        private Workflow GetWorkflow(DiscordConfiguration configuration)
         {
-            var workflow = new Workflow(typeof(WatchmanBot).Assembly, context)
+            var workflow = new Workflow(typeof(WatchmanBot).Assembly, _container)
                 .AddMiddleware<ChannelMiddleware, ChannelContext>()
                 .AddMiddleware<ServerMiddleware, DiscordServerContext>()
                 .AddMiddleware<UserMiddleware, UserContext>();
-            workflow.WorkflowException += this.LogException;
+
+            workflow.WorkflowException += _container.Resolve<ExceptionHandlerService>().LogException;
             workflow.WorkflowException += this.PrintExceptionOnConsole;
 #if DEBUG
             workflow.WorkflowException += this.PrintDebugExceptionInfo;
@@ -123,45 +124,6 @@ namespace Watchman.Discord
                 {
                     Log.Warning(ex, "Cannot find logs channel");
                 }
-            }
-        }
-
-        private void LogException(Exception e, Contexts contexts)
-        {
-            var messagesService = _container.Resolve<MessagesServiceFactory>().Create(contexts);
-
-            var mostInnerException = e.InnerException ?? e;
-
-            while (mostInnerException.InnerException != null)
-            {
-                mostInnerException = mostInnerException.InnerException;
-            }
-
-            Log.Error(mostInnerException.ToString());
-
-            switch (mostInnerException)
-            {
-                case NotAdminPermissionsException _:
-                    messagesService.SendResponse(x => x.UserIsNotAdmin(), contexts);
-                    break;
-                case RoleNotFoundException roleExc:
-                    messagesService.SendResponse(x => x.RoleNotFound(roleExc.RoleName), contexts);
-                    break;
-                case UserDidntMentionedAnyUserToMuteException _:
-                    messagesService.SendResponse(x => x.UserDidntMentionedAnyUserToMute(), contexts);
-                    break;
-                case UserNotFoundException notFoundExc:
-                    messagesService.SendResponse(x => x.UserNotFound(notFoundExc.Mention), contexts);
-                    break;
-                case TimeCannotBeNegativeException _:
-                    messagesService.SendResponse(x => x.TimeCannotBeNegative(), contexts);
-                    break;
-                case TimeIsTooBigException _:
-                    messagesService.SendResponse(x => x.TimeIsTooBig(), contexts);
-                    break;
-                default:
-                    messagesService.SendMessage("Wystąpił nieznany wyjątek");
-                    break;
             }
         }
 
