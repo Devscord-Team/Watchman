@@ -49,12 +49,11 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
             {
                 return _cashedExistingMessagesHashes;
             }
-
+            
             using var session = _sessionFactory.Create();
             var channelMessagesHashes = session.Get<Message>()
                 .Where(x => x.Channel.Id == channelId)
-                .AsEnumerable()
-                .Select(_md5HashService.GetHash)
+                .Select(x => x.Md5Hash)
                 .ToList() // ToList must be here
                 .OrderBy(x => x)
                 .ToList(); 

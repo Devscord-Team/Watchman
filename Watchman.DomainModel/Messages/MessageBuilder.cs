@@ -39,6 +39,10 @@ namespace Watchman.DomainModel.Messages
             return this;
         }
 
-        public Message Build() => this._message;
+        public Message Build()
+        {
+            this._message.SetHash();
+            return this._message;
+        }
     }
 }
