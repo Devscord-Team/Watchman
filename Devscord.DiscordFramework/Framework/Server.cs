@@ -11,6 +11,7 @@ using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Framework.Commands.Parsing;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Factories;
+using Devscord.DiscordFramework.Services.Models;
 
 namespace Devscord.DiscordFramework.Framework
 {
@@ -138,7 +139,7 @@ namespace Devscord.DiscordFramework.Framework
             return Task.FromResult(serverContexts);
         }
 
-        public static async Task<IEnumerable<(Contexts contexts, DiscordRequest request, ulong messageId)>> GetMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong fromMessageId = 0, bool goBefore = true)
+        public static async Task<IEnumerable<Message>> GetMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong fromMessageId = 0, bool goBefore = true)
         {
             var textChannel = (SocketTextChannel)Server.GetChannel(channel.Id);
             IEnumerable<IMessage> channelMessages;
@@ -162,7 +163,7 @@ namespace Devscord.DiscordFramework.Framework
 
                 var commandParser = new CommandParser();
                 var request = commandParser.Parse(message.Content, message.Timestamp.UtcDateTime);
-                return (contexts, request, message.Id);
+                return new Message(message.Id, request, contexts);
             });
             return messages;
         }

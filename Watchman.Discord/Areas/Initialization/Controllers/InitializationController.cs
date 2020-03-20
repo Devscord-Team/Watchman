@@ -104,7 +104,7 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
                     continue;
                 }
 
-                var lastMessageId = messages.Last().messageId;
+                var lastMessageId = messages.Last().Id;
                 await SaveMessages(messages, channel.Id);
 
                 while (true)
@@ -120,28 +120,27 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
                     {
                         break;
                     }
-                    lastMessageId = messages.Last().messageId;
+                    lastMessageId = messages.Last().Id;
                 }
             }
             Log.Information("Read messages history");
         }
-        private async Task SaveMessages(IEnumerable<(Contexts, DiscordRequest, ulong)> messages, ulong channelId)
+        private async Task SaveMessages(IEnumerable<Devscord.DiscordFramework.Services.Models.Message> messages, ulong channelId)
         {
             var convertedMessages = ConvertToMessages(messages);
             var command = new AddMessagesCommand(convertedMessages, channelId);
             await _commandBus.ExecuteAsync(command);
         }
         
-        private IEnumerable<Message> ConvertToMessages(IEnumerable<(Contexts contexts, DiscordRequest request, ulong)> messages)
+        private IEnumerable<Message> ConvertToMessages(IEnumerable<Devscord.DiscordFramework.Services.Models.Message> messages)
         {
             return messages.Select(x =>
             {
-                var (contexts, request, _) = x;
-                var builder = Message.Create(request.OriginalMessage);
-                builder.WithAuthor(contexts.User.Id, contexts.User.Name);
-                builder.WithChannel(contexts.Channel.Id, contexts.Channel.Name);
-                builder.WithServer(contexts.Server.Id, contexts.Server.Name, contexts.Server.Owner.Id, contexts.Server.Owner.Name);
-                builder.WithSentAtDate(request.SentAt);
+                var builder = Message.Create(x.Request.OriginalMessage);
+                builder.WithAuthor(x.Contexts.User.Id, x.Contexts.User.Name);
+                builder.WithChannel(x.Contexts.Channel.Id, x.Contexts.Channel.Name);
+                builder.WithServer(x.Contexts.Server.Id, x.Contexts.Server.Name, x.Contexts.Server.Owner.Id, x.Contexts.Server.Owner.Name);
+                builder.WithSentAtDate(x.Request.SentAt);
                 return builder.Build();
             });
         }

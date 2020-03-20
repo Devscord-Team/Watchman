@@ -10,20 +10,23 @@ using System;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Devscord.DiscordFramework.Middlewares.Factories;
 
 namespace Devscord.DiscordFramework
 {
-    public class Workflow : Delegates
+    public class Workflow
     {
         private readonly CommandParser _commandParser = new CommandParser();
         private readonly MiddlewaresService _middlewaresService = new MiddlewaresService();
         private readonly ControllersService _controllersService;
 
+        public Func<Contexts, Task> UserJoined { get; set; }
         public Action<Exception, Contexts> WorkflowException { get; set; }
 
         public Workflow(Assembly botAssembly, IComponentContext context)
         {
             this._controllersService = new ControllersService(context, botAssembly);
+            Server.UserJoined += CallUserJoined;
         }
 
         public Workflow AddMiddleware<T, W>() 
@@ -56,6 +59,24 @@ namespace Devscord.DiscordFramework
             var channel = (ISocketMessageChannel)Server.GetChannel(channelId);
             message = new StringBuilder(message).FormatMessageIntoBlock("json").ToString();
             channel.SendMessageAsync(message);
+        }
+
+        private Task CallUserJoined(SocketGuildUser guildUser)
+        {
+            var userFactory = new UserContextsFactory();
+            var serverFactory = new DiscordServerContextFactory();
+
+            var userContext = userFactory.Create(guildUser);
+            var discordServerContext = serverFactory.Create(guildUser.Guild);
+            var landingChannel = discordServerContext.LandingChannel;
+
+            var contexts = new Contexts();
+            contexts.SetContext(userContext);
+            contexts.SetContext(discordServerContext);
+            contexts.SetContext(landingChannel);
+
+            UserJoined.Invoke(contexts);
+            return Task.CompletedTask;
         }
     }
 }

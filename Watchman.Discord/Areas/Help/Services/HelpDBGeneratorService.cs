@@ -23,24 +23,24 @@ namespace Watchman.Discord.Areas.Help.Services
         public void FillDatabase(IEnumerable<CommandInfo> commandInfosFromAssembly)
         {
             var commandInfosFromAssemblyList = commandInfosFromAssembly.ToList(); // for not multiple enumerating
-            var helpInfosInDb = _session.Get<HelpInformation>().ToList();
+            var helpInfos = _session.Get<HelpInformation>().ToList();
 
-            var newCommands = FindNewCommands(commandInfosFromAssemblyList, helpInfosInDb).ToList();
-            Task.Run(() => CheckIfExistsUselessHelp(commandInfosFromAssemblyList, helpInfosInDb));
+            var newCommands = FindNewCommands(commandInfosFromAssemblyList, helpInfos).ToList();
+            Task.Run(() => CheckIfExistsUselessHelp(commandInfosFromAssemblyList, helpInfos));
 
             var newHelpInfos = newCommands.Select(x => _helpInformationFactory.Create(x));
             _session.Add(newHelpInfos);
         }
 
-        private IEnumerable<CommandInfo> FindNewCommands(IEnumerable<CommandInfo> commandInfosFromAssembly, IEnumerable<HelpInformation> helpInfosInBase)
+        private IEnumerable<CommandInfo> FindNewCommands(IEnumerable<CommandInfo> commandInfosFromAssembly, IEnumerable<HelpInformation> helpInfos)
         {
-            var defaultHelpInfosInDb = helpInfosInBase.Where(x => x.IsDefault).ToList(); // for optimize checking only defaults
+            var defaultHelpInfosInDb = helpInfos.Where(x => x.IsDefault).ToList(); // for optimize checking only defaults
             return commandInfosFromAssembly.Where(x => defaultHelpInfosInDb.All(h => h.MethodFullName != x.MethodFullName));
         }
         
-        private Task CheckIfExistsUselessHelp(IEnumerable<CommandInfo> commandInfosFromAssembly, IEnumerable<HelpInformation> helpInfosInBase)
+        private Task CheckIfExistsUselessHelp(IEnumerable<CommandInfo> commandInfosFromAssembly, IEnumerable<HelpInformation> helpInfos)
         {
-            var oldUselessHelps = helpInfosInBase.Where(h => commandInfosFromAssembly.All(c => c.MethodFullName != h.MethodFullName));
+            var oldUselessHelps = helpInfos.Where(h => commandInfosFromAssembly.All(c => c.MethodFullName != h.MethodFullName));
             foreach (var oldHelp in oldUselessHelps)
             {
                 Log.Warning($"Useless help info for method {oldHelp.MethodFullName}");
