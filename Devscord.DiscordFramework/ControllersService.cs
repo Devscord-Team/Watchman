@@ -80,7 +80,7 @@ namespace Devscord.DiscordFramework
                         }
 
                         var command = method.GetAttributeInstances<DiscordCommand>();
-                        if (IsValid(contexts, method) && IsMatchedCommand(command, request))
+                        if (IsMatchedCommand(command, request) && IsValid(contexts, method))
                         {
                             InvokeMethod(request, contexts, controllerInfo, method);
                         }
