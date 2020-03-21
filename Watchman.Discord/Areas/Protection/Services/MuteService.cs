@@ -1,5 +1,4 @@
 ﻿#nullable enable
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -36,7 +35,10 @@ namespace Watchman.Discord.Areas.Protection.Services
         public async Task MuteUserOrOverwrite(Contexts contexts, MuteEvent muteEvent, UserContext userToMute)
         {
             var possiblePreviousUserMuteEvent = GetNotUnmutedUserMuteEvent(contexts.Server, userToMute);
-            if (possiblePreviousUserMuteEvent != null)
+            var isAnyMuteEventToOverwrite = possiblePreviousUserMuteEvent != null;
+            var shouldJustMuteAgainTheSameMuteEvent = possiblePreviousUserMuteEvent?.Id == muteEvent.Id;
+
+            if (isAnyMuteEventToOverwrite && !shouldJustMuteAgainTheSameMuteEvent)
             {
                 var markAsUnmuted = new MarkMuteEventAsUnmutedCommand(possiblePreviousUserMuteEvent.Id);
                 await _commandBus.ExecuteAsync(markAsUnmuted);

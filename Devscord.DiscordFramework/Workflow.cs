@@ -1,20 +1,16 @@
 ﻿using Autofac;
-using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Framework;
-using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Framework.Commands.Parsing;
-using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Discord.WebSocket;
 using Serilog;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Devscord.DiscordFramework.Middlewares.Factories;
 
 namespace Devscord.DiscordFramework
 {
@@ -24,11 +20,13 @@ namespace Devscord.DiscordFramework
         private readonly MiddlewaresService _middlewaresService = new MiddlewaresService();
         private readonly ControllersService _controllersService;
 
+        public Func<Contexts, Task> UserJoined { get; set; }
         public Action<Exception, Contexts> WorkflowException { get; set; }
 
         public Workflow(Assembly botAssembly, IComponentContext context)
         {
             this._controllersService = new ControllersService(context, botAssembly);
+            Server.UserJoined += CallUserJoined;
         }
 
         public Workflow AddMiddleware<T, W>() 
@@ -40,21 +38,20 @@ namespace Devscord.DiscordFramework
             return this;
         }
 
-        public Task Run(SocketMessage socketMessage)
+        public async Task Run(SocketMessage socketMessage)
         {
             Log.Information("Processing message: {content} from user {user} started", socketMessage.Content, socketMessage.Author);
-            var request = _commandParser.Parse(socketMessage.Content);
+            var request = _commandParser.Parse(socketMessage.Content, socketMessage.Timestamp.UtcDateTime);
             var contexts = this._middlewaresService.RunMiddlewares(socketMessage);
             try
             {
-                this._controllersService.Run(request, contexts);
+                await this._controllersService.Run(request, contexts);
             }
             catch (Exception e)
             {
                 Log.Error(e, e.StackTrace);
                 WorkflowException.Invoke(e, contexts);
             }
-            return Task.CompletedTask;
         }
 
         public void LogOnChannel(string message, ulong channelId)
@@ -62,6 +59,24 @@ namespace Devscord.DiscordFramework
             var channel = (ISocketMessageChannel)Server.GetChannel(channelId);
             message = new StringBuilder(message).FormatMessageIntoBlock("json").ToString();
             channel.SendMessageAsync(message);
+        }
+
+        private Task CallUserJoined(SocketGuildUser guildUser)
+        {
+            var userFactory = new UserContextsFactory();
+            var serverFactory = new DiscordServerContextFactory();
+
+            var userContext = userFactory.Create(guildUser);
+            var discordServerContext = serverFactory.Create(guildUser.Guild);
+            var landingChannel = discordServerContext.LandingChannel;
+
+            var contexts = new Contexts();
+            contexts.SetContext(userContext);
+            contexts.SetContext(discordServerContext);
+            contexts.SetContext(landingChannel);
+
+            UserJoined.Invoke(contexts);
+            return Task.CompletedTask;
         }
     }
 }

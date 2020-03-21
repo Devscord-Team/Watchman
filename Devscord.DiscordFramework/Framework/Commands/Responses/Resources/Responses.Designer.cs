@@ -61,15 +61,6 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ```Obecna wersja: {{version}}```.
-        /// </summary>
-        public static string CurrentVersion {
-            get {
-                return ResourceManager.GetString("CurrentVersion", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Użytkownik {{user}} został zmutowany do {{timeEnd}}UTC.
         /// </summary>
         public static string MutedUser {
@@ -165,6 +156,33 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         public static string SpamAlertUserIsMuted {
             get {
                 return ResourceManager.GetString("SpamAlertUserIsMuted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spam alert! Użytkownik {{user}} został zmutowany na dłużej.
+        /// </summary>
+        public static string SpamAlertUserIsMutedForLong {
+            get {
+                return ResourceManager.GetString("SpamAlertUserIsMutedForLong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Czas nie może być ujemny!.
+        /// </summary>
+        public static string TimeCannotBeNegative {
+            get {
+                return ResourceManager.GetString("TimeCannotBeNegative", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Podano za dużą wartość czasu!.
+        /// </summary>
+        public static string TimeIsTooBig {
+            get {
+                return ResourceManager.GetString("TimeIsTooBig", resourceCulture);
             }
         }
         

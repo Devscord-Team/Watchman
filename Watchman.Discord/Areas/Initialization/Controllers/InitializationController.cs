@@ -20,13 +20,15 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
         private readonly ICommandBus _commandBus;
         private readonly MuteRoleInitService _muteRoleInitService;
         private readonly UsersRolesService _usersRolesService;
+        private readonly ServerScanningService _serverScanningService;
 
-        public InitializationController(IQueryBus queryBus, ICommandBus commandBus, MuteRoleInitService muteRoleInitService, UsersRolesService usersRolesService, UsersService usersService)
+        public InitializationController(IQueryBus queryBus, ICommandBus commandBus, MuteRoleInitService muteRoleInitService, UsersRolesService usersRolesService, ServerScanningService serverScanningService)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;
             this._muteRoleInitService = muteRoleInitService;
             this._usersRolesService = usersRolesService;
+            _serverScanningService = serverScanningService;
         }
 
         [AdminCommand]
@@ -35,9 +37,8 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
         public void Init(DiscordRequest request, Contexts contexts)
         {
             _ = ResponsesInit();
-            Log.Debug("Responses initialized");
             _ = MuteRoleInit(contexts);
-            Log.Debug("Mute role initialized");
+            _ = ReadServerMessagesHistory(contexts.Server);
         }
 
         private async Task ResponsesInit()
@@ -49,6 +50,7 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
 
             var command = new AddResponsesCommand(responsesToAdd);
             await _commandBus.ExecuteAsync(command);
+            Log.Information("Responses initialized");
         }
 
         private IEnumerable<DomainModel.Responses.Response> GetResponsesFromBase()
@@ -65,9 +67,10 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
                 .Select(prop =>
                 {
                     var onEvent = prop.Name;
-                    var message = prop.GetValue(prop).ToString();
+                    var message = prop.GetValue(prop)?.ToString();
                     return new DomainModel.Responses.Response(onEvent, message);
-                });
+                })
+                .ToList();
 
             return defaultResponses;
         }
@@ -80,6 +83,18 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
             {
                 await _muteRoleInitService.InitForServer(contexts);
             }
+            Log.Information("Mute role initialized");
+        }
+
+        private async Task ReadServerMessagesHistory(DiscordServerContext server)
+        {
+            Log.Information("Reading messages started");
+
+            foreach (var textChannel in server.TextChannels)
+            {
+                await _serverScanningService.ScanChannelHistory(server, textChannel);
+            }
+            Log.Information("Read messages history");
         }
     }
 }

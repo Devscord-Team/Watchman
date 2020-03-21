@@ -37,12 +37,12 @@ namespace Watchman.Discord.Areas.Protection.Services
             return userToMute;
         }
 
-        public MuteEvent GetMuteEvent(ulong userId, Contexts contexts)
+        public MuteEvent GetMuteEvent(ulong userId, Contexts contexts, DateTime startTime)
         {
             var reason = _request.Arguments.FirstOrDefault(x => x.Name == "reason")?.Value;
             var forTime = _request.Arguments.FirstOrDefault(x => x.Name == "time")?.Value;
 
-            var timeRange = TimeRange.Create(DateTime.UtcNow, DateTime.UtcNow + ParseToTimeSpan(forTime));
+            var timeRange = TimeRange.Create(startTime, startTime + ParseToTimeSpan(forTime));
             return new MuteEvent(userId, timeRange, reason, contexts.Server.Id);
         }
 
@@ -68,6 +68,16 @@ namespace Watchman.Discord.Areas.Protection.Services
             time = time[..^1];
             time = time.Replace(',', '.');
             double.TryParse(time, NumberStyles.Any, CultureInfo.InvariantCulture, out var asNumber);
+
+            if (asNumber <= 0)
+            {
+                throw new TimeCannotBeNegativeException();
+            }
+
+            if (asNumber >= int.MaxValue)
+            {
+                throw new TimeIsTooBigException();
+            }
 
             return lastChar switch
             {

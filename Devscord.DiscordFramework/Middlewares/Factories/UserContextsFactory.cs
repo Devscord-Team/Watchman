@@ -1,11 +1,12 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Discord;
 using Discord.WebSocket;
 
 namespace Devscord.DiscordFramework.Middlewares.Factories
 {
-    internal class UserContextsFactory : IContextFactory<SocketGuildUser, UserContext>
+    internal class UserContextsFactory : IContextFactory<IUser, UserContext>
     {
         private readonly UserRoleFactory _userRoleFactory;
 
@@ -14,9 +15,10 @@ namespace Devscord.DiscordFramework.Middlewares.Factories
             this._userRoleFactory = new UserRoleFactory();
         }
 
-        public UserContext Create(SocketGuildUser user)
+        public UserContext Create(IUser user)
         {
-            var roles = user.Roles.Select(x => _userRoleFactory.Create(x));
+            var socketGuildUser = user as SocketGuildUser;
+            var roles = socketGuildUser?.Roles.Select(x => _userRoleFactory.Create(x)) ?? new List<UserRole>();
             var avatarUrl = user.GetAvatarUrl(ImageFormat.Png, 2048);
 
             return new UserContext(user.Id, user.ToString(), roles, avatarUrl, user.Mention);

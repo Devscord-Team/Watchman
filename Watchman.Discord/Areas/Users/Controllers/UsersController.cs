@@ -15,23 +15,21 @@ namespace Watchman.Discord.Areas.Users.Controllers
 {
     public class UsersController : IController
     {
-        private readonly IQueryBus queryBus;
-        private readonly ICommandBus commandBus;
-        private readonly MessagesServiceFactory messagesServiceFactory;
-        private readonly RolesService rolesService;
+        private readonly IQueryBus _queryBus;
+        private readonly MessagesServiceFactory _messagesServiceFactory;
+        private readonly RolesService _rolesService;
 
-        public UsersController(IQueryBus queryBus, ICommandBus commandBus, MessagesServiceFactory messagesServiceFactory, RolesService rolesService)
+        public UsersController(IQueryBus queryBus, MessagesServiceFactory messagesServiceFactory, RolesService rolesService)
         {
-            this.queryBus = queryBus;
-            this.commandBus = commandBus;
-            this.messagesServiceFactory = messagesServiceFactory;
-            this.rolesService = rolesService;
+            this._queryBus = queryBus;
+            this._messagesServiceFactory = messagesServiceFactory;
+            this._rolesService = rolesService;
         }
 
         [DiscordCommand("avatar")]
         public void GetAvatar(DiscordRequest request, Contexts contexts)
         {
-            var messageService = messagesServiceFactory.Create(contexts);
+            var messageService = _messagesServiceFactory.Create(contexts);
             messageService.SendMessage(contexts.User.AvatarUrl);
         }
 
@@ -39,25 +37,25 @@ namespace Watchman.Discord.Areas.Users.Controllers
         public void AddRole(DiscordRequest request, Contexts contexts)
         {
             var commandRole = request.OriginalMessage.ToLowerInvariant().Replace("-add role ", string.Empty); //TODO use DiscordRequest properties
-            var safeRoles = this.queryBus.Execute(new GetDiscordServerSafeRolesQuery()).SafeRoles;
-            var messagesService = messagesServiceFactory.Create(contexts);
-            rolesService.AddRoleToUser(safeRoles, messagesService, contexts, commandRole);
+            var safeRoles = this._queryBus.Execute(new GetDiscordServerSafeRolesQuery()).SafeRoles;
+            var messagesService = _messagesServiceFactory.Create(contexts);
+            _rolesService.AddRoleToUser(safeRoles, messagesService, contexts, commandRole);
         }
 
         [DiscordCommand("remove role")] //todo
         public void RemoveRole(DiscordRequest request, Contexts contexts)
         {
             var commandRole = request.OriginalMessage.ToLowerInvariant().Replace("-remove role ", string.Empty); //TODO use DiscordRequest properties
-            var safeRoles = this.queryBus.Execute(new GetDiscordServerSafeRolesQuery()).SafeRoles;
-            var messagesService = messagesServiceFactory.Create(contexts);
-            rolesService.DeleteRoleFromUser(safeRoles, messagesService, contexts, commandRole);
+            var safeRoles = this._queryBus.Execute(new GetDiscordServerSafeRolesQuery()).SafeRoles;
+            var messagesService = _messagesServiceFactory.Create(contexts);
+            _rolesService.DeleteRoleFromUser(safeRoles, messagesService, contexts, commandRole);
         }
 
         [DiscordCommand("roles")]
         public void PrintRoles(DiscordRequest request, Contexts contexts)
         {
-            var messageService = messagesServiceFactory.Create(contexts);
-            var safeRoles = this.queryBus.Execute(new GetDiscordServerSafeRolesQuery()).SafeRoles;
+            var messageService = _messagesServiceFactory.Create(contexts);
+            var safeRoles = this._queryBus.Execute(new GetDiscordServerSafeRolesQuery()).SafeRoles;
             var output = new StringBuilder();
             output.PrintManyLines("Dostępne role:", safeRoles.Select(x => x.Name).ToArray(), true);
             messageService.SendMessage(output.ToString());
@@ -68,14 +66,14 @@ namespace Watchman.Discord.Areas.Users.Controllers
         public void AddOrRemoveAdmin(DiscordRequest request, Contexts contexts)
         {
             var roles = new List<Role> {new Role("admin")};
-            var messagesService = messagesServiceFactory.Create(contexts);
+            var messagesService = _messagesServiceFactory.Create(contexts);
             if (contexts.User.IsAdmin)
             {
-                rolesService.DeleteRoleFromUser(roles, messagesService, contexts, "admin");
+                _rolesService.DeleteRoleFromUser(roles, messagesService, contexts, "admin");
             }
             else
             {
-                rolesService.AddRoleToUser(roles, messagesService, contexts, "admin");
+                _rolesService.AddRoleToUser(roles, messagesService, contexts, "admin");
             }
         }
 #endif

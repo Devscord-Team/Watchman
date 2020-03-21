@@ -22,7 +22,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.Parsing.Models
             var commandParser = new CommandParser();
 
             //Act
-            var result = commandParser.Parse(message);
+            var result = commandParser.Parse(message, DateTime.UtcNow);
 
             //Assert
             Assert.AreEqual(shouldTrue, result.HasArgument(name));
@@ -46,7 +46,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.Parsing.Models
             var commandParser = new CommandParser();
 
             //Act
-            var result = commandParser.Parse(message);
+            var result = commandParser.Parse(message, DateTime.UtcNow);
 
             //Assert
             Assert.AreEqual(shouldTrue, result.HasArgument(name, value));

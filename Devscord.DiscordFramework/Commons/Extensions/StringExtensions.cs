@@ -1,14 +1,20 @@
-﻿using System.Text.RegularExpressions;
-
-namespace Devscord.DiscordFramework.Commons.Extensions
+﻿namespace Devscord.DiscordFramework.Commons.Extensions
 {
     public static class StringExtensions
     {
         public static string CutStart(this string value, string toCut)
         {
-            return string.IsNullOrEmpty(toCut) 
+            return string.IsNullOrEmpty(toCut)
                 ? value
-                : Regex.Replace(value, $@"^{toCut}", string.Empty, RegexOptions.Compiled);
+                : Replace(value, toCut);
+        }
+
+        private static string Replace(string value, string toCut)
+        {
+            if (!value.StartsWith(toCut))
+                return value;
+
+            return value[toCut.Length..];
         }
     }
 }

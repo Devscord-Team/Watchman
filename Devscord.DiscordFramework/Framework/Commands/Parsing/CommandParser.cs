@@ -11,13 +11,13 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
     {
         private readonly string[] _possiblePrefixes = { "!", "--", "-", "^", "$", "%" };
 
-        public DiscordRequest Parse(string message)
+        public DiscordRequest Parse(string message, DateTime sentAt)
         {
             var original = (string)message.Clone();
             var prefix = this.GetPrefix(message);
             if (string.IsNullOrWhiteSpace(prefix))
             {
-                return new DiscordRequest { OriginalMessage = original };
+                return new DiscordRequest { OriginalMessage = original, SentAt = sentAt };
             }
             message = message.CutStart(prefix);
 
@@ -33,7 +33,8 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
                 Prefix = prefix,
                 Name = name,
                 Arguments = arguments,
-                OriginalMessage = original
+                OriginalMessage = original,
+                SentAt = sentAt
             };
         }
 

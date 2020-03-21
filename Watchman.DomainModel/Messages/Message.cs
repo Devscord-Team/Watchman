@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using Watchman.DomainModel.Messages.Services;
 using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Messages
@@ -11,6 +10,8 @@ namespace Watchman.DomainModel.Messages
         public Channel Channel { get; private set; }
         public Server Server { get; private set; }
         public string Content { get; private set; }
+        public DateTime SentAt { get; private set; }
+        public string Md5Hash { get; private set; }
 
         private Message(string content)
         {
@@ -24,7 +25,7 @@ namespace Watchman.DomainModel.Messages
 
         public void SetAuthor(User author)
         {
-            if(author == this.Author)
+            if (author == this.Author)
             {
                 return;
             }
@@ -61,6 +62,21 @@ namespace Watchman.DomainModel.Messages
             this.Content = content;
             this.Update();
         }
-    }
 
+        public void SetSentAt(DateTime sentAt)
+        {
+            if (sentAt == this.SentAt)
+            {
+                return;
+            }
+            this.SentAt = sentAt;
+            this.Update();
+        }
+
+        public void SetHash(IHashService hashService)
+        {
+            this.Md5Hash = hashService.GetHash(this);
+            this.Update();
+        }
+    }
 }

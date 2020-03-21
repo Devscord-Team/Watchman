@@ -14,13 +14,14 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Discord.Areas.Help.Services;
 using System.Text;
-using System.Collections.Generic;
 using Devscord.DiscordFramework.Commons.Extensions;
 using System.Linq;
 using Devscord.DiscordFramework.Commons.Exceptions;
 using Watchman.Integrations.Logging;
 using MongoDB.Driver;
 using Serilog;
+using Watchman.Discord.Areas.Protection.Services;
+using Watchman.Discord.Areas.Users.Services;
 
 namespace Watchman.Discord
 {
@@ -39,25 +40,23 @@ namespace Watchman.Discord
                 TotalShards = 1
             });
             this._client.MessageReceived += this.MessageReceived;
-
+            
             this._container = GetAutofacContainer(configuration);
             Log.Logger = SerilogInitializer.Initialize(this._container.Resolve<IMongoDatabase>(), this.LogOnChannel);
             Log.Information("Bot created...");
-            this._workflow = GetWorkflow(configuration, _container);
+            this._workflow = GetWorkflow(configuration);
         }
 
         public async Task Start()
         {
             MongoConfiguration.Initialize();
-            ServerInitializer.Initialize(_client, _container.Resolve<MessagesServiceFactory>());
+            ServerInitializer.Initialize(_client);
 
             _ = Task.Run(DefaultHelpInit);
-            
+            AssignEvents();
+
             await _client.LoginAsync(TokenType.Bot, this._configuration.Token);
             await _client.StartAsync();
-            _client.Ready += UnmuteUsers;
-            _client.Ready += () => Task.Run(() => Log.Information("Bot started and logged in..."));
-
             await Task.Delay(-1);
         }
 
@@ -66,6 +65,14 @@ namespace Watchman.Discord
             var dataCollector = _container.Resolve<HelpDataCollectorService>();
             var helpService = _container.Resolve<HelpDBGeneratorService>();
             helpService.FillDatabase(dataCollector.GetCommandsInfo(typeof(WatchmanBot).Assembly));
+        }
+
+        private void AssignEvents()
+        {
+            _client.Ready += UnmuteUsers;
+            _client.Ready += () => Task.Run(() => Log.Information("Bot started and logged in..."));
+            _workflow.UserJoined += _container.Resolve<WelcomeUserService>().WelcomeUser;
+            _workflow.UserJoined += _container.Resolve<MutingRejoinedUsersService>().MuteAgainIfNeeded;
         }
 
         private async Task UnmuteUsers()
@@ -85,13 +92,14 @@ namespace Watchman.Discord
             return message.Author.IsBot ? Task.CompletedTask : this._workflow.Run(message);
         }
 
-        private Workflow GetWorkflow(DiscordConfiguration configuration, IContainer context)
+        private Workflow GetWorkflow(DiscordConfiguration configuration)
         {
-            var workflow = new Workflow(typeof(WatchmanBot).Assembly, context)
+            var workflow = new Workflow(typeof(WatchmanBot).Assembly, _container)
                 .AddMiddleware<ChannelMiddleware, ChannelContext>()
                 .AddMiddleware<ServerMiddleware, DiscordServerContext>()
                 .AddMiddleware<UserMiddleware, UserContext>();
-            workflow.WorkflowException += this.LogException;
+
+            workflow.WorkflowException += _container.Resolve<ExceptionHandlerService>().LogException;
             workflow.WorkflowException += this.PrintExceptionOnConsole;
 #if DEBUG
             workflow.WorkflowException += this.PrintDebugExceptionInfo;
@@ -101,7 +109,7 @@ namespace Watchman.Discord
 
         private void LogOnChannel(string message)
         {
-            if(this._workflow != null)
+            if (this._workflow != null)
             {
                 try
                 {
@@ -116,37 +124,6 @@ namespace Watchman.Discord
                 {
                     Log.Warning(ex, "Cannot find logs channel");
                 }
-            }
-        }
-
-        private void LogException(Exception e, Contexts contexts)
-        {
-            var messagesService = _container.Resolve<MessagesServiceFactory>().Create(contexts);
-
-            var mostInnerException = e.InnerException ?? e;
-            
-            while (mostInnerException.InnerException != null)
-            {
-                mostInnerException = mostInnerException.InnerException;
-            }
-
-            switch (mostInnerException)
-            {
-                case NotAdminPermissionsException _:
-                    messagesService.SendResponse(x => x.UserIsNotAdmin(), contexts);
-                    break;
-                case RoleNotFoundException roleExc:
-                    messagesService.SendResponse(x => x.RoleNotFound(roleExc.RoleName), contexts);
-                    break;
-                case UserDidntMentionedAnyUserToMuteException _:
-                    messagesService.SendResponse(x => x.UserDidntMentionedAnyUserToMute(), contexts);
-                    break;
-                case UserNotFoundException notFoundExc:
-                    messagesService.SendResponse(x => x.UserNotFound(notFoundExc.Mention), contexts);
-                    break;
-                default:
-                    messagesService.SendMessage("Wystąpił nieznany wyjątek");
-                    break;
             }
         }
 

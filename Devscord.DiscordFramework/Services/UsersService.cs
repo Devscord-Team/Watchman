@@ -2,23 +2,14 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Framework;
-using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Middlewares.Factories;
-using Devscord.DiscordFramework.Services.Factories;
 using Discord.WebSocket;
 
 namespace Devscord.DiscordFramework.Services
 {
     public class UsersService
     {
-        private readonly MessagesServiceFactory _messagesServiceFactory;
-
-        public UsersService(MessagesServiceFactory messagesServiceFactory)
-        {
-            _messagesServiceFactory = messagesServiceFactory;
-        }
-
         public Task AddRole(UserRole role, UserContext user, DiscordServerContext server)
         {
             var socketUser = GetUser(user, server);
@@ -40,13 +31,6 @@ namespace Devscord.DiscordFramework.Services
             var userContextFactory = new UserContextsFactory();
             var userContexts = guildUsers.Select(x => userContextFactory.Create(x));
             return userContexts;
-        }
-
-        public Task WelcomeUser(Contexts contexts)
-        {
-            var messagesService = _messagesServiceFactory.Create(contexts);
-            messagesService.SendResponse(x => x.NewUserArrived(contexts), contexts);
-            return Task.CompletedTask;
         }
 
         private SocketGuildUser GetUser(UserContext user, DiscordServerContext server)

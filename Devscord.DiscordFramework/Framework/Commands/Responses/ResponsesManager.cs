@@ -95,5 +95,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("UnmutedUser", new KeyValuePair<string, string>("user", unmutedUser.Name));
         }
+
+        public static string TimeCannotBeNegative(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("TimeCannotBeNegative");
+        }
+
+        public static string TimeIsTooBig(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("TimeIsTooBig");
+        }
     }
 }

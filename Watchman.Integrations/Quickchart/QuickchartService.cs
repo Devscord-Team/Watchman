@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using System.Net;
 using Watchman.Integrations.Quickchart.Models;
 
@@ -15,13 +14,9 @@ namespace Watchman.Integrations.Quickchart
             var datasetValues = chart.Data.Data.Select(x => x.ToString()).Aggregate((a, b) => a + "," + b);
             var url = baseUrl + $"?c={{type:'{chart.Type}',data:{{labels:[{labels}], datasets:[{{label:'{chart.Data.Label}',data:[{datasetValues}]}}]}}}}" + "&backgroundColor=white";
 
-            using (var client = new WebClient())
-            {
-                client.DownloadFile(url, "statistics.png");
-                return "statistics.png";
-            }
+            using var client = new WebClient();
+            client.DownloadFile(url, "statistics.png");
+            return "statistics.png";
         }
-
-        
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Devscord.DiscordFramework.Framework.Commands.Parsing.Models
@@ -10,6 +11,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing.Models
         public IEnumerable<DiscordRequestArgument> Arguments { get; set; }
         public string OriginalMessage { get; set; }
         public bool IsCommandForBot => !string.IsNullOrEmpty(this.Prefix);
+        public DateTime SentAt { get; set; }
 
         public bool HasArgument(string name)
         {
