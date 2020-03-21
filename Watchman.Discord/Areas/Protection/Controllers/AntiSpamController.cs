@@ -29,7 +29,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             var userWarnsInLastFewMinutes = _antiSpamService.CountUserWarnsInShortTime(contexts.User.Id);
             var userWarnsInLastFewHours = _antiSpamService.CountUserWarnsInLongTime(contexts.User.Id);
             var userMutesInLastFewHours = _antiSpamService.CountUserMutesInLongTime(contexts.User.Id);
-            var userMessages = _userMessagesCountService.CountMessages(contexts);
+            var userMessages = _userMessagesCountService.CountMessages(contexts.User.Id, contexts.Server.Id);
 
             Log.Information($"Warns in few minutes: {userWarnsInLastFewMinutes}; in few hours: {userWarnsInLastFewHours}");
             Log.Information($"Mutes in few hours: {userMutesInLastFewHours}");

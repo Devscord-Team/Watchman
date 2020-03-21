@@ -5,7 +5,9 @@ using Devscord.DiscordFramework.Services.Factories;
 using Newtonsoft.Json;
 using Serilog;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using Devscord.DiscordFramework.Commons.Extensions;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Statistics.Services;
 using Watchman.DomainModel.Messages.Commands;
@@ -58,8 +60,9 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
             var messagesService = _messagesServiceFactory.Create(contexts);
 #if DEBUG
             //TODO it should be inside messages service... or responses service
-            var dataToMessage = "```json\n" + JsonConvert.SerializeObject(report.StatisticsPerPeriod.Where(x => x.MessagesQuantity > 0), Formatting.Indented) + "\n```";
-            Log.Information(dataToMessage);
+            var dataToMessage = JsonConvert.SerializeObject(report.StatisticsPerPeriod.Where(x => x.MessagesQuantity > 0), Formatting.Indented);
+            var builder = new StringBuilder(dataToMessage).FormatMessageIntoBlock("json");
+            Log.Information(builder.ToString());
 #endif
             var path = _chartsService.GetImageStatisticsPerPeriod(report);
             messagesService.SendFile(path);

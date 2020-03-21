@@ -9,15 +9,15 @@ using Watchman.DomainModel.Messages.Commands;
 
 namespace Watchman.Discord.Areas.Initialization.Services
 {
-    public class ScanMessagesHistoryService
+    public class ServerScanningService
     {
         private readonly ICommandBus _commandBus;
-        private readonly ReadMessagesHistoryService _readMessagesHistoryService;
+        private readonly MessagesHistoryService _messagesHistoryService;
 
-        public ScanMessagesHistoryService(ICommandBus commandBus, ReadMessagesHistoryService readMessagesHistoryService)
+        public ServerScanningService(ICommandBus commandBus, MessagesHistoryService messagesHistoryService)
         {
             _commandBus = commandBus;
-            _readMessagesHistoryService = readMessagesHistoryService;
+            _messagesHistoryService = messagesHistoryService;
         }
 
         public async Task ScanChannelHistory(DiscordServerContext server, ChannelContext channel)
@@ -27,7 +27,7 @@ namespace Watchman.Discord.Areas.Initialization.Services
             if (channel.Name.Contains("logs"))
                 return;
 
-            var messages = (await _readMessagesHistoryService.ReadMessagesAsync(server, channel, LIMIT)).ToList();
+            var messages = (await _messagesHistoryService.ReadMessagesAsync(server, channel, LIMIT)).ToList();
             if (messages.Count == 0)
             {
                 return;
@@ -38,7 +38,7 @@ namespace Watchman.Discord.Areas.Initialization.Services
 
             do
             {
-                messages = (await _readMessagesHistoryService.ReadMessagesAsync(server, channel, LIMIT, lastMessageId, goBefore: true)).ToList();
+                messages = (await _messagesHistoryService.ReadMessagesAsync(server, channel, LIMIT, lastMessageId, goBefore: true)).ToList();
                 if (messages.Count == 0)
                 {
                     break;

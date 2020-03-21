@@ -6,7 +6,7 @@ using Devscord.DiscordFramework.Services.Models;
 
 namespace Devscord.DiscordFramework.Services
 {
-    public class ReadMessagesHistoryService
+    public class MessagesHistoryService
     {
         public async Task<IEnumerable<Message>> ReadMessagesAsync(DiscordServerContext server, ChannelContext channelContext, int limit)
         {

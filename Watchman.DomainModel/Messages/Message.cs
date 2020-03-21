@@ -73,9 +73,8 @@ namespace Watchman.DomainModel.Messages
             this.Update();
         }
 
-        public void SetHash()
+        public void SetHash(IHashService hashService)
         {
-            var hashService = new Md5HashService();
             this.Md5Hash = hashService.GetHash(this);
             this.Update();
         }

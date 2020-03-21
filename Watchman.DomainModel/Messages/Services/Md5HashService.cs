@@ -3,7 +3,12 @@ using System.Text;
 
 namespace Watchman.DomainModel.Messages.Services
 {
-    public class Md5HashService
+    public interface IHashService
+    {
+        public string GetHash(Message message);
+    }
+
+    public class Md5HashService : IHashService
     {
         public string GetHash(Message message)
         {

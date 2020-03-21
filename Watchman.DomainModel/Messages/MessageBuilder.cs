@@ -1,4 +1,5 @@
 ﻿using System;
+using Watchman.DomainModel.Messages.Services;
 
 namespace Watchman.DomainModel.Messages
 {
@@ -41,7 +42,7 @@ namespace Watchman.DomainModel.Messages
 
         public Message Build()
         {
-            this._message.SetHash();
+            this._message.SetHash(new Md5HashService());
             return this._message;
         }
     }

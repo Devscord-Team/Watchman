@@ -18,7 +18,7 @@ namespace Watchman.DomainModel.Messages.Queries.Handlers
         {
             using var session = _sessionFactory.Create();
             var messages = session.Get<Message>();
-            if (query.ServerId == 0)
+            if (query.ServerId != 0)
             {
                 messages = TakeOnlyFromOneServer(query.ServerId, messages);
             }

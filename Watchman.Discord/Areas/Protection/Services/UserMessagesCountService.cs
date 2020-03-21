@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Devscord.DiscordFramework.Middlewares.Contexts;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Protection.Models;
 using Watchman.DomainModel.Messages;
@@ -20,14 +19,14 @@ namespace Watchman.Discord.Areas.Protection.Services
             _queryBus = queryBus;
         }
 
-        public int CountMessages(Contexts contexts)
+        public int CountMessages(ulong userId, ulong serverId)
         {
             if (ShouldReloadCache())
             {
                 ReloadCache();
             }
 
-            return GetOneUserFromOneServerCount(contexts.User.Id, contexts.Server.Id);
+            return GetOneUserFromOneServerCount(userId, serverId);
         }
 
         private bool ShouldReloadCache()
@@ -37,20 +36,19 @@ namespace Watchman.Discord.Areas.Protection.Services
 
         private void ReloadCache()
         {
+            var getAllMessagesQuery = new GetMessagesQuery(0);
+            var messages = _queryBus.Execute(getAllMessagesQuery).Messages;
+            var groupedServerMessages = GroupMessagesByServers(messages);
+            UpdateServerMessagesCounts(groupedServerMessages);
             _lastUpdated = DateTime.UtcNow;
-
-            var getAllMessages = new GetMessagesQuery(0);
-            var messages = _queryBus.Execute(getAllMessages).Messages.ToList();
-            var groupedServerMessages = GroupMessagesIntoServers(messages);
-            MakeServerMessagesCounts(groupedServerMessages);
         }
 
-        private IEnumerable<IGrouping<ulong, Message>> GroupMessagesIntoServers(List<Message> messages)
+        private IEnumerable<IGrouping<ulong, Message>> GroupMessagesByServers(IEnumerable<Message> messages)
         {
             return messages.GroupBy(x => x.Server.Id);
         }
 
-        private void MakeServerMessagesCounts(IEnumerable<IGrouping<ulong, Message>> groups)
+        private void UpdateServerMessagesCounts(IEnumerable<IGrouping<ulong, Message>> groups)
         {
             this._everyServersMessagesQuantity = groups
                 .Select(x => new ServerMessagesCount(x.ToList(), x.Key))

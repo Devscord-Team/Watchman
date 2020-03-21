@@ -20,15 +20,15 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
         private readonly ICommandBus _commandBus;
         private readonly MuteRoleInitService _muteRoleInitService;
         private readonly UsersRolesService _usersRolesService;
-        private readonly ScanMessagesHistoryService _scanMessagesHistoryService;
+        private readonly ServerScanningService _serverScanningService;
 
-        public InitializationController(IQueryBus queryBus, ICommandBus commandBus, MuteRoleInitService muteRoleInitService, UsersRolesService usersRolesService, ScanMessagesHistoryService scanMessagesHistoryService)
+        public InitializationController(IQueryBus queryBus, ICommandBus commandBus, MuteRoleInitService muteRoleInitService, UsersRolesService usersRolesService, ServerScanningService serverScanningService)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;
             this._muteRoleInitService = muteRoleInitService;
             this._usersRolesService = usersRolesService;
-            _scanMessagesHistoryService = scanMessagesHistoryService;
+            _serverScanningService = serverScanningService;
         }
 
         [AdminCommand]
@@ -92,7 +92,7 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
 
             foreach (var textChannel in server.TextChannels)
             {
-                await _scanMessagesHistoryService.ScanChannelHistory(server, textChannel);
+                await _serverScanningService.ScanChannelHistory(server, textChannel);
             }
             Log.Information("Read messages history");
         }
