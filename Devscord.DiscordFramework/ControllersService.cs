@@ -97,7 +97,12 @@ namespace Devscord.DiscordFramework
 
         private bool IsMatchedCommand(IEnumerable<DiscordCommand> commands, DiscordRequest request)
         {
-            return commands.Any(x => request.Name == x.Command || request.OriginalMessage.TrimStart(request.Prefix.ToCharArray()).StartsWith(x.Command));
+            return commands.Any(x =>
+            {
+                var withoutPrefix = request.OriginalMessage.CutStart(request.Prefix);
+                return withoutPrefix.StartsWith(x.Command) 
+                       && (withoutPrefix.Length == x.Command.Length || withoutPrefix[x.Command.Length] == ' ');
+            });
         }
 
         private void CheckPermissions(MethodInfo method, Contexts contexts)
