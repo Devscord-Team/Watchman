@@ -105,5 +105,10 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("TimeIsTooBig");
         }
+
+        public static string ReadingHistoryDone(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("ReadingHistoryDone");
+        }
     }
 }

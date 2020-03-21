@@ -126,6 +126,9 @@
   <data name="PrintHelp" xml:space="preserve">
     <value>Dostępne komendy: ```{{help}}```</value>
   </data>
+  <data name="ReadingHistoryDone" xml:space="preserve">
+    <value>Zakończono wczytywanie historii wiadomości.</value>
+  </data>
   <data name="RoleAddedToUser" xml:space="preserve">
     <value>Dodano role: {{role}} użytkownikowi {{user}}</value>
   </data>

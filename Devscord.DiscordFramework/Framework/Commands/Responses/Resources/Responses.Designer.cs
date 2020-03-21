@@ -88,6 +88,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Zakończono wczytywanie historii wiadomości..
+        /// </summary>
+        public static string ReadingHistoryDone {
+            get {
+                return ResourceManager.GetString("ReadingHistoryDone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dodano role: {{role}} użytkownikowi {{user}}.
         /// </summary>
         public static string RoleAddedToUser {
