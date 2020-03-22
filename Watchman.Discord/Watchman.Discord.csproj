@@ -39,8 +39,4 @@
     <ProjectReference Include="..\Watchman.Integrations\Watchman.Integrations.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Areas\Administration\Services\" />
-  </ItemGroup>
-
 </Project>

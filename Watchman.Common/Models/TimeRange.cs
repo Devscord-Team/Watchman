@@ -19,5 +19,7 @@ namespace Watchman.Common.Models
         }
 
         public static TimeRange Create(DateTime start, DateTime end) => new TimeRange(start, end);
+        public static TimeRange ToNow(DateTime start) => new TimeRange(start, DateTime.UtcNow);
+        public static TimeRange FromNow(DateTime end) => new TimeRange(DateTime.UtcNow, end);
     }
 }
