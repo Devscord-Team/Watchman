@@ -142,7 +142,7 @@
     <value>Użytkownik {{user}} nie posiada roli {{role}}</value>
   </data>
   <data name="RoleNotFoundOrIsNotSafe" xml:space="preserve">
-    <value>Nie znaleziono roli {{role}} lub wybrana rola musi być usunięta ręcznie przez członka administracji</value>
+    <value>Nie znaleziono roli {{role}} lub wybrana rola musi być zmieniona ręcznie przez członka administracji</value>
   </data>
   <data name="RoleRemovedFromUser" xml:space="preserve">
     <value>Usunięto role {{role}} użytkownikowi {{user}}</value>

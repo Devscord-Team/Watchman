@@ -133,7 +133,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Nie znaleziono roli {{role}} lub wybrana rola musi być usunięta ręcznie przez członka administracji.
+        ///   Looks up a localized string similar to Nie znaleziono roli {{role}} lub wybrana rola musi być zmieniona ręcznie przez członka administracji.
         /// </summary>
         public static string RoleNotFoundOrIsNotSafe {
             get {

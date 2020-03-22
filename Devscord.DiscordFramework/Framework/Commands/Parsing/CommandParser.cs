@@ -40,8 +40,8 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
 
         private string GetPrefix(string message)
         {
-            var withoutWhitespaces = message.Trim().Split(' ');
-            return _possiblePrefixes.FirstOrDefault(x => withoutWhitespaces.Any(word => word.StartsWith(x)));
+            var withoutWhitespaces = message.Trim();
+            return _possiblePrefixes.FirstOrDefault(x => withoutWhitespaces.StartsWith(x));
         }
 
         private string GetName(string message)
@@ -64,7 +64,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
 
             while (trimmedMess.Length > 0)
             {
-                var prefix = _possiblePrefixes.FirstOrDefault(x => trimmedMess.StartsWith(x));
+                var prefix = GetPrefix(trimmedMess);
                 var isStartingWithValue = prefix == null;
 
                 if (isStartingWithValue)
