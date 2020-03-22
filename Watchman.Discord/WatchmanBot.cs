@@ -44,13 +44,24 @@ namespace Watchman.Discord
             this._container = GetAutofacContainer(configuration);
             Log.Logger = SerilogInitializer.Initialize(this._container.Resolve<IMongoDatabase>(), this.LogOnChannel);
             Log.Information("Bot created...");
-            this._workflow = GetWorkflow(configuration);
+
         }
 
-        public async Task Start()
+        public async Task Start(DiscordConfiguration configuration)
         {
             MongoConfiguration.Initialize();
-            ServerInitializer.Initialize(_client);
+            await WorkflowBuilder.Create(configuration.Token, this._container, typeof(WatchmanBot).Assembly)
+                .SetDefaultMiddlewares()
+                .AddWorkflowExceptionHandlers(exceptions =>
+                {
+                    exceptions
+                        .AddHandler(this.PrintExceptionOnConsole)
+                        .AddHandler(this.PrintDebugExceptionInfo, onlyOnDebug: true)
+                        .AddFromIoC<ExceptionHandlerService>(x => x.LogException);
+                })
+                .Run();
+            
+            
 
             _ = Task.Run(DefaultHelpInit);
             AssignEvents();
@@ -92,40 +103,6 @@ namespace Watchman.Discord
             return message.Author.IsBot ? Task.CompletedTask : this._workflow.Run(message);
         }
 
-        private Workflow GetWorkflow(DiscordConfiguration configuration)
-        {
-            var workflow = new Workflow(typeof(WatchmanBot).Assembly, _container)
-                .AddMiddleware<ChannelMiddleware, ChannelContext>()
-                .AddMiddleware<ServerMiddleware, DiscordServerContext>()
-                .AddMiddleware<UserMiddleware, UserContext>();
-
-            workflow.WorkflowException += _container.Resolve<ExceptionHandlerService>().LogException;
-            workflow.WorkflowException += this.PrintExceptionOnConsole;
-#if DEBUG
-            workflow.WorkflowException += this.PrintDebugExceptionInfo;
-#endif
-            return workflow;
-        }
-
-        private void LogOnChannel(string message)
-        {
-            if (this._workflow != null)
-            {
-                try
-                {
-#if DEBUG
-                    this._workflow.LogOnChannel(message, 684119569962631249);
-#else
-                    this._workflow.LogOnChannel(message, 681974777686261802);
-                    this._workflow.LogOnChannel(message, 681990585837813796);
-#endif
-                }
-                catch (Exception ex)
-                {
-                    Log.Warning(ex, "Cannot find logs channel");
-                }
-            }
-        }
 
         private void PrintDebugExceptionInfo(Exception e, Contexts contexts)
         {

@@ -11,6 +11,10 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Middlewares.Factories;
+using Discord;
+using Devscord.DiscordFramework.Middlewares;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Devscord.DiscordFramework
 {
@@ -54,13 +58,6 @@ namespace Devscord.DiscordFramework
             }
         }
 
-        public void LogOnChannel(string message, ulong channelId)
-        {
-            var channel = (ISocketMessageChannel)Server.GetChannel(channelId);
-            message = new StringBuilder(message).FormatMessageIntoBlock("json").ToString();
-            channel.SendMessageAsync(message);
-        }
-
         private Task CallUserJoined(SocketGuildUser guildUser)
         {
             var userFactory = new UserContextsFactory();
@@ -77,6 +74,100 @@ namespace Devscord.DiscordFramework
 
             UserJoined.Invoke(contexts);
             return Task.CompletedTask;
+        }
+    }
+
+    public class WorkflowBuilder
+    {
+        private readonly DiscordSocketClient _client;
+        private readonly string _token;
+        private readonly Workflow _workflow;
+        private readonly WorkflowBuilderExceptions _workflowBuilderExceptions;
+
+        private WorkflowBuilder(string token, IContainer container, Assembly botAssembly)
+        {
+            _client = new DiscordSocketClient(new DiscordSocketConfig
+            {
+                TotalShards = 1
+            });
+            this._token = token;
+            this._workflowBuilderExceptions = new WorkflowBuilderExceptions(container);
+            this._workflow = new Workflow(botAssembly, container);
+            ServerInitializer.Initialize(_client);
+        }
+
+        public static WorkflowBuilder Create(string token, IContainer container, Assembly botAssembly) => new WorkflowBuilder(token, container, botAssembly);
+
+        public WorkflowBuilder SetMessageHandler(Func<SocketMessage, Task> action)
+        {
+            _client.MessageReceived += action;
+            return this;
+        }
+
+        public WorkflowBuilder SetDefaultMiddlewares()
+        {
+            this._workflow
+                .AddMiddleware<ChannelMiddleware, ChannelContext>()
+                .AddMiddleware<ServerMiddleware, DiscordServerContext>()
+                .AddMiddleware<UserMiddleware, UserContext>();
+            return this;
+        }
+
+        public WorkflowBuilder AddWorkflowExceptionHandlers(Action<WorkflowBuilderExceptions> action)
+        {
+            action.Invoke(_workflowBuilderExceptions);
+            foreach (var exceptionHandler in _workflowBuilderExceptions.Handlers)
+            {
+                _workflow.WorkflowException += exceptionHandler;
+            }
+            _workflowBuilderExceptions.Clear();
+            return this;
+        }
+
+        public async Task Run()
+        {
+            await _client.LoginAsync(TokenType.Bot, _token);
+            await _client.StartAsync();
+            await Task.Delay(-1);
+        }
+    }
+
+    public class WorkflowBuilderExceptions
+    {
+        private List<Action<Exception, Contexts>> _handlers = new List<Action<Exception, Contexts>>();
+        private readonly IContainer _container;
+
+        internal IEnumerable<Action<Exception, Contexts>> Handlers => _handlers;
+
+        public WorkflowBuilderExceptions(IContainer container)
+        {
+            this._container = container;
+        }
+
+        public WorkflowBuilderExceptions AddHandler(Action<Exception, Contexts> handler, bool onlyOnDebug = false)
+        {
+            var isDebug = false;
+#if DEBUG
+            isDebug = true;
+#endif
+            if(!onlyOnDebug || (onlyOnDebug && isDebug))
+            {
+                _handlers.Add(handler);
+            }
+            return this;
+        }
+
+        public WorkflowBuilderExceptions AddFromIoC<T>(Func<T, Action<Exception, Contexts>> func)
+        {
+            var resolved = _container.Resolve<T>();
+            var handler = func.Invoke(resolved);
+            AddHandler(handler);
+            return this;
+        }
+
+        internal void Clear()
+        {
+            _handlers = new List<Action<Exception, Contexts>>();
         }
     }
 }
