@@ -41,6 +41,7 @@ namespace Watchman.Discord
         public async Task Start()
         {
             MongoConfiguration.Initialize();
+            _ = Task.Run(DefaultHelpInit);
 
             await WorkflowBuilder.Create(_configuration.Token, this._container, typeof(WatchmanBot).Assembly)
                 .SetDefaultMiddlewares()
