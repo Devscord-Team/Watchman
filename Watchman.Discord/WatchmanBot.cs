@@ -41,14 +41,22 @@ namespace Watchman.Discord
         public async Task Start()
         {
             MongoConfiguration.Initialize();
-            _ = Task.Run(DefaultHelpInit);
 
             await WorkflowBuilder.Create(_configuration.Token, this._container, typeof(WatchmanBot).Assembly)
                 .SetDefaultMiddlewares()
                 .AddOnReadyHandlers(builder =>
                 {
                     builder
-                        .AddHandler(this.UnmuteUsers)
+                        .AddFromIoC<HelpDataCollectorService, HelpDBGeneratorService>((dataCollector, helpService) => () =>
+                        {
+                            Task.Run(() => helpService.FillDatabase(dataCollector.GetCommandsInfo(typeof(WatchmanBot).Assembly)));
+                            return Task.CompletedTask;
+                        })
+                        .AddFromIoC<UnmutingExpiredMuteEventsService, DiscordServersService>((unmutingService, serversService) => async () => 
+                        {
+                            var servers = (await serversService.GetDiscordServers()).ToList();
+                            servers.ForEach(x => unmutingService.UnmuteUsersInit(x));
+                        })
                         .AddHandler(() => Task.Run(() => Log.Information("Bot started and logged in...")));
                 })
                 .AddOnUserJoinedHandlers(builder =>
@@ -60,32 +68,16 @@ namespace Watchman.Discord
                 .AddOnWorkflowExceptionHandlers(builder =>
                 {
                     builder
-                        .AddHandler(this.PrintExceptionOnConsole)
+                        .AddFromIoC<ExceptionHandlerService>(x => x.LogException)
                         .AddHandler(this.PrintDebugExceptionInfo, onlyOnDebug: true)
-                        .AddFromIoC<ExceptionHandlerService>(x => x.LogException);
+                        .AddHandler(this.PrintExceptionOnConsole);
                 })
                 .Run();
-        }
-
-        private void DefaultHelpInit()
-        {
-            var dataCollector = _container.Resolve<HelpDataCollectorService>();
-            var helpService = _container.Resolve<HelpDBGeneratorService>();
-            helpService.FillDatabase(dataCollector.GetCommandsInfo(typeof(WatchmanBot).Assembly));
-        }
-
-        private async Task UnmuteUsers()
-        {
-            var unmutingService = _container.Resolve<UnmutingExpiredMuteEventsService>();
-            var serversService = _container.Resolve<DiscordServersService>();
-            var servers = (await serversService.GetDiscordServers()).ToList();
-            servers.ForEach(x => unmutingService.UnmuteUsersInit(x));
         }
 
         private void PrintDebugExceptionInfo(Exception e, Contexts contexts)
         {
             var exceptionMessage = BuildExceptionMessage(e).ToString();
-
             var messagesService = _container.Resolve<MessagesServiceFactory>().Create(contexts);
             messagesService.SendMessage(exceptionMessage);
         }
