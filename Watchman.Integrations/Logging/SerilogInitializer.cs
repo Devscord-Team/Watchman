@@ -10,7 +10,7 @@ namespace Watchman.Integrations.Logging
 {
     public class SerilogInitializer
     {
-        public static ILogger Initialize(IMongoDatabase mongoDatabase, Action<string> discordLog = null)
+        public static ILogger Initialize(IMongoDatabase mongoDatabase)
         {
 #if DEBUG
             Serilog.Debugging.SelfLog.Enable(msg => Debug.WriteLine(msg));
@@ -45,14 +45,6 @@ namespace Watchman.Integrations.Logging
 
             var message = logEvent.RenderMessage();
             _onEmit.Invoke(message);
-        }
-    }
-
-    public static class SinkExtensions
-    {
-        public static LoggerConfiguration Discord(this LoggerSinkConfiguration loggerConfiguration, Action<string> onEmit)
-        {
-            return loggerConfiguration.Sink(new DiscordSink(onEmit));
         }
     }
 }
