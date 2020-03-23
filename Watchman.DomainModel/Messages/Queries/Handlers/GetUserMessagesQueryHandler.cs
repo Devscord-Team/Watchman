@@ -6,16 +6,16 @@ namespace Watchman.DomainModel.Messages.Queries.Handlers
 {
     public class GetUserMessagesQueryHandler : PaginationQueryHandler, IQueryHandler<GetUserMessagesQuery, GetMessagesQueryResult>
     {
-        private readonly GetMessagesQueryHandler getMessagesQueryHandler;
+        private readonly GetMessagesQueryHandler _getMessagesQueryHandler;
 
         public GetUserMessagesQueryHandler(ISessionFactory sessionFactory)
         {
-            getMessagesQueryHandler = new GetMessagesQueryHandler(sessionFactory);
+            _getMessagesQueryHandler = new GetMessagesQueryHandler(sessionFactory);
         }
 
         public GetMessagesQueryResult Handle(GetUserMessagesQuery query)
         {
-            return getMessagesQueryHandler.Handle(query);
+            return _getMessagesQueryHandler.Handle(query);
         }
     }
 }
