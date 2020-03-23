@@ -42,15 +42,13 @@ namespace Watchman.Discord
         {
             MongoConfiguration.Initialize();
 
-
-
             await WorkflowBuilder.Create(_configuration.Token, this._container, typeof(WatchmanBot).Assembly)
                 .SetDefaultMiddlewares()
                 .AddOnReadyHandlers(builder =>
                 {
                     builder
                         .AddHandler(this.UnmuteUsers)
-                        .AddHandler(() => Task.Run(() => Log.Information("Bot started and logged in..."));
+                        .AddHandler(() => Task.Run(() => Log.Information("Bot started and logged in...")));
                 })
                 .AddOnUserJoinedHandlers(builder =>
                 {
