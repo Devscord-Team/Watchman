@@ -48,35 +48,35 @@ namespace Devscord.DiscordFramework
 
         public WorkflowBuilder AddOnReadyHandlers(Action<WorkflowBuilderHandlers<Func<Task>>> action)
         {
-            AddHandlers(action, this._workflow.OnReady);
+            AddHandlers(action, this._workflow.AddOnReady);
             return this;
         }
 
         public WorkflowBuilder AddOnUserJoinedHandlers(Action<WorkflowBuilderHandlers<Func<Contexts, Task>>> action)
         {
-            AddHandlers(action, this._workflow.OnUserJoined);
+            AddHandlers(action, this._workflow.AddOnUserJoined);
             return this;
         }
 
         public WorkflowBuilder AddOnMessageReceivedHandlers(Action<WorkflowBuilderHandlers<Func<SocketMessage, Task>>> action)
         {
-            AddHandlers(action, this._workflow.OnMessageReceived);
+            AddHandlers(action, this._workflow.AddOnMessageReceived);
             return this;
         }
 
         public WorkflowBuilder AddOnWorkflowExceptionHandlers(Action<WorkflowBuilderHandlers<Action<Exception, Contexts>>> action)
         {
-            AddHandlers(action, this._workflow.OnWorkflowException);
+            AddHandlers(action, this._workflow.AddOnWorkflowException);
             return this;
         }
 
-        private void AddHandlers<T>(Action<WorkflowBuilderHandlers<T>> action, T workflowAction)
+        private void AddHandlers<T>(Action<WorkflowBuilderHandlers<T>> action, Action<T> workflowAction)
         {
             var workflowBuilderHandlers = new WorkflowBuilderHandlers<T>(this._container);
             action.Invoke(workflowBuilderHandlers);
             foreach (var exceptionHandler in workflowBuilderHandlers.Handlers)
             {
-                workflowAction += (dynamic)exceptionHandler;
+                workflowAction.Invoke(exceptionHandler);
             }
         }
 

@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Middlewares.Factories;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Devscord.DiscordFramework
 {
@@ -21,10 +22,10 @@ namespace Devscord.DiscordFramework
         private readonly MiddlewaresService _middlewaresService = new MiddlewaresService();
         private readonly ControllersService _controllersService;
 
-        public Func<Task> OnReady { get; set; }
-        public Func<Contexts, Task> OnUserJoined { get; set; }
-        public Func<SocketMessage, Task> OnMessageReceived { get; set; }
-        public Action<Exception, Contexts> OnWorkflowException { get; set; }
+        public List<Func<Task>> OnReady { get; set; } = new List<Func<Task>>();
+        public List<Func<Contexts, Task>> OnUserJoined { get; set; } = new List<Func<Contexts, Task>>();
+        public List<Func<SocketMessage, Task>> OnMessageReceived { get; set; } = new List<Func<SocketMessage, Task>>();
+        public List<Action<Exception, Contexts>> OnWorkflowException { get; set; } = new List<Action<Exception, Contexts>>();
 
         internal Workflow(Assembly botAssembly, IComponentContext context)
         {
@@ -43,14 +44,14 @@ namespace Devscord.DiscordFramework
 
         internal void Initialize()
         {
-            this.OnMessageReceived += MessageReceived;
+            AddOnMessageReceived(this.MessageReceived);
         }
 
         internal void MapHandlers(DiscordSocketClient client)
         {
-            client.Ready += this.OnReady;
+            this.OnReady.ForEach(x => client.Ready += x);
             client.UserJoined += this.CallUserJoined;
-            client.MessageReceived += this.OnMessageReceived;
+            this.OnMessageReceived.ForEach(x => client.MessageReceived += x);
         }
 
         private async Task MessageReceived(SocketMessage socketMessage)
@@ -70,7 +71,7 @@ namespace Devscord.DiscordFramework
             catch (Exception e)
             {
                 Log.Error(e, e.StackTrace);
-                OnWorkflowException.Invoke(e, contexts);
+                OnWorkflowException.ForEach(x => x.Invoke(e, contexts));
             }
         }
 
@@ -108,8 +109,13 @@ namespace Devscord.DiscordFramework
             contexts.SetContext(discordServerContext);
             contexts.SetContext(landingChannel);
 
-            OnUserJoined.Invoke(contexts);
+            OnUserJoined.ForEach(x => x.Invoke(contexts));
             return Task.CompletedTask;
         }
+
+        internal void AddOnReady(Func<Task> method) => this.OnReady.Add(method);
+        internal void AddOnUserJoined(Func<Contexts, Task> method) => this.OnUserJoined.Add(method);
+        internal void AddOnMessageReceived(Func<SocketMessage, Task> method) => this.OnMessageReceived.Add(method);
+        internal void AddOnWorkflowException(Action<Exception, Contexts> method) => this.OnWorkflowException.Add(method);
     }
 }
