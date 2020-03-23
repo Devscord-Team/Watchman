@@ -58,14 +58,10 @@ namespace Devscord.DiscordFramework
 
         private async Task MessageReceived(SocketMessage socketMessage)
         {
-#if DEBUG
-            if (!socketMessage.Channel.Name.Contains("test"))
+            if(ShouldIgnoreMessage(socketMessage))
+            {
                 return;
-#endif
-            if (socketMessage.Author.IsBot || socketMessage.Author.IsWebhook)
-                return;
-            if (socketMessage.Channel.Name.Contains("logs"))
-                return;
+            }
 
             Log.Information("Processing message: {content} from user {user} started", socketMessage.Content, socketMessage.Author);
             var request = _commandParser.Parse(socketMessage.Content, socketMessage.Timestamp.UtcDateTime);
@@ -79,6 +75,26 @@ namespace Devscord.DiscordFramework
                 Log.Error(e, e.StackTrace);
                 OnWorkflowException.Invoke(e, contexts);
             }
+        }
+
+        private bool ShouldIgnoreMessage(SocketMessage socketMessage)
+        {
+#if DEBUG
+            if (!socketMessage.Channel.Name.Contains("test"))
+            {
+                return true;
+            }
+#endif
+            if (socketMessage.Author.IsBot || socketMessage.Author.IsWebhook)
+            {
+                return true;
+            }
+            if (socketMessage.Channel.Name.Contains("logs"))
+            {
+                return true;
+            }
+                
+            return false;
         }
 
         private Task CallUserJoined(SocketGuildUser guildUser)
