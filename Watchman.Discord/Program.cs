@@ -1,12 +1,10 @@
-﻿
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Serilog;
 using System.IO;
 using System.Threading.Tasks;
 
 namespace Watchman.Discord
 {
-    
     class Program
     {
         public static async Task Main(string[] args)
