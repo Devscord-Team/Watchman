@@ -44,7 +44,7 @@ namespace Devscord.DiscordFramework
 
         internal void Initialize()
         {
-            AddOnMessageReceived(this.MessageReceived);
+            this.OnMessageReceived.Add(this.MessageReceived);
         }
 
         internal void MapHandlers(DiscordSocketClient client)
@@ -112,10 +112,5 @@ namespace Devscord.DiscordFramework
             OnUserJoined.ForEach(x => x.Invoke(contexts));
             return Task.CompletedTask;
         }
-
-        internal void AddOnReady(Func<Task> method) => this.OnReady.Add(method);
-        internal void AddOnUserJoined(Func<Contexts, Task> method) => this.OnUserJoined.Add(method);
-        internal void AddOnMessageReceived(Func<SocketMessage, Task> method) => this.OnMessageReceived.Add(method);
-        internal void AddOnWorkflowException(Action<Exception, Contexts> method) => this.OnWorkflowException.Add(method);
     }
 }

@@ -48,25 +48,25 @@ namespace Devscord.DiscordFramework
 
         public WorkflowBuilder AddOnReadyHandlers(Action<WorkflowBuilderHandlers<Func<Task>>> action)
         {
-            AddHandlers(action, this._workflow.AddOnReady);
+            AddHandlers(action, this._workflow.OnReady.Add);
             return this;
         }
 
         public WorkflowBuilder AddOnUserJoinedHandlers(Action<WorkflowBuilderHandlers<Func<Contexts, Task>>> action)
         {
-            AddHandlers(action, this._workflow.AddOnUserJoined);
+            AddHandlers(action, this._workflow.OnUserJoined.Add);
             return this;
         }
 
         public WorkflowBuilder AddOnMessageReceivedHandlers(Action<WorkflowBuilderHandlers<Func<SocketMessage, Task>>> action)
         {
-            AddHandlers(action, this._workflow.AddOnMessageReceived);
+            AddHandlers(action, this._workflow.OnMessageReceived.Add);
             return this;
         }
 
         public WorkflowBuilder AddOnWorkflowExceptionHandlers(Action<WorkflowBuilderHandlers<Action<Exception, Contexts>>> action)
         {
-            AddHandlers(action, this._workflow.AddOnWorkflowException);
+            AddHandlers(action, this._workflow.OnWorkflowException.Add);
             return this;
         }
 
