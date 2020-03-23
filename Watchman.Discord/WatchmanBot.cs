@@ -25,50 +25,47 @@ using Watchman.Discord.Areas.Users.Services;
 
 namespace Watchman.Discord
 {
-    public class WatchmanBot : IDisposable
+    public class WatchmanBot
     {
-        private readonly DiscordSocketClient _client;
-        private readonly Workflow _workflow;
         private readonly DiscordConfiguration _configuration;
         private readonly IContainer _container;
 
         public WatchmanBot(DiscordConfiguration configuration)
         {
             this._configuration = configuration;
-            this._client = new DiscordSocketClient(new DiscordSocketConfig
-            {
-                TotalShards = 1
-            });
-            this._client.MessageReceived += this.MessageReceived;
-            
             this._container = GetAutofacContainer(configuration);
-            Log.Logger = SerilogInitializer.Initialize(this._container.Resolve<IMongoDatabase>(), this.LogOnChannel);
+            Log.Logger = SerilogInitializer.Initialize(this._container.Resolve<IMongoDatabase>());
             Log.Information("Bot created...");
-
         }
 
-        public async Task Start(DiscordConfiguration configuration)
+        public async Task Start()
         {
             MongoConfiguration.Initialize();
-            await WorkflowBuilder.Create(configuration.Token, this._container, typeof(WatchmanBot).Assembly)
+
+
+
+            await WorkflowBuilder.Create(_configuration.Token, this._container, typeof(WatchmanBot).Assembly)
                 .SetDefaultMiddlewares()
-                .AddWorkflowExceptionHandlers(exceptions =>
+                .AddOnReadyHandlers(builder =>
                 {
-                    exceptions
+                    builder
+                        .AddHandler(this.UnmuteUsers)
+                        .AddHandler(() => Task.Run(() => Log.Information("Bot started and logged in..."));
+                })
+                .AddOnUserJoinedHandlers(builder =>
+                {
+                    builder
+                        .AddFromIoC<WelcomeUserService>(x => x.WelcomeUser)
+                        .AddFromIoC<MutingRejoinedUsersService>(x => x.MuteAgainIfNeeded);
+                })
+                .AddOnWorkflowExceptionHandlers(builder =>
+                {
+                    builder
                         .AddHandler(this.PrintExceptionOnConsole)
                         .AddHandler(this.PrintDebugExceptionInfo, onlyOnDebug: true)
                         .AddFromIoC<ExceptionHandlerService>(x => x.LogException);
                 })
                 .Run();
-            
-            
-
-            _ = Task.Run(DefaultHelpInit);
-            AssignEvents();
-
-            await _client.LoginAsync(TokenType.Bot, this._configuration.Token);
-            await _client.StartAsync();
-            await Task.Delay(-1);
         }
 
         private void DefaultHelpInit()
@@ -78,14 +75,6 @@ namespace Watchman.Discord
             helpService.FillDatabase(dataCollector.GetCommandsInfo(typeof(WatchmanBot).Assembly));
         }
 
-        private void AssignEvents()
-        {
-            _client.Ready += UnmuteUsers;
-            _client.Ready += () => Task.Run(() => Log.Information("Bot started and logged in..."));
-            _workflow.UserJoined += _container.Resolve<WelcomeUserService>().WelcomeUser;
-            _workflow.UserJoined += _container.Resolve<MutingRejoinedUsersService>().MuteAgainIfNeeded;
-        }
-
         private async Task UnmuteUsers()
         {
             var unmutingService = _container.Resolve<UnmutingExpiredMuteEventsService>();
@@ -93,16 +82,6 @@ namespace Watchman.Discord
             var servers = (await serversService.GetDiscordServers()).ToList();
             servers.ForEach(x => unmutingService.UnmuteUsersInit(x));
         }
-
-        private Task MessageReceived(SocketMessage message)
-        {
-#if DEBUG
-            if (!message.Channel.Name.Contains("test"))
-                return Task.CompletedTask;
-#endif
-            return message.Author.IsBot ? Task.CompletedTask : this._workflow.Run(message);
-        }
-
 
         private void PrintDebugExceptionInfo(Exception e, Contexts contexts)
         {
@@ -128,11 +107,6 @@ namespace Watchman.Discord
             return new ContainerModule(configuration)
                 .GetBuilder()
                 .Build();
-        }
-
-        public void Dispose()
-        {
-            this._client.Dispose();
         }
     }
 }
