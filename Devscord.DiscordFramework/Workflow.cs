@@ -18,22 +18,24 @@ using System.Collections.Generic;
 
 namespace Devscord.DiscordFramework
 {
-    public class Workflow
+    internal class Workflow
     {
         private readonly CommandParser _commandParser = new CommandParser();
         private readonly MiddlewaresService _middlewaresService = new MiddlewaresService();
         private readonly ControllersService _controllersService;
 
-        public Func<Contexts, Task> UserJoined { get; set; }
-        public Action<Exception, Contexts> WorkflowException { get; set; }
+        public Func<Task> OnReady { get; set; }
+        public Func<Contexts, Task> OnUserJoined { get; set; }
+        public Func<SocketMessage, Task> OnMessageReceived { get; set; }
+        public Action<Exception, Contexts> OnWorkflowException { get; set; }
 
-        public Workflow(Assembly botAssembly, IComponentContext context)
+        internal Workflow(Assembly botAssembly, IComponentContext context)
         {
             this._controllersService = new ControllersService(context, botAssembly);
             Server.UserJoined += CallUserJoined;
         }
 
-        public Workflow AddMiddleware<T, W>() 
+        internal Workflow AddMiddleware<T, W>() 
             where T : IMiddleware<W>
             where W : IDiscordContext
         {
@@ -42,8 +44,29 @@ namespace Devscord.DiscordFramework
             return this;
         }
 
-        public async Task Run(SocketMessage socketMessage)
+        internal void Initialize()
         {
+            this.OnMessageReceived += MessageReceived;
+        }
+
+        internal void MapHandlers(DiscordSocketClient client)
+        {
+            client.Ready += this.OnReady;
+            client.UserJoined += this.CallUserJoined;
+            client.MessageReceived += this.OnMessageReceived;
+        }
+
+        private async Task MessageReceived(SocketMessage socketMessage)
+        {
+#if DEBUG
+            if (!socketMessage.Channel.Name.Contains("test"))
+                return;
+#endif
+            if (socketMessage.Author.IsBot || socketMessage.Author.IsWebhook)
+                return;
+            if (socketMessage.Channel.Name.Contains("logs"))
+                return;
+
             Log.Information("Processing message: {content} from user {user} started", socketMessage.Content, socketMessage.Author);
             var request = _commandParser.Parse(socketMessage.Content, socketMessage.Timestamp.UtcDateTime);
             var contexts = this._middlewaresService.RunMiddlewares(socketMessage);
@@ -54,7 +77,7 @@ namespace Devscord.DiscordFramework
             catch (Exception e)
             {
                 Log.Error(e, e.StackTrace);
-                WorkflowException.Invoke(e, contexts);
+                OnWorkflowException.Invoke(e, contexts);
             }
         }
 
@@ -72,7 +95,7 @@ namespace Devscord.DiscordFramework
             contexts.SetContext(discordServerContext);
             contexts.SetContext(landingChannel);
 
-            UserJoined.Invoke(contexts);
+            OnUserJoined.Invoke(contexts);
             return Task.CompletedTask;
         }
     }
@@ -81,8 +104,8 @@ namespace Devscord.DiscordFramework
     {
         private readonly DiscordSocketClient _client;
         private readonly string _token;
+        private readonly IContainer _container;
         private readonly Workflow _workflow;
-        private readonly WorkflowBuilderExceptions _workflowBuilderExceptions;
 
         private WorkflowBuilder(string token, IContainer container, Assembly botAssembly)
         {
@@ -91,9 +114,9 @@ namespace Devscord.DiscordFramework
                 TotalShards = 1
             });
             this._token = token;
-            this._workflowBuilderExceptions = new WorkflowBuilderExceptions(container);
+            this._container = container;
             this._workflow = new Workflow(botAssembly, container);
-            ServerInitializer.Initialize(_client);
+            
         }
 
         public static WorkflowBuilder Create(string token, IContainer container, Assembly botAssembly) => new WorkflowBuilder(token, container, botAssembly);
@@ -113,38 +136,65 @@ namespace Devscord.DiscordFramework
             return this;
         }
 
-        public WorkflowBuilder AddWorkflowExceptionHandlers(Action<WorkflowBuilderExceptions> action)
+        public WorkflowBuilder AddOnReadyHandlers(Action<WorkflowBuilderHandlers<Func<Task>>> action)
         {
-            action.Invoke(_workflowBuilderExceptions);
-            foreach (var exceptionHandler in _workflowBuilderExceptions.Handlers)
-            {
-                _workflow.WorkflowException += exceptionHandler;
-            }
-            _workflowBuilderExceptions.Clear();
+            AddHandlers(action, this._workflow.OnReady);
             return this;
+        }
+
+        public WorkflowBuilder AddOnUserJoinedHandlers(Action<WorkflowBuilderHandlers<Func<Contexts, Task>>> action)
+        {
+            AddHandlers(action, this._workflow.OnUserJoined);
+            return this;
+        }
+
+        public WorkflowBuilder AddOnMessageReceivedHandlers(Action<WorkflowBuilderHandlers<Func<SocketMessage, Task>>> action)
+        {
+            AddHandlers(action, this._workflow.OnMessageReceived);
+            return this;
+        }
+
+        public WorkflowBuilder AddOnWorkflowExceptionHandlers(Action<WorkflowBuilderHandlers<Action<Exception, Contexts>>> action)
+        {
+            AddHandlers(action, this._workflow.OnWorkflowException);
+            return this;
+        }
+
+        private void AddHandlers<T>(Action<WorkflowBuilderHandlers<T>> action, T workflowAction)
+        {
+            var workflowBuilderHandlers = new WorkflowBuilderHandlers<T>(this._container);
+            action.Invoke(workflowBuilderHandlers);
+            foreach (var exceptionHandler in workflowBuilderHandlers.Handlers)
+            {
+                workflowAction += (dynamic)exceptionHandler;
+            }
         }
 
         public async Task Run()
         {
+            _workflow.Initialize();
+            _workflow.MapHandlers(_client);
+            ServerInitializer.Initialize(_client);
+
             await _client.LoginAsync(TokenType.Bot, _token);
             await _client.StartAsync();
             await Task.Delay(-1);
         }
     }
 
-    public class WorkflowBuilderExceptions
+    public class WorkflowBuilderHandlers<T>
     {
-        private List<Action<Exception, Contexts>> _handlers = new List<Action<Exception, Contexts>>();
+        private List<T> _handlers = new List<T>();
         private readonly IContainer _container;
 
-        internal IEnumerable<Action<Exception, Contexts>> Handlers => _handlers;
+        internal IEnumerable<T> Handlers => _handlers;
 
-        public WorkflowBuilderExceptions(IContainer container)
+        public WorkflowBuilderHandlers(IContainer container)
         {
             this._container = container;
         }
 
-        public WorkflowBuilderExceptions AddHandler(Action<Exception, Contexts> handler, bool onlyOnDebug = false)
+        public WorkflowBuilderHandlers<T> AddHandler(T handler, bool onlyOnDebug = false)
         {
             var isDebug = false;
 #if DEBUG
@@ -157,17 +207,12 @@ namespace Devscord.DiscordFramework
             return this;
         }
 
-        public WorkflowBuilderExceptions AddFromIoC<T>(Func<T, Action<Exception, Contexts>> func)
+        public WorkflowBuilderHandlers<T> AddFromIoC<W>(Func<W, T> func)
         {
-            var resolved = _container.Resolve<T>();
+            var resolved = _container.Resolve<W>();
             var handler = func.Invoke(resolved);
             AddHandler(handler);
             return this;
-        }
-
-        internal void Clear()
-        {
-            _handlers = new List<Action<Exception, Contexts>>();
         }
     }
 }
