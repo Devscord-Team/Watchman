@@ -10,15 +10,19 @@ namespace Watchman.Integrations.MongoDB
     public static class MongoConfiguration
     {
         private static bool _initialized;
+        private static object Lock = new object();
 
         public static void Initialize()
         {
-            if (_initialized)
+            lock (Lock)
             {
-                return;
+                if (_initialized)
+                {
+                    return;
+                }
+                RegisterConventions();
+                _initialized = true;
             }
-            RegisterConventions();
-            _initialized = true;
         }
 
         private static void RegisterConventions()
