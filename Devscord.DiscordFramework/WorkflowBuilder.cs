@@ -26,7 +26,6 @@ namespace Devscord.DiscordFramework
             this._token = token;
             this._container = container;
             this._workflow = new Workflow(botAssembly, container);
-            
         }
 
         public static WorkflowBuilder Create(string token, IContainer container, Assembly botAssembly) => new WorkflowBuilder(token, container, botAssembly);
@@ -80,14 +79,21 @@ namespace Devscord.DiscordFramework
             }
         }
 
-        public async Task Run()
+        public WorkflowBuilder Build()
         {
             _workflow.Initialize();
             _workflow.MapHandlers(_client);
-            ServerInitializer.Initialize(_client);
 
-            await _client.LoginAsync(TokenType.Bot, _token);
-            await _client.StartAsync();
+            _client.LoginAsync(TokenType.Bot, _token).Wait();
+            _client.StartAsync().Wait();
+
+            ServerInitializer.Initialize(_client);
+            
+            return this;
+        }
+
+        public async Task Run()
+        {
             await Task.Delay(-1);
         }
     }
