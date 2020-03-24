@@ -18,15 +18,20 @@ namespace Devscord.DiscordFramework.Framework
     public static class ServerInitializer
     {
         public static bool Initialized { get; private set; }
+        private static object Lock = new object();
 
         public static void Initialize(DiscordSocketClient client)
         {
-            if (Initialized)
+            lock (Lock)
             {
-                return;
+                if (Initialized)
+                {
+                    return;
+                }
+                Server.Initialize(client);
+                Initialized = true;
             }
-            Server.Initialize(client);
-            Initialized = true;
+            
         }
     }
 
@@ -34,11 +39,13 @@ namespace Devscord.DiscordFramework.Framework
     {
         private static DiscordSocketClient _client;
         private static List<SocketRole> _roles;
-
         public static Func<SocketGuildUser, Task> UserJoined { get; set; }
 
         public static void Initialize(DiscordSocketClient client)
         {
+            while(client.ConnectionState != ConnectionState.Connected)
+            { }
+
             _client = client;
             _client.UserJoined += user => UserJoined(user);
 
