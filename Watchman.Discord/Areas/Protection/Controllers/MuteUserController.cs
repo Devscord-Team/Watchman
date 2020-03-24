@@ -15,18 +15,20 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly MuteService _muteService;
         private readonly UsersService _usersService;
+        private readonly DirectMessagesService _directMessagesService;
 
-        public MuteUserController(MessagesServiceFactory messagesServiceFactory, MuteService muteService, UsersService usersService)
+        public MuteUserController(MessagesServiceFactory messagesServiceFactory, MuteService muteService, UsersService usersService, DirectMessagesService directMessagesService)
         {
             this._messagesServiceFactory = messagesServiceFactory;
             this._muteService = muteService;
             this._usersService = usersService;
+            this._directMessagesService = directMessagesService;
         }
 
         //[IgnoreForHelp] todo:
         [DiscordCommand("mute")]
         [AdminCommand]
-        public void MuteUser(DiscordRequest request, Contexts contexts)
+        public async void MuteUser(DiscordRequest request, Contexts contexts)
         {
             var requestParser = new MuteRequestParser(request, _usersService, contexts);
             var userToMute = requestParser.GetUser();
@@ -50,6 +52,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             {
                 var messagesService = _messagesServiceFactory.Create(contexts);
                 await messagesService.SendResponse(x => x.UnmutedUser(userToUnmute), contexts);
+                await _directMessagesService.TrySendMessage(userToUnmute.Id, x => x.UnmutedUserForUser(userToUnmute), contexts); //todo test on prod server
             }
         }
     }

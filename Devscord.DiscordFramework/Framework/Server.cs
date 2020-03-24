@@ -52,6 +52,12 @@ namespace Devscord.DiscordFramework.Framework
             _client.RoleDeleted += deletedRole => RemoveRole(deletedRole);
         }
 
+        public static async Task SendDirectMessage(ulong userId, string message)
+        {
+            var user = GetUser(userId);
+            await user.SendMessageAsync(message);
+        }
+
         public static IEnumerable<SocketRole> GetSocketRoles(ulong guildId)
         {
             return _roles.Where(x => x.Guild.Id == guildId);
