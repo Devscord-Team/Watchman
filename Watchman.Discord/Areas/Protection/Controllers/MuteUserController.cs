@@ -28,7 +28,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         //[IgnoreForHelp] todo:
         [DiscordCommand("mute")]
         [AdminCommand]
-        public async void MuteUser(DiscordRequest request, Contexts contexts)
+        public async Task MuteUser(DiscordRequest request, Contexts contexts)
         {
             var requestParser = new MuteRequestParser(request, _usersService, contexts);
             var userToMute = requestParser.GetUser();
