@@ -30,10 +30,10 @@ namespace Watchman.Discord
         private readonly DiscordConfiguration _configuration;
         private readonly IContainer _container;
 
-        public WatchmanBot(DiscordConfiguration configuration)
+        public WatchmanBot(DiscordConfiguration configuration, IContainer container = null)
         {
             this._configuration = configuration;
-            this._container = GetAutofacContainer(configuration);
+            this._container = container ?? GetAutofacContainer(configuration);
             Log.Logger = SerilogInitializer.Initialize(this._container.Resolve<IMongoDatabase>());
             Log.Information("Bot created...");
         }

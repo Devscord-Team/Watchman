@@ -10,11 +10,11 @@ namespace Watchman.IoC.Modules
 {
     public class DatabaseModule : Autofac.Module
     {
-        private readonly DiscordConfiguration configuration;
+        private readonly string _connectionString;
 
-        public DatabaseModule(DiscordConfiguration configuration)
+        public DatabaseModule(string connectionString)
         {
-            this.configuration = configuration;
+            this._connectionString = connectionString;
         }
 
         protected override void Load(ContainerBuilder builder)
@@ -23,7 +23,7 @@ namespace Watchman.IoC.Modules
                 .GetTypeInfo()
                 .Assembly;
 
-            builder.Register((c, p) => new MongoClient(configuration.MongoDbConnectionString).GetDatabase("devscord"))
+            builder.Register((c, p) => new MongoClient(_connectionString).GetDatabase("devscord"))
                 .As<IMongoDatabase>()
                 .InstancePerLifetimeScope();
 

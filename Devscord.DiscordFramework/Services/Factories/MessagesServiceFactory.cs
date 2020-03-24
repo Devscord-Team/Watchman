@@ -16,9 +16,14 @@ namespace Devscord.DiscordFramework.Services.Factories
 
         public MessagesService Create(Contexts contexts)
         {
+            return this.Create(contexts.Channel.Id);
+        }
+
+        public MessagesService Create(ulong channelId)
+        {
             return new MessagesService(_responsesService, _splittingService)
             {
-                ChannelId = contexts.Channel.Id
+                ChannelId = channelId
             };
         }
     }

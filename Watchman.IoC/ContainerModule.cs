@@ -5,17 +5,17 @@ namespace Watchman.IoC
 {
     public class ContainerModule
     {
-        private readonly DiscordConfiguration configuration;
+        private readonly string _connectionString;
 
-        public ContainerModule(DiscordConfiguration configuration)
+        public ContainerModule(string connectionString)
         {
-            this.configuration = configuration;
+            this._connectionString = connectionString;
         }
 
         public ContainerBuilder GetBuilder()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterModule(new DatabaseModule(configuration));
+            builder.RegisterModule(new DatabaseModule(_connectionString));
             builder.RegisterModule<CommandModule>();
             builder.RegisterModule<QueryModule>();
             builder.RegisterModule<ServiceModule>();
