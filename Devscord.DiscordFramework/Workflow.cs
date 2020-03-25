@@ -30,7 +30,6 @@ namespace Devscord.DiscordFramework
         internal Workflow(Assembly botAssembly, IComponentContext context)
         {
             this._controllersService = new ControllersService(context, botAssembly);
-            Server.UserJoined += CallUserJoined;
         }
 
         internal Workflow AddMiddleware<T, W>() 
@@ -50,8 +49,8 @@ namespace Devscord.DiscordFramework
         internal void MapHandlers(DiscordSocketClient client)
         {
             this.OnReady.ForEach(x => client.Ready += x);
-            client.UserJoined += this.CallUserJoined;
             this.OnMessageReceived.ForEach(x => client.MessageReceived += x);
+            Server.UserJoined += CallUserJoined;
         }
 
         private async Task MessageReceived(SocketMessage socketMessage)
