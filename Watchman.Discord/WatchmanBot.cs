@@ -41,7 +41,8 @@ namespace Watchman.Discord
         public async Task Start()
         {
             MongoConfiguration.Initialize();
-            await GetWorkflowBuilder().Run();
+            var workflowBuilder = GetWorkflowBuilder();
+            await Task.Delay(-1);
         }
 
         public WorkflowBuilder GetWorkflowBuilder()

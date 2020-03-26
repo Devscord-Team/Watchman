@@ -86,15 +86,8 @@ namespace Devscord.DiscordFramework
 
             _client.LoginAsync(TokenType.Bot, _token).Wait();
             _client.StartAsync().Wait();
-
             ServerInitializer.Initialize(_client);
-            
             return this;
-        }
-
-        public async Task Run()
-        {
-            await Task.Delay(-1);
         }
     }
 }
