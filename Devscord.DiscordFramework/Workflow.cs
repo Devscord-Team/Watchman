@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Devscord.DiscordFramework.Middlewares.Factories;
 using System.Collections;
 using System.Collections.Generic;
+using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 
 namespace Devscord.DiscordFramework
 {
@@ -60,15 +61,25 @@ namespace Devscord.DiscordFramework
                 return;
             }
 
-            Log.Information("Processing message: {content} from user {user} started", socketMessage.Content, socketMessage.Author);
-            var request = _commandParser.Parse(socketMessage.Content, socketMessage.Timestamp.UtcDateTime);
-            Log.Information("Request parsed");
-            var contexts = this._middlewaresService.RunMiddlewares(socketMessage);
-            Log.Information("Contexts created");
+            DiscordRequest request;
+            Contexts contexts;
+            try
+            {
+                Log.Information("Processing message: {content} from user {user} started", socketMessage.Content, socketMessage.Author);
+                request = _commandParser.Parse(socketMessage.Content, socketMessage.Timestamp.UtcDateTime);
+                Log.Information("Request parsed");
+                contexts = this._middlewaresService.RunMiddlewares(socketMessage);
+                Log.Information("Contexts created");
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, e.StackTrace);
+                return;
+            }
 
             try
             {
-                Log.Information("Started controllers");
+                Log.Information("Starting controllers");
                 await this._controllersService.Run(request, contexts);
             }
             catch (Exception e)
