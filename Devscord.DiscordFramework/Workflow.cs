@@ -62,9 +62,13 @@ namespace Devscord.DiscordFramework
 
             Log.Information("Processing message: {content} from user {user} started", socketMessage.Content, socketMessage.Author);
             var request = _commandParser.Parse(socketMessage.Content, socketMessage.Timestamp.UtcDateTime);
+            Log.Information("Request parsed");
             var contexts = this._middlewaresService.RunMiddlewares(socketMessage);
+            Log.Information("Contexts created");
+
             try
             {
+                Log.Information("Started controllers");
                 await this._controllersService.Run(request, contexts);
             }
             catch (Exception e)
