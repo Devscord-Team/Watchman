@@ -6,9 +6,9 @@ using Discord.WebSocket;
 
 namespace Devscord.DiscordFramework.Middlewares
 {
-    public class ChannelMiddleware : IMiddleware<ChannelContext>
+    public class ChannelMiddleware : IMiddleware
     {
-        public ChannelContext Process(SocketMessage data)
+        public IDiscordContext Process(SocketMessage data)
         {
             return new ChannelContext(data.Channel.Id, data.Channel.Name);
         }
