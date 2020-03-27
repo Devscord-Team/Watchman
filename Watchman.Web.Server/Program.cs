@@ -1,11 +1,8 @@
-using Autofac;
-using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using System.Threading.Tasks;
-using Watchman.Discord;
 using Watchman.Integrations.MongoDB;
+using Watchman.Web.Server.ServiceProviders;
 
 namespace Watchman.Web.Server
 {
@@ -15,13 +12,12 @@ namespace Watchman.Web.Server
         {
             MongoConfiguration.Initialize();
             var configuration = GetConfiguration();
-            RunWatchmanBot(configuration);
             CreateHostBuilder(args, configuration).Build().Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args, IConfiguration configuration) =>
             Host.CreateDefaultBuilder(args)
-            .UseServiceProviderFactory(new AutofacServiceProviderFactory(x => ConfigureAutofac(x, configuration)))
+            .UseServiceProviderFactory(new AutofacServiceProviderFactory(configuration))
             .ConfigureWebHostDefaults(webBuilder =>
             {
                 webBuilder.UseStartup<Startup>();
@@ -37,22 +33,6 @@ namespace Watchman.Web.Server
 #endif
                 .AddEnvironmentVariables();
             return builder.Build();
-        }
-
-        public static void RunWatchmanBot(IConfiguration configuration)
-        {
-            var discordConfiguration = new DiscordConfiguration
-            {
-                Token = configuration["Discord:Token"],
-                MongoDbConnectionString = configuration.GetConnectionString("Mongo")
-            };
-            var bot = new WatchmanBot(discordConfiguration, new Watchman.IoC.ContainerModule(configuration.GetConnectionString("Mongo")).GetBuilder().Build()); //todo optimalize to single instance of IoC
-            Task.Factory.StartNew(() => bot.Start(), TaskCreationOptions.LongRunning);
-        }
-        private static void ConfigureAutofac(ContainerBuilder builder, IConfiguration configuration)
-        {
-            var container = new Watchman.IoC.ContainerModule(configuration.GetConnectionString("Mongo"));
-            builder = container.GetBuilder();
         }
     }
 }
