@@ -1,9 +1,8 @@
-using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Watchman.Integrations.MongoDB;
-using Watchman.Web.Server.IoC;
+using Watchman.Web.Server.ServiceProviders;
 
 namespace Watchman.Web.Server
 {
@@ -12,12 +11,13 @@ namespace Watchman.Web.Server
         public static void Main(string[] args)
         {
             MongoConfiguration.Initialize();
-            CreateHostBuilder(args).Build().Run();
+            var configuration = GetConfiguration();
+            CreateHostBuilder(args, configuration).Build().Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
+        public static IHostBuilder CreateHostBuilder(string[] args, IConfiguration configuration) =>
             Host.CreateDefaultBuilder(args)
-            .UseServiceProviderFactory(new AutofacServiceProviderFactory(x => x.ConfigureContainer(GetConfiguration())))
+            .UseServiceProviderFactory(new AutofacServiceProviderFactory(configuration))
             .ConfigureWebHostDefaults(webBuilder =>
             {
                 webBuilder.UseStartup<Startup>();

@@ -24,18 +24,15 @@ namespace Watchman.IoC.Modules
             {
                 var asm = stack.Pop();
 
-                if (asm.FullName.Contains("Watchman.Discord"))
-                {
-                    var controllers = asm.GetTypes()
-                        .Where(type => typeof(IController).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)
-                        .ToList();
+                var controllers = asm.GetTypes()
+                    .Where(type => typeof(IController).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)
+                    .ToList();
 
-                    foreach (var controller in controllers)
-                    {
-                        builder.RegisterType(controller)
-                            .As(controller)
-                            .InstancePerLifetimeScope();
-                    }
+                foreach (var controller in controllers)
+                {
+                    builder.RegisterType(controller)
+                        .As(controller)
+                        .InstancePerLifetimeScope();
                 }
 
                 foreach (var reference in asm.GetReferencedAssemblies())

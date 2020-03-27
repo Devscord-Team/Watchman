@@ -17,7 +17,7 @@ namespace Watchman.Discord
             var configuration = JsonConvert.DeserializeObject<DiscordConfiguration>(File.ReadAllText(configPath));
             
             var watchman = new WatchmanBot(configuration);
-            await watchman.Start();
+            await watchman.GetWorkflowBuilder().Run();
         }
     }
 }

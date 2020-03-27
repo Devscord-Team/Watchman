@@ -12,6 +12,7 @@ using Devscord.DiscordFramework.Framework.Commands.Parsing;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Factories;
 using Devscord.DiscordFramework.Services.Models;
+using Discord.Rest;
 
 namespace Devscord.DiscordFramework.Framework
 {
@@ -32,13 +33,16 @@ namespace Devscord.DiscordFramework.Framework
 
     internal static class Server
     {
+        private static DiscordSocketRestClient _restClient => _client.Rest; //try to use only rest client if it is possible, because it is safer in our architecture
         private static DiscordSocketClient _client;
         private static List<SocketRole> _roles;
-
         public static Func<SocketGuildUser, Task> UserJoined { get; set; }
 
         public static void Initialize(DiscordSocketClient client)
         {
+            while(client.ConnectionState != ConnectionState.Connected)
+            { }
+
             _client = client;
             _client.UserJoined += user => UserJoined(user);
 
@@ -54,7 +58,7 @@ namespace Devscord.DiscordFramework.Framework
 
         public static async Task SendDirectMessage(ulong userId, string message)
         {
-            var user = GetUser(userId);
+            var user = await GetUser(userId);
             await user.SendMessageAsync(message);
         }
 
@@ -71,24 +75,34 @@ namespace Devscord.DiscordFramework.Framework
             return GetSocketRoles(guildId).Select(x => roleFactory.Create(x));
         }
 
-        public static SocketChannel GetChannel(ulong channelId)
+        public static async Task<RestChannel> GetChannel(ulong channelId, RestGuild guild = null)
         {
-            return _client.GetChannel(channelId);
+            if (guild != null)
+                return await guild.GetChannelAsync(channelId);
+            return await _restClient.GetChannelAsync(channelId);
         }
 
-        public static SocketUser GetUser(ulong userId)
+        public static async Task<RestUser> GetUser(ulong userId)
         {
-            return _client.GetUser(userId);
+            return await _restClient.GetUserAsync(userId);
         }
 
-        public static SocketGuildUser GetGuildUser(ulong userId, ulong guildId)
+        public static async Task<RestGuild> GetGuild(ulong guildId)
         {
-            return _client.GetGuild(guildId).GetUser(userId);
+            return await _restClient.GetGuildAsync(guildId);
         }
 
-        public static IReadOnlyCollection<SocketGuildUser> GetGuildUsers(ulong guildId)
+        public static async Task<RestGuildUser> GetGuildUser(ulong userId, ulong guildId)
         {
-            return _client.GetGuild(guildId).Users;
+            var guild = await _restClient.GetGuildAsync(guildId);
+            return await guild.GetUserAsync(userId);
+        }
+
+        public static async Task<IEnumerable<RestGuildUser>> GetGuildUsers(ulong guildId)
+        {
+            var guild = await _restClient.GetGuildAsync(guildId);
+            var users = guild.GetUsersAsync();
+            return await users.FlattenAsync();
         }
 
         private static Task AddRole(SocketRole role)
@@ -110,17 +124,17 @@ namespace Devscord.DiscordFramework.Framework
             return Task.CompletedTask;
         }
 
-        public static Task<UserRole> CreateNewRole(NewUserRole role, DiscordServerContext discordServer)
+        public static async Task<UserRole> CreateNewRole(NewUserRole role, DiscordServerContext discordServer)
         {
             var permissionsValue = role.Permissions.GetRawValue();
 
-            var createRoleTask = _client.GetGuild(discordServer.Id)
-                .CreateRoleAsync(role.Name, new GuildPermissions(permissionsValue));
+            var guild = await _restClient.GetGuildAsync(discordServer.Id);
+            var createRoleTask = guild.CreateRoleAsync(role.Name, new GuildPermissions(permissionsValue));
 
             var restRole = createRoleTask.Result;
             var userRole = new UserRoleFactory().Create(restRole);
 
-            return Task.FromResult(userRole);
+            return userRole;
         }
 
         public static async Task SetPermissions(ChannelContext channel, ChangedPermissions permissions, UserRole muteRole)
@@ -147,16 +161,17 @@ namespace Devscord.DiscordFramework.Framework
             });
         }
 
-        public static Task<IEnumerable<DiscordServerContext>> GetDiscordServers()
+        public static async Task<IEnumerable<DiscordServerContext>> GetDiscordServers()
         {
             var serverContextFactory = new DiscordServerContextFactory();
-            var serverContexts = _client.Guilds.Select(x => serverContextFactory.Create(x));
-            return Task.FromResult(serverContexts);
+            var guilds = await _restClient.GetGuildsAsync();
+            var serverContexts = guilds.Select(x => serverContextFactory.Create(x));
+            return serverContexts;
         }
 
         public static async Task<IEnumerable<Message>> GetMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong fromMessageId = 0, bool goBefore = true)
         {
-            var textChannel = (SocketTextChannel)Server.GetChannel(channel.Id);
+            var textChannel = (RestTextChannel)Server.GetChannel(channel.Id).Result;
             IEnumerable<IMessage> channelMessages;
             if (fromMessageId == 0)
             {

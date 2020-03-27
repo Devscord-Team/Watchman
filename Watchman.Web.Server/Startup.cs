@@ -14,8 +14,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
-using Watchman.Integrations.MongoDB;
-using Watchman.Web.Server.IoC;
 
 namespace Watchman.Web.Server
 {
@@ -25,7 +23,14 @@ namespace Watchman.Web.Server
 
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            var builder = new ConfigurationBuilder()
+#if RELEASE
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+#else
+                .AddJsonFile("appsettings.Development.json", optional: true)
+#endif
+                .AddEnvironmentVariables();
+            Configuration = builder.Build();
         }
 
         public void ConfigureServices(IServiceCollection services)

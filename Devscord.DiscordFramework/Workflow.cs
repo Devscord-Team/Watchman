@@ -111,7 +111,8 @@ namespace Devscord.DiscordFramework
             var serverFactory = new DiscordServerContextFactory();
 
             var userContext = userFactory.Create(guildUser);
-            var discordServerContext = serverFactory.Create(guildUser.Guild);
+            var guild = Server.GetGuild(guildUser.Id).Result;
+            var discordServerContext = serverFactory.Create(guild);
             var landingChannel = discordServerContext.LandingChannel;
 
             var contexts = new Contexts();

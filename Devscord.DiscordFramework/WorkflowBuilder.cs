@@ -14,22 +14,21 @@ namespace Devscord.DiscordFramework
     {
         private readonly DiscordSocketClient _client;
         private readonly string _token;
-        private readonly IContainer _container;
+        private readonly IComponentContext context;
         private readonly Workflow _workflow;
 
-        private WorkflowBuilder(string token, IContainer container, Assembly botAssembly)
+        private WorkflowBuilder(string token, IComponentContext context, Assembly botAssembly)
         {
             _client = new DiscordSocketClient(new DiscordSocketConfig
             {
                 TotalShards = 1
             });
             this._token = token;
-            this._container = container;
-            this._workflow = new Workflow(botAssembly, container);
-            
+            this.context = context;
+            this._workflow = new Workflow(botAssembly, context);
         }
 
-        public static WorkflowBuilder Create(string token, IContainer container, Assembly botAssembly) => new WorkflowBuilder(token, container, botAssembly);
+        public static WorkflowBuilder Create(string token, IComponentContext context, Assembly botAssembly) => new WorkflowBuilder(token, context, botAssembly);
 
         public WorkflowBuilder SetMessageHandler(Func<SocketMessage, Task> action)
         {
@@ -72,7 +71,7 @@ namespace Devscord.DiscordFramework
 
         private void AddHandlers<T>(Action<WorkflowBuilderHandlers<T>> action, Action<T> workflowAction)
         {
-            var workflowBuilderHandlers = new WorkflowBuilderHandlers<T>(this._container);
+            var workflowBuilderHandlers = new WorkflowBuilderHandlers<T>(this.context);
             action.Invoke(workflowBuilderHandlers);
             foreach (var exceptionHandler in workflowBuilderHandlers.Handlers)
             {
@@ -80,14 +79,20 @@ namespace Devscord.DiscordFramework
             }
         }
 
-        public async Task Run()
+        public WorkflowBuilder Build()
         {
             _workflow.Initialize();
             _workflow.MapHandlers(_client);
-            ServerInitializer.Initialize(_client);
 
-            await _client.LoginAsync(TokenType.Bot, _token);
-            await _client.StartAsync();
+            _client.LoginAsync(TokenType.Bot, _token).Wait();
+            _client.StartAsync().Wait();
+
+            ServerInitializer.Initialize(_client);
+            return this;
+        }
+
+        public async Task Run()
+        {
             await Task.Delay(-1);
         }
     }

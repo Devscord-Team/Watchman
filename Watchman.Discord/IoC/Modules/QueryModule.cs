@@ -21,18 +21,15 @@ namespace Watchman.Discord.Ioc.Modules
             {
                 var asm = stack.Pop();
 
-                if (asm.FullName.Contains("Watchman.DomainModel"))
-                {
-                    var handlers = asm.GetTypes()
-                        .Where(type => typeof(IQueryHandler).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)
-                        .ToList();
+                var handlers = asm.GetTypes()
+                    .Where(type => typeof(IQueryHandler).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)
+                    .ToList();
 
-                    foreach (var handler in handlers)
-                    {
-                        builder.RegisterType(handler)
-                            .As(handler.GetInterfaces().First())
-                            .InstancePerLifetimeScope();
-                    }
+                foreach (var handler in handlers)
+                {
+                    builder.RegisterType(handler)
+                        .As(handler.GetInterfaces().First())
+                        .InstancePerLifetimeScope();
                 }
 
                 foreach (var reference in asm.GetReferencedAssemblies())

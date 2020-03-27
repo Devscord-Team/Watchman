@@ -1,6 +1,12 @@
 ﻿using Autofac;
+using Devscord.DiscordFramework.Framework.Commands.Responses;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Watchman.Cqrs;
+using Watchman.Discord;
+using Watchman.Discord.Areas.Commons;
+using Watchman.DomainModel.Commons.Calculators.Statistics;
 
 namespace Watchman.IoC.Modules
 {
@@ -12,6 +18,9 @@ namespace Watchman.IoC.Modules
                 .As<ResponsesService>()
                 .InstancePerLifetimeScope();
 
+            builder.RegisterType<StatisticsCalculator>()
+                .As<IStatisticsCalculator>()
+                .InstancePerLifetimeScope();
 
             var list = new List<string>();
             var stack = new Stack<Assembly>();

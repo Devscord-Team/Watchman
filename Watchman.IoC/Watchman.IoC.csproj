@@ -6,7 +6,16 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="5.1.2" />
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Devscord.DiscordFramework\Devscord.DiscordFramework.csproj" />
+    <ProjectReference Include="..\Watchman.Common\Watchman.Common.csproj" />
+    <ProjectReference Include="..\Watchman.Cqrs\Watchman.Cqrs.csproj" />
+    <ProjectReference Include="..\Watchman.Discord\Watchman.Discord.csproj" />
+    <ProjectReference Include="..\Watchman.DomainModel\Watchman.DomainModel.csproj" />
+    <ProjectReference Include="..\Watchman.Integrations\Watchman.Integrations.csproj" />
+    <ProjectReference Include="..\Watchman.ScheduleRunner\Watchman.ScheduleRunner.csproj" />
   </ItemGroup>
 
 </Project>

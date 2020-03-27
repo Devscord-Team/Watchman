@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Devscord.DiscordFramework.Framework;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Middlewares.Factories;
+using Discord.Rest;
 using Discord.WebSocket;
 
 namespace Devscord.DiscordFramework.Services
@@ -26,16 +27,16 @@ namespace Devscord.DiscordFramework.Services
 
         public IEnumerable<UserContext> GetUsers(DiscordServerContext server)
         {
-            var guildUsers = Server.GetGuildUsers(server.Id);
+            var guildUsers = Server.GetGuildUsers(server.Id).Result;
 
             var userContextFactory = new UserContextsFactory();
             var userContexts = guildUsers.Select(x => userContextFactory.Create(x));
             return userContexts;
         }
 
-        private SocketGuildUser GetUser(UserContext user, DiscordServerContext server)
+        private RestGuildUser GetUser(UserContext user, DiscordServerContext server)
         {
-            return Server.GetGuildUser(user.Id, server.Id);
+            return Server.GetGuildUser(user.Id, server.Id).Result;
         }
 
         private SocketRole GetRole(ulong roleId, DiscordServerContext server)

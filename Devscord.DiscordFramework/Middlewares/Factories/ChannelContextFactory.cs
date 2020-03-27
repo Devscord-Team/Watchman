@@ -1,15 +1,14 @@
 ﻿using Devscord.DiscordFramework.Middlewares.Contexts;
+using Discord.Rest;
 using Discord.WebSocket;
 
 namespace Devscord.DiscordFramework.Middlewares.Factories
 {
-    internal class ChannelContextFactory : IContextFactory<ISocketMessageChannel, ChannelContext>
+    internal class ChannelContextFactory : IContextFactory<IRestMessageChannel, ChannelContext>
     {
-        public ChannelContext Create(ISocketMessageChannel socketChannel)
+        public ChannelContext Create(IRestMessageChannel restChannel)
         {
-            return socketChannel == null 
-                ? null 
-                : new ChannelContext(socketChannel.Id, socketChannel.Name);
+            return restChannel == null ? null : new ChannelContext(restChannel.Id, restChannel.Name);
         }
     }
 }
