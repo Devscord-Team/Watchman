@@ -33,7 +33,7 @@ namespace Watchman.DomainModel.Commons.Calculators.Statistics
                 Period.Hour => new HourSplitter(),
                 Period.Day => new DaySplitter(),
                 Period.Week => new WeekSplitter(),
-                Period.Month => new MonthSplitter(),
+                Period.Month => new WeekSplitter(),
                 _ => default
             };
         }
