@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework.Middlewares
 {
-    public class LoggingMiddleware : IMiddleware<EmptyContext>
+    public class LoggingMiddleware : IMiddleware
     {
-        public EmptyContext Process(SocketMessage data)
+        public IDiscordContext Process(SocketMessage data)
         {
             ///todo add serilog
             Console.WriteLine($"{DateTime.Now} {data.Author}: {data.Content}");

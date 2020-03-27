@@ -9,7 +9,7 @@ using Discord.WebSocket;
 
 namespace Devscord.DiscordFramework.Middlewares
 {
-    public class UserMiddleware : IMiddleware<UserContext>
+    public class UserMiddleware : IMiddleware
     {
         private readonly UserContextsFactory userContextsFactory;
 
@@ -18,7 +18,7 @@ namespace Devscord.DiscordFramework.Middlewares
             this.userContextsFactory = new UserContextsFactory();
         }
 
-        public UserContext Process(SocketMessage data)
+        public IDiscordContext Process(SocketMessage data)
         {
             var user = (SocketGuildUser)data.Author;
             return userContextsFactory.Create(user);

@@ -39,9 +39,9 @@ namespace Devscord.DiscordFramework
         public WorkflowBuilder SetDefaultMiddlewares()
         {
             this._workflow
-                .AddMiddleware<ChannelMiddleware, ChannelContext>()
-                .AddMiddleware<ServerMiddleware, DiscordServerContext>()
-                .AddMiddleware<UserMiddleware, UserContext>();
+                .AddMiddleware<ChannelMiddleware>()
+                .AddMiddleware<ServerMiddleware>()
+                .AddMiddleware<UserMiddleware>();
             return this;
         }
 

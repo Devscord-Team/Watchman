@@ -36,13 +36,14 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         public async Task SaveMessageAsync(DiscordRequest request, Contexts contexts)
         {
             //TODO maybe there should be builder... but it doesn't looks very bad
+            Log.Information("Started saving the message");
             var command = new AddMessageCommand(request.OriginalMessage,
                 contexts.User.Id, contexts.User.Name,
                 contexts.Channel.Id, contexts.Channel.Name,
                 contexts.Server.Id, contexts.Server.Name,
                 contexts.Server.Owner.Id, contexts.Server.Owner.Name,
                 request.SentAt);
-
+            Log.Information("Command created");
             await this._commandBus.ExecuteAsync(command);
             Log.Information("Message saved");
         }

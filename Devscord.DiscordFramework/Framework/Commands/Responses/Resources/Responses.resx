@@ -165,6 +165,9 @@
   <data name="UnmutedUser" xml:space="preserve">
     <value>Użytkownik {{user}} może pisać ponownie.</value>
   </data>
+  <data name="UnmutedUserForUser" xml:space="preserve">
+    <value>Cześć {{user}}! Już możesz pisać ponownie na serwerze {{server}}</value>
+  </data>
   <data name="UserDidntMentionedAnyUserToMute" xml:space="preserve">
     <value>Musisz wskazać użytkownika do zmutowania.</value>
   </data>

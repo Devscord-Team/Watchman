@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Framework;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Framework.Commands.Parsing;
@@ -8,11 +7,10 @@ using Discord.WebSocket;
 using Serilog;
 using System;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Middlewares.Factories;
-using System.Collections;
 using System.Collections.Generic;
+using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 
 namespace Devscord.DiscordFramework
 {
@@ -30,15 +28,13 @@ namespace Devscord.DiscordFramework
         internal Workflow(Assembly botAssembly, IComponentContext context)
         {
             this._controllersService = new ControllersService(context, botAssembly);
-            Server.UserJoined += CallUserJoined;
         }
 
-        internal Workflow AddMiddleware<T, W>() 
-            where T : IMiddleware<W>
-            where W : IDiscordContext
+        internal Workflow AddMiddleware<T>() 
+            where T : IMiddleware
         {
-            this._middlewaresService.AddMiddleware<T, W>();
-            Log.Debug("Added Middleware: {middlewareName} with DiscordContext: {contextName}", nameof(T), nameof(W));
+            this._middlewaresService.AddMiddleware<T>();
+            Log.Debug("Added Middleware: {middlewareName}", nameof(T));
             return this;
         }
 
@@ -50,8 +46,8 @@ namespace Devscord.DiscordFramework
         internal void MapHandlers(DiscordSocketClient client)
         {
             this.OnReady.ForEach(x => client.Ready += x);
-            client.UserJoined += this.CallUserJoined;
             this.OnMessageReceived.ForEach(x => client.MessageReceived += x);
+            Server.UserJoined += CallUserJoined;
         }
 
         private async Task MessageReceived(SocketMessage socketMessage)
@@ -61,11 +57,25 @@ namespace Devscord.DiscordFramework
                 return;
             }
 
-            Log.Information("Processing message: {content} from user {user} started", socketMessage.Content, socketMessage.Author);
-            var request = _commandParser.Parse(socketMessage.Content, socketMessage.Timestamp.UtcDateTime);
-            var contexts = this._middlewaresService.RunMiddlewares(socketMessage);
+            DiscordRequest request;
+            Contexts contexts;
             try
             {
+                Log.Information("Processing message: {content} from user {user} started", socketMessage.Content, socketMessage.Author);
+                request = _commandParser.Parse(socketMessage.Content, socketMessage.Timestamp.UtcDateTime);
+                Log.Information("Request parsed");
+                contexts = this._middlewaresService.RunMiddlewares(socketMessage);
+                Log.Information("Contexts created");
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, e.StackTrace);
+                return;
+            }
+
+            try
+            {
+                Log.Information("Starting controllers");
                 await this._controllersService.Run(request, contexts);
             }
             catch (Exception e)

@@ -51,18 +51,26 @@ namespace Devscord.DiscordFramework.Framework
             _client = client;
             _client.UserJoined += user => UserJoined(user);
 
-            _client.Ready += () =>
+            _client.Ready += async () => await Task.Run(() =>
             {
-                _roles = client.Guilds.SelectMany(x => x.Roles).ToList();
-                return Task.CompletedTask;
-            };
+                return _roles = client.Guilds.SelectMany(x => x.Roles).ToList();
+            });
 
-            _client.RoleCreated += newRole => AddRole(newRole);
-            _client.RoleDeleted += deletedRole => RemoveRole(deletedRole);
+            _client.RoleCreated += AddRole;
+            _client.RoleDeleted += RemoveRole;
+            _client.RoleUpdated += RoleUpdated;
+        }
+
+        public static async Task SendDirectMessage(ulong userId, string message)
+        {
+            var user = await GetUser(userId);
+            await user.SendMessageAsync(message);
         }
 
         public static IEnumerable<SocketRole> GetSocketRoles(ulong guildId)
         {
+            if (_roles == null) // todo: it should work without this if
+                _roles = _client.Guilds.SelectMany(x => x.Roles).ToList();
             return _roles.Where(x => x.Guild.Id == guildId);
         }
 
@@ -111,6 +119,13 @@ namespace Devscord.DiscordFramework.Framework
         private static Task RemoveRole(SocketRole role)
         {
             _roles.Remove(role);
+            return Task.CompletedTask;
+        }
+
+        private static Task RoleUpdated(SocketRole from, SocketRole to)
+        {
+            _roles.Remove(from);
+            _roles.Add(to);
             return Task.CompletedTask;
         }
 

@@ -11,7 +11,7 @@ using Discord.WebSocket;
 
 namespace Devscord.DiscordFramework.Middlewares
 {
-    public class ServerMiddleware : IMiddleware<DiscordServerContext>
+    public class ServerMiddleware : IMiddleware
     {
         private readonly DiscordServerContextFactory discordServerContextsFactory;
 
@@ -20,7 +20,7 @@ namespace Devscord.DiscordFramework.Middlewares
             this.discordServerContextsFactory = new DiscordServerContextFactory();
         }
 
-        public DiscordServerContext Process(SocketMessage data)
+        public IDiscordContext Process(SocketMessage data)
         {
             var serverInfo = ((SocketGuildChannel)data.Channel).Guild;
             var guild = Server.GetGuild(serverInfo.Id).Result;

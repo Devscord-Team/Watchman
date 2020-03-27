@@ -8,7 +8,7 @@ namespace Devscord.DiscordFramework.Middlewares.Factories
     {
         public ChannelContext Create(IRestMessageChannel restChannel)
         {
-            return new ChannelContext(restChannel.Id, restChannel.Name);
+            return restChannel == null ? null : new ChannelContext(restChannel.Id, restChannel.Name);
         }
     }
 }
