@@ -19,7 +19,7 @@ namespace Watchman.Discord.Integration.Channels.Commands.Handlers
 
         public async Task HandleAsync(SendMessageToChannelCommand command)
         {
-            var messagesService = this._messagesServiceFactory.Create(command.ChannelId);
+            var messagesService = this._messagesServiceFactory.Create(command.ChannelId, command.GuildId);
             await messagesService.SendMessage(command.Message);
         }
     }

@@ -19,10 +19,11 @@ namespace Devscord.DiscordFramework.Services.Factories
             return this.Create(contexts.Channel.Id);
         }
 
-        public MessagesService Create(ulong channelId)
+        public MessagesService Create(ulong channelId, ulong guildId = 0)
         {
             return new MessagesService(_responsesService, _splittingService)
             {
+                GuildId = guildId,
                 ChannelId = channelId
             };
         }

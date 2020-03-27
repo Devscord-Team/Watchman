@@ -2,6 +2,7 @@
 using Devscord.DiscordFramework.Framework;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
+using Discord.Rest;
 using Discord.WebSocket;
 using Serilog;
 using System;
@@ -11,6 +12,7 @@ namespace Devscord.DiscordFramework.Services
 {
     public class MessagesService
     {
+        public ulong GuildId { get; set; }
         public ulong ChannelId { get; set; }
 
         private readonly ResponsesService _responsesService;
@@ -24,7 +26,10 @@ namespace Devscord.DiscordFramework.Services
 
         public Task SendMessage(string message, MessageType messageType = MessageType.NormalText)
         {
-            var channel = (ISocketMessageChannel)Server.GetChannel(ChannelId);
+            RestGuild guild = null;
+            if (GuildId != default)
+                guild = Server.GetGuild(GuildId).Result;
+            var channel = (IRestMessageChannel)Server.GetChannel(ChannelId, guild).Result;
 
             foreach (var mess in _splittingService.SplitMessage(message, messageType))
             {
