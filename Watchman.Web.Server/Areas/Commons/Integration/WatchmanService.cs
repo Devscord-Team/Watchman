@@ -16,9 +16,9 @@ namespace Watchman.Web.Server.Areas.Commons.Integration
             this._commandBus = commandBus;
         }
 
-        public async Task SendMessageToChannel(ulong channelId, string message)
+        public async Task SendMessageToChannel(ulong guildId, ulong channelId, string message)
         {
-            var command = new SendMessageToChannelCommand(channelId, message);
+            var command = new SendMessageToChannelCommand(guildId, channelId, message);
             await this._commandBus.ExecuteAsync(command);
         }
     }

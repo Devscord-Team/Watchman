@@ -20,7 +20,7 @@ namespace Watchman.Web.Server.Areas.Channels.Controllers
         [HttpPost]
         public async Task SendMessageToChannel([FromBody] SendMessageToChannelRequest request)
         {
-            await this._watchmanService.SendMessageToChannel(request.ChannelId, request.Message);
+            await this._watchmanService.SendMessageToChannel(request.GetGuildId, request.GetChannelId, request.Message);
         }
     }
 }
