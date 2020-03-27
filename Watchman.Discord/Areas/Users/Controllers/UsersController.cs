@@ -10,6 +10,7 @@ using Watchman.Cqrs;
 using Watchman.DomainModel.DiscordServer.Queries;
 using Watchman.Discord.Areas.Users.Services;
 using Watchman.DomainModel.DiscordServer;
+using Devscord.DiscordFramework.Framework.Commands.Responses;
 
 namespace Watchman.Discord.Areas.Users.Controllers
 {
@@ -30,6 +31,12 @@ namespace Watchman.Discord.Areas.Users.Controllers
         public void GetAvatar(DiscordRequest request, Contexts contexts)
         {
             var messageService = _messagesServiceFactory.Create(contexts);
+            if (string.IsNullOrEmpty(contexts.User.AvatarUrl))
+            {
+                messageService.SendResponse(x => x.UserDoesntHaveAvatar(contexts.User), contexts);
+                return;
+            }
+
             messageService.SendMessage(contexts.User.AvatarUrl);
         }
 

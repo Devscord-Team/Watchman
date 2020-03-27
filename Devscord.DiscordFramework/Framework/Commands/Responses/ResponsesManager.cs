@@ -115,5 +115,10 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("ReadingHistoryDone");
         }
+
+        public static string UserDoesntHaveAvatar(this ResponsesService responsesService, UserContext user)
+        {
+            return responsesService.ProcessResponse("UserDoesntHaveAvatar", new KeyValuePair<string, string>("user", user.Mention));
+        }
     }
 }

@@ -171,6 +171,9 @@
   <data name="UserDidntMentionedAnyUserToMute" xml:space="preserve">
     <value>Musisz wskazać użytkownika do zmutowania.</value>
   </data>
+  <data name="UserDoesntHaveAvatar" xml:space="preserve">
+    <value>Użytkownik {{user}} nie posiada avatara.</value>
+  </data>
   <data name="UserIsNotAdmin" xml:space="preserve">
     <value>Nie masz wystarczających uprawnień do wywołania tej komendy.</value>
   </data>
