@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Framework;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Framework.Commands.Parsing;
@@ -8,10 +7,8 @@ using Discord.WebSocket;
 using Serilog;
 using System;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Middlewares.Factories;
-using System.Collections;
 using System.Collections.Generic;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 
@@ -33,12 +30,11 @@ namespace Devscord.DiscordFramework
             this._controllersService = new ControllersService(context, botAssembly);
         }
 
-        internal Workflow AddMiddleware<T, W>() 
-            where T : IMiddleware<W>
-            where W : IDiscordContext
+        internal Workflow AddMiddleware<T>() 
+            where T : IMiddleware
         {
-            this._middlewaresService.AddMiddleware<T, W>();
-            Log.Debug("Added Middleware: {middlewareName} with DiscordContext: {contextName}", nameof(T), nameof(W));
+            this._middlewaresService.AddMiddleware<T>();
+            Log.Debug("Added Middleware: {middlewareName}", nameof(T));
             return this;
         }
 

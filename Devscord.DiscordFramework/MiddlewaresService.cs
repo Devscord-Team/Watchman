@@ -9,13 +9,11 @@ namespace Devscord.DiscordFramework
 {
     internal class MiddlewaresService
     {
-        // dynamic = IMiddleware<T> where T : IDiscordContext
-        private readonly List<dynamic> _middlewares = new List<dynamic>();
-        public IEnumerable<dynamic> Middlewares => _middlewares;
+        private readonly List<IMiddleware> _middlewares = new List<IMiddleware>();
+        public IEnumerable<IMiddleware> Middlewares => _middlewares;
 
-        public void AddMiddleware<T, W>()
-            where T : IMiddleware<W>
-            where W : IDiscordContext
+        public void AddMiddleware<T>()
+            where T : IMiddleware
         {
             if (this._middlewares.Any(x => x.GetType().FullName == typeof(T).FullName))
             {
@@ -38,7 +36,7 @@ namespace Devscord.DiscordFramework
 
         private IEnumerable<IDiscordContext> GetMiddlewaresOutput(SocketMessage socketMessage)
         {
-            return this._middlewares.Select(x => (IDiscordContext) x.Process(socketMessage));
+            return this._middlewares.Select(x => x.Process(socketMessage));
         }
     }
 }

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework.Framework.Architecture.Middlewares
 {
-    public interface IMiddleware<T> where T : IDiscordContext
+    public interface IMiddleware
     {
-        T Process(SocketMessage data);
+        IDiscordContext Process(SocketMessage data);
     }
 }
