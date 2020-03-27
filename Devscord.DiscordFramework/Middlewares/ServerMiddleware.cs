@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Devscord.DiscordFramework.Framework;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Middlewares.Factories;
+using Discord.Rest;
 using Discord.WebSocket;
 
 namespace Devscord.DiscordFramework.Middlewares
@@ -21,7 +23,8 @@ namespace Devscord.DiscordFramework.Middlewares
         public DiscordServerContext Process(SocketMessage data)
         {
             var serverInfo = ((SocketGuildChannel)data.Channel).Guild;
-            return this.discordServerContextsFactory.Create(serverInfo);
+            var guild = Server.GetGuild(serverInfo.Id).Result;
+            return this.discordServerContextsFactory.Create(guild);
         }
     }
 }
