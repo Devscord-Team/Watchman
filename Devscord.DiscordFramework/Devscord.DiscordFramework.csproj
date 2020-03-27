@@ -12,10 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Watchman.Common\Watchman.Common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="Framework\Commands\Responses\Resources\Responses.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
