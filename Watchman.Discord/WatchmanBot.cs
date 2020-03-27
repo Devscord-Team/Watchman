@@ -41,12 +41,8 @@ namespace Watchman.Discord
         public async Task Start()
         {
             MongoConfiguration.Initialize();
-            await GetWorkflowBuilder().Run();
-        }
-
-        public WorkflowBuilder GetWorkflowBuilder()
-        {
-            return WorkflowBuilder.Create(_configuration.Token, this._container, typeof(WatchmanBot).Assembly)
+            
+            await WorkflowBuilder.Create(_configuration.Token, this._container, typeof(WatchmanBot).Assembly)
                 .SetDefaultMiddlewares()
                 .AddOnReadyHandlers(builder =>
                 {
@@ -56,7 +52,7 @@ namespace Watchman.Discord
                             Task.Run(() => helpService.FillDatabase(dataCollector.GetCommandsInfo(typeof(WatchmanBot).Assembly)));
                             return Task.CompletedTask;
                         })
-                        .AddFromIoC<UnmutingExpiredMuteEventsService, DiscordServersService>((unmutingService, serversService) => async () =>
+                        .AddFromIoC<UnmutingExpiredMuteEventsService, DiscordServersService>((unmutingService, serversService) => async () => 
                         {
                             var servers = (await serversService.GetDiscordServers()).ToList();
                             servers.ForEach(x => unmutingService.UnmuteUsersInit(x));
@@ -76,7 +72,7 @@ namespace Watchman.Discord
                         .AddHandler(this.PrintDebugExceptionInfo, onlyOnDebug: true)
                         .AddHandler(this.PrintExceptionOnConsole);
                 })
-                .Build();
+                .Run();
         }
 
         private void PrintDebugExceptionInfo(Exception e, Contexts contexts)
