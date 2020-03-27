@@ -52,6 +52,12 @@ namespace Devscord.DiscordFramework.Framework
             _client.RoleUpdated += RoleUpdated;
         }
 
+        public static async Task SendDirectMessage(ulong userId, string message)
+        {
+            var user = GetUser(userId);
+            await user.SendMessageAsync(message);
+        }
+
         public static IEnumerable<SocketRole> GetSocketRoles(ulong guildId)
         {
             if (_roles == null) // todo: it should work without this if

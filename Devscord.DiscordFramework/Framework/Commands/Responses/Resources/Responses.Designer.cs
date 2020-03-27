@@ -205,6 +205,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cześć {{user}}! Już możesz pisać ponownie na serwerze {{server}}.
+        /// </summary>
+        public static string UnmutedUserForUser {
+            get {
+                return ResourceManager.GetString("UnmutedUserForUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Musisz wskazać użytkownika do zmutowania..
         /// </summary>
         public static string UserDidntMentionedAnyUserToMute {

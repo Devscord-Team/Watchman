@@ -1,6 +1,7 @@
 ﻿using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Newtonsoft.Json;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -48,13 +49,16 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             {
                 throw new ArgumentException($"Cannot process response {response.OnEvent}. Values must be equal to required.");
             }
+            Log.Debug($"Start parsing response {response} with values {values}");
             return _parser.Parse(response, values);
         }
 
         public string ProcessResponse(Response response, Contexts contexts, params KeyValuePair<string, string>[] values)
         {
             var fields = contexts.ConvertToResponseFields(response.GetFields()).ToList();
+            Log.Debug($"Found fields {fields} in response {response}");
             fields.AddRange(values);
+            Log.Debug($"Start parsing response {response} with values {values}");
             return _parser.Parse(response, fields);
         }
     }
