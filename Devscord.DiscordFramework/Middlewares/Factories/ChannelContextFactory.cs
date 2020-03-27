@@ -7,7 +7,9 @@ namespace Devscord.DiscordFramework.Middlewares.Factories
     {
         public ChannelContext Create(ISocketMessageChannel socketChannel)
         {
-            return new ChannelContext(socketChannel.Id, socketChannel.Name);
+            return socketChannel == null 
+                ? null 
+                : new ChannelContext(socketChannel.Id, socketChannel.Name);
         }
     }
 }
