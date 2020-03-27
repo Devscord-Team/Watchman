@@ -8,7 +8,6 @@
     <PackageReference Include="Autofac" Version="5.1.2" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.2" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.3" />
     <PackageReference Include="MongoDB.Driver" Version="2.10.2" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0" />
@@ -19,7 +18,6 @@
     <ProjectReference Include="..\Watchman.Discord\Watchman.Discord.csproj" />
     <ProjectReference Include="..\Watchman.DomainModel\Watchman.DomainModel.csproj" />
     <ProjectReference Include="..\Watchman.Integrations\Watchman.Integrations.csproj" />
-    <ProjectReference Include="..\Watchman.IoC\Watchman.IoC.csproj" />
   </ItemGroup>
 
   <ItemGroup>
