@@ -28,21 +28,21 @@ namespace Watchman.Discord
     public class WatchmanBot
     {
         private readonly DiscordConfiguration _configuration;
-        private readonly IContainer _container;
+        private readonly IComponentContext _context;
 
-        public WatchmanBot(DiscordConfiguration configuration, IContainer container = null)
+        public WatchmanBot(DiscordConfiguration configuration, IComponentContext context = null)
         {
             this._configuration = configuration;
-            this._container = container ?? GetAutofacContainer(configuration);
-            Log.Logger = SerilogInitializer.Initialize(this._container.Resolve<IMongoDatabase>());
+            this._context = context ?? GetAutofacContainer(configuration).Resolve<IComponentContext>();
+            Log.Logger = SerilogInitializer.Initialize(this._context.Resolve<IMongoDatabase>());
             Log.Information("Bot created...");
         }
 
-        public async Task Start()
+        public WorkflowBuilder GetWorkflowBuilder()
         {
             MongoConfiguration.Initialize();
-            
-            await WorkflowBuilder.Create(_configuration.Token, this._container, typeof(WatchmanBot).Assembly)
+
+            return WorkflowBuilder.Create(_configuration.Token, this._context, typeof(WatchmanBot).Assembly)
                 .SetDefaultMiddlewares()
                 .AddOnReadyHandlers(builder =>
                 {
@@ -52,7 +52,7 @@ namespace Watchman.Discord
                             Task.Run(() => helpService.FillDatabase(dataCollector.GetCommandsInfo(typeof(WatchmanBot).Assembly)));
                             return Task.CompletedTask;
                         })
-                        .AddFromIoC<UnmutingExpiredMuteEventsService, DiscordServersService>((unmutingService, serversService) => async () => 
+                        .AddFromIoC<UnmutingExpiredMuteEventsService, DiscordServersService>((unmutingService, serversService) => async () =>
                         {
                             var servers = (await serversService.GetDiscordServers()).ToList();
                             servers.ForEach(x => unmutingService.UnmuteUsersInit(x));
@@ -72,13 +72,13 @@ namespace Watchman.Discord
                         .AddHandler(this.PrintDebugExceptionInfo, onlyOnDebug: true)
                         .AddHandler(this.PrintExceptionOnConsole);
                 })
-                .Run();
+                .Build();
         }
 
         private void PrintDebugExceptionInfo(Exception e, Contexts contexts)
         {
             var exceptionMessage = BuildExceptionMessage(e).ToString();
-            var messagesService = _container.Resolve<MessagesServiceFactory>().Create(contexts);
+            var messagesService = _context.Resolve<MessagesServiceFactory>().Create(contexts);
             messagesService.SendMessage(exceptionMessage);
         }
 
