@@ -3,9 +3,6 @@ using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Serilog;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework.Services
@@ -31,6 +28,7 @@ namespace Devscord.DiscordFramework.Services
             try
             {
                 await Server.SendDirectMessage(userId, message);
+                Log.Information($"Bot sent message {message}");
                 return true;
             }
             catch (Exception ex)

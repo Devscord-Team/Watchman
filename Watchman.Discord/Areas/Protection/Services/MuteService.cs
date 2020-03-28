@@ -22,14 +22,16 @@ namespace Watchman.Discord.Areas.Protection.Services
         private readonly UsersService _usersService;
         private readonly UsersRolesService _usersRolesService;
         private readonly MessagesServiceFactory _messagesServiceFactory;
+        private readonly DirectMessagesService _directMessagesService;
 
-        public MuteService(ICommandBus commandBus, IQueryBus queryBus, UsersService usersService, UsersRolesService usersRolesService, MessagesServiceFactory messagesServiceFactory)
+        public MuteService(ICommandBus commandBus, IQueryBus queryBus, UsersService usersService, UsersRolesService usersRolesService, MessagesServiceFactory messagesServiceFactory, DirectMessagesService directMessagesService)
         {
             this._commandBus = commandBus;
             this._queryBus = queryBus;
             this._usersService = usersService;
             this._usersRolesService = usersRolesService;
-            _messagesServiceFactory = messagesServiceFactory;
+            this._messagesServiceFactory = messagesServiceFactory;
+            this._directMessagesService = directMessagesService;
         }
 
         public async Task MuteUserOrOverwrite(Contexts contexts, MuteEvent muteEvent, UserContext userToMute)
@@ -73,6 +75,7 @@ namespace Watchman.Discord.Areas.Protection.Services
             {
                 var messagesService = _messagesServiceFactory.Create(contexts);
                 await messagesService.SendResponse(x => x.UnmutedUser(userToUnmute), contexts);
+                await _directMessagesService.TrySendMessage(userToUnmute.Id, x => x.UnmutedUserForUser(userToUnmute, contexts.Server), contexts);
             }
         }
 

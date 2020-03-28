@@ -17,7 +17,6 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         private readonly MuteService _muteService;
         private readonly UsersService _usersService;
         private readonly DirectMessagesService _directMessagesService;
-
         public MuteUserController(MessagesServiceFactory messagesServiceFactory, MuteService muteService, UsersService usersService, DirectMessagesService directMessagesService)
         {
             this._messagesServiceFactory = messagesServiceFactory;
@@ -35,14 +34,14 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             var userToMute = requestParser.GetUser();
             var muteEvent = requestParser.GetMuteEvent(userToMute.Id, contexts, request.SentAt);
 
-            _muteService.MuteUserOrOverwrite(contexts, muteEvent, userToMute).Wait();
+            await _muteService.MuteUserOrOverwrite(contexts, muteEvent, userToMute);
             _muteService.UnmuteInFuture(contexts, muteEvent, userToMute);
         }
 
         //[IgnoreForHelp] todo:
         [DiscordCommand("unmute")]
         [AdminCommand]
-        public async void UnmuteUserAsync(DiscordRequest request, Contexts contexts)
+        public async Task UnmuteUserAsync(DiscordRequest request, Contexts contexts)
         {
             var requestParser = new MuteRequestParser(request, _usersService, contexts);
             var userToUnmute = requestParser.GetUser();
@@ -53,7 +52,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             {
                 var messagesService = _messagesServiceFactory.Create(contexts);
                 await messagesService.SendResponse(x => x.UnmutedUser(userToUnmute), contexts);
-                await _directMessagesService.TrySendMessage(userToUnmute.Id, x => x.UnmutedUserForUser(userToUnmute), contexts); //todo test on prod server
+                await _directMessagesService.TrySendMessage(userToUnmute.Id, x => x.UnmutedUserForUser(userToUnmute, contexts.Server), contexts);
             }
         }
     }
