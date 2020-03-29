@@ -105,23 +105,25 @@ namespace Devscord.DiscordFramework
             return false;
         }
 
-        private Task CallUserJoined(SocketGuildUser guildUser)
+        private async Task CallUserJoined(SocketGuildUser guildUser)
         {
             var userFactory = new UserContextsFactory();
             var serverFactory = new DiscordServerContextFactory();
 
             var userContext = userFactory.Create(guildUser);
-            var guild = Server.GetGuild(guildUser.Id).Result;
+            var guild = await Server.GetGuild(guildUser.Guild.Id);
             var discordServerContext = serverFactory.Create(guild);
             var landingChannel = discordServerContext.LandingChannel;
 
             var contexts = new Contexts();
             contexts.SetContext(userContext);
             contexts.SetContext(discordServerContext);
-            contexts.SetContext(landingChannel);
+            if (landingChannel != null)
+            {
+                contexts.SetContext(landingChannel);
+            }
 
             OnUserJoined.ForEach(x => x.Invoke(contexts));
-            return Task.CompletedTask;
         }
     }
 }

@@ -16,6 +16,11 @@ namespace Watchman.Discord.Areas.Users.Services
 
         public Task WelcomeUser(Contexts contexts)
         {
+            if (contexts.Channel == null)
+            {
+                return Task.CompletedTask;
+            }
+
             var messagesService = _messagesServiceFactory.Create(contexts);
             messagesService.SendResponse(x => x.NewUserArrived(contexts), contexts);
             return Task.CompletedTask;
