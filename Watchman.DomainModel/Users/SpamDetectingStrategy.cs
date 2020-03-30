@@ -4,7 +4,7 @@
     {
         public ProtectionPunishment SelectPunishment(int warnsInLastFewMinutes, int warnsInLastFewHours, int mutesInLastFewHours, int messagesInLastFewSeconds, int messagesInLastFewMinutes, int userMessages)
         {
-            const int MIN_MESSAGES_TO_BE_SAFE = 400;
+            const int MIN_MESSAGES_TO_BE_SAFE = 800;
 
             if (userMessages > MIN_MESSAGES_TO_BE_SAFE)
             {
@@ -12,7 +12,9 @@
             }
 
             var badUser = messagesInLastFewSeconds > 10 
-                          || messagesInLastFewMinutes > 100;
+                          || messagesInLastFewMinutes > 100
+                          || (userMessages < 40 && messagesInLastFewSeconds > 4)
+                          || (userMessages < 200 && messagesInLastFewMinutes > 40);
 
             if (!badUser)
             {

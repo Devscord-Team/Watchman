@@ -14,7 +14,7 @@ namespace Watchman.Discord.Areas.Protection.Services
 {
     public class AntiSpamService
     {
-        private const int LONGER_TIME = 60;
+        private const int LONGER_TIME = 120;
         private const int SHORTER_TIME = 10;
         private const int WARNS_SHORT_EXPIRATION = 600;
         private const int WARNS_LONG_EXPIRATION = 3600 * 6;

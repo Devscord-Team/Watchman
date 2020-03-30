@@ -48,6 +48,8 @@ namespace Devscord.DiscordFramework.Framework
 
             _client.Ready += async () => await Task.Run(() =>
             {
+                var invites = Server.GetExistingInviteLinks(client.Guilds.First(x => x.Name == "TechnoLogiczni/kabuk").Id).Result.ToList();
+                Serilog.Log.Information(invites.Aggregate((x, y) => x + "\n" + y));
                 return _roles = client.Guilds.SelectMany(x => x.Roles).ToList();
             });
 
@@ -196,6 +198,13 @@ namespace Devscord.DiscordFramework.Framework
                 return new Message(message.Id, request, contexts);
             });
             return messages;
+        }
+
+        public static async Task<IEnumerable<string>> GetExistingInviteLinks(ulong serverId)
+        {
+            var guild = _client.GetGuild(serverId);
+            var invites = await guild.GetInvitesAsync();
+            return invites.Select(x => x.Url);
         }
     }
 }

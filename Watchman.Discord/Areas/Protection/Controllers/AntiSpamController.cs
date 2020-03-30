@@ -1,4 +1,5 @@
-﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+﻿using System.Threading.Tasks;
+using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Serilog;
@@ -21,7 +22,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         }
 
         [ReadAlways]
-        public void Scan(DiscordRequest request, Contexts contexts)
+        public Task Scan(DiscordRequest request, Contexts contexts)
         {
             this._antiSpamService.AddUserMessage(contexts);
             var messagesInShortTime = _antiSpamService.CountUserMessagesShorterTime(contexts.User.Id);
@@ -37,6 +38,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             var punishment = _strategy.SelectPunishment(userWarnsInLastFewMinutes, userWarnsInLastFewHours, userMutesInLastFewHours, messagesInShortTime, messagesInLongTime, userMessages);
             _antiSpamService.SetPunishment(contexts, punishment);
             Log.Information("Scanned");
+            return Task.CompletedTask;
         }
     }
 }

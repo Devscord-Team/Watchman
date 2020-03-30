@@ -1,10 +1,8 @@
 ﻿using Autofac;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace Watchman.Discord.IoC.Modules
 {
@@ -12,10 +10,6 @@ namespace Watchman.Discord.IoC.Modules
     {
         protected override void Load(ContainerBuilder builder)
         {
-            var assembly = typeof(ControllerModule)
-                .GetTypeInfo()
-                .Assembly;
-
             var list = new List<string>();
             var stack = new Stack<Assembly>();
 
