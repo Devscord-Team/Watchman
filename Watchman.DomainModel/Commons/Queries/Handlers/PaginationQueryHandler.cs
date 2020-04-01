@@ -22,12 +22,13 @@ namespace Watchman.DomainModel.Commons.Queries.Handlers
             if(paginationQuery.CreatedDate != null)
             {
                 var timeRange = paginationQuery.CreatedDate;
-                collection = collection.Where(x => x.CreatedAt <= timeRange.Start && x.CreatedAt >= timeRange.End);
+                // todo: wiadomości mogą mieć różne SentAt od CreatedAt. Podczas filtrowania dla statystyk ważniejsze jest SentAt
+                collection = collection.Where(x => x.CreatedAt >= timeRange.Start && x.CreatedAt <= timeRange.End);
             }
             if(paginationQuery.UpdatedDate != null)
             {
                 var timeRange = paginationQuery.UpdatedDate;
-                collection = collection.Where(x => x.UpdatedAt <= timeRange.Start && x.UpdatedAt >= timeRange.End);
+                collection = collection.Where(x => x.UpdatedAt >= timeRange.Start && x.UpdatedAt <= timeRange.End);
             }
             if(paginationQuery.Skip.HasValue)
             {

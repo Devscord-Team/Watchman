@@ -122,5 +122,10 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("UserDoesntHaveAvatar", new KeyValuePair<string, string>("user", user.Mention));
         }
+
+        public static string UserDidntWriteAnyMessageInThisTime(this ResponsesService responsesService, UserContext user)
+        {
+            return responsesService.ProcessResponse("UserDidntWriteAnyMessageInThisTime", new KeyValuePair<string, string>("user", user.Name));
+        }
     }
 }

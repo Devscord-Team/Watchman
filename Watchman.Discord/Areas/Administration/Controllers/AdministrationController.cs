@@ -4,14 +4,14 @@ using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Watchman.Common.Models;
+using System.Threading.Tasks;
+using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Administration.Models;
 using Watchman.DomainModel.Messages.Queries;
+using Devscord.DiscordFramework.Framework.Commands.Responses;
 
 namespace Watchman.Discord.Areas.Administration.Controllers
 {
@@ -19,16 +19,20 @@ namespace Watchman.Discord.Areas.Administration.Controllers
     {
         private readonly IQueryBus _queryBus;
         private readonly UsersService _usersService;
+        private readonly MessagesServiceFactory _messagesServiceFactory;
+        private readonly DirectMessagesService _directMessagesService;
 
-        public AdministrationController(IQueryBus queryBus, UsersService usersService)
+        public AdministrationController(IQueryBus queryBus, UsersService usersService, MessagesServiceFactory messagesServiceFactory, DirectMessagesService directMessagesService)
         {
             this._queryBus = queryBus;
             this._usersService = usersService;
+            _messagesServiceFactory = messagesServiceFactory;
+            _directMessagesService = directMessagesService;
         }
 
         [AdminCommand]
         [DiscordCommand("messages")]
-        public void ReadUserMessages(DiscordRequest request, Contexts contexts)
+        public async Task ReadUserMessages(DiscordRequest request, Contexts contexts)
         {
             var readUserMessagesRequest = new ReadUserMessagesRequest(request.Arguments);
             if(string.IsNullOrWhiteSpace(readUserMessagesRequest.Mention))
@@ -44,8 +48,19 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             {
                 CreatedDate = readUserMessagesRequest.GetTimeRange()
             };
-            var messages = _queryBus.Execute(query).Messages;
-            var result = new StringBuilder().PrintManyLines($"Messages from user {selectedUser} in last {readUserMessagesRequest.MinutesSince} minutes", messages.Select(x => $"{x.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")} {x.Author.ToString()}: {x.Content}").ToArray());
+            var messages = _queryBus.Execute(query).Messages.ToList();
+
+            if (!messages.Any())
+            {
+                await _directMessagesService.TrySendMessage(contexts.User.Id, "User didnt write any message"); // todo: use response
+                //await _directMessagesService.TrySendMessage(contexts.User.Id, x => x.UserDidntWriteAnyMessageInThisTime(scannedUser), contexts);
+            }
+
+            var result = new StringBuilder().PrintManyLines(
+                header: $"Messages from user {selectedUser} in last {readUserMessagesRequest.MinutesSince} minutes", 
+                lines: messages.Select(x => $"{x.CreatedAt:yyyy-MM-dd HH:mm:ss} {x.Author.Name}: {x.Content}").ToArray());
+
+            await _directMessagesService.TrySendMessage(contexts.User.Id, result.ToString());
         }
     }
 }
