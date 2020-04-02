@@ -69,9 +69,9 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             return responsesService.ProcessResponse("UserIsNotAdmin");
         }
 
-        public static string UserDidntMentionedAnyUserToMute(this ResponsesService responsesService)
+        public static string UserDidntMentionAnyUser(this ResponsesService responsesService)
         {
-            return responsesService.ProcessResponse("UserDidntMentionedAnyUserToMute");
+            return responsesService.ProcessResponse("UserDidntMentionAnyUser");
         }  
         
         public static string UserNotFound(this ResponsesService responsesService, string userMention)

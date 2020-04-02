@@ -214,11 +214,20 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Musisz wskazać użytkownika do zmutowania..
+        ///   Looks up a localized string similar to Nie wskazałeś żadnego użytkownika!.
         /// </summary>
-        public static string UserDidntMentionedAnyUserToMute {
+        public static string UserDidntMentionAnyUser {
             get {
-                return ResourceManager.GetString("UserDidntMentionedAnyUserToMute", resourceCulture);
+                return ResourceManager.GetString("UserDidntMentionAnyUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Użytkownik {{user}} nie napisał żadnej wiadomości w podanym czasie..
+        /// </summary>
+        public static string UserDidntWriteAnyMessageInThisTime {
+            get {
+                return ResourceManager.GetString("UserDidntWriteAnyMessageInThisTime", resourceCulture);
             }
         }
         

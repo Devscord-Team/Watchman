@@ -168,8 +168,11 @@
   <data name="UnmutedUserForUser" xml:space="preserve">
     <value>Cześć {{user}}! Już możesz pisać ponownie na serwerze {{server}}</value>
   </data>
-  <data name="UserDidntMentionedAnyUserToMute" xml:space="preserve">
-    <value>Musisz wskazać użytkownika do zmutowania.</value>
+  <data name="UserDidntMentionAnyUser" xml:space="preserve">
+    <value>Nie wskazałeś żadnego użytkownika!</value>
+  </data>
+  <data name="UserDidntWriteAnyMessageInThisTime" xml:space="preserve">
+    <value>Użytkownik {{user}} nie napisał żadnej wiadomości w podanym czasie.</value>
   </data>
   <data name="UserDoesntHaveAvatar" xml:space="preserve">
     <value>Użytkownik {{user}} nie posiada avatara.</value>

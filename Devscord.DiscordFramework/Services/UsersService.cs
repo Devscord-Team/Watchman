@@ -34,6 +34,13 @@ namespace Devscord.DiscordFramework.Services
             return userContexts;
         }
 
+        public UserContext GetUserByMention(DiscordServerContext server, string mention)
+        {
+            var user = GetUsers(server)
+                .FirstOrDefault(x => x.Mention == mention);
+            return user;
+        }
+
         private RestGuildUser GetUser(UserContext user, DiscordServerContext server)
         {
             return Server.GetGuildUser(user.Id, server.Id).Result;
