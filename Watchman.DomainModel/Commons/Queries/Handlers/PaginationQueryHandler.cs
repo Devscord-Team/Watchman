@@ -22,7 +22,6 @@ namespace Watchman.DomainModel.Commons.Queries.Handlers
             if(paginationQuery.CreatedDate != null)
             {
                 var timeRange = paginationQuery.CreatedDate;
-                // todo: wiadomości mogą mieć różne SentAt od CreatedAt. Podczas filtrowania dla statystyk ważniejsze jest SentAt
                 collection = collection.Where(x => x.CreatedAt >= timeRange.Start && x.CreatedAt <= timeRange.End);
             }
             if(paginationQuery.UpdatedDate != null)

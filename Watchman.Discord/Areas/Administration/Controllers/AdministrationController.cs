@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Messages.Queries;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
+using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Discord.Areas.Commons;
 
 namespace Watchman.Discord.Areas.Administration.Controllers
@@ -20,12 +21,14 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         private readonly IQueryBus _queryBus;
         private readonly UsersService _usersService;
         private readonly DirectMessagesService _directMessagesService;
+        private readonly MessagesServiceFactory _messagesServiceFactory;
 
-        public AdministrationController(IQueryBus queryBus, UsersService usersService, DirectMessagesService directMessagesService)
+        public AdministrationController(IQueryBus queryBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory)
         {
             this._queryBus = queryBus;
             this._usersService = usersService;
             this._directMessagesService = directMessagesService;
+            _messagesServiceFactory = messagesServiceFactory;
         }
 
         [AdminCommand]
@@ -42,7 +45,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             var timeRange = request.GetPastTimeRange(defaultTime: TimeSpan.FromHours(1));
             var query = new GetUserMessagesQuery(contexts.Server.Id, selectedUser.Id)
             {
-                CreatedDate = timeRange
+                SentDate = timeRange
             };
             var messages = _queryBus.Execute(query).Messages.ToList();
 
@@ -56,6 +59,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
                 lines: messages.Select(x => $"{x.CreatedAt:yyyy-MM-dd HH:mm:ss} {x.Author.Name}: {x.Content}").ToArray());
 
             await _directMessagesService.TrySendMessage(contexts.User.Id, result.ToString());
+            var messagesService = _messagesServiceFactory.Create(contexts);
         }
     }
 }
