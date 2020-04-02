@@ -127,5 +127,10 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("UserDidntWriteAnyMessageInThisTime", new KeyValuePair<string, string>("user", user.Name));
         }
+
+        public static string SentByDmMessagesOfAskedUser(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("SentByDmMessagesOfAskedUser");
+        }
     }
 }

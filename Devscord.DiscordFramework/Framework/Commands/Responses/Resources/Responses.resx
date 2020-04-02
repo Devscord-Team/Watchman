@@ -147,6 +147,9 @@
   <data name="RoleRemovedFromUser" xml:space="preserve">
     <value>Usunięto role {{role}} użytkownikowi {{user}}</value>
   </data>
+  <data name="SentByDmMessagesOfAskedUser" xml:space="preserve">
+    <value>Wysłano wiadomości danego użytkownika w wiadomości prywatnej.</value>
+  </data>
   <data name="SpamAlertRecognized" xml:space="preserve">
     <value>Spam alert! Wykryto spam u użytkownika {{user}} na kanale {{channel}}. Poczekaj chwile zanim coś napiszesz.</value>
   </data>

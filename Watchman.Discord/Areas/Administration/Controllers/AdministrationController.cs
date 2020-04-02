@@ -47,7 +47,9 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             {
                 SentDate = timeRange
             };
-            var messages = _queryBus.Execute(query).Messages.ToList();
+            var messages = _queryBus.Execute(query).Messages
+                .OrderBy(x => x.SentAt)
+                .ToList();
 
             if (!messages.Any())
             {
@@ -56,10 +58,11 @@ namespace Watchman.Discord.Areas.Administration.Controllers
 
             var result = new StringBuilder().PrintManyLines(
                 header: $"Messages from user {selectedUser} starting at {timeRange.Start}", 
-                lines: messages.Select(x => $"{x.CreatedAt:yyyy-MM-dd HH:mm:ss} {x.Author.Name}: {x.Content}").ToArray());
+                lines: messages.Select(x => $"{x.SentAt:yyyy-MM-dd HH:mm:ss} {x.Author.Name}: {x.Content}").ToArray());
 
             await _directMessagesService.TrySendMessage(contexts.User.Id, result.ToString());
             var messagesService = _messagesServiceFactory.Create(contexts);
+            await messagesService.SendResponse(x => x.SentByDmMessagesOfAskedUser(), contexts);
         }
     }
 }
