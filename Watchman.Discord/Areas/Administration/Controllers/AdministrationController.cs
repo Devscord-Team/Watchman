@@ -55,12 +55,15 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             {
                 await _directMessagesService.TrySendMessage(contexts.User.Id, x => x.UserDidntWriteAnyMessageInThisTime(selectedUser), contexts);
             }
+            else
+            {
+                var result = new StringBuilder().PrintManyLines(
+                    header: $"Messages from user {selectedUser} starting at {timeRange.Start}", 
+                    lines: messages.Select(x => $"{x.SentAt:yyyy-MM-dd HH:mm:ss} {x.Author.Name}: {x.Content}").ToArray());
 
-            var result = new StringBuilder().PrintManyLines(
-                header: $"Messages from user {selectedUser} starting at {timeRange.Start}", 
-                lines: messages.Select(x => $"{x.SentAt:yyyy-MM-dd HH:mm:ss} {x.Author.Name}: {x.Content}").ToArray());
+                await _directMessagesService.TrySendMessage(contexts.User.Id, result.ToString());
+            }
 
-            await _directMessagesService.TrySendMessage(contexts.User.Id, result.ToString());
             var messagesService = _messagesServiceFactory.Create(contexts);
             await messagesService.SendResponse(x => x.SentByDmMessagesOfAskedUser(), contexts);
         }
