@@ -8,6 +8,7 @@ using Devscord.DiscordFramework.Services;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Devscord.DiscordFramework.Commons;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Messages.Queries;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
@@ -57,11 +58,12 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             }
             else
             {
-                var result = new StringBuilder().PrintManyLines(
-                    header: $"Messages from user {selectedUser} starting at {timeRange.Start}", 
-                    lines: messages.Select(x => $"{x.SentAt:yyyy-MM-dd HH:mm:ss} {x.Author.Name}: {x.Content}").ToArray());
+                var header = $"Messages from user {selectedUser} starting at {timeRange.Start}";
+                var lines = messages.Select(x => $"{x.SentAt:yyyy-MM-dd HH:mm:ss} {x.Author.Name}: {x.Content.Replace("```", "")}");
+                var linesBuilder = new StringBuilder().PrintManyLines(lines.ToArray(), contentStyleBox: true);
 
-                await _directMessagesService.TrySendMessage(contexts.User.Id, result.ToString());
+                await _directMessagesService.TrySendMessage(contexts.User.Id, header);
+                await _directMessagesService.TrySendMessage(contexts.User.Id, linesBuilder.ToString(), MessageType.BlockFormatted);
             }
 
             var messagesService = _messagesServiceFactory.Create(contexts);
