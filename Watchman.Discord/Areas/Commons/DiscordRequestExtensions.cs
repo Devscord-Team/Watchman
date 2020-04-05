@@ -50,7 +50,9 @@ namespace Watchman.Discord.Areas.Commons
             {
                 throw new TimeCannotBeNegativeException();
             }
-            if (timeAsNumber >= int.MaxValue)
+
+            // huge value will be too big for parsing to DateTime, so I use ushort (instead of int) to be sure that the value isn't too big
+            if (timeAsNumber >= ushort.MaxValue) 
             {
                 throw new TimeIsTooBigException();
             }
