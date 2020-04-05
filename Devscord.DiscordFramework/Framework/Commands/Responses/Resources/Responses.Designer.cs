@@ -79,6 +79,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Liczba wiadomości w podanym zakresie jest ogromna ({{messagesCount}} wiadomości). Czy na pewno chcesz wszystkie przeczytać? (użyj parametru -force).
+        /// </summary>
+        public static string NumberOfMessagesIsHuge {
+            get {
+                return ResourceManager.GetString("NumberOfMessagesIsHuge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dostępne komendy: ```{{help}}```.
         /// </summary>
         public static string PrintHelp {
@@ -151,7 +160,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Wysłano wiadomości danego użytkownika w wiadomości prywatnej..
+        ///   Looks up a localized string similar to Wysłano {{messagesCount}} wiadomości użytkownika {{user}} w wiadomości prywatnej..
         /// </summary>
         public static string SentByDmMessagesOfAskedUser {
             get {

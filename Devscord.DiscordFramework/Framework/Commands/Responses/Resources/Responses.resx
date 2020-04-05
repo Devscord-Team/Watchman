@@ -123,6 +123,9 @@
   <data name="NewUserArrived" xml:space="preserve">
     <value>Cześć {{user}}! Witamy cię na serwerze {{server}}</value>
   </data>
+  <data name="NumberOfMessagesIsHuge" xml:space="preserve">
+    <value>Liczba wiadomości w podanym zakresie jest ogromna ({{messagesCount}} wiadomości). Czy na pewno chcesz wszystkie przeczytać? (użyj parametru -force)</value>
+  </data>
   <data name="PrintHelp" xml:space="preserve">
     <value>Dostępne komendy: ```{{help}}```</value>
   </data>
@@ -148,7 +151,7 @@
     <value>Usunięto role {{role}} użytkownikowi {{user}}</value>
   </data>
   <data name="SentByDmMessagesOfAskedUser" xml:space="preserve">
-    <value>Wysłano wiadomości danego użytkownika w wiadomości prywatnej.</value>
+    <value>Wysłano {{messagesCount}} wiadomości użytkownika {{user}} w wiadomości prywatnej.</value>
   </data>
   <data name="SpamAlertRecognized" xml:space="preserve">
     <value>Spam alert! Wykryto spam u użytkownika {{user}} na kanale {{channel}}. Poczekaj chwile zanim coś napiszesz.</value>

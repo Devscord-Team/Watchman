@@ -52,6 +52,15 @@ namespace Watchman.Discord.Areas.Administration.Controllers
                 .OrderBy(x => x.SentAt)
                 .ToList();
 
+            var messagesService = _messagesServiceFactory.Create(contexts);
+            var hasForceArgument = request.HasArgument("force") || request.HasArgument("f");
+
+            if (messages.Count > 200 && !hasForceArgument)
+            {
+                await messagesService.SendResponse(x => x.NumberOfMessagesIsHuge(messages.Count), contexts);
+                return;
+            }
+
             if (!messages.Any())
             {
                 await _directMessagesService.TrySendMessage(contexts.User.Id, x => x.UserDidntWriteAnyMessageInThisTime(selectedUser), contexts);
@@ -66,8 +75,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
                 await _directMessagesService.TrySendMessage(contexts.User.Id, linesBuilder.ToString(), MessageType.BlockFormatted);
             }
 
-            var messagesService = _messagesServiceFactory.Create(contexts);
-            await messagesService.SendResponse(x => x.SentByDmMessagesOfAskedUser(), contexts);
+            await messagesService.SendResponse(x => x.SentByDmMessagesOfAskedUser(messages.Count, selectedUser), contexts);
         }
     }
 }
