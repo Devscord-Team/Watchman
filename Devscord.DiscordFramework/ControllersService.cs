@@ -121,7 +121,11 @@ namespace Devscord.DiscordFramework
 
             using (LogContext.PushProperty("Method", method.Name))
             {
-                method.Invoke(controllerInfo.Controller, new object[] { request, contexts });
+                var runningMethod = method.Invoke(controllerInfo.Controller, new object[] { request, contexts });
+                if (runningMethod is Task task)
+                {
+                    task.Wait();
+                }
             }
         }
     }
