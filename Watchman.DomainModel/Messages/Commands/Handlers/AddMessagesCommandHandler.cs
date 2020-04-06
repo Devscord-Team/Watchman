@@ -27,7 +27,7 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
             using var session = _sessionFactory.Create();
             foreach (var message in newMessages)
             {
-                session.Add(message);
+                await session.AddAsync(message);
             };
         }
 
