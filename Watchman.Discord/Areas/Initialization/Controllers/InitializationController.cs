@@ -11,6 +11,8 @@ using Devscord.DiscordFramework.Services.Factories;
 using Serilog;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Initialization.Services;
+using Watchman.DomainModel.DiscordServer;
+using Watchman.DomainModel.DiscordServer.Commands;
 using Watchman.DomainModel.Responses.Commands;
 using Watchman.DomainModel.Responses.Queries;
 
@@ -38,19 +40,26 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
         [AdminCommand]
         [DiscordCommand("init")]
         //[IgnoreForHelp] TODO //TODO co to za TODO?
-        public void Init(DiscordRequest request, Contexts contexts)
+        public async Task Init(DiscordRequest request, Contexts contexts)
         {
-            _ = ResponsesInit();
-            _ = MuteRoleInit(contexts);
-            _ = ReadServerMessagesHistory(contexts);
+            await ResponsesInit();
+            await MuteRoleInit(contexts);
+            await SafeRolesInit(contexts.Server);
+            await ReadServerMessagesHistory(contexts);
         }
 
         private async Task ResponsesInit()
         {
             var responsesInBase = GetResponsesFromBase();
             var defaultResponses = GetResponsesFromResources();
+            var responsesToAdd = defaultResponses.Where(def => responsesInBase.All(@base => @base.OnEvent != def.OnEvent))
+                .ToList();
 
-            var responsesToAdd = defaultResponses.Where(def => responsesInBase.All(@base => @base.OnEvent != def.OnEvent));
+            if (responsesToAdd.Count == 0)
+            {
+                Log.Information("No new responses");
+                return;
+            }
 
             var command = new AddResponsesCommand(responsesToAdd);
             await _commandBus.ExecuteAsync(command);
@@ -102,6 +111,33 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
             Log.Information("Read messages history");
             var messagesService = _messagesServiceFactory.Create(contexts);
             await messagesService.SendResponse(x => x.ReadingHistoryDone(), contexts);
+        }
+
+        private async Task SafeRolesInit(DiscordServerContext server)
+        {
+            var defaultSafeRoles = new List<Role>
+            {
+                new Role("csharp", server.Id),
+                new Role("java", server.Id),
+                new Role("cpp", server.Id),
+                new Role("tester", server.Id),
+                new Role("javascript", server.Id),
+                new Role("python", server.Id),
+                new Role("php", server.Id),
+                new Role("functional master", server.Id),
+                new Role("rust", server.Id),
+                new Role("go", server.Id),
+                new Role("ruby", server.Id),
+                new Role("newbie", server.Id)
+            };
+
+            var rolesOnServer = _usersRolesService.GetRoles(server).ToList();
+            var rolesToSetAsSafe = rolesOnServer.Where(serverRole => defaultSafeRoles.Any(d => d.Name == serverRole.Name));
+            foreach (var role in rolesToSetAsSafe)
+            {
+                var command = new SetRoleAsSafeCommand(role.Name, server.Id);
+                await _commandBus.ExecuteAsync(command);
+            }
         }
     }
 }

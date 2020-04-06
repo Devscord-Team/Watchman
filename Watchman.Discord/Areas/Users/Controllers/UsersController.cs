@@ -44,7 +44,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
         public void AddRole(DiscordRequest request, Contexts contexts)
         {
             var commandRole = request.OriginalMessage.ToLowerInvariant().Replace("-add role ", string.Empty); //TODO use DiscordRequest properties
-            var safeRoles = this._queryBus.Execute(new GetDiscordServerSafeRolesQuery()).SafeRoles;
+            var safeRoles = this._queryBus.Execute(new GetDiscordServerSafeRolesQuery(contexts.Server.Id)).SafeRoles;
             var messagesService = _messagesServiceFactory.Create(contexts);
             _rolesService.AddRoleToUser(safeRoles, messagesService, contexts, commandRole);
         }
@@ -53,7 +53,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
         public void RemoveRole(DiscordRequest request, Contexts contexts)
         {
             var commandRole = request.OriginalMessage.ToLowerInvariant().Replace("-remove role ", string.Empty); //TODO use DiscordRequest properties
-            var safeRoles = this._queryBus.Execute(new GetDiscordServerSafeRolesQuery()).SafeRoles;
+            var safeRoles = this._queryBus.Execute(new GetDiscordServerSafeRolesQuery(contexts.Server.Id)).SafeRoles;
             var messagesService = _messagesServiceFactory.Create(contexts);
             _rolesService.DeleteRoleFromUser(safeRoles, messagesService, contexts, commandRole);
         }
@@ -62,7 +62,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
         public void PrintRoles(DiscordRequest request, Contexts contexts)
         {
             var messageService = _messagesServiceFactory.Create(contexts);
-            var safeRoles = this._queryBus.Execute(new GetDiscordServerSafeRolesQuery()).SafeRoles;
+            var safeRoles = this._queryBus.Execute(new GetDiscordServerSafeRolesQuery(contexts.Server.Id)).SafeRoles;
             var output = new StringBuilder();
             output.PrintManyLines("Dostępne role:", safeRoles.Select(x => x.Name).ToArray(), true);
             messageService.SendMessage(output.ToString());
@@ -72,7 +72,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
         [DiscordCommand("admin")]
         public void AddOrRemoveAdmin(DiscordRequest request, Contexts contexts)
         {
-            var roles = new List<Role> {new Role("admin")};
+            var roles = new List<Role> { new Role("admin", contexts.Server.Id) };
             var messagesService = _messagesServiceFactory.Create(contexts);
             if (contexts.User.IsAdmin)
             {

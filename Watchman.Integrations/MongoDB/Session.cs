@@ -52,9 +52,9 @@ namespace Watchman.Integrations.MongoDB
             await this.GetCollection<T>().ReplaceOneAsync(x => x.Id == entity.Id, entity);
         }
 
-        public void Delete<T>(T entity) where T : Entity
+        public async Task DeleteAsync<T>(T entity) where T : Entity
         {
-            this.GetCollection<T>().DeleteOne(x => x.Id == entity.Id);
+            await this.GetCollection<T>().DeleteOneAsync(x => x.Id == entity.Id);
         }
 
         public void SaveChanges()
