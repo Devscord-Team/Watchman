@@ -5,6 +5,7 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Devscord.DiscordFramework.Commons.Extensions;
 using Watchman.Cqrs;
 using Watchman.DomainModel.DiscordServer.Queries;
@@ -59,13 +60,21 @@ namespace Watchman.Discord.Areas.Users.Controllers
         }
 
         [DiscordCommand("roles")]
-        public void PrintRoles(DiscordRequest request, Contexts contexts)
+        public async Task PrintRoles(DiscordRequest request, Contexts contexts)
         {
             var messageService = _messagesServiceFactory.Create(contexts);
-            var safeRoles = this._queryBus.Execute(new GetDiscordServerSafeRolesQuery(contexts.Server.Id)).SafeRoles;
+            var query = new GetDiscordServerSafeRolesQuery(contexts.Server.Id);
+            var safeRoles = this._queryBus.Execute(query).SafeRoles.ToList();
+
+            if (safeRoles.Count == 0)
+            {
+                await messageService.SendResponse(x => x.ServerDoesntHaveAnySafeRoles(), contexts);
+                return;
+            }
+
             var output = new StringBuilder();
-            output.PrintManyLines("Dostępne role:", safeRoles.Select(x => x.Name).ToArray(), true);
-            messageService.SendMessage(output.ToString());
+            output.PrintManyLines(safeRoles.Select(x => x.Name).ToArray(), contentStyleBox: true);
+            await messageService.SendResponse(x => x.AvailableSafeRoles(output.ToString()), contexts);
         }
 
 #if DEBUG

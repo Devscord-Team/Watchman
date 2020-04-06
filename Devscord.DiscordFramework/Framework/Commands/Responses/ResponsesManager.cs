@@ -122,5 +122,16 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("UserDoesntHaveAvatar", new KeyValuePair<string, string>("user", user.Mention));
         }
+
+        public static string ServerDoesntHaveAnySafeRoles(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("ServerDoesntHaveAnySafeRoles");
+        }
+
+        public static string AvailableSafeRoles(this ResponsesService responsesService, string rolesLines)
+        {
+            return responsesService.ProcessResponse("AvailableSafeRoles",
+                new KeyValuePair<string, string>("roles", rolesLines));
+        }
     }
 }
