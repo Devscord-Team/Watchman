@@ -50,7 +50,7 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
 
         [AdminCommand]
         [DiscordCommand("stats")]
-        public void GetStatisticsPerPeriod(DiscordRequest request, Contexts contexts)
+        public async Task GetStatisticsPerPeriod(DiscordRequest request, Contexts contexts)
         {
             //TODO it doesn't looks clear...
             var period = _reportsService.SelectPeriod(request.OriginalMessage); //TODO use DiscordRequest properties
@@ -66,7 +66,7 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
             Log.Information(builder.ToString());
 #endif
             var path = _chartsService.GetImageStatisticsPerPeriod(report);
-            messagesService.SendFile(path);
+            await messagesService.SendFile(path);
         }
     }
 }

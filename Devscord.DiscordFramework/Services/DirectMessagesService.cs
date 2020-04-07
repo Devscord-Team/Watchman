@@ -4,16 +4,19 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Serilog;
 using System;
 using System.Threading.Tasks;
+using Devscord.DiscordFramework.Commons;
 
 namespace Devscord.DiscordFramework.Services
 {
     public class DirectMessagesService
     {
         private readonly ResponsesService _responsesService;
+        private readonly MessageSplittingService _messageSplittingService;
 
-        public DirectMessagesService(ResponsesService responsesService)
+        public DirectMessagesService(ResponsesService responsesService, MessageSplittingService messageSplittingService)
         {
             this._responsesService = responsesService;
+            _messageSplittingService = messageSplittingService;
         }
 
         public Task<bool> TrySendMessage(ulong userId, Func<ResponsesService, string> response, Contexts contexts)
@@ -23,12 +26,15 @@ namespace Devscord.DiscordFramework.Services
             return this.TrySendMessage(userId, message);
         }
 
-        public async Task<bool> TrySendMessage(ulong userId, string message)
+        public async Task<bool> TrySendMessage(ulong userId, string message, MessageType messageType = MessageType.NormalText)
         {
             try
             {
-                await Server.SendDirectMessage(userId, message);
-                Log.Information($"Bot sent message {message}");
+                foreach (var smallMessages in _messageSplittingService.SplitMessage(message, messageType))
+                {
+                    await Server.SendDirectMessage(userId, smallMessages);
+                    Log.Information($"Bot sent message {smallMessages}");
+                }
                 return true;
             }
             catch (Exception ex)

@@ -67,6 +67,7 @@ namespace Devscord.DiscordFramework
 
         private void RunMethods(DiscordRequest request, Contexts contexts, IEnumerable<ControllerInfo> controllers, bool isReadAlways)
         {
+            var tasks = new List<Task>();
             foreach (var controllerInfo in controllers)
             {
                 using (LogContext.PushProperty("Controller", controllerInfo.Controller.GetType().Name))
@@ -75,18 +76,21 @@ namespace Devscord.DiscordFramework
                     {
                         if (isReadAlways)
                         {
-                            InvokeMethod(request, contexts, controllerInfo, method);
-                            return;
+                            var task = InvokeMethod(request, contexts, controllerInfo, method);
+                            tasks.Add(task);
+                            continue;
                         }
 
                         var command = method.GetAttributeInstances<DiscordCommand>();
                         if (IsMatchedCommand(command, request) && IsValid(contexts, method))
                         {
-                            InvokeMethod(request, contexts, controllerInfo, method);
+                            var task = InvokeMethod(request, contexts, controllerInfo, method);
+                            tasks.Add(task);
                         }
                     }
                 }
             }
+            Task.WaitAll(tasks.ToArray());
         }
 
         private bool IsValid(Contexts contexts, MethodInfo method)
@@ -115,14 +119,19 @@ namespace Devscord.DiscordFramework
             Log.Information("User {user} have permissions for method {method}", contexts.User.ToString(), method.Name);
         }
 
-        private static void InvokeMethod(DiscordRequest request, Contexts contexts, ControllerInfo controllerInfo, MethodInfo method)
+        private static Task InvokeMethod(DiscordRequest request, Contexts contexts, ControllerInfo controllerInfo, MethodInfo method)
         {
             Log.Information("Invoke in controller {controller} method {method}", controllerInfo.Controller.GetType().Name, method.Name);
 
             using (LogContext.PushProperty("Method", method.Name))
             {
-                method.Invoke(controllerInfo.Controller, new object[] { request, contexts });
+                var runningMethod = method.Invoke(controllerInfo.Controller, new object[] { request, contexts });
+                if (runningMethod is Task task)
+                {
+                    return task;
+                }
             }
+            return Task.CompletedTask;
         }
     }
 }

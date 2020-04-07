@@ -3,7 +3,6 @@ using Devscord.DiscordFramework.Framework;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Discord.Rest;
-using Discord.WebSocket;
 using Serilog;
 using System;
 using System.Threading.Tasks;
@@ -47,10 +46,10 @@ namespace Devscord.DiscordFramework.Services
             return this.SendMessage(message);
         }
 
-        public Task SendFile(string filePath)
+        public async Task SendFile(string filePath)
         {
-            var channel = (ISocketMessageChannel)Server.GetChannel(ChannelId);
-            return channel.SendFileAsync(filePath);
+            var channel = (IRestMessageChannel) await Server.GetChannel(ChannelId);
+            await channel.SendFileAsync(filePath);
         }
     }
 }
