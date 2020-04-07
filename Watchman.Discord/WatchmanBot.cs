@@ -79,7 +79,7 @@ namespace Watchman.Discord
         {
             var exceptionMessage = BuildExceptionMessage(e).ToString();
             var messagesService = _context.Resolve<MessagesServiceFactory>().Create(contexts);
-            messagesService.SendMessage(exceptionMessage);
+            messagesService.SendMessage(exceptionMessage, Devscord.DiscordFramework.Commons.MessageType.BlockFormatted);
         }
 
         private void PrintExceptionOnConsole(Exception e, Contexts contexts)
@@ -90,7 +90,7 @@ namespace Watchman.Discord
 
         private StringBuilder BuildExceptionMessage(Exception e)
         {
-            return new StringBuilder($"{e.Message}\r\n\r\n{e.InnerException}\r\n\r\n{e.StackTrace}").FormatMessageIntoBlock();
+            return new StringBuilder($"{e.Message}\r\n\r\n{e.InnerException}\r\n\r\n{e.StackTrace}```").FormatMessageIntoBlock();
         }
 
         private IContainer GetAutofacContainer(DiscordConfiguration configuration)

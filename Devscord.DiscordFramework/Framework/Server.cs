@@ -141,7 +141,7 @@ namespace Devscord.DiscordFramework.Framework
         {
             await Task.Delay(1000);
 
-            var channelSocket = (IGuildChannel)GetChannel(channel.Id);
+            var channelSocket = (IGuildChannel)await GetChannel(channel.Id);
             var channelPermissions = new OverwritePermissions(permissions.AllowPermissions.GetRawValue(), permissions.DenyPermissions.GetRawValue());
             var createdRole = Server.GetSocketRoles(channelSocket.GuildId).FirstOrDefault(x => x.Id == muteRole.Id);
 
@@ -154,10 +154,10 @@ namespace Devscord.DiscordFramework.Framework
             var createdRole = Server.GetSocketRoles(server.Id).FirstOrDefault(x => x.Id == muteRole.Id);
             var channelPermissions = new OverwritePermissions(permissions.AllowPermissions.GetRawValue(), permissions.DenyPermissions.GetRawValue());
 
-            Parallel.ForEach(channels, c =>
+            Parallel.ForEach(channels, async c =>
             {
-                var channelSocket = (IGuildChannel)GetChannel(c.Id);
-                channelSocket.AddPermissionOverwriteAsync(createdRole, channelPermissions);
+                var channelSocket = (IGuildChannel) await GetChannel(c.Id);
+                await channelSocket.AddPermissionOverwriteAsync(createdRole, channelPermissions);
             });
         }
 

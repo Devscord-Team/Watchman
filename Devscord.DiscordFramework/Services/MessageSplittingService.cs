@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Devscord.DiscordFramework.Commons;
@@ -13,11 +14,19 @@ namespace Devscord.DiscordFramework.Services
 
         public IEnumerable<string> SplitMessage(string fullMessage, MessageType messageType)
         {
+            if (fullMessage.Length < MAX_MESSAGE_LENGTH)
+            {
+                return new List<string> { fullMessage };
+            }
+
             switch (messageType)
             {
                 case MessageType.Json:
                     fullMessage = TrimUselessWhitespaceFromBeginning(fullMessage);
                     return SplitJsonMessage(fullMessage);
+
+                case MessageType.BlockFormatted:
+                    return SplitBlockMessage(fullMessage);
 
                 case MessageType.NormalText:
                 default:
@@ -31,7 +40,7 @@ namespace Devscord.DiscordFramework.Services
             while (copiedMessage.Length > MAX_MESSAGE_LENGTH)
             {
                 var messageInChars = copiedMessage.Take(MAX_MESSAGE_LENGTH).ToList();
-                
+
                 var lastIndex = messageInChars.LastIndexOf('\n');
                 if (lastIndex < 1)
                 {
@@ -70,6 +79,22 @@ namespace Devscord.DiscordFramework.Services
 
             var lastMessage = oneMessage.FormatMessageIntoBlock("json").ToString();
             yield return lastMessage.Remove(lastMessage.LastIndexOf(','), 1); // remove the last comma - ','
+        }
+
+        private IEnumerable<string> SplitBlockMessage(string fullMessage)
+        {
+            var blockPrefix = GetBlockPrefix(fullMessage);
+            var cutMessage = fullMessage.CutStart(blockPrefix).TrimEnd('`', ' ', '\n', '\r'); // ```cs message ```
+            var splitMessages = SplitNormalMessage(cutMessage)
+                .Select(message => blockPrefix + message + "```");
+            return splitMessages;
+        }
+
+        private string GetBlockPrefix(string fullMessage)
+        {
+            var firstSpaceIndex = fullMessage.IndexOfAny(" \n\r".ToCharArray());
+            var prefix = fullMessage[..firstSpaceIndex];
+            return prefix;
         }
     }
 }
