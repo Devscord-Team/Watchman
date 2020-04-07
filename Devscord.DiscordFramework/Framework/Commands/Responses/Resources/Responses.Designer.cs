@@ -61,7 +61,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dostępne role:.
+        ///   Looks up a localized string similar to Dostępne role: {{roles}}.
         /// </summary>
         public static string AvailableSafeRoles {
             get {
