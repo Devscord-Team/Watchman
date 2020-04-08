@@ -40,7 +40,7 @@ namespace Devscord.DiscordFramework
 
         internal void Initialize()
         {
-            this.OnMessageReceived.Add(this.MessageReceived);
+            this.OnMessageReceived.Add(message => Task.Run(() => this.MessageReceived(message)));
         }
 
         internal void MapHandlers(DiscordSocketClient client)
@@ -50,7 +50,7 @@ namespace Devscord.DiscordFramework
             Server.UserJoined += CallUserJoined;
         }
 
-        private async Task MessageReceived(SocketMessage socketMessage)
+        private async void MessageReceived(SocketMessage socketMessage)
         {
             if(ShouldIgnoreMessage(socketMessage))
             {
