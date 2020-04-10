@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Messages;
+using Watchman.DomainModel.Messages.Commands;
 using Watchman.DomainModel.Messages.Queries;
 
 namespace Watchman.Discord.Areas.Statistics.Services
@@ -13,7 +15,7 @@ namespace Watchman.Discord.Areas.Statistics.Services
     public class CyclicStatisticsGeneratorService
     {
         private static bool _shouldStillGenerateEveryday;
-        private static bool _isNowRunningCyclicGenerator = false;
+        private static bool _isNowRunningCyclicGenerator;
         private readonly IQueryBus _queryBys;
         private readonly ICommandBus _commandBus;
         private readonly DiscordServersService _discordServersService;
@@ -46,6 +48,13 @@ namespace Watchman.Discord.Areas.Statistics.Services
             return Task.CompletedTask;
         }
 
+        public async Task GenerateStatsForDaysBefore(DiscordServerContext server)
+        {
+            // new channel on server
+            // new server joined
+            // maybe init?
+        }
+
         private async Task BlockUntilNextNight()
         {
             var nightTimeThisDay = DateTime.Now.Date.AddHours(2); // always 2:00AM this day
@@ -66,7 +75,8 @@ namespace Watchman.Discord.Areas.Statistics.Services
                 //todo: filter one day
                 var messages = _queryBys.Execute(query).Messages.ToList();
                 var serverStatistic = new ServerDayStatistic(messages, server.Id);
-
+                var command = new AddServerDayStatisticCommand(serverStatistic);
+                await _commandBus.ExecuteAsync(command);
             }
         }
     }
