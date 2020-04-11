@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
@@ -9,6 +7,7 @@ using Watchman.Cqrs;
 using Watchman.DomainModel.Messages;
 using Watchman.DomainModel.Messages.Commands;
 using Watchman.DomainModel.Messages.Queries;
+using Watchman.DomainModel.Messages.Queries.Handlers;
 
 namespace Watchman.Discord.Areas.Statistics.Services
 {
@@ -50,15 +49,19 @@ namespace Watchman.Discord.Areas.Statistics.Services
 
         public async Task GenerateStatsForDaysBefore(DiscordServerContext server)
         {
-            // new channel on server
-            // new server joined
-            // maybe init?
+            // get all server cached stats
+            var query = new GetServerDayStatisticsQuery(server.Id);
+            // select (by date) only new ones
+
+            // write to base the new ones
         }
 
         private async Task BlockUntilNextNight()
         {
-            var nightTimeThisDay = DateTime.Now.Date.AddHours(2); // always 2:00AM this day
-            var nextNight = DateTime.Now.Hour < 2
+            const int hourWhenShouldGenerateCyclicStatistics = 2; // 24h clock
+
+            var nightTimeThisDay = DateTime.Now.Date.AddHours(hourWhenShouldGenerateCyclicStatistics); // always 2:00AM this day
+            var nextNight = DateTime.Now.Hour < hourWhenShouldGenerateCyclicStatistics
                 ? nightTimeThisDay
                 : nightTimeThisDay.AddDays(1);
 
