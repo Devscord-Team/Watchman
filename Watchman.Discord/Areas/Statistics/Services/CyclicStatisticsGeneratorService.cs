@@ -15,13 +15,13 @@ namespace Watchman.Discord.Areas.Statistics.Services
     {
         private static bool _shouldStillGenerateEveryday;
         private static bool _isNowRunningCyclicGenerator;
-        private readonly IQueryBus _queryBys;
+        private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
         private readonly DiscordServersService _discordServersService;
 
-        public CyclicStatisticsGeneratorService(IQueryBus queryBys, ICommandBus commandBus, DiscordServersService discordServersService)
+        public CyclicStatisticsGeneratorService(IQueryBus queryBus, ICommandBus commandBus, DiscordServersService discordServersService)
         {
-            _queryBys = queryBys;
+            _queryBus = queryBus;
             _commandBus = commandBus;
             _discordServersService = discordServersService;
         }
@@ -49,11 +49,21 @@ namespace Watchman.Discord.Areas.Statistics.Services
 
         public async Task GenerateStatsForDaysBefore(DiscordServerContext server)
         {
-            // get all server cached stats
-            var query = new GetServerDayStatisticsQuery(server.Id);
-            // select (by date) only new ones
+            var dayStatisticsQuery = new GetServerDayStatisticsQuery(server.Id);
+            var allServerDaysStatistics = (await _queryBus.ExecuteAsync(dayStatisticsQuery)).ServerDayStatistics;
+            var messagesQuery = new GetMessagesQuery(server.Id);
+            var messages = _queryBus.Execute(messagesQuery).Messages;
+            
+            var messagesNotCachedForStats = messages
+                .Where(message => allServerDaysStatistics.All(s => message.SentAt.Date != s.Date));
 
-            // write to base the new ones
+            var serverStatistics = messagesNotCachedForStats
+                .GroupBy(x => x.SentAt.Date)
+                .Select(x => new ServerDayStatistic(x.ToList(), server.Id, x.Key));
+
+            var commands = serverStatistics.Select(x => new AddServerDayStatisticCommand(x));
+            var tasks = commands.Select(x => _commandBus.ExecuteAsync(x));
+            Task.WaitAll(tasks.ToArray());
         }
 
         private async Task BlockUntilNextNight()
@@ -76,8 +86,8 @@ namespace Watchman.Discord.Areas.Statistics.Services
             {
                 var query = new GetMessagesQuery(server.Id);
                 //todo: filter one day
-                var messages = _queryBys.Execute(query).Messages.ToList();
-                var serverStatistic = new ServerDayStatistic(messages, server.Id);
+                var messages = _queryBus.Execute(query).Messages.ToList();
+                var serverStatistic = new ServerDayStatistic(messages, server.Id, DateTime.Now.Date);
                 var command = new AddServerDayStatisticCommand(serverStatistic);
                 await _commandBus.ExecuteAsync(command);
             }

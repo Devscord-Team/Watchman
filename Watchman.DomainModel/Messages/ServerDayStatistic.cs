@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Watchman.Integrations.MongoDB;
 
@@ -9,10 +10,12 @@ namespace Watchman.DomainModel.Messages
         public ulong ServerId { get; private set; }
         public IEnumerable<ChannelDayStatistic> ChannelDayStatistics { get; private set; }
         public int Count { get; private set; }
+        public DateTime Date { get; private set; }
 
-        public ServerDayStatistic(IReadOnlyCollection<Message> serverMessages, ulong serverId)
+        public ServerDayStatistic(IReadOnlyCollection<Message> serverMessages, ulong serverId, DateTime date)
         {
             ServerId = serverId;
+            Date = date;
             Count = serverMessages.Count;
             var channelsMessages = serverMessages.GroupBy(x => x.Channel.Id);
 
