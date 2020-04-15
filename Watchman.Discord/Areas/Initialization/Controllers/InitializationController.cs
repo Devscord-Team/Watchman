@@ -11,6 +11,8 @@ using Devscord.DiscordFramework.Services.Factories;
 using Serilog;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Initialization.Services;
+using Watchman.DomainModel.DiscordServer;
+using Watchman.DomainModel.DiscordServer.Commands;
 using Watchman.DomainModel.Responses.Commands;
 using Watchman.DomainModel.Responses.Queries;
 
@@ -38,19 +40,25 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
         [AdminCommand]
         [DiscordCommand("init")]
         //[IgnoreForHelp] TODO //TODO co to za TODO?
-        public void Init(DiscordRequest request, Contexts contexts)
+        public async Task Init(DiscordRequest request, Contexts contexts)
         {
-            _ = ResponsesInit();
-            _ = MuteRoleInit(contexts);
-            _ = ReadServerMessagesHistory(contexts);
+            await ResponsesInit();
+            await MuteRoleInit(contexts);
+            await ReadServerMessagesHistory(contexts);
         }
 
         private async Task ResponsesInit()
         {
             var responsesInBase = GetResponsesFromBase();
             var defaultResponses = GetResponsesFromResources();
+            var responsesToAdd = defaultResponses.Where(def => responsesInBase.All(@base => @base.OnEvent != def.OnEvent))
+                .ToList();
 
-            var responsesToAdd = defaultResponses.Where(def => responsesInBase.All(@base => @base.OnEvent != def.OnEvent));
+            if (responsesToAdd.Count == 0)
+            {
+                Log.Information("No new responses");
+                return;
+            }
 
             var command = new AddResponsesCommand(responsesToAdd);
             await _commandBus.ExecuteAsync(command);

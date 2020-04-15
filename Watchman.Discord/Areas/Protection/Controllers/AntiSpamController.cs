@@ -24,7 +24,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         [ReadAlways]
         public Task Scan(DiscordRequest request, Contexts contexts)
         {
-            this._antiSpamService.AddUserMessage(contexts);
+            this._antiSpamService.AddUserMessage(contexts, request);
             var messagesInShortTime = _antiSpamService.CountUserMessagesShorterTime(contexts.User.Id);
             var messagesInLongTime = _antiSpamService.CountUserMessagesLongerTime(contexts.User.Id);
             var userWarnsInLastFewMinutes = _antiSpamService.CountUserWarnsInShortTime(contexts.User.Id);

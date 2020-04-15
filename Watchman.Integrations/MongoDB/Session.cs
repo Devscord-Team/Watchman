@@ -25,36 +25,36 @@ namespace Watchman.Integrations.MongoDB
             return this.GetCollection<T>().AsQueryable();
         }
 
-        public void Add<T>(T entity) where T : Entity
+        public async Task AddAsync<T>(T entity) where T : Entity
         {
-            this.GetCollection<T>().InsertOne(entity);
+            await this.GetCollection<T>().InsertOneAsync(entity);
         }
 
-        public void Add<T>(IEnumerable<T> entities) where T : Entity
+        public async Task AddAsync<T>(IEnumerable<T> entities) where T : Entity
         {
-            this.GetCollection<T>().InsertMany(entities);
+            await this.GetCollection<T>().InsertManyAsync(entities);
         }
 
-        public void AddOrUpdate<T>(T entity) where T : Entity
+        public async Task AddOrUpdateAsync<T>(T entity) where T : Entity
         {
             if (this.Get<T>(entity.Id) != null)
             {
-                this.Add(entity);
+                await this.AddAsync(entity);
             }
             else
             {
-                this.Update(entity);
+                await this.UpdateAsync(entity);
             }
         }
 
-        public void Update<T>(T entity) where T : Entity
+        public async Task UpdateAsync<T>(T entity) where T : Entity
         {
-            this.GetCollection<T>().ReplaceOne(x => x.Id == entity.Id, entity);
+            await this.GetCollection<T>().ReplaceOneAsync(x => x.Id == entity.Id, entity);
         }
 
-        public void Delete<T>(T entity) where T : Entity
+        public async Task DeleteAsync<T>(T entity) where T : Entity
         {
-            this.GetCollection<T>().DeleteOne(x => x.Id == entity.Id);
+            await this.GetCollection<T>().DeleteOneAsync(x => x.Id == entity.Id);
         }
 
         public void SaveChanges()

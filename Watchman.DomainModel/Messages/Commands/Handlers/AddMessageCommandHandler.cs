@@ -13,7 +13,7 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
             this._sessionFactory = sessionFactory;
         }
 
-        public Task HandleAsync(AddMessageCommand command)
+        public async Task HandleAsync(AddMessageCommand command)
         {
             var message = Message.Create(command.Content)
                 .WithAuthor(command.AuthorId, command.AuthorName)
@@ -22,11 +22,8 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
                 .WithSentAtDate(command.SentAt)
                 .Build();
 
-            using(var session = this._sessionFactory.Create())
-            {
-                session.Add(message);
-            }
-            return Task.CompletedTask;
+            using var session = this._sessionFactory.Create();
+            await session.AddAsync(message);
         }
     }
 }

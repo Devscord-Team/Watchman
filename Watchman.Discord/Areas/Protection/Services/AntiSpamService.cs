@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Common.Models;
 using Watchman.DomainModel.Users;
@@ -35,9 +36,9 @@ namespace Watchman.Discord.Areas.Protection.Services
         private readonly List<(ulong AuthorId, DateTime WarnedAt)> _warns = new List<(ulong, DateTime)>();
         private readonly List<(ulong AuthorId, DateTime MutedAt)> _mutes = new List<(ulong, DateTime)>();
 
-        public void AddUserMessage(Contexts contexts)
+        public void AddUserMessage(Contexts contexts, DiscordRequest discordRequest)
         {
-            _lastMessages.Add((contexts.User.Id, DateTime.UtcNow));
+            _lastMessages.Add((contexts.User.Id, discordRequest.SentAt));
         }
 
         public int CountUserMessagesShorterTime(ulong userId)

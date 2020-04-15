@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Watchman.Cqrs;
 using Watchman.Integrations.MongoDB;
 
@@ -9,22 +6,19 @@ namespace Watchman.DomainModel.Responses.Commands.Handlers
 {
     public class UpdateResponseCommandHandler : ICommandHandler<UpdateResponseCommand>
     {
-        private readonly ISessionFactory sessionFactory;
+        private readonly ISessionFactory _sessionFactory;
 
         public UpdateResponseCommandHandler(ISessionFactory sessionFactory)
         {
-            this.sessionFactory = sessionFactory;
+            this._sessionFactory = sessionFactory;
         }
 
-        public Task HandleAsync(UpdateResponseCommand command)
+        public async Task HandleAsync(UpdateResponseCommand command)
         {
-            using (var session = sessionFactory.Create())
-            {
-                var response = session.Get<Response>(command.Id);
-                response.SetMessage(command.Message);
-                session.Update(response);
-            }
-            return Task.CompletedTask;
+            using var session = _sessionFactory.Create();
+            var response = session.Get<Response>(command.Id);
+            response.SetMessage(command.Message);
+            await session.UpdateAsync(response);
         }
     }
 }

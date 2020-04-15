@@ -61,6 +61,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dostępne role: {{roles}}.
+        /// </summary>
+        public static string AvailableSafeRoles {
+            get {
+                return ResourceManager.GetString("AvailableSafeRoles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Użytkownik {{user}} został zmutowany do {{timeEnd}}UTC.
         /// </summary>
         public static string MutedUser {
@@ -165,6 +174,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         public static string SentByDmMessagesOfAskedUser {
             get {
                 return ResourceManager.GetString("SentByDmMessagesOfAskedUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Serwer nie ma żadnych dostępnych bezpiecznych ról (jeśli jesteś adminem spróbuj użyć komendy -init).
+        /// </summary>
+        public static string ServerDoesntHaveAnySafeRoles {
+            get {
+                return ResourceManager.GetString("ServerDoesntHaveAnySafeRoles", resourceCulture);
             }
         }
         
