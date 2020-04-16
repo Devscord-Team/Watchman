@@ -15,7 +15,7 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
         public async Task HandleAsync(AddServerDayStatisticCommand command)
         {
             using var session = _sessionFactory.Create();
-            session.Add(command.ServerDayStatistic);
+            await session.AddAsync(command.ServerDayStatistic);
         }
     }
 }

@@ -1,26 +1,21 @@
-﻿using Devscord.DiscordFramework.Framework;
-using Devscord.DiscordFramework.Middlewares;
-using Discord;
-using Discord.WebSocket;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Services;
 using Watchman.Integrations.MongoDB;
 using Watchman.Discord.Ioc;
 using Devscord.DiscordFramework;
 using Autofac;
-using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Discord.Areas.Help.Services;
 using System.Text;
 using Devscord.DiscordFramework.Commons.Extensions;
 using System.Linq;
-using Devscord.DiscordFramework.Commons.Exceptions;
 using Watchman.Integrations.Logging;
 using MongoDB.Driver;
 using Serilog;
 using Watchman.Discord.Areas.Protection.Services;
+using Watchman.Discord.Areas.Statistics.Services;
 using Watchman.Discord.Areas.Users.Services;
 
 namespace Watchman.Discord
@@ -56,6 +51,10 @@ namespace Watchman.Discord
                         {
                             var servers = (await serversService.GetDiscordServers()).ToList();
                             servers.ForEach(x => unmutingService.UnmuteUsersInit(x));
+                        })
+                        .AddFromIoC<CyclicStatisticsGeneratorService>(cyclicStatsGenerator => async () =>
+                        {
+                            await cyclicStatsGenerator.StartGeneratingStatsCacheEveryday();
                         })
                         .AddHandler(() => Task.Run(() => Log.Information("Bot started and logged in...")));
                 })

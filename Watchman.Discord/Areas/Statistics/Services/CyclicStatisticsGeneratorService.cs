@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
+using Watchman.Common.Models;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Messages;
 using Watchman.DomainModel.Messages.Commands;
@@ -51,9 +52,12 @@ namespace Watchman.Discord.Areas.Statistics.Services
         {
             var dayStatisticsQuery = new GetServerDayStatisticsQuery(server.Id);
             var allServerDaysStatistics = (await _queryBus.ExecuteAsync(dayStatisticsQuery)).ServerDayStatistics;
-            var messagesQuery = new GetMessagesQuery(server.Id);
+            var messagesQuery = new GetMessagesQuery(server.Id)
+            {
+                SentDate = new TimeRange(DateTime.UnixEpoch, DateTime.Today) // it will exclude today - it should generate today's stats tomorrow
+            };
             var messages = _queryBus.Execute(messagesQuery).Messages;
-            
+
             var messagesNotCachedForStats = messages
                 .Where(message => allServerDaysStatistics.All(s => message.SentAt.Date != s.Date));
 
@@ -82,11 +86,15 @@ namespace Watchman.Discord.Areas.Statistics.Services
         private async Task GenerateStatsForLastDay()
         {
             var servers = await _discordServersService.GetDiscordServers();
+            var yesterdayDate = DateTime.Now.Date.AddDays(-1);
+            var todayDate = DateTime.Now.Date;
+            var yesterdayRange = new TimeRange(yesterdayDate, todayDate);
+
             foreach (var server in servers)
             {
-                var query = new GetMessagesQuery(server.Id);
-                //todo: filter one day
+                var query = new GetMessagesQuery(server.Id) { SentDate = yesterdayRange };
                 var messages = _queryBus.Execute(query).Messages.ToList();
+
                 var serverStatistic = new ServerDayStatistic(messages, server.Id, DateTime.Now.Date);
                 var command = new AddServerDayStatisticCommand(serverStatistic);
                 await _commandBus.ExecuteAsync(command);
