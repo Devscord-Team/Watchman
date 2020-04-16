@@ -34,6 +34,7 @@ namespace Watchman.Discord.Areas.Statistics.Services
                 return;
             }
             _isNowRunningCyclicGenerator = true;
+            _shouldStillGenerateEveryday = true;
             while (_shouldStillGenerateEveryday)
             {
                 await BlockUntilNextNight();
@@ -72,9 +73,9 @@ namespace Watchman.Discord.Areas.Statistics.Services
 
         private async Task BlockUntilNextNight()
         {
-            const int hourWhenShouldGenerateCyclicStatistics = 2; // 24h clock
+            const int hourWhenShouldGenerateCyclicStatistics = 02; // 24h clock
 
-            var nightTimeThisDay = DateTime.Now.Date.AddHours(hourWhenShouldGenerateCyclicStatistics); // always 2:00AM this day
+            var nightTimeThisDay = DateTime.Today.AddHours(hourWhenShouldGenerateCyclicStatistics); // always 2:00AM this day
             var nextNight = DateTime.Now.Hour < hourWhenShouldGenerateCyclicStatistics
                 ? nightTimeThisDay
                 : nightTimeThisDay.AddDays(1);
@@ -86,8 +87,8 @@ namespace Watchman.Discord.Areas.Statistics.Services
         private async Task GenerateStatsForLastDay()
         {
             var servers = await _discordServersService.GetDiscordServers();
-            var yesterdayDate = DateTime.Now.Date.AddDays(-1);
-            var todayDate = DateTime.Now.Date;
+            var yesterdayDate = DateTime.Today.AddDays(-1);
+            var todayDate = DateTime.Today;
             var yesterdayRange = new TimeRange(yesterdayDate, todayDate);
 
             foreach (var server in servers)
@@ -95,7 +96,7 @@ namespace Watchman.Discord.Areas.Statistics.Services
                 var query = new GetMessagesQuery(server.Id) { SentDate = yesterdayRange };
                 var messages = _queryBus.Execute(query).Messages.ToList();
 
-                var serverStatistic = new ServerDayStatistic(messages, server.Id, DateTime.Now.Date);
+                var serverStatistic = new ServerDayStatistic(messages, server.Id, DateTime.Today);
                 var command = new AddServerDayStatisticCommand(serverStatistic);
                 await _commandBus.ExecuteAsync(command);
             }
