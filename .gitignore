@@ -336,3 +336,4 @@ ASALocalRun/
 .mfractor/
 /Watchman.Discord/version.txt
 /.editorconfig
+/Watchman.Web.Server/appsettings.Production.json

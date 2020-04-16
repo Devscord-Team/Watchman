@@ -13,7 +13,7 @@
 
             var badUser = messagesInLastFewSeconds > 10 
                           || messagesInLastFewMinutes > 100
-                          || (userMessages < 40 && messagesInLastFewSeconds > 4)
+                          || (userMessages < 40 && messagesInLastFewSeconds > 5)
                           || (userMessages < 200 && messagesInLastFewMinutes > 40);
 
             if (!badUser)

@@ -23,14 +23,7 @@ namespace Watchman.Web.Server
 
         public Startup(IConfiguration configuration)
         {
-            var builder = new ConfigurationBuilder()
-#if RELEASE
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-#else
-                .AddJsonFile("appsettings.Development.json", optional: true)
-#endif
-                .AddEnvironmentVariables();
-            Configuration = builder.Build();
+            Configuration = configuration;
         }
 
         public void ConfigureServices(IServiceCollection services)

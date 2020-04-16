@@ -11,25 +11,26 @@ namespace Watchman.Discord.Areas.Help.Services
 {
     public class HelpDBGeneratorService
     {
+        private readonly ISessionFactory _sessionFactory;
         private readonly HelpInformationFactory _helpInformationFactory;
-        private readonly ISession _session;
 
         public HelpDBGeneratorService(ISessionFactory sessionFactory, HelpInformationFactory helpInformationFactory)
         {
+            _sessionFactory = sessionFactory;
             _helpInformationFactory = helpInformationFactory;
-            _session = sessionFactory.Create();
         }
 
-        public void FillDatabase(IEnumerable<CommandInfo> commandInfosFromAssembly)
+        public async Task FillDatabase(IEnumerable<CommandInfo> commandInfosFromAssembly)
         {
+            using var session = _sessionFactory.Create();
             var commandInfosFromAssemblyList = commandInfosFromAssembly.ToList(); // for not multiple enumerating
-            var helpInfos = _session.Get<HelpInformation>().ToList();
+            var helpInfos = session.Get<HelpInformation>().ToList();
 
             var newCommands = FindNewCommands(commandInfosFromAssemblyList, helpInfos).ToList();
-            Task.Run(() => CheckIfExistsUselessHelp(commandInfosFromAssemblyList, helpInfos));
+            await Task.Run(() => CheckIfExistsUselessHelp(commandInfosFromAssemblyList, helpInfos));
 
             var newHelpInfos = newCommands.Select(x => _helpInformationFactory.Create(x));
-            _session.Add(newHelpInfos);
+            await session.AddAsync(newHelpInfos);
         }
 
         private IEnumerable<CommandInfo> FindNewCommands(IEnumerable<CommandInfo> commandInfosFromAssembly, IEnumerable<HelpInformation> helpInfos)

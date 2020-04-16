@@ -3,6 +3,7 @@
     public enum MessageType
     {
         NormalText,
-        Json
+        Json,
+        BlockFormatted
     }
 }

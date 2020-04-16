@@ -37,8 +37,8 @@ namespace Watchman.Discord
                 case RoleNotFoundException roleExc:
                     messagesService.SendResponse(x => x.RoleNotFound(roleExc.RoleName), contexts);
                     break;
-                case UserDidntMentionedAnyUserToMuteException _:
-                    messagesService.SendResponse(x => x.UserDidntMentionedAnyUserToMute(), contexts);
+                case UserDidntMentionAnyUser _:
+                    messagesService.SendResponse(x => x.UserDidntMentionAnyUser(), contexts);
                     break;
                 case UserNotFoundException notFoundExc:
                     messagesService.SendResponse(x => x.UserNotFound(notFoundExc.Mention), contexts);

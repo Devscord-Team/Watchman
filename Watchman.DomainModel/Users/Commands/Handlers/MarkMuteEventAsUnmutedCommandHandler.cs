@@ -18,8 +18,7 @@ namespace Watchman.DomainModel.Users.Commands.Handlers
             using var session = _sessionFactory.Create();
             var muteEvent = session.Get<MuteEvent>(command.MuteEventGuid);
             muteEvent.Unmuted = true;
-            session.Update(muteEvent);
-            await Task.CompletedTask;
+            await session.UpdateAsync(muteEvent);
         }
     }
 }

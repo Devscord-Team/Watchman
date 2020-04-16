@@ -117,11 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AvailableSafeRoles" xml:space="preserve">
+    <value>Dostępne role: {{roles}}</value>
+  </data>
   <data name="MutedUser" xml:space="preserve">
     <value>Użytkownik {{user}} został zmutowany do {{timeEnd}}UTC</value>
   </data>
   <data name="NewUserArrived" xml:space="preserve">
     <value>Cześć {{user}}! Witamy cię na serwerze {{server}}</value>
+  </data>
+  <data name="NumberOfMessagesIsHuge" xml:space="preserve">
+    <value>Liczba wiadomości w podanym zakresie jest ogromna ({{messagesCount}} wiadomości). Czy na pewno chcesz wszystkie przeczytać? (użyj parametru -force)</value>
   </data>
   <data name="PrintHelp" xml:space="preserve">
     <value>Dostępne komendy: ```{{help}}```</value>
@@ -147,6 +153,12 @@
   <data name="RoleRemovedFromUser" xml:space="preserve">
     <value>Usunięto role {{role}} użytkownikowi {{user}}</value>
   </data>
+  <data name="SentByDmMessagesOfAskedUser" xml:space="preserve">
+    <value>Wysłano {{messagesCount}} wiadomości użytkownika {{user}} w wiadomości prywatnej.</value>
+  </data>
+  <data name="ServerDoesntHaveAnySafeRoles" xml:space="preserve">
+    <value>Serwer nie ma żadnych dostępnych bezpiecznych ról (jeśli jesteś adminem spróbuj użyć komendy -init)</value>
+  </data>
   <data name="SpamAlertRecognized" xml:space="preserve">
     <value>Spam alert! Wykryto spam u użytkownika {{user}} na kanale {{channel}}. Poczekaj chwile zanim coś napiszesz.</value>
   </data>
@@ -168,8 +180,11 @@
   <data name="UnmutedUserForUser" xml:space="preserve">
     <value>Cześć {{user}}! Już możesz pisać ponownie na serwerze {{server}}</value>
   </data>
-  <data name="UserDidntMentionedAnyUserToMute" xml:space="preserve">
-    <value>Musisz wskazać użytkownika do zmutowania.</value>
+  <data name="UserDidntMentionAnyUser" xml:space="preserve">
+    <value>Nie wskazałeś żadnego użytkownika!</value>
+  </data>
+  <data name="UserDidntWriteAnyMessageInThisTime" xml:space="preserve">
+    <value>Użytkownik {{user}} nie napisał żadnej wiadomości w podanym czasie.</value>
   </data>
   <data name="UserDoesntHaveAvatar" xml:space="preserve">
     <value>Użytkownik {{user}} nie posiada avatara.</value>
