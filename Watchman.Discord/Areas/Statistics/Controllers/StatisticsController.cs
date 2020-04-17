@@ -53,7 +53,7 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         public async Task GetStatisticsPerPeriod(DiscordRequest request, Contexts contexts)
         {
             //TODO it doesn't looks clear...
-            var period = _reportsService.SelectPeriod(request.OriginalMessage); //TODO use DiscordRequest properties
+            var period = _reportsService.SelectPeriod(request.Arguments.FirstOrDefault()?.Value);
             var getMessages = new GetMessagesQuery(contexts.Server.Id);
             var messages = this._queryBus.Execute(getMessages).Messages.ToList();
             var report = _reportsService.CreateReport(messages, period);

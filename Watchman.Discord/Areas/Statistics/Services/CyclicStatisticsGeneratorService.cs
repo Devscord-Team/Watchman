@@ -43,7 +43,7 @@ namespace Watchman.Discord.Areas.Statistics.Services
             _isNowRunningCyclicGenerator = false;
         }
 
-        public Task StopGeneratingStatsCacheEveryday()
+        public Task StopGeneratingStatsCacheEveryday() // after calling this method, stopping will occure after next day generating - after stopping it will generate One more stats cache
         {
             _shouldStillGenerateEveryday = false;
             return Task.CompletedTask;

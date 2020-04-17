@@ -232,6 +232,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Nie określiłeś przedziału czasu!.
+        /// </summary>
+        public static string TimeNotSpecified {
+            get {
+                return ResourceManager.GetString("TimeNotSpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Użytkownik {{user}} może pisać ponownie..
         /// </summary>
         public static string UnmutedUser {
