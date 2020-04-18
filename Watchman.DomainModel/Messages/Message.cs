@@ -1,10 +1,11 @@
 ﻿using System;
+using Watchman.DomainModel.Commons.Calculators.Statistics.Splitters;
 using Watchman.DomainModel.Messages.Services;
 using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Messages
 {
-    public class Message : Entity, IAggregateRoot
+    public class Message : Entity, IAggregateRoot, ISplittable
     {
         public User Author { get; private set; }
         public Channel Channel { get; private set; }
@@ -78,5 +79,7 @@ namespace Watchman.DomainModel.Messages
             this.Md5Hash = hashService.GetHash(this);
             this.Update();
         }
+
+        public DateTime GetSplittable() => this.SentAt;
     }
 }

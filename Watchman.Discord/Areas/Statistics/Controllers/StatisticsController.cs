@@ -12,6 +12,7 @@ using Watchman.Cqrs;
 using Watchman.Discord.Areas.Statistics.Services;
 using Watchman.DomainModel.Messages.Commands;
 using Watchman.DomainModel.Messages.Queries;
+using Watchman.Common.Models;
 
 namespace Watchman.Discord.Areas.Statistics.Controllers
 {
@@ -48,12 +49,18 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
             Log.Information("Message saved");
         }
 
+        private Period[] implementedBySplitter = new Period[] { Period.Day };
         [AdminCommand]
         [DiscordCommand("stats")]
         public async Task GetStatisticsPerPeriod(DiscordRequest request, Contexts contexts)
         {
-            //TODO it doesn't looks clear...
             var period = _reportsService.SelectPeriod(request.Arguments.FirstOrDefault()?.Value);
+            if(implementedBySplitter.Contains(period))
+            {
+                var query = new GetMessagesStatisticsQuery(period);
+                var result = await this._queryBus.ExecuteAsync(query);
+            }
+            
             var getMessages = new GetMessagesQuery(contexts.Server.Id);
             var messages = this._queryBus.Execute(getMessages).Messages.ToList();
             var report = _reportsService.CreateReport(messages, period);
