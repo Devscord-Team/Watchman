@@ -59,12 +59,6 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("server", contexts.Server.Name));
         }
 
-        public static string CurrentVersion(this ResponsesService responsesService, Contexts contexts, string version)
-        {
-            return responsesService.ProcessResponse("CurrentVersion", contexts, 
-                new KeyValuePair<string, string>("version", version));
-        }
-
         public static string PrintHelp(this ResponsesService responsesService, string help)
         {
             return responsesService.ProcessResponse("PrintHelp",
@@ -162,6 +156,17 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("AvailableSafeRoles",
                 new KeyValuePair<string, string>("roles", rolesLines));
+        }
+
+        public static string NotEnoughArguments(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("NotEnoughArguments");
+        }
+
+        public static string RoleSettingsChanged(this ResponsesService responsesService, string roleName)
+        {
+            return responsesService.ProcessResponse("RoleSettingsChanged",
+                new KeyValuePair<string, string>("role", roleName));
         }
     }
 }

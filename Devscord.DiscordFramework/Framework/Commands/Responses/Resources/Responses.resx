@@ -126,6 +126,9 @@
   <data name="NewUserArrived" xml:space="preserve">
     <value>Cześć {{user}}! Witamy cię na serwerze {{server}}</value>
   </data>
+  <data name="NotEnoughArguments" xml:space="preserve">
+    <value>Podano niewystarczającą liczbę argumentów!</value>
+  </data>
   <data name="NumberOfMessagesIsHuge" xml:space="preserve">
     <value>Liczba wiadomości w podanym zakresie jest ogromna ({{messagesCount}} wiadomości). Czy na pewno chcesz wszystkie przeczytać? (użyj parametru -force)</value>
   </data>
@@ -152,6 +155,9 @@
   </data>
   <data name="RoleRemovedFromUser" xml:space="preserve">
     <value>Usunięto role {{role}} użytkownikowi {{user}}</value>
+  </data>
+  <data name="RoleSettingsChanged" xml:space="preserve">
+    <value>Zmieniono ustawienia roli {{role}} pomyślnie!</value>
   </data>
   <data name="SentByDmMessagesOfAskedUser" xml:space="preserve">
     <value>Wysłano {{messagesCount}} wiadomości użytkownika {{user}} w wiadomości prywatnej.</value>
