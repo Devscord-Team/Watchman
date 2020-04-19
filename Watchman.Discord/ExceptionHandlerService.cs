@@ -49,6 +49,9 @@ namespace Watchman.Discord
                 case TimeIsTooBigException _:
                     messagesService.SendResponse(x => x.TimeIsTooBig(), contexts);
                     break;
+                case TimeNotSpecifiedException _:
+                    messagesService.SendResponse(x => x.TimeNotSpecified(), contexts);
+                    break;
                 default:
                     messagesService.SendMessage("Wystąpił nieznany wyjątek");
                     break;

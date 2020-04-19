@@ -163,5 +163,10 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             return responsesService.ProcessResponse("AvailableSafeRoles",
                 new KeyValuePair<string, string>("roles", rolesLines));
         }
+
+        public static string TimeNotSpecified(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("TimeNotSpecified");
+        }
     }
 }

@@ -157,7 +157,7 @@
     <value>Wysłano {{messagesCount}} wiadomości użytkownika {{user}} w wiadomości prywatnej.</value>
   </data>
   <data name="ServerDoesntHaveAnySafeRoles" xml:space="preserve">
-    <value>Serwer nie ma żadnych dostępnych bezpiecznych ról (jeśli jesteś adminem spróbuj użyć komendy -init)</value>
+    <value>Serwer nie ma żadnych dostępnych bezpiecznych ról (jeśli jesteś adminem, ustaw bezpieczne role za pomocą komendy -set role &lt;nazwa_roli&gt; safe) </value>
   </data>
   <data name="SpamAlertRecognized" xml:space="preserve">
     <value>Spam alert! Wykryto spam u użytkownika {{user}} na kanale {{channel}}. Poczekaj chwile zanim coś napiszesz.</value>
@@ -173,6 +173,9 @@
   </data>
   <data name="TimeIsTooBig" xml:space="preserve">
     <value>Podano za dużą wartość czasu!</value>
+  </data>
+  <data name="TimeNotSpecified" xml:space="preserve">
+    <value>Nie określiłeś przedziału czasu!</value>
   </data>
   <data name="UnmutedUser" xml:space="preserve">
     <value>Użytkownik {{user}} może pisać ponownie.</value>
