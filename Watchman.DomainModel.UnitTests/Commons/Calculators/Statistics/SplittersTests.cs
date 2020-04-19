@@ -38,6 +38,7 @@ namespace Watchman.DomainModel.UnitTests.Commons.Calculators.Statistics
             Assert.That(daysAreEqual, Is.True);
         }
 
+        [Ignore("Not yet implemented")]
         [Test]
         [TestCase]
         [TestCase(5, 20, 4)]
