@@ -14,22 +14,27 @@ using Watchman.DomainModel.Messages.Queries;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Discord.Areas.Commons;
+using Watchman.DomainModel.DiscordServer.Commands;
 
 namespace Watchman.Discord.Areas.Administration.Controllers
 {
     public class AdministrationController : IController
     {
         private readonly IQueryBus _queryBus;
+        private readonly ICommandBus _commandBus;
         private readonly UsersService _usersService;
         private readonly DirectMessagesService _directMessagesService;
         private readonly MessagesServiceFactory _messagesServiceFactory;
+        private readonly UsersRolesService _usersRolesService;
 
-        public AdministrationController(IQueryBus queryBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory)
+        public AdministrationController(IQueryBus queryBus, ICommandBus commandBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, UsersRolesService usersRolesService)
         {
             this._queryBus = queryBus;
+            this._commandBus = commandBus;
             this._usersService = usersService;
             this._directMessagesService = directMessagesService;
-            _messagesServiceFactory = messagesServiceFactory;
+            this._messagesServiceFactory = messagesServiceFactory;
+            _usersRolesService = usersRolesService;
         }
 
         [AdminCommand]
@@ -38,7 +43,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         {
             var mention = request.GetMention();
             var selectedUser = _usersService.GetUserByMention(contexts.Server, mention);
-            if(selectedUser == null)
+            if (selectedUser == null)
             {
                 throw new UserNotFoundException(mention);
             }
@@ -76,6 +81,40 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             }
 
             await messagesService.SendResponse(x => x.SentByDmMessagesOfAskedUser(messages.Count, selectedUser), contexts);
+        }
+
+        [AdminCommand]
+        [DiscordCommand("set role")]
+        public async Task SetRoleAsSafe(DiscordRequest request, Contexts contexts)
+        {
+            var args = request.Arguments.Skip(1).ToArray(); // 1 args is string "role", so it's not needed
+            if (args.Length < 2)
+            {
+                throw new NotEnoughArgumentsException();
+            }
+
+            var roleName = args[0].Value;
+            var toSetAsSafe = args[1].Value == "safe";
+
+            var serverRole = _usersRolesService.GetRoleByName(roleName, contexts.Server);
+            if (serverRole == null)
+            {
+                throw new RoleNotFoundException(roleName);
+            }
+
+            if (toSetAsSafe)
+            {
+                var command = new SetRoleAsSafeCommand(roleName, contexts.Server.Id);
+                await _commandBus.ExecuteAsync(command);
+            }
+            else
+            {
+                var command = new SetRoleAsUnsafeCommand(roleName, contexts.Server.Id);
+                await _commandBus.ExecuteAsync(command);
+            }
+
+            var messagesService = _messagesServiceFactory.Create(contexts);
+            await messagesService.SendResponse(x => x.RoleSettingsChanged(roleName), contexts);
         }
     }
 }

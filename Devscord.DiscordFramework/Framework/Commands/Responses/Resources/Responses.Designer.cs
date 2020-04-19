@@ -88,6 +88,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Podano niewystarczającą liczbę argumentów!.
+        /// </summary>
+        public static string NotEnoughArguments {
+            get {
+                return ResourceManager.GetString("NotEnoughArguments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Liczba wiadomości w podanym zakresie jest ogromna ({{messagesCount}} wiadomości). Czy na pewno chcesz wszystkie przeczytać? (użyj parametru -force).
         /// </summary>
         public static string NumberOfMessagesIsHuge {
@@ -165,6 +174,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         public static string RoleRemovedFromUser {
             get {
                 return ResourceManager.GetString("RoleRemovedFromUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zmieniono ustawienia roli {{role}} pomyślnie!.
+        /// </summary>
+        public static string RoleSettingsChanged {
+            get {
+                return ResourceManager.GetString("RoleSettingsChanged", resourceCulture);
             }
         }
         
