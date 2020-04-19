@@ -167,6 +167,8 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("RoleSettingsChanged",
                 new KeyValuePair<string, string>("role", roleName));
+        }
+
         public static string TimeNotSpecified(this ResponsesService responsesService)
         {
             return responsesService.ProcessResponse("TimeNotSpecified");
