@@ -178,7 +178,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Serwer nie ma żadnych dostępnych bezpiecznych ról (jeśli jesteś adminem spróbuj użyć komendy -init).
+        ///   Looks up a localized string similar to Serwer nie ma żadnych dostępnych bezpiecznych ról (jeśli jesteś adminem, ustaw bezpieczne role za pomocą komendy -set role &lt;nazwa_roli&gt; safe) .
         /// </summary>
         public static string ServerDoesntHaveAnySafeRoles {
             get {

@@ -157,7 +157,7 @@
     <value>Wysłano {{messagesCount}} wiadomości użytkownika {{user}} w wiadomości prywatnej.</value>
   </data>
   <data name="ServerDoesntHaveAnySafeRoles" xml:space="preserve">
-    <value>Serwer nie ma żadnych dostępnych bezpiecznych ról (jeśli jesteś adminem spróbuj użyć komendy -init)</value>
+    <value>Serwer nie ma żadnych dostępnych bezpiecznych ról (jeśli jesteś adminem, ustaw bezpieczne role za pomocą komendy -set role &lt;nazwa_roli&gt; safe) </value>
   </data>
   <data name="SpamAlertRecognized" xml:space="preserve">
     <value>Spam alert! Wykryto spam u użytkownika {{user}} na kanale {{channel}}. Poczekaj chwile zanim coś napiszesz.</value>

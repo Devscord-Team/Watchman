@@ -13,6 +13,7 @@ using Watchman.Discord.Areas.Statistics.Services;
 using Watchman.DomainModel.Messages.Commands;
 using Watchman.DomainModel.Messages.Queries;
 using Watchman.Common.Models;
+using Watchman.Discord.Areas.Statistics.Models;
 
 namespace Watchman.Discord.Areas.Statistics.Controllers
 {
@@ -49,31 +50,37 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
             Log.Information("Message saved");
         }
 
-        private Period[] implementedBySplitter = new Period[] { Period.Day };
+        private Period[] implementedBySplitter = new Period[] { Period.Day }; // only while implementing other splitters / to remove
         [AdminCommand]
         [DiscordCommand("stats")]
         public async Task GetStatisticsPerPeriod(DiscordRequest request, Contexts contexts)
         {
             var period = _reportsService.SelectPeriod(request.Arguments.FirstOrDefault()?.Value);
-            if(implementedBySplitter.Contains(period))
+            if (implementedBySplitter.Contains(period))
             {
                 var query = new GetMessagesStatisticsQuery(period);
                 var result = await this._queryBus.ExecuteAsync(query);
+                var periodStats = result.PeriodStatistics.Where(x => x.Count > 0); // todo
+                return;
             }
-            
+
             var getMessages = new GetMessagesQuery(contexts.Server.Id);
             var messages = this._queryBus.Execute(getMessages).Messages.ToList();
             var report = _reportsService.CreateReport(messages, period);
             Log.Information("Generated statistics for time range {start} {end}", report.TimeRange.Start, report.TimeRange.End);
-            var messagesService = _messagesServiceFactory.Create(contexts);
 #if DEBUG
-            //TODO it should be inside messages service... or responses service
+            PrintDebugStats(report);
+#endif
+            var path = _chartsService.GetImageStatisticsPerPeriod(report);
+            var messagesService = _messagesServiceFactory.Create(contexts);
+            await messagesService.SendFile(path);
+        }
+
+        private static void PrintDebugStats(StatisticsReport report)
+        {
             var dataToMessage = JsonConvert.SerializeObject(report.StatisticsPerPeriod.Where(x => x.MessagesQuantity > 0), Formatting.Indented);
             var builder = new StringBuilder(dataToMessage).FormatMessageIntoBlock("json");
             Log.Information(builder.ToString());
-#endif
-            var path = _chartsService.GetImageStatisticsPerPeriod(report);
-            await messagesService.SendFile(path);
         }
     }
 }
