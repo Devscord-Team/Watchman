@@ -11,8 +11,7 @@ using Devscord.DiscordFramework.Services.Factories;
 using Serilog;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Initialization.Services;
-using Watchman.DomainModel.DiscordServer;
-using Watchman.DomainModel.DiscordServer.Commands;
+using Watchman.Discord.Areas.Statistics.Services;
 using Watchman.DomainModel.Responses.Commands;
 using Watchman.DomainModel.Responses.Queries;
 
@@ -26,8 +25,9 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
         private readonly UsersRolesService _usersRolesService;
         private readonly ServerScanningService _serverScanningService;
         private readonly MessagesServiceFactory _messagesServiceFactory;
+        private readonly CyclicStatisticsGeneratorService _cyclicStatisticsGeneratorService;
 
-        public InitializationController(IQueryBus queryBus, ICommandBus commandBus, MuteRoleInitService muteRoleInitService, UsersRolesService usersRolesService, ServerScanningService serverScanningService, MessagesServiceFactory messagesServiceFactory)
+        public InitializationController(IQueryBus queryBus, ICommandBus commandBus, MuteRoleInitService muteRoleInitService, UsersRolesService usersRolesService, ServerScanningService serverScanningService, MessagesServiceFactory messagesServiceFactory, CyclicStatisticsGeneratorService cyclicStatisticsGeneratorService)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;
@@ -35,6 +35,7 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
             this._usersRolesService = usersRolesService;
             _serverScanningService = serverScanningService;
             _messagesServiceFactory = messagesServiceFactory;
+            _cyclicStatisticsGeneratorService = cyclicStatisticsGeneratorService;
         }
 
         [AdminCommand]
@@ -45,6 +46,7 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
             await ResponsesInit();
             await MuteRoleInit(contexts);
             await ReadServerMessagesHistory(contexts);
+            await _cyclicStatisticsGeneratorService.GenerateStatsForDaysBefore(contexts.Server);
         }
 
         private async Task ResponsesInit()

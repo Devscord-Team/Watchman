@@ -11,13 +11,13 @@ namespace Watchman.DomainModel.Commons.Calculators.Statistics
 {
     public class StatisticsCalculator : IStatisticsCalculator
     {
-        public IEnumerable<PeriodStatistic> GetStatisticsPerPeriod<T>(IEnumerable<T> collection, Period period) where T : Entity
+        public IEnumerable<PeriodStatistic> GetStatisticsPerPeriod<T>(IEnumerable<T> collection, Period period) where T : ISplittable
         {
             var splitter = this.GetSplitter(period);
             return this.GetStatisticsPerPeriod(collection, splitter);
         }
 
-        public IEnumerable<PeriodStatistic> GetStatisticsPerPeriod<T>(IEnumerable<T> collection, ISplitter splitter) where T : Entity
+        public IEnumerable<PeriodStatistic> GetStatisticsPerPeriod<T>(IEnumerable<T> collection, ISplitter splitter) where T : ISplittable
         {
             var splitted = splitter.Split(collection);
             foreach (var singlePeriod in splitted)

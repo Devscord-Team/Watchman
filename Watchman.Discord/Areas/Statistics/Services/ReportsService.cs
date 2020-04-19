@@ -11,19 +11,19 @@ namespace Watchman.Discord.Areas.Statistics.Services
     {
         public Period SelectPeriod(string period)
         {
-            if (period.ToLowerInvariant().Contains("hour"))
+            if (period.ToLowerInvariant() == "hour")
             {
                return Period.Hour;
             }
-            else if (period.ToLowerInvariant().Contains("day"))
+            else if (period.ToLowerInvariant() == "day")
             {
                 return Period.Day;
             }
-            else if (period.ToLowerInvariant().Contains("week"))
+            else if (period.ToLowerInvariant() == "week")
             {
                 return Period.Week;
             }
-            else if (period.ToLowerInvariant().Contains("month"))
+            else if (period.ToLowerInvariant() == "month")
             {
                 return Period.Month;
             }

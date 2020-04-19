@@ -51,6 +51,8 @@ namespace Watchman.Discord
                     break;
                 case NotEnoughArgumentsException _:
                     messagesService.SendResponse(x => x.NotEnoughArguments(), contexts);
+                case TimeNotSpecifiedException _:
+                    messagesService.SendResponse(x => x.TimeNotSpecified(), contexts);
                     break;
                 default:
                     messagesService.SendMessage("Wystąpił nieznany wyjątek");
