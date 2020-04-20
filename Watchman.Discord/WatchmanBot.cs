@@ -14,6 +14,7 @@ using System.Linq;
 using Watchman.Integrations.Logging;
 using MongoDB.Driver;
 using Serilog;
+using Watchman.Discord.Areas.Initialization.Services;
 using Watchman.Discord.Areas.Protection.Services;
 using Watchman.Discord.Areas.Statistics.Services;
 using Watchman.Discord.Areas.Users.Services;
@@ -50,11 +51,15 @@ namespace Watchman.Discord
                         .AddFromIoC<UnmutingExpiredMuteEventsService, DiscordServersService>((unmutingService, serversService) => async () =>
                         {
                             var servers = (await serversService.GetDiscordServers()).ToList();
-                            servers.ForEach(x => unmutingService.UnmuteUsersInit(x));
+                            servers.ForEach(unmutingService.UnmuteUsersInit);
                         })
                         .AddFromIoC<CyclicStatisticsGeneratorService>(cyclicStatsGenerator => async () =>
                         {
-                            await cyclicStatsGenerator.StartGeneratingStatsCacheEveryday();
+                            _ = cyclicStatsGenerator.StartGeneratingStatsCacheEveryday();
+                        })
+                        .AddFromIoC<ResponsesInitService>(responsesService => async () =>
+                        {
+                            await responsesService.InitNewResponsesFromResources();
                         })
                         .AddHandler(() => Task.Run(() => Log.Information("Bot started and logged in...")));
                 })

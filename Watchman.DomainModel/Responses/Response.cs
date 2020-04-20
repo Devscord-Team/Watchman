@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Watchman.Integrations.MongoDB;
+﻿using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Responses
 {
@@ -9,11 +6,13 @@ namespace Watchman.DomainModel.Responses
     {
         public string OnEvent { get; private set; }
         public string Message { get; private set; }
+        public ulong ServerId { get; private set; }
 
-        public Response(string onEvent, string message)
+        public Response(string onEvent, string message, ulong serverId)
         {
             OnEvent = onEvent;
             Message = message;
+            ServerId = serverId;
         }
 
         public void SetOnEvent(string onEvent)
@@ -26,7 +25,7 @@ namespace Watchman.DomainModel.Responses
             this.Update();
         }
 
-        public void SetMessage(string message)
+        public void SetMessage(string message, ulong serverId = 0)
         {
             if (message == this.Message)
             {
