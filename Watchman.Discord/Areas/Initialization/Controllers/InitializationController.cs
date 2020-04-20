@@ -1,41 +1,33 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
-using Devscord.DiscordFramework.Framework.Commands.Responses.Resources;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
 using Serilog;
-using Watchman.Cqrs;
 using Watchman.Discord.Areas.Initialization.Services;
 using Watchman.Discord.Areas.Statistics.Services;
-using Watchman.DomainModel.Responses.Commands;
-using Watchman.DomainModel.Responses.Queries;
 
 namespace Watchman.Discord.Areas.Initialization.Controllers
 {
     public class InitializationController : IController
     {
-        private readonly IQueryBus _queryBus;
-        private readonly ICommandBus _commandBus;
         private readonly MuteRoleInitService _muteRoleInitService;
         private readonly UsersRolesService _usersRolesService;
         private readonly ServerScanningService _serverScanningService;
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly CyclicStatisticsGeneratorService _cyclicStatisticsGeneratorService;
+        private readonly ResponsesInitService _responsesInitService;
 
-        public InitializationController(IQueryBus queryBus, ICommandBus commandBus, MuteRoleInitService muteRoleInitService, UsersRolesService usersRolesService, ServerScanningService serverScanningService, MessagesServiceFactory messagesServiceFactory, CyclicStatisticsGeneratorService cyclicStatisticsGeneratorService)
+        public InitializationController(MuteRoleInitService muteRoleInitService, UsersRolesService usersRolesService, ServerScanningService serverScanningService, MessagesServiceFactory messagesServiceFactory, CyclicStatisticsGeneratorService cyclicStatisticsGeneratorService, ResponsesInitService responsesInitService)
         {
-            this._queryBus = queryBus;
-            this._commandBus = commandBus;
             this._muteRoleInitService = muteRoleInitService;
             this._usersRolesService = usersRolesService;
             _serverScanningService = serverScanningService;
             _messagesServiceFactory = messagesServiceFactory;
             _cyclicStatisticsGeneratorService = cyclicStatisticsGeneratorService;
+            _responsesInitService = responsesInitService;
         }
 
         [AdminCommand]
@@ -43,50 +35,15 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
         //[IgnoreForHelp] TODO //TODO co to za TODO?
         public async Task Init(DiscordRequest request, Contexts contexts)
         {
-            await ResponsesInit();
+            await ResponsesInit(contexts.Server);
             await MuteRoleInit(contexts);
             await ReadServerMessagesHistory(contexts);
             await _cyclicStatisticsGeneratorService.GenerateStatsForDaysBefore(contexts.Server);
         }
 
-        private async Task ResponsesInit()
+        private async Task ResponsesInit(DiscordServerContext server)
         {
-            var responsesInBase = GetResponsesFromBase();
-            var defaultResponses = GetResponsesFromResources();
-            var responsesToAdd = defaultResponses.Where(def => responsesInBase.All(@base => @base.OnEvent != def.OnEvent))
-                .ToList();
-
-            if (responsesToAdd.Count == 0)
-            {
-                Log.Information("No new responses");
-                return;
-            }
-
-            var command = new AddResponsesCommand(responsesToAdd);
-            await _commandBus.ExecuteAsync(command);
-            Log.Information("Responses initialized");
-        }
-
-        private IEnumerable<DomainModel.Responses.Response> GetResponsesFromBase()
-        {
-            var query = new GetResponsesQuery();
-            var responsesInBase = _queryBus.Execute(query).Responses;
-            return responsesInBase;
-        }
-
-        private IEnumerable<DomainModel.Responses.Response> GetResponsesFromResources()
-        {
-            var defaultResponses = typeof(Responses).GetProperties()
-                .Where(x => x.PropertyType.Name == "String")
-                .Select(prop =>
-                {
-                    var onEvent = prop.Name;
-                    var message = prop.GetValue(prop)?.ToString();
-                    return new DomainModel.Responses.Response(onEvent, message);
-                })
-                .ToList();
-
-            return defaultResponses;
+            await _responsesInitService.InitServerResponses(server);
         }
 
         private async Task MuteRoleInit(Contexts contexts)
