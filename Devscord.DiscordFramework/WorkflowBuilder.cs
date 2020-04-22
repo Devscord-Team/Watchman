@@ -63,6 +63,12 @@ namespace Devscord.DiscordFramework
             return this;
         }
 
+        public WorkflowBuilder AddOnDiscordServerAddedBot(Action<WorkflowBuilderHandlers<Func<DiscordServerContext, Task>>> action)
+        {
+            AddHandlers(action, this._workflow.OnDiscordServerAddedBot.Add);
+            return this;
+        }
+
         public WorkflowBuilder AddOnWorkflowExceptionHandlers(Action<WorkflowBuilderHandlers<Action<Exception, Contexts>>> action)
         {
             AddHandlers(action, this._workflow.OnWorkflowException.Add);

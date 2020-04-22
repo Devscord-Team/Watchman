@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Devscord.DiscordFramework.Middlewares.Factories;
 using System.Collections.Generic;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
+using Discord.Rest;
 
 namespace Devscord.DiscordFramework
 {
@@ -22,6 +23,7 @@ namespace Devscord.DiscordFramework
 
         public List<Func<Task>> OnReady { get; set; } = new List<Func<Task>>();
         public List<Func<Contexts, Task>> OnUserJoined { get; set; } = new List<Func<Contexts, Task>>();
+        public List<Func<DiscordServerContext, Task>> OnDiscordServerAddedBot { get; set; } = new List<Func<DiscordServerContext, Task>>();
         public List<Func<SocketMessage, Task>> OnMessageReceived { get; set; } = new List<Func<SocketMessage, Task>>();
         public List<Action<Exception, Contexts>> OnWorkflowException { get; set; } = new List<Action<Exception, Contexts>>();
 
@@ -30,7 +32,7 @@ namespace Devscord.DiscordFramework
             this._controllersService = new ControllersService(context, botAssembly);
         }
 
-        internal Workflow AddMiddleware<T>() 
+        internal Workflow AddMiddleware<T>()
             where T : IMiddleware
         {
             this._middlewaresService.AddMiddleware<T>();
@@ -48,11 +50,12 @@ namespace Devscord.DiscordFramework
             this.OnReady.ForEach(x => client.Ready += x);
             this.OnMessageReceived.ForEach(x => client.MessageReceived += x);
             Server.UserJoined += CallUserJoined;
+            Server.BotAddedToServer += CallServerAddedBot;
         }
 
         private async void MessageReceived(SocketMessage socketMessage)
         {
-            if(ShouldIgnoreMessage(socketMessage))
+            if (ShouldIgnoreMessage(socketMessage))
             {
                 return;
             }
@@ -101,7 +104,7 @@ namespace Devscord.DiscordFramework
             {
                 return true;
             }
-                
+
             return false;
         }
 
@@ -124,6 +127,15 @@ namespace Devscord.DiscordFramework
             }
 
             OnUserJoined.ForEach(x => x.Invoke(contexts));
+        }
+
+        private async Task CallServerAddedBot(SocketGuild guild)
+        {
+            var discordServerFactory = new DiscordServerContextFactory();
+            var restGuild = await Server.GetGuild(guild.Id);
+            var discordServer = discordServerFactory.Create(restGuild);
+
+            OnDiscordServerAddedBot.ForEach(x => x.Invoke(discordServer));
         }
     }
 }
