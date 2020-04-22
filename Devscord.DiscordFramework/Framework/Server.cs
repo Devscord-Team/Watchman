@@ -37,14 +37,16 @@ namespace Devscord.DiscordFramework.Framework
         private static DiscordSocketClient _client;
         private static List<SocketRole> _roles;
         public static Func<SocketGuildUser, Task> UserJoined { get; set; }
+        public static Func<SocketGuild, Task> BotAddedToServer { get; set; }
 
         public static void Initialize(DiscordSocketClient client)
         {
-            while(client.ConnectionState != ConnectionState.Connected)
+            while (client.ConnectionState != ConnectionState.Connected)
             { }
 
             _client = client;
             _client.UserJoined += user => UserJoined(user);
+            _client.JoinedGuild += BotAddedToServer;
 
             _client.Ready += async () => await Task.Run(() =>
             {
@@ -156,7 +158,7 @@ namespace Devscord.DiscordFramework.Framework
 
             Parallel.ForEach(channels, async c =>
             {
-                var channelSocket = (IGuildChannel) await GetChannel(c.Id);
+                var channelSocket = (IGuildChannel)await GetChannel(c.Id);
                 await channelSocket.AddPermissionOverwriteAsync(createdRole, channelPermissions);
             });
         }
