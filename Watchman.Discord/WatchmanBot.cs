@@ -18,7 +18,6 @@ using Watchman.Discord.Areas.Initialization.Services;
 using Watchman.Discord.Areas.Protection.Services;
 using Watchman.Discord.Areas.Statistics.Services;
 using Watchman.Discord.Areas.Users.Services;
-using Watchman.Discord.Areas.Initialization.Controllers;
 
 namespace Watchman.Discord
 {
@@ -66,9 +65,13 @@ namespace Watchman.Discord
                         })
                         .AddFromIoC<InitializationService, DiscordServersService>((initService, serversService) => () =>
                         {
-                            var servers = serversService.GetDiscordServers().Result.ToList();
-                            var tasks = servers.Select(initService.InitServer).ToArray();
-                            Task.WaitAll(tasks);
+                            var servers = serversService.GetDiscordServers().Result;
+                            Parallel.ForEach(servers, async server =>
+                            {
+                                Log.Information($"Initializing server: {server.Name}");
+                                await initService.InitServer(server);
+                                Log.Information($"Done server: {server.Name}");
+                            });
                             return Task.CompletedTask;
                         })
                         .AddHandler(() => Task.Run(() => Log.Information("Bot has done every Ready tasks.")));
