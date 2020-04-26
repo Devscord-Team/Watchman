@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Discord;
 using Discord.WebSocket;
@@ -9,10 +8,10 @@ using System.Threading.Tasks;
 using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Framework.Commands.Parsing;
-using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Factories;
 using Devscord.DiscordFramework.Services.Models;
 using Discord.Rest;
+using Serilog;
 
 namespace Devscord.DiscordFramework.Framework
 {
@@ -77,11 +76,24 @@ namespace Devscord.DiscordFramework.Framework
             return GetSocketRoles(guildId).Select(x => roleFactory.Create(x));
         }
 
-        public static async Task<RestChannel> GetChannel(ulong channelId, RestGuild guild = null)
+        public static async Task<IChannel> GetChannel(ulong channelId, RestGuild guild = null)
         {
             if (guild != null)
+            {
                 return await guild.GetChannelAsync(channelId);
-            return await _restClient.GetChannelAsync(channelId);
+            }
+
+            IChannel channel;
+            try
+            {
+                 channel = await _restClient.GetChannelAsync(channelId);
+            }
+            catch
+            {
+                Log.Warning($"RestClient couldn't get channel: {channelId}");
+                channel = _client.GetChannel(channelId);
+            }
+            return channel;
         }
 
         public static async Task<RestUser> GetUser(ulong userId)
@@ -173,7 +185,12 @@ namespace Devscord.DiscordFramework.Framework
 
         public static async Task<IEnumerable<Message>> GetMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong fromMessageId = 0, bool goBefore = true)
         {
-            var textChannel = (RestTextChannel)Server.GetChannel(channel.Id).Result;
+            var textChannel = (ITextChannel)Server.GetChannel(channel.Id).Result;
+            if (!CanBotReadTheChannel(textChannel))
+            {
+                return new List<Message>();
+            }
+
             IEnumerable<IMessage> channelMessages;
             if (fromMessageId == 0)
             {
@@ -198,6 +215,19 @@ namespace Devscord.DiscordFramework.Framework
                 return new Message(message.Id, request, contexts);
             });
             return messages;
+        }
+
+        private static bool CanBotReadTheChannel(IMessageChannel textChannel)
+        {
+            try
+            {
+                textChannel.GetMessagesAsync(limit: 1).FlattenAsync().Wait();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public static async Task<IEnumerable<string>> GetExistingInviteLinks(ulong serverId)

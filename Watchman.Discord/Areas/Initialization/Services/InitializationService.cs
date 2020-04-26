@@ -44,19 +44,18 @@ namespace Watchman.Discord.Areas.Initialization.Services
             {
                 await _muteRoleInitService.InitForServer(server);
             }
-            Log.Information("Mute role initialized");
+
+            Log.Information($"Mute role initialized: {server.Name}");
         }
 
         private async Task ReadServerMessagesHistory(DiscordServerContext server)
         {
-            Log.Information("Reading messages started");
-
             foreach (var textChannel in server.TextChannels)
             {
                 await _serverScanningService.ScanChannelHistory(server, textChannel);
             }
 
-            Log.Information("Read messages history");
+            Log.Information($"Read messages history: {server.Name}");
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Devscord.DiscordFramework
     {
         private readonly DiscordSocketClient _client;
         private readonly string _token;
-        private readonly IComponentContext context;
+        private readonly IComponentContext _context;
         private readonly Workflow _workflow;
 
         private WorkflowBuilder(string token, IComponentContext context, Assembly botAssembly)
@@ -24,7 +24,7 @@ namespace Devscord.DiscordFramework
                 TotalShards = 1
             });
             this._token = token;
-            this.context = context;
+            this._context = context;
             this._workflow = new Workflow(botAssembly, context);
         }
 
@@ -77,7 +77,7 @@ namespace Devscord.DiscordFramework
 
         private void AddHandlers<T>(Action<WorkflowBuilderHandlers<T>> action, Action<T> workflowAction)
         {
-            var workflowBuilderHandlers = new WorkflowBuilderHandlers<T>(this.context);
+            var workflowBuilderHandlers = new WorkflowBuilderHandlers<T>(this._context);
             action.Invoke(workflowBuilderHandlers);
             foreach (var exceptionHandler in workflowBuilderHandlers.Handlers)
             {

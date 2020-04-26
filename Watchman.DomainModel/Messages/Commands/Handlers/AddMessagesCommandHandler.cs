@@ -23,12 +23,12 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
 
         public async Task HandleAsync(AddMessagesCommand command)
         {
-            var newMessages = await Task.Run(() => GetOnlyNewMessages(command.Messages, command.ChannelId));
+            var newMessages = GetOnlyNewMessages(command.Messages, command.ChannelId).ToList();
             using var session = _sessionFactory.Create();
             foreach (var message in newMessages)
             {
                 await session.AddAsync(message);
-            };
+            }
         }
 
         private IEnumerable<Message> GetOnlyNewMessages(IEnumerable<Message> messages, ulong channelId)

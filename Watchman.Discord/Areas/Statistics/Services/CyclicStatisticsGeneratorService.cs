@@ -43,7 +43,7 @@ namespace Watchman.Discord.Areas.Statistics.Services
             _isNowRunningCyclicGenerator = false;
         }
 
-        public Task StopGeneratingStatsCacheEveryday() // after calling this method, stopping will occure after next day generating - after stopping it will generate One more stats cache
+        public Task StopGeneratingStatsCacheEveryday() // after calling this method, stopping will happen after next day generating - after stopping it will generate One more stats cache
         {
             _shouldStillGenerateEveryday = false;
             return Task.CompletedTask;
@@ -52,7 +52,7 @@ namespace Watchman.Discord.Areas.Statistics.Services
         public async Task GenerateStatsForDaysBefore(DiscordServerContext server)
         {
             var dayStatisticsQuery = new GetServerDayStatisticsQuery(server.Id);
-            var allServerDaysStatistics = (await _queryBus.ExecuteAsync(dayStatisticsQuery)).ServerDayStatistics;
+            var allServerDaysStatistics = (await _queryBus.ExecuteAsync(dayStatisticsQuery)).ServerDayStatistics.ToList();
             var messagesQuery = new GetMessagesQuery(server.Id)
             {
                 SentDate = new TimeRange(DateTime.UnixEpoch, DateTime.Today) // it will exclude today - it should generate today's stats tomorrow
@@ -67,8 +67,10 @@ namespace Watchman.Discord.Areas.Statistics.Services
                 .Select(x => new ServerDayStatistic(x.ToList(), server.Id, x.Key));
 
             var commands = serverStatistics.Select(x => new AddServerDayStatisticCommand(x));
-            var tasks = commands.Select(x => _commandBus.ExecuteAsync(x));
-            Task.WaitAll(tasks.ToArray());
+            foreach (var command in commands)
+            {
+                await _commandBus.ExecuteAsync(command);
+            }
         }
 
         private async Task BlockUntilNextNight()
