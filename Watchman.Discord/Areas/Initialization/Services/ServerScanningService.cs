@@ -22,7 +22,7 @@ namespace Watchman.Discord.Areas.Initialization.Services
 
         public async Task ScanChannelHistory(DiscordServerContext server, ChannelContext channel)
         {
-            const int LIMIT = 10000;
+            const int LIMIT = 100000;
 
             if (channel.Name.Contains("logs"))
                 return;
