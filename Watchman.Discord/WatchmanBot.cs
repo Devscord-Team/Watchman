@@ -18,6 +18,7 @@ using Watchman.Discord.Areas.Initialization.Services;
 using Watchman.Discord.Areas.Protection.Services;
 using Watchman.Discord.Areas.Statistics.Services;
 using Watchman.Discord.Areas.Users.Services;
+using System.Diagnostics;
 
 namespace Watchman.Discord
 {
@@ -65,13 +66,17 @@ namespace Watchman.Discord
                         })
                         .AddFromIoC<InitializationService, DiscordServersService>((initService, serversService) => () =>
                         {
+                            var stopwatch = Stopwatch.StartNew();
+
                             var servers = serversService.GetDiscordServers().Result;
-                            Parallel.ForEach(servers, async server =>
+                            Task.WaitAll(servers.Select(async server =>
                             {
                                 Log.Information($"Initializing server: {server.Name}");
                                 await initService.InitServer(server);
                                 Log.Information($"Done server: {server.Name}");
-                            });
+                            }).ToArray());
+
+                            Log.Information(stopwatch.ElapsedMilliseconds.ToString());
                             return Task.CompletedTask;
                         })
                         .AddHandler(() => Task.Run(() => Log.Information("Bot has done every Ready tasks.")));
