@@ -18,6 +18,7 @@ using Watchman.Discord.Areas.Initialization.Services;
 using Watchman.Discord.Areas.Protection.Services;
 using Watchman.Discord.Areas.Statistics.Services;
 using Watchman.Discord.Areas.Users.Services;
+using System.Diagnostics;
 
 namespace Watchman.Discord
 {
@@ -43,6 +44,7 @@ namespace Watchman.Discord
                 .AddOnReadyHandlers(builder =>
                 {
                     builder
+                        .AddHandler(() => Task.Run(() => Log.Information("Bot started and logged in...")))
                         .AddFromIoC<HelpDataCollectorService, HelpDBGeneratorService>((dataCollector, helpService) => () =>
                         {
                             Task.Run(() => helpService.FillDatabase(dataCollector.GetCommandsInfo(typeof(WatchmanBot).Assembly)));
@@ -53,21 +55,42 @@ namespace Watchman.Discord
                             var servers = (await serversService.GetDiscordServers()).ToList();
                             servers.ForEach(unmutingService.UnmuteUsersInit);
                         })
-                        .AddFromIoC<CyclicStatisticsGeneratorService>(cyclicStatsGenerator => async () =>
+                        .AddFromIoC<CyclicStatisticsGeneratorService>(cyclicStatsGenerator => () =>
                         {
                             _ = cyclicStatsGenerator.StartGeneratingStatsCacheEveryday();
+                            return Task.CompletedTask;
                         })
                         .AddFromIoC<ResponsesInitService>(responsesService => async () =>
                         {
                             await responsesService.InitNewResponsesFromResources();
                         })
-                        .AddHandler(() => Task.Run(() => Log.Information("Bot started and logged in...")));
+                        .AddFromIoC<InitializationService, DiscordServersService>((initService, serversService) => () =>
+                        {
+                            var stopwatch = Stopwatch.StartNew();
+
+                            var servers = serversService.GetDiscordServers().Result;
+                            Task.WaitAll(servers.Select(async server =>
+                            {
+                                Log.Information($"Initializing server: {server.Name}");
+                                await initService.InitServer(server);
+                                Log.Information($"Done server: {server.Name}");
+                            }).ToArray());
+
+                            Log.Information(stopwatch.ElapsedMilliseconds.ToString());
+                            return Task.CompletedTask;
+                        })
+                        .AddHandler(() => Task.Run(() => Log.Information("Bot has done every Ready tasks.")));
                 })
                 .AddOnUserJoinedHandlers(builder =>
                 {
                     builder
                         .AddFromIoC<WelcomeUserService>(x => x.WelcomeUser)
                         .AddFromIoC<MutingRejoinedUsersService>(x => x.MuteAgainIfNeeded);
+                })
+                .AddOnDiscordServerAddedBot(builder =>
+                {
+                    builder
+                        .AddFromIoC<InitializationService>(initService => initService.InitServer);
                 })
                 .AddOnWorkflowExceptionHandlers(builder =>
                 {

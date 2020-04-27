@@ -17,13 +17,13 @@ namespace Watchman.Discord.Areas.Initialization.Services
             _channelsService = channelsService;
         }
 
-        public Task InitForServer(Contexts contexts)
+        public Task InitForServer(DiscordServerContext server)
         {
             var changedPermissions = CreateChangedPermissions();
             var mutedRole = CreateMuteRole(changedPermissions.AllowPermissions);
 
-            var createdRole = SetRoleToServer(contexts, mutedRole);
-            SetChannelsPermissions(contexts.Server, createdRole, changedPermissions);
+            var createdRole = SetRoleToServer(server, mutedRole);
+            SetChannelsPermissions(server, createdRole, changedPermissions);
             return Task.CompletedTask;
         }
 
@@ -32,9 +32,9 @@ namespace Watchman.Discord.Areas.Initialization.Services
             return new NewUserRole(UsersRolesService.MUTED_ROLE_NAME, permissions);
         }
 
-        private UserRole SetRoleToServer(Contexts contexts, NewUserRole mutedRole)
+        private UserRole SetRoleToServer(DiscordServerContext server, NewUserRole mutedRole)
         {
-            return _usersRolesService.CreateNewRole(contexts, mutedRole);
+            return _usersRolesService.CreateNewRole(server, mutedRole);
         }
 
         private Task SetChannelsPermissions(DiscordServerContext server, UserRole mutedRole, ChangedPermissions changedPermissions)

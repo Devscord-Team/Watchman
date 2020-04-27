@@ -22,12 +22,13 @@ namespace Watchman.Discord.Areas.Initialization.Services
 
         public async Task ScanChannelHistory(DiscordServerContext server, ChannelContext channel)
         {
-            const int LIMIT = 1000;
+            const int LIMIT = 100000;
 
             if (channel.Name.Contains("logs"))
                 return;
 
             var messages = (await _messagesHistoryService.ReadMessagesAsync(server, channel, LIMIT)).ToList();
+            Serilog.Log.Information($"Channel: {channel.Name} read");
             if (messages.Count == 0)
             {
                 return;
@@ -35,10 +36,12 @@ namespace Watchman.Discord.Areas.Initialization.Services
 
             var lastMessageId = messages.Last().Id;
             await SaveMessages(messages, channel.Id);
+            Serilog.Log.Information($"Channel: {channel.Name} saved");
 
             do
             {
                 messages = (await _messagesHistoryService.ReadMessagesAsync(server, channel, LIMIT, lastMessageId, goBefore: true)).ToList();
+                Serilog.Log.Information($"Channel: {channel.Name} read");
                 if (messages.Count == 0)
                 {
                     break;
@@ -46,6 +49,7 @@ namespace Watchman.Discord.Areas.Initialization.Services
 
                 lastMessageId = messages.Last().Id;
                 await SaveMessages(messages, channel.Id);
+                Serilog.Log.Information($"Channel: {channel.Name} saved");
 
             } while (messages.Count < LIMIT);
         }

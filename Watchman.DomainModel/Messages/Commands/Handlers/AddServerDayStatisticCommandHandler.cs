@@ -12,6 +12,7 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
         {
             _sessionFactory = sessionFactory;
         }
+
         public async Task HandleAsync(AddServerDayStatisticCommand command)
         {
             using var session = _sessionFactory.Create();
