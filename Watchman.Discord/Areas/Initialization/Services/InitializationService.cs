@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Serilog;
@@ -27,8 +28,10 @@ namespace Watchman.Discord.Areas.Initialization.Services
         {
             await ResponsesInit(server);
             await MuteRoleInit(server);
-            await ReadServerMessagesHistory(server);
-            await _cyclicStatisticsGeneratorService.GenerateStatsForDaysBefore(server);
+            var lastInitDate = GetLastInitDate(server);
+            await ReadServerMessagesHistory(server, lastInitDate);
+            await _cyclicStatisticsGeneratorService.GenerateStatsForDaysBefore(server, lastInitDate);
+            await NotifyDomainAboutInit(server);
         }
 
         private async Task ResponsesInit(DiscordServerContext server)
@@ -48,14 +51,24 @@ namespace Watchman.Discord.Areas.Initialization.Services
             Log.Information($"Mute role initialized: {server.Name}");
         }
 
-        private async Task ReadServerMessagesHistory(DiscordServerContext server)
+        private DateTime GetLastInitDate(DiscordServerContext server)
+        {
+
+        }
+
+        private async Task ReadServerMessagesHistory(DiscordServerContext server, DateTime lastInitDate)
         {
             foreach (var textChannel in server.TextChannels)
             {
-                await _serverScanningService.ScanChannelHistory(server, textChannel);
+                await _serverScanningService.ScanChannelHistory(server, textChannel, lastInitDate);
             }
 
             Log.Information($"Read messages history: {server.Name}");
+        }
+
+        private async Task NotifyDomainAboutInit(DiscordServerContext server)
+        {
+
         }
     }
 }

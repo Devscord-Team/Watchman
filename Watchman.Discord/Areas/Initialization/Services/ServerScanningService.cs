@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Middlewares.Contexts;
@@ -20,9 +21,9 @@ namespace Watchman.Discord.Areas.Initialization.Services
             _messagesHistoryService = messagesHistoryService;
         }
 
-        public async Task ScanChannelHistory(DiscordServerContext server, ChannelContext channel)
+        public async Task ScanChannelHistory(DiscordServerContext server, ChannelContext channel, DateTime? startTime = null) // startTime ->->-> now
         {
-            const int LIMIT = 100000;
+            const int LIMIT = 20000; // low limit to check if the date of the last message is older than startTime
 
             if (channel.Name.Contains("logs"))
                 return;
@@ -40,6 +41,12 @@ namespace Watchman.Discord.Areas.Initialization.Services
 
             do
             {
+                var isLastMessageOlderThanStartTime = messages.Last().Request.SentAt < startTime;
+                if (isLastMessageOlderThanStartTime)
+                {
+                    return;
+                }
+
                 messages = (await _messagesHistoryService.ReadMessagesAsync(server, channel, LIMIT, lastMessageId, goBefore: true)).ToList();
                 Serilog.Log.Information($"Channel: {channel.Name} read");
                 if (messages.Count == 0)
