@@ -70,11 +70,12 @@ namespace Watchman.Discord.Areas.Initialization.Services
         {
             return messages.Select(x =>
             {
-                var builder = DomainModel.Messages.Message.Create(x.Request.OriginalMessage);
-                builder.WithAuthor(x.Contexts.User.Id, x.Contexts.User.Name);
-                builder.WithChannel(x.Contexts.Channel.Id, x.Contexts.Channel.Name);
-                builder.WithServer(x.Contexts.Server.Id, x.Contexts.Server.Name, x.Contexts.Server.Owner.Id, x.Contexts.Server.Owner.Name);
-                builder.WithSentAtDate(x.Request.SentAt);
+                var builder = DomainModel.Messages.Message.Create(x.Request.OriginalMessage)
+                    .WithAuthor(x.Contexts.User.Id, x.Contexts.User.Name)
+                    .WithChannel(x.Contexts.Channel.Id, x.Contexts.Channel.Name)
+                    .WithServer(x.Contexts.Server.Id, x.Contexts.Server.Name, x.Contexts.Server.Owner.Id, x.Contexts.Server.Owner.Name)
+                    .WithSentAtDate(x.Request.SentAt);
+
                 return builder.Build();
             });
         }

@@ -15,12 +15,8 @@ namespace Watchman.DomainModel.Settings.Commands.Handlers
 
         public async Task HandleAsync(AddInitEventCommand command)
         {
-            var session = _sessionFactory.Create();
-            var initEvent = new InitEvent
-            {
-                ServerId = command.ServerId,
-                EndedAt = command.EndedAt
-            };
+            using var session = _sessionFactory.Create();
+            var initEvent = new InitEvent(command.ServerId, command.EndedAt);
             await session.AddAsync(initEvent);
         }
     }

@@ -5,8 +5,8 @@ namespace Watchman.DomainModel.Settings.Commands
 {
     public class AddInitEventCommand : ICommand
     {
-        public ulong ServerId { get; set; }
-        public DateTime EndedAt { get; set; }
+        public ulong ServerId { get; private set; }
+        public DateTime EndedAt { get; private set; }
 
         public AddInitEventCommand(ulong serverId, DateTime endedAt)
         {
