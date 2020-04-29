@@ -1,12 +1,25 @@
-﻿using System;
+﻿using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
+using Devscord.DiscordFramework.Framework.Commands.Properties;
+using Devscord.DiscordFramework.Framework.Commands.PropertyAttributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Devscord.DiscordFramework.Framework.Commands
 {
     public class BotCommandsService
     {
+        private readonly Regex exTime = new Regex(@"\d+(h|m|s)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private readonly Regex exMention = new Regex(@"<@&?\d+>", RegexOptions.Compiled);
+        private readonly BotCommandPropertyConversionService botCommandPropertyConversionService;
+
+        public BotCommandsService(BotCommandPropertyConversionService botCommandPropertyConversionService)
+        {
+            this.botCommandPropertyConversionService = botCommandPropertyConversionService;
+        }
+
         public string RenderTextTemplate(BotCommandTemplate template)
         {
             var output = new StringBuilder();
@@ -18,12 +31,47 @@ namespace Devscord.DiscordFramework.Framework.Commands
             return output.ToString();
         }
 
-        public BotCommandTemplate GetCommandTemplate(IBotCommand command)
+        public BotCommandTemplate GetCommandTemplate(Type commandType)
         {
-            var type = command.GetType();
-            var properties = this.GetBotCommandProperties(type);
-            var template = new BotCommandTemplate(type.Name, properties);
+            var properties = this.GetBotCommandProperties(commandType);
+            var template = new BotCommandTemplate(commandType.Name, properties);
             return template;
+        }
+
+        public bool IsMatchedWithCommand(DiscordRequest request, BotCommandTemplate template)
+        {
+            if (!request.IsCommandForBot)
+            {
+                return false;
+            }
+            if (request.Name.ToLowerInvariant() != template.NormalizedCommandName)
+            {
+                return false;
+            }
+            if(!this.CompareArgumentsToProperties(request.Arguments.ToList(), template.Properties.ToList()))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public T ParseRequestToCommand<T>(DiscordRequest request, BotCommandTemplate template) where T : IBotCommand
+        {
+            return (T) this.ParseRequestToCommand(typeof(T), request, template);
+        }
+
+        public IBotCommand ParseRequestToCommand(Type commandType, DiscordRequest request, BotCommandTemplate template)
+        {
+            var instance = Activator.CreateInstance(commandType);
+            foreach (var property in commandType.GetProperties())
+            {
+                var value = request.Arguments.First(x => x.Name.ToLowerInvariant() == property.Name.ToLowerInvariant()).Value;
+                var propertyType = template.Properties.First(x => x.Name == property.Name).Type;
+                var convertedType = this.botCommandPropertyConversionService.ConvertType(value, propertyType);
+                property.SetValue(instance, convertedType);
+            }
+            return (IBotCommand) instance;
         }
 
         private IEnumerable<BotCommandProperty> GetBotCommandProperties(Type commandType)
@@ -38,73 +86,46 @@ namespace Devscord.DiscordFramework.Framework.Commands
                 yield return new BotCommandProperty(name, type);
             }
         }
-    }
 
-    public class BotCommandValidator
-    {
-
-    }
-
-    public class BotCommandTemplate
-    {
-        public string CommandName { get; private set; }
-        public IEnumerable<BotCommandProperty> Properties { get; private set; }
-
-        public BotCommandTemplate(string commandName, IEnumerable<BotCommandProperty> properties)
+        private bool CompareArgumentsToProperties(List<DiscordRequestArgument> arguments, List<BotCommandProperty> properties)
         {
-            CommandName = commandName;
-            Properties = properties;
+            if (arguments.Count != properties.Count)
+            {
+                return false;
+            }
+            foreach (var argument in arguments)
+            {
+                var anyIsmatched = properties.Any(property => argument.Name.ToLowerInvariant() == property.Name.ToLowerInvariant() && IsMatchedPropertyType(argument.Value, property.Type));
+                if(!anyIsmatched)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
-    }
 
-    public class BotCommandProperty
-    {
-        public string Name { get; private set; }
-        public BotCommandPropertyType Type { get; private set; }
-
-        public BotCommandProperty(string name, BotCommandPropertyType type)
+        private bool IsMatchedPropertyType(string value, BotCommandPropertyType type)
         {
-            Name = name;
-            Type = type;
+            if(type == BotCommandPropertyType.Number && !int.TryParse(value, out _))
+            {
+                return false;
+            }
+            else if (type == BotCommandPropertyType.Time && !exTime.IsMatch(value))
+            {
+                return false;
+            }
+            else if (type == BotCommandPropertyType.UserMention || type == BotCommandPropertyType.ChannelMention && !exMention.IsMatch(value))
+            {
+                return false;
+            }
+            else if (type == BotCommandPropertyType.SingleWord && value.Contains(' '))
+            {
+                return false;
+            }
+
+            return true;
         }
-    }
 
-    public enum BotCommandPropertyType
-    {
-        SingleWord = 0x1,
-        Text = 0x2,
-        Number = 0x4,
-        Time = 0x8,
-        UserMention = 0x16,
-        ChannelMention = 0x32
-    }
-
-    [AttributeUsage(AttributeTargets.Property)]
-    public abstract class CommandPropertyAttribute : Attribute
-    {
-    }
-    
-    public class SingleWord : CommandPropertyAttribute
-    {
-    }
-
-    public class Text : CommandPropertyAttribute
-    {
-    }
-
-    public class Number : CommandPropertyAttribute
-    {
-    }
-
-    public class Time : CommandPropertyAttribute
-    {
-    }
-
-    public class UserMention : CommandPropertyAttribute
-    {
-    }
-
-    public class ChannelMention : CommandPropertyAttribute
-    {
+        
     }
 }
