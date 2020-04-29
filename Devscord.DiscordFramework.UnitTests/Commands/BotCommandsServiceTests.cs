@@ -28,6 +28,21 @@ namespace Devscord.DiscordFramework.UnitTests.Commands
             Assert.That(template.Properties.Count(x => x.Type == BotCommandPropertyType.UserMention), Is.EqualTo(1));
             Assert.That(template.Properties.Count(x => x.Type == BotCommandPropertyType.Time), Is.EqualTo(0));
         }
+
+        [Test]
+        public void ShouldRenderTemplateCorrect()
+        {
+            //Arrange
+            var command = new SmallTestCommand();
+            var service = new BotCommandsService();
+
+            //Act
+            var template = service.GetCommandTemplate(command);
+            var rendered = service.RenderTextTemplate(template);
+
+            //Assert
+            Assert.That(rendered, Is.EqualTo(@"{{prefix}}[[SmallTestCommand]] {{prefix}}[[TestNumber]] ((Number)) {{prefix}}[[TestUser]] ((UserMention))"));
+        }
     }
 
     public class TestCommand : IBotCommand
@@ -36,6 +51,14 @@ namespace Devscord.DiscordFramework.UnitTests.Commands
         public string TestText { get; set; }
         public string TestSingleWord { get; set; }
         public string TestWithoutAtribute { get; set; }
+        [Number]
+        public string TestNumber { get; set; }
+        [UserMention]
+        public string TestUser { get; set; }
+    }
+
+    public class SmallTestCommand : IBotCommand
+    {
         [Number]
         public string TestNumber { get; set; }
         [UserMention]
