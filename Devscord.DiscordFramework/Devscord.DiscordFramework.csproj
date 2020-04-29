@@ -43,4 +43,8 @@
       <LastGenOutput>Responses.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Framework\Commands\PropertyAttributes\" />
+  </ItemGroup>
 </Project>

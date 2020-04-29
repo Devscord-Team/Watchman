@@ -31,11 +31,18 @@ namespace Devscord.DiscordFramework.Framework.Commands
             foreach (var commandProperty in commandType.GetProperties())
             {
                 var name = commandProperty.Name;
-                var attribute = commandProperty.GetCustomAttributes(typeof(CommandPropertyAttribute), true).Select(x => x as CommandPropertyAttribute).FirstOrDefault() ?? new SingleWord();
+                var attribute = commandProperty.GetCustomAttributes(typeof(CommandPropertyAttribute), true)
+                    .Select(x => x as CommandPropertyAttribute)
+                    .FirstOrDefault() ?? new SingleWord();
                 var type = (BotCommandPropertyType) Enum.Parse(typeof(BotCommandPropertyType), attribute.GetType().Name);
                 yield return new BotCommandProperty(name, type);
             }
         }
+    }
+
+    public class BotCommandValidator
+    {
+
     }
 
     public class BotCommandTemplate
