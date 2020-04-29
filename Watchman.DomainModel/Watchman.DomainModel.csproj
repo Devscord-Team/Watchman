@@ -6,8 +6,6 @@
 
   <ItemGroup>
     <Folder Include="Help\Commands\" />
-    <Folder Include="Settings\Commands\Handlers\" />
-    <Folder Include="Settings\Queries\Handlers\" />
   </ItemGroup>
 
   <ItemGroup>
