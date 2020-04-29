@@ -12,6 +12,7 @@ using Devscord.DiscordFramework.Middlewares.Factories;
 using System.Collections.Generic;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Discord.Rest;
+using Devscord.DiscordFramework.Framework.Commands;
 
 namespace Devscord.DiscordFramework
 {
@@ -29,7 +30,7 @@ namespace Devscord.DiscordFramework
 
         internal Workflow(Assembly botAssembly, IComponentContext context)
         {
-            this._controllersService = new ControllersService(context, botAssembly);
+            this._controllersService = new ControllersService(context, botAssembly, context.Resolve<BotCommandsService>());
         }
 
         internal Workflow AddMiddleware<T>()
