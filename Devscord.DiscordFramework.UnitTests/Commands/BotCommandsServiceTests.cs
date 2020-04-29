@@ -41,7 +41,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands
             var rendered = service.RenderTextTemplate(template);
 
             //Assert
-            Assert.That(rendered, Is.EqualTo(@"{{prefix}}[[SmallTestCommand]] {{prefix}}[[TestNumber]] ((Number)) {{prefix}}[[TestUser]] ((UserMention))"));
+            Assert.That(rendered, Is.EqualTo("{{prefix}}[[SmallTestCommand]] {{prefix}}[[TestNumber]] ((Number)) {{prefix}}[[TestUser]] ((UserMention))"));
         }
     }
 
