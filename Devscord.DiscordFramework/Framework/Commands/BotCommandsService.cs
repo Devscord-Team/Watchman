@@ -7,7 +7,18 @@ namespace Devscord.DiscordFramework.Framework.Commands
 {
     public class BotCommandsService
     {
-        public BotCommandTemplate GetDefaultCommandTemplate(IBotCommand command)
+        public string RenderTextTemplate(BotCommandTemplate template)
+        {
+            var output = new StringBuilder();
+            output.Append($"{{{{prefix}}}}[[{template.CommandName}]]");
+            foreach (var commandProperty in template.Properties)
+            {
+                output.Append($" {{{{prefix}}}}[[{commandProperty.Name}]] (({Enum.GetName(typeof(BotCommandPropertyType), commandProperty.Type)}))");
+            }
+            return output.ToString();
+        }
+
+        public BotCommandTemplate GetCommandTemplate(IBotCommand command)
         {
             var type = command.GetType();
             var properties = this.GetBotCommandProperties(type);
