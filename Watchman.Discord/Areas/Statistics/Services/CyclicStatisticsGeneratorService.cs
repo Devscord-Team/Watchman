@@ -49,13 +49,14 @@ namespace Watchman.Discord.Areas.Statistics.Services
             return Task.CompletedTask;
         }
 
-        public async Task GenerateStatsForDaysBefore(DiscordServerContext server)
+        public async Task GenerateStatsForDaysBefore(DiscordServerContext server, DateTime? lastInitDate)
         {
             var dayStatisticsQuery = new GetServerDayStatisticsQuery(server.Id);
             var allServerDaysStatistics = (await _queryBus.ExecuteAsync(dayStatisticsQuery)).ServerDayStatistics.ToList();
+            var startDate = lastInitDate ?? DateTime.UnixEpoch;
             var messagesQuery = new GetMessagesQuery(server.Id)
             {
-                SentDate = new TimeRange(DateTime.UnixEpoch, DateTime.Today) // it will exclude today - it should generate today's stats tomorrow
+                SentDate = new TimeRange(startDate, DateTime.Today) // it will exclude today - it should generate today's stats tomorrow
             };
             var messages = _queryBus.Execute(messagesQuery).Messages;
 
