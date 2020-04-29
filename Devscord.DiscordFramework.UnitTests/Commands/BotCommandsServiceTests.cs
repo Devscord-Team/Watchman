@@ -16,7 +16,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands
         public void ShouldGenerateDefaultCommandTemplateBasedOnModel()
         {
             //Arrange
-            var service = new BotCommandsService();
+            var service = new BotCommandsService(null);
 
             //Act
             var template = service.GetCommandTemplate(typeof(TestCommand));
@@ -34,8 +34,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands
         public void ShouldRenderTemplateCorrect()
         {
             //Arrange
-            var command = new SmallTestCommand();
-            var service = new BotCommandsService();
+            var service = new BotCommandsService(null);
 
             //Act
             var template = service.GetCommandTemplate(typeof(SmallTestCommand));
