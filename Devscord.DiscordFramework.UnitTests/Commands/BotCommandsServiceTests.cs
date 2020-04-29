@@ -52,7 +52,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands
         public string TestSingleWord { get; set; }
         public string TestWithoutAtribute { get; set; }
         [Number]
-        public string TestNumber { get; set; }
+        public int TestNumber { get; set; }
         [UserMention]
         public string TestUser { get; set; }
     }
