@@ -93,28 +93,54 @@ namespace Watchman.Discord.Areas.Administration.Controllers
                 throw new NotEnoughArgumentsException();
             }
 
-            var roleName = args[0].Value;
-            var toSetAsSafe = args[1].Value == "safe";
-
-            var serverRole = _usersRolesService.GetRoleByName(roleName, contexts.Server);
-            if (serverRole == null)
+            if (args.GroupBy(x => x.Value)
+                .Select(x => x.First()).Count() != args.Length)
             {
-                throw new RoleNotFoundException(roleName);
+                throw new ArgsAreDuplicatedException();
             }
 
-            if (toSetAsSafe)
+            var lastArg = args[args.Length - 1].Value;
+
+            if (lastArg.ToLower() != "safe"
+                && lastArg.ToLower() != "unsafe")
             {
-                var command = new SetRoleAsSafeCommand(roleName, contexts.Server.Id);
-                await _commandBus.ExecuteAsync(command);
-            }
-            else
-            {
-                var command = new SetRoleAsUnsafeCommand(roleName, contexts.Server.Id);
-                await _commandBus.ExecuteAsync(command);
+                throw new NotEnoughArgumentsException();
             }
 
-            var messagesService = _messagesServiceFactory.Create(contexts);
-            await messagesService.SendResponse(x => x.RoleSettingsChanged(roleName), contexts);
+            for (int i = 0; i < args.Length - 1; i++)
+            {
+                var roleName = args[i].Value;
+                var serverRole = _usersRolesService.GetRoleByName(roleName, contexts.Server);
+
+                if (serverRole == null)
+                {
+                    throw new RoleNotFoundException(roleName);
+                }
+            }
+
+            for (int i = 0; i < args.Length - 1; i++)
+            {
+                    var roleName = args[i].Value;
+
+                    if (lastArg.ToLower() == "safe")
+                    {
+                        await _commandBus.ExecuteAsync(
+                            new SetRoleAsSafeCommand(roleName, contexts.Server.Id)
+                            );
+                    }
+                    else
+                    {
+                        await _commandBus.ExecuteAsync(
+                            new SetRoleAsUnsafeCommand(roleName, contexts.Server.Id)
+                            );
+                    }
+            }
+
+            var messageService = _messagesServiceFactory.Create(contexts);
+            string msg = string.Join(", ",
+                args.Select(x => x.Value).Reverse()
+                .Skip(1).Reverse()) + " have been set as " + lastArg.ToLower();
+            await messageService.SendMessage(msg);
         }
     }
 }

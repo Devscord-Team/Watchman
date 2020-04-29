@@ -173,5 +173,10 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("TimeNotSpecified");
         }
+
+        public static string ArgsAreDuplicated(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("ArgsAreDuplicated");
+        }
     }
 }

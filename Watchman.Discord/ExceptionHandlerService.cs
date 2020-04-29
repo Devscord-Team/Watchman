@@ -55,6 +55,9 @@ namespace Watchman.Discord
                 case TimeNotSpecifiedException _:
                     messagesService.SendResponse(x => x.TimeNotSpecified(), contexts);
                     break;
+                case ArgsAreDuplicatedException _:
+                    messagesService.SendResponse(x => x.ArgsAreDuplicated(), contexts);
+                    break;
                 default:
                     messagesService.SendMessage("Wystąpił nieznany wyjątek");
                     break;

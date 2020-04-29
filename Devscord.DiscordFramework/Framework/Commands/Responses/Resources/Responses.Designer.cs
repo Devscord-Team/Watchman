@@ -61,6 +61,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Podane argumenty są zduplikowane..
+        /// </summary>
+        public static string ArgsAreDuplicated {
+            get {
+                return ResourceManager.GetString("ArgsAreDuplicated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dostępne role: {{roles}}.
         /// </summary>
         public static string AvailableSafeRoles {
