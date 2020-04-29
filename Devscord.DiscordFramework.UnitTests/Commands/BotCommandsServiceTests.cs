@@ -1,4 +1,6 @@
 ﻿using Devscord.DiscordFramework.Framework.Commands;
+using Devscord.DiscordFramework.Framework.Commands.Properties;
+using Devscord.DiscordFramework.Framework.Commands.PropertyAttributes;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -14,11 +16,10 @@ namespace Devscord.DiscordFramework.UnitTests.Commands
         public void ShouldGenerateDefaultCommandTemplateBasedOnModel()
         {
             //Arrange
-            var command = new TestCommand();
             var service = new BotCommandsService();
 
             //Act
-            var template = service.GetCommandTemplate(command);
+            var template = service.GetCommandTemplate(typeof(TestCommand));
 
             //Assert
             Assert.That(template.CommandName, Is.EqualTo("TestCommand"));
@@ -37,7 +38,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands
             var service = new BotCommandsService();
 
             //Act
-            var template = service.GetCommandTemplate(command);
+            var template = service.GetCommandTemplate(typeof(SmallTestCommand));
             var rendered = service.RenderTextTemplate(template);
 
             //Assert
