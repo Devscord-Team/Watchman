@@ -49,7 +49,7 @@ namespace Watchman.Discord.Areas.Initialization.Services
                 lastMessageId = messages.Last().Id;
                 await SaveMessages(messages, channel.Id);
 
-                if (LastMessageIsOlderThanStartTime(messages, startTime.Value))
+                if (this.LastMessageIsOlderThanStartTime(messages, startTime.Value))
                 {
                     break;
                 }
