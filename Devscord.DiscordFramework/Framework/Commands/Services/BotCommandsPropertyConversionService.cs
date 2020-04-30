@@ -2,9 +2,9 @@
 using System;
 using System.Text.RegularExpressions;
 
-namespace Devscord.DiscordFramework.Framework.Commands
+namespace Devscord.DiscordFramework.Framework.Commands.Services
 {
-    public class BotCommandPropertyConversionService
+    public class BotCommandsPropertyConversionService
     {
         private readonly Regex exTime = new Regex(@"(?<Value>\d+)(?<Unit>(h|m|s))", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         private readonly Regex exMention = new Regex(@"<@&?\d+>", RegexOptions.Compiled);
@@ -13,7 +13,7 @@ namespace Devscord.DiscordFramework.Framework.Commands
         {
             return type switch
             {
-                BotCommandPropertyType.Time => this.ToTimeSpan(value),
+                BotCommandPropertyType.Time => ToTimeSpan(value),
                 BotCommandPropertyType.Number => int.Parse(value),//TODO add more types
                 _ => value
             };
