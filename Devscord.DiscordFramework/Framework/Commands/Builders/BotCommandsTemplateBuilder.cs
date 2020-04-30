@@ -18,10 +18,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Builders
 
         private IEnumerable<BotCommandProperty> GetBotCommandProperties(Type commandType)
         {
-            foreach (var commandProperty in commandType.GetProperties())
-            {
-                yield return GetBotCommandProperty(commandProperty);
-            }
+            return commandType.GetProperties().Select(x => this.GetBotCommandProperty(x));
         }
 
         private BotCommandProperty GetBotCommandProperty(PropertyInfo commandProperty)
