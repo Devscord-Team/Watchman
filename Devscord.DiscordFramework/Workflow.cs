@@ -68,8 +68,8 @@ namespace Devscord.DiscordFramework
             Contexts contexts;
             try
             {
-                request = await this.ParseRequest(socketMessage);
-                contexts = await this.GetContexts(socketMessage);
+                request = this.ParseRequest(socketMessage);
+                contexts = this.GetContexts(socketMessage);
             }
             catch (Exception e)
             {
@@ -95,7 +95,7 @@ namespace Devscord.DiscordFramework
             this._stopWatch.Reset();
         }
 
-        private async Task<DiscordRequest> ParseRequest(SocketMessage socketMessage)
+        private DiscordRequest ParseRequest(SocketMessage socketMessage)
         {
             Log.Information("Processing message: {content} from user {user} started", socketMessage.Content, socketMessage.Author);
             var request = _commandParser.Parse(socketMessage.Content, socketMessage.Timestamp.UtcDateTime);
@@ -103,21 +103,21 @@ namespace Devscord.DiscordFramework
             var elapsedParse = this._stopWatch.ElapsedMilliseconds;
             Log.Information("Parsing time: {elapsedParse}ticks", elapsedParse);
 #if DEBUG
-            await socketMessage.Channel.SendMessageAsync($"```Parsing time: {elapsedParse}ticks```");
+            socketMessage.Channel.SendMessageAsync($"```Parsing time: {elapsedParse}ticks```").Wait();
 #endif
             Log.Information("Request parsed");
 
             return request;
         }
 
-        private async Task<Contexts> GetContexts(SocketMessage socketMessage)
+        private Contexts GetContexts(SocketMessage socketMessage)
         {
             this._stopWatch.Restart();
             var contexts = this._middlewaresService.RunMiddlewares(socketMessage);
             var elapsedMiddlewares = this._stopWatch.ElapsedTicks;
             Log.Information("Middlewares time: {elapsedMiddlewares}ticks", elapsedMiddlewares);
 #if DEBUG
-            await socketMessage.Channel.SendMessageAsync($"```Middlewares time: {elapsedMiddlewares}ticks```");
+            socketMessage.Channel.SendMessageAsync($"```Middlewares time: {elapsedMiddlewares}ticks```").Wait();
 #endif
             Log.Information("Contexts created");
             return contexts;
