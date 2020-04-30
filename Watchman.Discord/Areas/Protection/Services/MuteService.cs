@@ -1,5 +1,4 @@
-﻿#nullable enable
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Commons.Exceptions;
@@ -37,10 +36,9 @@ namespace Watchman.Discord.Areas.Protection.Services
         public async Task MuteUserOrOverwrite(Contexts contexts, MuteEvent muteEvent, UserContext userToMute)
         {
             var possiblePreviousUserMuteEvent = GetNotUnmutedUserMuteEvent(contexts.Server, userToMute);
-            var isAnyMuteEventToOverwrite = possiblePreviousUserMuteEvent != null;
             var shouldJustMuteAgainTheSameMuteEvent = possiblePreviousUserMuteEvent?.Id == muteEvent.Id;
 
-            if (isAnyMuteEventToOverwrite && !shouldJustMuteAgainTheSameMuteEvent)
+            if (possiblePreviousUserMuteEvent != null && !shouldJustMuteAgainTheSameMuteEvent)
             {
                 var markAsUnmuted = new MarkMuteEventAsUnmutedCommand(possiblePreviousUserMuteEvent.Id);
                 await _commandBus.ExecuteAsync(markAsUnmuted);
@@ -79,7 +77,7 @@ namespace Watchman.Discord.Areas.Protection.Services
             }
         }
 
-        private MuteEvent? GetNotUnmutedUserMuteEvent(DiscordServerContext server, UserContext userContext)
+        private MuteEvent GetNotUnmutedUserMuteEvent(DiscordServerContext server, UserContext userContext)
         {
             var userMuteEvents = GetMuteEvents(server, userContext.Id);
             // in the same time there should exists only one MUTED MuteEvent per user per server
@@ -109,7 +107,7 @@ namespace Watchman.Discord.Areas.Protection.Services
             Log.Information("User {user} has been muted on server {server}", userToMute.ToString(), server.Name);
         }
 
-        private MuteEvent? GetNotUnmutedEvent(IEnumerable<MuteEvent> userMuteEvents)
+        private MuteEvent GetNotUnmutedEvent(IEnumerable<MuteEvent> userMuteEvents)
         {
             return userMuteEvents.FirstOrDefault(x => x.Unmuted == false);
         }

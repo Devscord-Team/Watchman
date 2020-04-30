@@ -31,7 +31,6 @@ namespace Watchman.IoC.Modules
                 var asm = stack.Pop();
 
                 builder.RegisterAssemblyTypes(asm)
-                    .Where(x => x.Name.EndsWith("Service") || x.Name.EndsWith("Factory"))
                     .PreserveExistingDefaults()
                     .InstancePerLifetimeScope();
 
