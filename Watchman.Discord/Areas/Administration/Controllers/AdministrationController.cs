@@ -15,6 +15,8 @@ using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Discord.Areas.Commons;
 using Watchman.DomainModel.DiscordServer.Commands;
+using Watchman.DomainModel.Responses.Commands;
+using Watchman.DomainModel.Responses.Queries;
 
 namespace Watchman.Discord.Areas.Administration.Controllers
 {
@@ -115,6 +117,49 @@ namespace Watchman.Discord.Areas.Administration.Controllers
 
             var messagesService = _messagesServiceFactory.Create(contexts);
             await messagesService.SendResponse(x => x.RoleSettingsChanged(roleName), contexts);
+        }
+
+        [AdminCommand]
+        [DiscordCommand("add response")]
+        public async Task AddResponse(DiscordRequest request, Contexts contexts)
+        {
+            var messageService = _messagesServiceFactory.Create(contexts);
+            var onEvent = request.Arguments.FirstOrDefault(x => x.Name?.ToLowerInvariant() == "onevent")?.Value;
+            var message = request.Arguments.FirstOrDefault(x => x.Name?.ToLowerInvariant() == "message")?.Value;
+
+            if (onEvent == null || message == null)
+            {
+                await messageService.SendMessage("Nieprawidłowe argumenty");
+                return;
+            }
+
+            var query = new GetResponseQuery(onEvent);
+
+            var queryResult = await this._queryBus.ExecuteAsync(query);
+            var response = queryResult.Response;
+
+            if (response == null)
+            {
+                await messageService.SendResponse(x => x.ResponseNotFound(onEvent), contexts);
+                return;
+            }
+
+            var queryResultForThisServer =
+                await this._queryBus.ExecuteAsync(new GetResponseQuery(onEvent, contexts.Server.Id));
+            var responseForThisServer = queryResultForThisServer.Response;
+
+            if (responseForThisServer != null)
+            {
+                await messageService.SendResponse(x => x.ResponseAlreadyExists(onEvent), contexts);
+                return;
+            }
+
+            var addResponse = new DomainModel.Responses.Response(onEvent, message, contexts.Server.Id);
+
+            var command = new AddResponseCommand(addResponse);
+            await this._commandBus.ExecuteAsync(command);
+
+            await messageService.SendResponse(x => x.ResponseHasBeenAdded(onEvent), contexts);
         }
     }
 }

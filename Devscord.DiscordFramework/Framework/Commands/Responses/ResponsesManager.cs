@@ -17,19 +17,19 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("RoleRemovedFromUser", contexts,
                 new KeyValuePair<string, string>("role", role));
-        }        
-        
+        }
+
         public static string RoleNotFoundInUser(this ResponsesService responsesService, Contexts contexts, string role)
         {
             return responsesService.ProcessResponse("RoleNotFoundInUser", contexts,
                 new KeyValuePair<string, string>("role", role));
-        }        
-        
+        }
+
         public static string RoleNotFoundOrIsNotSafe(this ResponsesService responsesService, Contexts contexts, string role)
         {
             return responsesService.ProcessResponse("RoleNotFoundOrIsNotSafe", contexts,
                 new KeyValuePair<string, string>("role", role));
-        }        
+        }
 
         public static string RoleIsInUserAlready(this ResponsesService responsesService, Contexts contexts, string role)
         {
@@ -51,10 +51,10 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("SpamAlertUserIsMuted", contexts);
         }
-        
+
         public static string NewUserArrived(this ResponsesService responsesService, Contexts contexts)
         {
-            return responsesService.ProcessResponse("NewUserArrived", 
+            return responsesService.ProcessResponse("NewUserArrived",
                 new KeyValuePair<string, string>("user", contexts.User.Mention),
                 new KeyValuePair<string, string>("server", contexts.Server.Name));
         }
@@ -73,23 +73,23 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         public static string UserDidntMentionAnyUser(this ResponsesService responsesService)
         {
             return responsesService.ProcessResponse("UserDidntMentionAnyUser");
-        }  
-        
+        }
+
         public static string UserNotFound(this ResponsesService responsesService, string userMention)
         {
-            return responsesService.ProcessResponse("UserNotFound", 
+            return responsesService.ProcessResponse("UserNotFound",
                 new KeyValuePair<string, string>("user", userMention));
         }
 
         public static string RoleNotFound(this ResponsesService responsesService, string roleName)
         {
-            return responsesService.ProcessResponse("RoleNotFound", 
+            return responsesService.ProcessResponse("RoleNotFound",
                 new KeyValuePair<string, string>("role", roleName));
         }
 
         public static string MutedUser(this ResponsesService responsesService, UserContext mutedUser, DateTime timeEnd)
         {
-            return responsesService.ProcessResponse("MutedUser", 
+            return responsesService.ProcessResponse("MutedUser",
                 new KeyValuePair<string, string>("user", mutedUser.Name),
                 new KeyValuePair<string, string>("timeEnd", timeEnd.ToString("dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture)));
         }
@@ -103,7 +103,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         public static string UnmutedUserForUser(this ResponsesService responsesService, UserContext unmutedUser, DiscordServerContext server)
         {
             return responsesService.ProcessResponse("UnmutedUserForUser",
-                new KeyValuePair<string, string>("user", unmutedUser.Name), 
+                new KeyValuePair<string, string>("user", unmutedUser.Name),
                 new KeyValuePair<string, string>("server", server.Name));
         }
 
@@ -124,13 +124,13 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
 
         public static string UserDoesntHaveAvatar(this ResponsesService responsesService, UserContext user)
         {
-            return responsesService.ProcessResponse("UserDoesntHaveAvatar", 
+            return responsesService.ProcessResponse("UserDoesntHaveAvatar",
                 new KeyValuePair<string, string>("user", user.Mention));
         }
 
         public static string UserDidntWriteAnyMessageInThisTime(this ResponsesService responsesService, UserContext user)
         {
-            return responsesService.ProcessResponse("UserDidntWriteAnyMessageInThisTime", 
+            return responsesService.ProcessResponse("UserDidntWriteAnyMessageInThisTime",
                 new KeyValuePair<string, string>("user", user.Name));
         }
 
@@ -143,7 +143,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
 
         public static string NumberOfMessagesIsHuge(this ResponsesService responsesService, int numberOfMessages)
         {
-            return responsesService.ProcessResponse("NumberOfMessagesIsHuge", 
+            return responsesService.ProcessResponse("NumberOfMessagesIsHuge",
                 new KeyValuePair<string, string>("messagesCount", numberOfMessages.ToString()));
         }
 
@@ -172,6 +172,24 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         public static string TimeNotSpecified(this ResponsesService responsesService)
         {
             return responsesService.ProcessResponse("TimeNotSpecified");
+        }
+
+        public static string ResponseAlreadyExists(this ResponsesService responsesService, string onEvent)
+        {
+            return responsesService.ProcessResponse("ResponseAlreadyExists",
+                new KeyValuePair<string, string>("onEvent", onEvent));
+        }
+
+        public static string ResponseHasBeenAdded(this ResponsesService responsesService, string onEvent)
+        {
+            return responsesService.ProcessResponse("ResponseHasBeenAdded",
+                new KeyValuePair<string, string>("onEvent", onEvent));
+        }
+
+        public static string ResponseNotFound(this ResponsesService responsesService, string onEvent)
+        {
+            return responsesService.ProcessResponse("ResponseNotFound",
+                new KeyValuePair<string, string>("onEvent", onEvent));
         }
     }
 }

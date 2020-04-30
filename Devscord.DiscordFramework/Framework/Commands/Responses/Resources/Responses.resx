@@ -138,6 +138,15 @@
   <data name="ReadingHistoryDone" xml:space="preserve">
     <value>Zakończono wczytywanie historii wiadomości.</value>
   </data>
+  <data name="ResponseAlreadyExists" xml:space="preserve">
+    <value>Odpowiedź {{onEvent}} już istnieje dla serwera {{server}}.</value>
+  </data>
+  <data name="ResponseHasBeenAdded" xml:space="preserve">
+    <value>Odpowiedź {{onEvent}} została dodana dla serwera {{server}}.</value>
+  </data>
+  <data name="ResponseNotFound" xml:space="preserve">
+    <value>Nie znaleziono odpowiedzi {{onEvent}}.</value>
+  </data>
   <data name="RoleAddedToUser" xml:space="preserve">
     <value>Dodano role: {{role}} użytkownikowi {{user}}</value>
   </data>

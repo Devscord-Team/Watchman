@@ -36,21 +36,14 @@ namespace Watchman.Discord.Areas.Initialization.Services
             await AddNewResponses(responsesToAdd);
         }
 
-        public async Task InitServerResponses(DiscordServerContext server)
-        {
-            var responsesInBase = GetResponsesFromBase().ToList();
-            var defaultResponses = responsesInBase
-                .Where(x => x.ServerId == DEFAULT_SERVER_ID);
-            var serverResponses = responsesInBase
-                .Where(x => x.ServerId == server.Id);
+        //public async Task InitServerResponses(DiscordServerContext server)
+        //{
+        //    var responsesInBase = GetResponsesFromBase().ToList();
+        //    var defaultResponses = responsesInBase
+        //        .Where(x => x.ServerId == DEFAULT_SERVER_ID);
 
-            var responsesToAdd = defaultResponses
-                .Where(def => serverResponses.All(ser => ser.OnEvent != def.OnEvent))
-                .Select(def => new Response(def.OnEvent, def.Message, server.Id)) // creating new entities to avoid Guid conflict
-                .ToList();
-
-            await AddNewResponses(responsesToAdd);
-        }
+        //    await AddNewResponses(defaultResponses.ToList());
+        //}
 
         private IEnumerable<Response> GetResponsesFromBase()
         {
