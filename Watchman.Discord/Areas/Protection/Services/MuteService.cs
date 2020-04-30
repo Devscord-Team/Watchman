@@ -107,7 +107,7 @@ namespace Watchman.Discord.Areas.Protection.Services
             Log.Information("User {user} has been muted on server {server}", userToMute.ToString(), server.Name);
         }
 
-        private MuteEvent? GetNotUnmutedEvent(IEnumerable<MuteEvent> userMuteEvents)
+        private MuteEvent GetNotUnmutedEvent(IEnumerable<MuteEvent> userMuteEvents)
         {
             return userMuteEvents.FirstOrDefault(x => x.Unmuted == false);
         }
