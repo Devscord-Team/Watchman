@@ -24,7 +24,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Builders
         private BotCommandProperty GetBotCommandProperty(PropertyInfo commandProperty)
         {
             var name = commandProperty.Name;
-            var attributes = commandProperty.GetCustomAttributes(typeof(CommandPropertyAttribute), true).Select(x => x as CommandPropertyAttribute);
+            var attributes = commandProperty.GetCustomAttributes(typeof(CommandPropertyAttribute), inherit: true).Select(x => x as CommandPropertyAttribute);
             var attribute = attributes.FirstOrDefault(x => !(x is Optional)) ?? new SingleWord();
             var type = (BotCommandPropertyType)Enum.Parse(typeof(BotCommandPropertyType), attribute.GetType().Name);
             var isOptional = attributes.Any(x => x is Optional);
