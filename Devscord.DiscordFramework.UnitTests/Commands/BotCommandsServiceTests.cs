@@ -40,7 +40,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands
             var renderingService = new BotCommandsTemplateRenderingService();
 
             //Act
-            var template = templateBuilder.GetCommandTemplate(typeof(SmallTestCommand));
+            var template = templateBuilder.GetCommandTemplate(typeof(SmallTestCommand)); //tested in ShouldGenerateDefaultCommandTemplateBasedOnModel()
             var rendered = renderingService.RenderTextTemplate(template);
 
             //Assert
