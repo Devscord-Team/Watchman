@@ -13,7 +13,13 @@ namespace Watchman.Discord.Areas.Commons
             {
                 var responsesInBase = queryBus.Execute(new GetResponsesQuery()).Responses;
                 var serverResponses = responsesInBase.Where(x => x.ServerId == contexts.Server.Id);
-                var mapped = serverResponses.Select(x => new Response
+
+                var overridedOnEvents = serverResponses.Select(x => x.OnEvent).ToList();
+
+                var responsesNotOverridedByServer = responsesInBase.Where(x => !overridedOnEvents.Contains(x.OnEvent)).ToList();
+                responsesNotOverridedByServer.AddRange(serverResponses);
+
+                var mapped = responsesNotOverridedByServer.Select(x => new Response
                 {
                     OnEvent = x.OnEvent,
                     Message = x.Message

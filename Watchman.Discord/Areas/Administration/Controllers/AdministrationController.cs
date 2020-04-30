@@ -140,7 +140,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
 
             if (response == null)
             {
-                await messageService.SendResponse(x => x.ResponseNotFound(onEvent), contexts);
+                await messageService.SendResponse(x => x.ResponseNotFound(contexts, onEvent), contexts);
                 return;
             }
 
@@ -150,7 +150,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
 
             if (responseForThisServer != null)
             {
-                await messageService.SendResponse(x => x.ResponseAlreadyExists(onEvent), contexts);
+                await messageService.SendResponse(x => x.ResponseAlreadyExists(contexts, onEvent), contexts);
                 return;
             }
 
@@ -159,7 +159,46 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             var command = new AddResponseCommand(addResponse);
             await this._commandBus.ExecuteAsync(command);
 
-            await messageService.SendResponse(x => x.ResponseHasBeenAdded(onEvent), contexts);
+            await messageService.SendResponse(x => x.ResponseHasBeenAdded(contexts, onEvent), contexts);
+        }
+
+        [AdminCommand]
+        [DiscordCommand("update response")]
+        public async Task UpdateResponse(DiscordRequest request, Contexts contexts)
+        {
+            var messageService = _messagesServiceFactory.Create(contexts);
+            var onEvent = request.Arguments.FirstOrDefault(x => x.Name?.ToLowerInvariant() == "onevent")?.Value;
+            var message = request.Arguments.FirstOrDefault(x => x.Name?.ToLowerInvariant() == "message")?.Value;
+
+            if (onEvent == null || message == null)
+            {
+                await messageService.SendResponse(x => x.NotEnoughArguments(), contexts);
+                return;
+            }
+
+            var query = new GetResponseQuery(onEvent);
+
+            var queryResult = await this._queryBus.ExecuteAsync(query);
+            var response = queryResult.Response;
+
+            if (response == null)
+            {
+                await messageService.SendResponse(x => x.ResponseNotFound(contexts, onEvent), contexts);
+                return;
+            }
+
+            var queryResultForThisServer =
+                await this._queryBus.ExecuteAsync(new GetResponseQuery(onEvent, contexts.Server.Id));
+            var responseForThisServer = queryResultForThisServer.Response;
+
+            var command = new UpdateResponseCommand(responseForThisServer.Id, message);
+            await this._commandBus.ExecuteAsync(command);
+
+            await messageService.SendResponse(x => x.ResponseHasBeenUpdated(contexts,
+                    onEvent,
+                responseForThisServer.Message,
+                message),
+                contexts);
         }
     }
 }

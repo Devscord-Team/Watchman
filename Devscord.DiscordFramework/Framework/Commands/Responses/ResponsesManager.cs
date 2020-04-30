@@ -174,22 +174,32 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             return responsesService.ProcessResponse("TimeNotSpecified");
         }
 
-        public static string ResponseAlreadyExists(this ResponsesService responsesService, string onEvent)
+        public static string ResponseAlreadyExists(this ResponsesService responsesService, Contexts contexts, string onEvent)
         {
-            return responsesService.ProcessResponse("ResponseAlreadyExists",
+            return responsesService.ProcessResponse("ResponseAlreadyExists", contexts,
                 new KeyValuePair<string, string>("onEvent", onEvent));
         }
 
-        public static string ResponseHasBeenAdded(this ResponsesService responsesService, string onEvent)
+        public static string ResponseHasBeenAdded(this ResponsesService responsesService, Contexts contexts, string onEvent)
         {
-            return responsesService.ProcessResponse("ResponseHasBeenAdded",
+            return responsesService.ProcessResponse("ResponseHasBeenAdded", contexts,
                 new KeyValuePair<string, string>("onEvent", onEvent));
         }
 
-        public static string ResponseNotFound(this ResponsesService responsesService, string onEvent)
+        public static string ResponseNotFound(this ResponsesService responsesService, Contexts contexts, string onEvent)
         {
-            return responsesService.ProcessResponse("ResponseNotFound",
+            return responsesService.ProcessResponse("ResponseNotFound", contexts,
                 new KeyValuePair<string, string>("onEvent", onEvent));
+        }
+
+        public static string ResponseHasBeenUpdated(this ResponsesService responsesService, Contexts contexts, string onEvent,
+            string oldMessage,
+            string newMessage)
+        {
+            return responsesService.ProcessResponse("ResponseHasBeenUpdated", contexts,
+                new KeyValuePair<string, string>("onEvent", onEvent),
+                new KeyValuePair<string, string>("oldMessage", oldMessage),
+                new KeyValuePair<string, string>("newMessage", newMessage));
         }
     }
 }

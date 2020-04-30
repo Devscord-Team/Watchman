@@ -144,6 +144,9 @@
   <data name="ResponseHasBeenAdded" xml:space="preserve">
     <value>Odpowiedź {{onEvent}} została dodana dla serwera {{server}}.</value>
   </data>
+  <data name="ResponseHasBeenUpdated" xml:space="preserve">
+    <value>Odpowiedź {{onEvent}} została zaktualizowana dla serwera {{server}}.\nStara odpowiedź: {{oldMessage}}.\nNowa odpowiedź: {{newMessage}}.</value>
+  </data>
   <data name="ResponseNotFound" xml:space="preserve">
     <value>Nie znaleziono odpowiedzi {{onEvent}}.</value>
   </data>

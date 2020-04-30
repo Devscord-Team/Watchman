@@ -18,7 +18,7 @@ namespace Watchman.DomainModel.Responses.Queries.Handlers
         public GetResponseQueryResult Handle(GetResponseQuery query)
         {
             using var session = _sessionFactory.Create();
-            var response = session.Get<Response>().FirstOrDefault(x => x.ServerId == query.ServerId && x.OnEvent.ToLowerInvariant() == query.OnEvent.ToLowerInvariant());
+            var response = session.Get<Response>().FirstOrDefault(x => x.ServerId == query.ServerId && x.OnEvent == query.OnEvent);
             return new GetResponseQueryResult(response);
         }
     }
