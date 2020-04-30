@@ -114,6 +114,11 @@ namespace Devscord.DiscordFramework
                 {
                     foreach (var method in controllerInfo.Methods)
                     {
+                        if(!IsValid(contexts, method))
+                        {
+                            continue;
+                        }
+
                         var commandInParameterType = method.GetParameters().First(x => typeof(IBotCommand).IsAssignableFrom(x.ParameterType)).ParameterType;
                         var template = this._botCommandsService.GetCommandTemplate(commandInParameterType);
                         if(!this._botCommandsService.IsMatchedWithCommand(request, template))

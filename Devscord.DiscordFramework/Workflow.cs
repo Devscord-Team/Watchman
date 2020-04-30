@@ -58,7 +58,6 @@ namespace Devscord.DiscordFramework
 
         private async void MessageReceived(SocketMessage socketMessage)
         {
-            
             if (ShouldIgnoreMessage(socketMessage))
             {
                 return;
