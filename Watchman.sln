@@ -25,7 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{C8965E11
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Watchman.DomainModel.UnitTests", "Watchman.DomainModel.UnitTests\Watchman.DomainModel.UnitTests.csproj", "{74200B98-8DCB-4D8A-A34C-EC81CF0FF171}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watchman.IoC", "Watchman.IoC\Watchman.IoC.csproj", "{C81832C3-4D66-47C5-99D7-8963F7BDC297}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Watchman.IoC", "Watchman.IoC\Watchman.IoC.csproj", "{C81832C3-4D66-47C5-99D7-8963F7BDC297}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
