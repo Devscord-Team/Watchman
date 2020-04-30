@@ -12,7 +12,8 @@ using Devscord.DiscordFramework.Middlewares.Factories;
 using System.Collections.Generic;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Discord.Rest;
-using Devscord.DiscordFramework.Framework.Commands;
+using System.Diagnostics;
+using Devscord.DiscordFramework.Framework.Commands.Services;
 
 namespace Devscord.DiscordFramework
 {
@@ -21,6 +22,7 @@ namespace Devscord.DiscordFramework
         private readonly CommandParser _commandParser = new CommandParser();
         private readonly MiddlewaresService _middlewaresService = new MiddlewaresService();
         private readonly ControllersService _controllersService;
+        private readonly Stopwatch _stopWatch = new Stopwatch();
 
         public List<Func<Task>> OnReady { get; set; } = new List<Func<Task>>();
         public List<Func<Contexts, Task>> OnUserJoined { get; set; } = new List<Func<Contexts, Task>>();
@@ -56,6 +58,7 @@ namespace Devscord.DiscordFramework
 
         private async void MessageReceived(SocketMessage socketMessage)
         {
+            
             if (ShouldIgnoreMessage(socketMessage))
             {
                 return;
@@ -65,18 +68,14 @@ namespace Devscord.DiscordFramework
             Contexts contexts;
             try
             {
-                Log.Information("Processing message: {content} from user {user} started", socketMessage.Content, socketMessage.Author);
-                request = _commandParser.Parse(socketMessage.Content, socketMessage.Timestamp.UtcDateTime);
-                Log.Information("Request parsed");
-                contexts = this._middlewaresService.RunMiddlewares(socketMessage);
-                Log.Information("Contexts created");
+                request = await this.ParseRequest(socketMessage);
+                contexts = await this.GetContexts(socketMessage);
             }
             catch (Exception e)
             {
                 Log.Error(e, e.StackTrace);
                 return;
             }
-
             try
             {
                 Log.Information("Starting controllers");
@@ -87,6 +86,41 @@ namespace Devscord.DiscordFramework
                 Log.Error(e, e.StackTrace);
                 OnWorkflowException.ForEach(x => x.Invoke(e, contexts));
             }
+            var elapsedRun = this._stopWatch.ElapsedTicks;
+            Log.Information("_controllersService.Run time {elapsedRun}ticks", elapsedRun);
+#if DEBUG
+            await socketMessage.Channel.SendMessageAsync($"```Run time: {elapsedRun}ticks```");
+#endif
+            this._stopWatch.Stop();
+            this._stopWatch.Reset();
+        }
+
+        private async Task<DiscordRequest> ParseRequest(SocketMessage socketMessage)
+        {
+            Log.Information("Processing message: {content} from user {user} started", socketMessage.Content, socketMessage.Author);
+            var request = _commandParser.Parse(socketMessage.Content, socketMessage.Timestamp.UtcDateTime);
+            this._stopWatch.Restart();
+            var elapsedParse = this._stopWatch.ElapsedMilliseconds;
+            Log.Information("Parsing time: {elapsedParse}ticks", elapsedParse);
+#if DEBUG
+            await socketMessage.Channel.SendMessageAsync($"```Parsing time: {elapsedParse}ticks```");
+#endif
+            Log.Information("Request parsed");
+
+            return request;
+        }
+
+        private async Task<Contexts> GetContexts(SocketMessage socketMessage)
+        {
+            this._stopWatch.Restart();
+            var contexts = this._middlewaresService.RunMiddlewares(socketMessage);
+            var elapsedMiddlewares = this._stopWatch.ElapsedTicks;
+            Log.Information("Middlewares time: {elapsedMiddlewares}ticks", elapsedMiddlewares);
+#if DEBUG
+            await socketMessage.Channel.SendMessageAsync($"```Middlewares time: {elapsedMiddlewares}ticks```");
+#endif
+            Log.Information("Contexts created");
+            return contexts;
         }
 
         private bool ShouldIgnoreMessage(SocketMessage socketMessage)
