@@ -1,4 +1,5 @@
 ﻿using Devscord.DiscordFramework.Framework.Commands;
+using Devscord.DiscordFramework.Framework.Commands.Builders;
 using Devscord.DiscordFramework.Framework.Commands.Properties;
 using Devscord.DiscordFramework.Framework.Commands.PropertyAttributes;
 using Devscord.DiscordFramework.Framework.Commands.Services;
@@ -17,7 +18,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands
         public void ShouldGenerateDefaultCommandTemplateBasedOnModel()
         {
             //Arrange
-            var service = new BotCommandsService(null);
+            var service = new BotCommandsTemplateBuilder();
 
             //Act
             var template = service.GetCommandTemplate(typeof(TestCommand));
@@ -35,11 +36,12 @@ namespace Devscord.DiscordFramework.UnitTests.Commands
         public void ShouldRenderTemplateCorrect()
         {
             //Arrange
-            var service = new BotCommandsService(null);
+            var templateBuilder = new BotCommandsTemplateBuilder();
+            var renderingService = new BotCommandsTemplateRenderingService();
 
             //Act
-            var template = service.GetCommandTemplate(typeof(SmallTestCommand));
-            var rendered = service.RenderTextTemplate(template);
+            var template = templateBuilder.GetCommandTemplate(typeof(SmallTestCommand));
+            var rendered = renderingService.RenderTextTemplate(template);
 
             //Assert
             Assert.That(rendered, Is.EqualTo("{{prefix}}[[SmallTestCommand]] {{prefix}}[[TestNumber]] ((Number)) {{prefix}}[[TestUser]] ((UserMention))<<optional>>"));
