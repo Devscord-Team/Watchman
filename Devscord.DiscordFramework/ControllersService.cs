@@ -4,6 +4,7 @@ using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
+using Devscord.DiscordFramework.Framework.Commands.Services;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Serilog;
 using Serilog.Context;

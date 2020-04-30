@@ -10,9 +10,12 @@ namespace Watchman.Discord.Areas.UselessFeatures.BotCommands
     {
         [Text]
         public string Message { get; set; }
+        
         [Number]
         public int Times { get; set; }
+
         [Time]
+        [Optional]
         public TimeSpan Delay { get; set; }
     }
 }

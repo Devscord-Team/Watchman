@@ -32,7 +32,6 @@ namespace Watchman.Discord.Areas.UselessFeatures.Controllers
             for (int i = 0; i < command.Times; i++)
             {
                 await messagesService.SendMessage(command.Message);
-                await Task.Delay(Convert.ToInt32(command.Delay.TotalMilliseconds));
             }
         }
     }
