@@ -34,17 +34,11 @@ namespace Watchman.Discord.Areas.Initialization.Services
 
         public async Task InitServer(DiscordServerContext server)
         {
-            await ResponsesInit(server);
             await MuteRoleInit(server);
             var lastInitDate = GetLastInitDate(server);
             await ReadServerMessagesHistory(server, lastInitDate);
             await _cyclicStatisticsGeneratorService.GenerateStatsForDaysBefore(server, lastInitDate);
             await NotifyDomainAboutInit(server);
-        }
-
-        private async Task ResponsesInit(DiscordServerContext server)
-        {
-            await _responsesInitService.InitServerResponses(server);
         }
 
         private async Task MuteRoleInit(DiscordServerContext server)
