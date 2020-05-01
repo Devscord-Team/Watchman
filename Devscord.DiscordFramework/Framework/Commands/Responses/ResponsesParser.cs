@@ -16,7 +16,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 var group = match.Groups[param.Key];
                 message = message.Replace(group.Value, param.Value);
             }
-            return message;
+            return message.Replace(@"\n", "\n").Replace(@"\r","\r");
         }
     }
 }

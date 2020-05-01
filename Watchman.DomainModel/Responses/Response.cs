@@ -25,7 +25,7 @@ namespace Watchman.DomainModel.Responses
             this.Update();
         }
 
-        public void SetMessage(string message, ulong serverId = 0)
+        public void SetMessage(string message)
         {
             if (message == this.Message)
             {

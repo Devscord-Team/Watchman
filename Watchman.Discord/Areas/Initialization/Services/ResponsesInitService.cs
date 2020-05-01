@@ -36,22 +36,6 @@ namespace Watchman.Discord.Areas.Initialization.Services
             await AddNewResponses(responsesToAdd);
         }
 
-        public async Task InitServerResponses(DiscordServerContext server)
-        {
-            var responsesInBase = GetResponsesFromBase().ToList();
-            var defaultResponses = responsesInBase
-                .Where(x => x.ServerId == DEFAULT_SERVER_ID);
-            var serverResponses = responsesInBase
-                .Where(x => x.ServerId == server.Id);
-
-            var responsesToAdd = defaultResponses
-                .Where(def => serverResponses.All(ser => ser.OnEvent != def.OnEvent))
-                .Select(def => new Response(def.OnEvent, def.Message, server.Id)) // creating new entities to avoid Guid conflict
-                .ToList();
-
-            await AddNewResponses(responsesToAdd);
-        }
-
         private IEnumerable<Response> GetResponsesFromBase()
         {
             var query = new GetResponsesQuery();
@@ -61,7 +45,7 @@ namespace Watchman.Discord.Areas.Initialization.Services
 
         private IEnumerable<Response> GetResponsesFromResources()
         {
-            var defaultResponses = typeof(Responses).GetProperties()
+            var defaultResponses = typeof(Devscord.DiscordFramework.Framework.Commands.Responses.Resources.Responses).GetProperties()
                 .Where(x => x.PropertyType.Name == "String")
                 .Select(prop =>
                 {
