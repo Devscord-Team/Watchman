@@ -45,7 +45,7 @@ namespace Watchman.Discord.Areas.Initialization.Services
 
         private IEnumerable<Response> GetResponsesFromResources()
         {
-            var defaultResponses = typeof(Responses).GetProperties()
+            var defaultResponses = typeof(Devscord.DiscordFramework.Framework.Commands.Responses.Resources.Responses).GetProperties()
                 .Where(x => x.PropertyType.Name == "String")
                 .Select(prop =>
                 {
