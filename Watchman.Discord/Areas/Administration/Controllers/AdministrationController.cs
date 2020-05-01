@@ -15,8 +15,6 @@ using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Discord.Areas.Commons;
 using Watchman.DomainModel.DiscordServer.Commands;
-using Watchman.DomainModel.Responses.Commands;
-using Watchman.DomainModel.Responses.Queries;
 
 namespace Watchman.Discord.Areas.Administration.Controllers
 {

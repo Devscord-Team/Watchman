@@ -51,7 +51,6 @@ namespace Watchman.Discord.Areas.Responses.Controllers
             }
 
             var response = await _responsesService.GetResponseByOnEvent(onEvent);
-
             if (response == null)
             {
                 await messageService.SendResponse(x => x.ResponseNotFound(contexts, onEvent), contexts);
@@ -59,16 +58,13 @@ namespace Watchman.Discord.Areas.Responses.Controllers
             }
 
             var responseForThisServer = await _responsesService.GetResponseByOnEvent(onEvent, contexts.Server.Id);
-
             if (responseForThisServer != null)
             {
                 await messageService.SendResponse(x => x.ResponseAlreadyExists(contexts, onEvent), contexts);
                 return;
             }
 
-            var addResponse = new DomainModel.Responses.Response(onEvent, message, contexts.Server.Id);
-            var command = new AddResponseCommand(addResponse);
-            await this._commandBus.ExecuteAsync(command);
+            await _responsesService.AddResponse(onEvent, message, contexts.Server.Id);
             await messageService.SendResponse(x => x.ResponseHasBeenAdded(contexts, onEvent), contexts);
         }
 
@@ -87,19 +83,14 @@ namespace Watchman.Discord.Areas.Responses.Controllers
             }
 
             var response = await _responsesService.GetResponseByOnEvent(onEvent, contexts.Server.Id);
-
             if (response == null)
             {
                 await messageService.SendResponse(x => x.ResponseNotFound(contexts, onEvent), contexts);
                 return;
             }
 
-            var command = new UpdateResponseCommand(response.Id, message);
-            await this._commandBus.ExecuteAsync(command);
-            await messageService.SendResponse(x => x.ResponseHasBeenUpdated(contexts, onEvent,
-                    response.Message,
-                    message),
-                contexts);
+            await _responsesService.UpdateResponse(response.Id, message);
+            await messageService.SendResponse(x => x.ResponseHasBeenUpdated(contexts, onEvent, response.Message, message), contexts);
         }
 
         [AdminCommand]
@@ -116,15 +107,13 @@ namespace Watchman.Discord.Areas.Responses.Controllers
             }
 
             var response = await _responsesService.GetResponseByOnEvent(onEvent, contexts.Server.Id);
-
             if (response == null)
             {
                 await messageService.SendResponse(x => x.ResponseNotFound(contexts, onEvent), contexts);
                 return;
             }
 
-            var command = new RemoveResponseCommand(onEvent, contexts.Server.Id);
-            await this._commandBus.ExecuteAsync(command);
+            await _responsesService.RemoveResponse(onEvent, contexts.Server.Id);
             await messageService.SendResponse(x => x.ResponseHasBeenRemoved(contexts, onEvent), contexts);
         }
     }
