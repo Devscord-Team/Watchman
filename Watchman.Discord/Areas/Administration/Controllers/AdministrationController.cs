@@ -129,7 +129,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
 
             if (onEvent == null || message == null)
             {
-                await messageService.SendMessage("Nieprawidłowe argumenty");
+                await messageService.SendResponse(x => x.NotEnoughArguments(), contexts);
                 return;
             }
 
