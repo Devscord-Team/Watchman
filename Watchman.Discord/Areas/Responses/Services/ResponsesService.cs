@@ -23,7 +23,6 @@ namespace Watchman.Discord.Areas.Responses.Services
             var query = new GetResponseQuery(onEvent, serverId);
             var queryResult = await this._queryBus.ExecuteAsync(query);
             var response = queryResult.Response;
-
             return response;
         }
 
