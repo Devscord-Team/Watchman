@@ -17,8 +17,7 @@ namespace Watchman.DomainModel.Responses.Commands.Handlers
         {
             using var session = _sessionFactory.Create();
             var onEvent = session.Get<Response>()
-                .Where(x => x.ServerId == command.ServerId)
-                .FirstOrDefault(x => x.OnEvent == command.OnEvent);
+                .FirstOrDefault(x => x.ServerId == command.ServerId && x.OnEvent == command.OnEvent);
 
             if (onEvent == null)
             {

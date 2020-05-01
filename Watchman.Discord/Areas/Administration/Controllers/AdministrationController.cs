@@ -134,7 +134,6 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             }
 
             var query = new GetResponseQuery(onEvent);
-
             var queryResult = await this._queryBus.ExecuteAsync(query);
             var response = queryResult.Response;
 
@@ -144,8 +143,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
                 return;
             }
 
-            var queryResultForThisServer =
-                await this._queryBus.ExecuteAsync(new GetResponseQuery(onEvent, contexts.Server.Id));
+            var queryResultForThisServer = await this._queryBus.ExecuteAsync(new GetResponseQuery(onEvent, contexts.Server.Id));
             var responseForThisServer = queryResultForThisServer.Response;
 
             if (responseForThisServer != null)
@@ -155,10 +153,8 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             }
 
             var addResponse = new DomainModel.Responses.Response(onEvent, message, contexts.Server.Id);
-
             var command = new AddResponseCommand(addResponse);
             await this._commandBus.ExecuteAsync(command);
-
             await messageService.SendResponse(x => x.ResponseHasBeenAdded(contexts, onEvent), contexts);
         }
 
@@ -177,7 +173,6 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             }
 
             var query = new GetResponseQuery(onEvent, contexts.Server.Id);
-
             var queryResult = await this._queryBus.ExecuteAsync(query);
             var response = queryResult.Response;
 
@@ -187,15 +182,12 @@ namespace Watchman.Discord.Areas.Administration.Controllers
                 return;
             }
 
-            var queryResultForThisServer =
-                await this._queryBus.ExecuteAsync(new GetResponseQuery(onEvent, contexts.Server.Id));
+            var queryResultForThisServer = await this._queryBus.ExecuteAsync(new GetResponseQuery(onEvent, contexts.Server.Id));
             var responseForThisServer = queryResultForThisServer.Response;
-
             var command = new UpdateResponseCommand(responseForThisServer.Id, message);
             await this._commandBus.ExecuteAsync(command);
 
-            await messageService.SendResponse(x => x.ResponseHasBeenUpdated(contexts,
-                    onEvent,
+            await messageService.SendResponse(x => x.ResponseHasBeenUpdated(contexts, onEvent,
                 responseForThisServer.Message,
                 message),
                 contexts);
@@ -224,14 +216,9 @@ namespace Watchman.Discord.Areas.Administration.Controllers
                 return;
             }
 
-            var queryResultForThisServer =
-                await this._queryBus.ExecuteAsync(new GetResponseQuery(onEvent, contexts.Server.Id));
-            var responseForThisServer = queryResultForThisServer.Response;
-
             var command = new RemoveResponseCommand(onEvent, contexts.Server.Id);
             await this._commandBus.ExecuteAsync(command);
-
-            await messageService.SendResponse(x=>x.ResponseHasBeenRemoved(contexts, onEvent), contexts);
+            await messageService.SendResponse(x => x.ResponseHasBeenRemoved(contexts, onEvent), contexts);
         }
     }
 }

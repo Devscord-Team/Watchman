@@ -36,15 +36,6 @@ namespace Watchman.Discord.Areas.Initialization.Services
             await AddNewResponses(responsesToAdd);
         }
 
-        //public async Task InitServerResponses(DiscordServerContext server)
-        //{
-        //    var responsesInBase = GetResponsesFromBase().ToList();
-        //    var defaultResponses = responsesInBase
-        //        .Where(x => x.ServerId == DEFAULT_SERVER_ID);
-
-        //    await AddNewResponses(defaultResponses.ToList());
-        //}
-
         private IEnumerable<Response> GetResponsesFromBase()
         {
             var query = new GetResponsesQuery();

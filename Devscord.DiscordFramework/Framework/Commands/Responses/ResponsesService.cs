@@ -30,7 +30,6 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
 
         public Response GetResponse(string name)
         {
-            var res = Responses.SingleOrDefault(x => x.OnEvent == name);
             return Responses.SingleOrDefault(x => x.OnEvent == name);
         }
 
