@@ -124,7 +124,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Odpowiedź {{onEvent}} już istnieje dla serwera {{server}}..
+        ///   Looks up a localized string similar to Odpowiedź `{{onEvent}}` już istnieje dla serwera **{{server}}**..
         /// </summary>
         public static string ResponseAlreadyExists {
             get {
@@ -133,7 +133,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Odpowiedź {{onEvent}} została dodana dla serwera {{server}}..
+        ///   Looks up a localized string similar to Odpowiedź `{{onEvent}}` została dodana dla serwera **{{server}}**..
         /// </summary>
         public static string ResponseHasBeenAdded {
             get {
@@ -142,7 +142,16 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Odpowiedź {{onEvent}} została zaktualizowana dla serwera {{server}}.\nStara odpowiedź: {{oldMessage}}.\nNowa odpowiedź: {{newMessage}}..
+        ///   Looks up a localized string similar to Odpowiedź `{{onEvent}}` została usunięta dla serwera **{{server}}**..
+        /// </summary>
+        public static string ResponseHasBeenRemoved {
+            get {
+                return ResourceManager.GetString("ResponseHasBeenRemoved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Odpowiedź `{{onEvent}}` została zaktualizowana dla serwera **{{server}}**.\nStara odpowiedź: *{{oldMessage}}*.\nNowa odpowiedź: *{{newMessage}}*..
         /// </summary>
         public static string ResponseHasBeenUpdated {
             get {
@@ -151,7 +160,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Nie znaleziono odpowiedzi {{onEvent}}..
+        ///   Looks up a localized string similar to Odpowiedź `{{onEvent}}` nie została odnaleziona dla serwera **{{server}}**..
         /// </summary>
         public static string ResponseNotFound {
             get {

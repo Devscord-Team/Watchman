@@ -139,16 +139,19 @@
     <value>Zakończono wczytywanie historii wiadomości.</value>
   </data>
   <data name="ResponseAlreadyExists" xml:space="preserve">
-    <value>Odpowiedź {{onEvent}} już istnieje dla serwera {{server}}.</value>
+    <value>Odpowiedź `{{onEvent}}` już istnieje dla serwera **{{server}}**.</value>
   </data>
   <data name="ResponseHasBeenAdded" xml:space="preserve">
-    <value>Odpowiedź {{onEvent}} została dodana dla serwera {{server}}.</value>
+    <value>Odpowiedź `{{onEvent}}` została dodana dla serwera **{{server}}**.</value>
+  </data>
+  <data name="ResponseHasBeenRemoved" xml:space="preserve">
+    <value>Odpowiedź `{{onEvent}}` została usunięta dla serwera **{{server}}**.</value>
   </data>
   <data name="ResponseHasBeenUpdated" xml:space="preserve">
-    <value>Odpowiedź {{onEvent}} została zaktualizowana dla serwera {{server}}.\nStara odpowiedź: {{oldMessage}}.\nNowa odpowiedź: {{newMessage}}.</value>
+    <value>Odpowiedź `{{onEvent}}` została zaktualizowana dla serwera **{{server}}**.\nStara odpowiedź: *{{oldMessage}}*.\nNowa odpowiedź: *{{newMessage}}*.</value>
   </data>
   <data name="ResponseNotFound" xml:space="preserve">
-    <value>Nie znaleziono odpowiedzi {{onEvent}}.</value>
+    <value>Odpowiedź `{{onEvent}}` nie została odnaleziona dla serwera **{{server}}**.</value>
   </data>
   <data name="RoleAddedToUser" xml:space="preserve">
     <value>Dodano role: {{role}} użytkownikowi {{user}}</value>

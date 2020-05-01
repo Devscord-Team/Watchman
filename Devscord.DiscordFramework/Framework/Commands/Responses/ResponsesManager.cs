@@ -201,5 +201,11 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("oldMessage", oldMessage),
                 new KeyValuePair<string, string>("newMessage", newMessage));
         }
+
+        public static string ResponseHasBeenRemoved(this ResponsesService responsesService, Contexts contexts, string onEvent)
+        {
+            return responsesService.ProcessResponse("ResponseHasBeenRemoved", contexts,
+                new KeyValuePair<string, string>("onEvent", onEvent));
+        }
     }
 }

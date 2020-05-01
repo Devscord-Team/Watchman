@@ -25,24 +25,13 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
 
         public void RefreshResponses(Contexts contexts)
         {
-            try
-            {
-                this.Responses = this.GetResponsesFunc(contexts);
-            }
-            catch { }
+            this.Responses = this.GetResponsesFunc(contexts);
         }
 
         public Response GetResponse(string name)
         {
-            try
-            {
-                var res = Responses.SingleOrDefault(x => x.OnEvent == name);
+            var res = Responses.SingleOrDefault(x => x.OnEvent == name);
             return Responses.SingleOrDefault(x => x.OnEvent == name);
-            }
-            catch { }
-
-
-            return new Response();
         }
 
         public string ProcessResponse(string response, params KeyValuePair<string, string>[] values)
@@ -57,16 +46,11 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
 
         public string ProcessResponse(Response response, params KeyValuePair<string, string>[] values)
         {
-            try
-            {
-
-            if(values.Length != response.GetFields().Count())
+            if (values.Length != response.GetFields().Count())
             {
                 throw new ArgumentException($"Cannot process response {response.OnEvent}. Values must be equal to required.");
             }
             Log.Debug($"Start parsing response {response} with values {values}");
-            }
-            catch { }
             return _parser.Parse(response, values);
         }
 

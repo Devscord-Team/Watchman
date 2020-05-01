@@ -200,5 +200,38 @@ namespace Watchman.Discord.Areas.Administration.Controllers
                 message),
                 contexts);
         }
+
+        [AdminCommand]
+        [DiscordCommand("remove response")]
+        public async Task RemoveResponse(DiscordRequest request, Contexts contexts)
+        {
+            var messageService = _messagesServiceFactory.Create(contexts);
+            var onEvent = request.Arguments.FirstOrDefault(x => x.Name?.ToLowerInvariant() == "onevent")?.Value;
+
+            if (onEvent == null)
+            {
+                await messageService.SendResponse(x => x.NotEnoughArguments(), contexts);
+                return;
+            }
+
+            var query = new GetResponseQuery(onEvent, contexts.Server.Id);
+            var queryResult = await this._queryBus.ExecuteAsync(query);
+            var response = queryResult.Response;
+
+            if (response == null)
+            {
+                await messageService.SendResponse(x => x.ResponseNotFound(contexts, onEvent), contexts);
+                return;
+            }
+
+            var queryResultForThisServer =
+                await this._queryBus.ExecuteAsync(new GetResponseQuery(onEvent, contexts.Server.Id));
+            var responseForThisServer = queryResultForThisServer.Response;
+
+            var command = new RemoveResponseCommand(onEvent, contexts.Server.Id);
+            await this._commandBus.ExecuteAsync(command);
+
+            await messageService.SendResponse(x=>x.ResponseHasBeenRemoved(contexts, onEvent), contexts);
+        }
     }
 }
