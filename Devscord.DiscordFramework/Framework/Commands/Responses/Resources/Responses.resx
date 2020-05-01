@@ -147,6 +147,12 @@
   <data name="RoleIsInUserAlready" xml:space="preserve">
     <value>Użytkownik {{user}} posiada już role {{role}}</value>
   </data>
+  <data name="RoleIsSafeAlready" xml:space="preserve">
+    <value>Rola "{{role}}" już jest ustawiona jako bezpieczna.</value>
+  </data>
+  <data name="RoleIsUnsafeAlready" xml:space="preserve">
+    <value>Rola "{{role}}" już jest ustawiona jako niebezpieczna.</value>
+  </data>
   <data name="RoleNotFound" xml:space="preserve">
     <value>Nie znaleziono roli {{role}}.</value>
   </data>

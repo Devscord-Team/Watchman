@@ -15,6 +15,7 @@ using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Discord.Areas.Commons;
 using Watchman.DomainModel.DiscordServer.Commands;
+using Watchman.DomainModel.DiscordServer.Queries;
 
 namespace Watchman.Discord.Areas.Administration.Controllers
 {
@@ -107,34 +108,49 @@ namespace Watchman.Discord.Areas.Administration.Controllers
                 throw new NotEnoughArgumentsException();
             }
 
-            for (int i = 0; i < args.Length - 1; i++)
+            var isSafe = lastArg.ToLower() == "safe" ? true : false;
+
+            var safeRoles = this._queryBus.Execute(new GetDiscordServerSafeRolesQuery(contexts.Server.Id)).SafeRoles;
+            var argRoleNames = args.Select(x => x.Value).SkipLast(1).ToList();
+
+            argRoleNames.ForEach(roleNameToCheck =>
             {
-                var roleName = args[i].Value;
-                var serverRole = _usersRolesService.GetRoleByName(roleName, contexts.Server);
+                var serverRole = _usersRolesService.GetRoleByName(roleNameToCheck, contexts.Server);
 
                 if (serverRole == null)
                 {
-                    throw new RoleNotFoundException(roleName);
+                    throw new RoleNotFoundException(roleNameToCheck);
                 }
-            }
 
-            for (int i = 0; i < args.Length - 1; i++)
+                if (isSafe 
+                    && safeRoles.Select(obj => obj.Name)
+                    .Where(x => x == roleNameToCheck).Select(x => x).Count() != 0)
+                {
+                    throw new RoleIsSafeAlreadyException(roleNameToCheck);
+                }
+                else if (!isSafe
+                    && safeRoles.Select(obj => obj.Name)
+                    .Where(x => x == roleNameToCheck).Select(x => x).Count() == 0)
+                {
+                    throw new RoleIsUnsafeAlreadyException(roleNameToCheck);
+                }
+            });
+
+            argRoleNames.ForEach(roleNameToSet =>
             {
-                    var roleName = args[i].Value;
-
-                    if (lastArg.ToLower() == "safe")
-                    {
-                        await _commandBus.ExecuteAsync(
-                            new SetRoleAsSafeCommand(roleName, contexts.Server.Id)
-                            );
-                    }
-                    else
-                    {
-                        await _commandBus.ExecuteAsync(
-                            new SetRoleAsUnsafeCommand(roleName, contexts.Server.Id)
-                            );
-                    }
-            }
+                if (isSafe)
+                {
+                     _commandBus.ExecuteAsync(
+                        new SetRoleAsSafeCommand(roleNameToSet, contexts.Server.Id)
+                        );
+                }
+                else
+                {
+                    _commandBus.ExecuteAsync(
+                        new SetRoleAsUnsafeCommand(roleNameToSet, contexts.Server.Id)
+                        );
+                }
+            });
 
             var messageService = _messagesServiceFactory.Create(contexts);
             string msg = string.Join(", ",

@@ -178,5 +178,17 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("ArgsAreDuplicated");
         }
+
+        public static string RoleIsSafeAlready(this ResponsesService responsesService, string roleName)
+        {
+            return responsesService.ProcessResponse("RoleIsSafeAlready",
+                new KeyValuePair<string, string>("role", roleName));
+        }
+
+        public static string RoleIsUnsafeAlready(this ResponsesService responsesService, string roleName)
+        {
+            return responsesService.ProcessResponse("RoleIsUnsafeAlready" ,
+                new KeyValuePair<string, string>("role", roleName));
+        }
     }
 }

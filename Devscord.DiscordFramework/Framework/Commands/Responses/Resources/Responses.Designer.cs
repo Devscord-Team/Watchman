@@ -151,6 +151,24 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rola &quot;{{role}}&quot; już jest ustawiona jako bezpieczna..
+        /// </summary>
+        public static string RoleIsSafeAlready {
+            get {
+                return ResourceManager.GetString("RoleIsSafeAlready", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rola &quot;{{role}}&quot; już jest ustawiona jako niebezpieczna..
+        /// </summary>
+        public static string RoleIsUnsafeAlready {
+            get {
+                return ResourceManager.GetString("RoleIsUnsafeAlready", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Nie znaleziono roli {{role}}..
         /// </summary>
         public static string RoleNotFound {

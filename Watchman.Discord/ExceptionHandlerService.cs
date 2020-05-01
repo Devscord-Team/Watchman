@@ -58,6 +58,12 @@ namespace Watchman.Discord
                 case ArgsAreDuplicatedException _:
                     messagesService.SendResponse(x => x.ArgsAreDuplicated(), contexts);
                     break;
+                case RoleIsSafeAlreadyException roleExc:
+                    messagesService.SendResponse(x => x.RoleIsSafeAlready(roleExc.RoleName), contexts);
+                    break;
+                case RoleIsUnsafeAlreadyException roleExc:
+                    messagesService.SendResponse(x => x.RoleIsUnsafeAlready(roleExc.RoleName), contexts);
+                    break;
                 default:
                     messagesService.SendMessage("Wystąpił nieznany wyjątek");
                     break;
