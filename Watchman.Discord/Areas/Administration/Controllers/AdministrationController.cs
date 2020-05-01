@@ -176,7 +176,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
                 return;
             }
 
-            var query = new GetResponseQuery(onEvent);
+            var query = new GetResponseQuery(onEvent, contexts.Server.Id);
 
             var queryResult = await this._queryBus.ExecuteAsync(query);
             var response = queryResult.Response;
