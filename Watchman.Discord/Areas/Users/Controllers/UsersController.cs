@@ -12,6 +12,8 @@ using Watchman.DomainModel.DiscordServer.Queries;
 using Watchman.Discord.Areas.Users.Services;
 using Watchman.DomainModel.DiscordServer;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
+using Devscord.DiscordFramework.Services;
+using Devscord.DiscordFramework.Commons.Exceptions;
 
 namespace Watchman.Discord.Areas.Users.Controllers
 {
@@ -20,12 +22,14 @@ namespace Watchman.Discord.Areas.Users.Controllers
         private readonly IQueryBus _queryBus;
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly RolesService _rolesService;
+        private readonly UsersRolesService _usersRolesService;
 
-        public UsersController(IQueryBus queryBus, MessagesServiceFactory messagesServiceFactory, RolesService rolesService)
+        public UsersController(IQueryBus queryBus, MessagesServiceFactory messagesServiceFactory, RolesService rolesService, UsersRolesService usersRolesService)
         {
             this._queryBus = queryBus;
             this._messagesServiceFactory = messagesServiceFactory;
             this._rolesService = rolesService;
+            this._usersRolesService = usersRolesService;
         }
 
         [DiscordCommand("avatar")]
@@ -44,10 +48,50 @@ namespace Watchman.Discord.Areas.Users.Controllers
         [DiscordCommand("add role")] //todo
         public void AddRole(DiscordRequest request, Contexts contexts)
         {
-            var commandRole = request.OriginalMessage.ToLowerInvariant().Replace("-add role ", string.Empty); //TODO use DiscordRequest properties
-            var safeRoles = this._queryBus.Execute(new GetDiscordServerSafeRolesQuery(contexts.Server.Id)).SafeRoles;
-            var messagesService = _messagesServiceFactory.Create(contexts);
-            _rolesService.AddRoleToUser(safeRoles, messagesService, contexts, commandRole);
+            var args = request.Arguments.Skip(1).ToArray();
+            var rolesToAssign = args.Select(x => x.Value).ToList();
+
+            if (rolesToAssign.Count() < 1)
+            {
+                throw new NotEnoughArgumentsException();
+            }
+
+            if (args.GroupBy(x => x.Value)
+                .Select(x => x.First()).Count() != args.Length)
+            {
+                throw new ArgsAreDuplicatedException();
+            }
+
+            var allRoleNames = _usersRolesService.GetRoles(contexts.Server).ToList().Select(x => x.Name);
+            var safeRoleNames = _queryBus.Execute(new GetDiscordServerSafeRolesQuery(contexts.Server.Id)).SafeRoles.ToList().Select(x => x.Name);
+            var userRoles = contexts.User.Roles.Select(x => x.Name);
+
+            var messageService = _messagesServiceFactory.Create(contexts);
+            bool canBeAssigned = true;
+
+            rolesToAssign.ForEach(roleToCheck =>
+            {
+                if (!allRoleNames.Contains(roleToCheck)
+                || !safeRoleNames.Contains(roleToCheck))
+                {
+                    messageService.SendResponse(x => x.RoleNotFoundOrIsNotSafe(contexts, roleToCheck), contexts);
+                    canBeAssigned = false;
+                }
+                if (userRoles.Contains(roleToCheck))
+                {
+                    messageService.SendResponse(x => x.RoleIsInUserAlready(contexts, roleToCheck), contexts);
+                    canBeAssigned = false;
+                }
+            });
+
+            if (canBeAssigned)
+            {
+                rolesToAssign.ForEach(roleToSet =>
+            {
+                var roleToAssign = new List<Role> { new Role(roleToSet, contexts.Server.Id) };
+                _rolesService.AddRoleToUser(roleToAssign, messageService, contexts, roleToSet);
+            });
+            }
         }
 
         [DiscordCommand("remove role")] //todo

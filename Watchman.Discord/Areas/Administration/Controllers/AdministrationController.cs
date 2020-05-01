@@ -154,8 +154,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
 
             var messageService = _messagesServiceFactory.Create(contexts);
             string msg = string.Join(", ",
-                args.Select(x => x.Value).Reverse()
-                .Skip(1).Reverse()) + " have been set as " + lastArg.ToLower();
+                args.Select(x => x.Value).SkipLast(1)) + " have been set as " + lastArg.ToLower();
             await messageService.SendMessage(msg);
         }
     }
