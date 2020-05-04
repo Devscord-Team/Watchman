@@ -31,6 +31,7 @@ namespace Watchman.IoC.Modules
                 var asm = stack.Pop();
 
                 builder.RegisterAssemblyTypes(asm)
+                    .Where(x => x.FullName.StartsWith("Watchman") || x.FullName.StartsWith("Devscord"))
                     .PreserveExistingDefaults()
                     .InstancePerLifetimeScope();
 
