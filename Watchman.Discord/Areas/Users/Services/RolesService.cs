@@ -28,17 +28,13 @@ namespace Watchman.Discord.Areas.Users.Services
                 if (!allRoleNames.Contains(role) || !safeRoles.Contains(role))
                 {
                     messagesService.SendResponse(x => x.RoleNotFoundOrIsNotSafe(contexts, role), contexts);
-                    return;
+                    continue;
                 }
                 if (userRoles.Contains(role))
                 {
                     messagesService.SendResponse(x => x.RoleIsInUserAlready(contexts, role), contexts);
-                    return;
+                    continue;
                 }
-            }
-
-            foreach (var role in commandRoles)
-            {
                 var serverRole = _usersRolesService.GetRoleByName(role, contexts.Server);
                 _usersService.AddRole(serverRole, contexts.User, contexts.Server).Wait();
                 messagesService.SendResponse(x => x.RoleAddedToUser(contexts, role), contexts);

@@ -87,6 +87,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         [DiscordCommand("set role")]
         public async Task SetRoleAsSafe(DiscordRequest request, Contexts contexts)
         {
+            var messageService = _messagesServiceFactory.Create(contexts);
             var args = request.Arguments.Skip(1).ToList(); // 1 args is string "role", so it's not needed
 
             if (args.Count() < 2)
@@ -99,61 +100,53 @@ namespace Watchman.Discord.Areas.Administration.Controllers
                 throw new ArgumentsDuplicatedException();
             }
 
-            var isSafeArgument = args.Last().Value.ToLower();
+            var lastArgument = args.Last().Value.ToLower();
 
-            if (isSafeArgument != "safe"
-                && isSafeArgument != "unsafe")
+            var argumentIsNotCorrect = lastArgument != "safe" && lastArgument != "unsafe";
+
+            if (argumentIsNotCorrect)
             {
                 throw new NotEnoughArgumentsException();
             }
 
-            var isSafe = isSafeArgument == "safe" ? true : false;
+            var isSafe = lastArgument == "safe" ? true : false;
 
             var safeRoles = this._queryBus.Execute(new GetDiscordServerSafeRolesQuery(contexts.Server.Id)).SafeRoles;
             var argRoleNames = args.Select(x => x.Value).SkipLast(1).ToList();
 
-            foreach (var roleNameToCheck in argRoleNames)
+            foreach (var roleName in argRoleNames)
             {
-                var serverRole = _usersRolesService.GetRoleByName(roleNameToCheck, contexts.Server);
+                var serverRole = _usersRolesService.GetRoleByName(roleName, contexts.Server);
 
                 if (serverRole == null)
                 {
-                    throw new RoleNotFoundException(roleNameToCheck);
+                    await messageService.SendResponse(x => x.RoleNotFoundOrIsNotSafe(contexts, roleName), contexts);
+                    continue;
                 }
 
-                if (isSafe
-                    && safeRoles.Select(obj => obj.Name)
-                    .Where(x => x == roleNameToCheck).Select(x => x).Count() != 0)
+                if (isSafe && !safeRoles.Select(x => x.Name).Where(x => x == roleName).Select(x => x).Any())
                 {
-                    throw new RoleIsSafeAlreadyException(roleNameToCheck);
+                    await messageService.SendResponse(x => x.RoleIsSafeAlready(roleName), contexts);
+                    continue;
                 }
-                else if (!isSafe
-                    && safeRoles.Select(obj => obj.Name)
-                    .Where(x => x == roleNameToCheck).Select(x => x).Count() == 0)
+                else if (!isSafe && !safeRoles.Select(x => x.Name).Where(x => x == roleName).Select(x => x).Any())
                 {
-                    throw new RoleIsUnsafeAlreadyException(roleNameToCheck);
+                    await messageService.SendResponse(x => x.RoleIsUnsafeAlready(roleName), contexts);
+                    continue;
                 }
-            }
 
-            foreach (var roleNameToSet in argRoleNames)
-            {
                 if (isSafe)
                 {
-                     await _commandBus.ExecuteAsync(
-                        new SetRoleAsSafeCommand(roleNameToSet, contexts.Server.Id)
-                        );
+                    await _commandBus.ExecuteAsync(new SetRoleAsSafeCommand(roleName, contexts.Server.Id));
                 }
                 else
                 {
-                    await _commandBus.ExecuteAsync(
-                        new SetRoleAsUnsafeCommand(roleNameToSet, contexts.Server.Id)
-                        );
+                    await _commandBus.ExecuteAsync(new SetRoleAsUnsafeCommand(roleName, contexts.Server.Id));
                 }
-            };
+            }
 
-            var messageService = _messagesServiceFactory.Create(contexts);
             string msg = string.Join(", ",
-                args.Select(x => x.Value).SkipLast(1)) + " have been set as " + isSafeArgument;
+                args.Select(x => x.Value).SkipLast(1)) + " have been set as " + lastArgument;
             await messageService.SendMessage(msg);
         }
     }

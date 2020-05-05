@@ -25,9 +25,9 @@ namespace Devscord.DiscordFramework.Services
             return Server.GetRoles(server.Id).ToList();
         }
 
-        public List<string> GetAllRoleNames(DiscordServerContext server)
+        public IEnumerable<string> GetAllRoleNames(DiscordServerContext server)
         {
-            return Server.GetRoles(server.Id).Select(x => x.Name).ToList();
+            return Server.GetRoles(server.Id).Select(x => x.Name);
         }
     }
 }

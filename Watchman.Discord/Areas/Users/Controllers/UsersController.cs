@@ -49,21 +49,21 @@ namespace Watchman.Discord.Areas.Users.Controllers
         [DiscordCommand("add role")] //todo
         public void AddRole(DiscordRequest request, Contexts contexts)
         {
-            var args = request.Arguments.Skip(1).ToList();
-            var rolesToAssign = args.Select(x => x.Value);
+            var requestArguments = request.Arguments.Skip(1);
+            var rolesToAssign = requestArguments.Select(x => x.Value);
 
-            if (rolesToAssign.Count() < 1)
+            if (!rolesToAssign.Any())
             {
                 throw new NotEnoughArgumentsException();
             }
 
-            if (args.HasDuplicates())
+            if (requestArguments.HasDuplicates())
             {
                 throw new ArgumentsDuplicatedException();
             }
 
-            var safeRoleNames = _queryBus.Execute(new GetDiscordServerSafeRolesQuery(contexts.Server.Id)).SafeRoles
-                .ToList().Select(x => x.Name);
+            var safeRoleNames = _queryBus.Execute(new GetDiscordServerSafeRolesQuery(contexts.Server.Id))
+                .SafeRoles.Select(x => x.Name);
             var messageService = _messagesServiceFactory.Create(contexts);
 
             _rolesService.AddRoleToUser(safeRoleNames, messageService, contexts, rolesToAssign);

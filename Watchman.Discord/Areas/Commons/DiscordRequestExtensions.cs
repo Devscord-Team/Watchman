@@ -34,7 +34,7 @@ namespace Watchman.Discord.Areas.Commons
                 end: discordRequest.SentAt);
         }
 
-        public static bool HasDuplicates(this List<DiscordRequestArgument> requestArguments)
+        public static bool HasDuplicates(this IEnumerable<DiscordRequestArgument> requestArguments)
         {
             return requestArguments.Select(x => x).Count() != requestArguments.Select(x => x.Value).Distinct().Count();
         }
