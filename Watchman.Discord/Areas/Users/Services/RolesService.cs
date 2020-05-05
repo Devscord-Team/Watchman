@@ -18,20 +18,6 @@ namespace Watchman.Discord.Areas.Users.Services
             _usersRolesService = usersRolesService;
         }
 
-#if DEBUG
-        public void AddRoleToUser(MessagesService messagesService, Contexts contexts, string commandRole)
-        {
-            var allRoleNames = _usersRolesService.GetAllRoleNames(contexts.Server);
-
-            if (!allRoleNames.Contains(commandRole))
-            {
-                messagesService.SendResponse(x => x.RoleNotFound(commandRole), contexts);
-            }
-            var serverRole = _usersRolesService.GetRoleByName(commandRole, contexts.Server);
-            _usersService.AddRole(serverRole, contexts.User, contexts.Server).Wait();
-            messagesService.SendResponse(x => x.RoleAddedToUser(contexts, commandRole), contexts);
-        }
-#endif
         public void AddRoleToUser(IEnumerable<string> safeRoles, MessagesService messagesService, Contexts contexts, IEnumerable<string> commandRoles)
         {
             var allRoleNames = _usersRolesService.GetAllRoleNames(contexts.Server);
@@ -51,10 +37,9 @@ namespace Watchman.Discord.Areas.Users.Services
                 }
             }
 
-            UserRole serverRole;
             foreach (var role in commandRoles)
             {
-                serverRole = _usersRolesService.GetRoleByName(role, contexts.Server);
+                var serverRole = _usersRolesService.GetRoleByName(role, contexts.Server);
                 _usersService.AddRole(serverRole, contexts.User, contexts.Server).Wait();
                 messagesService.SendResponse(x => x.RoleAddedToUser(contexts, role), contexts);
             }
