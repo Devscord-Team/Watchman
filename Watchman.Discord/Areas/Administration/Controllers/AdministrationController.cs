@@ -110,9 +110,10 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             }
 
             var isSafe = lastArgument == "safe" ? true : false;
+            var safeRolesQuery = new GetDiscordServerSafeRolesQuery(contexts.Server.Id);
 
-            var safeRoles = this._queryBus.Execute(new GetDiscordServerSafeRolesQuery(contexts.Server.Id)).SafeRoles;
-            var argRoleNames = args.Select(x => x.Value).SkipLast(1).ToList();
+            var safeRoles = this._queryBus.Execute(safeRolesQuery).SafeRoles;
+            var argRoleNames = args.Select(x => x.Value).SkipLast(1);
 
             foreach (var roleName in argRoleNames)
             {
