@@ -174,9 +174,9 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             return responsesService.ProcessResponse("TimeNotSpecified");
         }
 
-        public static string ArgsAreDuplicated(this ResponsesService responsesService)
+        public static string ArgumentsDuplicated(this ResponsesService responsesService)
         {
-            return responsesService.ProcessResponse("ArgsAreDuplicated");
+            return responsesService.ProcessResponse("ArgumentsDuplicated");
         }
 
         public static string RoleIsSafeAlready(this ResponsesService responsesService, string roleName)

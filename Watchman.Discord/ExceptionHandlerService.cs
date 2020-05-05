@@ -55,8 +55,8 @@ namespace Watchman.Discord
                 case TimeNotSpecifiedException _:
                     messagesService.SendResponse(x => x.TimeNotSpecified(), contexts);
                     break;
-                case ArgsAreDuplicatedException _:
-                    messagesService.SendResponse(x => x.ArgsAreDuplicated(), contexts);
+                case ArgumentsDuplicatedException _:
+                    messagesService.SendResponse(x => x.ArgumentsDuplicated(), contexts);
                     break;
                 case RoleIsSafeAlreadyException roleExc:
                     messagesService.SendResponse(x => x.RoleIsSafeAlready(roleExc.RoleName), contexts);

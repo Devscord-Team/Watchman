@@ -27,7 +27,6 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         private readonly DirectMessagesService _directMessagesService;
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly UsersRolesService _usersRolesService;
-
         public AdministrationController(IQueryBus queryBus, ICommandBus commandBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, UsersRolesService usersRolesService)
         {
             this._queryBus = queryBus;
@@ -88,32 +87,32 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         [DiscordCommand("set role")]
         public async Task SetRoleAsSafe(DiscordRequest request, Contexts contexts)
         {
-            var args = request.Arguments.Skip(1).ToArray(); // 1 args is string "role", so it's not needed
-            if (args.Length < 2)
+            var args = request.Arguments.Skip(1).ToList(); // 1 args is string "role", so it's not needed
+
+            if (args.Count() < 2)
             {
                 throw new NotEnoughArgumentsException();
             }
 
-            if (args.GroupBy(x => x.Value)
-                .Select(x => x.First()).Count() != args.Length)
+            if (args.HasDuplicates())
             {
-                throw new ArgsAreDuplicatedException();
+                throw new ArgumentsDuplicatedException();
             }
 
-            var lastArg = args[args.Length - 1].Value;
+            var isSafeArgument = args.Last().Value.ToLower();
 
-            if (lastArg.ToLower() != "safe"
-                && lastArg.ToLower() != "unsafe")
+            if (isSafeArgument != "safe"
+                && isSafeArgument != "unsafe")
             {
                 throw new NotEnoughArgumentsException();
             }
 
-            var isSafe = lastArg.ToLower() == "safe" ? true : false;
+            var isSafe = isSafeArgument == "safe" ? true : false;
 
             var safeRoles = this._queryBus.Execute(new GetDiscordServerSafeRolesQuery(contexts.Server.Id)).SafeRoles;
             var argRoleNames = args.Select(x => x.Value).SkipLast(1).ToList();
 
-            argRoleNames.ForEach(roleNameToCheck =>
+            foreach (var roleNameToCheck in argRoleNames)
             {
                 var serverRole = _usersRolesService.GetRoleByName(roleNameToCheck, contexts.Server);
 
@@ -122,7 +121,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
                     throw new RoleNotFoundException(roleNameToCheck);
                 }
 
-                if (isSafe 
+                if (isSafe
                     && safeRoles.Select(obj => obj.Name)
                     .Where(x => x == roleNameToCheck).Select(x => x).Count() != 0)
                 {
@@ -134,27 +133,27 @@ namespace Watchman.Discord.Areas.Administration.Controllers
                 {
                     throw new RoleIsUnsafeAlreadyException(roleNameToCheck);
                 }
-            });
+            }
 
-            argRoleNames.ForEach(roleNameToSet =>
+            foreach (var roleNameToSet in argRoleNames)
             {
                 if (isSafe)
                 {
-                     _commandBus.ExecuteAsync(
+                     await _commandBus.ExecuteAsync(
                         new SetRoleAsSafeCommand(roleNameToSet, contexts.Server.Id)
                         );
                 }
                 else
                 {
-                    _commandBus.ExecuteAsync(
+                    await _commandBus.ExecuteAsync(
                         new SetRoleAsUnsafeCommand(roleNameToSet, contexts.Server.Id)
                         );
                 }
-            });
+            };
 
             var messageService = _messagesServiceFactory.Create(contexts);
             string msg = string.Join(", ",
-                args.Select(x => x.Value).SkipLast(1)) + " have been set as " + lastArg.ToLower();
+                args.Select(x => x.Value).SkipLast(1)) + " have been set as " + isSafeArgument;
             await messageService.SendMessage(msg);
         }
     }

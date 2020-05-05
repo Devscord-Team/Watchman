@@ -18,22 +18,46 @@ namespace Watchman.Discord.Areas.Users.Services
             _usersRolesService = usersRolesService;
         }
 
-        public void AddRoleToUser(IEnumerable<Role> safeRoles, MessagesService messagesService, Contexts contexts, string commandRole)
+#if DEBUG
+        public void AddRoleToUser(MessagesService messagesService, Contexts contexts, string commandRole)
         {
-            var role = safeRoles.FirstOrDefault(x => x.Name == commandRole);
-            if (role == null)
+            var allRoleNames = _usersRolesService.GetAllRoleNames(contexts.Server);
+
+            if (!allRoleNames.Contains(commandRole))
             {
-                messagesService.SendResponse(x => x.RoleNotFoundOrIsNotSafe(contexts, commandRole), contexts);
-                return;
-            }
-            if (contexts.User.Roles.Any(x => x.Name == role.Name))
-            {
-                messagesService.SendResponse(x => x.RoleIsInUserAlready(contexts, commandRole), contexts);
-                return;
+                messagesService.SendResponse(x => x.RoleNotFound(commandRole), contexts);
             }
             var serverRole = _usersRolesService.GetRoleByName(commandRole, contexts.Server);
             _usersService.AddRole(serverRole, contexts.User, contexts.Server).Wait();
             messagesService.SendResponse(x => x.RoleAddedToUser(contexts, commandRole), contexts);
+        }
+#endif
+        public void AddRoleToUser(IEnumerable<string> safeRoles, MessagesService messagesService, Contexts contexts, IEnumerable<string> commandRoles)
+        {
+            var allRoleNames = _usersRolesService.GetAllRoleNames(contexts.Server);
+            var userRoles = contexts.User.Roles.Select(x => x.Name);
+
+            foreach (var role in commandRoles)
+            {
+                if (!allRoleNames.Contains(role) || !safeRoles.Contains(role))
+                {
+                    messagesService.SendResponse(x => x.RoleNotFoundOrIsNotSafe(contexts, role), contexts);
+                    return;
+                }
+                if (userRoles.Contains(role))
+                {
+                    messagesService.SendResponse(x => x.RoleIsInUserAlready(contexts, role), contexts);
+                    return;
+                }
+            }
+
+            UserRole serverRole;
+            foreach (var role in commandRoles)
+            {
+                serverRole = _usersRolesService.GetRoleByName(role, contexts.Server);
+                _usersService.AddRole(serverRole, contexts.User, contexts.Server).Wait();
+                messagesService.SendResponse(x => x.RoleAddedToUser(contexts, role), contexts);
+            }
         }
 
         public void DeleteRoleFromUser(IEnumerable<Role> safeRoles, MessagesService messagesService, Contexts contexts, string commandRole)

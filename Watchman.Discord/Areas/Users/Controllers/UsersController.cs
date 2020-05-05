@@ -14,6 +14,7 @@ using Watchman.DomainModel.DiscordServer;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Commons.Exceptions;
+using Watchman.Discord.Areas.Commons;
 
 namespace Watchman.Discord.Areas.Users.Controllers
 {
@@ -48,7 +49,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
         [DiscordCommand("add role")] //todo
         public void AddRole(DiscordRequest request, Contexts contexts)
         {
-            var args = request.Arguments.Skip(1).ToArray();
+            var args = request.Arguments.Skip(1).ToList();
             var rolesToAssign = args.Select(x => x.Value).ToList();
 
             if (rolesToAssign.Count() < 1)
@@ -56,42 +57,16 @@ namespace Watchman.Discord.Areas.Users.Controllers
                 throw new NotEnoughArgumentsException();
             }
 
-            if (args.GroupBy(x => x.Value)
-                .Select(x => x.First()).Count() != args.Length)
+            if (args.HasDuplicates())
             {
-                throw new ArgsAreDuplicatedException();
+                throw new ArgumentsDuplicatedException();
             }
 
-            var allRoleNames = _usersRolesService.GetRoles(contexts.Server).ToList().Select(x => x.Name);
-            var safeRoleNames = _queryBus.Execute(new GetDiscordServerSafeRolesQuery(contexts.Server.Id)).SafeRoles.ToList().Select(x => x.Name);
-            var userRoles = contexts.User.Roles.Select(x => x.Name);
-
+            var safeRoleNames = _queryBus.Execute(new GetDiscordServerSafeRolesQuery(contexts.Server.Id)).SafeRoles
+                .ToList().Select(x => x.Name);
             var messageService = _messagesServiceFactory.Create(contexts);
-            bool canBeAssigned = true;
 
-            rolesToAssign.ForEach(roleToCheck =>
-            {
-                if (!allRoleNames.Contains(roleToCheck)
-                || !safeRoleNames.Contains(roleToCheck))
-                {
-                    messageService.SendResponse(x => x.RoleNotFoundOrIsNotSafe(contexts, roleToCheck), contexts);
-                    canBeAssigned = false;
-                }
-                if (userRoles.Contains(roleToCheck))
-                {
-                    messageService.SendResponse(x => x.RoleIsInUserAlready(contexts, roleToCheck), contexts);
-                    canBeAssigned = false;
-                }
-            });
-
-            if (canBeAssigned)
-            {
-                rolesToAssign.ForEach(roleToSet =>
-            {
-                var roleToAssign = new List<Role> { new Role(roleToSet, contexts.Server.Id) };
-                _rolesService.AddRoleToUser(roleToAssign, messageService, contexts, roleToSet);
-            });
-            }
+            _rolesService.AddRoleToUser(safeRoleNames, messageService, contexts, rolesToAssign);
         }
 
         [DiscordCommand("remove role")] //todo
@@ -133,7 +108,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
             }
             else
             {
-                _rolesService.AddRoleToUser(roles, messagesService, contexts, "admin");
+                _rolesService.AddRoleToUser(messagesService, contexts, "admin");
             }
         }
 #endif

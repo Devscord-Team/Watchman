@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Devscord.DiscordFramework.Commons.Exceptions;
@@ -31,6 +32,11 @@ namespace Watchman.Discord.Areas.Commons
             return new TimeRange(
                 start: discordRequest.SentAt - ParseToTimeSpan(discordRequest, defaultTime), 
                 end: discordRequest.SentAt);
+        }
+
+        public static bool HasDuplicates(this List<DiscordRequestArgument> requestArguments)
+        {
+            return requestArguments.Select(x => x).Count() != requestArguments.Select(x => x.Value).Distinct().Count();
         }
 
         private static TimeSpan ParseToTimeSpan(DiscordRequest discordRequest, TimeSpan defaultTime)
