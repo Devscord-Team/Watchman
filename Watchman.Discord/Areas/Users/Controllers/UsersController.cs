@@ -50,7 +50,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
         public void AddRole(DiscordRequest request, Contexts contexts)
         {
             var args = request.Arguments.Skip(1).ToList();
-            var rolesToAssign = args.Select(x => x.Value).ToList();
+            var rolesToAssign = args.Select(x => x.Value);
 
             if (rolesToAssign.Count() < 1)
             {
