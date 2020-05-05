@@ -18,26 +18,18 @@ namespace Watchman.Web.Server.Areas.Messages.Controllers
     public class MessagesController : BaseApiController
     {
         private readonly IQueryBus _queryBus;
-
+        private const int LimitForQuery = 100;
         public MessagesController(IQueryBus queryBus)
         {
             this._queryBus = queryBus;
         }
 
-        [HttpGet]
-        public async Task<IEnumerable<MessageDto>> GetMessages(ulong serverId, ulong channelId,  ulong? userId)
+        [HttpPost]
+        public async Task<IEnumerable<MessageDto>> GetMessages([FromBody]GetMessagesRequest request)
         {
-            var query = new GetMessagesQuery(serverId);
+            var query = new GetMessagesQuery(request.GetGuildId, request.GetChannelId, request.GetUserId);
             var responseResult = await _queryBus.ExecuteAsync(query);
-            IEnumerable<MessageDto> messagesDto;
-            if (userId.HasValue)
-            {
-                messagesDto = responseResult.Messages.Where(x => x.Author.Id == userId && x.Channel.Id == channelId).Take(100).Select(x => new MessageDto(x));
-            }
-            else
-            {
-                messagesDto = responseResult.Messages.Where(x => x.Channel.Id == channelId).Take(100).Select(x => new MessageDto(x));
-            }
+            var messagesDto = responseResult.Messages.Take(LimitForQuery).Select(x => new MessageDto(x));
             return messagesDto;
         }
     }
