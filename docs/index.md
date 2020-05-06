@@ -18,7 +18,7 @@ Poniżej znajdziesz instrukcję uruchomienia bota na własnym hostingu (np. na w
 
 #### Potrzebne narzędzia:
 
-* .NET Core 3.0
+* .NET Core 3.1
 * Lokalna baza MongoDB
 
 #### Przygotowanie bota do uruchomienia
