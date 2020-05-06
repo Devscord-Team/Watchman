@@ -65,4 +65,4 @@ Z tą różnicą, że musisz przekopiować w miejsce `id_twojego_bota` ClientID 
 Przejdź po ten adres, wybierz serwer oraz przydziel uprawnienia.  
 
 Od tego momentu możesz już korzystać z bota na własnym serwerze.  
-Aby dowiedzieć się więcej o działaniu bota - kliknij w zakładkę "Dokumentacja techniczna" w górnym menu.  
+Aby dowiedzieć się więcej o działaniu bota - kliknij w zakładkę "Dokumentacja techniczna" w głównym  menu.  
