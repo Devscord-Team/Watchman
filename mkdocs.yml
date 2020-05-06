@@ -5,7 +5,11 @@ nav:
         - 'Serwisy w frameworku': 135-services-in-framework.md
         - 'Jak działa Workflow': 134-workflow.md
         - 'Do czego używamy klasy Server': 141-do-czego-uzywamy-klasy-server.md
-theme: material
+theme: 
+    name: 'material'
+    palette:
+        primary: 'green'
+        accent: 'light green'
 markdown_extensions:
     - codehilite
 extra_css:
