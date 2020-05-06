@@ -3,9 +3,10 @@
 Poniżej znajdziesz najważniejsze linki niezbędne do pracy nad Watchmanem.
 
 [Repozytorium na githubie](https://github.com/Devscord-Team/Watchman)
+
 [Trello](https://trello.com/b/xpN9bYtR/watchman)
 
-# Getting Started
+## Getting Started
 
 
 Poniżej znajdziesz instrukcję uruchomienia bota na własnym hostingu (np. na własnym PC), co daje możliwość samodzielnej ingerencji w kod i dostosowanie bota do własnych preferencji.
