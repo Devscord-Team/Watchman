@@ -66,3 +66,5 @@ Przejdź po ten adres, wybierz serwer oraz przydziel uprawnienia.
 
 
 ### Od tego momentu możesz już korzystać z bota na własnym serwerze.
+
+Aby dowiedzieć się więcej o działaniu bota - kliknij w zakładkę "Dokumentacja techniczna" w górnym menu.
