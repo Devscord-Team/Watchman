@@ -1,4 +1,5 @@
 site_name: Watchman
 nav:
     - 'Strona główna': index.md
-    - 'Serwisy w frameworku': 135-services-in-framework.md
+    - 'Dokumentacja techniczna':
+        - 'Serwisy w frameworku': 135-services-in-framework.md
