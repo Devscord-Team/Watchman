@@ -30,6 +30,7 @@ Jeśli masz już zainstalowane powyższe narzędzia, możesz przejść do sklono
 ```  
 git clone https://github.com/Devscord-Team/Watchman.git  
 ```  
+
 #### Dodawanie pliku konfiguracyjnego  
 
 Następnie w folderze `Watchman/Watchman.Discord/` utwórz plik `config.json`, w którym powinny się znaleźć:  
