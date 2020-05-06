@@ -25,12 +25,12 @@ Poniżej znajdziesz instrukcję uruchomienia bota na własnym hostingu (np. na w
 
 Jeśli masz już zainstalowane powyższe narzędzia, możesz przejść do sklonowania repozytorium:  
 
-##### Klonowanie repozytorium  
+#### Klonowanie repozytorium  
 
 ```  
 git clone https://github.com/Devscord-Team/Watchman.git  
 ```  
-##### Dodawanie pliku konfiguracyjnego  
+#### Dodawanie pliku konfiguracyjnego  
 
 Następnie w folderze `Watchman/Watchman.Discord/` utwórz plik `config.json`, w którym powinny się znaleźć:  
 * token bota utworzony na stronie [Discord Developer Portal](https://discordapp.com/developers/applications)  
@@ -44,7 +44,7 @@ Przykład takiego pliku:
 }  
 ```  
 
-##### Kompilowanie bota i uruchomienie  
+#### Kompilowanie bota i uruchomienie  
 
 Przejdź w konsoli do folderu `Watchman/Watchman.Discord`, następnie skompiluj i uruchom bota za pomocą komend:  
 
