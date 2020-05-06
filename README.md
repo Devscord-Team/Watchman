@@ -12,3 +12,7 @@ Zajrzyj do [Wiki - Pomoc w rozwoju projektu](https://github.com/Devscord-Team/Wa
 ### Najczęściej zadawane pytania (FAQ)
 Chciesz dowiedzieć się w jaki sposób dodać bota do swojego serwera, albo dlaczego wymaga od ciebie takich uprawnień?
 Przeczytaj najczęściej zadawane pytania w naszym [Wiki - FAQ](https://github.com/Devscord-Team/Watchman/wiki/Najcz%C4%99%C5%9Bciej-zadawane-pytania-(FAQ)).
+
+### Dokumentacja techniczna
+
+[Link do dokumentacji](https://watchman.readthedocs.io/pl/latest/)
