@@ -3,3 +3,4 @@ nav:
     - 'Strona główna': index.md
     - 'Dokumentacja techniczna':
         - 'Serwisy w frameworku': 135-services-in-framework.md
+        - 'Jak działa Workflow': 134-workflow.md
