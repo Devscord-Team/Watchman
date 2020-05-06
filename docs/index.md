@@ -16,21 +16,21 @@ Poniżej znajdziesz instrukcję uruchomienia bota na własnym hostingu (np. na w
 
 ***
 
-## Potrzebne narzędzia:
+#### Potrzebne narzędzia:
 
 * .NET Core 3.0
 * Lokalna baza MongoDB
 
-## Przygotowanie bota do uruchomienia
+#### Przygotowanie bota do uruchomienia
 
 Jeśli masz już zainstalowane powyższe narzędzia, możesz przejść do sklonowania repozytorium:
 
-### Klonowanie repozytorium
+##### Klonowanie repozytorium
 
 ```
 git clone https://github.com/Devscord-Team/Watchman.git
 ```
-### Dodawanie pliku konfiguracyjnego
+##### Dodawanie pliku konfiguracyjnego
 
 Następnie w folderze `Watchman/Watchman.Discord/` utwórz plik `config.json`, w którym powinny się znaleźć:
 * token bota utworzony na stronie [Discord Developer Portal](https://discordapp.com/developers/applications)
@@ -44,7 +44,7 @@ Przykład takiego pliku:
 }
 ```
 
-### Kompilowanie bota i uruchomienie
+##### Kompilowanie bota i uruchomienie
 
 Przejdź w konsoli do folderu `Watchman/Watchman.Discord`, następnie skompiluj i uruchom bota za pomocą komend:
 
@@ -53,7 +53,7 @@ cd Watchman/Watchman.Discord
 dotnet run
 ```
 
-### Dodawanie bota do swojego serwera
+#### Dodawanie bota do swojego serwera
 
 Link który umożliwi dodanie bota do serwera będzie wyglądać następująco:
 
@@ -66,6 +66,5 @@ Z tą różnicą, że musisz przekopiować w miejsce `id_twojego_bota` ClientID 
 Przejdź po ten adres, wybierz serwer oraz przydziel uprawnienia.
 
 
-### Od tego momentu możesz już korzystać z bota na własnym serwerze.
-
+Od tego momentu możesz już korzystać z bota na własnym serwerze.
 Aby dowiedzieć się więcej o działaniu bota - kliknij w zakładkę "Dokumentacja techniczna" w górnym menu.
