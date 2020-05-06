@@ -5,4 +5,4 @@ nav:
         - 'Serwisy w frameworku': 135-services-in-framework.md
         - 'Jak działa Workflow': 134-workflow.md
         - 'Do czego używamy klasy Server': 141-do-czego-uzywamy-klasy-server.md
-theme: readthedocs
+theme: material
