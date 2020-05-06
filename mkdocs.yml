@@ -6,3 +6,5 @@ nav:
         - 'Jak działa Workflow': 134-workflow.md
         - 'Do czego używamy klasy Server': 141-do-czego-uzywamy-klasy-server.md
 theme: material
+markdown_extensions:
+  - codehilite
