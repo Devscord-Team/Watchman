@@ -13,5 +13,4 @@ theme:
 markdown_extensions:
     - codehilite
 extra_css:
-  - stylesheets/dark_theme.css
   - stylesheets/codehilite.css
