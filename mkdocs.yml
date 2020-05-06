@@ -7,8 +7,7 @@ nav:
         - 'Do czego używamy klasy Server': 141-do-czego-uzywamy-klasy-server.md
 theme: material
 markdown_extensions:
-    - codehilite:
-            guess_lang: False
-            use_pygments: True
-            noclasses: True
-            pygments_style: monokai
+    - codehilite
+extra_css:
+  - stylesheets/dark_theme.css
+  - stylesheets/codehilite.css
