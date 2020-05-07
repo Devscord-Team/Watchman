@@ -7,6 +7,9 @@ nav:
         - 'Do czego używamy klasy Server': 141-do-czego-uzywamy-klasy-server.md
 theme: 
     name: 'material'
+    features:
+        - tabs
+    language: pl
     palette:
         primary: 'green'
         accent: 'light green'
