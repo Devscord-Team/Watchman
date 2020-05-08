@@ -36,7 +36,7 @@ namespace Watchman.Discord.Areas.Commons
 
         public static bool HasDuplicates(this IEnumerable<DiscordRequestArgument> requestArguments)
         {
-            return requestArguments.Select(x => x).Count() != requestArguments.Select(x => x.Value).Distinct().Count();
+            return requestArguments.Count() != requestArguments.Select(x => x.Value).Distinct().Count();
         }
 
         private static TimeSpan ParseToTimeSpan(DiscordRequest discordRequest, TimeSpan defaultTime)

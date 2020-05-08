@@ -51,21 +51,17 @@ namespace Watchman.Discord.Areas.Users.Controllers
         {
             var requestArguments = request.Arguments.Skip(1);
             var rolesToAssign = requestArguments.Select(x => x.Value);
-
             if (!rolesToAssign.Any())
             {
                 throw new NotEnoughArgumentsException();
             }
-
             if (requestArguments.HasDuplicates())
             {
                 throw new ArgumentsDuplicatedException();
             }
-
             var safeRoleNames = _queryBus.Execute(new GetDiscordServerSafeRolesQuery(contexts.Server.Id))
-                .SafeRoles.Select(x => x.Name);
+                .SafeRoles;
             var messageService = _messagesServiceFactory.Create(contexts);
-
             _rolesService.AddRoleToUser(safeRoleNames, messageService, contexts, rolesToAssign);
         }
 
@@ -95,6 +91,5 @@ namespace Watchman.Discord.Areas.Users.Controllers
             output.PrintManyLines(safeRoles.Select(x => x.Name).ToArray(), contentStyleBox: true);
             await messageService.SendResponse(x => x.AvailableSafeRoles(output.ToString()), contexts);
         }
-
     }
 }

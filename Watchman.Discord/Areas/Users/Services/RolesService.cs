@@ -18,24 +18,23 @@ namespace Watchman.Discord.Areas.Users.Services
             _usersRolesService = usersRolesService;
         }
 
-        public void AddRoleToUser(IEnumerable<string> safeRoles, MessagesService messagesService, Contexts contexts, IEnumerable<string> commandRoles)
+        public void AddRoleToUser(IEnumerable<Role> safeRoles, MessagesService messagesService, Contexts contexts, IEnumerable<string> commandRoles)
         {
-            var allRoleNames = _usersRolesService.GetAllRoleNames(contexts.Server);
-            var userRoles = contexts.User.Roles.Select(x => x.Name);
-
+            var userRoleNames = contexts.User.Roles.Select(x =>x.Name);
+            var safeRoleNames = safeRoles.Select(x => x.Name);
             foreach (var role in commandRoles)
             {
-                if (!allRoleNames.Contains(role) || !safeRoles.Contains(role))
-                {
-                    messagesService.SendResponse(x => x.RoleNotFoundOrIsNotSafe(contexts, role), contexts);
-                    continue;
-                }
-                if (userRoles.Contains(role))
+                if (userRoleNames.Contains(role))
                 {
                     messagesService.SendResponse(x => x.RoleIsInUserAlready(contexts, role), contexts);
                     continue;
                 }
                 var serverRole = _usersRolesService.GetRoleByName(role, contexts.Server);
+                if (serverRole == null || !safeRoleNames.Contains(role))
+                {
+                    messagesService.SendResponse(x => x.RoleNotFoundOrIsNotSafe(contexts, role), contexts);
+                    continue;
+                }
                 _usersService.AddRole(serverRole, contexts.User, contexts.Server).Wait();
                 messagesService.SendResponse(x => x.RoleAddedToUser(contexts, role), contexts);
             }
