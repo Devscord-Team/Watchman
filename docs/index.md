@@ -6,7 +6,7 @@ Poniżej znajdziesz najważniejsze linki, które są niezbędne do pracy nad Wat
 
 [Trello](https://trello.com/b/xpN9bYtR/watchman)  
 
-Aby dowiedzieć się więcej, przeczytaj resztę dokumentacji.
+Aby dowiedzieć się więcej, przeczytaj resztę dokumentacji.  
 Szczególnie istotne są  
 
 [Instrukcja dla nowych osób w zespole Watchmana](https://watchman.readthedocs.io/pl/latest/150-instrukcja-dla-nowych-osob-w-zespole-watchmana/)  
