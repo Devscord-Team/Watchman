@@ -1,6 +1,7 @@
 site_name: Watchman
 nav:
     - 'Strona główna': index.md
+    - 'Instrukcja dla nowych osób w zespole Watchmana' - 150-instrukcja-dla-nowych-osob-w-zespole-watchmana.md
     - 'Dokumentacja techniczna':
         - 'Serwisy w frameworku': 135-services-in-framework.md
         - 'Jak działa Workflow': 134-workflow.md
