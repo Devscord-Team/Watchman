@@ -10,6 +10,9 @@ nav:
 theme: 
     name: 'material'
     language: pl
+    font:
+        text: Roboto
+        code: Roboto
     features:
         - tabs
         - instant
