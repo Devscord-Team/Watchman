@@ -31,9 +31,9 @@ namespace Watchman.DomainModel.Messages.Queries.Handlers
                 messages = TakeOnlyForUser(query.UserId.Value, messages);
             }
             var paginated = this.Paginate(query, messages);
-            if (query is GetUserMessagesQuery userQuery)
+            if (query.UserId.HasValue)
             {
-                paginated = paginated.Where(x => x.Author.Id == userQuery.UserId);
+                paginated = paginated.Where(x => x.Author.Id == query.UserId.Value);
             }
             return new GetMessagesQueryResult(paginated);
         }

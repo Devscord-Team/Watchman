@@ -13,6 +13,12 @@ namespace Watchman.DomainModel.Messages.Queries
             ServerId = serverId;
         }
 
+        public GetMessagesQuery(ulong serverId, ulong? userId)
+        {
+            ServerId = serverId;
+            UserId = userId;
+        }
+
         public GetMessagesQuery(ulong serverId, ulong channelId, ulong? userId)
         {
             ServerId = serverId;
