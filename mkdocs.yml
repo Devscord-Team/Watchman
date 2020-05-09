@@ -10,6 +10,8 @@ nav:
 theme: 
     name: 'material'
     language: pl
+    features:
+        - tabs
     palette:
         primary: 'green'
         accent: 'light green'
