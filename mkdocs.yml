@@ -12,6 +12,7 @@ theme:
     language: pl
     features:
         - tabs
+        - instant
     palette:
         primary: 'green'
         accent: 'light green'
