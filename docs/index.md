@@ -5,3 +5,10 @@ Poniżej znajdziesz najważniejsze linki, które są niezbędne do pracy nad Wat
 [Repozytorium na githubie](https://github.com/Devscord-Team/Watchman)  
 
 [Trello](https://trello.com/b/xpN9bYtR/watchman)  
+
+Aby dowiedzieć się więcej, przeczytaj resztę dokumentacji.
+Szczególnie istotne są  
+
+[Instrukcja dla nowych osób w zespole Watchmana](https://watchman.readthedocs.io/pl/latest/150-instrukcja-dla-nowych-osob-w-zespole-watchmana/)  
+
+[Jak zacząć rozwijać bota](https://watchman.readthedocs.io/pl/latest/151-jak-zaczac-rozwijac-bota/)  
