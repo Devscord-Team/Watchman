@@ -49,7 +49,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             }
 
             var timeRange = request.GetPastTimeRange(defaultTime: TimeSpan.FromHours(1));
-            var query = new GetUserMessagesQuery(contexts.Server.Id, selectedUser.Id)
+            var query = new GetMessagesQuery(contexts.Server.Id, selectedUser.Id)
             {
                 SentDate = timeRange
             };
