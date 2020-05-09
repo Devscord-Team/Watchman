@@ -1,6 +1,3 @@
-## Jak zacząć rozwijać bota
-
-
 Poniżej znajdziesz instrukcję uruchomienia bota na własnym hostingu (np. na własnym PC), co daje możliwość samodzielnej ingerencji w kod i dostosowanie bota do własnych preferencji.  
 
 **Jeśli jednak zależy Ci jedynie na skorzystaniu z domyślnego bota na swoim serwerze Discord, użyj tego linku:**  
