@@ -44,7 +44,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
         [DiscordCommand("add role")] //todo
         public void AddRole(DiscordRequest request, Contexts contexts)
         {
-            var commandRole = request.OriginalMessage.ToLowerInvariant().Replace("-add role ", string.Empty); //TODO use DiscordRequest properties
+            var commandRole = request.OriginalMessage.Replace("-add role ", string.Empty); //TODO use DiscordRequest properties
             var safeRoles = this._queryBus.Execute(new GetDiscordServerSafeRolesQuery(contexts.Server.Id)).SafeRoles;
             var messagesService = _messagesServiceFactory.Create(contexts);
             _rolesService.AddRoleToUser(safeRoles, messagesService, contexts, commandRole);
@@ -53,7 +53,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
         [DiscordCommand("remove role")] //todo
         public void RemoveRole(DiscordRequest request, Contexts contexts)
         {
-            var commandRole = request.OriginalMessage.ToLowerInvariant().Replace("-remove role ", string.Empty); //TODO use DiscordRequest properties
+            var commandRole = request.OriginalMessage.Replace("-remove role ", string.Empty); //TODO use DiscordRequest properties
             var safeRoles = this._queryBus.Execute(new GetDiscordServerSafeRolesQuery(contexts.Server.Id)).SafeRoles;
             var messagesService = _messagesServiceFactory.Create(contexts);
             _rolesService.DeleteRoleFromUser(safeRoles, messagesService, contexts, commandRole);
