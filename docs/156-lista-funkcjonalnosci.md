@@ -70,7 +70,7 @@ Parametry:
 `onEvent` - identyfikator wydarzenia przy którym jest wywoływana komenda.  
 `message` - treść wiadomości, jeśli jest dłuższy niż jedno słowo (zawiera spacje), musi być wewnątrz cudzysłowów.  
   
-Lista dostępnych wydarzeń z danymi domyślnymi:  
+#### Lista dostępnych wydarzeń z danymi domyślnymi:  
 ```  
 AvailableSafeRoles  
 ```  
