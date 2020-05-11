@@ -241,7 +241,7 @@ Wyświetla awatar użytkownika, który wpisał komende.
 ```  
 -marchew  
 ```  
-To jest niepojętne...  
+Odpowiedź na życie   
 ```  
 -init  
 ```  
