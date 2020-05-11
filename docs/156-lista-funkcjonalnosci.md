@@ -11,22 +11,22 @@ Listy bezpiecznych roli są indywidualne dla wszystkich serwerów, nie istnieje 
 ```  
 Wyświetla liste wszystkich bezpiecznych roli na serwerze.  
 ```  
- -set role {role} -safe  
+-set role {role} -safe  
 ```  
  Dodaje role do listy bezpiecznych roli.  
  Przykład użycia: `-set role testowa safe`  
 ```  
- -set role {role} -unsafe  
+-set role {role} -unsafe  
 ```  
  Dodaje role jako bezpieczną.  
  Przykład użycia: `-set role testowa unsafe`  
 ```  
- -add role {role}  
+-add role {role}  
 ```  
  Przypisuje role do użytkownika, który wpisał komende.  
  Przykład użycia: `-add role testowa`  
 ```  
- -remove role {role}  
+-remove role {role}  
 ```  
 Usuwa role użytkownikowi, który wpisał komende.  
 Przykład użycia: `-remove role testowa`  
