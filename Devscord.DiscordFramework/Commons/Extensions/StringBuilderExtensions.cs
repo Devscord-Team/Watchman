@@ -15,7 +15,8 @@ namespace Devscord.DiscordFramework.Commons.Extensions
 
         public static StringBuilder PrintManyLines(this StringBuilder builder, string[] lines, bool contentStyleBox = true, bool spacesBetweenLines = false, string formatName = "")
         {
-            builder.AppendLine();//can fix message if response looks like "test {outputFromPrintManyLines}"
+            //can fix message if response looks like "test {outputFromPrintManyLines}"
+            builder.AppendLine();
             if (contentStyleBox)
             {
                 builder.AppendLine($"```{formatName}");
