@@ -5,6 +5,7 @@ using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Newtonsoft.Json;
 using Watchman.Cqrs;
+using Watchman.DomainModel.Help;
 using Watchman.DomainModel.Help.Queries;
 
 namespace Watchman.Discord.Areas.Help.Services
@@ -43,6 +44,33 @@ namespace Watchman.Discord.Areas.Help.Services
             var serialized = JsonConvert.SerializeObject(result.HelpInformations, Formatting.Indented);
             serialized = RemoveFirstAndLastBracket(serialized);
             return serialized;
+        }
+
+        public IEnumerable<KeyValuePair<string, string>> MapToEmbedInput(IEnumerable<HelpInformation> helpInformations)
+        {
+            return helpInformations.Select(x =>
+            {
+                var name = "-" + x.Names.First();
+
+                var descriptions = x.Descriptions.Where(x => x.Details.Trim().ToLowerInvariant() != "empty").Select(x => $"{x.Name} => {x.Details}");
+                var arguments = x.ArgumentInfos.Where(x => x.Description.Trim().ToLowerInvariant() != "empty")?.Select(x => $"{x.Name} => {x.Description}");
+
+                var content = descriptions.Any() ? descriptions.Aggregate((a, b) => a + "\n" + b) : string.Empty;
+                if(string.IsNullOrWhiteSpace(content))
+                {
+                    content = content + "\n\n";
+                }
+                if(arguments.Any())
+                {
+                    content = content + arguments.Aggregate((a, b) => a + "\n" + b);
+                }
+
+                if (string.IsNullOrWhiteSpace(content))
+                {
+                    content = "Jeszcze nie posiada opisu";
+                }
+                return new KeyValuePair<string, string>(name, content);
+            });
         }
 
         private string RemoveFirstAndLastBracket(string fullMessage) // '[' & ']'

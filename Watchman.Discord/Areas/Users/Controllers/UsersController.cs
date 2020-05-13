@@ -73,7 +73,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
             }
 
             var output = new StringBuilder();
-            output.PrintManyLines(safeRoles.Select(x => x.Name).ToArray(), contentStyleBox: true);
+            output.PrintManyLines(safeRoles.Select(x => x.Name).ToArray(), contentStyleBox: false, spacesBetweenLines: false);
             await messageService.SendResponse(x => x.AvailableSafeRoles(output.ToString()), contexts);
         }
 

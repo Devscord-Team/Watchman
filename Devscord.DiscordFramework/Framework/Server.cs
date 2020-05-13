@@ -63,6 +63,12 @@ namespace Devscord.DiscordFramework.Framework
             await user.SendMessageAsync(message);
         }
 
+        public static async Task SendDirectEmbedMessage(ulong userId, Embed embed)
+        {
+            var user = await GetUser(userId);
+            await user.SendMessageAsync(embed: embed);
+        }
+
         public static IEnumerable<SocketRole> GetSocketRoles(ulong guildId)
         {
             if (_roles == null) // todo: it should work without this if

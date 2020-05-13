@@ -5,6 +5,11 @@ using Devscord.DiscordFramework.Services.Factories;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Watchman.Discord.Areas.Help.Services;
 using Devscord.DiscordFramework.Commons;
+using Watchman.DomainModel.Help.Queries;
+using Watchman.Cqrs;
+using System.Linq;
+using System.Collections.Generic;
+using Watchman.DomainModel.Help;
 
 namespace Watchman.Discord.Areas.Help.Controllers
 {
@@ -12,11 +17,13 @@ namespace Watchman.Discord.Areas.Help.Controllers
     {
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly HelpMessageGeneratorService _helpMessageGenerator;
+        private readonly IQueryBus _queryBus;
 
-        public HelpController(MessagesServiceFactory messagesServiceFactory, HelpMessageGeneratorService messageGeneratorService)
+        public HelpController(MessagesServiceFactory messagesServiceFactory, HelpMessageGeneratorService messageGeneratorService, IQueryBus queryBus)
         {
             this._messagesServiceFactory = messagesServiceFactory;
             _helpMessageGenerator = messageGeneratorService;
+            _queryBus = queryBus;
         }
 
         [DiscordCommand("help")]
@@ -31,9 +38,11 @@ namespace Watchman.Discord.Areas.Help.Controllers
             }
             else
             {
-                var helpMessage = this._helpMessageGenerator.GenerateHelp(contexts);
-                messagesService.SendResponse(x => x.PrintHelp(helpMessage), contexts);
+                var helpInformations = this._queryBus.Execute(new GetHelpInformationQuery(contexts.Server.Id)).HelpInformations;
+                messagesService.SendEmbedMessage("Dostępne komendy:", "Poniżej znajdziesz listę dostępnych komend wraz z ich opisami\nJeśli chcesz poznać dokładniejszy opis - zapraszamy do opisu w naszej dokumentacji\nhttps://watchman.readthedocs.io/pl/latest/156-lista-funkcjonalnosci/", _helpMessageGenerator.MapToEmbedInput(helpInformations)); //todo add to responses - now we cannot handle this format
             }
         }
+
+        
     }
 }
