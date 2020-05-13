@@ -28,19 +28,7 @@ namespace Watchman.Discord.Areas.UselessFeatures.Controllers
             var messagesService = _messagesServiceFactory.Create(contexts);
             await messagesService.SendMessage(text);
         }
-
-        [DiscordCommand("embed")]
-        public async Task Embed(DiscordRequest request, Contexts contexts)
-        {
-            var messagesService = _messagesServiceFactory.Create(contexts);
-            await messagesService.SendEmbedMessage("Testowy tytuł", "Testowy opis", new List<KeyValuePair<string, string>>()
-            {
-                new KeyValuePair<string, string>("Test1", "Opis1"),
-                new KeyValuePair<string, string>("Inny tytuł", "Inny opis"),
-                new KeyValuePair<string, string>("Testowe dane", "Troche inny opis, taki dłuższy \nzawierający enter!"),
-            });
-        }
-
+        
         public async Task PrintMyMessage(PrintCommand command, Contexts contexts)
         {
             var messagesService = _messagesServiceFactory.Create(contexts);
