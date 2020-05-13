@@ -56,7 +56,7 @@ namespace Watchman.Discord.Areas.Help.Services
                 var arguments = x.ArgumentInfos.Where(x => x.Description.Trim().ToLowerInvariant() != "empty")?.Select(x => $"{x.Name} => {x.Description}");
 
                 var content = descriptions.Any() ? descriptions.Aggregate((a, b) => a + "\n" + b) : string.Empty;
-                if(string.IsNullOrWhiteSpace(content))
+                if(!string.IsNullOrWhiteSpace(content))
                 {
                     content = content + "\n\n";
                 }
