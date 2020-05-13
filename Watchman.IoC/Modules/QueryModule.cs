@@ -43,11 +43,9 @@ namespace Watchman.IoC.Modules
             }
             while (stack.Count > 0);
 
-
             builder.RegisterType<QueryBus>()
                 .As<IQueryBus>()
                 .InstancePerLifetimeScope();
         }
-
     }
 }

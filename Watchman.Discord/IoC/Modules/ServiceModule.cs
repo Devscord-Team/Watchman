@@ -22,7 +22,6 @@ namespace Watchman.Discord.IoC.Modules
             builder.RegisterType<StatisticsCalculator>()
                 .As<IStatisticsCalculator>()
                 .InstancePerLifetimeScope();
-                
 
             var list = new List<string>();
             var stack = new Stack<Assembly>();

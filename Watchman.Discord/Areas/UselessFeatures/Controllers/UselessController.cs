@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
+using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Discord.Areas.UselessFeatures.BotCommands;
 
@@ -25,7 +28,7 @@ namespace Watchman.Discord.Areas.UselessFeatures.Controllers
             var messagesService = _messagesServiceFactory.Create(contexts);
             await messagesService.SendMessage(text);
         }
-
+        
         public async Task PrintMyMessage(PrintCommand command, Contexts contexts)
         {
             var messagesService = _messagesServiceFactory.Create(contexts);

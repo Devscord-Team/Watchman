@@ -39,12 +39,10 @@ namespace Watchman.Discord.Ioc.Modules
                 }
             }
             while (stack.Count > 0);
-             
 
             builder.RegisterType<CommandBus>()
                 .As<ICommandBus>()
                 .InstancePerLifetimeScope();
         }
-        
     }
 }
