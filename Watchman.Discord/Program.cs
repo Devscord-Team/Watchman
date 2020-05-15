@@ -21,7 +21,6 @@ namespace Watchman.Discord
             
             var watchman = new WatchmanBot(configuration);
             var workflowBuilder = watchman.GetWorkflowBuilder();
-
             var lastException = DateTime.MinValue;
             var numberOfExceptionsInLastTime = 0;
 
