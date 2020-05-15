@@ -34,20 +34,14 @@ namespace Watchman.Discord
                 catch (Exception e)
                 {
                     Log.Error(e, "Not handled exception!");
-                    if (numberOfExceptionsInLastTime > HOW_MANY_EXCEPTIONS_IN_SHORT_TIME_TO_STOP_BOT)
+                    if (numberOfExceptionsInLastTime++ > HOW_MANY_EXCEPTIONS_IN_SHORT_TIME_TO_STOP_BOT)
                     {
                         break;
                     }
-
-                    if (lastException.AddMinutes(10) > DateTime.Now)
-                    {
-                        numberOfExceptionsInLastTime++;
-                    }
-                    else
+                    if (lastException < DateTime.Now.AddMinutes(-30))
                     {
                         numberOfExceptionsInLastTime = 0;
                     }
-                    lastException = DateTime.Now;
                 }
             }
         }
