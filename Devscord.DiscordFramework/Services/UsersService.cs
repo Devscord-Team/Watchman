@@ -41,6 +41,11 @@ namespace Devscord.DiscordFramework.Services
             return user;
         }
 
+        public UserContext GetUserById(DiscordServerContext server, ulong userId)
+        {
+            return GetUsers(server).FirstOrDefault(x => x.Id == userId);
+        }
+
         private RestGuildUser GetUser(UserContext user, DiscordServerContext server)
         {
             return Server.GetGuildUser(user.Id, server.Id).Result;
