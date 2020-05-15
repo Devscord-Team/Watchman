@@ -8,6 +8,8 @@ namespace Watchman.Discord
 {
     class Program
     {
+        const int HOW_MANY_EXCEPTIONS_IN_SHORT_TIME_TO_STOP_BOT = 3;
+
         public static async Task Main(string[] args)
         {
 #if DEBUG
@@ -19,6 +21,10 @@ namespace Watchman.Discord
             
             var watchman = new WatchmanBot(configuration);
             var workflowBuilder = watchman.GetWorkflowBuilder();
+
+            var lastException = DateTime.MinValue;
+            var numberOfExceptionsInLastTime = 0;
+
             while (true)
             {
                 try
@@ -27,7 +33,21 @@ namespace Watchman.Discord
                 }
                 catch (Exception e)
                 {
-                    Log.Error($"Not handled exception: {e.Message} stack trace: {e.StackTrace}");
+                    Log.Error(e, "Not handled exception!");
+                    if (numberOfExceptionsInLastTime > HOW_MANY_EXCEPTIONS_IN_SHORT_TIME_TO_STOP_BOT)
+                    {
+                        break;
+                    }
+
+                    if (lastException.AddMinutes(10) > DateTime.Now)
+                    {
+                        numberOfExceptionsInLastTime++;
+                    }
+                    else
+                    {
+                        numberOfExceptionsInLastTime = 0;
+                    }
+                    lastException = DateTime.Now;
                 }
             }
         }

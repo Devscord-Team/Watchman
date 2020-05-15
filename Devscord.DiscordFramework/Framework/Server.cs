@@ -248,7 +248,7 @@ namespace Devscord.DiscordFramework.Framework
 
         private static Task BotDisconnected(Exception exception)
         {
-            Log.Warning($"Bot disconnected {exception.Message} stack trace: {exception.StackTrace}");
+            Log.Warning(exception, "Bot disconnected!");
             return Task.CompletedTask;
         }
     }
