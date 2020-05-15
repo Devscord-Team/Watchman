@@ -59,10 +59,9 @@ namespace Watchman.Discord.Areas.Users.Controllers
             {
                 throw new ArgumentsDuplicatedException();
             }
-            var safeRoleNames = _queryBus.Execute(new GetDiscordServerSafeRolesQuery(contexts.Server.Id))
-                .SafeRoles;
+            var safeRoles = _queryBus.Execute(new GetDiscordServerSafeRolesQuery(contexts.Server.Id)).SafeRoles;
             var messageService = _messagesServiceFactory.Create(contexts);
-            _rolesService.AddRoleToUser(safeRoleNames, messageService, contexts, rolesToAssign);
+            _rolesService.AddRoleToUser(safeRoles, messageService, contexts, rolesToAssign);
         }
 
         [DiscordCommand("remove role")] //todo

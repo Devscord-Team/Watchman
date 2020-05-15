@@ -26,7 +26,7 @@ namespace Watchman.Discord.Areas.Administration.Services
             this._commandBus = commandBus;
         }
 
-        public async Task SetRoleAsSafe(Contexts contexts, IEnumerable<string> commandRoles, bool setAsSafe)
+        public async Task SetRolesAsSafe(Contexts contexts, IEnumerable<string> commandRoles, bool setAsSafe)
         {
             var safeRolesQuery = new GetDiscordServerSafeRolesQuery(contexts.Server.Id);
             var safeRoles = this._queryBus.Execute(safeRolesQuery).SafeRoles;

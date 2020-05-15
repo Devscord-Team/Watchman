@@ -112,7 +112,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             };
             var commandRoles = args.Select(x => x.Value).SkipLast(1);
             var roleService = new SetRoleService(_messagesServiceFactory, _queryBus, _commandBus,  _usersRolesService);
-            await roleService.SetRoleAsSafe(contexts, commandRoles, isSafe);
+            await roleService.SetRolesAsSafe(contexts, commandRoles, isSafe);
 
             var messageService = _messagesServiceFactory.Create(contexts);
             string msg = string.Join(", ",
