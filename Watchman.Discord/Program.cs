@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using Serilog;
 using System.IO;
 using System.Threading.Tasks;
@@ -17,7 +18,18 @@ namespace Watchman.Discord
             var configuration = JsonConvert.DeserializeObject<DiscordConfiguration>(File.ReadAllText(configPath));
             
             var watchman = new WatchmanBot(configuration);
-            await watchman.GetWorkflowBuilder().Run();
+            var workflowBuilder = watchman.GetWorkflowBuilder();
+            while (true)
+            {
+                try
+                {
+                    await workflowBuilder.Run();
+                }
+                catch (Exception e)
+                {
+                    Log.Error($"Not handled exception: {e.Message} stack trace: {e.StackTrace}");
+                }
+            }
         }
     }
 }
