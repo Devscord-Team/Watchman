@@ -59,6 +59,11 @@ namespace Watchman.Discord.Areas.Protection.Services
             {
                 return false;
             }
+            userToUnmute = _usersService.GetUserById(server, userToUnmute.Id);
+            if (userToUnmute == null) // user could left the server
+            {
+                return false;
+            }
             await UnmuteUser(userToUnmute, eventToUnmute, server);
             return true;
         }

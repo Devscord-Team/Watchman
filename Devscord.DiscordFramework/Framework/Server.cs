@@ -41,7 +41,9 @@ namespace Devscord.DiscordFramework.Framework
         public static void Initialize(DiscordSocketClient client)
         {
             while (client.ConnectionState != ConnectionState.Connected)
-            { }
+            {
+                Task.Delay(100).Wait();
+            }
 
             _client = client;
             _client.UserJoined += user => UserJoined(user);
@@ -55,6 +57,7 @@ namespace Devscord.DiscordFramework.Framework
             _client.RoleCreated += AddRole;
             _client.RoleDeleted += RemoveRole;
             _client.RoleUpdated += RoleUpdated;
+            _client.Disconnected += BotDisconnected;
         }
 
         public static async Task SendDirectMessage(ulong userId, string message)
@@ -92,7 +95,7 @@ namespace Devscord.DiscordFramework.Framework
             IChannel channel;
             try
             {
-                 channel = await _restClient.GetChannelAsync(channelId);
+                channel = await _restClient.GetChannelAsync(channelId);
             }
             catch
             {
@@ -241,6 +244,12 @@ namespace Devscord.DiscordFramework.Framework
             var guild = _client.GetGuild(serverId);
             var invites = await guild.GetInvitesAsync();
             return invites.Select(x => x.Url);
+        }
+
+        private static Task BotDisconnected(Exception exception)
+        {
+            Log.Warning(exception, "Bot disconnected!");
+            return Task.CompletedTask;
         }
     }
 }

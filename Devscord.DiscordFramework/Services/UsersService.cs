@@ -13,14 +13,14 @@ namespace Devscord.DiscordFramework.Services
     {
         public Task AddRole(UserRole role, UserContext user, DiscordServerContext server)
         {
-            var socketUser = GetUser(user, server);
+            var socketUser = GetRestUser(user, server);
             var socketRole = GetRole(role.Id, server);
             return socketUser.AddRoleAsync(socketRole);
         }
 
         public Task RemoveRole(UserRole role, UserContext user, DiscordServerContext server)
         {
-            var socketUser = GetUser(user, server);
+            var socketUser = GetRestUser(user, server);
             var socketRole = GetRole(role.Id, server);
             return socketUser.RemoveRoleAsync(socketRole);
         }
@@ -41,7 +41,12 @@ namespace Devscord.DiscordFramework.Services
             return user;
         }
 
-        private RestGuildUser GetUser(UserContext user, DiscordServerContext server)
+        public UserContext GetUserById(DiscordServerContext server, ulong userId)
+        {
+            return GetUsers(server).FirstOrDefault(x => x.Id == userId);
+        }
+
+        private RestGuildUser GetRestUser(UserContext user, DiscordServerContext server)
         {
             return Server.GetGuildUser(user.Id, server.Id).Result;
         }

@@ -61,7 +61,7 @@ namespace Devscord.DiscordFramework
                 {
                     await commandsTask;
                 }
-                if(botCommandsTask != null)
+                if (botCommandsTask != null)
                 {
                     await botCommandsTask;
                 }
@@ -114,14 +114,14 @@ namespace Devscord.DiscordFramework
                 {
                     foreach (var method in controllerInfo.Methods)
                     {
-                        if(!IsValid(contexts, method))
+                        if (!IsValid(contexts, method))
                         {
                             continue;
                         }
 
                         var commandInParameterType = method.GetParameters().First(x => typeof(IBotCommand).IsAssignableFrom(x.ParameterType)).ParameterType;
                         var template = this._botCommandsService.GetCommandTemplate(commandInParameterType);
-                        if(!this._botCommandsService.IsMatchedWithCommand(request, template))
+                        if (!this._botCommandsService.IsMatchedWithCommand(request, template))
                         {
                             continue;
                         }
@@ -145,7 +145,7 @@ namespace Devscord.DiscordFramework
             return commands.Any(x =>
             {
                 var withoutPrefix = request.OriginalMessage.CutStart(request.Prefix);
-                return withoutPrefix.StartsWith(x.Command) 
+                return withoutPrefix.StartsWith(x.Command)
                        && (withoutPrefix.Length == x.Command.Length || withoutPrefix[x.Command.Length] == ' ');
             });
         }
