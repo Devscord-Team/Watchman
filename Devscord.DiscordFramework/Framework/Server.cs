@@ -152,9 +152,7 @@ namespace Devscord.DiscordFramework.Framework
             var permissionsValue = role.Permissions.GetRawValue();
 
             var guild = await _restClient.GetGuildAsync(discordServer.Id);
-            var createRoleTask = guild.CreateRoleAsync(role.Name, new GuildPermissions(permissionsValue));
-
-            var restRole = createRoleTask.Result;
+            var restRole = await guild.CreateRoleAsync(role.Name, new GuildPermissions(permissionsValue), isMentionable: false);
             var userRole = new UserRoleFactory().Create(restRole);
 
             return userRole;
