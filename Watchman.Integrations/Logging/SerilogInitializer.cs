@@ -20,7 +20,9 @@ namespace Watchman.Integrations.Logging
                 .Enrich.WithThreadId()
                 .Enrich.WithMachineName()
                 .Enrich.WithEnvironmentUserName()
-                .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Verbose)
+                .WriteTo.Console(
+                    restrictedToMinimumLevel: LogEventLevel.Verbose,
+                    outputTemplate: "[{Timestamp:dd-MM-yyyy} - {Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
                 .WriteTo.Debug(restrictedToMinimumLevel: LogEventLevel.Verbose)
                 .CreateLogger();
             return logger;
