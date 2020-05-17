@@ -30,7 +30,7 @@ namespace Watchman.Discord.Areas.Help.Services
                     .Select(x => $"{x.Name} => {x.Description}")
                     .ToList();
 
-                var content = "";
+                var content = string.Empty;
                 if(descriptions.Any())
                 {
                     var commandDescription = descriptions.Aggregate((a, b) => a + "\n" + b);
