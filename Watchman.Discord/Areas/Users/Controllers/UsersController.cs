@@ -59,6 +59,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
             _rolesService.DeleteRoleFromUser(safeRoles, messagesService, contexts, commandRole);
         }
 
+        [DiscordCommand("list role")]
         [DiscordCommand("roles")]
         public async Task PrintRoles(DiscordRequest request, Contexts contexts)
         {
