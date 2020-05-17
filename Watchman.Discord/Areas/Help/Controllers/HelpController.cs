@@ -2,14 +2,10 @@
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
-using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Watchman.Discord.Areas.Help.Services;
 using Devscord.DiscordFramework.Commons;
 using Watchman.DomainModel.Help.Queries;
 using Watchman.Cqrs;
-using System.Linq;
-using System.Collections.Generic;
-using Watchman.DomainModel.Help;
 
 namespace Watchman.Discord.Areas.Help.Controllers
 {
@@ -30,15 +26,15 @@ namespace Watchman.Discord.Areas.Help.Controllers
         public void PrintHelp(DiscordRequest request, Contexts contexts)
         {
             var messagesService = _messagesServiceFactory.Create(contexts);
+            var helpInformations = this._queryBus.Execute(new GetHelpInformationQuery(contexts.Server.Id)).HelpInformations;
 
             if (request.HasArgument(null, "json"))
             {
-                var helpMessage = this._helpMessageGenerator.GenerateJsonHelp(contexts);
+                var helpMessage = this._helpMessageGenerator.GenerateJsonHelp(helpInformations);
                 messagesService.SendMessage(helpMessage, MessageType.Json);
             }
             else
             {
-                var helpInformations = this._queryBus.Execute(new GetHelpInformationQuery(contexts.Server.Id)).HelpInformations;
                 messagesService.SendEmbedMessage("Dostępne komendy:", "Poniżej znajdziesz listę dostępnych komend wraz z ich opisami\nJeśli chcesz poznać dokładniejszy opis - zapraszamy do opisu w naszej dokumentacji\nhttps://watchman.readthedocs.io/pl/latest/156-lista-funkcjonalnosci/", _helpMessageGenerator.MapToEmbedInput(helpInformations)); //todo add to responses - now we cannot handle this format
             }
         }

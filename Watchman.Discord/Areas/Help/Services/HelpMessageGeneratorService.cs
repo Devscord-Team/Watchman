@@ -1,27 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Devscord.DiscordFramework.Middlewares.Contexts;
 using Newtonsoft.Json;
-using Watchman.Cqrs;
 using Watchman.DomainModel.Help;
-using Watchman.DomainModel.Help.Queries;
 
 namespace Watchman.Discord.Areas.Help.Services
 {
     public class HelpMessageGeneratorService
     {
-        private readonly IQueryBus _queryBus;
-
-        public HelpMessageGeneratorService(IQueryBus queryBus)
+        public string GenerateJsonHelp(IEnumerable<HelpInformation> helpInformations)
         {
-            _queryBus = queryBus;
-        }
-
-        public string GenerateJsonHelp(Contexts contexts)
-        {
-            var result = this._queryBus.Execute(new GetHelpInformationQuery(contexts.Server.Id));
-
-            var serialized = JsonConvert.SerializeObject(result.HelpInformations, Formatting.Indented);
+            var serialized = JsonConvert.SerializeObject(helpInformations, Formatting.Indented);
             serialized = RemoveFirstAndLastBracket(serialized);
             return serialized;
         }

@@ -3,34 +3,40 @@ using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Services.Models;
 using Serilog;
+using Watchman.Cqrs;
 using Watchman.Discord.Areas.Help.Factories;
 using Watchman.DomainModel.Help;
-using Watchman.Integrations.MongoDB;
+using Watchman.DomainModel.Help.Commands;
+using Watchman.DomainModel.Help.Queries;
 
 namespace Watchman.Discord.Areas.Help.Services
 {
     public class HelpDBGeneratorService
     {
-        private readonly ISessionFactory _sessionFactory;
+        private readonly IQueryBus _queryBus;
+        private readonly ICommandBus _commandBus;
         private readonly HelpInformationFactory _helpInformationFactory;
 
-        public HelpDBGeneratorService(ISessionFactory sessionFactory, HelpInformationFactory helpInformationFactory)
+        public HelpDBGeneratorService(IQueryBus queryBus, ICommandBus commandBus, HelpInformationFactory helpInformationFactory)
         {
-            _sessionFactory = sessionFactory;
+            _queryBus = queryBus;
+            _commandBus = commandBus;
             _helpInformationFactory = helpInformationFactory;
         }
 
         public async Task FillDatabase(IEnumerable<CommandInfo> commandInfosFromAssembly)
         {
-            using var session = _sessionFactory.Create();
             var commandInfosFromAssemblyList = commandInfosFromAssembly.ToList(); // for not multiple enumerating
-            var helpInfos = session.Get<HelpInformation>().ToList();
+
+            var query = new GetHelpInformationQuery(HelpInformation.DEFAULT_SERVER_INDEX);
+            var helpInfos = _queryBus.Execute(query).HelpInformations.ToList();
 
             var newCommands = FindNewCommands(commandInfosFromAssemblyList, helpInfos).ToList();
             await Task.Run(() => CheckIfExistsUselessHelp(commandInfosFromAssemblyList, helpInfos));
 
             var newHelpInfos = newCommands.Select(x => _helpInformationFactory.Create(x));
-            await session.AddAsync(newHelpInfos);
+            var command = new AddHelpInformationCommand(newHelpInfos);
+            await _commandBus.ExecuteAsync(command);
         }
 
         private IEnumerable<CommandInfo> FindNewCommands(IEnumerable<CommandInfo> commandInfosFromAssembly, IEnumerable<HelpInformation> helpInfos)
