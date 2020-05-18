@@ -17,23 +17,13 @@ namespace Watchman.Discord.Areas.Responses.Controllers
 {
     public class ResponsesController : IController
     {
-        private readonly IQueryBus _queryBus;
-        private readonly ICommandBus _commandBus;
-        private readonly UsersService _usersService;
-        private readonly DirectMessagesService _directMessagesService;
         private readonly MessagesServiceFactory _messagesServiceFactory;
-        private readonly UsersRolesService _usersRolesService;
         private readonly Services.ResponsesService _responsesService;
 
-        public ResponsesController(IQueryBus queryBus, ICommandBus commandBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, UsersRolesService usersRolesService, Services.ResponsesService responsesService)
+        public ResponsesController(MessagesServiceFactory messagesServiceFactory, UsersRolesService usersRolesService, Services.ResponsesService responsesService)
         {
-            this._queryBus = queryBus;
-            this._commandBus = commandBus;
-            this._usersService = usersService;
-            this._directMessagesService = directMessagesService;
             this._messagesServiceFactory = messagesServiceFactory;
             this._responsesService = responsesService;
-            _usersRolesService = usersRolesService;
         }
 
         [AdminCommand]

@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Devscord.DiscordFramework.UnitTests.Commands
 {
@@ -45,6 +46,23 @@ namespace Devscord.DiscordFramework.UnitTests.Commands
 
             //Assert
             Assert.That(rendered, Is.EqualTo("{{prefix}}[[SmallTestCommand]] {{prefix}}[[TestNumber]] ((Number)) {{prefix}}[[TestUser]] ((UserMention))<<optional>>"));
+        }
+
+        [Test]
+        public void ShouldMapToTemplate()
+        {
+            //Arrange
+            var template = new BotCommandsTemplateBuilder().GetCommandTemplate(typeof(SmallTestCommand));
+            var customTemplate = new Regex(@"run\s*(?<TestUser>\<\@\S+\>)?\s*(?<TestNumber>\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            var input = "-run <@1234567890> 12";
+            var parsingService = new BotCommandsParsingService(new BotCommandsPropertyConversionService()); //todo mock and test
+
+            //Act
+            var result = (SmallTestCommand) parsingService.ParseCustomTemplate(typeof(SmallTestCommand), template, customTemplate, input);
+
+            //Assert
+            Assert.That(result.TestNumber, Is.EqualTo(12));
+            Assert.That(result.TestUser, Is.EqualTo("<@1234567890>"));
         }
     }
 

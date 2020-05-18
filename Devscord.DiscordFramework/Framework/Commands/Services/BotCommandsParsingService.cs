@@ -1,6 +1,8 @@
 ﻿using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
+using Serilog;
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Devscord.DiscordFramework.Framework.Commands.Services
 {
@@ -24,6 +26,19 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                 property.SetValue(instance, convertedType);
             }
             return (IBotCommand)instance;
+        }
+
+        public IBotCommand ParseCustomTemplate(Type commandType, BotCommandTemplate template, Regex customTemplate, string input)
+        {
+            var match = customTemplate.Match(input);
+            if(!match.Success 
+                || match.Groups.Count < template.Properties.Where(x => !x.IsOptional).Count()
+                || template.Properties.Where(x => !x.IsOptional).Any(x => !match.Groups.ContainsKey(x.Name)))
+            {
+                Log.Warning("Custom template {customTemplate} is not valid for {commandName}", customTemplate, template.CommandName);
+                return null;
+            }
+            var instance = Activator.CreateInstance(commandType);
         }
     }
 }
