@@ -9,8 +9,8 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
     public class BotCommandsMatchingService
     {
 
-        private readonly Regex exTime = new Regex(@"\d+(h|m|s)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-        private readonly Regex exMention = new Regex(@"<@&?\d+>", RegexOptions.Compiled);
+        private readonly Regex _exTime = new Regex(@"\d+(h|m|s)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private readonly Regex _exMention = new Regex(@"<@&?\d+>", RegexOptions.Compiled);
 
         public bool IsMatchedWithCommand(DiscordRequest request, BotCommandTemplate template)
         {
@@ -26,20 +26,20 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             {
                 return false;
             }
-
             return true;
         }
 
-        private bool CompareArgumentsToProperties(List<DiscordRequestArgument> arguments, List<BotCommandProperty> properties)
+        private bool CompareArgumentsToProperties(IReadOnlyCollection<DiscordRequestArgument> arguments, IReadOnlyCollection<BotCommandProperty> properties)
         {
-            if (arguments.Count != properties.Count)
+            var notOptionalCount = properties.Count(x => !x.IsOptional);
+            if (arguments.Count > properties.Count || arguments.Count < notOptionalCount)
             {
                 return false;
             }
             foreach (var argument in arguments)
             {
-                var anyIsmatched = properties.Any(property => argument.Name.ToLowerInvariant() == property.Name.ToLowerInvariant() && IsMatchedPropertyType(argument.Value, property.Type));
-                if (!anyIsmatched)
+                var anyIsMatched = properties.Any(property => argument.Name.ToLowerInvariant() == property.Name.ToLowerInvariant() && IsMatchedPropertyType(argument.Value, property.Type));
+                if (!anyIsMatched)
                 {
                     return false;
                 }
@@ -53,19 +53,18 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             {
                 return false;
             }
-            else if (type == BotCommandPropertyType.Time && !exTime.IsMatch(value))
+            if (type == BotCommandPropertyType.Time && !_exTime.IsMatch(value))
             {
                 return false;
             }
-            else if (type == BotCommandPropertyType.UserMention || type == BotCommandPropertyType.ChannelMention && !exMention.IsMatch(value))
+            if (type == BotCommandPropertyType.UserMention || type == BotCommandPropertyType.ChannelMention && !_exMention.IsMatch(value))
             {
                 return false;
             }
-            else if (type == BotCommandPropertyType.SingleWord && value.Contains(' '))
+            if (type == BotCommandPropertyType.SingleWord && value.Contains(' '))
             {
                 return false;
             }
-
             return true;
         }
     }
