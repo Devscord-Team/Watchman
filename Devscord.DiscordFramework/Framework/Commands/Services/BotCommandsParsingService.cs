@@ -17,7 +17,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
 
         public IBotCommand ParseRequestToCommand(Type commandType, DiscordRequest request, BotCommandTemplate template)
         {
-            var result = GetFilledInstance(commandType, template, x => request.Arguments.First(a => a.Name.ToLowerInvariant() == x.ToLowerInvariant()).Value);
+            var result = GetFilledInstance(commandType, template, x => request.Arguments.First(a => a.Name.ToLowerInvariant() == x.ToLowerInvariant())?.Value);
             return result;
         }
 

@@ -11,20 +11,23 @@ namespace Devscord.DiscordFramework.Services.Factories
     {
         public IEnumerable<CommandInfo> Create(Type controller)
         {
-            var methods = controller.GetMethods().FilterMethodsByAttribute<DiscordCommand>();
-            return methods.Select(x => new CommandInfo
+            var methods = controller
+                .GetMethods()
+                .FilterMethodsByAttribute<DiscordCommand>();
+
+            foreach (var methodInfo in methods)
             {
-                Names = x.CustomAttributes.FilterAttributes<DiscordCommand>().Select(x => x.ConstructorArguments.First().ToString().Replace("\"", "")),
-                MethodFullName = x.ReflectedType?.FullName + '.' + x.Name,
-                CommandArgumentInfos = new List<CommandArgumentInfo>
+                var discordCommands = methodInfo.CustomAttributes.FilterAttributes<DiscordCommand>();
+                var nameAttributes = discordCommands.Select(x => x.ConstructorArguments.First());
+                var classFullName = methodInfo.ReflectedType?.FullName;
+
+                yield return new CommandInfo
                 {
-                    new CommandArgumentInfo
-                    {
-                        Name = "Default",
-                        
-                    }
-                }
-            });
+                    Names = nameAttributes.Select(x => x.ToString().Replace("\"", "")),
+                    MethodFullName = classFullName + '.' + methodInfo.Name,
+                    CommandArgumentInfos = new List<CommandArgumentInfo> { new CommandArgumentInfo { Name = "Default" } }
+                };
+            }
         }
     }
 }
