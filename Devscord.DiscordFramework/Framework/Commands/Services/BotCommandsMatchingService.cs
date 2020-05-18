@@ -38,7 +38,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             }
             foreach (var argument in arguments)
             {
-                var anyIsMatched = properties.Any(property => argument.Name.ToLowerInvariant() == property.Name.ToLowerInvariant() && IsMatchedPropertyType(argument.Value, property.Type));
+                var anyIsMatched = properties.Any(property => argument.Name?.ToLowerInvariant() == property.Name.ToLowerInvariant() && IsMatchedPropertyType(argument.Value, property.Type));
                 if (!anyIsMatched)
                 {
                     return false;
@@ -62,6 +62,10 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                 return false;
             }
             if (type == BotCommandPropertyType.SingleWord && value.Contains(' '))
+            {
+                return false;
+            }
+            if (type == BotCommandPropertyType.Bool && !bool.TryParse(value, out _))
             {
                 return false;
             }

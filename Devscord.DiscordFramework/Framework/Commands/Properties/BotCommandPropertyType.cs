@@ -7,6 +7,7 @@
         Number = 0x4,
         Time = 0x8,
         UserMention = 0x16,
-        ChannelMention = 0x32
+        ChannelMention = 0x32,
+        Bool = 0x64
     }
 }

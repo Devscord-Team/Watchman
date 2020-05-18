@@ -1,11 +1,11 @@
 ﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
-using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Discord.Areas.Help.Services;
 using Devscord.DiscordFramework.Commons;
 using Watchman.DomainModel.Help.Queries;
 using Watchman.Cqrs;
+using Watchman.Discord.Areas.Help.BotCommands;
 
 namespace Watchman.Discord.Areas.Help.Controllers
 {
@@ -22,13 +22,12 @@ namespace Watchman.Discord.Areas.Help.Controllers
             _queryBus = queryBus;
         }
 
-        [DiscordCommand("help")]
-        public void PrintHelp(DiscordRequest request, Contexts contexts)
+        public void PrintHelp(HelpCommand request, Contexts contexts)
         {
             var messagesService = _messagesServiceFactory.Create(contexts);
             var helpInformations = this._queryBus.Execute(new GetHelpInformationQuery(contexts.Server.Id)).HelpInformations;
 
-            if (request.HasArgument(null, "json"))
+            if (request.Json)
             {
                 var helpMessage = this._helpMessageGenerator.GenerateJsonHelp(helpInformations);
                 messagesService.SendMessage(helpMessage, MessageType.Json);

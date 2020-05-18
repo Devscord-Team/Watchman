@@ -28,7 +28,7 @@ namespace Watchman.Discord.Areas.Help.Services
         {
             var commandInfosFromAssemblyList = commandInfosFromAssembly.ToList(); // for not multiple enumerating
 
-            var query = new GetHelpInformationQuery(HelpInformation.DEFAULT_SERVER_INDEX);
+            var query = new GetHelpInformationQuery(HelpInformation.EMPTY_SERVER_ID);
             var helpInfos = _queryBus.Execute(query).HelpInformations.ToList();
 
             var newCommands = FindNewCommands(commandInfosFromAssemblyList, helpInfos).ToList();

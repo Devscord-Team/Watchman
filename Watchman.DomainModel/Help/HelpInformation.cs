@@ -6,7 +6,7 @@ namespace Watchman.DomainModel.Help
 {
     public class HelpInformation : Entity
     {
-        public const ulong DEFAULT_SERVER_INDEX = 0;
+        public const ulong EMPTY_SERVER_ID = 0;
 
         public Guid HelpId { get; set; }
         public IEnumerable<string> Names { get; set; }
@@ -14,7 +14,7 @@ namespace Watchman.DomainModel.Help
         public IEnumerable<ArgumentInfo> ArgumentInfos { get; set; }
         public IEnumerable<Description> Descriptions { get; set; }
         public ulong ServerId { get; set; }
-        public bool IsDefault => ServerId == DEFAULT_SERVER_INDEX;
+        public bool IsDefault => ServerId == EMPTY_SERVER_ID;
 
         public HelpInformation()
         {
