@@ -32,7 +32,7 @@ namespace Devscord.DiscordFramework
 
         internal Workflow(Assembly botAssembly, IComponentContext context)
         {
-            this._controllersService = new ControllersService(context, botAssembly, context.Resolve<BotCommandsService>());
+            this._controllersService = new ControllersService(context, botAssembly, context.Resolve<BotCommandsService>(), context.Resolve<CommandsContainer>());
         }
 
         internal Workflow AddMiddleware<T>()

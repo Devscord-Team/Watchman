@@ -38,7 +38,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             var instance = Activator.CreateInstance(commandType);
             foreach (var property in commandType.GetProperties())
             {
-                var value = getValueByName(property.Name);
+                var value = getValueByName.Invoke(property.Name);
                 if(value == null)
                 {
                     continue;

@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework
@@ -21,13 +22,16 @@ namespace Devscord.DiscordFramework
         private readonly IComponentContext _context;
         private readonly Assembly _assembly;
         private readonly BotCommandsService _botCommandsService;
+        private readonly CommandsContainer _commandsContainer;
         private ControllersContainer _controllersContainer;
 
-        public ControllersService(IComponentContext context, Assembly assembly, BotCommandsService botCommandsService)
+        public ControllersService(IComponentContext context, Assembly assembly, BotCommandsService botCommandsService,
+            CommandsContainer commandsContainer)
         {
             this._context = context;
             this._assembly = assembly;
             this._botCommandsService = botCommandsService;
+            this._commandsContainer = commandsContainer;
         }
 
         public async Task Run(DiscordRequest request, Contexts contexts)
@@ -189,5 +193,53 @@ namespace Devscord.DiscordFramework
             }
             return Task.CompletedTask;
         }
+    }
+
+    public class CommandsContainer
+    {
+        private readonly ICustomCommandsLoader _customCommandsLoader;
+        private List<CustomCommand> _customCommands;
+        private DateTime _lastRefresh;
+
+        public CommandsContainer(ICustomCommandsLoader customCommandsLoader)
+        {
+            this._customCommandsLoader = customCommandsLoader;
+        }
+
+        public CustomCommand GetCommand(DiscordRequest request)
+        {
+            this.TryRefresh();
+            var command = this._customCommands.FirstOrDefault(x => x.Template.IsMatch(request.OriginalMessage));
+            return command;
+        }
+
+        private void TryRefresh()
+        {
+            if(this._lastRefresh > DateTime.UtcNow.AddMinutes(-15))
+            {
+                return;
+            }
+            this._customCommands = this._customCommandsLoader.GetCustomCommands();
+            this._lastRefresh = DateTime.UtcNow;
+        }
+    }
+
+    public class CustomCommand
+    {
+        public BotCommandTemplate BaseTemplate { get; private set; }
+        public Type ExpectedBotCommand { get; private set; }
+        public Regex Template { get; private set; }
+
+        public CustomCommand(BotCommandTemplate baseTemplate, Type expectedBotCommand, Regex template)
+        {
+            this.BaseTemplate = baseTemplate;
+            this.ExpectedBotCommand = expectedBotCommand;
+            this.Template = template;
+        }
+    }
+
+    public interface ICustomCommandsLoader
+    {
+        List<CustomCommand> GetCustomCommands();
     }
 }
