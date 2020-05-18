@@ -22,12 +22,12 @@ namespace Watchman.Discord.Areas.Help.Controllers
             _queryBus = queryBus;
         }
 
-        public void PrintHelp(HelpCommand request, Contexts contexts)
+        public void PrintHelp(HelpCommand command, Contexts contexts)
         {
             var messagesService = _messagesServiceFactory.Create(contexts);
             var helpInformations = this._queryBus.Execute(new GetHelpInformationQuery(contexts.Server.Id)).HelpInformations;
 
-            if (request.Json)
+            if (command.Json)
             {
                 var helpMessage = this._helpMessageGenerator.GenerateJsonHelp(helpInformations);
                 messagesService.SendMessage(helpMessage, MessageType.Json);

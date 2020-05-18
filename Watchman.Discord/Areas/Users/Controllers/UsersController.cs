@@ -12,6 +12,7 @@ using Watchman.DomainModel.DiscordServer.Queries;
 using Watchman.Discord.Areas.Users.Services;
 using Watchman.DomainModel.DiscordServer;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
+using Watchman.Discord.Areas.Users.BotCommands;
 
 namespace Watchman.Discord.Areas.Users.Controllers
 {
@@ -59,9 +60,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
             _rolesService.DeleteRoleFromUser(safeRoles, messagesService, contexts, commandRole);
         }
 
-        [DiscordCommand("list role")]
-        [DiscordCommand("roles")]
-        public async Task PrintRoles(DiscordRequest request, Contexts contexts)
+        public async Task PrintRoles(RolesCommand command, Contexts contexts)
         {
             var messageService = _messagesServiceFactory.Create(contexts);
             var query = new GetDiscordServerSafeRolesQuery(contexts.Server.Id);
