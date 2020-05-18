@@ -37,6 +37,8 @@ namespace Devscord.DiscordFramework.Framework
         private static List<SocketRole> _roles;
         public static Func<SocketGuildUser, Task> UserJoined { get; set; }
         public static Func<SocketGuild, Task> BotAddedToServer { get; set; }
+        public static List<DateTime> DisconnectedTimes { get; set; } = new List<DateTime>();
+        public static List<DateTime> ConnectedTimes { get; set; } = new List<DateTime>();
 
         public static void Initialize(DiscordSocketClient client)
         {
@@ -58,6 +60,7 @@ namespace Devscord.DiscordFramework.Framework
             _client.RoleDeleted += RemoveRole;
             _client.RoleUpdated += RoleUpdated;
             _client.Disconnected += BotDisconnected;
+            _client.Connected += BotConnected;
         }
 
         public static async Task SendDirectMessage(ulong userId, string message)
@@ -247,6 +250,13 @@ namespace Devscord.DiscordFramework.Framework
         private static Task BotDisconnected(Exception exception)
         {
             Log.Warning(exception, "Bot disconnected!");
+            DisconnectedTimes.Add(DateTime.Now);
+            return Task.CompletedTask;
+        }
+
+        private static Task BotConnected()
+        {
+            ConnectedTimes.Add(DateTime.Now);
             return Task.CompletedTask;
         }
     }
