@@ -83,7 +83,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands
     public class SmallTestCommand : IBotCommand
     {
         [Number]
-        public string TestNumber { get; set; }
+        public int TestNumber { get; set; }
 
         [UserMention]
         [Optional]
