@@ -3,7 +3,7 @@
 Opisane niżej klasy możesz znaleźć w projekcie `Watchman.Discord`, w ścieżce `Areas/Help/`  
 Namespace: `Watchman.Discord.Areas.Help.Services`, `Watchman.Discord.Areas.Help.Factories` i `Devscord.DiscordFramework.Services`  
   
-### TL;DR  
+### Podsumowanie:  
   
 Wraz z uruchomieniem bota zostaje uruchomiony serwis z Frameworka, który zbiera dane o wszystkich kontrolerach.  
 Następnie informacje te są mapowane na `CommandInfo` (z uzupełnieniem domyślnych opisów), a na sam koniec wpisywane za pomocą domeny jako `HelpInformation` do bazy.  
