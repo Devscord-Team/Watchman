@@ -1,76 +1,52 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Devscord.DiscordFramework.Commons.Extensions;
-using Devscord.DiscordFramework.Middlewares.Contexts;
 using Newtonsoft.Json;
-using Watchman.Cqrs;
 using Watchman.DomainModel.Help;
-using Watchman.DomainModel.Help.Queries;
 
 namespace Watchman.Discord.Areas.Help.Services
 {
     public class HelpMessageGeneratorService
     {
-        private readonly IQueryBus _queryBus;
-
-        public HelpMessageGeneratorService(IQueryBus queryBus)
+        public string GenerateJsonHelp(IEnumerable<HelpInformation> helpInformations)
         {
-            _queryBus = queryBus;
-        }
-
-        public string GenerateHelp(Contexts contexts)
-        {
-            var result = this._queryBus.Execute(new GetHelpInformationQuery(contexts.Server.Id));
-
-            var lines = new Dictionary<string, string>();
-            foreach (var helpInfo in result.HelpInformations)
-            {
-                var names = helpInfo.Names.Aggregate((x, y) => $"{x} / -{y}");
-                var description = helpInfo.Descriptions.First().Details;
-
-                lines.Add(names, description);
-            }
-
-            var messageBuilder = new StringBuilder();
-            messageBuilder.PrintManyLines(lines, false);
-            return messageBuilder.ToString();
-        }
-
-        public string GenerateJsonHelp(Contexts contexts)
-        {
-            var result = this._queryBus.Execute(new GetHelpInformationQuery(contexts.Server.Id));
-
-            var serialized = JsonConvert.SerializeObject(result.HelpInformations, Formatting.Indented);
+            var serialized = JsonConvert.SerializeObject(helpInformations, Formatting.Indented);
             serialized = RemoveFirstAndLastBracket(serialized);
             return serialized;
         }
 
         public IEnumerable<KeyValuePair<string, string>> MapToEmbedInput(IEnumerable<HelpInformation> helpInformations)
         {
-            return helpInformations.Select(x =>
+            foreach(var helpInfo in helpInformations)
             {
-                var name = "-" + x.Names.First();
+                var name = "-" + helpInfo.Names.Aggregate((a, b) => $"{a} / {b}");
 
-                var descriptions = x.Descriptions.Where(x => x.Details.Trim().ToLowerInvariant() != "empty").Select(x => $"{x.Name} => {x.Details}");
-                var arguments = x.ArgumentInfos.Where(x => x.Description.Trim().ToLowerInvariant() != "empty")?.Select(x => $"{x.Name} => {x.Description}");
+                var descriptions = helpInfo.Descriptions
+                    .Where(x => x.Details.Trim().ToLowerInvariant() != "empty")
+                    .Select(x => $"{x.Name} => {x.Details}")
+                    .ToList();
 
-                var content = descriptions.Any() ? descriptions.Aggregate((a, b) => a + "\n" + b) : string.Empty;
-                if(!string.IsNullOrWhiteSpace(content))
+                var arguments = helpInfo.ArgumentInfos
+                    .Where(x => x.Description.Trim().ToLowerInvariant() != "empty")
+                    .Select(x => $"{x.Name} => {x.Description}")
+                    .ToList();
+
+                var content = string.Empty;
+                if(descriptions.Any())
                 {
-                    content = content + "\n\n";
+                    var commandDescription = descriptions.Aggregate((a, b) => a + "\n" + b);
+                    content = commandDescription + "\n\n";
                 }
                 if(arguments.Any())
                 {
-                    content = content + arguments.Aggregate((a, b) => a + "\n" + b);
+                    content += arguments.Aggregate((a, b) => a + "\n" + b);
                 }
 
                 if (string.IsNullOrWhiteSpace(content))
                 {
                     content = "Jeszcze nie posiada opisu";
                 }
-                return new KeyValuePair<string, string>(name, content);
-            });
+                yield return new KeyValuePair<string, string>(name, content);
+            }
         }
 
         private string RemoveFirstAndLastBracket(string fullMessage) // '[' & ']'

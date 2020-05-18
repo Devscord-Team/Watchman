@@ -19,9 +19,8 @@ namespace Watchman.Discord.Areas.Initialization.Services
         private readonly UsersRolesService _usersRolesService;
         private readonly ServerScanningService _serverScanningService;
         private readonly CyclicStatisticsGeneratorService _cyclicStatisticsGeneratorService;
-        private readonly ResponsesInitService _responsesInitService;
 
-        public InitializationService(IQueryBus queryBus, ICommandBus commandBus, MuteRoleInitService muteRoleInitService, UsersRolesService usersRolesService, ServerScanningService serverScanningService, CyclicStatisticsGeneratorService cyclicStatisticsGeneratorService, ResponsesInitService responsesInitService)
+        public InitializationService(IQueryBus queryBus, ICommandBus commandBus, MuteRoleInitService muteRoleInitService, UsersRolesService usersRolesService, ServerScanningService serverScanningService, CyclicStatisticsGeneratorService cyclicStatisticsGeneratorService)
         {
             _queryBus = queryBus;
             _commandBus = commandBus;
@@ -29,7 +28,6 @@ namespace Watchman.Discord.Areas.Initialization.Services
             _usersRolesService = usersRolesService;
             _serverScanningService = serverScanningService;
             _cyclicStatisticsGeneratorService = cyclicStatisticsGeneratorService;
-            _responsesInitService = responsesInitService;
         }
 
         public async Task InitServer(DiscordServerContext server)

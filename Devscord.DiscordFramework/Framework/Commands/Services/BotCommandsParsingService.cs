@@ -18,7 +18,11 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             var instance = Activator.CreateInstance(commandType);
             foreach (var property in commandType.GetProperties())
             {
-                var value = request.Arguments.First(x => x.Name.ToLowerInvariant() == property.Name.ToLowerInvariant()).Value;
+                var value = request.Arguments.FirstOrDefault(x => x.Name.ToLowerInvariant() == property.Name.ToLowerInvariant())?.Value;
+                if (value == null)
+                {
+                    continue;
+                }
                 var propertyType = template.Properties.First(x => x.Name == property.Name).Type;
                 var convertedType = botCommandPropertyConversionService.ConvertType(value, propertyType);
                 property.SetValue(instance, convertedType);
