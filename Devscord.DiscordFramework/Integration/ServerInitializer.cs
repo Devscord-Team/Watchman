@@ -1,4 +1,6 @@
-﻿using Discord.WebSocket;
+﻿using Devscord.DiscordFramework.Integration.Services;
+using Discord.WebSocket;
+using Serilog;
 
 namespace Devscord.DiscordFramework.Framework
 {
@@ -12,7 +14,9 @@ namespace Devscord.DiscordFramework.Framework
             {
                 return;
             }
-            Server.Initialize(client);
+            var discordClient = new DiscordClient(client);
+            Server.Initialize(discordClient);
+            Log.Information("Server initialized");
             Initialized = true;
         }
     }
