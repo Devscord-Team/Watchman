@@ -1,11 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Serilog;
 using Watchman.Cqrs;
+using Watchman.Discord.Areas.Help.BotCommands;
 using Watchman.Discord.Areas.Statistics.Services;
+using Watchman.Discord.Areas.UselessFeatures.BotCommands;
+using Watchman.DomainModel.CustomCommands;
+using Watchman.DomainModel.CustomCommands.Commands;
+using Watchman.DomainModel.CustomCommands.Queries;
 using Watchman.DomainModel.Settings.Commands;
 using Watchman.DomainModel.Settings.Queries;
 
@@ -36,6 +42,7 @@ namespace Watchman.Discord.Areas.Initialization.Services
             var lastInitDate = GetLastInitDate(server);
             await ReadServerMessagesHistory(server, lastInitDate);
             await _cyclicStatisticsGeneratorService.GenerateStatsForDaysBefore(server, lastInitDate);
+            await AddDefaultCustomCommandsToTestServer(lastInitDate);
             await NotifyDomainAboutInit(server);
         }
 
@@ -72,6 +79,24 @@ namespace Watchman.Discord.Areas.Initialization.Services
 
             var lastInitEvent = initEvents.Max(x => x.EndedAt);
             return lastInitEvent;
+        }
+
+        private async Task AddDefaultCustomCommandsToTestServer(DateTime lastInitDate)
+        {
+            if(lastInitDate > DateTime.UtcNow.AddMinutes(-15))
+            {
+                return;
+            }
+            ulong testServerId = 636238466899902504; //watchman test server
+            var commands = new List<AddCustomCommandsCommand>()
+            {
+                new AddCustomCommandsCommand(typeof(HelpCommand).FullName, @"pomocy\s*panie\s*bocie\s*(\!*)?\s*(?<Json>json)?", testServerId),
+                new AddCustomCommandsCommand(typeof(MarchewCommand).FullName, @"jak\s*to\s*\jest\s*być\s*programistą\s*\?", testServerId)
+            };
+            foreach (var command in commands)
+            {
+                await this._commandBus.ExecuteAsync(command);
+            }
         }
 
         private async Task NotifyDomainAboutInit(DiscordServerContext server)
