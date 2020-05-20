@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Watchman.Cqrs;
+using Watchman.DomainModel.CustomCommands.Queries;
 
 namespace Watchman.Discord.Integration.DevscordFramework
 {
@@ -15,9 +17,10 @@ namespace Watchman.Discord.Integration.DevscordFramework
             this._queryBus = queryBus;
         }
 
-        public List<CustomCommand> GetCustomCommands()
+        public async Task<List<CustomCommand>> GetCustomCommands()
         {
-            throw new NotImplementedException();
+            var query = new GetCustomCommandsQuery();
+            return await this._queryBus.ExecuteAsync(query);
         }
     }
 }

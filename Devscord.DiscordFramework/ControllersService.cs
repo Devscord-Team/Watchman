@@ -109,9 +109,8 @@ namespace Devscord.DiscordFramework
             Task.WaitAll(tasks.ToArray());
         }
 
-        private void RunMethodsIBotCommand(DiscordRequest request, Contexts contexts, IEnumerable<ControllerInfo> controllers, bool isReadAlways)
+        private async Task RunMethodsIBotCommand(DiscordRequest request, Contexts contexts, IEnumerable<ControllerInfo> controllers, bool isReadAlways)
         {
-            var tasks = new List<Task>();
             foreach (var controllerInfo in controllers)
             {
                 using (LogContext.PushProperty("Controller", controllerInfo.Controller.GetType().Name))
@@ -122,20 +121,31 @@ namespace Devscord.DiscordFramework
                         {
                             continue;
                         }
-
                         var commandInParameterType = method.GetParameters().First(x => typeof(IBotCommand).IsAssignableFrom(x.ParameterType)).ParameterType;
-                        var template = this._botCommandsService.GetCommandTemplate(commandInParameterType);
+                        var template = this._botCommandsService.GetCommandTemplate(commandInParameterType); //TODO zoptymalizować, spokojnie można to pobierać wcześniej i używać raz, zamiast wszystko obliczać przy każdym odpaleniu
+                        var isToContinue = false;
                         if (!this._botCommandsService.IsMatchedWithCommand(request, template))
                         {
-                            continue;
+                            isToContinue = true;
                         }
-                        var command = this._botCommandsService.ParseRequestToCommand(commandInParameterType, request, template);
-                        var task = InvokeMethod(command, contexts, controllerInfo, method);
-                        tasks.Add(task);
+                        IBotCommand command;
+                        if(isToContinue)
+                        {
+                            var customCommand = await this._commandsContainer.GetCommand(request, commandInParameterType);
+                            if(customCommand == null)
+                            {
+                                continue;
+                            }
+                            command = this._botCommandsService.ParseCustomTemplate(commandInParameterType, template, customCommand.Template, request.OriginalMessage);
+                        }
+                        else
+                        {
+                            command = this._botCommandsService.ParseRequestToCommand(commandInParameterType, request, template);
+                        }
+                        await InvokeMethod(command, contexts, controllerInfo, method);
                     }
                 }
             }
-            Task.WaitAll(tasks.ToArray());
         }
 
         private bool IsValid(Contexts contexts, MethodInfo method)
@@ -198,7 +208,7 @@ namespace Devscord.DiscordFramework
     public class CommandsContainer
     {
         private readonly ICustomCommandsLoader _customCommandsLoader;
-        private List<CustomCommand> _customCommands;
+        private Dictionary<string, List<CustomCommand>> _customCommandsGroupedByBotCommand;
         private DateTime _lastRefresh;
 
         public CommandsContainer(ICustomCommandsLoader customCommandsLoader)
@@ -206,40 +216,43 @@ namespace Devscord.DiscordFramework
             this._customCommandsLoader = customCommandsLoader;
         }
 
-        public CustomCommand GetCommand(DiscordRequest request)
+        public async Task<CustomCommand> GetCommand(DiscordRequest request, Type botCommand)
         {
-            this.TryRefresh();
-            var command = this._customCommands.FirstOrDefault(x => x.Template.IsMatch(request.OriginalMessage));
+            await this.TryRefresh();
+            if(!this._customCommandsGroupedByBotCommand.ContainsKey(botCommand.FullName))
+            {
+                return null;
+            }
+            var command = this._customCommandsGroupedByBotCommand[botCommand.FullName].FirstOrDefault(x => x.Template.IsMatch(request.OriginalMessage));
             return command;
         }
 
-        private void TryRefresh()
+        private async Task TryRefresh()
         {
             if(this._lastRefresh > DateTime.UtcNow.AddMinutes(-15))
             {
                 return;
             }
-            this._customCommands = this._customCommandsLoader.GetCustomCommands();
+            var customCommands = await this._customCommandsLoader.GetCustomCommands();
+            this._customCommandsGroupedByBotCommand = customCommands.GroupBy(x => x.ExpectedBotCommandName).ToDictionary(k => k.Key, v => v.ToList());
             this._lastRefresh = DateTime.UtcNow;
         }
     }
 
     public class CustomCommand
     {
-        public BotCommandTemplate BaseTemplate { get; private set; }
-        public Type ExpectedBotCommand { get; private set; }
+        public string ExpectedBotCommandName { get; private set; } //IBotCommand
         public Regex Template { get; private set; }
 
-        public CustomCommand(BotCommandTemplate baseTemplate, Type expectedBotCommand, Regex template)
+        public CustomCommand(string expectedBotCommandName, Regex template)
         {
-            this.BaseTemplate = baseTemplate;
-            this.ExpectedBotCommand = expectedBotCommand;
+            this.ExpectedBotCommandName = expectedBotCommandName;
             this.Template = template;
         }
     }
 
     public interface ICustomCommandsLoader
     {
-        List<CustomCommand> GetCustomCommands();
+        Task<List<CustomCommand>> GetCustomCommands();
     }
 }
