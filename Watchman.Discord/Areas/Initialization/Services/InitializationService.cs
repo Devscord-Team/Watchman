@@ -41,8 +41,8 @@ namespace Watchman.Discord.Areas.Initialization.Services
             await MuteRoleInit(server);
             var lastInitDate = GetLastInitDate(server);
             await ReadServerMessagesHistory(server, lastInitDate);
-            await _cyclicStatisticsGeneratorService.GenerateStatsForDaysBefore(server, lastInitDate);
             await AddDefaultCustomCommandsToTestServer(lastInitDate);
+            await _cyclicStatisticsGeneratorService.GenerateStatsForDaysBefore(server, lastInitDate);
             await NotifyDomainAboutInit(server);
         }
 

@@ -29,7 +29,7 @@ namespace Devscord.DiscordFramework.Framework
                 Log.Information("Waiting for connection... {time}ms after initialization", waiting++ * 100);
                 Task.Delay(100).Wait();
             }
-            Log.Information("Initialization done and bot is connected. {ticks}ticks | {ms}ms", sw.ElapsedTicks, sw.ElapsedMilliseconds);
+            Log.Information("Bot is connected. {ticks}ticks | {ms}ms", sw.ElapsedTicks, sw.ElapsedMilliseconds);
             sw.Stop();
         }
     }
