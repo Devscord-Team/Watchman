@@ -11,7 +11,6 @@ using Devscord.DiscordFramework.Integration.Services.Interfaces;
 
 namespace Devscord.DiscordFramework.Integration.Services
 {
-
     internal class DiscordClientServersService : IDiscordClientServersService
     {
         private DiscordSocketRestClient _restClient => _client.Rest;
