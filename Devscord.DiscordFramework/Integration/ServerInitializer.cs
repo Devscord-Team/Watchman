@@ -1,4 +1,5 @@
-﻿using Devscord.DiscordFramework.Integration.Services;
+﻿using Devscord.DiscordFramework.Integration;
+using Devscord.DiscordFramework.Integration.Services;
 using Discord.WebSocket;
 using Serilog;
 

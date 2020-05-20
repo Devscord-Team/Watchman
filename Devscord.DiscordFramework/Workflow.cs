@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Devscord.DiscordFramework.Framework;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Framework.Commands.Parsing;
 using Devscord.DiscordFramework.Middlewares.Contexts;
@@ -14,6 +13,7 @@ using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Discord.Rest;
 using System.Diagnostics;
 using Devscord.DiscordFramework.Framework.Commands.Services;
+using Devscord.DiscordFramework.Integration;
 
 namespace Devscord.DiscordFramework
 {
