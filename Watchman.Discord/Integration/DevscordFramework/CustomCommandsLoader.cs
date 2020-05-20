@@ -24,8 +24,12 @@ namespace Watchman.Discord.Integration.DevscordFramework
         {
             var query = new GetCustomCommandsQuery();
             var commands = await this._queryBus.ExecuteAsync(query);
-            var mapped = commands.CustomCommands.Select(x => new CustomCommand(x.CommandFullName, new Regex(x.CustomTemplateRegex, RegexOptions.Compiled), x.ServerId));
-            return mapped.ToList();
+            var mapped = commands.CustomCommands.Select(x =>
+            {
+                var regex = new Regex(x.CustomTemplateRegex.Replace(@"\\", @"\"), RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                return new CustomCommand(x.CommandFullName, regex, x.ServerId);
+            }).ToList();
+            return mapped;
         }
     }
 }

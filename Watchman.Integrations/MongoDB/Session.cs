@@ -37,7 +37,7 @@ namespace Watchman.Integrations.MongoDB
 
         public async Task AddOrUpdateAsync<T>(T entity) where T : Entity
         {
-            if (this.Get<T>(entity.Id) != null)
+            if (this.Get<T>(entity.Id) == null)
             {
                 await this.AddAsync(entity);
             }

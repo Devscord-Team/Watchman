@@ -88,12 +88,16 @@ namespace Watchman.Discord.Areas.Initialization.Services
                 return;
             }
             ulong testServerId = 636238466899902504; //watchman test server
+
+            var query = new GetCustomCommandsQuery();
+            var commandsInRepository = await this._queryBus.ExecuteAsync(query);
+
             var commands = new List<AddCustomCommandsCommand>()
             {
                 new AddCustomCommandsCommand(typeof(HelpCommand).FullName, @"pomocy\s*panie\s*bocie\s*(\!*)?\s*(?<Json>json)?", testServerId),
-                new AddCustomCommandsCommand(typeof(MarchewCommand).FullName, @"jak\s*to\s*\jest\s*być\s*programistą\s*\?", testServerId)
+                new AddCustomCommandsCommand(typeof(MarchewCommand).FullName, @"jak\s*to\s*jest\s*być\s*programistą\s*", testServerId)
             };
-            foreach (var command in commands)
+            foreach (var command in commands.Where(x => !commandsInRepository.CustomCommands?.Any(c => c.ServerId == x.ServerId && x.CommandFullName == c.CommandFullName) ?? true))
             {
                 await this._commandBus.ExecuteAsync(command);
             }

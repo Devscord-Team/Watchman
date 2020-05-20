@@ -20,7 +20,7 @@ namespace Watchman.DomainModel.CustomCommands.Commands.Handlers
         {
             using var session = this.sessionFactory.Create();
             var customCommand = new CustomCommand(command.CommandFullName, command.CustomTemplateRegex, command.ServerId);
-            await session.AddOrUpdateAsync(customCommand);
+            await session.AddAsync(customCommand);
         }
     }
 }
