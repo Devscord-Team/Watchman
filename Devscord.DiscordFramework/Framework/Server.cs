@@ -15,80 +15,363 @@ using Serilog;
 
 namespace Devscord.DiscordFramework.Framework
 {
-    public static class ServerInitializer
+    internal static class Server
     {
-        public static bool Initialized { get; private set; }
+        private static IDiscordClient _discordClient;
 
-        public static void Initialize(DiscordSocketClient client)
+        public Func<SocketGuildUser, Task> UserJoined => _discordClient.
+        public Func<SocketGuild, Task> BotAddedToServer { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public List<DateTime> ConnectedTimes { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public List<DateTime> DisconnectedTimes { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        internal static void Initialize(IDiscordClient discordClient)
         {
-            if (Initialized)
-            {
-                return;
-            }
-            Server.Initialize(client);
-            Initialized = true;
+            _discordClient = discordClient;
+        }
+
+        public Task AddRole(SocketRole role)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task BotConnected()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task BotDisconnected(Exception exception)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool CanBotReadTheChannel(IMessageChannel textChannel)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<UserRole> CreateNewRole(NewUserRole role, DiscordServerContext discordServer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IChannel> GetChannel(ulong channelId, RestGuild guild = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<DiscordServerContext>> GetDiscordServers()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<string>> GetExistingInviteLinks(ulong serverId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RestGuild> GetGuild(ulong guildId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RestGuildUser> GetGuildUser(ulong userId, ulong guildId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<RestGuildUser>> GetGuildUsers(ulong guildId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Message>> GetMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong fromMessageId = 0, bool goBefore = true)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<UserRole> GetRoles(ulong guildId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<SocketRole> GetSocketRoles(ulong guildId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RestUser> GetUser(ulong userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RemoveRole(SocketRole role)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RoleUpdated(SocketRole from, SocketRole to)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SendDirectEmbedMessage(ulong userId, Embed embed)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SendDirectMessage(ulong userId, string message)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SetRolePermissions(ChannelContext channel, ChangedPermissions permissions, UserRole role)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SetRolePermissions(IEnumerable<ChannelContext> channels, DiscordServerContext server, ChangedPermissions permissions, UserRole muteRole)
+        {
+            throw new NotImplementedException();
         }
     }
 
-    internal static class Server
+    public class DiscordClient : IDiscordClient
     {
-        private static DiscordSocketRestClient _restClient => _client.Rest; //try to use only rest client if it is possible, because it is safer in our architecture
-        private static DiscordSocketClient _client;
-        private static List<SocketRole> _roles;
-        public static Func<SocketGuildUser, Task> UserJoined { get; set; }
-        public static Func<SocketGuild, Task> BotAddedToServer { get; set; }
-        public static List<DateTime> DisconnectedTimes { get; set; } = new List<DateTime>();
-        public static List<DateTime> ConnectedTimes { get; set; } = new List<DateTime>();
+        private bool _initialized;
+        private DiscordSocketClient _client;
 
-        public static void Initialize(DiscordSocketClient client)
+        public IDiscordClientUsersService UsersService { get; private set; }
+        public IDiscordClientChannelsService ChannelsService { get; private set; }
+        public IDiscordClientRolesService RolesService { get; private set; }
+        public IDiscordClientServersService ServersService { get; private set; }
+
+        public DiscordClient(DiscordSocketClient client)
         {
+            this._client = client;
             while (client.ConnectionState != ConnectionState.Connected)
             {
                 Task.Delay(100).Wait();
             }
+            this.Initialize();
+        }
 
-            _client = client;
-            _client.UserJoined += user => UserJoined(user);
-            _client.JoinedGuild += BotAddedToServer;
-
-            _client.Ready += async () => await Task.Run(() =>
+        private void Initialize()
+        {
+            if(_initialized)
             {
-                return _roles = client.Guilds.SelectMany(x => x.Roles).ToList();
+                return;
+            }
+            this.UsersService = new DiscordClientUsersService(this._client);
+            this.ChannelsService = new DiscordClientChannelsService(this._client, this.UsersService);
+            this.RolesService = new DiscordClientRolesService(this._client, this.ChannelsService);
+            this.ServersService = new DiscordClientServersService(this._client, this.ChannelsService);
+
+            _initialized = true;
+            Log.Information("DiscordClient initialized");
+        }
+    }
+
+    public interface IDiscordClient
+    {
+        IDiscordClientUsersService UsersService { get; set; }
+        IDiscordClientChannelsService ChannelsService { get; set; }
+        IDiscordClientRolesService RolesService { get; set; }
+        IDiscordClientServersService ServersService { get; set; }
+    }
+
+    public interface IDiscordClientUsersService
+    {
+        Func<SocketGuildUser, Task> UserJoined { get; set; }
+        Task<RestGuildUser> GetGuildUser(ulong userId, ulong guildId);
+        Task<IEnumerable<RestGuildUser>> GetGuildUsers(ulong guildId);
+        Task<RestUser> GetUser(ulong userId);
+    }
+
+    public interface IDiscordClientChannelsService
+    {
+        Task<IChannel> GetChannel(ulong channelId, RestGuild guild = null);
+        Task SendDirectEmbedMessage(ulong userId, Embed embed);
+        Task SendDirectMessage(ulong userId, string message);
+    }
+
+    public interface IDiscordClientRolesService
+    {
+        Task AddRole(SocketRole role);
+        Task<UserRole> CreateNewRole(NewUserRole role, DiscordServerContext discordServer);
+        IEnumerable<UserRole> GetRoles(ulong guildId);
+        IEnumerable<SocketRole> GetSocketRoles(ulong guildId);
+        Task RemoveRole(SocketRole role);
+        Task RoleUpdated(SocketRole from, SocketRole to);
+        Task SetRolePermissions(ChannelContext channel, ChangedPermissions permissions, UserRole role);
+        Task SetRolePermissions(IEnumerable<ChannelContext> channels, DiscordServerContext server, ChangedPermissions permissions, UserRole muteRole);
+    }
+
+    public interface IDiscordClientServersService
+    {
+        Func<SocketGuild, Task> BotAddedToServer { get; set; }
+        List<DateTime> ConnectedTimes { get; set; }
+        List<DateTime> DisconnectedTimes { get; set; }
+
+        Task BotConnected();
+        Task BotDisconnected(Exception exception);
+        bool CanBotReadTheChannel(IMessageChannel textChannel);
+        Task<IEnumerable<DiscordServerContext>> GetDiscordServers();
+        Task<IEnumerable<string>> GetExistingInviteLinks(ulong serverId);
+        Task<RestGuild> GetGuild(ulong guildId);
+        Task<IEnumerable<Message>> GetMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong fromMessageId = 0, bool goBefore = true);
+    }
+
+    public class DiscordClientRolesService : IDiscordClientRolesService
+    {
+        private DiscordSocketRestClient _restClient => _client.Rest;
+        private readonly DiscordSocketClient _client;
+        private readonly IDiscordClientChannelsService _discordClientChannelsService;
+        private List<SocketRole> _roles;
+
+        public DiscordClientRolesService(DiscordSocketClient client, IDiscordClientChannelsService discordClientChannelsService)
+        {
+            this._client = client;
+            this._discordClientChannelsService = discordClientChannelsService;
+
+            this._client.Ready += async () => await Task.Run(() =>
+            {
+                return _roles = this._client.Guilds.SelectMany(x => x.Roles).ToList();
             });
-
-            _client.RoleCreated += AddRole;
-            _client.RoleDeleted += RemoveRole;
-            _client.RoleUpdated += RoleUpdated;
-            _client.Disconnected += BotDisconnected;
-            _client.Connected += BotConnected;
+            this._client.RoleCreated += AddRole;
+            this._client.RoleDeleted += RemoveRole;
+            this._client.RoleUpdated += RoleUpdated;
         }
 
-        public static async Task SendDirectMessage(ulong userId, string message)
+        public async Task<UserRole> CreateNewRole(NewUserRole role, DiscordServerContext discordServer)
         {
-            var user = await GetUser(userId);
-            await user.SendMessageAsync(message);
+            var permissionsValue = role.Permissions.GetRawValue();
+
+            var guild = await _restClient.GetGuildAsync(discordServer.Id);
+            var restRole = await guild.CreateRoleAsync(role.Name, new GuildPermissions(permissionsValue), isMentionable: false);
+            var userRole = new UserRoleFactory().Create(restRole);
+
+            return userRole;
         }
 
-        public static async Task SendDirectEmbedMessage(ulong userId, Embed embed)
+        public async Task SetRolePermissions(ChannelContext channel, ChangedPermissions permissions, UserRole role)
         {
-            var user = await GetUser(userId);
-            await user.SendMessageAsync(embed: embed);
+            await Task.Delay(1000);
+
+            var channelSocket = (IGuildChannel)await this._discordClientChannelsService.GetChannel(channel.Id);
+            var channelPermissions = new OverwritePermissions(permissions.AllowPermissions.GetRawValue(), permissions.DenyPermissions.GetRawValue());
+            var createdRole = this.GetSocketRoles(channelSocket.GuildId).FirstOrDefault(x => x.Id == role.Id);
+
+            await channelSocket.AddPermissionOverwriteAsync(createdRole, channelPermissions);
         }
 
-        public static IEnumerable<SocketRole> GetSocketRoles(ulong guildId)
+        public async Task SetRolePermissions(IEnumerable<ChannelContext> channels, DiscordServerContext server, ChangedPermissions permissions, UserRole muteRole)
+        {
+            await Task.Delay(1000);
+            var createdRole = this.GetSocketRoles(server.Id).FirstOrDefault(x => x.Id == muteRole.Id);
+            var channelPermissions = new OverwritePermissions(permissions.AllowPermissions.GetRawValue(), permissions.DenyPermissions.GetRawValue());
+
+            Parallel.ForEach(channels, async c =>
+            {
+                var channelSocket = (IGuildChannel)await this._discordClientChannelsService.GetChannel(c.Id);
+                await channelSocket.AddPermissionOverwriteAsync(createdRole, channelPermissions);
+            });
+        }
+
+        public IEnumerable<SocketRole> GetSocketRoles(ulong guildId)
         {
             if (_roles == null) // todo: it should work without this if
                 _roles = _client.Guilds.SelectMany(x => x.Roles).ToList();
             return _roles.Where(x => x.Guild.Id == guildId);
         }
 
-        public static IEnumerable<UserRole> GetRoles(ulong guildId)
+        public IEnumerable<UserRole> GetRoles(ulong guildId)
         {
             var roleFactory = new UserRoleFactory();
             return GetSocketRoles(guildId).Select(x => roleFactory.Create(x));
         }
 
-        public static async Task<IChannel> GetChannel(ulong channelId, RestGuild guild = null)
+        public Task AddRole(SocketRole role)
+        {
+            this._roles.Add(role);
+            return Task.CompletedTask;
+        }
+
+        public Task RemoveRole(SocketRole role)
+        {
+            this._roles.Remove(role);
+            return Task.CompletedTask;
+        }
+
+        public Task RoleUpdated(SocketRole from, SocketRole to)
+        {
+            this._roles.Remove(from);
+            this._roles.Add(to);
+            return Task.CompletedTask;
+        }
+    }
+
+    
+
+    public class DiscordClientUsersService : IDiscordClientUsersService
+    {
+        private DiscordSocketRestClient _restClient => _client.Rest;
+        private readonly DiscordSocketClient _client;
+
+        public Func<SocketGuildUser, Task> UserJoined { get; set; }
+
+        public DiscordClientUsersService(DiscordSocketClient client)
+        {
+            this._client = client;
+
+            this._client.UserJoined += user => this.UserJoined(user);
+        }
+
+        public async Task<RestUser> GetUser(ulong userId)
+        {
+            return await this._restClient.GetUserAsync(userId);
+        }
+
+        public async Task<RestGuildUser> GetGuildUser(ulong userId, ulong guildId)
+        {
+            var guild = await _restClient.GetGuildAsync(guildId);
+            return await guild.GetUserAsync(userId);
+        }
+
+        public async Task<IEnumerable<RestGuildUser>> GetGuildUsers(ulong guildId)
+        {
+            var guild = await _restClient.GetGuildAsync(guildId);
+            var users = guild.GetUsersAsync();
+            return await users.FlattenAsync();
+        }
+    }
+
+    
+
+    public class DiscordClientChannelsService : IDiscordClientChannelsService
+    {
+        private DiscordSocketRestClient _restClient => _client.Rest;
+        private readonly DiscordSocketClient _client;
+        private readonly IDiscordClientUsersService _discordClientUsersService;
+
+        public DiscordClientChannelsService(DiscordSocketClient client, IDiscordClientUsersService discordClientUsersService)
+        {
+            this._client = client;
+            this._discordClientUsersService = discordClientUsersService;
+        }
+
+        public async Task SendDirectMessage(ulong userId, string message)
+        {
+            var user = await _discordClientUsersService.GetUser(userId);
+            await user.SendMessageAsync(message);
+        }
+
+        public async Task SendDirectEmbedMessage(ulong userId, Embed embed)
+        {
+            var user = await _discordClientUsersService.GetUser(userId);
+            await user.SendMessageAsync(embed: embed);
+        }
+
+        public async Task<IChannel> GetChannel(ulong channelId, RestGuild guild = null)
         {
             if (guild != null)
             {
@@ -107,85 +390,36 @@ namespace Devscord.DiscordFramework.Framework
             }
             return channel;
         }
+    }
 
-        public static async Task<RestUser> GetUser(ulong userId)
+    
+
+    public class DiscordClientServersService : IDiscordClientServersService
+    {
+        private DiscordSocketRestClient _restClient => _client.Rest;
+        private readonly DiscordSocketClient _client;
+        private readonly IDiscordClientChannelsService _discordClientChannelsService;
+
+        public Func<SocketGuild, Task> BotAddedToServer { get; set; }
+        public List<DateTime> DisconnectedTimes { get; set; } = new List<DateTime>();
+        public List<DateTime> ConnectedTimes { get; set; } = new List<DateTime>();
+
+        public DiscordClientServersService(DiscordSocketClient client, IDiscordClientChannelsService discordClientChannelsService)
         {
-            return await _restClient.GetUserAsync(userId);
+            this._client = client;
+            this._discordClientChannelsService = discordClientChannelsService;
+
+            this._client.JoinedGuild += this.BotAddedToServer;
+            this._client.Disconnected += this.BotDisconnected;
+            this._client.Connected += this.BotConnected;
         }
 
-        public static async Task<RestGuild> GetGuild(ulong guildId)
+        public async Task<RestGuild> GetGuild(ulong guildId)
         {
             return await _restClient.GetGuildAsync(guildId);
         }
 
-        public static async Task<RestGuildUser> GetGuildUser(ulong userId, ulong guildId)
-        {
-            var guild = await _restClient.GetGuildAsync(guildId);
-            return await guild.GetUserAsync(userId);
-        }
-
-        public static async Task<IEnumerable<RestGuildUser>> GetGuildUsers(ulong guildId)
-        {
-            var guild = await _restClient.GetGuildAsync(guildId);
-            var users = guild.GetUsersAsync();
-            return await users.FlattenAsync();
-        }
-
-        private static Task AddRole(SocketRole role)
-        {
-            _roles.Add(role);
-            return Task.CompletedTask;
-        }
-
-        private static Task RemoveRole(SocketRole role)
-        {
-            _roles.Remove(role);
-            return Task.CompletedTask;
-        }
-
-        private static Task RoleUpdated(SocketRole from, SocketRole to)
-        {
-            _roles.Remove(from);
-            _roles.Add(to);
-            return Task.CompletedTask;
-        }
-
-        public static async Task<UserRole> CreateNewRole(NewUserRole role, DiscordServerContext discordServer)
-        {
-            var permissionsValue = role.Permissions.GetRawValue();
-
-            var guild = await _restClient.GetGuildAsync(discordServer.Id);
-            var restRole = await guild.CreateRoleAsync(role.Name, new GuildPermissions(permissionsValue), isMentionable: false);
-            var userRole = new UserRoleFactory().Create(restRole);
-
-            return userRole;
-        }
-
-        public static async Task SetPermissions(ChannelContext channel, ChangedPermissions permissions, UserRole muteRole)
-        {
-            await Task.Delay(1000);
-
-            var channelSocket = (IGuildChannel)await GetChannel(channel.Id);
-            var channelPermissions = new OverwritePermissions(permissions.AllowPermissions.GetRawValue(), permissions.DenyPermissions.GetRawValue());
-            var createdRole = Server.GetSocketRoles(channelSocket.GuildId).FirstOrDefault(x => x.Id == muteRole.Id);
-
-            await channelSocket.AddPermissionOverwriteAsync(createdRole, channelPermissions);
-        }
-
-        public static async Task SetPermissions(IEnumerable<ChannelContext> channels, DiscordServerContext server, ChangedPermissions permissions, UserRole muteRole)
-        {
-            await Task.Delay(1000);
-            var createdRole = Server.GetSocketRoles(server.Id).FirstOrDefault(x => x.Id == muteRole.Id);
-            var channelPermissions = new OverwritePermissions(permissions.AllowPermissions.GetRawValue(), permissions.DenyPermissions.GetRawValue());
-
-            Parallel.ForEach(channels, async c =>
-            {
-                var channelSocket = (IGuildChannel)await GetChannel(c.Id);
-                await channelSocket.AddPermissionOverwriteAsync(createdRole, channelPermissions);
-            });
-        }
-
-        public static async Task<IEnumerable<DiscordServerContext>> GetDiscordServers()
+        public async Task<IEnumerable<DiscordServerContext>> GetDiscordServers()
         {
             var serverContextFactory = new DiscordServerContextFactory();
             var guilds = await _restClient.GetGuildsAsync();
@@ -193,10 +427,17 @@ namespace Devscord.DiscordFramework.Framework
             return serverContexts;
         }
 
-        public static async Task<IEnumerable<Message>> GetMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong fromMessageId = 0, bool goBefore = true)
+        public async Task<IEnumerable<string>> GetExistingInviteLinks(ulong serverId)
         {
-            var textChannel = (ITextChannel)Server.GetChannel(channel.Id).Result;
-            if (!CanBotReadTheChannel(textChannel))
+            var guild = this._client.GetGuild(serverId);
+            var invites = await guild.GetInvitesAsync();
+            return invites.Select(x => x.Url);
+        }
+
+        public async Task<IEnumerable<Message>> GetMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong fromMessageId = 0, bool goBefore = true)
+        {
+            var textChannel = (ITextChannel)this._discordClientChannelsService.GetChannel(channel.Id).Result;
+            if (!this.CanBotReadTheChannel(textChannel))
             {
                 return new List<Message>();
             }
@@ -227,7 +468,7 @@ namespace Devscord.DiscordFramework.Framework
             return messages;
         }
 
-        private static bool CanBotReadTheChannel(IMessageChannel textChannel)
+        public bool CanBotReadTheChannel(IMessageChannel textChannel)
         {
             try
             {
@@ -240,23 +481,16 @@ namespace Devscord.DiscordFramework.Framework
             }
         }
 
-        public static async Task<IEnumerable<string>> GetExistingInviteLinks(ulong serverId)
-        {
-            var guild = _client.GetGuild(serverId);
-            var invites = await guild.GetInvitesAsync();
-            return invites.Select(x => x.Url);
-        }
-
-        private static Task BotDisconnected(Exception exception)
+        public Task BotDisconnected(Exception exception)
         {
             Log.Warning(exception, "Bot disconnected!");
-            DisconnectedTimes.Add(DateTime.Now);
+            this.DisconnectedTimes.Add(DateTime.Now);
             return Task.CompletedTask;
         }
 
-        private static Task BotConnected()
+        public Task BotConnected()
         {
-            ConnectedTimes.Add(DateTime.Now);
+            this.ConnectedTimes.Add(DateTime.Now);
             return Task.CompletedTask;
         }
     }
