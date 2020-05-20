@@ -55,12 +55,10 @@ namespace Devscord.DiscordFramework
                 {
                     var discordCommandMethods = this._controllersContainer.WithDiscordCommand;
                     commandsTask = Task.Run(() => RunMethods(request, contexts, discordCommandMethods, false));
-
                 }
                 var discordBotCommandMethods = this._controllersContainer.WithIBotCommand;
                 botCommandsTask = Task.Run(() => RunMethodsIBotCommand(request, contexts, discordBotCommandMethods, false));//TODO zoptymalizować
                 
-
                 // ReadAlwaysMethods should be first in throwing exception, bcs every ReadAlways exception is Error
                 await readAlwaysTask;
                 if (commandsTask != null)
@@ -134,7 +132,7 @@ namespace Devscord.DiscordFramework
                             {
                                 continue;
                             }
-                            command = this._botCommandsService.ParseCustomTemplate(commandInParameterType, template, customCommand.Template, request.OriginalMessage);
+                            command = this._botCommandsService.ParseCustomTemplate(commandInParameterType, template, customCommand.Template, request.OriginalMessage); //TODO optional parameters validation
                         }
                         else
                         {

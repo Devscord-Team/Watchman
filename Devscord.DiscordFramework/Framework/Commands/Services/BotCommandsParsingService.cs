@@ -39,7 +39,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             foreach (var property in commandType.GetProperties())
             {
                 var value = getValueByName.Invoke(property.Name);
-                if(value == null)
+                if(string.IsNullOrWhiteSpace(value))
                 {
                     continue;
                 }
