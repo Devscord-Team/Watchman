@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Devscord.DiscordFramework.Framework.Commands.Parsing.Models
 {
-    public class DiscordRequest //TODO add lasy loading for everything except IsCommandForBot
+    public class DiscordRequest //TODO add lazy loading for everything except IsCommandForBot
     {
         public string Prefix { get; set; }
         public string Name { get; set; }
