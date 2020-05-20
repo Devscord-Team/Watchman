@@ -19,14 +19,10 @@ namespace Devscord.DiscordFramework.Integration.Services
         public DiscordClient(DiscordSocketClient client)
         {
             _client = client;
-            while (client.ConnectionState != ConnectionState.Connected)
-            {
-                Task.Delay(100).Wait();
-            }
-            Initialize();
+            this.Initialize();
         }
 
-        private void Initialize()
+        public void Initialize()
         {
             if (_initialized)
             {
@@ -35,7 +31,7 @@ namespace Devscord.DiscordFramework.Integration.Services
             UsersService = new DiscordClientUsersService(_client);
             ChannelsService = new DiscordClientChannelsService(_client, UsersService);
             RolesService = new DiscordClientRolesService(_client, ChannelsService);
-            ServersService = new DiscordClientServersService(_client, ChannelsService);
+            ServersService = new DiscordClientServersService(_client);
 
             _initialized = true;
             Log.Information("DiscordClient initialized");

@@ -16,16 +16,14 @@ namespace Devscord.DiscordFramework.Integration.Services
     {
         private DiscordSocketRestClient _restClient => _client.Rest;
         private readonly DiscordSocketClient _client;
-        private readonly IDiscordClientChannelsService _discordClientChannelsService;
 
-        public Func<SocketGuild, Task> BotAddedToServer { get; set; }
+        public Func<SocketGuild, Task> BotAddedToServer { get; set; } = x => Task.CompletedTask;
         public List<DateTime> DisconnectedTimes { get; set; } = new List<DateTime>();
         public List<DateTime> ConnectedTimes { get; set; } = new List<DateTime>();
 
-        public DiscordClientServersService(DiscordSocketClient client, IDiscordClientChannelsService discordClientChannelsService)
+        public DiscordClientServersService(DiscordSocketClient client)
         {
             this._client = client;
-            this._discordClientChannelsService = discordClientChannelsService;
 
             this._client.JoinedGuild += this.BotAddedToServer;
             this._client.Disconnected += this.BotDisconnected;

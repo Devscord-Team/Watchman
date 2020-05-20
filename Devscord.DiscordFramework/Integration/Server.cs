@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Services.Models;
 using Discord.Rest;
+using Serilog;
 
 namespace Devscord.DiscordFramework.Integration
 {
@@ -24,6 +25,7 @@ namespace Devscord.DiscordFramework.Integration
             _discordClient = discordClient;
             _discordClient.UsersService.UserJoined += UserJoined;
             _discordClient.ServersService.BotAddedToServer += BotAddedToServer;
+            Log.Information("Server initialized");
         }
 
         //Users
