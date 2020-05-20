@@ -5,6 +5,7 @@ using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Framework.Commands.Services;
+using Devscord.DiscordFramework.Integration;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Serilog;
 using Serilog.Context;
@@ -123,15 +124,11 @@ namespace Devscord.DiscordFramework
                         }
                         var commandInParameterType = method.GetParameters().First(x => typeof(IBotCommand).IsAssignableFrom(x.ParameterType)).ParameterType;
                         var template = this._botCommandsService.GetCommandTemplate(commandInParameterType); //TODO zoptymalizować, spokojnie można to pobierać wcześniej i używać raz, zamiast wszystko obliczać przy każdym odpaleniu
-                        var isToContinue = false;
-                        if (!this._botCommandsService.IsMatchedWithCommand(request, template))
-                        {
-                            isToContinue = true;
-                        }
+                        var isToContinue = !this._botCommandsService.IsMatchedWithCommand(request, template);
                         IBotCommand command;
                         if(isToContinue)
                         {
-                            var customCommand = await this._commandsContainer.GetCommand(request, commandInParameterType);
+                            var customCommand = await this._commandsContainer.GetCommand(request, commandInParameterType, contexts.Server.Id);
                             if(customCommand == null)
                             {
                                 continue;
@@ -208,7 +205,7 @@ namespace Devscord.DiscordFramework
     public class CommandsContainer
     {
         private readonly ICustomCommandsLoader _customCommandsLoader;
-        private Dictionary<string, List<CustomCommand>> _customCommandsGroupedByBotCommand;
+        private Dictionary<ulong, List<CustomCommand>> _customCommandsGroupedByBotCommand;
         private DateTime _lastRefresh;
 
         public CommandsContainer(ICustomCommandsLoader customCommandsLoader)
@@ -216,14 +213,15 @@ namespace Devscord.DiscordFramework
             this._customCommandsLoader = customCommandsLoader;
         }
 
-        public async Task<CustomCommand> GetCommand(DiscordRequest request, Type botCommand)
+        public async Task<CustomCommand> GetCommand(DiscordRequest request, Type botCommand, ulong serverId)
         {
             await this.TryRefresh();
-            if(!this._customCommandsGroupedByBotCommand.ContainsKey(botCommand.FullName))
+            if (!this._customCommandsGroupedByBotCommand.ContainsKey(serverId))
             {
                 return null;
             }
-            var command = this._customCommandsGroupedByBotCommand[botCommand.FullName].FirstOrDefault(x => x.Template.IsMatch(request.OriginalMessage));
+            var serverCommands = this._customCommandsGroupedByBotCommand[serverId];
+            var command = serverCommands.FirstOrDefault(x => x.ExpectedBotCommandName == botCommand.FullName && x.Template.IsMatch(request.OriginalMessage));
             return command;
         }
 
@@ -234,7 +232,7 @@ namespace Devscord.DiscordFramework
                 return;
             }
             var customCommands = await this._customCommandsLoader.GetCustomCommands();
-            this._customCommandsGroupedByBotCommand = customCommands.GroupBy(x => x.ExpectedBotCommandName).ToDictionary(k => k.Key, v => v.ToList());
+            this._customCommandsGroupedByBotCommand = customCommands.GroupBy(x => x.ServerId).ToDictionary(k => k.Key, v => v.ToList());
             this._lastRefresh = DateTime.UtcNow;
         }
     }
@@ -243,11 +241,13 @@ namespace Devscord.DiscordFramework
     {
         public string ExpectedBotCommandName { get; private set; } //IBotCommand
         public Regex Template { get; private set; }
+        public ulong ServerId { get; private set; }
 
-        public CustomCommand(string expectedBotCommandName, Regex template)
+        public CustomCommand(string expectedBotCommandName, Regex template, ulong serverId)
         {
             this.ExpectedBotCommandName = expectedBotCommandName;
             this.Template = template;
+            this.ServerId = serverId;
         }
     }
 
