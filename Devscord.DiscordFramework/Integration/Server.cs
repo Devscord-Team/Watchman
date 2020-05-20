@@ -14,14 +14,16 @@ namespace Devscord.DiscordFramework.Integration
     {
         private static Services.Interfaces.IDiscordClient _discordClient;
 
-        internal static Func<SocketGuildUser, Task> UserJoined => _discordClient.UsersService.UserJoined;
-        internal static Func<SocketGuild, Task> BotAddedToServer => _discordClient.ServersService.BotAddedToServer;
+        internal static Func<SocketGuildUser, Task> UserJoined { get; set; }
+        internal static Func<SocketGuild, Task> BotAddedToServer { get; set; }
         internal static List<DateTime> ConnectedTimes => _discordClient.ServersService.ConnectedTimes;
         internal static List<DateTime> DisconnectedTimes => _discordClient.ServersService.DisconnectedTimes;
 
         internal static void Initialize(Services.Interfaces.IDiscordClient discordClient)
         {
             _discordClient = discordClient;
+            _discordClient.UsersService.UserJoined += UserJoined;
+            _discordClient.ServersService.BotAddedToServer += BotAddedToServer;
         }
 
         //Users
