@@ -27,8 +27,10 @@ namespace Watchman.Discord.Areas.Initialization.Services
 
         public async Task InitNewResponsesFromResources()
         {
-            var responsesInBase = GetResponsesFromBase();
-            var defaultResponses = GetResponsesFromResources();
+            var allResponses = new ResponsesDatabase(_queryBus, DEFAULT_SERVER_ID);
+
+            var responsesInBase = allResponses.GetResponsesFromBase();
+            var defaultResponses = allResponses.GetResponsesFromResources();
             var responsesToAdd = defaultResponses
                 .Where(def => responsesInBase.All(@base => @base.OnEvent != def.OnEvent))
                 .ToList();
@@ -36,27 +38,27 @@ namespace Watchman.Discord.Areas.Initialization.Services
             await AddNewResponses(responsesToAdd);
         }
 
-        private IEnumerable<Response> GetResponsesFromBase()
-        {
-            var query = new GetResponsesQuery();
-            var responsesInBase = _queryBus.Execute(query).Responses;
-            return responsesInBase;
-        }
+        //private IEnumerable<Response> GetResponsesFromBase()
+        //{
+        //    var query = new GetResponsesQuery();
+        //    var responsesInBase = _queryBus.Execute(query).Responses;
+        //    return responsesInBase;
+        //}
 
-        private IEnumerable<Response> GetResponsesFromResources()
-        {
-            var defaultResponses = typeof(Devscord.DiscordFramework.Framework.Commands.Responses.Resources.Responses).GetProperties()
-                .Where(x => x.PropertyType.Name == "String")
-                .Select(prop =>
-                {
-                    var onEvent = prop.Name;
-                    var message = prop.GetValue(prop)?.ToString();
-                    return new DomainModel.Responses.Response(onEvent, message, DEFAULT_SERVER_ID);
-                })
-                .ToList();
+        //private IEnumerable<Response> GetResponsesFromResources()
+        //{
+        //    var defaultResponses = typeof(Devscord.DiscordFramework.Framework.Commands.Responses.Resources.Responses).GetProperties()
+        //        .Where(x => x.PropertyType.Name == "String")
+        //        .Select(prop =>
+        //        {
+        //            var onEvent = prop.Name;
+        //            var message = prop.GetValue(prop)?.ToString();
+        //            return new DomainModel.Responses.Response(onEvent, message, DEFAULT_SERVER_ID);
+        //        })
+        //        .ToList();
 
-            return defaultResponses;
-        }
+        //    return defaultResponses;
+        //}
 
         private async Task AddNewResponses(IReadOnlyCollection<Response> responsesToAdd)
         {

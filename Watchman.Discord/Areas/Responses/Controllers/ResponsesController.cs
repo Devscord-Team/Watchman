@@ -10,8 +10,10 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Cqrs;
+using Watchman.DomainModel.Responses;
 using Watchman.DomainModel.Responses.Commands;
 using Watchman.DomainModel.Responses.Queries;
+using Devscord.DiscordFramework.Commons.Exceptions;
 
 namespace Watchman.Discord.Areas.Responses.Controllers
 {
@@ -105,6 +107,31 @@ namespace Watchman.Discord.Areas.Responses.Controllers
             }
             await _responsesService.RemoveResponse(onEvent, contexts.Server.Id);
             await messageService.SendResponse(x => x.ResponseHasBeenRemoved(contexts, onEvent), contexts);
+        }
+
+        [AdminCommand]
+        [DiscordCommand("responses")]
+        public Task Responses(DiscordRequest request, Contexts contexts)
+        {
+            var args = request.Arguments?.ToArray();
+            string commandArgument = null;
+
+            if (args?.Length == 0)
+            {
+                commandArgument = "all";
+            }
+
+            else if (args[0].Name != "all" && args[0].Name != "default" && args[0].Name != "custom")
+            {
+                throw new InvalidArgumentsException();
+            }
+
+            commandArgument = commandArgument ?? args[0].Name;
+            var messageService = _messagesServiceFactory.Create(contexts);
+            var allResponses = new ResponsesDatabase(_queryBus, contexts.Server.Id);
+            var responsesMessageService = new ResponsesMessageService(allResponses, messageService);
+
+            return responsesMessageService.PrintResponses(commandArgument);
         }
     }
 }
