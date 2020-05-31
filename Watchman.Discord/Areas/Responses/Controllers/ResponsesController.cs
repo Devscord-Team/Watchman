@@ -10,10 +10,10 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Cqrs;
-using Watchman.DomainModel.Responses;
 using Watchman.DomainModel.Responses.Commands;
 using Watchman.DomainModel.Responses.Queries;
 using Devscord.DiscordFramework.Commons.Exceptions;
+using Watchman.Discord.Areas.Responses.Services;
 
 namespace Watchman.Discord.Areas.Responses.Controllers
 {
@@ -111,27 +111,27 @@ namespace Watchman.Discord.Areas.Responses.Controllers
 
         [AdminCommand]
         [DiscordCommand("responses")]
-        public Task Responses(DiscordRequest request, Contexts contexts)
+        public async Task Responses(DiscordRequest request, Contexts contexts)
         {
-            var args = request.Arguments?.ToArray();
+            var arg = request.Arguments?.FirstOrDefault();
             string commandArgument = null;
 
-            if (args?.Length == 0)
+            if (arg == null)
             {
                 commandArgument = "all";
             }
-
-            else if (args[0].Name != "all" && args[0].Name != "default" && args[0].Name != "custom")
+            else if (arg.Name != "all" && arg.Name != "default" && arg.Name != "custom")
             {
-                throw new InvalidArgumentsException();
+                throw new InvalidArgumentsException("-all -default -custom");
             }
 
-            commandArgument = commandArgument ?? args[0].Name;
+            commandArgument = commandArgument ?? arg.Name;
             var messageService = _messagesServiceFactory.Create(contexts);
-            var allResponses = new ResponsesDatabase(_queryBus, contexts.Server.Id);
-            var responsesMessageService = new ResponsesMessageService(allResponses, messageService);
+            var embedMessageSplittingService = new EmbedMessageSplittingService(messageService);
+            var allResponses = new ResponsesGetterService(_queryBus);
+            var responsesMessageService = new ResponsesMessageService(allResponses, embedMessageSplittingService, contexts.Server.Id);
 
-            return responsesMessageService.PrintResponses(commandArgument);
+            await responsesMessageService.PrintResponses(commandArgument);
         }
     }
 }

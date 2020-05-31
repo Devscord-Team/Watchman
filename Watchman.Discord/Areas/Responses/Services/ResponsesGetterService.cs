@@ -4,18 +4,18 @@ using System.Text;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Responses.Queries;
 using System.Linq;
+using Watchman.DomainModel.Responses;
 
-namespace Watchman.DomainModel.Responses
+namespace Watchman.Discord.Areas.Responses.Services
 {
-    public class ResponsesDatabase
+    public class ResponsesGetterService
     {
-        private readonly ulong _ServerID;
+        private const int DEFAULT_SERVER_ID = 0;
         private readonly IQueryBus _queryBus;
 
-        public ResponsesDatabase(IQueryBus queryBus, ulong ServerID)
+        public ResponsesGetterService(IQueryBus queryBus)
         {
             _queryBus = queryBus;
-            _ServerID = ServerID;
         }
 
         public IEnumerable<Response> GetResponsesFromBase()
@@ -33,7 +33,7 @@ namespace Watchman.DomainModel.Responses
                 {
                     var onEvent = prop.Name;
                     var message = prop.GetValue(prop)?.ToString();
-                    return new Response(onEvent, message, _ServerID);
+                    return new Response(onEvent, message, DEFAULT_SERVER_ID);
                 })
                 .ToList();
 

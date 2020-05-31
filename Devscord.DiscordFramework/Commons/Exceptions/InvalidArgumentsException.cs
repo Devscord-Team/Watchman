@@ -6,12 +6,11 @@ namespace Devscord.DiscordFramework.Commons.Exceptions
 {
     public class InvalidArgumentsException : Exception
     {
-        public InvalidArgumentsException()
-        {
-        }
+        public readonly string AvailableArguments;
 
-        public InvalidArgumentsException(string message) : base(message) 
+        public InvalidArgumentsException(string arguments)
         {
+            AvailableArguments = arguments;
         }
     }
 }

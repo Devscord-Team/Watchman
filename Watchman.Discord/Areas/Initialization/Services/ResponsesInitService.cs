@@ -7,6 +7,7 @@ using Devscord.DiscordFramework.Framework.Commands.Responses.Resources;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Serilog;
 using Watchman.Cqrs;
+using Watchman.Discord.Areas.Responses.Services;
 using Watchman.DomainModel.Responses;
 using Watchman.DomainModel.Responses.Commands;
 using Watchman.DomainModel.Responses.Queries;
@@ -15,22 +16,21 @@ namespace Watchman.Discord.Areas.Initialization.Services
 {
     public class ResponsesInitService
     { 
-        private const int DEFAULT_SERVER_ID = 0;
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
+        private readonly ResponsesGetterService _responsesGetterService;
 
-        public ResponsesInitService(IQueryBus queryBus, ICommandBus commandBus)
+        public ResponsesInitService(IQueryBus queryBus, ICommandBus commandBus, ResponsesGetterService responsesGetterService)
         {
             _queryBus = queryBus;
             _commandBus = commandBus;
+            _responsesGetterService = responsesGetterService;
         }
 
         public async Task InitNewResponsesFromResources()
         {
-            var allResponses = new ResponsesDatabase(_queryBus, DEFAULT_SERVER_ID);
-
-            var responsesInBase = allResponses.GetResponsesFromBase();
-            var defaultResponses = allResponses.GetResponsesFromResources();
+            var responsesInBase = _responsesGetterService.GetResponsesFromBase();
+            var defaultResponses = _responsesGetterService.GetResponsesFromResources();
             var responsesToAdd = defaultResponses
                 .Where(def => responsesInBase.All(@base => @base.OnEvent != def.OnEvent))
                 .ToList();
