@@ -26,8 +26,9 @@ namespace Watchman.Discord.Areas.Responses.Controllers
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly UsersRolesService _usersRolesService;
         private readonly Services.ResponsesService _responsesService;
+        private readonly ResponsesMessageService _responsesMessageService;
 
-        public ResponsesController(IQueryBus queryBus, ICommandBus commandBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, UsersRolesService usersRolesService, Services.ResponsesService responsesService)
+        public ResponsesController(IQueryBus queryBus, ICommandBus commandBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, UsersRolesService usersRolesService, Services.ResponsesService responsesService, ResponsesMessageService responsesMessageService)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;
@@ -36,6 +37,7 @@ namespace Watchman.Discord.Areas.Responses.Controllers
             this._messagesServiceFactory = messagesServiceFactory;
             this._responsesService = responsesService;
             _usersRolesService = usersRolesService;
+            _responsesMessageService = responsesMessageService;
         }
 
         [AdminCommand]
@@ -124,14 +126,9 @@ namespace Watchman.Discord.Areas.Responses.Controllers
             {
                 throw new InvalidArgumentsException("-all -default -custom");
             }
-
             commandArgument = commandArgument ?? arg.Name;
-            var messageService = _messagesServiceFactory.Create(contexts);
-            var embedMessageSplittingService = new EmbedMessageSplittingService(messageService);
-            var allResponses = new ResponsesGetterService(_queryBus);
-            var responsesMessageService = new ResponsesMessageService(allResponses, embedMessageSplittingService, contexts.Server.Id);
 
-            await responsesMessageService.PrintResponses(commandArgument);
+            await _responsesMessageService.PrintResponses(commandArgument, contexts.Server.Id);
         }
     }
 }

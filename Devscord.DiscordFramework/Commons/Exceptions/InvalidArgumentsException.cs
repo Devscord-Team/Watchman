@@ -6,7 +6,7 @@ namespace Devscord.DiscordFramework.Commons.Exceptions
 {
     public class InvalidArgumentsException : Exception
     {
-        public readonly string AvailableArguments;
+        public string AvailableArguments { get; }
 
         public InvalidArgumentsException(string arguments)
         {

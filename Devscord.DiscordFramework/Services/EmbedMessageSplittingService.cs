@@ -19,7 +19,6 @@ namespace Devscord.DiscordFramework.Services
         public async Task SendEmbedSplitMessage(string title, string description, IEnumerable<KeyValuePair<string, string>> values)
         {
             var messages = SplitMessage(values.ToList());
-
             await _messagesService.SendEmbedMessage(title, description, messages[0]);
             for (int i = 1; i < messages.Count; ++i)
             {
@@ -36,10 +35,8 @@ namespace Devscord.DiscordFramework.Services
                 {
                     messages.Add(new List<KeyValuePair<string, string>>(MAX_NUMBER_OF_MESSAGE_FIELDS));
                 }
-
                 messages.Last().Add(values[i]);
             }
-
             return messages;
         }
     }

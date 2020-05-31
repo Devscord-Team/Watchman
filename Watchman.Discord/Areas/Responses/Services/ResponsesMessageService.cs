@@ -13,63 +13,68 @@ namespace Watchman.Discord.Areas.Responses.Services
     public class ResponsesMessageService
     {
         private const string DESCRIPTION = "dokumentacja:\nhttps://watchman.readthedocs.io/pl/latest/135-services-in-framework/";
-        private ResponsesGetterService _responsesDatabase;
-        private EmbedMessageSplittingService _embedMessageSplittingService;
-        private readonly ulong _serverId;
+        private readonly ResponsesGetterService _responsesDatabase;
+        private readonly EmbedMessageSplittingService _embedMessageSplittingService;
 
-        public ResponsesMessageService(ResponsesGetterService responsesDatabase, EmbedMessageSplittingService embedMessageSplittingService, ulong serverId)
+        public ResponsesMessageService(ResponsesGetterService responsesDatabase, EmbedMessageSplittingService embedMessageSplittingService)
         {
             _responsesDatabase = responsesDatabase;
             _embedMessageSplittingService = embedMessageSplittingService;
-            _serverId = serverId;
         }
 
-        public async Task PrintResponses(string commandArgument)
+        public async Task PrintResponses(string commandArgument, ulong serverId)
         {
             if (commandArgument == "default")
             {
-                await _embedMessageSplittingService.SendEmbedSplitMessage("Domyślne responses:", DESCRIPTION, GetAppropriateResponses("default"));
+                await _embedMessageSplittingService.SendEmbedSplitMessage("Domyślne responses:", DESCRIPTION, GetDefaultResponses());
             }
             else if (commandArgument == "custom")
             {
-                await _embedMessageSplittingService.SendEmbedSplitMessage("Nadpisane responses:", DESCRIPTION, GetAppropriateResponses("custom"));
+                await _embedMessageSplittingService.SendEmbedSplitMessage("Nadpisane responses:", DESCRIPTION, GetCustomResponses(serverId));
             }
             else
             {
-                await _embedMessageSplittingService.SendEmbedSplitMessage("Wszystkie responses:", DESCRIPTION, GetAppropriateResponses("all"));
+                await _embedMessageSplittingService.SendEmbedSplitMessage("Wszystkie responses:", DESCRIPTION, GetAllResponses());
             }
         }
 
-        private IEnumerable<KeyValuePair<string, string>> GetAppropriateResponses(string category)
+        private IEnumerable<KeyValuePair<string, string>> GetDefaultResponses()
         {
-            List<DomainModel.Responses.Response> responses;
-            if (category == "default")
-            {
-                responses = _responsesDatabase.GetResponsesFromBase()
+            var responses = _responsesDatabase.GetResponsesFromBase()
                             .Where(x => x.IsDefault)
                             .ToList();
-            }
-            if (category == "custom")
-            {
-                responses = _responsesDatabase.GetResponsesFromBase()
-                            .Where(x => !x.IsDefault)
-                            .Where(x => x.ServerId == _serverId)
-                            .ToList();
-
-                if (responses.Any() == false)
-                {
-                    yield return new KeyValuePair<string, string>("-------------------------------", "```Obecnie jest brak nadpisanych responses!```");
-                }
-            }
-            else
-            {
-                responses = _responsesDatabase.GetResponsesFromBase().ToList();
-            }
 
             foreach (var response in responses)
             {
                 yield return new KeyValuePair<string, string>(response.OnEvent, GetMessageWithoutFramesAndBold(response.Message));
-            }        
+            }
+        }
+
+        private IEnumerable<KeyValuePair<string, string>> GetCustomResponses(ulong serverId)
+        {
+            var responses = _responsesDatabase.GetResponsesFromBase()
+                            .Where(x => !x.IsDefault)
+                            .Where(x => x.ServerId == serverId)
+                            .ToList();
+
+            if (responses.Any() == false)
+            {
+                yield return new KeyValuePair<string, string>("-------------------------------", "```Obecnie jest brak nadpisanych responses!```");
+            }
+            foreach (var response in responses)
+            {
+                yield return new KeyValuePair<string, string>(response.OnEvent, GetMessageWithoutFramesAndBold(response.Message));
+            }
+        }
+
+        private IEnumerable<KeyValuePair<string, string>> GetAllResponses()
+        {
+            var responses = _responsesDatabase.GetResponsesFromBase().ToList();
+
+            foreach (var response in responses)
+            {
+                yield return new KeyValuePair<string, string>(response.OnEvent, GetMessageWithoutFramesAndBold(response.Message));
+            }
         }
 
         private string GetMessageWithoutFramesAndBold(string message)
