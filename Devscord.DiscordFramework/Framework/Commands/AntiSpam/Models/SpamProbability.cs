@@ -2,9 +2,9 @@
 {
     public enum SpamProbability
     {
-        Sure = 1,
-        Medium = 2,
-        Low = 4,
-        None = 8
+        None = 1,
+        Low = 2,
+        Medium = 4,
+        Sure = 8
     }
 }
