@@ -36,8 +36,8 @@ namespace Watchman.Discord.Areas.Responses.Controllers
             this._directMessagesService = directMessagesService;
             this._messagesServiceFactory = messagesServiceFactory;
             this._responsesService = responsesService;
-            _usersRolesService = usersRolesService;
-            _responsesMessageService = responsesMessageService;
+            this._usersRolesService = usersRolesService;
+            this._responsesMessageService = responsesMessageService;
         }
 
         [AdminCommand]
@@ -115,20 +115,13 @@ namespace Watchman.Discord.Areas.Responses.Controllers
         [DiscordCommand("responses")]
         public async Task Responses(DiscordRequest request, Contexts contexts)
         {
-            var argument = request.Arguments?.FirstOrDefault()?.Name;
-            string commandArgument = null;
-
-            if (argument == null)
+            var possibleArguments = new string[] { "all", "default", "custom" };
+            var argument = request.Arguments?.FirstOrDefault()?.Name?.ToLowerInvariant();
+            if (!possibleArguments.Contains(argument))
             {
-                commandArgument = "all";
+                argument = "all";
             }
-            else if (argument != "all" && argument != "default" && argument != "custom")
-            {
-                throw new InvalidArgumentsException("-all -default -custom");
-            }
-            commandArgument = commandArgument ?? argument;
-
-            await _responsesMessageService.PrintResponses(commandArgument, contexts);
+            await _responsesMessageService.PrintResponses(argument, contexts);
         }
     }
 }

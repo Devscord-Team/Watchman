@@ -15,13 +15,13 @@ namespace Watchman.Discord.Areas.Responses.Services
 
         public ResponsesGetterService(IQueryBus queryBus)
         {
-            _queryBus = queryBus;
+            this._queryBus = queryBus;
         }
 
         public IEnumerable<Response> GetResponsesFromBase()
         {
             var query = new GetResponsesQuery();
-            var responsesInBase = _queryBus.Execute(query).Responses;
+            var responsesInBase = this._queryBus.Execute(query).Responses;
             return responsesInBase;
         }
 

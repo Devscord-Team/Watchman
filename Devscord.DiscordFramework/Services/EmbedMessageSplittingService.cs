@@ -10,34 +10,34 @@ namespace Devscord.DiscordFramework.Services
 {
     public class EmbedMessageSplittingService
     {
-        private const int MAX_NUMBER_OF_MESSAGE_FIELDS = 20;
+        private const int MAX_NUMBER_OF_MESSAGE_FIELDS = 25;
         private MessagesServiceFactory _messagesServiceFactory;
 
         public EmbedMessageSplittingService(MessagesServiceFactory messagesServiceFactory)
         {
-            _messagesServiceFactory = messagesServiceFactory;
+            this._messagesServiceFactory = messagesServiceFactory;
         }
 
         public async Task SendEmbedSplitMessage(string title, string description, IEnumerable<KeyValuePair<string, string>> values, Contexts contexts)
         {
-            var messagesService = _messagesServiceFactory.Create(contexts);
+            var messagesService = this._messagesServiceFactory.Create(contexts);
             var messages = SplitMessage(values.ToList());
 
             await messagesService.SendEmbedMessage(title, description, messages[0]);
-            for (int i = 1; i < messages.Count; ++i)
+            foreach (var message in messages.Skip(1))
             {
-                await messagesService.SendEmbedMessage(title: null, description: null, messages[i]);
+                await messagesService.SendEmbedMessage(title: null, description: null, message);
             }
         }
 
         private List<List<KeyValuePair<string, string>>> SplitMessage(List<KeyValuePair<string, string>> values)
         {
             var messages = new List<List<KeyValuePair<string, string>>>();
-            for (int i = 0; i < values.Count; ++i)
+            for (int i = 0; i < values.Count; i++)
             {
                 if (i % MAX_NUMBER_OF_MESSAGE_FIELDS == 0)
                 {
-                    messages.Add(new List<KeyValuePair<string, string>>(MAX_NUMBER_OF_MESSAGE_FIELDS));
+                    messages.Add(new List<KeyValuePair<string, string>>());
                 }
                 messages.Last().Add(values[i]);
             }

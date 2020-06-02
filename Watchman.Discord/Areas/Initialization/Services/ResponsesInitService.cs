@@ -16,15 +16,13 @@ namespace Watchman.Discord.Areas.Initialization.Services
 {
     public class ResponsesInitService
     { 
-        private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
         private readonly ResponsesGetterService _responsesGetterService;
 
-        public ResponsesInitService(IQueryBus queryBus, ICommandBus commandBus, ResponsesGetterService responsesGetterService)
+        public ResponsesInitService(ICommandBus commandBus, ResponsesGetterService responsesGetterService)
         {
-            _queryBus = queryBus;
-            _commandBus = commandBus;
-            _responsesGetterService = responsesGetterService;
+            this._commandBus = commandBus;
+            this._responsesGetterService = responsesGetterService;
         }
 
         public async Task InitNewResponsesFromResources()

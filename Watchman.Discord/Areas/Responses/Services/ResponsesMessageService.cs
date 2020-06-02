@@ -19,8 +19,8 @@ namespace Watchman.Discord.Areas.Responses.Services
 
         public ResponsesMessageService(ResponsesGetterService responsesDatabase, EmbedMessageSplittingService embedMessageSplittingService)
         {
-            _responsesDatabase = responsesDatabase;
-            _embedMessageSplittingService = embedMessageSplittingService;
+            this._responsesDatabase = responsesDatabase;
+            this._embedMessageSplittingService = embedMessageSplittingService;
         }
 
         public async Task PrintResponses(string commandArgument, Contexts contexts)
@@ -43,14 +43,14 @@ namespace Watchman.Discord.Areas.Responses.Services
         {
             return _responsesDatabase.GetResponsesFromBase()
                 .Where(x => x.IsDefault)
-                .Select(x => new KeyValuePair<string, string>(x.OnEvent, GetMessageWithoutFramesAndBold(x.Message)));
+                .Select(x => new KeyValuePair<string, string>(x.OnEvent, GetRawMessage(x.Message)));
         }
 
         private IEnumerable<KeyValuePair<string, string>> GetCustomResponses(ulong serverId)
         {
             var responses = _responsesDatabase.GetResponsesFromBase()
                 .Where(x => x.ServerId == serverId)
-                .Select(x => new KeyValuePair<string, string>(x.OnEvent, GetMessageWithoutFramesAndBold(x.Message)));
+                .Select(x => new KeyValuePair<string, string>(x.OnEvent, GetRawMessage(x.Message)));
 
             if (!responses.Any())
             {
@@ -62,10 +62,10 @@ namespace Watchman.Discord.Areas.Responses.Services
         private IEnumerable<KeyValuePair<string, string>> GetAllResponses()
         {
             return _responsesDatabase.GetResponsesFromBase()
-                .Select(x => new KeyValuePair<string, string>(x.OnEvent, GetMessageWithoutFramesAndBold(x.Message)));
+                .Select(x => new KeyValuePair<string, string>(x.OnEvent, GetRawMessage(x.Message)));
         }
 
-        private string GetMessageWithoutFramesAndBold(string message)
+        private string GetRawMessage(string message)
         {
             message = message.Contains('`')
                 ? message.Insert(message.IndexOf('`'), @"\")
