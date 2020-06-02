@@ -115,20 +115,20 @@ namespace Watchman.Discord.Areas.Responses.Controllers
         [DiscordCommand("responses")]
         public async Task Responses(DiscordRequest request, Contexts contexts)
         {
-            var arg = request.Arguments?.FirstOrDefault();
+            var argument = request.Arguments?.FirstOrDefault()?.Name;
             string commandArgument = null;
 
-            if (arg == null)
+            if (argument == null)
             {
                 commandArgument = "all";
             }
-            else if (arg.Name != "all" && arg.Name != "default" && arg.Name != "custom")
+            else if (argument != "all" && argument != "default" && argument != "custom")
             {
                 throw new InvalidArgumentsException("-all -default -custom");
             }
-            commandArgument = commandArgument ?? arg.Name;
+            commandArgument = commandArgument ?? argument;
 
-            await _responsesMessageService.PrintResponses(commandArgument, contexts.Server.Id);
+            await _responsesMessageService.PrintResponses(commandArgument, contexts);
         }
     }
 }

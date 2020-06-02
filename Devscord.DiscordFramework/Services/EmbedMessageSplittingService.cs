@@ -1,28 +1,32 @@
-﻿using System;
+﻿using Devscord.DiscordFramework.Services.Factories;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Devscord.DiscordFramework.Middlewares.Contexts;
 
 namespace Devscord.DiscordFramework.Services
 {
     public class EmbedMessageSplittingService
     {
         private const int MAX_NUMBER_OF_MESSAGE_FIELDS = 20;
-        private MessagesService _messagesService;
+        private MessagesServiceFactory _messagesServiceFactory;
 
-        public EmbedMessageSplittingService(MessagesService messagesService)
+        public EmbedMessageSplittingService(MessagesServiceFactory messagesServiceFactory)
         {
-            _messagesService = messagesService;
+            _messagesServiceFactory = messagesServiceFactory;
         }
 
-        public async Task SendEmbedSplitMessage(string title, string description, IEnumerable<KeyValuePair<string, string>> values)
+        public async Task SendEmbedSplitMessage(string title, string description, IEnumerable<KeyValuePair<string, string>> values, Contexts contexts)
         {
+            var messagesService = _messagesServiceFactory.Create(contexts);
             var messages = SplitMessage(values.ToList());
-            await _messagesService.SendEmbedMessage(title, description, messages[0]);
+
+            await messagesService.SendEmbedMessage(title, description, messages[0]);
             for (int i = 1; i < messages.Count; ++i)
             {
-                await _messagesService.SendEmbedMessage(title: null, description: null, messages[i]);
+                await messagesService.SendEmbedMessage(title: null, description: null, messages[i]);
             }
         }
 

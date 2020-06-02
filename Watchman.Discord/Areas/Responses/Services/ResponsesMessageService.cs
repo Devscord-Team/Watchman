@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using Devscord.DiscordFramework.Middlewares.Contexts;
 
 namespace Watchman.Discord.Areas.Responses.Services
 {
@@ -22,71 +23,56 @@ namespace Watchman.Discord.Areas.Responses.Services
             _embedMessageSplittingService = embedMessageSplittingService;
         }
 
-        public async Task PrintResponses(string commandArgument, ulong serverId)
+        public async Task PrintResponses(string commandArgument, Contexts contexts)
         {
             if (commandArgument == "default")
             {
-                await _embedMessageSplittingService.SendEmbedSplitMessage("Domyślne responses:", DESCRIPTION, GetDefaultResponses());
+                await _embedMessageSplittingService.SendEmbedSplitMessage("Domyślne responses:", DESCRIPTION, GetDefaultResponses(), contexts);
             }
             else if (commandArgument == "custom")
             {
-                await _embedMessageSplittingService.SendEmbedSplitMessage("Nadpisane responses:", DESCRIPTION, GetCustomResponses(serverId));
+                await _embedMessageSplittingService.SendEmbedSplitMessage("Nadpisane responses:", DESCRIPTION, GetCustomResponses(contexts.Server.Id), contexts);
             }
             else
             {
-                await _embedMessageSplittingService.SendEmbedSplitMessage("Wszystkie responses:", DESCRIPTION, GetAllResponses());
+                await _embedMessageSplittingService.SendEmbedSplitMessage("Wszystkie responses:", DESCRIPTION, GetAllResponses(), contexts);
             }
         }
 
         private IEnumerable<KeyValuePair<string, string>> GetDefaultResponses()
         {
-            var responses = _responsesDatabase.GetResponsesFromBase()
-                            .Where(x => x.IsDefault)
-                            .ToList();
-
-            foreach (var response in responses)
-            {
-                yield return new KeyValuePair<string, string>(response.OnEvent, GetMessageWithoutFramesAndBold(response.Message));
-            }
+            return _responsesDatabase.GetResponsesFromBase()
+                .Where(x => x.IsDefault)
+                .Select(x => new KeyValuePair<string, string>(x.OnEvent, GetMessageWithoutFramesAndBold(x.Message)));
         }
 
         private IEnumerable<KeyValuePair<string, string>> GetCustomResponses(ulong serverId)
         {
             var responses = _responsesDatabase.GetResponsesFromBase()
-                            .Where(x => !x.IsDefault)
-                            .Where(x => x.ServerId == serverId)
-                            .ToList();
+                .Where(x => x.ServerId == serverId)
+                .Select(x => new KeyValuePair<string, string>(x.OnEvent, GetMessageWithoutFramesAndBold(x.Message)));
 
-            if (responses.Any() == false)
+            if (!responses.Any())
             {
-                yield return new KeyValuePair<string, string>("-------------------------------", "```Obecnie jest brak nadpisanych responses!```");
+                responses = responses.Append(new KeyValuePair<string, string>("-------------------------------", "```Obecnie jest brak nadpisanych responses!```"));
             }
-            foreach (var response in responses)
-            {
-                yield return new KeyValuePair<string, string>(response.OnEvent, GetMessageWithoutFramesAndBold(response.Message));
-            }
+            return responses;
         }
 
         private IEnumerable<KeyValuePair<string, string>> GetAllResponses()
         {
-            var responses = _responsesDatabase.GetResponsesFromBase().ToList();
-
-            foreach (var response in responses)
-            {
-                yield return new KeyValuePair<string, string>(response.OnEvent, GetMessageWithoutFramesAndBold(response.Message));
-            }
+            return _responsesDatabase.GetResponsesFromBase()
+                .Select(x => new KeyValuePair<string, string>(x.OnEvent, GetMessageWithoutFramesAndBold(x.Message)));
         }
 
         private string GetMessageWithoutFramesAndBold(string message)
         {
-            message = message.Contains("`")
-                      ? message.Insert(message.IndexOf("`"), "\\")
-                      : message;
-
-            message = message.Contains("*")
-                      ? message.Insert(message.IndexOf("*"), "\\")
-                      : message;
-
+            message = message.Contains('`')
+                ? message.Insert(message.IndexOf('`'), @"\")
+                : message;
+            message = message.Contains('*')
+                ? message.Insert(message.IndexOf('*'), @"\")
+                : message;
             return message;
         }
     }

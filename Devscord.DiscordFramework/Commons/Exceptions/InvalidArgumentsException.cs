@@ -10,7 +10,7 @@ namespace Devscord.DiscordFramework.Commons.Exceptions
 
         public InvalidArgumentsException(string arguments)
         {
-            AvailableArguments = arguments;
+            this.AvailableArguments = arguments;
         }
     }
 }

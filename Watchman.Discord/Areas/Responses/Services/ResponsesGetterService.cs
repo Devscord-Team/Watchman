@@ -34,9 +34,7 @@ namespace Watchman.Discord.Areas.Responses.Services
                     var onEvent = prop.Name;
                     var message = prop.GetValue(prop)?.ToString();
                     return new Response(onEvent, message, DEFAULT_SERVER_ID);
-                })
-                .ToList();
-
+                });
             return defaultResponses;
         }
     }
