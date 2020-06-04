@@ -10,7 +10,7 @@ namespace Devscord.DiscordFramework.Services
 {
     public class EmbedMessageSplittingService
     {
-        private const int MAX_NUMBER_OF_MESSAGE_FIELDS = 25;
+        private const int MAX_FIELDS = 25;
         private MessagesServiceFactory _messagesServiceFactory;
 
         public EmbedMessageSplittingService(MessagesServiceFactory messagesServiceFactory)
@@ -23,25 +23,19 @@ namespace Devscord.DiscordFramework.Services
             var messagesService = this._messagesServiceFactory.Create(contexts);
             var messages = SplitMessage(values.ToList());
 
-            await messagesService.SendEmbedMessage(title, description, messages[0]);
+            await messagesService.SendEmbedMessage(title, description, messages.First());
             foreach (var message in messages.Skip(1))
             {
                 await messagesService.SendEmbedMessage(title: null, description: null, message);
             }
         }
 
-        private List<List<KeyValuePair<string, string>>> SplitMessage(List<KeyValuePair<string, string>> values)
+        private IEnumerable<IEnumerable<KeyValuePair<string, string>>> SplitMessage(List<KeyValuePair<string, string>> values)
         {
-            var messages = new List<List<KeyValuePair<string, string>>>();
-            for (int i = 0; i < values.Count; i++)
+            for (int i = 0; i < Math.Ceiling((double)values.Count / MAX_FIELDS); i++)
             {
-                if (i % MAX_NUMBER_OF_MESSAGE_FIELDS == 0)
-                {
-                    messages.Add(new List<KeyValuePair<string, string>>());
-                }
-                messages.Last().Add(values[i]);
+                yield return values.Skip(MAX_FIELDS * i).Take(MAX_FIELDS);
             }
-            return messages;
         }
     }
 }

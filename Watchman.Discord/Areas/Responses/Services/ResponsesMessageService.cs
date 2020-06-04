@@ -25,18 +25,13 @@ namespace Watchman.Discord.Areas.Responses.Services
 
         public async Task PrintResponses(string commandArgument, Contexts contexts)
         {
-            if (commandArgument == "default")
+            Func<Task> sendMessages = commandArgument switch
             {
-                await _embedMessageSplittingService.SendEmbedSplitMessage("Domyślne responses:", DESCRIPTION, GetDefaultResponses(), contexts);
-            }
-            else if (commandArgument == "custom")
-            {
-                await _embedMessageSplittingService.SendEmbedSplitMessage("Nadpisane responses:", DESCRIPTION, GetCustomResponses(contexts.Server.Id), contexts);
-            }
-            else
-            {
-                await _embedMessageSplittingService.SendEmbedSplitMessage("Wszystkie responses:", DESCRIPTION, GetAllResponses(), contexts);
-            }
+                "default" => async () => await _embedMessageSplittingService.SendEmbedSplitMessage("Domyślne responses:", DESCRIPTION, GetDefaultResponses(), contexts),
+                "custom" => async () => await _embedMessageSplittingService.SendEmbedSplitMessage("Nadpisane responses:", DESCRIPTION, GetCustomResponses(contexts.Server.Id), contexts),
+                _ => async () => await _embedMessageSplittingService.SendEmbedSplitMessage("Wszystkie responses:", DESCRIPTION, GetAllResponses(), contexts),
+            };
+            await sendMessages();
         }
 
         private IEnumerable<KeyValuePair<string, string>> GetDefaultResponses()
@@ -67,13 +62,7 @@ namespace Watchman.Discord.Areas.Responses.Services
 
         private string GetRawMessage(string message)
         {
-            message = message.Contains('`')
-                ? message.Insert(message.IndexOf('`'), @"\")
-                : message;
-            message = message.Contains('*')
-                ? message.Insert(message.IndexOf('*'), @"\")
-                : message;
-            return message;
+            return message.Replace("`", @"\`").Replace("*", @"\*");
         }
     }
 }
