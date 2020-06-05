@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
 using Devscord.DiscordFramework.Services.Models;
@@ -9,14 +7,17 @@ namespace Watchman.Discord.Areas.Protection.Strategies
 {
     public class LinksDetectorStrategy : ISpamDetector
     {
-        private readonly int _userMessagesCountToBeSafe;
+        public IUserMessagesCounter UserMessagesCounter { get; set; }
 
-        public LinksDetectorStrategy()
+        private readonly int _userMessagesCountToBeSafe;
+        
+        public LinksDetectorStrategy(IUserMessagesCounter userMessagesCounter)
         {
+            UserMessagesCounter = userMessagesCounter;
             _userMessagesCountToBeSafe = 500;
         }
 
-        public SpamProbability GetSpamProbability(List<SmallMessage> serverSmallMessages, Message message)
+        public SpamProbability GetSpamProbability(ServerMessagesCacheService serverMessagesCacheService, Message message)
         {
             var content = message.Request.OriginalMessage;
             var linkRegex = new Regex(@"http[s]?:\/\/");
@@ -26,7 +27,8 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             }
 
             var userId = message.Contexts.User.Id;
-            if (serverSmallMessages.Count(x => x.UserId == userId) > _userMessagesCountToBeSafe)
+            var serverId = message.Contexts.Server.Id;
+            if (this.UserMessagesCounter.CountUserMessages(userId, serverId) > _userMessagesCountToBeSafe)
             {
                 return SpamProbability.Low;
             }

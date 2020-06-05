@@ -14,21 +14,21 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         private readonly AntiSpamService _antiSpamService;
         private readonly UserMessagesCountService _userMessagesCountService;
         private readonly SpamDetectingStrategy _strategy;
-        private readonly ServerSmallMessages _serverSmallMessages;
+        private readonly ServerMessagesCacheService _serverMessagesCacheService;
 
         public AntiSpamController(AntiSpamService antiSpamService, UserMessagesCountService userMessagesCountService)
         {
             this._antiSpamService = antiSpamService;
             _userMessagesCountService = userMessagesCountService;
             this._strategy = new SpamDetectingStrategy();
-            this._serverSmallMessages = new ServerSmallMessages();
+            this._serverMessagesCacheService = new ServerMessagesCacheService();
         }
 
         [ReadAlways]
         public Task Scan(DiscordRequest request, Contexts contexts)
         {
             Log.Information("Started scanning the message");
-            _serverSmallMessages.AddMessage(request, contexts);
+            _serverMessagesCacheService.AddMessage(request, contexts);
 
             Log.Information("Scanned");
             return Task.CompletedTask;

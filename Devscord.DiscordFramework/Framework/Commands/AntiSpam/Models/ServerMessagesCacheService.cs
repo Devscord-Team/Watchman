@@ -8,17 +8,17 @@ using Devscord.DiscordFramework.Services.Models;
 
 namespace Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models
 {
-    public class ServerSmallMessages
+    public class ServerMessagesCacheService
     {
         private static Dictionary<ulong, List<SmallMessage>> _usersMessages;
 
-        static ServerSmallMessages()
+        static ServerMessagesCacheService()
         {
             _usersMessages = new Dictionary<ulong, List<SmallMessage>>();
             RemoveOldMessagesCyclic();
         }
 
-        public ServerSmallMessages()
+        public ServerMessagesCacheService()
         {
         }
 
@@ -36,11 +36,6 @@ namespace Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models
         {
             var smallMessage = new SmallMessage(request.OriginalMessage, contexts.User.Id, request.SentAt);
             this.AddMessage(smallMessage);
-        }
-
-        public Dictionary<ulong, List<SmallMessage>> GetLastMessagesPaired()
-        {
-            return _usersMessages;
         }
 
         public List<SmallMessage> GetLastUserMessages(ulong userId)
