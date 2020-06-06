@@ -34,8 +34,8 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             var userMessagesCount = this.UserMessagesCounter.CountUserMessages(userId, serverId);
 
             return similarMessagesCount switch
-            {
-                0 when userMessagesCount >  => SpamProbability.None,
+            { //todo: dokończyć przypadki
+                0 when userMessagesCount > UserMessagesCounter.UserMessagesCountToBeSafe => SpamProbability.None,
                 1 => SpamProbability.Low,
                 2 => SpamProbability.Medium,
                 _ => SpamProbability.Sure

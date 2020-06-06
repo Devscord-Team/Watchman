@@ -35,7 +35,7 @@ namespace Watchman.Discord.UnitTests
         [Test]
         [TestCase("some link: https://discord.com abc", 10, SpamProbability.Medium)]
         [TestCase("http://abc.com", 600, SpamProbability.Low)]
-        public void LinksDetector_ShouldDetectSpam(string messageContent, int userMessagesCount, SpamProbability shouldDetectProb)
+        public void LinksDetector_ShouldDetectSpam(string messageContent, int userMessagesCount, SpamProbability exceptedSpamProbability)
         {
             // Arrange
             var message = CreateMessage(messageContent);
@@ -48,7 +48,7 @@ namespace Watchman.Discord.UnitTests
             var spamProbability = linksDetector.GetSpamProbability(_exampleServerMessages, message);
 
             // Assert
-            Assert.That(spamProbability, Is.EqualTo(shouldDetectProb));
+            Assert.That(spamProbability, Is.EqualTo(exceptedSpamProbability));
         }
 
         [Test]
@@ -68,12 +68,20 @@ namespace Watchman.Discord.UnitTests
         }
 
         [Test]
-        [TestCase("spam", "spam2", "spam3", "spam", 400)]
-        [TestCase("spam", "spam2", "spam", "spam", 50)]
-        [TestCase("aaaaaaaaaabbbbb", "https://discord.gg/example", "https://discord.gg/example", "https://discord.gg/example", 20)]
-        public void DuplicatesDetector_ShouldDetectSpam(string messageContent1, string messageContent2, string messageContent3, string messageContent4, int userMessagesCount)
+        [TestCase("spam", "spam", "spam", "spam", 1000, SpamProbability.Low)]
+        [TestCase("spam", "spam2", "spam3", "spam", 400, SpamProbability.Low)]
+        [TestCase("spam", "spam2", "spam", "spam", 50, SpamProbability.Medium)]
+        [TestCase("aaaaaaaaaabbbbb", "https://discord.gg/example", "https://discord.gg/example", "https://discord.gg/example", 20, SpamProbability.Medium)]
+        public void DuplicatesDetector_ShouldDetectSpam(string messageContent1, string messageContent2, string messageContent3, string messageContent4, int userMessagesCount, SpamProbability exceptedSpamProbability)
         {
             // Arrange
+            _userMessagesCounter
+                .Setup(x => x.CountUserMessages(DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
+                .Returns(userMessagesCount);
+            
+            var duplicatesDetector = new DuplicatedMessagesDetectorStrategy(_userMessagesCounter.Object); //todo: mockowaæ configuration
+
+            var lastMessage = CreateMessage(messageContent4);
             var serverMessages = new ServerMessagesCacheService();
             serverMessages.OverwriteMessages(new List<SmallMessage>
             {
@@ -81,23 +89,19 @@ namespace Watchman.Discord.UnitTests
                 new SmallMessage(messageContent2, DEFAULT_TEST_USER_ID, DateTime.Now),
                 new SmallMessage(messageContent3, DEFAULT_TEST_USER_ID, DateTime.Now)
             });
-            _userMessagesCounter
-                .Setup(x => x.CountUserMessages(DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
-                .Returns(userMessagesCount);
-            var duplicatesDetector = new DuplicatedMessagesDetectorStrategy()
 
             // Act
-
+            var spamProbability = duplicatesDetector.GetSpamProbability(serverMessages, lastMessage);
 
             // Assert
-
+            Assert.That(spamProbability, Is.EqualTo(exceptedSpamProbability));
         }
 
         [Test]
-        [TestCase("not spam", "something else", "something more else", "totally different")]
-        [TestCase("hello", "zxy", "afegserg", "egr")]
-        [TestCase("hello", "how", "are", "you")]
-        public void DuplicatesDetector_ShouldNotDetectSpam(string messageContent1, string messageContent2, string messageContent3, string messageContent4)
+        [TestCase("not spam", "something else", "something more else", "totally different", 10)]
+        [TestCase("hello", "zxy", "afegserg", "egr", 5)]
+        [TestCase("hello", "how", "are", "you", 5)]
+        public void DuplicatesDetector_ShouldNotDetectSpam(string messageContent1, string messageContent2, string messageContent3, string messageContent4, int userMessagesCount)
         {
             // Arrange
 
