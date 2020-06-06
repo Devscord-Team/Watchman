@@ -11,7 +11,7 @@ namespace Devscord.DiscordFramework.Services
     public class EmbedMessageSplittingService
     {
         private const int MAX_FIELDS = 25;
-        private MessagesServiceFactory _messagesServiceFactory;
+        private readonly MessagesServiceFactory _messagesServiceFactory;
 
         public EmbedMessageSplittingService(MessagesServiceFactory messagesServiceFactory)
         {

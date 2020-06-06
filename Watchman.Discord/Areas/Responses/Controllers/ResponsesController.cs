@@ -27,7 +27,7 @@ namespace Watchman.Discord.Areas.Responses.Controllers
         private readonly UsersRolesService _usersRolesService;
         private readonly Services.ResponsesService _responsesService;
         private readonly ResponsesMessageService _responsesMessageService;
-        private readonly string[] possibleArguments;
+        private readonly string[] possibleArguments = new string[] { "all", "default", "custom" };
 
         public ResponsesController(IQueryBus queryBus, ICommandBus commandBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, UsersRolesService usersRolesService, Services.ResponsesService responsesService, ResponsesMessageService responsesMessageService)
         {
@@ -39,7 +39,6 @@ namespace Watchman.Discord.Areas.Responses.Controllers
             this._responsesService = responsesService;
             this._usersRolesService = usersRolesService;
             this._responsesMessageService = responsesMessageService;
-            this.possibleArguments = new string[] { "all", "default", "custom" };
         }
 
         [AdminCommand]
