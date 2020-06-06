@@ -12,6 +12,8 @@ using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Responses.Commands;
 using Watchman.DomainModel.Responses.Queries;
+using Devscord.DiscordFramework.Commons.Exceptions;
+using Watchman.Discord.Areas.Responses.Services;
 
 namespace Watchman.Discord.Areas.Responses.Controllers
 {
@@ -24,8 +26,10 @@ namespace Watchman.Discord.Areas.Responses.Controllers
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly UsersRolesService _usersRolesService;
         private readonly Services.ResponsesService _responsesService;
+        private readonly ResponsesMessageService _responsesMessageService;
+        private readonly string[] possibleArguments = new string[] { "all", "default", "custom" };
 
-        public ResponsesController(IQueryBus queryBus, ICommandBus commandBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, UsersRolesService usersRolesService, Services.ResponsesService responsesService)
+        public ResponsesController(IQueryBus queryBus, ICommandBus commandBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, UsersRolesService usersRolesService, Services.ResponsesService responsesService, ResponsesMessageService responsesMessageService)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;
@@ -33,7 +37,8 @@ namespace Watchman.Discord.Areas.Responses.Controllers
             this._directMessagesService = directMessagesService;
             this._messagesServiceFactory = messagesServiceFactory;
             this._responsesService = responsesService;
-            _usersRolesService = usersRolesService;
+            this._usersRolesService = usersRolesService;
+            this._responsesMessageService = responsesMessageService;
         }
 
         [AdminCommand]
@@ -105,6 +110,18 @@ namespace Watchman.Discord.Areas.Responses.Controllers
             }
             await _responsesService.RemoveResponse(onEvent, contexts.Server.Id);
             await messageService.SendResponse(x => x.ResponseHasBeenRemoved(contexts, onEvent), contexts);
+        }
+
+        [AdminCommand]
+        [DiscordCommand("responses")]
+        public async Task Responses(DiscordRequest request, Contexts contexts)
+        {
+            var argument = request.Arguments?.FirstOrDefault()?.Name?.ToLowerInvariant();
+            if (!possibleArguments.Contains(argument))
+            {
+                argument = "all";
+            }
+            await _responsesMessageService.PrintResponses(argument, contexts);
         }
     }
 }

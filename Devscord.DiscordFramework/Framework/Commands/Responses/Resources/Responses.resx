@@ -120,6 +120,9 @@
   <data name="AvailableSafeRoles" xml:space="preserve">
     <value>Dostępne role: {{roles}}</value>
   </data>
+  <data name="InvalidArguments" xml:space="preserve">
+    <value>Dla tego polecenia są dostępne tylko argumenty: {{arguments}}</value>
+  </data>
   <data name="MutedUser" xml:space="preserve">
     <value>Użytkownik {{user}} został zmutowany do {{timeEnd}}UTC</value>
   </data>

@@ -207,5 +207,11 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             return responsesService.ProcessResponse("ResponseHasBeenRemoved", contexts,
                 new KeyValuePair<string, string>("onEvent", onEvent));
         }
+
+        public static string InvalidArguments(this ResponsesService responsesService, string arguments)
+        {
+            return responsesService.ProcessResponse("InvalidArguments",
+                new KeyValuePair<string, string>("arguments", arguments));
+        }
     }
 }
