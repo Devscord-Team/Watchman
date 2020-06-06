@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
@@ -17,6 +16,7 @@ namespace Watchman.Discord.UnitTests
     public class AntiSpamDetectionTests
     {
         private const int DEFAULT_TEST_USER_ID = 1;
+        private const int DEFAULT_COUNT_TO_BE_SAFE = 500;
         private readonly ServerMessagesCacheService _exampleServerMessages = new ServerMessagesCacheService();
         private readonly Mock<IUserMessagesCounter> _userMessagesCounter = new Mock<IUserMessagesCounter>();
 
@@ -42,6 +42,7 @@ namespace Watchman.Discord.UnitTests
             _userMessagesCounter
                 .Setup(x => x.CountUserMessages(DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
                 .Returns(userMessagesCount);
+
             var linksDetector = new LinksDetectorStrategy(_userMessagesCounter.Object);
 
             // Act
@@ -68,18 +69,24 @@ namespace Watchman.Discord.UnitTests
         }
 
         [Test]
-        [TestCase("spam", "spam", "spam", "spam", 1000, SpamProbability.Low)]
-        [TestCase("spam", "spam2", "spam3", "spam", 400, SpamProbability.Low)]
-        [TestCase("spam", "spam2", "spam", "spam", 50, SpamProbability.Medium)]
+        [TestCase("spam", "spam", "spam", "spam", 1000, SpamProbability.Medium)]
+        [TestCase("spam", "sth else", "spam", "spam", 1000, SpamProbability.Low)]
+        [TestCase("spam", "spam2", "spam3", "spamm", 400, SpamProbability.Sure)]
+        [TestCase("spam", "spam2", "spam3", "spamm", 1200, SpamProbability.Medium)]
+        [TestCase("spam", "spam2", "spam", "spam", 50, SpamProbability.Sure)]
         [TestCase("aaaaaaaaaabbbbb", "https://discord.gg/example", "https://discord.gg/example", "https://discord.gg/example", 20, SpamProbability.Medium)]
+        [TestCase("link: https://discord.gg/example", "https://discord.gg/example", "https://discord.gg/example", "https://discord.gg/example", 20, SpamProbability.Sure)]
         public void DuplicatesDetector_ShouldDetectSpam(string messageContent1, string messageContent2, string messageContent3, string messageContent4, int userMessagesCount, SpamProbability exceptedSpamProbability)
         {
             // Arrange
             _userMessagesCounter
                 .Setup(x => x.CountUserMessages(DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
                 .Returns(userMessagesCount);
+            _userMessagesCounter
+                .Setup(x => x.UserMessagesCountToBeSafe)
+                .Returns(DEFAULT_COUNT_TO_BE_SAFE);
             
-            var duplicatesDetector = new DuplicatedMessagesDetectorStrategy(_userMessagesCounter.Object); //todo: mockowaæ configuration
+            var duplicatesDetector = new DuplicatedMessagesDetectorStrategy(_userMessagesCounter.Object);
 
             var lastMessage = CreateMessage(messageContent4);
             var serverMessages = new ServerMessagesCacheService();
@@ -101,16 +108,33 @@ namespace Watchman.Discord.UnitTests
         [TestCase("not spam", "something else", "something more else", "totally different", 10)]
         [TestCase("hello", "zxy", "afegserg", "egr", 5)]
         [TestCase("hello", "how", "are", "you", 5)]
+        [TestCase("hello", "how", "her", "shower", 50)]
         public void DuplicatesDetector_ShouldNotDetectSpam(string messageContent1, string messageContent2, string messageContent3, string messageContent4, int userMessagesCount)
         {
             // Arrange
+            _userMessagesCounter
+                .Setup(x => x.CountUserMessages(DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
+                .Returns(userMessagesCount);
+            _userMessagesCounter
+                .Setup(x => x.UserMessagesCountToBeSafe)
+                .Returns(DEFAULT_COUNT_TO_BE_SAFE);
+            
+            var duplicatesDetector = new DuplicatedMessagesDetectorStrategy(_userMessagesCounter.Object);
 
+            var lastMessage = CreateMessage(messageContent4);
+            var serverMessages = new ServerMessagesCacheService();
+            serverMessages.OverwriteMessages(new List<SmallMessage>
+            {
+                new SmallMessage(messageContent1, DEFAULT_TEST_USER_ID, DateTime.Now),
+                new SmallMessage(messageContent2, DEFAULT_TEST_USER_ID, DateTime.Now),
+                new SmallMessage(messageContent3, DEFAULT_TEST_USER_ID, DateTime.Now)
+            });
 
             // Act
-
+            var spamProbability = duplicatesDetector.GetSpamProbability(serverMessages, lastMessage);
 
             // Assert
-
+            Assert.That(spamProbability, Is.EqualTo(SpamProbability.None));
         }
 
         private Message CreateMessage(string content)

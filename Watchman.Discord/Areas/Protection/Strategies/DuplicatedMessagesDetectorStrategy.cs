@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
 using Devscord.DiscordFramework.Services.Models;
@@ -31,13 +29,17 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             var content = message.Request.OriginalMessage;
             var similarMessagesCount = lastAFewMessages.Count(x => GetDifferencePercent(x.Content, content) < 0.4);
             var serverId = message.Contexts.Server.Id;
-            var userMessagesCount = this.UserMessagesCounter.CountUserMessages(userId, serverId);
+            
+            var userCount = this.UserMessagesCounter.CountUserMessages(userId, serverId);
+            var countToBeSafe = this.UserMessagesCounter.UserMessagesCountToBeSafe;
 
             return similarMessagesCount switch
-            { //todo: dokończyć przypadki
-                0 when userMessagesCount > UserMessagesCounter.UserMessagesCountToBeSafe => SpamProbability.None,
+            {
+                0 => SpamProbability.None,
                 1 => SpamProbability.Low,
+                2 when userCount >= countToBeSafe => SpamProbability.Low,
                 2 => SpamProbability.Medium,
+                _ when userCount >= countToBeSafe => SpamProbability.Medium,
                 _ => SpamProbability.Sure
             };
         }
