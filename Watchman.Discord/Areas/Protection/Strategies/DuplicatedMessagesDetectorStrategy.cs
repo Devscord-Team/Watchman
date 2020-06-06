@@ -18,16 +18,16 @@ namespace Watchman.Discord.Areas.Protection.Strategies
         public SpamProbability GetSpamProbability(ServerMessagesCacheService serverMessagesCacheService, Message message)
         {
             var userId = message.Contexts.User.Id;
-            var lastAFewMessages = serverMessagesCacheService.GetLastUserMessages(userId)
+            var lastFewMessages = serverMessagesCacheService.GetLastUserMessages(userId)
                 .TakeLast(4)
                 .ToList();
-            if (lastAFewMessages.Count < 3)
+            if (lastFewMessages.Count < 3)
             {
                 return SpamProbability.None;
             }
 
             var content = message.Request.OriginalMessage;
-            var similarMessagesCount = lastAFewMessages.Count(x => GetDifferencePercent(x.Content, content) < 0.4);
+            var similarMessagesCount = lastFewMessages.Count(x => GetDifferencePercent(x.Content, content) < 0.4);
             var serverId = message.Contexts.Server.Id;
             
             var userCount = this.UserMessagesCounter.CountUserMessages(userId, serverId);

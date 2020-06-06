@@ -137,6 +137,34 @@ namespace Watchman.Discord.UnitTests
             Assert.That(spamProbability, Is.EqualTo(SpamProbability.None));
         }
 
+        [Test]
+        [TestCase()]
+        public void OverallSpamDetectorStrategy_ShouldDetectSpam()
+        {
+            // Arrange
+            //todo: write tests
+
+            // Act
+
+
+            // Assert
+            Assert.Fail();
+        }
+
+        [Test]
+        [TestCase()]
+        public void OverallSpamDetectorStrategy_ShouldNotDetectSpam()
+        {
+            // Arrange
+            //todo: write tests
+
+            // Act
+
+
+            // Assert
+            Assert.Fail();
+        }
+
         private Message CreateMessage(string content)
         {
             var request = new DiscordRequest { OriginalMessage = content };
@@ -148,8 +176,8 @@ namespace Watchman.Discord.UnitTests
         private Contexts GetDefaultContexts()
         {
             var contexts = new Contexts();
-            contexts.SetContext(new UserContext(DEFAULT_TEST_USER_ID, "abc", new List<UserRole>(), null, null));
-            contexts.SetContext(new DiscordServerContext(GetMessagesQuery.GET_ALL_SERVERS, "aaa", null, null, null));
+            contexts.SetContext(new UserContext(DEFAULT_TEST_USER_ID, null, new List<UserRole>(), null, null));
+            contexts.SetContext(new DiscordServerContext(GetMessagesQuery.GET_ALL_SERVERS, null, null, null, null));
             return contexts;
         }
     }
