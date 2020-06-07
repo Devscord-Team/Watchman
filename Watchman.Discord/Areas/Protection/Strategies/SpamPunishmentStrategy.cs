@@ -18,7 +18,8 @@ namespace Watchman.Discord.Areas.Protection.Strategies
         public Punishment GetPunishment(ulong userId, SpamProbability spamProbability)
         {
             var userPunishments = _punishmentsCachingService.GetUserPunishments(userId);
-            var warnsCount = userPunishments.Count(x => x.GivenAt > DateTime.Now.AddHours(-12) && x.PunishmentOption == PunishmentOption.Warn);
+            var startTime = DateTime.Now.AddHours(-12);
+            var warnsCount = userPunishments.Count(x => x.PunishmentOption == PunishmentOption.Warn && x.GivenAt > startTime);
 
             var punishmentOption = spamProbability switch
             {
@@ -36,7 +37,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
 
             if (punishmentOption == PunishmentOption.Mute)
             {
-                var mutesCount = userPunishments.Count(x => x.PunishmentOption == PunishmentOption.Mute);
+                var mutesCount = userPunishments.Count(x => x.PunishmentOption == PunishmentOption.Mute && x.GivenAt > startTime);
                 return new Punishment(PunishmentOption.Mute, DateTime.Now, GetTimeForMute(mutesCount));
             }
             return new Punishment(punishmentOption, DateTime.Now);
