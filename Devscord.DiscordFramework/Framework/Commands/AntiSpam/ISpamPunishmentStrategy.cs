@@ -2,7 +2,7 @@
 
 namespace Devscord.DiscordFramework.Framework.Commands.AntiSpam
 {
-    interface ISpamPunishmentStrategy
+    public interface ISpamPunishmentStrategy
     {
         public Punishment GetPunishment(ulong userId, SpamProbability spamProbability);
     }

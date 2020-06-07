@@ -98,10 +98,10 @@ namespace Watchman.Discord.Areas.Protection.Services
                     messagesService.SendResponse(x => x.SpamAlertUserIsMuted(contexts), contexts);
                     break;
                     
-                case ProtectionPunishmentOption.LongMute:
-                    MuteUserForSpam(contexts, SECOND_MUTE_LENGTH).Wait();
-                    messagesService.SendResponse(x => x.SpamAlertUserIsMutedForLong(contexts), contexts);
-                    break;
+                //case ProtectionPunishmentOption.LongMute:
+                //    MuteUserForSpam(contexts, SECOND_MUTE_LENGTH).Wait();
+                //    messagesService.SendResponse(x => x.SpamAlertUserIsMutedForLong(contexts), contexts);
+                //    break;
             }
         }
 
