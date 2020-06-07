@@ -10,7 +10,7 @@ using NUnit.Framework;
 using Watchman.Discord.Areas.Protection.Strategies;
 using Watchman.DomainModel.Messages.Queries;
 
-namespace Watchman.Discord.UnitTests
+namespace Watchman.Discord.UnitTests.AntiSpam
 {
     [TestFixture]
     public class AntiSpamDetectionTests
@@ -85,7 +85,7 @@ namespace Watchman.Discord.UnitTests
             _userMessagesCounter
                 .Setup(x => x.CountUserMessages(DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
                 .Returns(userMessagesCount);
-            
+
             var duplicatesDetector = new DuplicatedMessagesDetectorStrategy(_userMessagesCounter.Object);
 
             var lastMessage = CreateMessage(messageContent4);
@@ -116,7 +116,7 @@ namespace Watchman.Discord.UnitTests
                 .Setup(x => x.CountUserMessages(DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
                 .Returns(userMessagesCount);
 
-            
+
             var duplicatesDetector = new DuplicatedMessagesDetectorStrategy(_userMessagesCounter.Object);
 
             var lastMessage = CreateMessage(messageContent4);

@@ -13,14 +13,12 @@ namespace Watchman.Discord.Areas.Protection.Controllers
     {
         private readonly AntiSpamService _antiSpamService;
         private readonly UserMessagesCountService _userMessagesCountService;
-        private readonly SpamDetectingStrategy _strategy;
         private readonly ServerMessagesCacheService _serverMessagesCacheService;
 
         public AntiSpamController(AntiSpamService antiSpamService, UserMessagesCountService userMessagesCountService)
         {
             this._antiSpamService = antiSpamService;
             _userMessagesCountService = userMessagesCountService;
-            this._strategy = new SpamDetectingStrategy();
             this._serverMessagesCacheService = new ServerMessagesCacheService();
         }
 
