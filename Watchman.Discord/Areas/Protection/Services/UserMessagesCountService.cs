@@ -7,7 +7,6 @@ using Watchman.Cqrs;
 using Watchman.Discord.Areas.Protection.Models;
 using Watchman.DomainModel.Messages;
 using Watchman.DomainModel.Messages.Queries;
-using Watchman.DomainModel.Settings;
 using Watchman.DomainModel.Settings.Queries;
 
 namespace Watchman.Discord.Areas.Protection.Services
@@ -43,17 +42,18 @@ namespace Watchman.Discord.Areas.Protection.Services
         {
             Log.Information("Reloading cache....");
 
-            this.UserMessagesCountToBeSafe = GetConfiguration().UserMessagesCountToBeSafe;
+            UpdateConfiguration();
             UpdateMessages();
             _lastUpdated = DateTime.UtcNow;
 
             Log.Information("Cache reloaded");
         }
 
-        private Configuration GetConfiguration()
+        private void UpdateConfiguration()
         {
             var query = new GetConfigurationQuery();
-            return _queryBus.Execute(query).Configuration;
+            var configuration = _queryBus.Execute(query).Configuration;
+            this.UserMessagesCountToBeSafe = configuration.UserMessagesCountToBeSafe;
         }
 
         private void UpdateMessages()

@@ -5,11 +5,11 @@ namespace Watchman.DomainModel.Users.Commands
 {
     public class AddProtectionPunishmentCommand : ICommand
     {
-        public ProtectionPunishment ProtectionPunishment { get; set; }
+        public ProtectionPunishment ProtectionPunishment { get; }
 
-        public AddProtectionPunishmentCommand(ProtectionPunishmentOption protectionPunishmentOption, ulong userId, TimeSpan? forTime = null)
+        public AddProtectionPunishmentCommand(ProtectionPunishmentOption protectionPunishmentOption, ulong userId, DateTime givenAt, TimeSpan? forTime = null)
         {
-            this.ProtectionPunishment = new ProtectionPunishment(protectionPunishmentOption, userId, forTime);
+            this.ProtectionPunishment = new ProtectionPunishment(protectionPunishmentOption, userId, givenAt, forTime);
         }
 
         public AddProtectionPunishmentCommand(ProtectionPunishment protectionPunishment)
