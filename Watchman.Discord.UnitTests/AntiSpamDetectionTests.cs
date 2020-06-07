@@ -30,6 +30,9 @@ namespace Watchman.Discord.UnitTests
                 new SmallMessage("fgdfgfa", 1, DateTime.Now.AddSeconds(-1)),
             };
             _exampleServerMessages.OverwriteMessages(exampleSmallMessages);
+            _userMessagesCounter
+                .Setup(x => x.UserMessagesCountToBeSafe)
+                .Returns(DEFAULT_COUNT_TO_BE_SAFE);
         }
 
         [Test]
@@ -82,9 +85,6 @@ namespace Watchman.Discord.UnitTests
             _userMessagesCounter
                 .Setup(x => x.CountUserMessages(DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
                 .Returns(userMessagesCount);
-            _userMessagesCounter
-                .Setup(x => x.UserMessagesCountToBeSafe)
-                .Returns(DEFAULT_COUNT_TO_BE_SAFE);
             
             var duplicatesDetector = new DuplicatedMessagesDetectorStrategy(_userMessagesCounter.Object);
 
@@ -115,9 +115,7 @@ namespace Watchman.Discord.UnitTests
             _userMessagesCounter
                 .Setup(x => x.CountUserMessages(DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
                 .Returns(userMessagesCount);
-            _userMessagesCounter
-                .Setup(x => x.UserMessagesCountToBeSafe)
-                .Returns(DEFAULT_COUNT_TO_BE_SAFE);
+
             
             var duplicatesDetector = new DuplicatedMessagesDetectorStrategy(_userMessagesCounter.Object);
 
@@ -144,12 +142,9 @@ namespace Watchman.Discord.UnitTests
         public void OverallSpamDetectorStrategy_ShouldDetectSpam(string messageContent1, string messageContent2, string messageContent3, string messageContent4, int userMessagesCount, SpamProbability exceptedSpamProbability)
         {
             // Arrange
-                _userMessagesCounter
+            _userMessagesCounter
                 .Setup(x => x.CountUserMessages(DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
                 .Returns(userMessagesCount);
-            _userMessagesCounter
-                .Setup(x => x.UserMessagesCountToBeSafe)
-                .Returns(DEFAULT_COUNT_TO_BE_SAFE);
 
             var lastMessage = CreateMessage(messageContent4);
             var serverMessages = new ServerMessagesCacheService();
@@ -159,12 +154,7 @@ namespace Watchman.Discord.UnitTests
                 new SmallMessage(messageContent2, DEFAULT_TEST_USER_ID, DateTime.Now),
                 new SmallMessage(messageContent3, DEFAULT_TEST_USER_ID, DateTime.Now)
             });
-            var spamDetectors = new List<ISpamDetector>
-            {
-                new LinksDetectorStrategy(_userMessagesCounter.Object),
-                new DuplicatedMessagesDetectorStrategy(_userMessagesCounter.Object)
-            };
-            var overallSpamDetector = new OverallSpamDetectorStrategy(serverMessages, spamDetectors);
+            var overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessages, _userMessagesCounter.Object);
 
             // Act
             var overallSpamProbability = overallSpamDetector.GetOverallSpamProbability(lastMessage);
@@ -179,11 +169,8 @@ namespace Watchman.Discord.UnitTests
         {
             // Arrange
             _userMessagesCounter
-            .Setup(x => x.CountUserMessages(DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
-            .Returns(userMessagesCount);
-            _userMessagesCounter
-                .Setup(x => x.UserMessagesCountToBeSafe)
-                .Returns(DEFAULT_COUNT_TO_BE_SAFE);
+                .Setup(x => x.CountUserMessages(DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
+                .Returns(userMessagesCount);
 
             var lastMessage = CreateMessage(messageContent4);
             var serverMessages = new ServerMessagesCacheService();
@@ -193,12 +180,7 @@ namespace Watchman.Discord.UnitTests
                 new SmallMessage(messageContent2, DEFAULT_TEST_USER_ID, DateTime.Now),
                 new SmallMessage(messageContent3, DEFAULT_TEST_USER_ID, DateTime.Now)
             });
-            var spamDetectors = new List<ISpamDetector>
-            {
-                new LinksDetectorStrategy(_userMessagesCounter.Object),
-                new DuplicatedMessagesDetectorStrategy(_userMessagesCounter.Object)
-            };
-            var overallSpamDetector = new OverallSpamDetectorStrategy(serverMessages, spamDetectors);
+            var overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessages, _userMessagesCounter.Object);
 
             // Act
             var overallSpamProbability = overallSpamDetector.GetOverallSpamProbability(lastMessage);
