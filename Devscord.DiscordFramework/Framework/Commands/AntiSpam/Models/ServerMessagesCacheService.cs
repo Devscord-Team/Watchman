@@ -25,7 +25,14 @@ namespace Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models
 
         public void AddMessage(SmallMessage smallMessage)
         {
-            _usersMessages[smallMessage.UserId].Add(smallMessage);
+            if (_usersMessages.ContainsKey(smallMessage.UserId))
+            {
+                _usersMessages[smallMessage.UserId].Add(smallMessage);
+            }
+            else
+            {
+                _usersMessages.Add(smallMessage.UserId, new List<SmallMessage> { smallMessage });
+            }
         }
 
         public void AddMessage(DiscordRequest request, Contexts contexts)
@@ -36,18 +43,27 @@ namespace Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models
 
         public List<SmallMessage> GetLastUserMessages(ulong userId)
         {
-            return _usersMessages[userId];
+            if (_usersMessages.TryGetValue(userId, out var smallMessages))
+            {
+                return smallMessages;
+            }
+            return new List<SmallMessage>();
         }
 
         private static async void RemoveOldMessagesCyclic()
         {
             await Task.Delay(TimeSpan.FromMinutes(2));
-            var minTimeInPast = DateTime.Now.AddMinutes(-5);
-            _usersMessages = _usersMessages.Values.Select(list =>
+            var minTimeInPast = DateTime.UtcNow.AddMinutes(-5);
+            var smallMessages = _usersMessages.Values.Select(list =>
             {
                 list.RemoveAll(message => message.SentAt < minTimeInPast);
                 return list;
-            }).ToDictionary(x => x.First().UserId, x => x);
+            }).ToList();
+            if (smallMessages.Count == 0)
+            {
+                return;
+            }
+            _usersMessages = smallMessages.ToDictionary(x => x.First().UserId, x => x);
         }
     }
 }

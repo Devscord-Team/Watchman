@@ -30,7 +30,12 @@ namespace Watchman.Discord.Areas.Protection.Services
 
         public int GetUserWarnsCount(ulong userId, DateTime? since = null)
         {
-            var warns = _punishments[userId].Where(x => x.PunishmentOption == PunishmentOption.Warn);
+            var wasFound = _punishments.TryGetValue(userId, out var punishments);
+            if (!wasFound)
+            {
+                return 0;
+            }
+            var warns = punishments.Where(x => x.PunishmentOption == PunishmentOption.Warn);
             return since != null 
                 ? warns.Count(x => x.GivenAt >= since)
                 : warns.Count();
@@ -38,7 +43,12 @@ namespace Watchman.Discord.Areas.Protection.Services
 
         public int GetUserMutesCount(ulong userId, DateTime? since = null)
         {
-            var mutes = _punishments[userId].Where(x => x.PunishmentOption == PunishmentOption.Mute);
+            var wasFound = _punishments.TryGetValue(userId, out var punishments);
+            if (!wasFound)
+            {
+                return 0;
+            }
+            var mutes = punishments.Where(x => x.PunishmentOption == PunishmentOption.Mute);
             return since != null
                 ? mutes.Count(x => x.GivenAt >= since)
                 : mutes.Count();

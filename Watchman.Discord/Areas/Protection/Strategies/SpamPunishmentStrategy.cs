@@ -44,6 +44,10 @@ namespace Watchman.Discord.Areas.Protection.Strategies
         private TimeSpan GetTimeForMute(int userMutesCount)
         {
             var minutes = 15 * Math.Pow(2, userMutesCount);
+            if (minutes > int.MaxValue)
+            {
+                return TimeSpan.FromMinutes(int.MaxValue);
+            }
             return TimeSpan.FromMinutes(minutes);
         }
     }

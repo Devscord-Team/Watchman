@@ -13,6 +13,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
     public class AntiSpamController : IController
     {
         private readonly ServerMessagesCacheService _serverMessagesCacheService;
+        private readonly PunishmentsCachingService _punishmentsCachingService;
         private readonly AntiSpamService _antiSpamService;
         private readonly IOverallSpamDetector _overallSpamDetector;
         private readonly ISpamPunishmentStrategy _spamPunishmentStrategy;
@@ -20,6 +21,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         public AntiSpamController(ServerMessagesCacheService serverMessagesCacheService, UserMessagesCountService userMessagesCounterService, PunishmentsCachingService punishmentsCachingService, AntiSpamService antiSpamService)
         {
             _serverMessagesCacheService = serverMessagesCacheService;
+            _punishmentsCachingService = punishmentsCachingService;
             _antiSpamService = antiSpamService;
             _overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessagesCacheService, userMessagesCounterService);
             _spamPunishmentStrategy = new SpamPunishmentStrategy(punishmentsCachingService);
@@ -35,6 +37,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             {
                 var punishment = _spamPunishmentStrategy.GetPunishment(contexts.User.Id, spamProbability);
                 await _antiSpamService.SetPunishment(contexts, punishment);
+                await _punishmentsCachingService.AddUserPunishment(contexts.User.Id, punishment);
             }
             _serverMessagesCacheService.AddMessage(request, contexts);
             Log.Information("Scanned");
