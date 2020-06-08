@@ -6,7 +6,6 @@ using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Models;
 using Moq;
-using NUnit.Framework;
 using Watchman.DomainModel.Messages.Queries;
 
 namespace Watchman.Discord.UnitTests.AntiSpam
@@ -33,12 +32,11 @@ namespace Watchman.Discord.UnitTests.AntiSpam
                 .Returns(DEFAULT_COUNT_TO_BE_SAFE);
         }
 
-        protected Message CreateMessage(string content)
+        protected (DiscordRequest request, Contexts contexts) CreateRequestAndContexts(string content)
         {
             var request = new DiscordRequest { OriginalMessage = content };
             var contexts = GetDefaultContexts();
-            var message = new Message(1, request, contexts);
-            return message;
+            return (request, contexts);
         }
 
         private Contexts GetDefaultContexts()

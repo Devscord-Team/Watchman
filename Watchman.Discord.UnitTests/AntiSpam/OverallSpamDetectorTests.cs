@@ -22,7 +22,7 @@ namespace Watchman.Discord.UnitTests.AntiSpam
                 .Setup(x => x.CountUserMessages(DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
                 .Returns(userMessagesCount);
 
-            var lastMessage = CreateMessage(messageContent4);
+            var (request, contexts) = CreateRequestAndContexts(messageContent4);
             var serverMessages = new ServerMessagesCacheService();
             serverMessages.OverwriteMessages(new List<SmallMessage>
             {
@@ -33,7 +33,7 @@ namespace Watchman.Discord.UnitTests.AntiSpam
             var overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessages, UserMessagesCounter.Object);
 
             // Act
-            var overallSpamProbability = overallSpamDetector.GetOverallSpamProbability(lastMessage);
+            var overallSpamProbability = overallSpamDetector.GetOverallSpamProbability(request, contexts);
 
             // Assert
             Assert.That(overallSpamProbability, Is.EqualTo(exceptedSpamProbability));
@@ -48,7 +48,7 @@ namespace Watchman.Discord.UnitTests.AntiSpam
                 .Setup(x => x.CountUserMessages(DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
                 .Returns(userMessagesCount);
 
-            var lastMessage = CreateMessage(messageContent4);
+            var (request, contexts) = CreateRequestAndContexts(messageContent4);
             var serverMessages = new ServerMessagesCacheService();
             serverMessages.OverwriteMessages(new List<SmallMessage>
             {
@@ -59,7 +59,7 @@ namespace Watchman.Discord.UnitTests.AntiSpam
             var overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessages, UserMessagesCounter.Object);
 
             // Act
-            var overallSpamProbability = overallSpamDetector.GetOverallSpamProbability(lastMessage);
+            var overallSpamProbability = overallSpamDetector.GetOverallSpamProbability(request, contexts);
 
             // Assert
             Assert.That(overallSpamProbability, Is.EqualTo(SpamProbability.None));

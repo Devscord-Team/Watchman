@@ -17,7 +17,7 @@ namespace Watchman.Discord.UnitTests.AntiSpam
         public void LinksDetector_ShouldDetectSpam(string messageContent, int userMessagesCount, SpamProbability exceptedSpamProbability)
         {
             // Arrange
-            var message = CreateMessage(messageContent);
+            var (request, contexts) = CreateRequestAndContexts(messageContent);
             UserMessagesCounter
                 .Setup(x => x.CountUserMessages(DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
                 .Returns(userMessagesCount);
@@ -25,7 +25,7 @@ namespace Watchman.Discord.UnitTests.AntiSpam
             var linksDetector = new LinksDetectorStrategy(UserMessagesCounter.Object);
 
             // Act
-            var spamProbability = linksDetector.GetSpamProbability(ExampleServerMessages, message);
+            var spamProbability = linksDetector.GetSpamProbability(ExampleServerMessages, request, contexts);
 
             // Assert
             Assert.That(spamProbability, Is.EqualTo(exceptedSpamProbability));
@@ -37,11 +37,11 @@ namespace Watchman.Discord.UnitTests.AntiSpam
         public void LinksDetector_ShouldNotDetectSpam(string messageContent)
         {
             // Arrange
-            var message = CreateMessage(messageContent);
+            var (request, contexts) = CreateRequestAndContexts(messageContent);
             var linksDetector = new LinksDetectorStrategy(UserMessagesCounter.Object);
 
             // Act
-            var spamProbability = linksDetector.GetSpamProbability(ExampleServerMessages, message);
+            var spamProbability = linksDetector.GetSpamProbability(ExampleServerMessages, request, contexts);
 
             // Assert
             Assert.That(spamProbability, Is.EqualTo(SpamProbability.None));
@@ -64,7 +64,7 @@ namespace Watchman.Discord.UnitTests.AntiSpam
 
             var duplicatesDetector = new DuplicatedMessagesDetectorStrategy(UserMessagesCounter.Object);
 
-            var lastMessage = CreateMessage(messageContent4);
+            var (request, contexts) = CreateRequestAndContexts(messageContent4);
             var serverMessages = new ServerMessagesCacheService();
             serverMessages.OverwriteMessages(new List<SmallMessage>
             {
@@ -74,7 +74,7 @@ namespace Watchman.Discord.UnitTests.AntiSpam
             });
 
             // Act
-            var spamProbability = duplicatesDetector.GetSpamProbability(serverMessages, lastMessage);
+            var spamProbability = duplicatesDetector.GetSpamProbability(serverMessages, request, contexts);
 
             // Assert
             Assert.That(spamProbability, Is.EqualTo(exceptedSpamProbability));
@@ -95,7 +95,7 @@ namespace Watchman.Discord.UnitTests.AntiSpam
 
             var duplicatesDetector = new DuplicatedMessagesDetectorStrategy(UserMessagesCounter.Object);
 
-            var lastMessage = CreateMessage(messageContent4);
+            var (request, contexts) = CreateRequestAndContexts(messageContent4);
             var serverMessages = new ServerMessagesCacheService();
             serverMessages.OverwriteMessages(new List<SmallMessage>
             {
@@ -105,7 +105,7 @@ namespace Watchman.Discord.UnitTests.AntiSpam
             });
 
             // Act
-            var spamProbability = duplicatesDetector.GetSpamProbability(serverMessages, lastMessage);
+            var spamProbability = duplicatesDetector.GetSpamProbability(serverMessages, request, contexts);
 
             // Assert
             Assert.That(spamProbability, Is.EqualTo(SpamProbability.None));
