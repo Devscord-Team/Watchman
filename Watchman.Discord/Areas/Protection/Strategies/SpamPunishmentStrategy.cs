@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
 using Watchman.Discord.Areas.Protection.Services;
@@ -8,18 +7,17 @@ namespace Watchman.Discord.Areas.Protection.Strategies
 {
     public class SpamPunishmentStrategy : ISpamPunishmentStrategy
     {
-        private readonly PunishmentsCachingService _punishmentsCachingService;
+        private readonly IPunishmentsCachingService _punishmentsCachingService;
 
-        public SpamPunishmentStrategy(PunishmentsCachingService punishmentsCachingService)
+        public SpamPunishmentStrategy(IPunishmentsCachingService punishmentsCachingService)
         {
             _punishmentsCachingService = punishmentsCachingService;
         }
 
         public Punishment GetPunishment(ulong userId, SpamProbability spamProbability)
         {
-            var userPunishments = _punishmentsCachingService.GetUserPunishments(userId);
-            var startTime = DateTime.Now.AddHours(-12);
-            var warnsCount = userPunishments.Count(x => x.PunishmentOption == PunishmentOption.Warn && x.GivenAt > startTime);
+            var takeFromTime = DateTime.Now.AddHours(-12);
+            var warnsCount = _punishmentsCachingService.GetUserWarnsCount(userId, takeFromTime);
 
             var punishmentOption = spamProbability switch
             {
@@ -37,7 +35,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
 
             if (punishmentOption == PunishmentOption.Mute)
             {
-                var mutesCount = userPunishments.Count(x => x.PunishmentOption == PunishmentOption.Mute && x.GivenAt > startTime);
+                var mutesCount = _punishmentsCachingService.GetUserMutesCount(userId, takeFromTime);
                 return new Punishment(PunishmentOption.Mute, DateTime.Now, GetTimeForMute(mutesCount));
             }
             return new Punishment(punishmentOption, DateTime.Now);

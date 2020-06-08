@@ -2,7 +2,8 @@
 using System.Linq;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
-using Devscord.DiscordFramework.Services.Models;
+using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
+using Devscord.DiscordFramework.Middlewares.Contexts;
 
 namespace Watchman.Discord.Areas.Protection.Strategies
 {
@@ -15,9 +16,9 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             UserMessagesCounter = userMessagesCounter;
         }
 
-        public SpamProbability GetSpamProbability(ServerMessagesCacheService serverMessagesCacheService, Message message)
+        public SpamProbability GetSpamProbability(ServerMessagesCacheService serverMessagesCacheService, DiscordRequest request, Contexts contexts)
         {
-            var userId = message.Contexts.User.Id;
+            var userId = contexts.User.Id;
             var lastFewMessages = serverMessagesCacheService.GetLastUserMessages(userId)
                 .TakeLast(4)
                 .ToList();
@@ -26,9 +27,9 @@ namespace Watchman.Discord.Areas.Protection.Strategies
                 return SpamProbability.None;
             }
 
-            var content = message.Request.OriginalMessage;
+            var content = request.OriginalMessage;
             var similarMessagesCount = lastFewMessages.Count(x => GetDifferencePercent(x.Content, content) < 0.4);
-            var serverId = message.Contexts.Server.Id;
+            var serverId = contexts.Server.Id;
             
             var userCount = this.UserMessagesCounter.CountUserMessages(userId, serverId);
             var countToBeSafe = this.UserMessagesCounter.UserMessagesCountToBeSafe;

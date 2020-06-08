@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
@@ -9,7 +10,7 @@ using Watchman.DomainModel.Users.Queries;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {
-    public class PunishmentsCachingService
+    public class PunishmentsCachingService : IPunishmentsCachingService
     {
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
@@ -25,6 +26,22 @@ namespace Watchman.Discord.Areas.Protection.Services
         public List<Punishment> GetUserPunishments(ulong userId)
         {
             return _punishments[userId];
+        }
+
+        public int GetUserWarnsCount(ulong userId, DateTime? since = null)
+        {
+            var warns = _punishments[userId].Where(x => x.PunishmentOption == PunishmentOption.Warn);
+            return since != null 
+                ? warns.Count(x => x.GivenAt >= since)
+                : warns.Count();
+        }
+
+        public int GetUserMutesCount(ulong userId, DateTime? since = null)
+        {
+            var mutes = _punishments[userId].Where(x => x.PunishmentOption == PunishmentOption.Mute);
+            return since != null
+                ? mutes.Count(x => x.GivenAt >= since)
+                : mutes.Count();
         }
 
         public async Task AddUserPunishment(ulong userId, Punishment punishment)

@@ -1,35 +1,43 @@
 ﻿using System.Threading.Tasks;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+using Devscord.DiscordFramework.Framework.Commands.AntiSpam;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Serilog;
 using Watchman.Discord.Areas.Protection.Services;
-using Watchman.DomainModel.Users;
+using Watchman.Discord.Areas.Protection.Strategies;
 
 namespace Watchman.Discord.Areas.Protection.Controllers
 {
     public class AntiSpamController : IController
     {
-        private readonly AntiSpamService _antiSpamService;
-        private readonly UserMessagesCountService _userMessagesCountService;
         private readonly ServerMessagesCacheService _serverMessagesCacheService;
+        private readonly AntiSpamService _antiSpamService;
+        private readonly IOverallSpamDetector _overallSpamDetector;
+        private readonly ISpamPunishmentStrategy _spamPunishmentStrategy;
 
-        public AntiSpamController(AntiSpamService antiSpamService, UserMessagesCountService userMessagesCountService)
+        public AntiSpamController(ServerMessagesCacheService serverMessagesCacheService, UserMessagesCountService userMessagesCounterService, PunishmentsCachingService punishmentsCachingService, AntiSpamService antiSpamService)
         {
-            this._antiSpamService = antiSpamService;
-            _userMessagesCountService = userMessagesCountService;
-            this._serverMessagesCacheService = new ServerMessagesCacheService();
+            _serverMessagesCacheService = serverMessagesCacheService;
+            _antiSpamService = antiSpamService;
+            _overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessagesCacheService, userMessagesCounterService);
+            _spamPunishmentStrategy = new SpamPunishmentStrategy(punishmentsCachingService);
         }
 
         [ReadAlways]
-        public Task Scan(DiscordRequest request, Contexts contexts)
+        public async Task Scan(DiscordRequest request, Contexts contexts)
         {
             Log.Information("Started scanning the message");
-            _serverMessagesCacheService.AddMessage(request, contexts);
 
+            var spamProbability = _overallSpamDetector.GetOverallSpamProbability(request, contexts);
+            if (spamProbability != SpamProbability.None)
+            {
+                var punishment = _spamPunishmentStrategy.GetPunishment(contexts.User.Id, spamProbability);
+                await _antiSpamService.SetPunishment(contexts, punishment);
+            }
+            _serverMessagesCacheService.AddMessage(request, contexts);
             Log.Information("Scanned");
-            return Task.CompletedTask;
         }
     }
 }

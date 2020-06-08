@@ -1,7 +1,8 @@
 ﻿using System.Text.RegularExpressions;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
-using Devscord.DiscordFramework.Services.Models;
+using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
+using Devscord.DiscordFramework.Middlewares.Contexts;
 
 namespace Watchman.Discord.Areas.Protection.Strategies
 {
@@ -17,17 +18,17 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             _userMessagesCountToBeSafe = 500;
         }
 
-        public SpamProbability GetSpamProbability(ServerMessagesCacheService serverMessagesCacheService, Message message)
+        public SpamProbability GetSpamProbability(ServerMessagesCacheService serverMessagesCacheService, DiscordRequest request, Contexts contexts)
         {
-            var content = message.Request.OriginalMessage;
+            var content = request.OriginalMessage;
             var linkRegex = new Regex(@"http[s]?:\/\/");
             if (!linkRegex.IsMatch(content))
             {
                 return SpamProbability.None;
             }
 
-            var userId = message.Contexts.User.Id;
-            var serverId = message.Contexts.Server.Id;
+            var userId = contexts.User.Id;
+            var serverId = contexts.Server.Id;
             if (this.UserMessagesCounter.CountUserMessages(userId, serverId) > _userMessagesCountToBeSafe)
             {
                 return SpamProbability.Low;
