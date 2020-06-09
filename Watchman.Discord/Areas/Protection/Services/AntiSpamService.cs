@@ -39,7 +39,6 @@ namespace Watchman.Discord.Areas.Protection.Services
                     break;
                 case PunishmentOption.Mute:
                     await MuteUserForSpam(contexts, punishment.ForTime!.Value);
-                    await messagesService.SendResponse(x => x.SpamAlertUserIsMuted(contexts), contexts);
                     break;
             }
         }

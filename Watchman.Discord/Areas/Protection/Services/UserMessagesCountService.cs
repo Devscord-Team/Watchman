@@ -22,8 +22,9 @@ namespace Watchman.Discord.Areas.Protection.Services
         public UserMessagesCountService(IQueryBus queryBus)
         {
             this._queryBus = queryBus;
+            ReloadCache();
         }
-
+        
         public int CountUserMessages(ulong userId, ulong serverId)
         {
             if (ShouldReloadCache())
@@ -35,7 +36,7 @@ namespace Watchman.Discord.Areas.Protection.Services
 
         private bool ShouldReloadCache()
         {
-            return _everyServersMessagesQuantity == null || _lastUpdated.AddHours(12) < DateTime.UtcNow;
+            return _lastUpdated.AddHours(12) < DateTime.UtcNow;
         }
 
         private void ReloadCache()

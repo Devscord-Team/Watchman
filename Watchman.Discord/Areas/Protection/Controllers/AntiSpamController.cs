@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
@@ -17,6 +20,8 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         private readonly AntiSpamService _antiSpamService;
         private readonly IOverallSpamDetector _overallSpamDetector;
         private readonly ISpamPunishmentStrategy _spamPunishmentStrategy;
+        private static readonly Dictionary<ulong, DateTime> _lastUserPunishmentDate = new Dictionary<ulong, DateTime>();
+        private static bool _isNowChecking;
 
         public AntiSpamController(ServerMessagesCacheService serverMessagesCacheService, UserMessagesCountService userMessagesCounterService, PunishmentsCachingService punishmentsCachingService, AntiSpamService antiSpamService)
         {
@@ -30,17 +35,28 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         [ReadAlways]
         public async Task Scan(DiscordRequest request, Contexts contexts)
         {
+            var stopwatch = Stopwatch.StartNew();
             Log.Information("Started scanning the message");
 
-            var spamProbability = _overallSpamDetector.GetOverallSpamProbability(request, contexts);
-            if (spamProbability != SpamProbability.None)
+            if (!_isNowChecking && (!_lastUserPunishmentDate.TryGetValue(contexts.User.Id, out var time) || time < request.SentAt.AddSeconds(-5)))
             {
-                var punishment = _spamPunishmentStrategy.GetPunishment(contexts.User.Id, spamProbability);
-                await _antiSpamService.SetPunishment(contexts, punishment);
-                await _punishmentsCachingService.AddUserPunishment(contexts.User.Id, punishment);
+                _isNowChecking = true;
+                var spamProbability = _overallSpamDetector.GetOverallSpamProbability(request, contexts);
+                if (spamProbability != SpamProbability.None)
+                {
+                    var punishment = _spamPunishmentStrategy.GetPunishment(contexts.User.Id, spamProbability);
+                    await _antiSpamService.SetPunishment(contexts, punishment);
+                    await _punishmentsCachingService.AddUserPunishment(contexts.User.Id, punishment);
+                    if (punishment.PunishmentOption != PunishmentOption.Nothing && !_lastUserPunishmentDate.TryAdd(contexts.User.Id, request.SentAt))
+                    {
+                        _lastUserPunishmentDate[contexts.User.Id] = request.SentAt;
+                    }
+                }
+                _isNowChecking = false;
             }
             _serverMessagesCacheService.AddMessage(request, contexts);
             Log.Information("Scanned");
+            Log.Information($"antispam: {stopwatch.ElapsedMilliseconds}ms");
         }
     }
 }
