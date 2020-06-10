@@ -12,9 +12,13 @@ namespace Watchman.Discord.UnitTests.AntiSpam
     internal class OverallSpamDetectorTests : AntiSpamTestsBase
     {
         [Test]
+        [TestCase("abc", "xyz", "spam", "spam", 10, SpamProbability.Low)]
+        [TestCase("xyz", "aaa", "abc", "https://discord.gg/example", 1000, SpamProbability.Low)]
+        [TestCase("abc", "xyz", "spam", "spam", 1000, SpamProbability.Low)]
+        [TestCase("xyz", "aaa", "abc", "https://discord.gg/example", 10, SpamProbability.Medium)]
         [TestCase("spam", "spam", "spam", "spam", 1000, SpamProbability.Medium)]
         [TestCase("aaaaaaaaaabbbbb", "https://discord.gg/example", "https://discord.gg/example", "https://discord.gg/example", 20, SpamProbability.Sure)]
-        [TestCase("link: https://discord.gg/example", "https://discord.gg/example", "https://discord.gg/example", "https://discord.gg/example", 20, SpamProbability.Sure)]
+        [TestCase("link: https://discord.gg/example", "abc: https://discord.gg/example", "xyz: https://discord.gg/example", "spam: https://discord.gg/example", 20, SpamProbability.Sure)]
         public void OverallSpamDetectorStrategy_ShouldDetectSpam(string messageContent1, string messageContent2, string messageContent3, string messageContent4, int userMessagesCount, SpamProbability exceptedSpamProbability)
         {
             // Arrange

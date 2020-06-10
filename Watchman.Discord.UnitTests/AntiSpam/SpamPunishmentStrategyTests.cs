@@ -73,6 +73,7 @@ namespace Watchman.Discord.UnitTests.AntiSpam
         [TestCase(0, 15)]
         [TestCase(1, 30)]
         [TestCase(4, 240)]
+        [TestCase(40, 35791)]
         public void SpamPunishmentStrategy_ShouldGiveMuteForTime(int userMutesCount, int expectedMinutesOfMute)
         {
             // Arrange
