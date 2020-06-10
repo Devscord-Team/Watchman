@@ -92,7 +92,6 @@ namespace Watchman.Discord.UnitTests.AntiSpam
                 .Setup(x => x.CountUserMessages(DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
                 .Returns(userMessagesCount);
 
-
             var duplicatesDetector = new DuplicatedMessagesDetectorStrategy(UserMessagesCounter.Object);
 
             var (request, contexts) = CreateRequestAndContexts(messageContent4);
