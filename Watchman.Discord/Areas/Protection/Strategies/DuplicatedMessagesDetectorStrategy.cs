@@ -22,7 +22,8 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             var lastFewMessages = serverMessagesCacheService.GetLastUserMessages(userId)
                 .TakeLast(4)
                 .ToList();
-            if (lastFewMessages.Count < 3)
+
+            if (lastFewMessages.Count < 2)
             {
                 return SpamProbability.None;
             }

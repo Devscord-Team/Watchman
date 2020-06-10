@@ -20,7 +20,10 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         private readonly AntiSpamService _antiSpamService;
         private readonly IOverallSpamDetector _overallSpamDetector;
         private readonly ISpamPunishmentStrategy _spamPunishmentStrategy;
+
+        // to avoid giving a few mutes in just a few seconds to the same user
         private static readonly Dictionary<ulong, DateTime> _lastUserPunishmentDate = new Dictionary<ulong, DateTime>();
+        // it's really needed - to avoid multiple warning and muting the same user
         private static bool _isNowChecking;
 
         public AntiSpamController(ServerMessagesCacheService serverMessagesCacheService, UserMessagesCountService userMessagesCounterService, PunishmentsCachingService punishmentsCachingService, AntiSpamService antiSpamService)
@@ -38,25 +41,50 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             var stopwatch = Stopwatch.StartNew();
             Log.Information("Started scanning the message");
 
-            if (!_isNowChecking && (!_lastUserPunishmentDate.TryGetValue(contexts.User.Id, out var time) || time < request.SentAt.AddSeconds(-5)))
+            if (ShouldCheckThisMessage(contexts.User.Id, request.SentAt))
             {
                 _isNowChecking = true;
                 var spamProbability = _overallSpamDetector.GetOverallSpamProbability(request, contexts);
                 if (spamProbability != SpamProbability.None)
                 {
-                    var punishment = _spamPunishmentStrategy.GetPunishment(contexts.User.Id, spamProbability);
-                    await _antiSpamService.SetPunishment(contexts, punishment);
-                    await _punishmentsCachingService.AddUserPunishment(contexts.User.Id, punishment);
-                    if (punishment.PunishmentOption != PunishmentOption.Nothing && !_lastUserPunishmentDate.TryAdd(contexts.User.Id, request.SentAt))
-                    {
-                        _lastUserPunishmentDate[contexts.User.Id] = request.SentAt;
-                    }
+                    Log.Information("{SpamProbability} for {user}", spamProbability, contexts.User.Name);
+                    await HandlePossibleSpam(contexts, spamProbability, request.SentAt);
                 }
                 _isNowChecking = false;
             }
             _serverMessagesCacheService.AddMessage(request, contexts);
             Log.Information("Scanned");
-            Log.Information($"antispam: {stopwatch.ElapsedMilliseconds}ms");
+            Log.Information("antispam: {miliseconds}ms", stopwatch.ElapsedMilliseconds);
+        }
+
+        private bool ShouldCheckThisMessage(ulong userId, DateTime messageSentAt)
+        {
+            if (_isNowChecking)
+            {
+                return false;
+            }
+            return !_lastUserPunishmentDate.TryGetValue(userId, out var time) || time < messageSentAt.AddSeconds(-5);
+        }
+
+        private async Task HandlePossibleSpam(Contexts contexts, SpamProbability spamProbability, DateTime messageSentAt)
+        {
+            var punishment = _spamPunishmentStrategy.GetPunishment(contexts.User.Id, spamProbability);
+            await _antiSpamService.SetPunishment(contexts, punishment);
+            await _punishmentsCachingService.AddUserPunishment(contexts.User.Id, punishment);
+
+            if (punishment.PunishmentOption != PunishmentOption.Nothing)
+            {
+                UpdateLastPunishmentDate(contexts.User.Id, messageSentAt);
+                Log.Information("{PunishmentOption} for user: {user}", punishment.PunishmentOption, contexts.User.Name);
+            }
+        }
+
+        private void UpdateLastPunishmentDate(ulong userId, DateTime messageSentAt)
+        {
+            if (!_lastUserPunishmentDate.TryAdd(userId, messageSentAt))
+            {
+                _lastUserPunishmentDate[userId] = messageSentAt;
+            }
         }
     }
 }

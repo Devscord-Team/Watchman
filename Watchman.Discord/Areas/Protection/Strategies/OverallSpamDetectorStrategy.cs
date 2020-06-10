@@ -31,7 +31,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
         {
             var probabilities = _spamDetectors
                 .Select(x => x.GetSpamProbability(_serverMessagesCacheService, request, contexts))
-                .Where(x => x > SpamProbability.None)
+                .Where(x => x != SpamProbability.None)
                 .ToList();
 
             if (probabilities.Count == 0)
@@ -44,7 +44,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
                 return SpamProbability.Sure;
             }
 
-            if (probabilities.Count(x => x == SpamProbability.Medium) >= 2)
+            if (probabilities.Count(x => x == SpamProbability.Medium) > 1)
             {
                 return SpamProbability.Sure;
             }
