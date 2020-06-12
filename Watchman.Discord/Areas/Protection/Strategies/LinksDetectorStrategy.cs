@@ -21,7 +21,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
         public SpamProbability GetSpamProbability(ServerMessagesCacheService serverMessagesCacheService, DiscordRequest request, Contexts contexts)
         {
             var content = request.OriginalMessage;
-            var linkRegex = new Regex(@"http[s]?:\/\/");
+            var linkRegex = new Regex(@"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)");
             if (!linkRegex.IsMatch(content))
             {
                 return SpamProbability.None;
