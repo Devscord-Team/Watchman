@@ -12,10 +12,8 @@ using Watchman.DomainModel.Messages.Queries.Handlers;
 
 namespace Watchman.Discord.Areas.Statistics.Services
 {
-    public class CyclicStatisticsGeneratorService
+    public class CyclicStatisticsGeneratorService : CyclicCacheGenerator
     {
-        private static bool _shouldStillGenerateEveryday;
-        private static bool _isNowRunningCyclicGenerator;
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
         private readonly DiscordServersService _discordServersService;
@@ -25,28 +23,6 @@ namespace Watchman.Discord.Areas.Statistics.Services
             _queryBus = queryBus;
             _commandBus = commandBus;
             _discordServersService = discordServersService;
-        }
-
-        public async Task StartGeneratingStatsCacheEveryday()
-        {
-            if (_isNowRunningCyclicGenerator)
-            {
-                return;
-            }
-            _isNowRunningCyclicGenerator = true;
-            _shouldStillGenerateEveryday = true;
-            while (_shouldStillGenerateEveryday)
-            {
-                await BlockUntilNextNight();
-                await GenerateStatsForLastDay();
-            }
-            _isNowRunningCyclicGenerator = false;
-        }
-
-        public Task StopGeneratingStatsCacheEveryday() // after calling this method, stopping will happen after next day generating - after stopping it will generate One more stats cache
-        {
-            _shouldStillGenerateEveryday = false;
-            return Task.CompletedTask;
         }
 
         public async Task GenerateStatsForDaysBefore(DiscordServerContext server, DateTime? lastInitDate)
@@ -74,18 +50,7 @@ namespace Watchman.Discord.Areas.Statistics.Services
             }
         }
 
-        private async Task BlockUntilNextNight()
-        {
-            const int hourWhenShouldGenerateCyclicStatistics = 02; // 24h clock
-
-            var nightTimeThisDay = DateTime.Today.AddHours(hourWhenShouldGenerateCyclicStatistics); // always 2:00AM this day
-            var nextNight = DateTime.Now.Hour < hourWhenShouldGenerateCyclicStatistics
-                ? nightTimeThisDay
-                : nightTimeThisDay.AddDays(1);
-
-            var delay = nextNight - DateTime.Now;
-            await Task.Delay(delay);
-        }
+        protected override async Task ReloadCache() => await GenerateStatsForLastDay();
 
         private async Task GenerateStatsForLastDay()
         {
