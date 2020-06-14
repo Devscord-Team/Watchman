@@ -1,11 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Serilog;
 using Watchman.Cqrs;
+using Watchman.Discord.Areas.Help.BotCommands;
 using Watchman.Discord.Areas.Statistics.Services;
+using Watchman.Discord.Areas.UselessFeatures.BotCommands;
+using Watchman.DomainModel.CustomCommands;
+using Watchman.DomainModel.CustomCommands.Commands;
+using Watchman.DomainModel.CustomCommands.Queries;
 using Watchman.DomainModel.Settings.Commands;
 using Watchman.DomainModel.Settings.Queries;
 

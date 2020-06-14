@@ -47,5 +47,10 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
         {
             return this.botCommandParsingService.ParseRequestToCommand(commandType, request, template);
         }
+
+        public IBotCommand ParseCustomTemplate(Type commandType, BotCommandTemplate template, Regex customTemplate, string input)
+        {
+            return this.botCommandParsingService.ParseCustomTemplate(commandType, template, customTemplate, input);
+        }
     }
 }

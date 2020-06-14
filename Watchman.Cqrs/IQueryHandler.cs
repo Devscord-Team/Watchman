@@ -14,5 +14,4 @@ namespace Watchman.Cqrs
     {
         W Handle(T query);
     }
-    
 }

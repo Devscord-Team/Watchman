@@ -1,13 +1,12 @@
-﻿using Devscord.DiscordFramework.Framework.Commands;
-using Devscord.DiscordFramework.Framework.Commands.Builders;
+﻿using Devscord.DiscordFramework.Framework.Commands.Builders;
 using Devscord.DiscordFramework.Framework.Commands.Properties;
-using Devscord.DiscordFramework.Framework.Commands.PropertyAttributes;
 using Devscord.DiscordFramework.Framework.Commands.Services;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Devscord.DiscordFramework.UnitTests.Commands
 {
@@ -46,29 +45,22 @@ namespace Devscord.DiscordFramework.UnitTests.Commands
             //Assert
             Assert.That(rendered, Is.EqualTo("{{prefix}}[[SmallTestCommand]] {{prefix}}[[TestNumber]] ((Number)) {{prefix}}[[TestUser]] ((UserMention))<<optional>>"));
         }
-    }
 
-    public class TestCommand : IBotCommand
-    {
-        [Text]
-        public string TestText { get; set; }
-        public string TestSingleWord { get; set; }
-        public string TestWithoutAtribute { get; set; }
+        [Test]
+        public void ShouldMapToTemplate()
+        {
+            //Arrange
+            var template = new BotCommandsTemplateBuilder().GetCommandTemplate(typeof(SmallTestCommand));
+            var customTemplate = new Regex(@"run\s*(?<TestUser>\<\@\S+\>)?\s*(?<TestNumber>\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            var input = "-run <@1234567890> 12";
+            var parsingService = new BotCommandsParsingService(new BotCommandsPropertyConversionService()); //todo mock and test
 
-        [Number]
-        public int TestNumber { get; set; }
+            //Act
+            var result = (SmallTestCommand) parsingService.ParseCustomTemplate(typeof(SmallTestCommand), template, customTemplate, input);
 
-        [UserMention]
-        public string TestUser { get; set; }
-    }
-
-    public class SmallTestCommand : IBotCommand
-    {
-        [Number]
-        public string TestNumber { get; set; }
-
-        [UserMention]
-        [Optional]
-        public string TestUser { get; set; }
+            //Assert
+            Assert.That(result.TestNumber, Is.EqualTo(12));
+            Assert.That(result.TestUser, Is.EqualTo("<@1234567890>"));
+        }
     }
 }
