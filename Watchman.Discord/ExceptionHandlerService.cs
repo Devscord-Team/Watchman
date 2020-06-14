@@ -55,6 +55,9 @@ namespace Watchman.Discord
                 case TimeNotSpecifiedException _:
                     messagesService.SendResponse(x => x.TimeNotSpecified(), contexts);
                     break;
+                case InvalidArgumentsException invalidArgumentsExc:
+                    messagesService.SendResponse(x => x.InvalidArguments(invalidArgumentsExc.AvailableArguments), contexts);
+                    break;
                 default:
                     messagesService.SendMessage("Wystąpił nieznany wyjątek");
                     break;
