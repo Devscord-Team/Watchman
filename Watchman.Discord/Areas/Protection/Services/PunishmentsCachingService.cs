@@ -18,8 +18,8 @@ namespace Watchman.Discord.Areas.Protection.Services
 
         public PunishmentsCachingService(IQueryBus queryBus, ICommandBus commandBus)
         {
-            _queryBus = queryBus;
-            _commandBus = commandBus;
+            this._queryBus = queryBus;
+            this._commandBus = commandBus;
             _punishments = LoadUsersPunishmentsFromDomain();
         }
 
@@ -36,7 +36,7 @@ namespace Watchman.Discord.Areas.Protection.Services
                 return 0;
             }
             var warns = punishments.Where(x => x.PunishmentOption == PunishmentOption.Warn);
-            return since != null 
+            return since.HasValue
                 ? warns.Count(x => x.GivenAt >= since)
                 : warns.Count();
         }
@@ -49,7 +49,7 @@ namespace Watchman.Discord.Areas.Protection.Services
                 return 0;
             }
             var mutes = punishments.Where(x => x.PunishmentOption == PunishmentOption.Mute);
-            return since != null
+            return since.HasValue
                 ? mutes.Count(x => x.GivenAt >= since)
                 : mutes.Count();
         }
@@ -84,10 +84,10 @@ namespace Watchman.Discord.Areas.Protection.Services
                     {
                         var option = (PunishmentOption)(int)x.Option;
                         return new Punishment(option, x.GivenAt, x.Time);
-                    }).ToList();
-                    return new KeyValuePair<ulong, List<Punishment>>(userId, punishments);
+                    });
+                    return new KeyValuePair<ulong, IEnumerable<Punishment>>(userId, punishments);
                 })
-                .ToDictionary(x => x.Key, x => x.Value);
+                .ToDictionary(x => x.Key, x => x.Value.ToList());
         }
     }
 }

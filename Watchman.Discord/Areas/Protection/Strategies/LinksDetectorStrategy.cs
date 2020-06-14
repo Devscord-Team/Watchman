@@ -9,6 +9,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
     public class LinksDetectorStrategy : ISpamDetector
     {
         public IUserSafetyChecker UserSafetyChecker { get; set; }
+        private readonly Regex _linkRegex = new Regex(@"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)", RegexOptions.Compiled);
 
         public LinksDetectorStrategy(IUserSafetyChecker userSafetyChecker)
         {
@@ -18,8 +19,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
         public SpamProbability GetSpamProbability(ServerMessagesCacheService serverMessagesCacheService, DiscordRequest request, Contexts contexts)
         {
             var content = request.OriginalMessage;
-            var linkRegex = new Regex(@"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)");
-            if (!linkRegex.IsMatch(content))
+            if (!_linkRegex.IsMatch(content))
             {
                 return SpamProbability.None;
             }
