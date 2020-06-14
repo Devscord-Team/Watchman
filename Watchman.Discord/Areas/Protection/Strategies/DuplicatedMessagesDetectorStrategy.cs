@@ -9,11 +9,11 @@ namespace Watchman.Discord.Areas.Protection.Strategies
 {
     public class DuplicatedMessagesDetectorStrategy : ISpamDetector
     {
-        public IUserMessagesCounter UserMessagesCounter { get; set; }
+        public IUserSafetyChecker UserSafetyChecker { get; set; }
 
-        public DuplicatedMessagesDetectorStrategy(IUserMessagesCounter userMessagesCounter)
+        public DuplicatedMessagesDetectorStrategy(IUserSafetyChecker userSafetyChecker)
         {
-            UserMessagesCounter = userMessagesCounter;
+            UserSafetyChecker = userSafetyChecker;
         }
 
         public SpamProbability GetSpamProbability(ServerMessagesCacheService serverMessagesCacheService, DiscordRequest request, Contexts contexts)
@@ -31,23 +31,19 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             var content = request.OriginalMessage;
             var similarMessagesCount = lastFewMessages.Count(x => GetDifferencePercent(x.Content, content) < 0.4);
             var serverId = contexts.Server.Id;
-            
-            var userCount = this.UserMessagesCounter.CountUserMessages(userId, serverId);
-            var countToBeSafe = this.UserMessagesCounter.UserMessagesCountToBeSafe;
+            var isUserSafe = this.UserSafetyChecker.IsUserSafe(userId, serverId);
 
             return similarMessagesCount switch
             {
                 0 => SpamProbability.None,
                 1 => SpamProbability.Low,
-                2 when userCount >= countToBeSafe => SpamProbability.Low,
+                2 when isUserSafe => SpamProbability.Low,
                 2 => SpamProbability.Medium,
-                _ when userCount >= countToBeSafe => SpamProbability.Medium,
+                _ when isUserSafe => SpamProbability.Medium,
                 _ => SpamProbability.Sure
             };
         }
 
-        // copied from source: https://gist.github.com/Davidblkx/e12ab0bb2aff7fd8072632b396538560
-        // modified: returns
         private double GetDifferencePercent(string message1, string message2)
         {
             if (message1 == message2)

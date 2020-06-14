@@ -6,7 +6,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.AntiSpam
 {
     public interface ISpamDetector
     {
-        public IUserMessagesCounter UserMessagesCounter { get; set; }
+        public IUserSafetyChecker UserSafetyChecker { get; set; }
         public SpamProbability GetSpamProbability(ServerMessagesCacheService serverMessagesCacheService, DiscordRequest request, Contexts contexts);
     }
 }

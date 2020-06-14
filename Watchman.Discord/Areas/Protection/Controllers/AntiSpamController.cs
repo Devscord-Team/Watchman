@@ -26,12 +26,12 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         // it's really needed - to avoid multiple warning and muting the same user
         private static bool _isNowChecking;
 
-        public AntiSpamController(ServerMessagesCacheService serverMessagesCacheService, UserMessagesCountService userMessagesCounterService, PunishmentsCachingService punishmentsCachingService, AntiSpamService antiSpamService)
+        public AntiSpamController(ServerMessagesCacheService serverMessagesCacheService, CheckUserSafetyStrategyService checkUserSafetyStrategyService, PunishmentsCachingService punishmentsCachingService, AntiSpamService antiSpamService)
         {
             _serverMessagesCacheService = serverMessagesCacheService;
             _punishmentsCachingService = punishmentsCachingService;
             _antiSpamService = antiSpamService;
-            _overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessagesCacheService, userMessagesCounterService);
+            _overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessagesCacheService, checkUserSafetyStrategyService);
             _spamPunishmentStrategy = new SpamPunishmentStrategy(punishmentsCachingService);
         }
 

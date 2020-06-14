@@ -8,14 +8,11 @@ namespace Watchman.Discord.Areas.Protection.Strategies
 {
     public class LinksDetectorStrategy : ISpamDetector
     {
-        public IUserMessagesCounter UserMessagesCounter { get; set; }
+        public IUserSafetyChecker UserSafetyChecker { get; set; }
 
-        private readonly int _userMessagesCountToBeSafe;
-        
-        public LinksDetectorStrategy(IUserMessagesCounter userMessagesCounter)
+        public LinksDetectorStrategy(IUserSafetyChecker userSafetyChecker)
         {
-            UserMessagesCounter = userMessagesCounter;
-            _userMessagesCountToBeSafe = 500;
+            UserSafetyChecker = userSafetyChecker;
         }
 
         public SpamProbability GetSpamProbability(ServerMessagesCacheService serverMessagesCacheService, DiscordRequest request, Contexts contexts)
@@ -29,11 +26,9 @@ namespace Watchman.Discord.Areas.Protection.Strategies
 
             var userId = contexts.User.Id;
             var serverId = contexts.Server.Id;
-            if (this.UserMessagesCounter.CountUserMessages(userId, serverId) > _userMessagesCountToBeSafe)
-            {
-                return SpamProbability.Low;
-            }
-            return SpamProbability.Medium;
+            return this.UserSafetyChecker.IsUserSafe(userId, serverId) 
+                ? SpamProbability.Low 
+                : SpamProbability.Medium;
         }
     }
 }

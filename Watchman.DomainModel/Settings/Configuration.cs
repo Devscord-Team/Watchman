@@ -4,13 +4,13 @@ namespace Watchman.DomainModel.Settings
 {
     public class Configuration : Entity, IAggregateRoot
     {
-        public int UserMessagesCountToBeSafe { get; private set; }
+        public int MinAverageMessagesPerWeek { get; private set; }
 
         internal static Configuration GetDefaultConfiguration()
         {
             return new Configuration
             {
-                UserMessagesCountToBeSafe = 500
+                MinAverageMessagesPerWeek = 500
             };
         }
     }

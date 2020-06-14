@@ -12,12 +12,12 @@ namespace Watchman.Discord.Areas.Protection.Strategies
         private readonly ServerMessagesCacheService _serverMessagesCacheService;
         private readonly List<ISpamDetector> _spamDetectors;
 
-        public static OverallSpamDetectorStrategy GetStrategyWithDefaultDetectors(ServerMessagesCacheService serverMessagesCacheService, IUserMessagesCounter userMessagesCounter)
+        public static OverallSpamDetectorStrategy GetStrategyWithDefaultDetectors(ServerMessagesCacheService serverMessagesCacheService, IUserSafetyChecker userSafetyChecker)
         {
             return new OverallSpamDetectorStrategy(serverMessagesCacheService, new List<ISpamDetector>
             {
-                new LinksDetectorStrategy(userMessagesCounter),
-                new DuplicatedMessagesDetectorStrategy(userMessagesCounter)
+                new LinksDetectorStrategy(userSafetyChecker),
+                new DuplicatedMessagesDetectorStrategy(userSafetyChecker)
             });
         }
 

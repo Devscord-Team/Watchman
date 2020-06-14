@@ -12,15 +12,17 @@ using Watchman.DomainModel.Settings.Queries;
 
 namespace Watchman.Discord.Areas.Protection.Strategies
 {
-    public class CheckUserSafetyStrategy : CyclicCacheGenerator, IUserSafetyChecker
+    public class CheckUserSafetyStrategyService : CyclicCacheGenerator, IUserSafetyChecker
     {
         private int _minAverageMessagesPerWeek;
         private Dictionary<ulong, ServerSafeUsers> _safeUsersOnServers;
         private readonly IQueryBus _queryBus;
 
-        public CheckUserSafetyStrategy(IQueryBus queryBus)
+        public CheckUserSafetyStrategyService(IQueryBus queryBus)
         {
             this._queryBus = queryBus;
+            this.ReloadCache();
+            base.StartGeneratingStatsCacheEveryday();
         }
 
         public bool IsUserSafe(ulong userId, ulong serverId)
@@ -28,7 +30,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             return _safeUsersOnServers.GetValueOrDefault(serverId)?.SafeUsers.Contains(userId) ?? false;
         }
 
-        protected override Task ReloadCache()
+        protected sealed override Task ReloadCache()
         {
             Log.Information("Reloading cache....");
 
@@ -58,6 +60,11 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             var servers = messages.GroupBy(x => x.Server.Id);
             this._safeUsersOnServers = servers.Select(x => new ServerSafeUsers(x, x.Key, _minAverageMessagesPerWeek))
                 .ToDictionary(x => x.ServerId, x => x);
+        }
+
+        bool IUserSafetyChecker.IsUserSafe(ulong userId, ulong serverId)
+        {
+            throw new System.NotImplementedException(); //todo:
         }
     }
 }

@@ -57,7 +57,7 @@ namespace Watchman.Discord
                         })
                         .AddFromIoC<CyclicStatisticsGeneratorService>(cyclicStatsGenerator => () =>
                         {
-                            _ = cyclicStatsGenerator.StartGeneratingStatsCacheEveryday();
+                            cyclicStatsGenerator.StartGeneratingStatsCacheEveryday();
                             return Task.CompletedTask;
                         })
                         .AddFromIoC<ResponsesInitService>(responsesService => async () =>
