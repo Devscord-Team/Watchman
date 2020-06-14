@@ -9,7 +9,7 @@ using Watchman.DomainModel.Messages.Queries;
 namespace Watchman.Discord.UnitTests.AntiSpam
 {
     [TestFixture]
-    internal class SpamDetectorsStrategiesTests : AntiSpamTestsBase
+    internal class SpamDetectorsStrategiesTests
     {
         [Test]
         [TestCase("some link: https://discord.com abc", 10, SpamProbability.Medium)]
@@ -17,15 +17,16 @@ namespace Watchman.Discord.UnitTests.AntiSpam
         public void LinksDetector_ShouldDetectSpam(string messageContent, int userMessagesCount, SpamProbability exceptedSpamProbability)
         {
             // Arrange
-            var (request, contexts) = CreateRequestAndContexts(messageContent);
-            UserMessagesCounter
-                .Setup(x => x.CountUserMessages(DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
+            var spamTestsService = new AntiSpamTestsService();
+            var (request, contexts) = spamTestsService.CreateRequestAndContexts(messageContent);
+            spamTestsService.UserMessagesCounter
+                .Setup(x => x.CountUserMessages(AntiSpamTestsService.DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
                 .Returns(userMessagesCount);
 
-            var linksDetector = new LinksDetectorStrategy(UserMessagesCounter.Object);
+            var linksDetector = new LinksDetectorStrategy(spamTestsService.UserMessagesCounter.Object);
 
             // Act
-            var spamProbability = linksDetector.GetSpamProbability(ExampleServerMessages, request, contexts);
+            var spamProbability = linksDetector.GetSpamProbability(spamTestsService.ExampleServerMessages, request, contexts);
 
             // Assert
             Assert.That(spamProbability, Is.EqualTo(exceptedSpamProbability));
@@ -37,11 +38,12 @@ namespace Watchman.Discord.UnitTests.AntiSpam
         public void LinksDetector_ShouldNotDetectSpam(string messageContent)
         {
             // Arrange
-            var (request, contexts) = CreateRequestAndContexts(messageContent);
-            var linksDetector = new LinksDetectorStrategy(UserMessagesCounter.Object);
+            var spamTestsService = new AntiSpamTestsService();
+            var (request, contexts) = spamTestsService.CreateRequestAndContexts(messageContent);
+            var linksDetector = new LinksDetectorStrategy(spamTestsService.UserMessagesCounter.Object);
 
             // Act
-            var spamProbability = linksDetector.GetSpamProbability(ExampleServerMessages, request, contexts);
+            var spamProbability = linksDetector.GetSpamProbability(spamTestsService.ExampleServerMessages, request, contexts);
 
             // Assert
             Assert.That(spamProbability, Is.EqualTo(SpamProbability.None));
@@ -58,19 +60,20 @@ namespace Watchman.Discord.UnitTests.AntiSpam
         public void DuplicatesDetector_ShouldDetectSpam(string messageContent1, string messageContent2, string messageContent3, string messageContent4, int userMessagesCount, SpamProbability exceptedSpamProbability)
         {
             // Arrange
-            UserMessagesCounter
-                .Setup(x => x.CountUserMessages(DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
+            var spamTestsService = new AntiSpamTestsService();
+            spamTestsService.UserMessagesCounter
+                .Setup(x => x.CountUserMessages(AntiSpamTestsService.DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
                 .Returns(userMessagesCount);
 
-            var duplicatesDetector = new DuplicatedMessagesDetectorStrategy(UserMessagesCounter.Object);
+            var duplicatesDetector = new DuplicatedMessagesDetectorStrategy(spamTestsService.UserMessagesCounter.Object);
 
-            var (request, contexts) = CreateRequestAndContexts(messageContent4);
+            var (request, contexts) = spamTestsService.CreateRequestAndContexts(messageContent4);
             var serverMessages = new ServerMessagesCacheService();
             serverMessages.OverwriteMessages(new List<SmallMessage>
             {
-                new SmallMessage(messageContent1, DEFAULT_TEST_USER_ID, DateTime.Now),
-                new SmallMessage(messageContent2, DEFAULT_TEST_USER_ID, DateTime.Now),
-                new SmallMessage(messageContent3, DEFAULT_TEST_USER_ID, DateTime.Now)
+                new SmallMessage(messageContent1, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now),
+                new SmallMessage(messageContent2, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now),
+                new SmallMessage(messageContent3, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now)
             });
 
             // Act
@@ -88,19 +91,20 @@ namespace Watchman.Discord.UnitTests.AntiSpam
         public void DuplicatesDetector_ShouldNotDetectSpam(string messageContent1, string messageContent2, string messageContent3, string messageContent4, int userMessagesCount)
         {
             // Arrange
-            UserMessagesCounter
-                .Setup(x => x.CountUserMessages(DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
+            var spamTestsService = new AntiSpamTestsService();
+            spamTestsService.UserMessagesCounter
+                .Setup(x => x.CountUserMessages(AntiSpamTestsService.DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
                 .Returns(userMessagesCount);
 
-            var duplicatesDetector = new DuplicatedMessagesDetectorStrategy(UserMessagesCounter.Object);
+            var duplicatesDetector = new DuplicatedMessagesDetectorStrategy(spamTestsService.UserMessagesCounter.Object);
 
-            var (request, contexts) = CreateRequestAndContexts(messageContent4);
+            var (request, contexts) = spamTestsService.CreateRequestAndContexts(messageContent4);
             var serverMessages = new ServerMessagesCacheService();
             serverMessages.OverwriteMessages(new List<SmallMessage>
             {
-                new SmallMessage(messageContent1, DEFAULT_TEST_USER_ID, DateTime.Now),
-                new SmallMessage(messageContent2, DEFAULT_TEST_USER_ID, DateTime.Now),
-                new SmallMessage(messageContent3, DEFAULT_TEST_USER_ID, DateTime.Now)
+                new SmallMessage(messageContent1, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now),
+                new SmallMessage(messageContent2, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now),
+                new SmallMessage(messageContent3, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now)
             });
 
             // Act

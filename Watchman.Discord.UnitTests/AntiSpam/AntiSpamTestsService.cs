@@ -10,14 +10,14 @@ using Watchman.DomainModel.Messages.Queries;
 
 namespace Watchman.Discord.UnitTests.AntiSpam
 {
-    internal abstract class AntiSpamTestsBase
+    internal class AntiSpamTestsService
     {
-        protected readonly ServerMessagesCacheService ExampleServerMessages = new ServerMessagesCacheService();
-        protected readonly Mock<IUserMessagesCounter> UserMessagesCounter = new Mock<IUserMessagesCounter>();
-        protected const int DEFAULT_TEST_USER_ID = 1;
+        public readonly ServerMessagesCacheService ExampleServerMessages = new ServerMessagesCacheService();
+        public readonly Mock<IUserMessagesCounter> UserMessagesCounter = new Mock<IUserMessagesCounter>();
+        public const int DEFAULT_TEST_USER_ID = 1;
         private const int DEFAULT_COUNT_TO_BE_SAFE = 500;
 
-        protected AntiSpamTestsBase()
+        public AntiSpamTestsService()
         {
             var exampleSmallMessages = new List<SmallMessage>
             {
@@ -32,7 +32,7 @@ namespace Watchman.Discord.UnitTests.AntiSpam
                 .Returns(DEFAULT_COUNT_TO_BE_SAFE);
         }
 
-        protected (DiscordRequest request, Contexts contexts) CreateRequestAndContexts(string content)
+        public (DiscordRequest request, Contexts contexts) CreateRequestAndContexts(string content)
         {
             var request = new DiscordRequest { OriginalMessage = content };
             var contexts = GetDefaultContexts();

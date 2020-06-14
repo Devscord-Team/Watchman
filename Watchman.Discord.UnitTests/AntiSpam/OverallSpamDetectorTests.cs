@@ -9,7 +9,7 @@ using Watchman.DomainModel.Messages.Queries;
 namespace Watchman.Discord.UnitTests.AntiSpam
 {
     [TestFixture]
-    internal class OverallSpamDetectorTests : AntiSpamTestsBase
+    internal class OverallSpamDetectorTests
     {
         [Test]
         [TestCase("abc", "xyz", "spam", "spam", 10, SpamProbability.Low)]
@@ -22,19 +22,20 @@ namespace Watchman.Discord.UnitTests.AntiSpam
         public void OverallSpamDetectorStrategy_ShouldDetectSpam(string messageContent1, string messageContent2, string messageContent3, string messageContent4, int userMessagesCount, SpamProbability exceptedSpamProbability)
         {
             // Arrange
-            UserMessagesCounter
-                .Setup(x => x.CountUserMessages(DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
+            var spamTestsService = new AntiSpamTestsService();
+            spamTestsService.UserMessagesCounter
+                .Setup(x => x.CountUserMessages(AntiSpamTestsService.DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
                 .Returns(userMessagesCount);
 
-            var (request, contexts) = CreateRequestAndContexts(messageContent4);
+            var (request, contexts) = spamTestsService.CreateRequestAndContexts(messageContent4);
             var serverMessages = new ServerMessagesCacheService();
             serverMessages.OverwriteMessages(new List<SmallMessage>
             {
-                new SmallMessage(messageContent1, DEFAULT_TEST_USER_ID, DateTime.Now),
-                new SmallMessage(messageContent2, DEFAULT_TEST_USER_ID, DateTime.Now),
-                new SmallMessage(messageContent3, DEFAULT_TEST_USER_ID, DateTime.Now)
+                new SmallMessage(messageContent1, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now),
+                new SmallMessage(messageContent2, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now),
+                new SmallMessage(messageContent3, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now)
             });
-            var overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessages, UserMessagesCounter.Object);
+            var overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessages, spamTestsService.UserMessagesCounter.Object);
 
             // Act
             var overallSpamProbability = overallSpamDetector.GetOverallSpamProbability(request, contexts);
@@ -48,19 +49,20 @@ namespace Watchman.Discord.UnitTests.AntiSpam
         public void OverallSpamDetectorStrategy_ShouldNotDetectSpam(string messageContent1, string messageContent2, string messageContent3, string messageContent4, int userMessagesCount)
         {
             // Arrange
-            UserMessagesCounter
-                .Setup(x => x.CountUserMessages(DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
+            var spamTestsService = new AntiSpamTestsService();
+            spamTestsService.UserMessagesCounter
+                .Setup(x => x.CountUserMessages(AntiSpamTestsService.DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
                 .Returns(userMessagesCount);
 
-            var (request, contexts) = CreateRequestAndContexts(messageContent4);
+            var (request, contexts) = spamTestsService.CreateRequestAndContexts(messageContent4);
             var serverMessages = new ServerMessagesCacheService();
             serverMessages.OverwriteMessages(new List<SmallMessage>
             {
-                new SmallMessage(messageContent1, DEFAULT_TEST_USER_ID, DateTime.Now),
-                new SmallMessage(messageContent2, DEFAULT_TEST_USER_ID, DateTime.Now),
-                new SmallMessage(messageContent3, DEFAULT_TEST_USER_ID, DateTime.Now)
+                new SmallMessage(messageContent1, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now),
+                new SmallMessage(messageContent2, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now),
+                new SmallMessage(messageContent3, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now)
             });
-            var overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessages, UserMessagesCounter.Object);
+            var overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessages, spamTestsService.UserMessagesCounter.Object);
 
             // Act
             var overallSpamProbability = overallSpamDetector.GetOverallSpamProbability(request, contexts);
