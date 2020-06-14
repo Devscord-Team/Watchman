@@ -22,14 +22,14 @@ namespace Watchman.Discord.Areas.Responses.Controllers
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly Services.ResponsesService _responsesService;
         private readonly ResponsesMessageService _responsesMessageService;
+        private 
         private readonly string[] possibleArguments = new string[] { "all", "default", "custom" };
 
         public ResponsesController(IQueryBus queryBus, ICommandBus commandBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, 
-            UsersRolesService usersRolesService, Services.ResponsesService responsesService, ResponsesMessageService responsesMessageService)
+            Services.ResponsesService responsesService, ResponsesMessageService responsesMessageService)
         {
             this._messagesServiceFactory = messagesServiceFactory;
             this._responsesService = responsesService;
-            this._usersRolesService = usersRolesService;
             this._responsesMessageService = responsesMessageService;
         }
 
