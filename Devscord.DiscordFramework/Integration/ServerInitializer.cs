@@ -17,8 +17,7 @@ namespace Devscord.DiscordFramework.Framework
             {
                 return;
             }
-            var sw = new Stopwatch();
-            sw.Start();
+            var sw = Stopwatch.StartNew();
             var discordClient = new DiscordClient(client);
             Server.Initialize(discordClient);
             Initialized = true;

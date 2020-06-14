@@ -41,7 +41,6 @@ namespace Watchman.Discord.Areas.Initialization.Services
             await MuteRoleInit(server);
             var lastInitDate = GetLastInitDate(server);
             await ReadServerMessagesHistory(server, lastInitDate);
-            await AddDefaultCustomCommandsToTestServer(lastInitDate);
             await _cyclicStatisticsGeneratorService.GenerateStatsForDaysBefore(server, lastInitDate);
             await NotifyDomainAboutInit(server);
         }
@@ -79,28 +78,6 @@ namespace Watchman.Discord.Areas.Initialization.Services
 
             var lastInitEvent = initEvents.Max(x => x.EndedAt);
             return lastInitEvent;
-        }
-
-        private async Task AddDefaultCustomCommandsToTestServer(DateTime lastInitDate)
-        {
-            if(lastInitDate > DateTime.UtcNow.AddMinutes(-15))
-            {
-                return;
-            }
-            ulong testServerId = 636238466899902504; //watchman test server
-
-            var query = new GetCustomCommandsQuery();
-            var commandsInRepository = await this._queryBus.ExecuteAsync(query);
-
-            var commands = new List<AddCustomCommandsCommand>()
-            {
-                new AddCustomCommandsCommand(typeof(HelpCommand).FullName, @"pomocy\s*panie\s*bocie\s*(\!*)?\s*(?<Json>json)?", testServerId),
-                new AddCustomCommandsCommand(typeof(MarchewCommand).FullName, @"jak\s*to\s*jest\s*być\s*programistą\s*", testServerId)
-            };
-            foreach (var command in commands.Where(x => !commandsInRepository.CustomCommands?.Any(c => c.ServerId == x.ServerId && x.CommandFullName == c.CommandFullName) ?? true))
-            {
-                await this._commandBus.ExecuteAsync(command);
-            }
         }
 
         private async Task NotifyDomainAboutInit(DiscordServerContext server)
