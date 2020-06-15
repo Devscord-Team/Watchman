@@ -49,7 +49,7 @@ namespace Devscord.DiscordFramework.Services
 
         public DateTime? GetUserJoinedDateTime(ulong userId, ulong serverId)
         {
-            return Server.GetGuildUser(userId, serverId).Result.JoinedAt?.DateTime;
+            return Server.GetGuildUser(userId, serverId).Result?.JoinedAt?.DateTime;
         }
 
         private RestGuildUser GetRestUser(UserContext user, DiscordServerContext server)

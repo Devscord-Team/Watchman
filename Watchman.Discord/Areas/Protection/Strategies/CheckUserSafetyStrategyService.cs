@@ -17,12 +17,15 @@ namespace Watchman.Discord.Areas.Protection.Strategies
         private int _minAverageMessagesPerWeek;
         private Dictionary<ulong, ServerSafeUsers> _safeUsersOnServers;
         private readonly IQueryBus _queryBus;
+        private readonly DiscordServersService _discordServersService;
 
-        public CheckUserSafetyStrategyService(IQueryBus queryBus, UsersService usersService)
+        public CheckUserSafetyStrategyService(IQueryBus queryBus, UsersService usersService, DiscordServersService discordServersService)
         {
             ServerSafeUsers.UsersService = usersService;
             this._queryBus = queryBus;
-            this.ReloadCache();
+            this._discordServersService = discordServersService;
+
+            this.ReloadCache().Wait();
             base.StartCyclicCaching();
         }
 
@@ -31,15 +34,14 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             return _safeUsersOnServers.TryGetValue(serverId, out var serverUsers) && serverUsers.SafeUsers.Contains(userId);
         }
 
-        protected sealed override Task ReloadCache()
+        protected sealed override async Task ReloadCache()
         {
             Log.Information("Reloading cache....");
 
             UpdateConfiguration();
-            UpdateMessages();
+            await UpdateMessages();
 
             Log.Information("Cache reloaded");
-            return Task.CompletedTask;
         }
 
         private void UpdateConfiguration()
@@ -49,16 +51,18 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             this._minAverageMessagesPerWeek = configuration.MinAverageMessagesPerWeek;
         }
 
-        private void UpdateMessages()
+        private async Task UpdateMessages()
         {
             var getAllMessagesQuery = new GetMessagesQuery(GetMessagesQuery.GET_ALL_SERVERS);
             var messages = _queryBus.Execute(getAllMessagesQuery).Messages;
-            this.UpdateSafetyUsersStates(messages);
+            await this.UpdateSafetyUsersStates(messages);
         }
 
-        private void UpdateSafetyUsersStates(IEnumerable<Message> messages)
+        private async Task UpdateSafetyUsersStates(IEnumerable<Message> messages)
         {
-            var servers = messages.GroupBy(x => x.Server.Id);
+            var serversWhereBotIs = (await _discordServersService.GetDiscordServers()).Select(x => x.Id).ToHashSet();
+            var servers = messages.GroupBy(x => x.Server.Id).Where(x => serversWhereBotIs.Contains(x.Key));
+
             this._safeUsersOnServers = servers.Select(x => new ServerSafeUsers(x, x.Key, _minAverageMessagesPerWeek))
                 .ToDictionary(x => x.ServerId, x => x);
         }
