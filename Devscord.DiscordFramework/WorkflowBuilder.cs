@@ -3,15 +3,20 @@ using Devscord.DiscordFramework.Framework;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Discord.WebSocket;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using Discord;
 using Devscord.DiscordFramework.Middlewares;
+using Devscord.DiscordFramework.Integration;
 
 namespace Devscord.DiscordFramework
 {
     public class WorkflowBuilder
     {
+        public static List<DateTime> ConnectedTimes => Server.ConnectedTimes;
+        public static List<DateTime> DisconnectedTimes => Server.DisconnectedTimes;
+
         private readonly DiscordSocketClient _client;
         private readonly string _token;
         private readonly IComponentContext _context;

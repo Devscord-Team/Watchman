@@ -22,8 +22,5 @@ namespace Watchman.DomainModel.Commons.Calculators.Statistics.Splitters
                 }
             }
         }
-
-
-
     }
 }

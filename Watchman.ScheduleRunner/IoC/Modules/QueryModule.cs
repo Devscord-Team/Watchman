@@ -10,7 +10,6 @@ namespace Watchman.ScheduleRunner.IoC.Modules
 {
     public class QueryModule : Autofac.Module
     {
-
         protected override void Load(ContainerBuilder builder)
         {
             var list = new List<string>();
@@ -46,11 +45,9 @@ namespace Watchman.ScheduleRunner.IoC.Modules
             }
             while (stack.Count > 0);
 
-
             builder.RegisterType<QueryBus>()
                 .As<IQueryBus>()
                 .InstancePerLifetimeScope();
         }
-
     }
 }

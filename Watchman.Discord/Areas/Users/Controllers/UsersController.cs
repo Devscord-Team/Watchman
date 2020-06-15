@@ -15,6 +15,7 @@ using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Commons.Exceptions;
 using Watchman.Discord.Areas.Commons;
+using Watchman.Discord.Areas.Users.BotCommands;
 
 namespace Watchman.Discord.Areas.Users.Controllers
 {
@@ -67,14 +68,13 @@ namespace Watchman.Discord.Areas.Users.Controllers
         [DiscordCommand("remove role")] //todo
         public void RemoveRole(DiscordRequest request, Contexts contexts)
         {
-            var commandRole = request.OriginalMessage.ToLowerInvariant().Replace("-remove role ", string.Empty); //TODO use DiscordRequest properties
+            var commandRole = request.OriginalMessage.Replace("-remove role ", string.Empty); //TODO use DiscordRequest properties
             var safeRoles = this._queryBus.Execute(new GetDiscordServerSafeRolesQuery(contexts.Server.Id)).SafeRoles;
             var messagesService = _messagesServiceFactory.Create(contexts);
             _rolesService.DeleteRoleFromUser(safeRoles, messagesService, contexts, commandRole);
         }
 
-        [DiscordCommand("roles")]
-        public async Task PrintRoles(DiscordRequest request, Contexts contexts)
+        public async Task PrintRoles(RolesCommand command, Contexts contexts)
         {
             var messageService = _messagesServiceFactory.Create(contexts);
             var query = new GetDiscordServerSafeRolesQuery(contexts.Server.Id);
@@ -87,7 +87,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
             }
 
             var output = new StringBuilder();
-            output.PrintManyLines(safeRoles.Select(x => x.Name).ToArray(), contentStyleBox: true);
+            output.PrintManyLines(safeRoles.Select(x => x.Name).ToArray(), contentStyleBox: false, spacesBetweenLines: false);
             await messageService.SendResponse(x => x.AvailableSafeRoles(output.ToString()), contexts);
         }
     }

@@ -12,9 +12,9 @@ namespace Devscord.DiscordFramework.Services
     {
         private readonly CommandsInfoFactory _commandsInfoFactory;
 
-        public HelpDataCollectorService()
+        public HelpDataCollectorService(CommandsInfoFactory commandsInfoFactory)
         {
-            this._commandsInfoFactory = new CommandsInfoFactory();
+            this._commandsInfoFactory = commandsInfoFactory;
         }
 
         public IEnumerable<CommandInfo> GetCommandsInfo(Assembly botAssembly)

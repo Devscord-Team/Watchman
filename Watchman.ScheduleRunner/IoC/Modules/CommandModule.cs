@@ -43,11 +43,9 @@ namespace Watchman.ScheduleRunner.IoC.Modules
             }
             while (stack.Count > 0);
 
-
             builder.RegisterType<CommandBus>()
                 .As<ICommandBus>()
                 .InstancePerLifetimeScope();
         }
-
     }
 }

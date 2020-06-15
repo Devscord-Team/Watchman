@@ -30,7 +30,6 @@ namespace Watchman.Discord.Areas.Statistics.Services
             return Period.Day;
         }
 
-
         //TODO unit test
         public StatisticsReport CreateReport(List<Message> serverMessages, Period period)
         {

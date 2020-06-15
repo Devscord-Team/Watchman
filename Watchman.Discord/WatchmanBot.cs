@@ -57,7 +57,7 @@ namespace Watchman.Discord
                         })
                         .AddFromIoC<CyclicStatisticsGeneratorService>(cyclicStatsGenerator => () =>
                         {
-                            _ = cyclicStatsGenerator.StartGeneratingStatsCacheEveryday();
+                            cyclicStatsGenerator.StartCyclicCaching();
                             return Task.CompletedTask;
                         })
                         .AddFromIoC<ResponsesInitService>(responsesService => async () =>
@@ -68,6 +68,12 @@ namespace Watchman.Discord
                         {
                             var stopwatch = Stopwatch.StartNew();
 
+                            // when bot was offline for less than 5 minutes, it doesn't make sense to init all servers
+                            if (WorkflowBuilder.DisconnectedTimes.LastOrDefault() > DateTime.Now.AddMinutes(-5))
+                            {
+                                Log.Information("Bot was connected less than 5 minutes ago");
+                                return Task.CompletedTask;
+                            }
                             var servers = serversService.GetDiscordServers().Result;
                             Task.WaitAll(servers.Select(async server =>
                             {

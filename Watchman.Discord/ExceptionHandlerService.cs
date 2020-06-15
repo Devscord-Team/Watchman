@@ -63,6 +63,8 @@ namespace Watchman.Discord
                     break;
                 case RoleIsUnsafeAlreadyException roleExc:
                     messagesService.SendResponse(x => x.RoleIsUnsafeAlready(roleExc.RoleName), contexts);
+                case InvalidArgumentsException invalidArgumentsExc:
+                    messagesService.SendResponse(x => x.InvalidArguments(invalidArgumentsExc.AvailableArguments), contexts);
                     break;
                 default:
                     messagesService.SendMessage("Wystąpił nieznany wyjątek");

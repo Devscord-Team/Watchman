@@ -10,7 +10,6 @@ namespace Watchman.Discord.Ioc.Modules
 {
     public class QueryModule : Autofac.Module
     {
-        
         protected override void Load(ContainerBuilder builder)
         {
             var list = new List<string>();
@@ -20,11 +19,9 @@ namespace Watchman.Discord.Ioc.Modules
             do
             {
                 var asm = stack.Pop();
-
                 var handlers = asm.GetTypes()
                     .Where(type => typeof(IQueryHandler).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)
                     .ToList();
-
                 foreach (var handler in handlers)
                 {
                     builder.RegisterType(handler)
@@ -42,12 +39,10 @@ namespace Watchman.Discord.Ioc.Modules
                 }
             }
             while (stack.Count > 0);
-             
 
             builder.RegisterType<QueryBus>()
                 .As<IQueryBus>()
                 .InstancePerLifetimeScope();
         }
-        
     }
 }

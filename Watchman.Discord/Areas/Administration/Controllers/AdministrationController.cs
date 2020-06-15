@@ -50,7 +50,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             }
 
             var timeRange = request.GetPastTimeRange(defaultTime: TimeSpan.FromHours(1));
-            var query = new GetUserMessagesQuery(contexts.Server.Id, selectedUser.Id)
+            var query = new GetMessagesQuery(contexts.Server.Id, selectedUser.Id)
             {
                 SentDate = timeRange
             };
@@ -69,17 +69,16 @@ namespace Watchman.Discord.Areas.Administration.Controllers
 
             if (!messages.Any())
             {
-                await _directMessagesService.TrySendMessage(contexts.User.Id, x => x.UserDidntWriteAnyMessageInThisTime(selectedUser), contexts);
+                await messagesService.SendResponse(x => x.UserDidntWriteAnyMessageInThisTime(selectedUser), contexts);
+                return;
             }
-            else
-            {
-                var header = $"Messages from user {selectedUser} starting at {timeRange.Start}";
-                var lines = messages.Select(x => $"{x.SentAt:yyyy-MM-dd HH:mm:ss} {x.Author.Name}: {x.Content.Replace("```", "")}");
-                var linesBuilder = new StringBuilder().PrintManyLines(lines.ToArray(), contentStyleBox: true);
 
-                await _directMessagesService.TrySendMessage(contexts.User.Id, header);
-                await _directMessagesService.TrySendMessage(contexts.User.Id, linesBuilder.ToString(), MessageType.BlockFormatted);
-            }
+            var header = $"Messages from user {selectedUser} starting at {timeRange.Start}";
+            var lines = messages.Select(x => $"{x.SentAt:yyyy-MM-dd HH:mm:ss} {x.Author.Name}: {x.Content.Replace("```", "")}");
+            var linesBuilder = new StringBuilder().PrintManyLines(lines.ToArray(), contentStyleBox: true);
+
+            await _directMessagesService.TrySendMessage(contexts.User.Id, header);
+            await _directMessagesService.TrySendMessage(contexts.User.Id, linesBuilder.ToString(), MessageType.BlockFormatted);
 
             await messagesService.SendResponse(x => x.SentByDmMessagesOfAskedUser(messages.Count, selectedUser), contexts);
         }

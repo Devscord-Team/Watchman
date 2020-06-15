@@ -16,7 +16,7 @@ namespace Devscord.DiscordFramework.Commons.Extensions
 
         public static bool HasParameter<T>(this MethodInfo method)
         {
-            return method.GetParameters().Any(p => p.ParameterType.FullName == typeof(T).FullName);
+            return method.GetParameters().Any(p => p.ParameterType.FullName == typeof(T).FullName || typeof(T).IsAssignableFrom(p.ParameterType));
         }
 
         public static bool HasParameter<T>(this ConstructorInfo method)

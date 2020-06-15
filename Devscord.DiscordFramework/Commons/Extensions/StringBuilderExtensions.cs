@@ -1,26 +1,33 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Devscord.DiscordFramework.Commons.Extensions
 {
     public static class StringBuilderExtensions
     {
-        public static StringBuilder PrintManyLines(this StringBuilder builder, string header, string[] lines, bool contentStyleBox = true, string formatName = "")
+        public static StringBuilder PrintManyLines(this StringBuilder builder, string header, string[] lines, bool contentStyleBox = true, bool spacesBetweenLines = false, string formatName = "")
         {
             builder.AppendLine(header);
-            PrintManyLines(builder, lines, contentStyleBox, formatName);
+            PrintManyLines(builder, lines, contentStyleBox, spacesBetweenLines, formatName);
             return builder;
         }
 
-        public static StringBuilder PrintManyLines(this StringBuilder builder, string[] lines, bool contentStyleBox = true, string formatName = "")
+        public static StringBuilder PrintManyLines(this StringBuilder builder, string[] lines, bool contentStyleBox = true, bool spacesBetweenLines = false, string formatName = "")
         {
-            if(contentStyleBox)
+            //can fix message if response looks like "test {outputFromPrintManyLines}"
+            builder.AppendLine();
+            if (contentStyleBox)
             {
                 builder.AppendLine($"```{formatName}");
             }
             foreach (var line in lines)
             {
                 builder.AppendLine(line);
+                if (spacesBetweenLines && line.GetHashCode() != lines.Last().GetHashCode())
+                {
+                    builder.AppendLine();
+                }
             }
             if (contentStyleBox)
             {
@@ -29,8 +36,9 @@ namespace Devscord.DiscordFramework.Commons.Extensions
             return builder;
         }
 
-        public static StringBuilder PrintManyLines(this StringBuilder builder, Dictionary<string, string> lines, bool contentStyleBox = true)
+        public static StringBuilder PrintManyLines(this StringBuilder builder, Dictionary<string, string> lines, bool contentStyleBox = true, bool spacesBetweenLines = false)
         {
+            builder.AppendLine();
             if (contentStyleBox)
             {
                 builder.AppendLine("```");
@@ -38,6 +46,10 @@ namespace Devscord.DiscordFramework.Commons.Extensions
             foreach (var line in lines)
             {
                 builder.Append(line.Key).Append(" => ").AppendLine(line.Value);
+                if (spacesBetweenLines && line.GetHashCode() != lines.Last().GetHashCode())
+                {
+                    builder.AppendLine();
+                }
             }
             if (contentStyleBox)
             {

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using Serilog;
 using System.IO;
 using System.Threading.Tasks;
@@ -7,6 +8,8 @@ namespace Watchman.Discord
 {
     class Program
     {
+        const int HOW_MANY_EXCEPTIONS_IN_SHORT_TIME_TO_STOP_BOT = 4;
+
         public static async Task Main(string[] args)
         {
 #if DEBUG
@@ -17,7 +20,26 @@ namespace Watchman.Discord
             var configuration = JsonConvert.DeserializeObject<DiscordConfiguration>(File.ReadAllText(configPath));
             
             var watchman = new WatchmanBot(configuration);
-            await watchman.GetWorkflowBuilder().Run();
+            var workflowBuilder = watchman.GetWorkflowBuilder();
+            var lastException = DateTime.MinValue;
+            var numberOfExceptionsInLastTime = 0;
+
+            while (numberOfExceptionsInLastTime++ < HOW_MANY_EXCEPTIONS_IN_SHORT_TIME_TO_STOP_BOT)
+            {
+                try
+                {
+                    await workflowBuilder.Run();
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e, "Not handled exception!");
+
+                    if (lastException < DateTime.Now.AddMinutes(-30))
+                    {
+                        numberOfExceptionsInLastTime = 0;
+                    }
+                }
+            }
         }
     }
 }

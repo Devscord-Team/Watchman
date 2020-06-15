@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Devscord.DiscordFramework.Framework;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
+using Devscord.DiscordFramework.Integration;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Middlewares.Factories;
 using Discord.Rest;

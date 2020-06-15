@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Devscord.DiscordFramework;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Reflection;
 using Watchman.Cqrs;
 using Watchman.Discord;
 using Watchman.Discord.Areas.Commons;
+using Watchman.Discord.Integration.DevscordFramework;
 using Watchman.DomainModel.Commons.Calculators.Statistics;
 
 namespace Watchman.IoC.Modules
@@ -22,6 +24,10 @@ namespace Watchman.IoC.Modules
                 .As<IStatisticsCalculator>()
                 .InstancePerLifetimeScope();
 
+            builder.RegisterType<CustomCommandsLoader>()
+                .As<ICustomCommandsLoader>()
+                .InstancePerLifetimeScope();
+
             var list = new List<string>();
             var stack = new Stack<Assembly>();
 
@@ -31,7 +37,7 @@ namespace Watchman.IoC.Modules
                 var asm = stack.Pop();
 
                 builder.RegisterAssemblyTypes(asm)
-                    .Where(x => x.Name.EndsWith("Service") || x.Name.EndsWith("Factory"))
+                    .Where(x => x.FullName.StartsWith("Watchman") || x.FullName.StartsWith("Devscord"))
                     .PreserveExistingDefaults()
                     .InstancePerLifetimeScope();
 
