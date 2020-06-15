@@ -2,7 +2,7 @@
 
 namespace Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models
 {
-    public class Punishment
+    public readonly struct Punishment
     {
         public PunishmentOption PunishmentOption { get; }
         public DateTime GivenAt { get; }
