@@ -6,12 +6,9 @@ namespace Watchman.DomainModel.Settings
     {
         public int MinAverageMessagesPerWeek { get; private set; }
 
-        internal static Configuration GetDefaultConfiguration()
+        internal static Configuration Default => new Configuration
         {
-            return new Configuration
-            {
-                MinAverageMessagesPerWeek = 500
-            };
-        }
+            MinAverageMessagesPerWeek = 500
+        };
     }
 }

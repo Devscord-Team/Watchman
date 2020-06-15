@@ -16,7 +16,7 @@ namespace Watchman.DomainModel.Settings.Queries.Handlers
         public GetConfigurationQueryResult Handle(GetConfigurationQuery query)
         {
             using var session = _sessionFactory.Create();
-            var configuration = session.Get<Configuration>().FirstOrDefault() ?? Configuration.GetDefaultConfiguration();
+            var configuration = session.Get<Configuration>().FirstOrDefault() ?? Configuration.Default;
             return new GetConfigurationQueryResult(configuration);
         }
     }

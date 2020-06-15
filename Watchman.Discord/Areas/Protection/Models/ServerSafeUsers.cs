@@ -5,25 +5,23 @@ using Watchman.DomainModel.Messages;
 
 namespace Watchman.Discord.Areas.Protection.Models
 {
-    public class ServerSafeUsers
+    public struct ServerSafeUsers
     {
         public ulong ServerId { get; }
-        public List<ulong> SafeUsers { get; private set; }
-        private readonly int _minAverageMessagesPerWeek;
+        public HashSet<ulong> SafeUsers { get; private set; }
 
         public ServerSafeUsers(IEnumerable<Message> serverMessages, ulong serverId, int minAverageMessagesPerWeek)
         {
             ServerId = serverId;
-            _minAverageMessagesPerWeek = minAverageMessagesPerWeek;
 
             this.SafeUsers = serverMessages
                 .GroupBy(x => x.Author.Id)
-                .Where(u => IsUserSafe(u, u.Key, serverId))
+                .Where(u => IsUserSafe(u, u.Key, serverId, minAverageMessagesPerWeek))
                 .Select(x => x.Key)
-                .ToList();
+                .ToHashSet();
         }
 
-        private bool IsUserSafe(IEnumerable<Message> userMessages, ulong userId, ulong serverId)
+        private static bool IsUserSafe(IEnumerable<Message> userMessages, ulong userId, ulong serverId, int minAverageMessagesPerWeek)
         {
             var days = GetHowManyDaysUserIsOnThisServer(userId, serverId);
             if (days < 30)
@@ -42,15 +40,15 @@ namespace Watchman.Discord.Areas.Protection.Models
             });
 
             var avg = cutWeeks.Sum() / days;
-            return avg > this._minAverageMessagesPerWeek;
+            return avg > minAverageMessagesPerWeek;
         }
 
-        private int GetHowManyDaysUserIsOnThisServer(ulong userId, ulong serverId)
+        private static int GetHowManyDaysUserIsOnThisServer(ulong userId, ulong serverId)
         {
             throw new NotImplementedException();
         }
 
-        private DateTime StartOfWeek(DateTime date)
+        private static DateTime StartOfWeek(DateTime date)
         {
             return date.AddDays(-1 * (int)date.DayOfWeek).Date;
         }

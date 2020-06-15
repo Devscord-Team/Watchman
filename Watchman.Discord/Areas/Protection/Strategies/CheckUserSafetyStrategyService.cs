@@ -27,7 +27,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
 
         public bool IsUserSafe(ulong userId, ulong serverId)
         {
-            return _safeUsersOnServers.GetValueOrDefault(serverId)?.SafeUsers.Contains(userId) ?? false;
+            return _safeUsersOnServers.TryGetValue(serverId, out var serverUsers) && serverUsers.SafeUsers.Contains(userId);
         }
 
         protected sealed override Task ReloadCache()
@@ -60,11 +60,6 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             var servers = messages.GroupBy(x => x.Server.Id);
             this._safeUsersOnServers = servers.Select(x => new ServerSafeUsers(x, x.Key, _minAverageMessagesPerWeek))
                 .ToDictionary(x => x.ServerId, x => x);
-        }
-
-        bool IUserSafetyChecker.IsUserSafe(ulong userId, ulong serverId)
-        {
-            throw new System.NotImplementedException(); //todo:
         }
     }
 }
