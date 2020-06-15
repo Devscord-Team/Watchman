@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Devscord.DiscordFramework.Services;
 using Watchman.DomainModel.Messages;
 
 namespace Watchman.Discord.Areas.Protection.Models
 {
     public struct ServerSafeUsers
     {
+        public static UsersService UsersService { get; set; }
+
         public ulong ServerId { get; }
         public HashSet<ulong> SafeUsers { get; private set; }
 
@@ -45,7 +48,8 @@ namespace Watchman.Discord.Areas.Protection.Models
 
         private static int GetHowManyDaysUserIsOnThisServer(ulong userId, ulong serverId)
         {
-            throw new NotImplementedException();
+            var joinedAt = UsersService.GetUserJoinedDateTime(userId, serverId) ?? DateTime.Now;
+            return (int)(DateTime.Now.Date - joinedAt.Date).TotalDays;
         }
 
         private static DateTime StartOfWeek(DateTime date)

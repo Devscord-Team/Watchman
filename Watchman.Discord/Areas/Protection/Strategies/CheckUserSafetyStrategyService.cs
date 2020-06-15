@@ -18,8 +18,9 @@ namespace Watchman.Discord.Areas.Protection.Strategies
         private Dictionary<ulong, ServerSafeUsers> _safeUsersOnServers;
         private readonly IQueryBus _queryBus;
 
-        public CheckUserSafetyStrategyService(IQueryBus queryBus)
+        public CheckUserSafetyStrategyService(IQueryBus queryBus, UsersService usersService)
         {
+            ServerSafeUsers.UsersService = usersService;
             this._queryBus = queryBus;
             this.ReloadCache();
             base.StartCyclicCaching();

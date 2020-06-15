@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Integration;
@@ -44,6 +45,11 @@ namespace Devscord.DiscordFramework.Services
         public UserContext GetUserById(DiscordServerContext server, ulong userId)
         {
             return GetUsers(server).FirstOrDefault(x => x.Id == userId);
+        }
+
+        public DateTime? GetUserJoinedDateTime(ulong userId, ulong serverId)
+        {
+            return Server.GetGuildUser(userId, serverId).Result.JoinedAt?.DateTime;
         }
 
         private RestGuildUser GetRestUser(UserContext user, DiscordServerContext server)
