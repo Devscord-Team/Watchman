@@ -2,9 +2,8 @@
 {
     public enum ProtectionPunishmentOption
     {
-        Nothing,
-        Warn,
-        Mute,
-        LongMute
+        Nothing = 1,
+        Warn = 2,
+        Mute = 4
     }
 }

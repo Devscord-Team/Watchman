@@ -96,16 +96,15 @@ namespace Devscord.DiscordFramework
 
         private DiscordRequest ParseRequest(SocketMessage socketMessage)
         {
+            this._stopWatch.Restart();
             Log.Information("Processing message: {content} from user {user} started", socketMessage.Content, socketMessage.Author);
             var request = _commandParser.Parse(socketMessage.Content, socketMessage.Timestamp.UtcDateTime);
-            this._stopWatch.Restart();
-            var elapsedParse = this._stopWatch.ElapsedMilliseconds;
+            var elapsedParse = this._stopWatch.ElapsedTicks;
             Log.Information("Parsing time: {elapsedParse}ticks", elapsedParse);
 #if DEBUG
             socketMessage.Channel.SendMessageAsync($"```Parsing time: {elapsedParse}ticks```").Wait();
 #endif
             Log.Information("Request parsed");
-
             return request;
         }
 
