@@ -1,10 +1,10 @@
-﻿using Devscord.DiscordFramework.Framework;
-using Devscord.DiscordFramework.Framework.Commands.Responses;
+﻿using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Serilog;
 using System;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Commons;
+using Devscord.DiscordFramework.Integration;
 
 namespace Devscord.DiscordFramework.Services
 {

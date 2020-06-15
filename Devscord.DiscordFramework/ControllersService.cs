@@ -5,6 +5,7 @@ using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Framework.Commands.Services;
+using Devscord.DiscordFramework.Integration;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Serilog;
 using Serilog.Context;
@@ -21,13 +22,16 @@ namespace Devscord.DiscordFramework
         private readonly IComponentContext _context;
         private readonly Assembly _assembly;
         private readonly BotCommandsService _botCommandsService;
+        private readonly CommandsContainer _commandsContainer;
         private ControllersContainer _controllersContainer;
 
-        public ControllersService(IComponentContext context, Assembly assembly, BotCommandsService botCommandsService)
+        public ControllersService(IComponentContext context, Assembly assembly, BotCommandsService botCommandsService,
+            CommandsContainer commandsContainer)
         {
             this._context = context;
             this._assembly = assembly;
             this._botCommandsService = botCommandsService;
+            this._commandsContainer = commandsContainer;
         }
 
         public async Task Run(DiscordRequest request, Contexts contexts)
@@ -50,11 +54,11 @@ namespace Devscord.DiscordFramework
                 {
                     var discordCommandMethods = this._controllersContainer.WithDiscordCommand;
                     commandsTask = Task.Run(() => RunMethods(request, contexts, discordCommandMethods, false));
-
-                    var discordBotCommandMethods = this._controllersContainer.WithIBotCommand;
-                    botCommandsTask = Task.Run(() => RunMethodsIBotCommand(request, contexts, discordBotCommandMethods, false));
                 }
-
+                var discordBotCommandMethods = this._controllersContainer.WithIBotCommand;
+                //TODO zoptymalizować
+                botCommandsTask = Task.Run(() => RunMethodsIBotCommand(request, contexts, discordBotCommandMethods, false));
+                
                 // ReadAlwaysMethods should be first in throwing exception, bcs every ReadAlways exception is Error
                 await readAlwaysTask;
                 if (commandsTask != null)
@@ -105,9 +109,8 @@ namespace Devscord.DiscordFramework
             Task.WaitAll(tasks.ToArray());
         }
 
-        private void RunMethodsIBotCommand(DiscordRequest request, Contexts contexts, IEnumerable<ControllerInfo> controllers, bool isReadAlways)
+        private async Task RunMethodsIBotCommand(DiscordRequest request, Contexts contexts, IEnumerable<ControllerInfo> controllers, bool isReadAlways)
         {
-            var tasks = new List<Task>();
             foreach (var controllerInfo in controllers)
             {
                 using (LogContext.PushProperty("Controller", controllerInfo.Controller.GetType().Name))
@@ -118,20 +121,29 @@ namespace Devscord.DiscordFramework
                         {
                             continue;
                         }
-
                         var commandInParameterType = method.GetParameters().First(x => typeof(IBotCommand).IsAssignableFrom(x.ParameterType)).ParameterType;
-                        var template = this._botCommandsService.GetCommandTemplate(commandInParameterType);
-                        if (!this._botCommandsService.IsMatchedWithCommand(request, template))
+                        //TODO zoptymalizować, spokojnie można to pobierać wcześniej i używać raz, zamiast wszystko obliczać przy każdym odpaleniu
+                        var template = this._botCommandsService.GetCommandTemplate(commandInParameterType); 
+                        var isToContinue = !this._botCommandsService.IsMatchedWithCommand(request, template);
+                        IBotCommand command;
+                        if(isToContinue)
                         {
-                            continue;
+                            var customCommand = await this._commandsContainer.GetCommand(request, commandInParameterType, contexts.Server.Id);
+                            if(customCommand == null)
+                            {
+                                continue;
+                            }
+                            //TODO optional parameters validation
+                            command = this._botCommandsService.ParseCustomTemplate(commandInParameterType, template, customCommand.Template, request.OriginalMessage); 
                         }
-                        var command = this._botCommandsService.ParseRequestToCommand(commandInParameterType, request, template);
-                        var task = InvokeMethod(command, contexts, controllerInfo, method);
-                        tasks.Add(task);
+                        else
+                        {
+                            command = this._botCommandsService.ParseRequestToCommand(commandInParameterType, request, template);
+                        }
+                        await InvokeMethod(command, contexts, controllerInfo, method);
                     }
                 }
             }
-            Task.WaitAll(tasks.ToArray());
         }
 
         private bool IsValid(Contexts contexts, MethodInfo method)

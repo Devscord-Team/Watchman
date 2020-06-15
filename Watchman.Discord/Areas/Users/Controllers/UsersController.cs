@@ -76,22 +76,5 @@ namespace Watchman.Discord.Areas.Users.Controllers
             output.PrintManyLines(safeRoles.Select(x => x.Name).ToArray(), contentStyleBox: false, spacesBetweenLines: false);
             await messageService.SendResponse(x => x.AvailableSafeRoles(output.ToString()), contexts);
         }
-
-#if DEBUG
-        [DiscordCommand("admin")]
-        public void AddOrRemoveAdmin(DiscordRequest request, Contexts contexts)
-        {
-            var roles = new List<Role> { new Role("admin", contexts.Server.Id) };
-            var messagesService = _messagesServiceFactory.Create(contexts);
-            if (contexts.User.IsAdmin)
-            {
-                _rolesService.DeleteRoleFromUser(roles, messagesService, contexts, "admin");
-            }
-            else
-            {
-                _rolesService.AddRoleToUser(roles, messagesService, contexts, "admin");
-            }
-        }
-#endif
     }
 }

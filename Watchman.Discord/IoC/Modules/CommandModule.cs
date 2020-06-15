@@ -12,16 +12,13 @@ namespace Watchman.Discord.Ioc.Modules
         {
             var list = new List<string>();
             var stack = new Stack<Assembly>();
-
             stack.Push(Assembly.GetEntryAssembly());
             do
             {
                 var asm = stack.Pop();
-
                 var handlers = asm.GetTypes()
                     .Where(type => typeof(ICommandHandler).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)
                     .ToList();
-
                 foreach (var handler in handlers)
                 {
                     builder.RegisterType(handler)

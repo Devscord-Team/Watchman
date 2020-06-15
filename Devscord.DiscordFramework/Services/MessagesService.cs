@@ -1,6 +1,6 @@
 ﻿using Devscord.DiscordFramework.Commons;
-using Devscord.DiscordFramework.Framework;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
+using Devscord.DiscordFramework.Integration;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Discord.Rest;
 using Serilog;

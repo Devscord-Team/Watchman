@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Discord;
 using Devscord.DiscordFramework.Middlewares;
+using Devscord.DiscordFramework.Integration;
 
 namespace Devscord.DiscordFramework
 {
