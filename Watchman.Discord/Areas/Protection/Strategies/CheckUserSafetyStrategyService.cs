@@ -22,7 +22,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
         {
             this._queryBus = queryBus;
             this.ReloadCache();
-            base.StartGeneratingStatsCacheEveryday();
+            base.StartCyclicCaching();
         }
 
         public bool IsUserSafe(ulong userId, ulong serverId)

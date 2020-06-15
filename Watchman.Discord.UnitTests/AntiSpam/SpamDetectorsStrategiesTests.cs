@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using Devscord.DiscordFramework.Framework.Commands.AntiSpam;
-using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
-using Devscord.DiscordFramework.Services.Models;
-using Moq;
+﻿using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
 using NUnit.Framework;
 using Watchman.Discord.Areas.Protection.Strategies;
-using Watchman.DomainModel.Messages.Queries;
 
 namespace Watchman.Discord.UnitTests.AntiSpam
 {
@@ -18,36 +12,22 @@ namespace Watchman.Discord.UnitTests.AntiSpam
         [TestCase("http://abc.com", true, SpamProbability.Low)]
         public void LinksDetector_ShouldDetectSpam(string messageContent, bool isUserSafe, SpamProbability exceptedSpamProbability)
         {
-            // Arrange
-            var spamTestsService = new AntiSpamTestsService();
-            var (request, contexts) = spamTestsService.CreateRequestAndContexts(messageContent);
-            var userSafetyChecker = new Mock<IUserSafetyChecker>();
-            userSafetyChecker
-                .Setup(x => x.IsUserSafe(AntiSpamTestsService.DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
-                .Returns(isUserSafe);
-
-            var linksDetector = new LinksDetectorStrategy(userSafetyChecker.Object);
-
-            // Act
-            var spamProbability = linksDetector.GetSpamProbability(spamTestsService.ExampleServerMessages, request, contexts);
+            var spamDetectorsTestsService = new SpamDetectorsTestsService<LinksDetectorStrategy>();
+            var spamProbability = spamDetectorsTestsService.GetSpamProbability(isUserSafe, messageContent);
 
             // Assert
             Assert.That(spamProbability, Is.EqualTo(exceptedSpamProbability));
         }
 
         [Test]
-        [TestCase("abcd")]
-        [TestCase("rgdrg32http")]
-        public void LinksDetector_ShouldNotDetectSpam(string messageContent)
+        [TestCase("abcd", false)]
+        [TestCase("abcd", true)]
+        [TestCase("rgdrg32http", false)]
+        [TestCase("rgdrg32http", true)]
+        public void LinksDetector_ShouldNotDetectSpam(string messageContent, bool isUserSafe)
         {
-            // Arrange
-            var spamTestsService = new AntiSpamTestsService();
-            var (request, contexts) = spamTestsService.CreateRequestAndContexts(messageContent);
-            var userSafetyChecker = new Mock<IUserSafetyChecker>();
-            var linksDetector = new LinksDetectorStrategy(userSafetyChecker.Object);
-
-            // Act
-            var spamProbability = linksDetector.GetSpamProbability(spamTestsService.ExampleServerMessages, request, contexts);
+            var spamDetectorsTestsService = new SpamDetectorsTestsService<LinksDetectorStrategy>();
+            var spamProbability = spamDetectorsTestsService.GetSpamProbability(isUserSafe, messageContent);
 
             // Assert
             Assert.That(spamProbability, Is.EqualTo(SpamProbability.None));
@@ -65,26 +45,8 @@ namespace Watchman.Discord.UnitTests.AntiSpam
         [TestCase("link: https://discord.gg/example", "https://discord.gg/example", "https://discord.gg/example", "https://discord.gg/example", false, SpamProbability.Sure)]
         public void DuplicatesDetector_ShouldDetectSpam(string messageContent1, string messageContent2, string messageContent3, string messageContent4, bool isUserSafe, SpamProbability exceptedSpamProbability)
         {
-            // Arrange
-            var spamTestsService = new AntiSpamTestsService();
-            var userSafetyChecker = new Mock<IUserSafetyChecker>();
-            userSafetyChecker
-                .Setup(x => x.IsUserSafe(AntiSpamTestsService.DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
-                .Returns(isUserSafe);
-
-            var duplicatesDetector = new DuplicatedMessagesDetectorStrategy(userSafetyChecker.Object);
-
-            var (request, contexts) = spamTestsService.CreateRequestAndContexts(messageContent4);
-            var serverMessages = new ServerMessagesCacheService();
-            serverMessages.OverwriteMessages(new List<SmallMessage>
-            {
-                new SmallMessage(messageContent1, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now),
-                new SmallMessage(messageContent2, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now),
-                new SmallMessage(messageContent3, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now)
-            });
-
-            // Act
-            var spamProbability = duplicatesDetector.GetSpamProbability(serverMessages, request, contexts);
+            var spamDetectorsTestsService = new SpamDetectorsTestsService<DuplicatedMessagesDetectorStrategy>();
+            var spamProbability = spamDetectorsTestsService.GetSpamProbability(isUserSafe, messageContent1, messageContent2, messageContent3, messageContent4);
 
             // Assert
             Assert.That(spamProbability, Is.EqualTo(exceptedSpamProbability));
@@ -97,26 +59,8 @@ namespace Watchman.Discord.UnitTests.AntiSpam
         [TestCase("hello", "how", "him", "you", true)]
         public void DuplicatesDetector_ShouldNotDetectSpam(string messageContent1, string messageContent2, string messageContent3, string messageContent4, bool isUserSafe)
         {
-            // Arrange
-            var spamTestsService = new AntiSpamTestsService();
-            var userSafetyChecker = new Mock<IUserSafetyChecker>();
-            userSafetyChecker
-                .Setup(x => x.IsUserSafe(AntiSpamTestsService.DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
-                .Returns(isUserSafe);
-
-            var duplicatesDetector = new DuplicatedMessagesDetectorStrategy(userSafetyChecker.Object);
-
-            var (request, contexts) = spamTestsService.CreateRequestAndContexts(messageContent4);
-            var serverMessages = new ServerMessagesCacheService();
-            serverMessages.OverwriteMessages(new List<SmallMessage>
-            {
-                new SmallMessage(messageContent1, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now),
-                new SmallMessage(messageContent2, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now),
-                new SmallMessage(messageContent3, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now)
-            });
-
-            // Act
-            var spamProbability = duplicatesDetector.GetSpamProbability(serverMessages, request, contexts);
+            var spamDetectorsTestsService = new SpamDetectorsTestsService<DuplicatedMessagesDetectorStrategy>();
+            var spamProbability = spamDetectorsTestsService.GetSpamProbability(isUserSafe, messageContent1, messageContent2, messageContent3, messageContent4);
 
             // Assert
             Assert.That(spamProbability, Is.EqualTo(SpamProbability.None));

@@ -8,7 +8,7 @@ namespace Devscord.DiscordFramework.Services
     {
         private CancellationTokenSource _cancellationTokenSource;
 
-        public async void StartGeneratingStatsCacheEveryday()
+        public async void StartCyclicCaching()
         {
             var isNowRunning = _cancellationTokenSource?.IsCancellationRequested == false;
             if (isNowRunning)
@@ -23,7 +23,7 @@ namespace Devscord.DiscordFramework.Services
             }
         }
 
-        public void StopGeneratingStatsCacheEveryday()
+        public void StopCyclicCaching()
         {
             _cancellationTokenSource.Cancel();
         }
@@ -32,7 +32,7 @@ namespace Devscord.DiscordFramework.Services
 
         private async Task BlockUntilNextNight()
         {
-            const int hourWhenShouldGenerateCyclicStatistics = 02; // 24h clock
+            const int hourWhenShouldGenerateCyclicStatistics = 2; // 24h clock
 
             var nightTimeThisDay = DateTime.Today.AddHours(hourWhenShouldGenerateCyclicStatistics); // always 2:00AM this day
             var nextNight = DateTime.Now.Hour < hourWhenShouldGenerateCyclicStatistics

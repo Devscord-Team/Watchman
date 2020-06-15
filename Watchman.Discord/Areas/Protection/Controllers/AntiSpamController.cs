@@ -54,7 +54,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             }
             _serverMessagesCacheService.AddMessage(request, contexts);
             Log.Information("Scanned");
-            Log.Information("antispam: {miliseconds}ms", stopwatch.ElapsedMilliseconds);
+            Log.Information("antispam: {ticks}ticks", stopwatch.ElapsedTicks);
         }
 
         private bool ShouldCheckThisMessage(ulong userId, DateTime messageSentAt)
