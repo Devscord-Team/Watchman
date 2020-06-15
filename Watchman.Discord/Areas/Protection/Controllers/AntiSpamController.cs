@@ -28,11 +28,11 @@ namespace Watchman.Discord.Areas.Protection.Controllers
 
         public AntiSpamController(ServerMessagesCacheService serverMessagesCacheService, CheckUserSafetyStrategyService checkUserSafetyStrategyService, PunishmentsCachingService punishmentsCachingService, AntiSpamService antiSpamService)
         {
-            _serverMessagesCacheService = serverMessagesCacheService;
-            _punishmentsCachingService = punishmentsCachingService;
-            _antiSpamService = antiSpamService;
-            _overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessagesCacheService, checkUserSafetyStrategyService);
-            _spamPunishmentStrategy = new SpamPunishmentStrategy(punishmentsCachingService);
+            this._serverMessagesCacheService = serverMessagesCacheService;
+            this._punishmentsCachingService = punishmentsCachingService;
+            this._antiSpamService = antiSpamService;
+            this._overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessagesCacheService, checkUserSafetyStrategyService);
+            this._spamPunishmentStrategy = new SpamPunishmentStrategy(punishmentsCachingService);
         }
 
         [ReadAlways]
@@ -44,7 +44,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             if (ShouldCheckThisMessage(contexts.User.Id, request.SentAt))
             {
                 _isNowChecking = true;
-                var spamProbability = _overallSpamDetector.GetOverallSpamProbability(request, contexts);
+                var spamProbability = this._overallSpamDetector.GetOverallSpamProbability(request, contexts);
                 if (spamProbability != SpamProbability.None)
                 {
                     Log.Information("{SpamProbability} for {user}", spamProbability, contexts.User.Name);
@@ -52,7 +52,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
                 }
                 _isNowChecking = false;
             }
-            _serverMessagesCacheService.AddMessage(request, contexts);
+            this._serverMessagesCacheService.AddMessage(request, contexts);
             Log.Information("Scanned");
             Log.Information("antispam: {ticks}ticks", stopwatch.ElapsedTicks);
         }
@@ -68,9 +68,9 @@ namespace Watchman.Discord.Areas.Protection.Controllers
 
         private async Task HandlePossibleSpam(Contexts contexts, SpamProbability spamProbability, DateTime messageSentAt)
         {
-            var punishment = _spamPunishmentStrategy.GetPunishment(contexts.User.Id, spamProbability);
-            await _antiSpamService.SetPunishment(contexts, punishment);
-            await _punishmentsCachingService.AddUserPunishment(contexts.User.Id, punishment);
+            var punishment = this._spamPunishmentStrategy.GetPunishment(contexts.User.Id, spamProbability);
+            await this._antiSpamService.SetPunishment(contexts, punishment);
+            await this._punishmentsCachingService.AddUserPunishment(contexts.User.Id, punishment);
 
             if (punishment.PunishmentOption != PunishmentOption.Nothing)
             {

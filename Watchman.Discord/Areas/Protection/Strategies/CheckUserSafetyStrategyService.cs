@@ -31,7 +31,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
 
         public bool IsUserSafe(ulong userId, ulong serverId)
         {
-            return _safeUsersOnServers.TryGetValue(serverId, out var serverUsers) && serverUsers.SafeUsers.Contains(userId);
+            return this._safeUsersOnServers.TryGetValue(serverId, out var serverUsers) && serverUsers.SafeUsers.Contains(userId);
         }
 
         protected sealed override async Task ReloadCache()
@@ -47,23 +47,23 @@ namespace Watchman.Discord.Areas.Protection.Strategies
         private void UpdateConfiguration()
         {
             var query = new GetConfigurationQuery();
-            var configuration = _queryBus.Execute(query).Configuration;
+            var configuration = this._queryBus.Execute(query).Configuration;
             this._minAverageMessagesPerWeek = configuration.MinAverageMessagesPerWeek;
         }
 
         private async Task UpdateMessages()
         {
             var getAllMessagesQuery = new GetMessagesQuery(GetMessagesQuery.GET_ALL_SERVERS);
-            var messages = _queryBus.Execute(getAllMessagesQuery).Messages;
+            var messages = this._queryBus.Execute(getAllMessagesQuery).Messages;
             await this.UpdateSafetyUsersStates(messages);
         }
 
         private async Task UpdateSafetyUsersStates(IEnumerable<Message> messages)
         {
-            var serversWhereBotIs = (await _discordServersService.GetDiscordServers()).Select(x => x.Id).ToHashSet();
+            var serversWhereBotIs = (await this._discordServersService.GetDiscordServers()).Select(x => x.Id).ToHashSet();
             var servers = messages.GroupBy(x => x.Server.Id).Where(x => serversWhereBotIs.Contains(x.Key));
 
-            this._safeUsersOnServers = servers.Select(x => new ServerSafeUsers(x, x.Key, _minAverageMessagesPerWeek))
+            this._safeUsersOnServers = servers.Select(x => new ServerSafeUsers(x, x.Key, this._minAverageMessagesPerWeek))
                 .ToDictionary(x => x.ServerId, x => x);
         }
     }

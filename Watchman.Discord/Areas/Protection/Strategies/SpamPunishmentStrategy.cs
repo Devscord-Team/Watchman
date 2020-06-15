@@ -11,7 +11,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
 
         public SpamPunishmentStrategy(IPunishmentsCachingService punishmentsCachingService)
         {
-            _punishmentsCachingService = punishmentsCachingService;
+            this._punishmentsCachingService = punishmentsCachingService;
         }
 
         public Punishment GetPunishment(ulong userId, SpamProbability spamProbability)

@@ -8,7 +8,7 @@ namespace Watchman.DomainModel.Settings.Queries
         
         public GetConfigurationQueryResult(Configuration configuration)
         {
-            Configuration = configuration;
+            this.Configuration = configuration;
         }
     }
 }

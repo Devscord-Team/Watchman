@@ -68,13 +68,13 @@ namespace Watchman.Discord.Areas.Protection.Services
             var option = (ProtectionPunishmentOption)(int)punishment.PunishmentOption;
             var protectionPunishment = new ProtectionPunishment(option, userId, punishment.GivenAt, punishment.ForTime);
             var command = new AddProtectionPunishmentCommand(protectionPunishment);
-            await _commandBus.ExecuteAsync(command);
+            await this._commandBus.ExecuteAsync(command);
         }
 
         private Dictionary<ulong, List<Punishment>> LoadUsersPunishmentsFromDomain()
         {
             var query = new GetProtectionPunishmentsQuery();
-            var protectionPunishments = _queryBus.Execute(query).ProtectionPunishments;
+            var protectionPunishments = this._queryBus.Execute(query).ProtectionPunishments;
             return protectionPunishments
                 .GroupBy(x => x.UserId)
                 .Select(x =>

@@ -15,8 +15,7 @@ namespace Watchman.Discord.Areas.Protection.Models
 
         public ServerSafeUsers(IEnumerable<Message> serverMessages, ulong serverId, int minAverageMessagesPerWeek)
         {
-            ServerId = serverId;
-
+            this.ServerId = serverId;
             this.SafeUsers = serverMessages
                 .GroupBy(x => x.Author.Id)
                 .Where(u => IsUserSafe(u, u.Key, serverId, minAverageMessagesPerWeek))

@@ -10,9 +10,9 @@ namespace Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models
 
         public Punishment(PunishmentOption punishmentOption, DateTime givenAt, TimeSpan? forTime = null)
         {
-            PunishmentOption = punishmentOption;
-            GivenAt = givenAt;
-            ForTime = forTime;
+            this.PunishmentOption = punishmentOption;
+            this.GivenAt = givenAt;
+            this.ForTime = forTime;
         }
     }
 }

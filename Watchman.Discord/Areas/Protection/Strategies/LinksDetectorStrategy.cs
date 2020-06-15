@@ -13,7 +13,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
 
         public LinksDetectorStrategy(IUserSafetyChecker userSafetyChecker)
         {
-            UserSafetyChecker = userSafetyChecker;
+            this.UserSafetyChecker = userSafetyChecker;
         }
 
         public SpamProbability GetSpamProbability(ServerMessagesCacheService serverMessagesCacheService, DiscordRequest request, Contexts contexts)

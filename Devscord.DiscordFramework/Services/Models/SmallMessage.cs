@@ -10,9 +10,9 @@ namespace Devscord.DiscordFramework.Services.Models
 
         public SmallMessage(string content, ulong userId, DateTime sentAt)
         {
-            Content = content;
-            UserId = userId;
-            SentAt = sentAt;
+            this.Content = content;
+            this.UserId = userId;
+            this.SentAt = sentAt;
         }
     }
 }

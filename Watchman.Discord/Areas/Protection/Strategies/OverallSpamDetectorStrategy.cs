@@ -38,22 +38,18 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             {
                 return SpamProbability.None;
             }
-
             if (probabilities.Contains(SpamProbability.Sure))
             {
                 return SpamProbability.Sure;
             }
-
             if (probabilities.Count(x => x == SpamProbability.Medium) > 1)
             {
                 return SpamProbability.Sure;
             }
-
             if (probabilities.Contains(SpamProbability.Medium))
             {
                 return SpamProbability.Medium;
             }
-
             return SpamProbability.Low;
         }
     }

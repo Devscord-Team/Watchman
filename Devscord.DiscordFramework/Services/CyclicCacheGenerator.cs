@@ -10,13 +10,13 @@ namespace Devscord.DiscordFramework.Services
 
         public async void StartCyclicCaching()
         {
-            var isNowRunning = _cancellationTokenSource?.IsCancellationRequested == false;
+            var isNowRunning = this._cancellationTokenSource?.IsCancellationRequested == false;
             if (isNowRunning)
             {
                 return;
             }
-            _cancellationTokenSource = new CancellationTokenSource();
-            while (!_cancellationTokenSource.IsCancellationRequested)
+            this._cancellationTokenSource = new CancellationTokenSource();
+            while (!this._cancellationTokenSource.IsCancellationRequested)
             {
                 await BlockUntilNextNight();
                 await ReloadCache();
@@ -25,7 +25,7 @@ namespace Devscord.DiscordFramework.Services
 
         public void StopCyclicCaching()
         {
-            _cancellationTokenSource.Cancel();
+            this._cancellationTokenSource.Cancel();
         }
 
         protected abstract Task ReloadCache();
@@ -40,7 +40,7 @@ namespace Devscord.DiscordFramework.Services
                 : nightTimeThisDay.AddDays(1);
 
             var delay = nextNight - DateTime.Now;
-            await Task.Delay(delay, _cancellationTokenSource.Token);
+            await Task.Delay(delay, this._cancellationTokenSource.Token);
         }
     }
 }

@@ -10,12 +10,12 @@ namespace Watchman.DomainModel.Settings.Queries.Handlers
 
         public GetConfigurationQueryHandler(ISessionFactory sessionFactory)
         {
-            _sessionFactory = sessionFactory;
+            this._sessionFactory = sessionFactory;
         }
 
         public GetConfigurationQueryResult Handle(GetConfigurationQuery query)
         {
-            using var session = _sessionFactory.Create();
+            using var session = this._sessionFactory.Create();
             var configuration = session.Get<Configuration>().FirstOrDefault() ?? Configuration.Default;
             return new GetConfigurationQueryResult(configuration);
         }
