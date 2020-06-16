@@ -1,9 +1,14 @@
 ﻿using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
+using Devscord.DiscordFramework.Services.Factories;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Watchman.Cqrs;
 using Watchman.DomainModel.DiscordServer;
+using Watchman.DomainModel.DiscordServer.Commands;
+using Watchman.DomainModel.DiscordServer.Queries;
 
 namespace Watchman.Discord.Areas.Users.Services
 {
@@ -11,11 +16,17 @@ namespace Watchman.Discord.Areas.Users.Services
     {
         private readonly UsersService _usersService;
         private readonly UsersRolesService _usersRolesService;
+        private readonly IQueryBus _queryBus;
+        private readonly MessagesServiceFactory _messagesServiceFactory;
+        private readonly ICommandBus _commandBus;
 
-        public RolesService(UsersService usersService, UsersRolesService usersRolesService)
+        public RolesService(UsersService usersService, UsersRolesService usersRolesService, IQueryBus queryBus, MessagesServiceFactory messagesServiceFactory, ICommandBus commandBus)
         {
             this._usersService = usersService;
-            _usersRolesService = usersRolesService;
+            this._usersRolesService = usersRolesService;
+            this._queryBus = queryBus;
+            this._messagesServiceFactory = messagesServiceFactory;
+            this._commandBus = commandBus;
         }
 
         public void AddRoleToUser(IEnumerable<Role> safeRoles, MessagesService messagesService, Contexts contexts, IEnumerable<string> commandRoles)
@@ -56,6 +67,54 @@ namespace Watchman.Discord.Areas.Users.Services
             var serverRole = _usersRolesService.GetRoleByName(commandRole, contexts.Server);
             _usersService.RemoveRole(serverRole, contexts.User, contexts.Server).Wait();
             messagesService.SendResponse(x => x.RoleRemovedFromUser(contexts, commandRole), contexts);
+        }
+
+        public async Task SetRolesAsSafe(Contexts contexts, IEnumerable<string> commandRoles, bool setAsSafe)
+        {
+            var safeRolesQuery = new GetDiscordServerSafeRolesQuery(contexts.Server.Id);
+            var safeRoles = this._queryBus.Execute(safeRolesQuery).SafeRoles;
+            var messageService = _messagesServiceFactory.Create(contexts);
+
+            foreach (var roleName in commandRoles)
+            {
+                var serverRole = _usersRolesService.GetRoleByName(roleName, contexts.Server);
+                if (serverRole == null)
+                {
+                    await messageService.SendResponse(x => x.RoleNotFoundOrIsNotSafe(contexts, roleName), contexts);
+                    continue;
+                }
+                var settingsWasChanged = setAsSafe
+                    ? await TryToSetAsSafe(safeRoles, roleName, contexts)
+                    : await TryToSetAsUnsafe(safeRoles, roleName, contexts);
+                if (settingsWasChanged)
+                {
+                    await messageService.SendResponse(x => x.RoleSettingsChanged(roleName), contexts);
+                }
+            }
+        }
+
+        private async Task<bool> TryToSetAsSafe(IEnumerable<Role> safeRoles, string roleName, Contexts contexts)
+        {
+            if (safeRoles.Any(x => x.Name == roleName))
+            {
+                var messageService = _messagesServiceFactory.Create(contexts);
+                await messageService.SendResponse(x => x.RoleIsSafeAlready(roleName), contexts);
+                return false;
+            }
+            await _commandBus.ExecuteAsync(new SetRoleAsSafeCommand(roleName, contexts.Server.Id));
+            return true;
+        }
+
+        private async Task<bool> TryToSetAsUnsafe(IEnumerable<Role> safeRoles, string roleName, Contexts contexts)
+        {
+            if (!safeRoles.Any(x => x.Name == roleName))
+            {
+                var messageService = _messagesServiceFactory.Create(contexts);
+                await messageService.SendResponse(x => x.RoleIsUnsafeAlready(roleName), contexts);
+                return false;
+            }
+            await _commandBus.ExecuteAsync(new SetRoleAsUnsafeCommand(roleName, contexts.Server.Id));
+            return true;
         }
     }
 }

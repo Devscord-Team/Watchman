@@ -14,7 +14,7 @@ using Watchman.DomainModel.Messages.Queries;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Discord.Areas.Commons;
-using Watchman.Discord.Areas.Administration.Services;
+using Watchman.Discord.Areas.Users.Services;
 
 namespace Watchman.Discord.Areas.Administration.Controllers
 {
@@ -25,15 +25,16 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         private readonly UsersService _usersService;
         private readonly DirectMessagesService _directMessagesService;
         private readonly MessagesServiceFactory _messagesServiceFactory;
-        private readonly UsersRolesService _usersRolesService;
-        public AdministrationController(IQueryBus queryBus, ICommandBus commandBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, UsersRolesService usersRolesService, SetRoleService setRoleService)
+        private readonly RolesService _rolesService;
+
+        public AdministrationController(IQueryBus queryBus, ICommandBus commandBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, RolesService rolesService)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;
             this._usersService = usersService;
             this._directMessagesService = directMessagesService;
             this._messagesServiceFactory = messagesServiceFactory;
-            this._usersRolesService = usersRolesService;
+            this._rolesService = rolesService;
         }
 
         [AdminCommand]
@@ -102,8 +103,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
                 _ => throw new NotEnoughArgumentsException()
             };
             var commandRoles = args.Select(x => x.Value).SkipLast(1);
-            var roleService = new SetRoleService(_messagesServiceFactory, _queryBus, _commandBus,  _usersRolesService);
-            await roleService.SetRolesAsSafe(contexts, commandRoles, isSafe);
+            await this._rolesService.SetRolesAsSafe(contexts, commandRoles, isSafe);
         }
     }
 }
