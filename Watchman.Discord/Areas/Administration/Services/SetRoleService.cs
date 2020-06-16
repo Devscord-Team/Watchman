@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
+using Watchman.DomainModel.DiscordServer;
 using Watchman.DomainModel.DiscordServer.Commands;
 using Watchman.DomainModel.DiscordServer.Queries;
 
@@ -31,37 +32,47 @@ namespace Watchman.Discord.Areas.Administration.Services
             var safeRolesQuery = new GetDiscordServerSafeRolesQuery(contexts.Server.Id);
             var safeRoles = this._queryBus.Execute(safeRolesQuery).SafeRoles;
             var messageService = _messagesServiceFactory.Create(contexts);
+
             foreach (var roleName in commandRoles)
             {
                 var serverRole = _usersRolesService.GetRoleByName(roleName, contexts.Server);
-
                 if (serverRole == null)
                 {
                     await messageService.SendResponse(x => x.RoleNotFoundOrIsNotSafe(contexts, roleName), contexts);
                     continue;
                 }
-
-                if (setAsSafe && !safeRoles.Select(x => x.Name).Where(x => x == roleName).Select(x => x).Any())
+                var settingsWasChanged = setAsSafe
+                    ? await TryToSetAsSafe(safeRoles, roleName, contexts)
+                    : await TryToSetAsUnsafe(safeRoles, roleName, contexts);
+                if (settingsWasChanged)
                 {
-                    await messageService.SendResponse(x => x.RoleIsSafeAlready(roleName), contexts);
-                    continue;
-                }
-                else if (!setAsSafe && !safeRoles.Select(x => x.Name).Where(x => x == roleName).Select(x => x).Any())
-                {
-                    await messageService.SendResponse(x => x.RoleIsUnsafeAlready(roleName), contexts);
-                    continue;
-                }
-
-                if (setAsSafe)
-                {
-                    await _commandBus.ExecuteAsync(new SetRoleAsSafeCommand(roleName, contexts.Server.Id));
-                }
-                else
-                {
-                    await _commandBus.ExecuteAsync(new SetRoleAsUnsafeCommand(roleName, contexts.Server.Id));
+                    await messageService.SendResponse(x => x.RoleSettingsChanged(roleName), contexts);
                 }
             }
+        }
 
+        private async Task<bool> TryToSetAsSafe(IEnumerable<Role> safeRoles, string roleName, Contexts contexts)
+        {
+            if (safeRoles.Any(x => x.Name == roleName))
+            {
+                var messageService = _messagesServiceFactory.Create(contexts);
+                await messageService.SendResponse(x => x.RoleIsSafeAlready(roleName), contexts);
+                return false;
+            }
+            await _commandBus.ExecuteAsync(new SetRoleAsSafeCommand(roleName, contexts.Server.Id));
+            return true;
+        }
+
+        private async Task<bool> TryToSetAsUnsafe(IEnumerable<Role> safeRoles, string roleName, Contexts contexts)
+        {
+            if (!safeRoles.Any(x => x.Name == roleName))
+            {
+                var messageService = _messagesServiceFactory.Create(contexts);
+                await messageService.SendResponse(x => x.RoleIsUnsafeAlready(roleName), contexts);
+                return false;
+            }
+            await _commandBus.ExecuteAsync(new SetRoleAsUnsafeCommand(roleName, contexts.Server.Id));
+            return true;
         }
     }
 }

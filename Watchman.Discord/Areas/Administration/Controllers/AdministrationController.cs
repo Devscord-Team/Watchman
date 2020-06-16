@@ -14,8 +14,6 @@ using Watchman.DomainModel.Messages.Queries;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Discord.Areas.Commons;
-using Watchman.DomainModel.DiscordServer.Commands;
-using Watchman.DomainModel.DiscordServer.Queries;
 using Watchman.Discord.Areas.Administration.Services;
 
 namespace Watchman.Discord.Areas.Administration.Controllers
@@ -28,7 +26,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         private readonly DirectMessagesService _directMessagesService;
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly UsersRolesService _usersRolesService;
-        public AdministrationController(IQueryBus queryBus, ICommandBus commandBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, UsersRolesService usersRolesService)
+        public AdministrationController(IQueryBus queryBus, ICommandBus commandBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, UsersRolesService usersRolesService, SetRoleService setRoleService)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;
@@ -96,13 +94,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             {
                 throw new ArgumentsDuplicatedException();
             }
-
             var lastArgument = args.Last().Value.ToLower();
-            var argumentIsNotCorrect = lastArgument != "safe" && lastArgument != "unsafe";
-            if (argumentIsNotCorrect)
-            {
-                throw new NotEnoughArgumentsException();
-            }
             var isSafe = lastArgument switch
             {
                 "safe" => true,
@@ -112,11 +104,6 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             var commandRoles = args.Select(x => x.Value).SkipLast(1);
             var roleService = new SetRoleService(_messagesServiceFactory, _queryBus, _commandBus,  _usersRolesService);
             await roleService.SetRolesAsSafe(contexts, commandRoles, isSafe);
-
-            var messageService = _messagesServiceFactory.Create(contexts);
-            string msg = string.Join(", ",
-                args.Select(x => x.Value).SkipLast(1)) + " have been set as " + lastArgument;
-            await messageService.SendMessage(msg);
         }
     }
 }
