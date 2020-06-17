@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Integration;
 using Devscord.DiscordFramework.Middlewares.Contexts;
@@ -10,9 +11,9 @@ namespace Devscord.DiscordFramework.Services
     {
         public const string MUTED_ROLE_NAME = "muted";
 
-        public UserRole CreateNewRole(DiscordServerContext server, NewUserRole userRole)
+        public async Task<UserRole> CreateNewRole(DiscordServerContext server, NewUserRole userRole)
         {
-            return Server.CreateNewRole(userRole, server).Result;
+            return await Server.CreateNewRole(userRole, server);
         }
 
         public UserRole GetRoleByName(string name, DiscordServerContext server)
@@ -22,8 +23,7 @@ namespace Devscord.DiscordFramework.Services
 
         public IEnumerable<UserRole> GetRoles(DiscordServerContext server)
         {
-            return Server.GetRoles(server.Id).ToList();
+            return Server.GetRoles(server.Id);
         }
-
     }
 }

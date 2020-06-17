@@ -42,7 +42,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         public async Task ReadUserMessages(DiscordRequest request, Contexts contexts)
         {
             var mention = request.GetMention();
-            var selectedUser = _usersService.GetUserByMention(contexts.Server, mention);
+            var selectedUser = this._usersService.GetUserByMention(contexts.Server, mention);
             if (selectedUser == null)
             {
                 throw new UserNotFoundException(mention);
@@ -53,11 +53,11 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             {
                 SentDate = timeRange
             };
-            var messages = _queryBus.Execute(query).Messages
+            var messages = this._queryBus.Execute(query).Messages
                 .OrderBy(x => x.SentAt)
                 .ToList();
 
-            var messagesService = _messagesServiceFactory.Create(contexts);
+            var messagesService = this._messagesServiceFactory.Create(contexts);
             var hasForceArgument = request.HasArgument("force") || request.HasArgument("f");
 
             if (messages.Count > 200 && !hasForceArgument)
@@ -76,8 +76,8 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             var lines = messages.Select(x => $"{x.SentAt:yyyy-MM-dd HH:mm:ss} {x.Author.Name}: {x.Content.Replace("```", "")}");
             var linesBuilder = new StringBuilder().PrintManyLines(lines.ToArray(), contentStyleBox: true);
 
-            await _directMessagesService.TrySendMessage(contexts.User.Id, header);
-            await _directMessagesService.TrySendMessage(contexts.User.Id, linesBuilder.ToString(), MessageType.BlockFormatted);
+            await this._directMessagesService.TrySendMessage(contexts.User.Id, header);
+            await this._directMessagesService.TrySendMessage(contexts.User.Id, linesBuilder.ToString(), MessageType.BlockFormatted);
 
             await messagesService.SendResponse(x => x.SentByDmMessagesOfAskedUser(messages.Count, selectedUser), contexts);
         }
@@ -95,15 +95,15 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             {
                 throw new ArgumentsDuplicatedException();
             }
-            var lastArgument = args.Last().Value.ToLower();
-            var isSafe = lastArgument switch
+            var lastArgument = args.Last().Value.ToLowerInvariant();
+            var shouldSetToSafe = lastArgument switch
             {
                 "safe" => true,
                 "unsafe" => false,
                 _ => throw new NotEnoughArgumentsException()
             };
             var commandRoles = args.Select(x => x.Value).SkipLast(1);
-            await this._rolesService.SetRolesAsSafe(contexts, commandRoles, isSafe);
+            await this._rolesService.SetRolesAsSafe(contexts, commandRoles, shouldSetToSafe);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
@@ -16,7 +17,7 @@ namespace Watchman.Discord
             _messagesServiceFactory = messagesServiceFactory;
         }
 
-        public void LogException(Exception e, Contexts contexts)
+        public Task LogException(Exception e, Contexts contexts)
         {
             var messagesService = _messagesServiceFactory.Create(contexts);
 
@@ -58,12 +59,6 @@ namespace Watchman.Discord
                 case ArgumentsDuplicatedException _:
                     messagesService.SendResponse(x => x.ArgumentsDuplicated(), contexts);
                     break;
-                case RoleIsSafeAlreadyException roleExc:
-                    messagesService.SendResponse(x => x.RoleIsSafeAlready(roleExc.RoleName), contexts);
-                    break;
-                case RoleIsUnsafeAlreadyException roleExc:
-                    messagesService.SendResponse(x => x.RoleIsUnsafeAlready(roleExc.RoleName), contexts);
-                    break;
                 case InvalidArgumentsException invalidArgumentsExc:
                     messagesService.SendResponse(x => x.InvalidArguments(invalidArgumentsExc.AvailableArguments), contexts);
                     break;
@@ -71,6 +66,7 @@ namespace Watchman.Discord
                     messagesService.SendMessage("Wystąpił nieznany wyjątek");
                     break;
             }
+            return Task.CompletedTask;
         }
     }
 }

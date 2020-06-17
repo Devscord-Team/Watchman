@@ -40,13 +40,13 @@ namespace Watchman.Discord.Areas.Users.Services
                     messagesService.SendResponse(x => x.RoleIsInUserAlready(contexts, role), contexts);
                     continue;
                 }
-                var serverRole = _usersRolesService.GetRoleByName(role, contexts.Server);
+                var serverRole = this._usersRolesService.GetRoleByName(role, contexts.Server);
                 if (serverRole == null || !safeRoleNames.Contains(role))
                 {
                     messagesService.SendResponse(x => x.RoleNotFoundOrIsNotSafe(contexts, role), contexts);
                     continue;
                 }
-                _usersService.AddRole(serverRole, contexts.User, contexts.Server).Wait();
+                this._usersService.AddRole(serverRole, contexts.User, contexts.Server).Wait();
                 messagesService.SendResponse(x => x.RoleAddedToUser(contexts, role), contexts);
             }
         }
@@ -64,8 +64,8 @@ namespace Watchman.Discord.Areas.Users.Services
                 messagesService.SendResponse(x => x.RoleNotFoundInUser(contexts, commandRole), contexts);
                 return;
             }
-            var serverRole = _usersRolesService.GetRoleByName(commandRole, contexts.Server);
-            _usersService.RemoveRole(serverRole, contexts.User, contexts.Server).Wait();
+            var serverRole = this._usersRolesService.GetRoleByName(commandRole, contexts.Server);
+            this._usersService.RemoveRole(serverRole, contexts.User, contexts.Server).Wait();
             messagesService.SendResponse(x => x.RoleRemovedFromUser(contexts, commandRole), contexts);
         }
 
@@ -73,11 +73,11 @@ namespace Watchman.Discord.Areas.Users.Services
         {
             var safeRolesQuery = new GetDiscordServerSafeRolesQuery(contexts.Server.Id);
             var safeRoles = this._queryBus.Execute(safeRolesQuery).SafeRoles;
-            var messageService = _messagesServiceFactory.Create(contexts);
+            var messageService = this._messagesServiceFactory.Create(contexts);
 
             foreach (var roleName in commandRoles)
             {
-                var serverRole = _usersRolesService.GetRoleByName(roleName, contexts.Server);
+                var serverRole = this._usersRolesService.GetRoleByName(roleName, contexts.Server);
                 if (serverRole == null)
                 {
                     await messageService.SendResponse(x => x.RoleNotFoundOrIsNotSafe(contexts, roleName), contexts);
@@ -97,23 +97,23 @@ namespace Watchman.Discord.Areas.Users.Services
         {
             if (safeRoles.Any(x => x.Name == roleName))
             {
-                var messageService = _messagesServiceFactory.Create(contexts);
+                var messageService = this._messagesServiceFactory.Create(contexts);
                 await messageService.SendResponse(x => x.RoleIsSafeAlready(roleName), contexts);
                 return false;
             }
-            await _commandBus.ExecuteAsync(new SetRoleAsSafeCommand(roleName, contexts.Server.Id));
+            await this._commandBus.ExecuteAsync(new SetRoleAsSafeCommand(roleName, contexts.Server.Id));
             return true;
         }
 
         private async Task<bool> TryToSetAsUnsafe(IEnumerable<Role> safeRoles, string roleName, Contexts contexts)
         {
-            if (!safeRoles.Any(x => x.Name == roleName))
+            if (safeRoles.All(x => x.Name != roleName))
             {
-                var messageService = _messagesServiceFactory.Create(contexts);
+                var messageService = this._messagesServiceFactory.Create(contexts);
                 await messageService.SendResponse(x => x.RoleIsUnsafeAlready(roleName), contexts);
                 return false;
             }
-            await _commandBus.ExecuteAsync(new SetRoleAsUnsafeCommand(roleName, contexts.Server.Id));
+            await this._commandBus.ExecuteAsync(new SetRoleAsUnsafeCommand(roleName, contexts.Server.Id));
             return true;
         }
     }
