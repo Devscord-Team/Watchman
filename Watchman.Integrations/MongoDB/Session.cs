@@ -57,6 +57,20 @@ namespace Watchman.Integrations.MongoDB
             await this.GetCollection<T>().DeleteOneAsync(x => x.Id == entity.Id);
         }
 
+        public async Task ReplaceByTypeAsync<T>(T item) where T : Entity
+        {
+            var possiblePreviousItems = this.Get<T>().ToList();
+            if (possiblePreviousItems.Count > 1)
+            {
+                throw new Exception("To replace there must be only one item of this type");
+            }
+            if (possiblePreviousItems.Count == 1)
+            {
+                await this.DeleteAsync(possiblePreviousItems.First());
+            }
+            await this.AddAsync(item);
+        }
+
         public void SaveChanges()
         {
             //use on database change

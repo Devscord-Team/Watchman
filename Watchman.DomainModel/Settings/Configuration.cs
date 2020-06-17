@@ -5,10 +5,12 @@ namespace Watchman.DomainModel.Settings
     public class Configuration : Entity, IAggregateRoot
     {
         public int MinAverageMessagesPerWeek { get; private set; }
+        public double PercentOfSimilarityBetweenMessagesToSuspectSpam { get; private set; }
 
-        internal static Configuration Default => new Configuration
+        public static Configuration Default => new Configuration
         {
-            MinAverageMessagesPerWeek = 20
+            MinAverageMessagesPerWeek = 20,
+            PercentOfSimilarityBetweenMessagesToSuspectSpam = 0.4
         };
     }
 }

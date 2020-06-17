@@ -4,7 +4,7 @@ using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Settings.Queries.Handlers
 {
-    public class GetConfigurationQueryHandler : IQueryHandler<GetConfigurationQuery, GetConfigurationQueryResult>
+    internal class GetConfigurationQueryHandler : IQueryHandler<GetConfigurationQuery, GetConfigurationQueryResult>
     {
         private readonly ISessionFactory _sessionFactory;
 

@@ -14,6 +14,7 @@ namespace Watchman.Integrations.MongoDB
         Task AddOrUpdateAsync<T>(T entity) where T : Entity;
         Task UpdateAsync<T>(T entity) where T : Entity;
         Task DeleteAsync<T>(T entity) where T : Entity;
+        Task ReplaceByTypeAsync<T>(T item) where T : Entity;
         void SaveChanges();
     }
 }

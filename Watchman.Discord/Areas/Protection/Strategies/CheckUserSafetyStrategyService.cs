@@ -8,22 +8,23 @@ using Watchman.Cqrs;
 using Watchman.Discord.Areas.Protection.Models;
 using Watchman.DomainModel.Messages;
 using Watchman.DomainModel.Messages.Queries;
-using Watchman.DomainModel.Settings.Queries;
+using Watchman.DomainModel.Settings.Services;
 
 namespace Watchman.Discord.Areas.Protection.Strategies
 {
     public class CheckUserSafetyStrategyService : CyclicCacheGenerator, IUserSafetyChecker
     {
-        private int _minAverageMessagesPerWeek;
         private Dictionary<ulong, ServerSafeUsers> _safeUsersOnServers;
         private readonly IQueryBus _queryBus;
         private readonly DiscordServersService _discordServersService;
+        private readonly ConfigurationService _configurationService;
 
-        public CheckUserSafetyStrategyService(IQueryBus queryBus, UsersService usersService, DiscordServersService discordServersService)
+        public CheckUserSafetyStrategyService(IQueryBus queryBus, UsersService usersService, DiscordServersService discordServersService, ConfigurationService configurationService)
         {
             ServerSafeUsers.UsersService = usersService;
             this._queryBus = queryBus;
             this._discordServersService = discordServersService;
+            this._configurationService = configurationService;
 
             this.ReloadCache().Wait();
             base.StartCyclicCaching();
@@ -37,18 +38,8 @@ namespace Watchman.Discord.Areas.Protection.Strategies
         protected sealed override async Task ReloadCache()
         {
             Log.Information("Reloading cache....");
-
-            UpdateConfiguration();
             await UpdateMessages();
-
             Log.Information("Cache reloaded");
-        }
-
-        private void UpdateConfiguration()
-        {
-            var query = new GetConfigurationQuery();
-            var configuration = this._queryBus.Execute(query).Configuration;
-            this._minAverageMessagesPerWeek = configuration.MinAverageMessagesPerWeek;
         }
 
         private async Task UpdateMessages()
@@ -63,7 +54,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             var serversWhereBotIs = (await this._discordServersService.GetDiscordServers()).Select(x => x.Id).ToHashSet();
             var servers = messages.GroupBy(x => x.Server.Id).Where(x => serversWhereBotIs.Contains(x.Key));
 
-            this._safeUsersOnServers = servers.Select(x => new ServerSafeUsers(x, x.Key, this._minAverageMessagesPerWeek))
+            this._safeUsersOnServers = servers.Select(x => new ServerSafeUsers(x, x.Key, this._configurationService.Configuration.MinAverageMessagesPerWeek))
                 .ToDictionary(x => x.ServerId, x => x);
         }
     }

@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Autofac.Extras.Moq;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
 using Devscord.DiscordFramework.Services.Models;
 using Moq;
 using NUnit.Framework;
+using Watchman.Cqrs;
 using Watchman.Discord.Areas.Protection.Strategies;
 using Watchman.DomainModel.Messages.Queries;
+using Watchman.DomainModel.Settings;
+using Watchman.DomainModel.Settings.Services;
+using Watchman.Integrations.MongoDB;
 
 namespace Watchman.Discord.UnitTests.AntiSpam
 {
@@ -29,7 +35,7 @@ namespace Watchman.Discord.UnitTests.AntiSpam
             userSafetyChecker
                 .Setup(x => x.IsUserSafe(AntiSpamTestsService.DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
                 .Returns(isUserSafe);
-
+            
             var (request, contexts) = spamTestsService.CreateRequestAndContexts(messageContent4);
             var serverMessages = new ServerMessagesCacheService();
             serverMessages.OverwriteMessages(new List<SmallMessage>
@@ -38,7 +44,11 @@ namespace Watchman.Discord.UnitTests.AntiSpam
                 new SmallMessage(messageContent2, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now),
                 new SmallMessage(messageContent3, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now)
             });
-            var overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessages, userSafetyChecker.Object);
+            var configurationService = new Mock<ConfigurationService>(null, null);
+            configurationService
+                .Setup(x => x.Configuration)
+                .Returns(Configuration.Default);
+            var overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessages, userSafetyChecker.Object, configurationService.Object);
 
             // Act
             var overallSpamProbability = overallSpamDetector.GetOverallSpamProbability(request, contexts);
@@ -67,7 +77,11 @@ namespace Watchman.Discord.UnitTests.AntiSpam
                 new SmallMessage(messageContent2, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now),
                 new SmallMessage(messageContent3, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now)
             });
-            var overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessages, userSafetyChecker.Object);
+            var configurationService = new Mock<ConfigurationService>();
+            configurationService
+                .Setup(x => x.Configuration)
+                .Returns(Configuration.Default);
+            var overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessages, userSafetyChecker.Object, configurationService.Object);
 
             // Act
             var overallSpamProbability = overallSpamDetector.GetOverallSpamProbability(request, contexts);
