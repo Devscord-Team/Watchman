@@ -18,6 +18,7 @@ namespace Watchman.Integrations.Logging
                 .Enrich.WithThreadId()
                 .Enrich.WithMachineName()
                 .Enrich.WithEnvironmentUserName()
+                .WriteTo.RollingFile("logs/log-{Date}.log")
                 .WriteTo.Console(
                     restrictedToMinimumLevel: LogEventLevel.Verbose,
                     outputTemplate: "[{Timestamp:dd-MM-yyyy} - {Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
