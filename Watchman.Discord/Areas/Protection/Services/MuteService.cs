@@ -48,7 +48,7 @@ namespace Watchman.Discord.Areas.Protection.Services
             await _commandBus.ExecuteAsync(new AddMuteEventCommand(muteEvent));
 
             var messagesService = _messagesServiceFactory.Create(contexts);
-            await messagesService.SendResponse(x => x.MutedUser(userToMute, muteEvent.TimeRange.End), contexts);
+            await messagesService.SendResponse(x => x.MutedUser(userToMute, muteEvent.TimeRange.End));
         }
 
         public async Task<bool> UnmuteIfNeeded(DiscordServerContext server, UserContext userToUnmute)
@@ -77,7 +77,7 @@ namespace Watchman.Discord.Areas.Protection.Services
             if (wasNeededToUnmute)
             {
                 var messagesService = _messagesServiceFactory.Create(contexts);
-                await messagesService.SendResponse(x => x.UnmutedUser(userToUnmute), contexts);
+                await messagesService.SendResponse(x => x.UnmutedUser(userToUnmute));
                 await _directMessagesService.TrySendMessage(userToUnmute.Id, x => x.UnmutedUserForUser(userToUnmute, contexts.Server), contexts);
             }
         }

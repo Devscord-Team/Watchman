@@ -11,7 +11,7 @@ namespace Watchman.Discord.Areas.Users.Services
 
         public WelcomeUserService(MessagesServiceFactory messagesServiceFactory)
         {
-            _messagesServiceFactory = messagesServiceFactory;
+            this._messagesServiceFactory = messagesServiceFactory;
         }
 
         public Task WelcomeUser(Contexts contexts)
@@ -21,8 +21,8 @@ namespace Watchman.Discord.Areas.Users.Services
                 return Task.CompletedTask;
             }
 
-            var messagesService = _messagesServiceFactory.Create(contexts);
-            messagesService.SendResponse(x => x.NewUserArrived(contexts), contexts);
+            var messagesService = this._messagesServiceFactory.Create(contexts);
+            messagesService.SendResponse(x => x.NewUserArrived(contexts));
             return Task.CompletedTask;
         }
     }

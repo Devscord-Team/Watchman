@@ -35,7 +35,7 @@ namespace Watchman.Discord.Areas.Protection.Services
             switch (punishment.PunishmentOption)
             {
                 case PunishmentOption.Warn:
-                    await messagesService.SendResponse(x => x.SpamAlertRecognized(contexts), contexts);
+                    await messagesService.SendResponse(x => x.SpamAlertRecognized(contexts));
                     break;
                 case PunishmentOption.Mute:
                     await MuteUserForSpam(contexts, punishment.ForTime!.Value);

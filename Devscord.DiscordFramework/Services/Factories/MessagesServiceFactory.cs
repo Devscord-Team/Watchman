@@ -18,10 +18,10 @@ namespace Devscord.DiscordFramework.Services.Factories
 
         public MessagesService Create(Contexts contexts)
         {
-            return this.Create(contexts.Channel.Id);
+            return this.Create(contexts.Channel.Id, contexts.Server.Id);
         }
 
-        public MessagesService Create(ulong channelId, ulong guildId = 0)
+        public MessagesService Create(ulong channelId, ulong guildId)
         {
             return new MessagesService(_responsesService, _splittingService, _embedMessagesService)
             {

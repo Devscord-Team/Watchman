@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
@@ -10,12 +9,9 @@ using Devscord.DiscordFramework.Commons.Extensions;
 using Watchman.Cqrs;
 using Watchman.DomainModel.DiscordServer.Queries;
 using Watchman.Discord.Areas.Users.Services;
-using Watchman.DomainModel.DiscordServer;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
-using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Commons.Exceptions;
 using Watchman.Discord.Areas.Commons;
-using Watchman.Discord.Areas.Users.BotCommands;
 
 namespace Watchman.Discord.Areas.Users.Controllers
 {
@@ -24,14 +20,12 @@ namespace Watchman.Discord.Areas.Users.Controllers
         private readonly IQueryBus _queryBus;
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly RolesService _rolesService;
-        private readonly UsersRolesService _usersRolesService;
 
-        public UsersController(IQueryBus queryBus, MessagesServiceFactory messagesServiceFactory, RolesService rolesService, UsersRolesService usersRolesService)
+        public UsersController(IQueryBus queryBus, MessagesServiceFactory messagesServiceFactory, RolesService rolesService)
         {
             this._queryBus = queryBus;
             this._messagesServiceFactory = messagesServiceFactory;
             this._rolesService = rolesService;
-            this._usersRolesService = usersRolesService;
         }
 
         [DiscordCommand("avatar")]
@@ -40,7 +34,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
             var messageService = _messagesServiceFactory.Create(contexts);
             if (string.IsNullOrEmpty(contexts.User.AvatarUrl))
             {
-                messageService.SendResponse(x => x.UserDoesntHaveAvatar(contexts.User), contexts);
+                messageService.SendResponse(x => x.UserDoesntHaveAvatar(contexts.User));
                 return;
             }
 
@@ -74,7 +68,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
             _rolesService.DeleteRoleFromUser(safeRoles, messagesService, contexts, commandRole);
         }
 
-        public async Task PrintRoles(RolesCommand command, Contexts contexts)
+        public async Task PrintRoles(Contexts contexts)
         {
             var messageService = _messagesServiceFactory.Create(contexts);
             var query = new GetDiscordServerSafeRolesQuery(contexts.Server.Id);
@@ -82,13 +76,13 @@ namespace Watchman.Discord.Areas.Users.Controllers
 
             if (safeRoles.Count == 0)
             {
-                await messageService.SendResponse(x => x.ServerDoesntHaveAnySafeRoles(), contexts);
+                await messageService.SendResponse(x => x.ServerDoesntHaveAnySafeRoles());
                 return;
             }
 
             var output = new StringBuilder();
             output.PrintManyLines(safeRoles.Select(x => x.Name).ToArray(), contentStyleBox: false, spacesBetweenLines: false);
-            await messageService.SendResponse(x => x.AvailableSafeRoles(output.ToString()), contexts);
+            await messageService.SendResponse(x => x.AvailableSafeRoles(output.ToString()));
         }
     }
 }

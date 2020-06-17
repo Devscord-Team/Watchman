@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Commons.Exceptions;
 using System.Linq;
-using System.Collections;
 
 namespace Devscord.DiscordFramework.Services
 {
@@ -18,13 +17,20 @@ namespace Devscord.DiscordFramework.Services
         public ulong GuildId { get; set; }
         public ulong ChannelId { get; set; }
 
-        private readonly ResponsesService _responsesService;
+        private static readonly Dictionary<ulong, IEnumerable<Response>> _serversResponses;
+        private static ResponsesService _responsesService;
         private readonly MessageSplittingService _splittingService;
         private readonly EmbedMessagesService _embedMessagesService;
 
+        static MessagesService()
+        {
+            _serversResponses = new Dictionary<ulong, IEnumerable<Response>>();
+            RefreshResponsesCyclic();
+        }
+
         public MessagesService(ResponsesService responsesService, MessageSplittingService splittingService, EmbedMessagesService embedMessagesService)
         {
-            this._responsesService = responsesService;
+            _responsesService = responsesService;
             this._splittingService = splittingService;
             this._embedMessagesService = embedMessagesService;
         }
@@ -49,10 +55,10 @@ namespace Devscord.DiscordFramework.Services
             return Task.CompletedTask;
         }
 
-        public Task SendResponse(Func<ResponsesService, string> response, Contexts contexts)
+        public Task SendResponse(Func<ResponsesService, string> response)
         {
-            this._responsesService.RefreshResponses(contexts); //todo: optimize:
-            var message = response.Invoke(this._responsesService);
+            _responsesService.Responses = _serversResponses.GetValueOrDefault(this.GuildId) ?? GetResponsesForNewServer(this.GuildId);
+            var message = response.Invoke(_responsesService);
             return this.SendMessage(message);
         }
 
@@ -80,7 +86,27 @@ namespace Devscord.DiscordFramework.Services
                     arg = arg.Append(botException.Value).ToArray();
                 }
                 return (string)responseManagerMethod.Invoke(null, arg);
-            }, contexts);
+            });
+        }
+
+        private static async void RefreshResponsesCyclic()
+        {
+            while (true)
+            {
+                foreach (var serverId in _serversResponses.Keys.ToList())
+                {
+                    var responses = _responsesService.GetResponsesFunc(serverId);
+                    _serversResponses[serverId] = responses;
+                }
+                await Task.Delay(10 * 60 * 1000);
+            }
+        }
+
+        private static IEnumerable<Response> GetResponsesForNewServer(ulong serverId)
+        {
+            var responses = _responsesService.GetResponsesFunc(serverId).ToList();
+            _serversResponses.Add(serverId, responses);
+            return responses;
         }
 
         private IRestMessageChannel GetChannel()

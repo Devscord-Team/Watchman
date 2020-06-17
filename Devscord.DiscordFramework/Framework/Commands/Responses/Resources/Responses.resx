@@ -132,6 +132,9 @@
   <data name="NewUserArrived" xml:space="preserve">
     <value>Cześć {{user}}! Witamy cię na serwerze {{server}}</value>
   </data>
+  <data name="NotAdminPermissions" xml:space="preserve">
+    <value>Nie masz wystarczających uprawnień do wywołania tej komendy.</value>
+  </data>
   <data name="NotEnoughArguments" xml:space="preserve">
     <value>Podano niewystarczającą liczbę argumentów!</value>
   </data>
@@ -224,9 +227,6 @@
   </data>
   <data name="UserDoesntHaveAvatar" xml:space="preserve">
     <value>Użytkownik {{user}} nie posiada avatara.</value>
-  </data>
-  <data name="UserIsNotAdmin" xml:space="preserve">
-    <value>Nie masz wystarczających uprawnień do wywołania tej komendy.</value>
   </data>
   <data name="UserNotFound" xml:space="preserve">
     <value>Użytkownik {{user}} nie istnieje.</value>

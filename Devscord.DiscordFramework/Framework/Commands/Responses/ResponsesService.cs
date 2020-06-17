@@ -1,13 +1,8 @@
 ﻿using Devscord.DiscordFramework.Middlewares.Contexts;
-using Devscord.DiscordFramework.Services;
-using Newtonsoft.Json;
 using Serilog;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 
 namespace Devscord.DiscordFramework.Framework.Commands.Responses
 {
@@ -16,16 +11,16 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         public IEnumerable<Response> Responses { get; set; }
         private readonly ResponsesParser _parser;
 
-        public Func<Contexts, IEnumerable<Response>> GetResponsesFunc { get; set; } = x => throw new NotImplementedException();
+        public Func<ulong, IEnumerable<Response>> GetResponsesFunc { get; set; } = x => throw new NotImplementedException();
 
         public ResponsesService()
         {
             this._parser = new ResponsesParser();
         }
 
-        public void RefreshResponses(Contexts contexts)
+        public void RefreshResponses(ulong serverId)
         {
-            this.Responses = this.GetResponsesFunc(contexts);
+            this.Responses = this.GetResponsesFunc(serverId);
         }
 
         public Response GetResponse(string name)

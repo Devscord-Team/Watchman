@@ -21,16 +21,14 @@ namespace Watchman.Discord.Areas.Administration.Controllers
     public class AdministrationController : IController
     {
         private readonly IQueryBus _queryBus;
-        private readonly ICommandBus _commandBus;
         private readonly UsersService _usersService;
         private readonly DirectMessagesService _directMessagesService;
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly RolesService _rolesService;
 
-        public AdministrationController(IQueryBus queryBus, ICommandBus commandBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, RolesService rolesService)
+        public AdministrationController(IQueryBus queryBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, RolesService rolesService)
         {
             this._queryBus = queryBus;
-            this._commandBus = commandBus;
             this._usersService = usersService;
             this._directMessagesService = directMessagesService;
             this._messagesServiceFactory = messagesServiceFactory;
@@ -62,13 +60,13 @@ namespace Watchman.Discord.Areas.Administration.Controllers
 
             if (messages.Count > 200 && !hasForceArgument)
             {
-                await messagesService.SendResponse(x => x.NumberOfMessagesIsHuge(messages.Count), contexts);
+                await messagesService.SendResponse(x => x.NumberOfMessagesIsHuge(messages.Count));
                 return;
             }
 
             if (!messages.Any())
             {
-                await messagesService.SendResponse(x => x.UserDidntWriteAnyMessageInThisTime(selectedUser), contexts);
+                await messagesService.SendResponse(x => x.UserDidntWriteAnyMessageInThisTime(selectedUser));
                 return;
             }
 
@@ -79,7 +77,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             await this._directMessagesService.TrySendMessage(contexts.User.Id, header);
             await this._directMessagesService.TrySendMessage(contexts.User.Id, linesBuilder.ToString(), MessageType.BlockFormatted);
 
-            await messagesService.SendResponse(x => x.SentByDmMessagesOfAskedUser(messages.Count, selectedUser), contexts);
+            await messagesService.SendResponse(x => x.SentByDmMessagesOfAskedUser(messages.Count, selectedUser));
         }
 
         [AdminCommand]
