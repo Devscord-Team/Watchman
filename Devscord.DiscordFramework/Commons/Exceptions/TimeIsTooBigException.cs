@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace Devscord.DiscordFramework.Commons.Exceptions
+﻿namespace Devscord.DiscordFramework.Commons.Exceptions
 {
-    public class TimeIsTooBigException: Exception
+    public class TimeIsTooBigException: BotException
     {
     }
 }

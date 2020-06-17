@@ -15,7 +15,7 @@ namespace Watchman.Discord.Areas.Commons
             var mention = discordRequest.Arguments.FirstOrDefault(x => x.Value.StartsWith('<') && x.Value.EndsWith('>'))?.Value;
             if (mention == null)
             {
-                throw new UserDidntMentionAnyUser();
+                throw new UserDidntMentionAnyUserException();
             }
             return mention;
         }
