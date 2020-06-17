@@ -13,7 +13,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
         private readonly ServerMessagesCacheService _serverMessagesCacheService;
         private readonly List<ISpamDetector> _spamDetectors;
 
-        public static OverallSpamDetectorStrategy GetStrategyWithDefaultDetectors(ServerMessagesCacheService serverMessagesCacheService, IUserSafetyChecker userSafetyChecker, ConfigurationService configurationService)
+        public static OverallSpamDetectorStrategy GetStrategyWithDefaultDetectors(ServerMessagesCacheService serverMessagesCacheService, IUserSafetyChecker userSafetyChecker, IConfigurationService configurationService)
         {
             return new OverallSpamDetectorStrategy(serverMessagesCacheService, new List<ISpamDetector>
             {

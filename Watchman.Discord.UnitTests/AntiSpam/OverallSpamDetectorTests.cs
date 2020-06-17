@@ -44,7 +44,7 @@ namespace Watchman.Discord.UnitTests.AntiSpam
                 new SmallMessage(messageContent2, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now),
                 new SmallMessage(messageContent3, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now)
             });
-            var configurationService = new Mock<ConfigurationService>(null, null);
+            var configurationService = new Mock<IConfigurationService>();
             configurationService
                 .Setup(x => x.Configuration)
                 .Returns(Configuration.Default);
@@ -77,7 +77,7 @@ namespace Watchman.Discord.UnitTests.AntiSpam
                 new SmallMessage(messageContent2, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now),
                 new SmallMessage(messageContent3, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now)
             });
-            var configurationService = new Mock<ConfigurationService>();
+            var configurationService = new Mock<IConfigurationService>();
             configurationService
                 .Setup(x => x.Configuration)
                 .Returns(Configuration.Default);

@@ -12,9 +12,9 @@ namespace Watchman.Discord.Areas.Protection.Strategies
     {
         public IUserSafetyChecker UserSafetyChecker { get; set; }
 
-        private readonly ConfigurationService _configurationService;
+        private readonly IConfigurationService _configurationService;
 
-        public DuplicatedMessagesDetectorStrategy(IUserSafetyChecker userSafetyChecker, ConfigurationService configurationService)
+        public DuplicatedMessagesDetectorStrategy(IUserSafetyChecker userSafetyChecker, IConfigurationService configurationService)
         {
             this._configurationService = configurationService;
             this.UserSafetyChecker = userSafetyChecker;

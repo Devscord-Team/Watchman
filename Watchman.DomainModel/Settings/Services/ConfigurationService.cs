@@ -6,9 +6,9 @@ using Watchman.DomainModel.Settings.Queries;
 
 namespace Watchman.DomainModel.Settings.Services
 {
-    public class ConfigurationService
+    public class ConfigurationService : IConfigurationService
     {
-        public virtual Configuration Configuration
+        public Configuration Configuration
         {
             get
             {
