@@ -29,6 +29,7 @@ namespace Watchman.Web
 #if !DEBUG
                 .AddJsonFile("appsettings.Production.json", optional: false)
 #else
+                .AddJsonFile("appsettings.Development.json", optional: false)
 #endif
                 .AddEnvironmentVariables();
             return builder.Build();
