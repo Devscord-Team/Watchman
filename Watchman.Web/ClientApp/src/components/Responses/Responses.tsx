@@ -4,7 +4,7 @@ export interface IResponsesProps {}
 
 export interface IResponsesState {}
 
-export default class Responses extends React.Component<IResponsesProps, IResponsesState> {
+export default class Responses extends React.Component<{}, {}> {
     public render() {
         return <div></div>;
     }
