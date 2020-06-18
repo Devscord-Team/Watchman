@@ -1,7 +1,7 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace Watchman.Web.Pages
 {
@@ -10,17 +10,11 @@ namespace Watchman.Web.Pages
     {
         private readonly ILogger<ErrorModel> logger;
 
-        public ErrorModel(ILogger<ErrorModel> _logger)
-        {
-            logger = _logger;
-        }
+        public ErrorModel(ILogger<ErrorModel> _logger) => this.logger = _logger;
         public string RequestId { get; set; }
 
-        public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+        public bool ShowRequestId => !string.IsNullOrEmpty(this.RequestId);
 
-        public void OnGet()
-        {
-            RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
-        }
+        public void OnGet() => this.RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier;
     }
 }

@@ -6,8 +6,8 @@
         public string ChannelId { private get; set; }
         public string UserId { private get; set; }
 
-        public ulong GetGuildId => ulong.Parse(GuildId);
-        public ulong GetChannelId => ulong.Parse(ChannelId);
-        public ulong? GetUserId => ulong.Parse(UserId);
+        public ulong GetGuildId => ulong.Parse(this.GuildId);
+        public ulong GetChannelId => ulong.Parse(this.ChannelId);
+        public ulong? GetUserId => ulong.Parse(this.UserId);
     }
 }

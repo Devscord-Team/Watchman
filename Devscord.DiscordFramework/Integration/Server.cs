@@ -1,13 +1,13 @@
-﻿using System;
+﻿using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Middlewares.Contexts;
+using Devscord.DiscordFramework.Services.Models;
 using Discord;
+using Discord.Rest;
 using Discord.WebSocket;
+using Serilog;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Devscord.DiscordFramework.Commons;
-using Devscord.DiscordFramework.Services.Models;
-using Discord.Rest;
-using Serilog;
 
 namespace Devscord.DiscordFramework.Integration
 {

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Watchman.Integrations.MongoDB
 {
@@ -13,8 +11,8 @@ namespace Watchman.Integrations.MongoDB
 
         protected void Update()
         {
-            UpdatedAt = DateTime.UtcNow;
-            Version++;
+            this.UpdatedAt = DateTime.UtcNow;
+            this.Version++;
         }
     }
 }

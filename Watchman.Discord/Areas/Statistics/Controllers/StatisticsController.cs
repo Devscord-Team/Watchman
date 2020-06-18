@@ -1,4 +1,5 @@
-﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+﻿using Devscord.DiscordFramework.Commons.Extensions;
+using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
@@ -7,13 +8,12 @@ using Serilog;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Devscord.DiscordFramework.Commons.Extensions;
+using Watchman.Common.Models;
 using Watchman.Cqrs;
+using Watchman.Discord.Areas.Statistics.Models;
 using Watchman.Discord.Areas.Statistics.Services;
 using Watchman.DomainModel.Messages.Commands;
 using Watchman.DomainModel.Messages.Queries;
-using Watchman.Common.Models;
-using Watchman.Discord.Areas.Statistics.Models;
 
 namespace Watchman.Discord.Areas.Statistics.Controllers
 {
@@ -50,13 +50,13 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
             Log.Information("Message saved");
         }
 
-        private Period[] implementedBySplitter = new Period[] { Period.Day }; // only while implementing other splitters / to remove
+        private readonly Period[] implementedBySplitter = new Period[] { Period.Day }; // only while implementing other splitters / to remove
         [AdminCommand]
         [DiscordCommand("stats")]
         public async Task GetStatisticsPerPeriod(DiscordRequest request, Contexts contexts)
         {
-            var period = _reportsService.SelectPeriod(request.Arguments.FirstOrDefault()?.Value);
-            if (implementedBySplitter.Contains(period))
+            var period = this._reportsService.SelectPeriod(request.Arguments.FirstOrDefault()?.Value);
+            if (this.implementedBySplitter.Contains(period))
             {
                 var query = new GetMessagesStatisticsQuery(period);
                 var result = await this._queryBus.ExecuteAsync(query);
@@ -66,13 +66,13 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
 
             var getMessages = new GetMessagesQuery(contexts.Server.Id);
             var messages = this._queryBus.Execute(getMessages).Messages.ToList();
-            var report = _reportsService.CreateReport(messages, period);
+            var report = this._reportsService.CreateReport(messages, period);
             Log.Information("Generated statistics for time range {start} {end}", report.TimeRange.Start, report.TimeRange.End);
 #if DEBUG
             PrintDebugStats(report);
 #endif
-            var path = _chartsService.GetImageStatisticsPerPeriod(report);
-            var messagesService = _messagesServiceFactory.Create(contexts);
+            var path = this._chartsService.GetImageStatisticsPerPeriod(report);
+            var messagesService = this._messagesServiceFactory.Create(contexts);
             await messagesService.SendFile(path);
         }
 

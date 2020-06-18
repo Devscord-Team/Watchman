@@ -21,15 +21,15 @@ namespace Devscord.DiscordFramework.Services
 
         public MessagesService(ResponsesService responsesService, MessageSplittingService splittingService, EmbedMessagesService embedMessagesService)
         {
-            _responsesService = responsesService;
-            _splittingService = splittingService;
-            _embedMessagesService = embedMessagesService;
+            this._responsesService = responsesService;
+            this._splittingService = splittingService;
+            this._embedMessagesService = embedMessagesService;
         }
 
         public Task SendMessage(string message, MessageType messageType = MessageType.NormalText)
         {
             var channel = this.GetChannel();
-            foreach (var mess in _splittingService.SplitMessage(message, messageType))
+            foreach (var mess in this._splittingService.SplitMessage(message, messageType))
             {
                 channel.SendMessageAsync(mess);
                 Log.Information("Bot sent message {splitted} {message}", mess, messageType != MessageType.NormalText ? "splitted" : string.Empty);
@@ -48,23 +48,26 @@ namespace Devscord.DiscordFramework.Services
 
         public Task SendResponse(Func<ResponsesService, string> response, Contexts contexts)
         {
-            _responsesService.RefreshResponses(contexts);
+            this._responsesService.RefreshResponses(contexts);
             var message = response.Invoke(this._responsesService);
             return this.SendMessage(message);
         }
 
         public async Task SendFile(string filePath)
         {
-            var channel = (IRestMessageChannel) await Server.GetChannel(ChannelId);
+            var channel = (IRestMessageChannel)await Server.GetChannel(this.ChannelId);
             await channel.SendFileAsync(filePath);
         }
 
         private IRestMessageChannel GetChannel()
         {
             RestGuild guild = null;
-            if (GuildId != default)
-                guild = Server.GetGuild(GuildId).Result;
-            var channel = (IRestMessageChannel)Server.GetChannel(ChannelId, guild).Result;
+            if (this.GuildId != default)
+            {
+                guild = Server.GetGuild(this.GuildId).Result;
+            }
+
+            var channel = (IRestMessageChannel)Server.GetChannel(this.ChannelId, guild).Result;
             return channel;
         }
     }

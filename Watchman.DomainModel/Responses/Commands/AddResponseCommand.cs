@@ -6,9 +6,6 @@ namespace Watchman.DomainModel.Responses.Commands
     {
         public Response Response { get; }
 
-        public AddResponseCommand(Response response)
-        {
-            Response = response;
-        }
+        public AddResponseCommand(Response response) => this.Response = response;
     }
 }

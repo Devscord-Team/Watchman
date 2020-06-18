@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Watchman.Cqrs;
 
 namespace Watchman.DomainModel.Responses.Commands
@@ -12,8 +10,8 @@ namespace Watchman.DomainModel.Responses.Commands
 
         public UpdateResponseCommand(Guid id, string message)
         {
-            Id = id;
-            Message = message;
+            this.Id = id;
+            this.Message = message;
         }
     }
 }

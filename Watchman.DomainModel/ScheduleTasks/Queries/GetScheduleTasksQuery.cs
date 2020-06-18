@@ -6,9 +6,6 @@ namespace Watchman.DomainModel.ScheduleTasks.Queries
     {
         public bool LoadOnlyActive { get; private set; }
 
-        public GetScheduleTasksQuery(bool loadOnlyActive)
-        {
-            this.LoadOnlyActive = loadOnlyActive;
-        }
+        public GetScheduleTasksQuery(bool loadOnlyActive) => this.LoadOnlyActive = loadOnlyActive;
     }
 }

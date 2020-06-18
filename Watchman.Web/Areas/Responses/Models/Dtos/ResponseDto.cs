@@ -15,9 +15,9 @@ namespace Watchman.Web.Areas.Responses.Models.Dtos
 
         public ResponseDto(Response response)
         {
-            Id = response.Id;
-            OnEvent = response.OnEvent;
-            Message = response.Message;
+            this.Id = response.Id;
+            this.OnEvent = response.OnEvent;
+            this.Message = response.Message;
         }
     }
 }

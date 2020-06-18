@@ -10,9 +10,9 @@ namespace Watchman.Web.Areas.Helps.Models.Dtos
 
         public ArgumentInfoDto(ArgumentInfo argumentInfo)
         {
-            Name = argumentInfo.Name;
-            Description = argumentInfo.Description;
-            ExampleValues = argumentInfo.ExampleValues;
+            this.Name = argumentInfo.Name;
+            this.Description = argumentInfo.Description;
+            this.ExampleValues = argumentInfo.ExampleValues;
         }
     }
 }

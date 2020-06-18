@@ -6,9 +6,6 @@ namespace Watchman.DomainModel.Help.Queries
     {
         public ulong ServerId { get; }
 
-        public GetHelpInformationQuery(ulong serverId)
-        {
-            this.ServerId = serverId;
-        }
+        public GetHelpInformationQuery(ulong serverId) => this.ServerId = serverId;
     }
 }

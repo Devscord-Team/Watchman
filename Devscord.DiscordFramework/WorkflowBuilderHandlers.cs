@@ -1,51 +1,47 @@
 ﻿using Autofac;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework
 {
     public class WorkflowBuilderHandlers<T>
     {
-        private List<T> _handlers = new List<T>();
+        private readonly List<T> _handlers = new List<T>();
         private readonly IComponentContext context;
 
-        internal IEnumerable<T> Handlers => _handlers;
+        internal IEnumerable<T> Handlers => this._handlers;
 
-        public WorkflowBuilderHandlers(IComponentContext context)
-        {
-            this.context = context;
-        }
+        public WorkflowBuilderHandlers(IComponentContext context) => this.context = context;
 
         public WorkflowBuilderHandlers<T> AddHandler(T handler, bool onlyOnDebug = false)
         {
-            if(!ShouldIgnore(onlyOnDebug))
+            if (!this.ShouldIgnore(onlyOnDebug))
             {
-                _handlers.Add(handler);
+                this._handlers.Add(handler);
             }
-            
+
             return this;
         }
 
         public WorkflowBuilderHandlers<T> AddFromIoC<A>(Func<A, T> func, bool onlyOnDebug = false)
         {
-            if (!ShouldIgnore(onlyOnDebug))
+            if (!this.ShouldIgnore(onlyOnDebug))
             {
-                var resolved = context.Resolve<A>();
+                var resolved = this.context.Resolve<A>();
                 var handler = func.Invoke(resolved);
-                AddHandler(handler);
+                this.AddHandler(handler);
             }
             return this;
         }
 
         public WorkflowBuilderHandlers<T> AddFromIoC<A, B>(Func<A, B, T> func, bool onlyOnDebug = false)
         {
-            if (!ShouldIgnore(onlyOnDebug))
+            if (!this.ShouldIgnore(onlyOnDebug))
             {
                 var resolvedA = this.context.Resolve<A>();
                 var resolvedB = this.context.Resolve<B>();
                 var handler = func.Invoke(resolvedA, resolvedB);
-                AddHandler(handler);
+                this.AddHandler(handler);
             }
             return this;
         }

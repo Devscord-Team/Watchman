@@ -7,9 +7,6 @@ namespace Watchman.DomainModel.ScheduleTasks.Queries
     {
         public IEnumerable<ScheduleTask> ScheduleTasks { get; private set; }
 
-        public GetScheduleTasksQueryResult(IEnumerable<ScheduleTask> scheduleTasks)
-        {
-            this.ScheduleTasks = scheduleTasks;
-        }
+        public GetScheduleTasksQueryResult(IEnumerable<ScheduleTask> scheduleTasks) => this.ScheduleTasks = scheduleTasks;
     }
 }

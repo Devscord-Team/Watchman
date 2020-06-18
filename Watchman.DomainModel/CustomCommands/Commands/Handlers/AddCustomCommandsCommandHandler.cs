@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Watchman.Cqrs;
 using Watchman.Integrations.MongoDB;
 
@@ -11,10 +8,7 @@ namespace Watchman.DomainModel.CustomCommands.Commands.Handlers
     {
         private readonly ISessionFactory sessionFactory;
 
-        public AddCustomCommandsCommandHandler(ISessionFactory sessionFactory)
-        {
-            this.sessionFactory = sessionFactory;
-        }
+        public AddCustomCommandsCommandHandler(ISessionFactory sessionFactory) => this.sessionFactory = sessionFactory;
 
         public async Task HandleAsync(AddCustomCommandsCommand command)
         {

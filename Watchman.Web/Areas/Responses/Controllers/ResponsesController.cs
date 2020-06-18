@@ -24,7 +24,7 @@ namespace Watchman.Web.Areas.Responses.Controllers
         public async Task<IEnumerable<ResponseDto>> GetResponses()
         {
             var query = new GetResponsesQuery();
-            var responsesResult = await queryBus.ExecuteAsync(query);
+            var responsesResult = await this.queryBus.ExecuteAsync(query);
             var responsesDto = responsesResult.Responses.Select(x => new ResponseDto(x));
             return responsesDto;
         }
@@ -33,8 +33,8 @@ namespace Watchman.Web.Areas.Responses.Controllers
         public async Task<IActionResult> UpdateResponse([FromBody] ResponseDto request)
         {
             var command = new UpdateResponseCommand(request.Id, request.Message);
-            await commandBus.ExecuteAsync(command);
-            return Ok();
+            await this.commandBus.ExecuteAsync(command);
+            return this.Ok();
         }
     }
 }

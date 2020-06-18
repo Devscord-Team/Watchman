@@ -10,7 +10,7 @@ namespace Devscord.DiscordFramework
     internal class MiddlewaresService
     {
         private readonly List<IMiddleware> _middlewares = new List<IMiddleware>();
-        public IEnumerable<IMiddleware> Middlewares => _middlewares;
+        public IEnumerable<IMiddleware> Middlewares => this._middlewares;
 
         public void AddMiddleware<T>()
             where T : IMiddleware
@@ -34,9 +34,6 @@ namespace Devscord.DiscordFramework
             return contextsInstance;
         }
 
-        private IEnumerable<IDiscordContext> GetMiddlewaresOutput(SocketMessage socketMessage)
-        {
-            return this._middlewares.Select(x => x.Process(socketMessage));
-        }
+        private IEnumerable<IDiscordContext> GetMiddlewaresOutput(SocketMessage socketMessage) => this._middlewares.Select(x => x.Process(socketMessage));
     }
 }

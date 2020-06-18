@@ -13,7 +13,7 @@ namespace Watchman.Discord.Areas.Statistics.Services
         {
             if (period.ToLowerInvariant() == "hour")
             {
-               return Period.Hour;
+                return Period.Hour;
             }
             else if (period.ToLowerInvariant() == "day")
             {
@@ -97,9 +97,9 @@ namespace Watchman.Discord.Areas.Statistics.Services
             {
                 Period.Hour => new DateTime(latestDate.Year, latestDate.Month, latestDate.Day, latestDate.Hour, 0, 0).AddHours(1).AddMilliseconds(-1),
                 Period.Day => new DateTime(latestDate.Year, latestDate.Month, latestDate.Day).AddDays(1).AddMilliseconds(-1),
-                Period.Week => new DateTime(latestDate.Year, latestDate.Month, latestDate.Day).AddDays(-(int) latestDate.DayOfWeek + 7).AddDays(1).AddMilliseconds(-1), //should be sunday
+                Period.Week => new DateTime(latestDate.Year, latestDate.Month, latestDate.Day).AddDays(-(int)latestDate.DayOfWeek + 7).AddDays(1).AddMilliseconds(-1), //should be sunday
                 Period.Month => new DateTime(latestDate.Year, latestDate.Month, DateTime.DaysInMonth(latestDate.Year, latestDate.Month)).AddDays(1).AddMilliseconds(-1), //last day of current month
-            _ => default
+                _ => default
             };
         }
     }

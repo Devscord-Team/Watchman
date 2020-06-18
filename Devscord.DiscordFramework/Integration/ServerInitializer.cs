@@ -22,7 +22,7 @@ namespace Devscord.DiscordFramework.Framework
             Server.Initialize(discordClient);
             Initialized = true;
 
-            int waiting = 0;
+            var waiting = 0;
             while (client.ConnectionState != Discord.ConnectionState.Connected)
             {
                 Log.Information("Waiting for connection... {time}ms after initialization", waiting++ * 100);

@@ -1,15 +1,13 @@
-﻿using Discord;
+﻿using Devscord.DiscordFramework.Integration.Services.Interfaces;
 using Discord.WebSocket;
-using System.Threading.Tasks;
 using Serilog;
-using Devscord.DiscordFramework.Integration.Services.Interfaces;
 
 namespace Devscord.DiscordFramework.Integration.Services
 {
     internal class DiscordClient : Interfaces.IDiscordClient
     {
         private bool _initialized;
-        private DiscordSocketClient _client;
+        private readonly DiscordSocketClient _client;
 
         public IDiscordClientUsersService UsersService { get; private set; }
         public IDiscordClientChannelsService ChannelsService { get; private set; }
@@ -18,22 +16,22 @@ namespace Devscord.DiscordFramework.Integration.Services
 
         public DiscordClient(DiscordSocketClient client)
         {
-            _client = client;
+            this._client = client;
             this.Initialize();
         }
 
         public void Initialize()
         {
-            if (_initialized)
+            if (this._initialized)
             {
                 return;
             }
-            UsersService = new DiscordClientUsersService(_client);
-            ChannelsService = new DiscordClientChannelsService(_client, UsersService);
-            RolesService = new DiscordClientRolesService(_client, ChannelsService);
-            ServersService = new DiscordClientServersService(_client);
+            this.UsersService = new DiscordClientUsersService(this._client);
+            this.ChannelsService = new DiscordClientChannelsService(this._client, this.UsersService);
+            this.RolesService = new DiscordClientRolesService(this._client, this.ChannelsService);
+            this.ServersService = new DiscordClientServersService(this._client);
 
-            _initialized = true;
+            this._initialized = true;
             Log.Information("DiscordClient initialized");
         }
     }

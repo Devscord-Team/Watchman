@@ -12,7 +12,9 @@
         private static string Replace(string value, string toCut)
         {
             if (!value.StartsWith(toCut))
+            {
                 return value;
+            }
 
             return value[toCut.Length..];
         }

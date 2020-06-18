@@ -1,24 +1,24 @@
-﻿using System;
-using System.Threading.Tasks;
-using Devscord.DiscordFramework.Services;
-using Watchman.Integrations.MongoDB;
-using Watchman.Discord.Ioc;
+﻿using Autofac;
 using Devscord.DiscordFramework;
-using Autofac;
-using Devscord.DiscordFramework.Middlewares.Contexts;
-using Devscord.DiscordFramework.Services.Factories;
-using Watchman.Discord.Areas.Help.Services;
-using System.Text;
 using Devscord.DiscordFramework.Commons.Extensions;
-using System.Linq;
-using Watchman.Integrations.Logging;
+using Devscord.DiscordFramework.Middlewares.Contexts;
+using Devscord.DiscordFramework.Services;
+using Devscord.DiscordFramework.Services.Factories;
 using MongoDB.Driver;
 using Serilog;
+using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Watchman.Discord.Areas.Help.Services;
 using Watchman.Discord.Areas.Initialization.Services;
 using Watchman.Discord.Areas.Protection.Services;
 using Watchman.Discord.Areas.Statistics.Services;
 using Watchman.Discord.Areas.Users.Services;
-using System.Diagnostics;
+using Watchman.Discord.Ioc;
+using Watchman.Integrations.Logging;
+using Watchman.Integrations.MongoDB;
 
 namespace Watchman.Discord
 {
@@ -30,7 +30,7 @@ namespace Watchman.Discord
         public WatchmanBot(DiscordConfiguration configuration, IComponentContext context = null)
         {
             this._configuration = configuration;
-            this._context = context ?? GetAutofacContainer(configuration).Resolve<IComponentContext>();
+            this._context = context ?? this.GetAutofacContainer(configuration).Resolve<IComponentContext>();
             Log.Logger = SerilogInitializer.Initialize(this._context.Resolve<IMongoDatabase>());
             Log.Information("Bot created...");
         }
@@ -39,7 +39,7 @@ namespace Watchman.Discord
         {
             MongoConfiguration.Initialize();
 
-            return WorkflowBuilder.Create(_configuration.Token, this._context, typeof(WatchmanBot).Assembly)
+            return WorkflowBuilder.Create(this._configuration.Token, this._context, typeof(WatchmanBot).Assembly)
                 .SetDefaultMiddlewares()
                 .AddOnReadyHandlers(builder =>
                 {
@@ -110,21 +110,18 @@ namespace Watchman.Discord
 
         private void PrintDebugExceptionInfo(Exception e, Contexts contexts)
         {
-            var exceptionMessage = BuildExceptionMessage(e).ToString();
-            var messagesService = _context.Resolve<MessagesServiceFactory>().Create(contexts);
+            var exceptionMessage = this.BuildExceptionMessage(e).ToString();
+            var messagesService = this._context.Resolve<MessagesServiceFactory>().Create(contexts);
             messagesService.SendMessage(exceptionMessage, Devscord.DiscordFramework.Commons.MessageType.BlockFormatted);
         }
 
         private void PrintExceptionOnConsole(Exception e, Contexts contexts)
         {
-            var exceptionMessage = BuildExceptionMessage(e).ToString();
+            var exceptionMessage = this.BuildExceptionMessage(e).ToString();
             Console.WriteLine(exceptionMessage);
         }
 
-        private StringBuilder BuildExceptionMessage(Exception e)
-        {
-            return new StringBuilder($"{e.Message}\r\n\r\n{e.InnerException}\r\n\r\n{e.StackTrace}```").FormatMessageIntoBlock();
-        }
+        private StringBuilder BuildExceptionMessage(Exception e) => new StringBuilder($"{e.Message}\r\n\r\n{e.InnerException}\r\n\r\n{e.StackTrace}```").FormatMessageIntoBlock();
 
         private IContainer GetAutofacContainer(DiscordConfiguration configuration)
         {

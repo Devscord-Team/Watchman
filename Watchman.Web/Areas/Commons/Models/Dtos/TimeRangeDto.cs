@@ -15,9 +15,9 @@ namespace Watchman.Web.Areas.Commons.Models.Dtos
 
         public TimeRangeDto(TimeRange timeRange)
         {
-            Start = timeRange.Start;
-            End = timeRange.End;
-            DaysBetween = timeRange.DaysBetween;
+            this.Start = timeRange.Start;
+            this.End = timeRange.End;
+            this.DaysBetween = timeRange.DaysBetween;
         }
     }
 }

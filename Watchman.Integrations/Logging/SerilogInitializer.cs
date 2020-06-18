@@ -1,8 +1,6 @@
 ﻿using MongoDB.Driver;
 using Serilog;
-using Serilog.Configuration;
 using Serilog.Events;
-using Serilog.Formatting.Compact;
 using Serilog.Formatting.Json;
 using System.Diagnostics;
 

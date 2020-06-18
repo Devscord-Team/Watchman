@@ -6,9 +6,6 @@ namespace Devscord.DiscordFramework.Commons.Exceptions
     {
         public string RoleName { get; }
 
-        public RoleNotFoundException(string roleName)
-        {
-            RoleName = roleName;
-        }
+        public RoleNotFoundException(string roleName) => this.RoleName = roleName;
     }
 }

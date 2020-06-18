@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using Watchman.Cqrs;
 using Watchman.Integrations.MongoDB;
 
@@ -11,13 +8,10 @@ namespace Watchman.DomainModel.Responses.Queries.Handlers
     {
         private readonly ISessionFactory _sessionFactory;
 
-        public GetResponseQueryHandler(ISessionFactory sessionFactory)
-        {
-            _sessionFactory = sessionFactory;
-        }
+        public GetResponseQueryHandler(ISessionFactory sessionFactory) => this._sessionFactory = sessionFactory;
         public GetResponseQueryResult Handle(GetResponseQuery query)
         {
-            using var session = _sessionFactory.Create();
+            using var session = this._sessionFactory.Create();
             var response = session.Get<Response>().FirstOrDefault(x => x.ServerId == query.ServerId && x.OnEvent == query.OnEvent);
             return new GetResponseQueryResult(response);
         }

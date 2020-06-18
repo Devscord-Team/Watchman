@@ -8,9 +8,9 @@
 
         public Server(ulong id, string name, User owner)
         {
-            Id = id;
-            Name = name;
-            Owner = owner;
+            this.Id = id;
+            this.Name = name;
+            this.Owner = owner;
         }
     }
 

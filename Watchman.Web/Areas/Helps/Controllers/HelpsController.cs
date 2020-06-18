@@ -11,16 +11,13 @@ namespace Watchman.Web.Areas.Helps.Controllers
     {
         private readonly IQueryBus _queryBus;
 
-        public HelpsController(IQueryBus queryBus)
-        {
-            _queryBus = queryBus;
-        }
+        public HelpsController(IQueryBus queryBus) => this._queryBus = queryBus;
 
         [HttpGet]
         public IEnumerable<HelpInformationDto> GetHelpInformations(ulong serverId = 0)
         {
             var query = new GetHelpInformationQuery(serverId);
-            var responses = _queryBus.Execute(query).HelpInformations;
+            var responses = this._queryBus.Execute(query).HelpInformations;
             var helpInformation = responses.Select(x => new HelpInformationDto(x));
             return helpInformation;
         }

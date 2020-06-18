@@ -2,10 +2,7 @@
 using Devscord.DiscordFramework.Framework.Commands.Properties;
 using Devscord.DiscordFramework.Framework.Commands.Services;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Devscord.DiscordFramework.UnitTests.Commands
@@ -56,7 +53,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands
             var parsingService = new BotCommandsParsingService(new BotCommandsPropertyConversionService()); //todo mock and test
 
             //Act
-            var result = (SmallTestCommand) parsingService.ParseCustomTemplate(typeof(SmallTestCommand), template, customTemplate, input);
+            var result = (SmallTestCommand)parsingService.ParseCustomTemplate(typeof(SmallTestCommand), template, customTemplate, input);
 
             //Assert
             Assert.That(result.TestNumber, Is.EqualTo(12));

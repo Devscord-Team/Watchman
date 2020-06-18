@@ -9,8 +9,8 @@ namespace Watchman.Web.Areas.Helps.Models.Dtos
 
         public DescriptionDto(Description description)
         {
-            Name = description.Name;
-            Value = description.Details;
+            this.Name = description.Name;
+            this.Value = description.Details;
         }
     }
 }

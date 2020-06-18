@@ -14,15 +14,9 @@ namespace Watchman.DomainModel.Messages
         public DateTime SentAt { get; private set; }
         public string Md5Hash { get; private set; }
 
-        private Message(string content)
-        {
-            this.Content = content;
-        }
+        private Message(string content) => this.Content = content;
 
-        public static MessageBuilder Create(string content)
-        {
-            return new MessageBuilder(new Message(content));
-        }
+        public static MessageBuilder Create(string content) => new MessageBuilder(new Message(content));
 
         public void SetAuthor(User author)
         {

@@ -1,16 +1,15 @@
-﻿using System;
+﻿using Devscord.DiscordFramework.Commons;
+using Devscord.DiscordFramework.Commons.Extensions;
+using PCRE;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Devscord.DiscordFramework.Commons;
-using Devscord.DiscordFramework.Commons.Extensions;
-using PCRE;
 
 namespace Devscord.DiscordFramework.Services
 {
     public class MessageSplittingService
     {
-        const int MAX_MESSAGE_LENGTH = 1990; // for safety reason I made it smaller than 2000
+        private const int MAX_MESSAGE_LENGTH = 1990; // for safety reason I made it smaller than 2000
 
         public IEnumerable<string> SplitMessage(string fullMessage, MessageType messageType)
         {
@@ -22,15 +21,15 @@ namespace Devscord.DiscordFramework.Services
             switch (messageType)
             {
                 case MessageType.Json:
-                    fullMessage = TrimUselessWhitespaceFromBeginning(fullMessage);
-                    return SplitJsonMessage(fullMessage);
+                    fullMessage = this.TrimUselessWhitespaceFromBeginning(fullMessage);
+                    return this.SplitJsonMessage(fullMessage);
 
                 case MessageType.BlockFormatted:
-                    return SplitBlockMessage(fullMessage);
+                    return this.SplitBlockMessage(fullMessage);
 
                 case MessageType.NormalText:
                 default:
-                    return SplitNormalMessage(fullMessage);
+                    return this.SplitNormalMessage(fullMessage);
             }
         }
 
@@ -83,9 +82,9 @@ namespace Devscord.DiscordFramework.Services
 
         private IEnumerable<string> SplitBlockMessage(string fullMessage)
         {
-            var blockPrefix = GetBlockPrefix(fullMessage);
+            var blockPrefix = this.GetBlockPrefix(fullMessage);
             var cutMessage = fullMessage.CutStart(blockPrefix).TrimEnd('`', ' ', '\n', '\r'); // ```cs message ```
-            var splitMessages = SplitNormalMessage(cutMessage)
+            var splitMessages = this.SplitNormalMessage(cutMessage)
                 .Select(message => blockPrefix + message + "```");
             return splitMessages;
         }

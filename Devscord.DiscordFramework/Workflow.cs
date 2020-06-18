@@ -1,5 +1,4 @@
 ﻿using Autofac;
-
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Framework.Commands.Parsing;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
@@ -7,11 +6,8 @@ using Devscord.DiscordFramework.Framework.Commands.Services;
 using Devscord.DiscordFramework.Integration;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Middlewares.Factories;
-
 using Discord.WebSocket;
-
 using Serilog;
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

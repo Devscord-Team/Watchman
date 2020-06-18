@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Devscord.DiscordFramework.Commons;
+﻿using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Watchman.Discord.Areas.Initialization.Services
 {
@@ -13,33 +13,27 @@ namespace Watchman.Discord.Areas.Initialization.Services
 
         public MuteRoleInitService(UsersRolesService usersRolesService, ChannelsService channelsService)
         {
-            _usersRolesService = usersRolesService;
-            _channelsService = channelsService;
+            this._usersRolesService = usersRolesService;
+            this._channelsService = channelsService;
         }
 
         public Task InitForServer(DiscordServerContext server)
         {
-            var changedPermissions = CreateChangedPermissions();
-            var mutedRole = CreateMuteRole(changedPermissions.AllowPermissions);
+            var changedPermissions = this.CreateChangedPermissions();
+            var mutedRole = this.CreateMuteRole(changedPermissions.AllowPermissions);
 
-            var createdRole = SetRoleToServer(server, mutedRole);
-            SetChannelsPermissions(server, createdRole, changedPermissions);
+            var createdRole = this.SetRoleToServer(server, mutedRole);
+            this.SetChannelsPermissions(server, createdRole, changedPermissions);
             return Task.CompletedTask;
         }
 
-        private NewUserRole CreateMuteRole(ICollection<Permission> permissions)
-        {
-            return new NewUserRole(UsersRolesService.MUTED_ROLE_NAME, permissions);
-        }
+        private NewUserRole CreateMuteRole(ICollection<Permission> permissions) => new NewUserRole(UsersRolesService.MUTED_ROLE_NAME, permissions);
 
-        private UserRole SetRoleToServer(DiscordServerContext server, NewUserRole mutedRole)
-        {
-            return _usersRolesService.CreateNewRole(server, mutedRole);
-        }
+        private UserRole SetRoleToServer(DiscordServerContext server, NewUserRole mutedRole) => this._usersRolesService.CreateNewRole(server, mutedRole);
 
         private Task SetChannelsPermissions(DiscordServerContext server, UserRole mutedRole, ChangedPermissions changedPermissions)
         {
-            _channelsService.SetPermissions(server.TextChannels, server, changedPermissions, mutedRole);
+            this._channelsService.SetPermissions(server.TextChannels, server, changedPermissions, mutedRole);
             return Task.CompletedTask;
         }
 

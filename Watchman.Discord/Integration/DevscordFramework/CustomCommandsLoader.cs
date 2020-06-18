@@ -1,9 +1,6 @@
 ﻿using Devscord.DiscordFramework;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
@@ -15,10 +12,7 @@ namespace Watchman.Discord.Integration.DevscordFramework
     {
         private readonly IQueryBus _queryBus;
 
-        public CustomCommandsLoader(IQueryBus queryBus)
-        {
-            this._queryBus = queryBus;
-        }
+        public CustomCommandsLoader(IQueryBus queryBus) => this._queryBus = queryBus;
 
         public async Task<List<CustomCommand>> GetCustomCommands()
         {

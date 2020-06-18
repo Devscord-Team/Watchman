@@ -9,8 +9,8 @@ namespace Watchman.DomainModel.Users
 
         public ProtectionPunishment(ProtectionPunishmentOption option, TimeSpan? time = null)
         {
-            Option = option;
-            Time = time;
+            this.Option = option;
+            this.Time = time;
         }
     }
 }

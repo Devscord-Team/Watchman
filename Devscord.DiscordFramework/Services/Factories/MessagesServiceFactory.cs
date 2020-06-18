@@ -12,18 +12,15 @@ namespace Devscord.DiscordFramework.Services.Factories
         public MessagesServiceFactory(ResponsesService responsesService, MessageSplittingService splittingService, EmbedMessagesService embedMessagesService)
         {
             this._responsesService = responsesService;
-            _splittingService = splittingService;
-            _embedMessagesService = embedMessagesService;
+            this._splittingService = splittingService;
+            this._embedMessagesService = embedMessagesService;
         }
 
-        public MessagesService Create(Contexts contexts)
-        {
-            return this.Create(contexts.Channel.Id);
-        }
+        public MessagesService Create(Contexts contexts) => this.Create(contexts.Channel.Id);
 
         public MessagesService Create(ulong channelId, ulong guildId = 0)
         {
-            return new MessagesService(_responsesService, _splittingService, _embedMessagesService)
+            return new MessagesService(this._responsesService, this._splittingService, this._embedMessagesService)
             {
                 GuildId = guildId,
                 ChannelId = channelId

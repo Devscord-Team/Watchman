@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using Watchman.Common.Models;
-using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Commons.Calculators.Statistics.Splitters
 {

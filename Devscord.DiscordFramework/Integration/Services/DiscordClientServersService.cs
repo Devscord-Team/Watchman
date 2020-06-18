@@ -1,19 +1,19 @@
-﻿using System;
+﻿using Devscord.DiscordFramework.Integration.Services.Interfaces;
 using Devscord.DiscordFramework.Middlewares.Contexts;
+using Devscord.DiscordFramework.Middlewares.Factories;
+using Discord.Rest;
 using Discord.WebSocket;
+using Serilog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Devscord.DiscordFramework.Middlewares.Factories;
-using Discord.Rest;
-using Serilog;
-using Devscord.DiscordFramework.Integration.Services.Interfaces;
 
 namespace Devscord.DiscordFramework.Integration.Services
 {
     internal class DiscordClientServersService : IDiscordClientServersService
     {
-        private DiscordSocketRestClient _restClient => _client.Rest;
+        private DiscordSocketRestClient _restClient => this._client.Rest;
         private readonly DiscordSocketClient _client;
 
         public Func<SocketGuild, Task> BotAddedToServer { get; set; } = x => Task.CompletedTask;
@@ -29,15 +29,12 @@ namespace Devscord.DiscordFramework.Integration.Services
             this._client.Connected += this.BotConnected;
         }
 
-        public async Task<RestGuild> GetGuild(ulong guildId)
-        {
-            return await _restClient.GetGuildAsync(guildId);
-        }
+        public async Task<RestGuild> GetGuild(ulong guildId) => await this._restClient.GetGuildAsync(guildId);
 
         public async Task<IEnumerable<DiscordServerContext>> GetDiscordServers()
         {
             var serverContextFactory = new DiscordServerContextFactory();
-            var guilds = await _restClient.GetGuildsAsync();
+            var guilds = await this._restClient.GetGuildsAsync();
             var serverContexts = guilds.Select(x => serverContextFactory.Create(x));
             return serverContexts;
         }

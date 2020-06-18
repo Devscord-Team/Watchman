@@ -22,7 +22,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             {
                 return false;
             }
-            if (!CompareArgumentsToProperties(request.Arguments.ToList(), template.Properties.ToList()))
+            if (!this.CompareArgumentsToProperties(request.Arguments.ToList(), template.Properties.ToList()))
             {
                 return false;
             }
@@ -38,7 +38,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             }
             foreach (var argument in arguments)
             {
-                var anyIsMatched = properties.Any(property => argument.Name?.ToLowerInvariant() == property.Name.ToLowerInvariant() && IsMatchedPropertyType(argument.Value, property.Type));
+                var anyIsMatched = properties.Any(property => argument.Name?.ToLowerInvariant() == property.Name.ToLowerInvariant() && this.IsMatchedPropertyType(argument.Value, property.Type));
                 if (!anyIsMatched)
                 {
                     return false;
@@ -53,11 +53,11 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             {
                 return false;
             }
-            if (type == BotCommandPropertyType.Time && !_exTime.IsMatch(value))
+            if (type == BotCommandPropertyType.Time && !this._exTime.IsMatch(value))
             {
                 return false;
             }
-            if (type == BotCommandPropertyType.UserMention || type == BotCommandPropertyType.ChannelMention && !_exMention.IsMatch(value))
+            if (type == BotCommandPropertyType.UserMention || type == BotCommandPropertyType.ChannelMention && !this._exMention.IsMatch(value))
             {
                 return false;
             }

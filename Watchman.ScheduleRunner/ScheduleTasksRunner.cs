@@ -24,12 +24,12 @@ namespace Watchman.ScheduleRunner
             var commandType = this._assembly.GetTypes()
                 .FirstOrDefault(x => x.FullName == scheduleTask.CommandName || x.Name == scheduleTask.CommandName);
 
-            if(commandType == null)
+            if (commandType == null)
             {
                 throw new ArgumentException($"Not found {scheduleTask.CommandName} command");
             }
 
-            var instance = (ICommand) Activator.CreateInstance(commandType, scheduleTask.Arguments.ToArray());
+            var instance = (ICommand)Activator.CreateInstance(commandType, scheduleTask.Arguments.ToArray());
             await this._commandBus.ExecuteAsync(instance);
             var setAsExecutedCommand = new SetAsExecutedScheduleTaskCommand(scheduleTask.Id);
             await this._commandBus.ExecuteAsync(setAsExecutedCommand);

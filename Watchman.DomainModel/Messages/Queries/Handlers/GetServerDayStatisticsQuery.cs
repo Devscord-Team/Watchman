@@ -7,9 +7,6 @@ namespace Watchman.DomainModel.Messages.Queries.Handlers
     {
         public ulong ServerId { get; }
 
-        public GetServerDayStatisticsQuery(ulong serverId)
-        {
-            ServerId = serverId;
-        }
+        public GetServerDayStatisticsQuery(ulong serverId) => this.ServerId = serverId;
     }
 }

@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Devscord.DiscordFramework.Commons.Exceptions;
+using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
+using System;
 using System.Globalization;
 using System.Linq;
-using Devscord.DiscordFramework.Commons.Exceptions;
-using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Watchman.Common.Models;
 
 namespace Watchman.Discord.Areas.Commons
@@ -29,7 +29,7 @@ namespace Watchman.Discord.Areas.Commons
         public static TimeRange GetPastTimeRange(this DiscordRequest discordRequest, TimeSpan defaultTime)
         {
             return new TimeRange(
-                start: discordRequest.SentAt - ParseToTimeSpan(discordRequest, defaultTime), 
+                start: discordRequest.SentAt - ParseToTimeSpan(discordRequest, defaultTime),
                 end: discordRequest.SentAt);
         }
 
@@ -52,7 +52,7 @@ namespace Watchman.Discord.Areas.Commons
             }
 
             // huge value will be too big for parsing to DateTime, so I use ushort (instead of int) to be sure that the value isn't too big
-            if (timeAsNumber >= ushort.MaxValue) 
+            if (timeAsNumber >= ushort.MaxValue)
             {
                 throw new TimeIsTooBigException();
             }

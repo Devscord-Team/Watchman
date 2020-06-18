@@ -1,9 +1,6 @@
 ﻿using Autofac;
 using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using Watchman.Integrations.MongoDB;
 
 namespace Watchman.ScheduleRunner.IoC.Modules

@@ -1,13 +1,12 @@
-﻿using Devscord.DiscordFramework.Framework.Commands.Responses;
+﻿using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
+using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
-using Devscord.DiscordFramework.Services;
+using Devscord.DiscordFramework.Services.Factories;
 using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
-using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Common.Models;
 using Watchman.DomainModel.Users;
 
@@ -28,50 +27,47 @@ namespace Watchman.Discord.Areas.Protection.Services
 
         public AntiSpamService(MuteService muteService, MessagesServiceFactory messagesServiceFactory)
         {
-            _muteService = muteService;
-            _messagesServiceFactory = messagesServiceFactory;
+            this._muteService = muteService;
+            this._messagesServiceFactory = messagesServiceFactory;
         }
 
         private readonly List<(ulong AuthorId, DateTime SentAt)> _lastMessages = new List<(ulong, DateTime)>();
         private readonly List<(ulong AuthorId, DateTime WarnedAt)> _warns = new List<(ulong, DateTime)>();
         private readonly List<(ulong AuthorId, DateTime MutedAt)> _mutes = new List<(ulong, DateTime)>();
 
-        public void AddUserMessage(Contexts contexts, DiscordRequest discordRequest)
-        {
-            _lastMessages.Add((contexts.User.Id, discordRequest.SentAt));
-        }
+        public void AddUserMessage(Contexts contexts, DiscordRequest discordRequest) => this._lastMessages.Add((contexts.User.Id, discordRequest.SentAt));
 
         public int CountUserMessagesShorterTime(ulong userId)
         {
-            return _lastMessages
+            return this._lastMessages
                 .Where(x => x.SentAt >= DateTime.UtcNow.AddSeconds(-SHORTER_TIME))
                 .Count(x => x.AuthorId == userId);
         }
 
         public int CountUserMessagesLongerTime(ulong userId)
         {
-            ClearOldMessages();
-            return _lastMessages
+            this.ClearOldMessages();
+            return this._lastMessages
                 .Count(x => x.AuthorId == userId);
         }
 
         public int CountUserWarnsInShortTime(ulong userId)
         {
-            return _warns
+            return this._warns
                 .Where(x => x.AuthorId == userId)
                 .Count(x => x.WarnedAt > DateTime.UtcNow.AddSeconds(-WARNS_SHORT_EXPIRATION));
         }
 
         public int CountUserWarnsInLongTime(ulong userId)
         {
-            ClearOldWarns();
-            return _warns.Count(x => x.AuthorId == userId);
+            this.ClearOldWarns();
+            return this._warns.Count(x => x.AuthorId == userId);
         }
 
         public int CountUserMutesInLongTime(ulong userId)
         {
-            ClearOldMutes();
-            return _mutes.Count(x => x.AuthorId == userId);
+            this.ClearOldMutes();
+            return this._mutes.Count(x => x.AuthorId == userId);
         }
 
         public void SetPunishment(Contexts contexts, ProtectionPunishment punishment)
@@ -84,48 +80,39 @@ namespace Watchman.Discord.Areas.Protection.Services
             Log.Information("Spam recognized! User: {user} on channel: {channel} server: {server}",
                             contexts.User.Name, contexts.Channel.Name, contexts.Server.Name);
 
-            var messagesService = _messagesServiceFactory.Create(contexts);
+            var messagesService = this._messagesServiceFactory.Create(contexts);
             switch (punishment.Option)
             {
                 case ProtectionPunishmentOption.Warn:
-                    _warns.Add((contexts.User.Id, DateTime.UtcNow));
+                    this._warns.Add((contexts.User.Id, DateTime.UtcNow));
                     messagesService.SendResponse(x => x.SpamAlertRecognized(contexts), contexts);
                     break;
 
                 case ProtectionPunishmentOption.Mute:
-                    _mutes.Add((contexts.User.Id, DateTime.UtcNow));
-                    MuteUserForSpam(contexts, FIRST_MUTE_LENGTH).Wait();
+                    this._mutes.Add((contexts.User.Id, DateTime.UtcNow));
+                    this.MuteUserForSpam(contexts, FIRST_MUTE_LENGTH).Wait();
                     messagesService.SendResponse(x => x.SpamAlertUserIsMuted(contexts), contexts);
                     break;
-                    
+
                 case ProtectionPunishmentOption.LongMute:
-                    MuteUserForSpam(contexts, SECOND_MUTE_LENGTH).Wait();
+                    this.MuteUserForSpam(contexts, SECOND_MUTE_LENGTH).Wait();
                     messagesService.SendResponse(x => x.SpamAlertUserIsMutedForLong(contexts), contexts);
                     break;
             }
         }
 
-        private void ClearOldMessages()
-        {
-            _lastMessages.RemoveAll(x => x.SentAt < DateTime.UtcNow.AddSeconds(-LONGER_TIME));
-        }
+        private void ClearOldMessages() => this._lastMessages.RemoveAll(x => x.SentAt < DateTime.UtcNow.AddSeconds(-LONGER_TIME));
 
-        private void ClearOldWarns()
-        {
-            _warns.RemoveAll(x => x.WarnedAt < DateTime.UtcNow.AddSeconds(-WARNS_LONG_EXPIRATION));
-        }
+        private void ClearOldWarns() => this._warns.RemoveAll(x => x.WarnedAt < DateTime.UtcNow.AddSeconds(-WARNS_LONG_EXPIRATION));
 
-        private void ClearOldMutes()
-        {
-            _mutes.RemoveAll(x => x.MutedAt < DateTime.UtcNow.AddSeconds(-MUTES_EXPIRATION));
-        }
+        private void ClearOldMutes() => this._mutes.RemoveAll(x => x.MutedAt < DateTime.UtcNow.AddSeconds(-MUTES_EXPIRATION));
 
         private async Task MuteUserForSpam(Contexts contexts, int lengthInSeconds)
         {
             var timeRange = new TimeRange(DateTime.UtcNow, DateTime.UtcNow.AddSeconds(lengthInSeconds));
             var muteEvent = new MuteEvent(contexts.User.Id, timeRange, "Spam detected (by bot)", contexts.Server.Id);
-            await _muteService.MuteUserOrOverwrite(contexts, muteEvent, contexts.User);
-            _muteService.UnmuteInFuture(contexts, muteEvent, contexts.User);
+            await this._muteService.MuteUserOrOverwrite(contexts, muteEvent, contexts.User);
+            this._muteService.UnmuteInFuture(contexts, muteEvent, contexts.User);
         }
     }
 }

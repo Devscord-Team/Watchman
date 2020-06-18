@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Devscord.DiscordFramework.Commons;
+﻿using Devscord.DiscordFramework.Commons;
+using System.Collections.Generic;
 
 namespace Devscord.DiscordFramework.Middlewares.Contexts
 {

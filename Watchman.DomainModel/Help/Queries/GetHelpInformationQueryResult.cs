@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Watchman.Cqrs;
-using Watchman.DomainModel.Help;
 
 namespace Watchman.DomainModel.Help.Queries
 {
@@ -8,9 +7,6 @@ namespace Watchman.DomainModel.Help.Queries
     {
         public IEnumerable<HelpInformation> HelpInformations { get; }
 
-        public GetHelpInformationQueryResult(IEnumerable<HelpInformation> helpInformations)
-        {
-            this.HelpInformations = helpInformations;
-        }
+        public GetHelpInformationQueryResult(IEnumerable<HelpInformation> helpInformations) => this.HelpInformations = helpInformations;
     }
 }

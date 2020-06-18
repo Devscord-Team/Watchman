@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Watchman.Cqrs;
-using Watchman.DomainModel.Responses.Queries;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Watchman.Cqrs;
 using Watchman.DomainModel.Responses;
+using Watchman.DomainModel.Responses.Queries;
 
 namespace Watchman.Discord.Areas.Responses.Services
 {
@@ -13,10 +11,7 @@ namespace Watchman.Discord.Areas.Responses.Services
         private const int DEFAULT_SERVER_ID = 0;
         private readonly IQueryBus _queryBus;
 
-        public ResponsesGetterService(IQueryBus queryBus)
-        {
-            this._queryBus = queryBus;
-        }
+        public ResponsesGetterService(IQueryBus queryBus) => this._queryBus = queryBus;
 
         public IEnumerable<Response> GetResponsesFromBase()
         {

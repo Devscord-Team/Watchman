@@ -1,9 +1,5 @@
-﻿using Devscord.DiscordFramework.Framework;
-using Discord;
-using System;
+﻿using Discord;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework.Services
 {

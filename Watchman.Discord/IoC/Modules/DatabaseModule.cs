@@ -1,9 +1,6 @@
 ﻿using Autofac;
 using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using Watchman.Integrations.MongoDB;
 
 namespace Watchman.Discord.IoC.Modules
@@ -12,10 +9,7 @@ namespace Watchman.Discord.IoC.Modules
     {
         private readonly DiscordConfiguration configuration;
 
-        public DatabaseModule(DiscordConfiguration configuration)
-        {
-            this.configuration = configuration;
-        }
+        public DatabaseModule(DiscordConfiguration configuration) => this.configuration = configuration;
 
         protected override void Load(ContainerBuilder builder)
         {
@@ -23,7 +17,7 @@ namespace Watchman.Discord.IoC.Modules
                 .GetTypeInfo()
                 .Assembly;
 
-            builder.Register((c, p) => new MongoClient(configuration.MongoDbConnectionString).GetDatabase("devscord"))
+            builder.Register((c, p) => new MongoClient(this.configuration.MongoDbConnectionString).GetDatabase("devscord"))
                 .As<IMongoDatabase>()
                 .InstancePerLifetimeScope();
 

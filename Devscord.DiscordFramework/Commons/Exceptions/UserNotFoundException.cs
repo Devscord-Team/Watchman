@@ -6,9 +6,6 @@ namespace Devscord.DiscordFramework.Commons.Exceptions
     {
         public string Mention { get; }
 
-        public UserNotFoundException(string mention)
-        {
-            this.Mention = mention;
-        }
+        public UserNotFoundException(string mention) => this.Mention = mention;
     }
 }

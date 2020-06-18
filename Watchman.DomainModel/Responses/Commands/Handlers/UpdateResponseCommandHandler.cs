@@ -8,14 +8,11 @@ namespace Watchman.DomainModel.Responses.Commands.Handlers
     {
         private readonly ISessionFactory _sessionFactory;
 
-        public UpdateResponseCommandHandler(ISessionFactory sessionFactory)
-        {
-            this._sessionFactory = sessionFactory;
-        }
+        public UpdateResponseCommandHandler(ISessionFactory sessionFactory) => this._sessionFactory = sessionFactory;
 
         public async Task HandleAsync(UpdateResponseCommand command)
         {
-            using var session = _sessionFactory.Create();
+            using var session = this._sessionFactory.Create();
             var response = session.Get<Response>(command.Id);
             response.SetMessage(command.Message);
             await session.UpdateAsync(response);

@@ -1,8 +1,4 @@
-﻿using Devscord.DiscordFramework.Services;
-using Devscord.DiscordFramework.Services.Factories;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Devscord.DiscordFramework.Services.Factories;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
 
@@ -12,10 +8,7 @@ namespace Watchman.Discord.Integration.Channels.Commands.Handlers
     {
         private readonly MessagesServiceFactory _messagesServiceFactory;
 
-        public SendMessageToChannelCommandHandler(MessagesServiceFactory messagesServiceFactory)
-        {
-            _messagesServiceFactory = messagesServiceFactory;
-        }
+        public SendMessageToChannelCommandHandler(MessagesServiceFactory messagesServiceFactory) => this._messagesServiceFactory = messagesServiceFactory;
 
         public async Task HandleAsync(SendMessageToChannelCommand command)
         {

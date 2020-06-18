@@ -1,21 +1,21 @@
-﻿using Devscord.DiscordFramework.Middlewares.Contexts;
+﻿using Devscord.DiscordFramework.Framework.Commands.Parsing;
+using Devscord.DiscordFramework.Integration.Services.Interfaces;
+using Devscord.DiscordFramework.Middlewares.Contexts;
+using Devscord.DiscordFramework.Middlewares.Factories;
+using Devscord.DiscordFramework.Services.Models;
 using Discord;
+using Discord.Rest;
 using Discord.WebSocket;
+using Serilog;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Devscord.DiscordFramework.Framework.Commands.Parsing;
-using Devscord.DiscordFramework.Middlewares.Factories;
-using Devscord.DiscordFramework.Services.Models;
-using Discord.Rest;
-using Serilog;
-using Devscord.DiscordFramework.Integration.Services.Interfaces;
 
 namespace Devscord.DiscordFramework.Integration.Services
 {
     internal class DiscordClientChannelsService : IDiscordClientChannelsService
     {
-        private DiscordSocketRestClient _restClient => _client.Rest;
+        private DiscordSocketRestClient _restClient => this._client.Rest;
         private readonly DiscordSocketClient _client;
         private readonly IDiscordClientUsersService _discordClientUsersService;
 
@@ -27,13 +27,13 @@ namespace Devscord.DiscordFramework.Integration.Services
 
         public async Task SendDirectMessage(ulong userId, string message)
         {
-            var user = await _discordClientUsersService.GetUser(userId);
+            var user = await this._discordClientUsersService.GetUser(userId);
             await user.SendMessageAsync(message);
         }
 
         public async Task SendDirectEmbedMessage(ulong userId, Embed embed)
         {
-            var user = await _discordClientUsersService.GetUser(userId);
+            var user = await this._discordClientUsersService.GetUser(userId);
             await user.SendMessageAsync(embed: embed);
         }
 
@@ -47,12 +47,12 @@ namespace Devscord.DiscordFramework.Integration.Services
             IChannel channel;
             try
             {
-                channel = await _restClient.GetChannelAsync(channelId);
+                channel = await this._restClient.GetChannelAsync(channelId);
             }
             catch
             {
                 Log.Warning($"RestClient couldn't get channel: {channelId}");
-                channel = _client.GetChannel(channelId);
+                channel = this._client.GetChannel(channelId);
             }
             return channel;
         }

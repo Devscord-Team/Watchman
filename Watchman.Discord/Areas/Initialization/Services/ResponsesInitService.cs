@@ -1,21 +1,16 @@
-﻿using System;
+﻿using Serilog;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Devscord.DiscordFramework.Framework.Commands.Responses.Resources;
-using Devscord.DiscordFramework.Middlewares.Contexts;
-using Serilog;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Responses.Services;
 using Watchman.DomainModel.Responses;
 using Watchman.DomainModel.Responses.Commands;
-using Watchman.DomainModel.Responses.Queries;
 
 namespace Watchman.Discord.Areas.Initialization.Services
 {
     public class ResponsesInitService
-    { 
+    {
         private readonly ICommandBus _commandBus;
         private readonly ResponsesGetterService _responsesGetterService;
 
@@ -27,13 +22,13 @@ namespace Watchman.Discord.Areas.Initialization.Services
 
         public async Task InitNewResponsesFromResources()
         {
-            var responsesInBase = _responsesGetterService.GetResponsesFromBase();
-            var defaultResponses = _responsesGetterService.GetResponsesFromResources();
+            var responsesInBase = this._responsesGetterService.GetResponsesFromBase();
+            var defaultResponses = this._responsesGetterService.GetResponsesFromResources();
             var responsesToAdd = defaultResponses
                 .Where(def => responsesInBase.All(@base => @base.OnEvent != def.OnEvent))
                 .ToList();
 
-            await AddNewResponses(responsesToAdd);
+            await this.AddNewResponses(responsesToAdd);
         }
 
         private async Task AddNewResponses(IReadOnlyCollection<Response> responsesToAdd)
@@ -45,7 +40,7 @@ namespace Watchman.Discord.Areas.Initialization.Services
             }
 
             var command = new AddResponsesCommand(responsesToAdd);
-            await _commandBus.ExecuteAsync(command);
+            await this._commandBus.ExecuteAsync(command);
             Log.Information("Responses initialized");
         }
     }

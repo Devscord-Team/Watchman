@@ -6,7 +6,7 @@
         public string ChannelId { private get; set; }
         public string Message { get; set; }
 
-        public ulong GetGuildId => ulong.Parse(GuildId);
-        public ulong GetChannelId => ulong.Parse(ChannelId);
+        public ulong GetGuildId => ulong.Parse(this.GuildId);
+        public ulong GetChannelId => ulong.Parse(this.ChannelId);
     }
 }

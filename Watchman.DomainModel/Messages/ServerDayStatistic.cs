@@ -15,9 +15,9 @@ namespace Watchman.DomainModel.Messages
 
         public ServerDayStatistic(IReadOnlyCollection<Message> serverMessages, ulong serverId, DateTime date)
         {
-            ServerId = serverId;
-            Date = date;
-            Count = serverMessages.Count;
+            this.ServerId = serverId;
+            this.Date = date;
+            this.Count = serverMessages.Count;
             var channelsMessages = serverMessages.GroupBy(x => x.Channel.Id);
 
             this.ChannelDayStatistics = channelsMessages.Select(x => new ChannelDayStatistic
@@ -27,7 +27,7 @@ namespace Watchman.DomainModel.Messages
             });
         }
 
-        public DateTime GetSplittable() => Date;
+        public DateTime GetSplittable() => this.Date;
     }
 
     public class ChannelDayStatistic

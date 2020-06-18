@@ -22,9 +22,6 @@ namespace Watchman.DomainModel.ScheduleTasks
             this.ExecutionDate = executionDate;
         }
 
-        public void SetAsExecuted()
-        {
-            this.IsExecuted = true;
-        }
+        public void SetAsExecuted() => this.IsExecuted = true;
     }
 }

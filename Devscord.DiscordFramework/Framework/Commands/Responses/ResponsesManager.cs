@@ -1,5 +1,5 @@
-﻿using System;
-using Devscord.DiscordFramework.Middlewares.Contexts;
+﻿using Devscord.DiscordFramework.Middlewares.Contexts;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 
@@ -37,20 +37,11 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("role", role));
         }
 
-        public static string SpamAlertRecognized(this ResponsesService responsesService, Contexts contexts)
-        {
-            return responsesService.ProcessResponse("SpamAlertRecognized", contexts);
-        }
+        public static string SpamAlertRecognized(this ResponsesService responsesService, Contexts contexts) => responsesService.ProcessResponse("SpamAlertRecognized", contexts);
 
-        public static string SpamAlertUserIsMutedForLong(this ResponsesService responsesService, Contexts contexts)
-        {
-            return responsesService.ProcessResponse("SpamAlertUserIsMutedForLong", contexts);
-        }
+        public static string SpamAlertUserIsMutedForLong(this ResponsesService responsesService, Contexts contexts) => responsesService.ProcessResponse("SpamAlertUserIsMutedForLong", contexts);
 
-        public static string SpamAlertUserIsMuted(this ResponsesService responsesService, Contexts contexts)
-        {
-            return responsesService.ProcessResponse("SpamAlertUserIsMuted", contexts);
-        }
+        public static string SpamAlertUserIsMuted(this ResponsesService responsesService, Contexts contexts) => responsesService.ProcessResponse("SpamAlertUserIsMuted", contexts);
 
         public static string NewUserArrived(this ResponsesService responsesService, Contexts contexts)
         {
@@ -65,15 +56,9 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("help", help));
         }
 
-        public static string UserIsNotAdmin(this ResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("UserIsNotAdmin");
-        }
+        public static string UserIsNotAdmin(this ResponsesService responsesService) => responsesService.ProcessResponse("UserIsNotAdmin");
 
-        public static string UserDidntMentionAnyUser(this ResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("UserDidntMentionAnyUser");
-        }
+        public static string UserDidntMentionAnyUser(this ResponsesService responsesService) => responsesService.ProcessResponse("UserDidntMentionAnyUser");
 
         public static string UserNotFound(this ResponsesService responsesService, string userMention)
         {
@@ -107,20 +92,11 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("server", server.Name));
         }
 
-        public static string TimeCannotBeNegative(this ResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("TimeCannotBeNegative");
-        }
+        public static string TimeCannotBeNegative(this ResponsesService responsesService) => responsesService.ProcessResponse("TimeCannotBeNegative");
 
-        public static string TimeIsTooBig(this ResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("TimeIsTooBig");
-        }
+        public static string TimeIsTooBig(this ResponsesService responsesService) => responsesService.ProcessResponse("TimeIsTooBig");
 
-        public static string ReadingHistoryDone(this ResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("ReadingHistoryDone");
-        }
+        public static string ReadingHistoryDone(this ResponsesService responsesService) => responsesService.ProcessResponse("ReadingHistoryDone");
 
         public static string UserDoesntHaveAvatar(this ResponsesService responsesService, UserContext user)
         {
@@ -147,10 +123,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("messagesCount", numberOfMessages.ToString()));
         }
 
-        public static string ServerDoesntHaveAnySafeRoles(this ResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("ServerDoesntHaveAnySafeRoles");
-        }
+        public static string ServerDoesntHaveAnySafeRoles(this ResponsesService responsesService) => responsesService.ProcessResponse("ServerDoesntHaveAnySafeRoles");
 
         public static string AvailableSafeRoles(this ResponsesService responsesService, string rolesLines)
         {
@@ -158,10 +131,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("roles", rolesLines));
         }
 
-        public static string NotEnoughArguments(this ResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("NotEnoughArguments");
-        }
+        public static string NotEnoughArguments(this ResponsesService responsesService) => responsesService.ProcessResponse("NotEnoughArguments");
 
         public static string RoleSettingsChanged(this ResponsesService responsesService, string roleName)
         {
@@ -169,10 +139,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("role", roleName));
         }
 
-        public static string TimeNotSpecified(this ResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("TimeNotSpecified");
-        }
+        public static string TimeNotSpecified(this ResponsesService responsesService) => responsesService.ProcessResponse("TimeNotSpecified");
 
         public static string ResponseAlreadyExists(this ResponsesService responsesService, Contexts contexts, string onEvent)
         {

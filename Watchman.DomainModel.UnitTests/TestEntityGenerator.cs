@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Watchman.Common.Models;
 
 namespace Watchman.DomainModel.UnitTests
@@ -20,7 +19,7 @@ namespace Watchman.DomainModel.UnitTests
             foreach (var dayIndex in Enumerable.Range(0, days))
             {
                 var time = timeRange.Start.AddDays(dayIndex);
-                foreach(var itemIndex in Enumerable.Range(0, itemsPerDay))
+                foreach (var itemIndex in Enumerable.Range(0, itemsPerDay))
                 {
                     var item = new TestEntity();
                     item.SetCreatedAt(time);
@@ -35,7 +34,9 @@ namespace Watchman.DomainModel.UnitTests
             {
                 var result = func.Invoke(dayIndex);
                 if (result != null)
+                {
                     yield return result;
+                }
             }
         }
     }

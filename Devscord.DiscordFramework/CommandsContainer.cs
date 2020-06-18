@@ -12,10 +12,7 @@ namespace Devscord.DiscordFramework
         private Dictionary<ulong, List<CustomCommand>> _customCommandsGroupedByBotCommand;
         private DateTime _lastRefresh;
 
-        public CommandsContainer(ICustomCommandsLoader customCommandsLoader)
-        {
-            this._customCommandsLoader = customCommandsLoader;
-        }
+        public CommandsContainer(ICustomCommandsLoader customCommandsLoader) => this._customCommandsLoader = customCommandsLoader;
 
         public async Task<CustomCommand> GetCommand(DiscordRequest request, Type botCommand, ulong serverId)
         {
@@ -31,7 +28,7 @@ namespace Devscord.DiscordFramework
 
         private async Task TryRefresh()
         {
-            if(this._lastRefresh > DateTime.UtcNow.AddMinutes(-15))
+            if (this._lastRefresh > DateTime.UtcNow.AddMinutes(-15))
             {
                 return;
             }

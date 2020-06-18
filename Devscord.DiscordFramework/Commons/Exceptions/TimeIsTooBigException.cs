@@ -2,7 +2,7 @@
 
 namespace Devscord.DiscordFramework.Commons.Exceptions
 {
-    public class TimeIsTooBigException: Exception
+    public class TimeIsTooBigException : Exception
     {
     }
 }

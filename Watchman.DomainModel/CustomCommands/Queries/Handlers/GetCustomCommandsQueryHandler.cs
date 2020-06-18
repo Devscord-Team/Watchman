@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Watchman.Cqrs;
+﻿using Watchman.Cqrs;
 using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.CustomCommands.Queries.Handlers
@@ -10,10 +7,7 @@ namespace Watchman.DomainModel.CustomCommands.Queries.Handlers
     {
         private readonly ISessionFactory sessionFactory;
 
-        public GetCustomCommandsQueryHandler(ISessionFactory sessionFactory)
-        {
-            this.sessionFactory = sessionFactory;
-        }
+        public GetCustomCommandsQueryHandler(ISessionFactory sessionFactory) => this.sessionFactory = sessionFactory;
 
         public GetCustomCommandsQueryResult Handle(GetCustomCommandsQuery query)
         {

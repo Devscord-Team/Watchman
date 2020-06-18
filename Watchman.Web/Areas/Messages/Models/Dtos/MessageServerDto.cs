@@ -8,9 +8,9 @@
 
         public MessageServerDto(ulong id, string name, MessageServerOwnerDto owner)
         {
-            Id = id;
-            Name = name;
-            Owner = owner;
+            this.Id = id;
+            this.Name = name;
+            this.Owner = owner;
         }
     }
 }

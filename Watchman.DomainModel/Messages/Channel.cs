@@ -7,8 +7,8 @@
 
         public Channel(ulong id, string name)
         {
-            Id = id;
-            Name = name;
+            this.Id = id;
+            this.Name = name;
         }
     }
 

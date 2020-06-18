@@ -1,8 +1,8 @@
-﻿using System;
+﻿using MongoDB.Driver;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MongoDB.Driver;
 
 namespace Watchman.Integrations.MongoDB
 {
@@ -10,30 +10,15 @@ namespace Watchman.Integrations.MongoDB
     {
         private readonly IMongoDatabase _database;
 
-        public Session(IMongoDatabase database)
-        {
-            _database = database;
-        }
+        public Session(IMongoDatabase database) => this._database = database;
 
-        public T Get<T>(Guid id) where T : Entity
-        {
-            return this.Get<T>().FirstOrDefault(x => x.Id == id);
-        }
+        public T Get<T>(Guid id) where T : Entity => this.Get<T>().FirstOrDefault(x => x.Id == id);
 
-        public IQueryable<T> Get<T>() where T : Entity
-        {
-            return this.GetCollection<T>().AsQueryable();
-        }
+        public IQueryable<T> Get<T>() where T : Entity => this.GetCollection<T>().AsQueryable();
 
-        public async Task AddAsync<T>(T entity) where T : Entity
-        {
-            await this.GetCollection<T>().InsertOneAsync(entity);
-        }
+        public async Task AddAsync<T>(T entity) where T : Entity => await this.GetCollection<T>().InsertOneAsync(entity);
 
-        public async Task AddAsync<T>(IEnumerable<T> entities) where T : Entity
-        {
-            await this.GetCollection<T>().InsertManyAsync(entities);
-        }
+        public async Task AddAsync<T>(IEnumerable<T> entities) where T : Entity => await this.GetCollection<T>().InsertManyAsync(entities);
 
         public async Task AddOrUpdateAsync<T>(T entity) where T : Entity
         {
@@ -47,15 +32,9 @@ namespace Watchman.Integrations.MongoDB
             }
         }
 
-        public async Task UpdateAsync<T>(T entity) where T : Entity
-        {
-            await this.GetCollection<T>().ReplaceOneAsync(x => x.Id == entity.Id, entity);
-        }
+        public async Task UpdateAsync<T>(T entity) where T : Entity => await this.GetCollection<T>().ReplaceOneAsync(x => x.Id == entity.Id, entity);
 
-        public async Task DeleteAsync<T>(T entity) where T : Entity
-        {
-            await this.GetCollection<T>().DeleteOneAsync(x => x.Id == entity.Id);
-        }
+        public async Task DeleteAsync<T>(T entity) where T : Entity => await this.GetCollection<T>().DeleteOneAsync(x => x.Id == entity.Id);
 
         public void SaveChanges()
         {
@@ -67,9 +46,6 @@ namespace Watchman.Integrations.MongoDB
             //use on database change
         }
 
-        private IMongoCollection<T> GetCollection<T>() where T : Entity
-        {
-            return _database.GetCollection<T>($"{typeof(T).Name}s");
-        }
+        private IMongoCollection<T> GetCollection<T>() where T : Entity => this._database.GetCollection<T>($"{typeof(T).Name}s");
     }
 }

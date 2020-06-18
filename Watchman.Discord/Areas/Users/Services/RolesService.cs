@@ -15,7 +15,7 @@ namespace Watchman.Discord.Areas.Users.Services
         public RolesService(UsersService usersService, UsersRolesService usersRolesService)
         {
             this._usersService = usersService;
-            _usersRolesService = usersRolesService;
+            this._usersRolesService = usersRolesService;
         }
 
         public void AddRoleToUser(IEnumerable<Role> safeRoles, MessagesService messagesService, Contexts contexts, string commandRole)
@@ -31,8 +31,8 @@ namespace Watchman.Discord.Areas.Users.Services
                 messagesService.SendResponse(x => x.RoleIsInUserAlready(contexts, commandRole), contexts);
                 return;
             }
-            var serverRole = _usersRolesService.GetRoleByName(commandRole, contexts.Server);
-            _usersService.AddRole(serverRole, contexts.User, contexts.Server).Wait();
+            var serverRole = this._usersRolesService.GetRoleByName(commandRole, contexts.Server);
+            this._usersService.AddRole(serverRole, contexts.User, contexts.Server).Wait();
             messagesService.SendResponse(x => x.RoleAddedToUser(contexts, commandRole), contexts);
         }
 
@@ -49,8 +49,8 @@ namespace Watchman.Discord.Areas.Users.Services
                 messagesService.SendResponse(x => x.RoleNotFoundInUser(contexts, commandRole), contexts);
                 return;
             }
-            var serverRole = _usersRolesService.GetRoleByName(commandRole, contexts.Server);
-            _usersService.RemoveRole(serverRole, contexts.User, contexts.Server).Wait();
+            var serverRole = this._usersRolesService.GetRoleByName(commandRole, contexts.Server);
+            this._usersService.RemoveRole(serverRole, contexts.User, contexts.Server).Wait();
             messagesService.SendResponse(x => x.RoleRemovedFromUser(contexts, commandRole), contexts);
         }
     }

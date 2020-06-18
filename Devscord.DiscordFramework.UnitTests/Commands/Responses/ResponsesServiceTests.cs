@@ -18,7 +18,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.Responses
             var result = fields.Count();
 
             //Assert
-            Assert.That(result, Is.EqualTo(2)); 
+            Assert.That(result, Is.EqualTo(2));
         }
     }
 }

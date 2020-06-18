@@ -6,14 +6,8 @@ namespace Watchman.Integrations.MongoDB
     {
         private readonly IMongoDatabase _database;
 
-        public SessionFactory(IMongoDatabase database)
-        {
-            _database = database;
-        }
+        public SessionFactory(IMongoDatabase database) => this._database = database;
 
-        public ISession Create()
-        {
-            return new Session(_database);
-        }
+        public ISession Create() => new Session(this._database);
     }
 }

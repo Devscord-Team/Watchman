@@ -1,7 +1,7 @@
-﻿using System.Threading.Tasks;
-using Devscord.DiscordFramework.Framework.Commands.Responses;
+﻿using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
+using System.Threading.Tasks;
 
 namespace Watchman.Discord.Areas.Users.Services
 {
@@ -9,10 +9,7 @@ namespace Watchman.Discord.Areas.Users.Services
     {
         private readonly MessagesServiceFactory _messagesServiceFactory;
 
-        public WelcomeUserService(MessagesServiceFactory messagesServiceFactory)
-        {
-            _messagesServiceFactory = messagesServiceFactory;
-        }
+        public WelcomeUserService(MessagesServiceFactory messagesServiceFactory) => this._messagesServiceFactory = messagesServiceFactory;
 
         public Task WelcomeUser(Contexts contexts)
         {
@@ -21,7 +18,7 @@ namespace Watchman.Discord.Areas.Users.Services
                 return Task.CompletedTask;
             }
 
-            var messagesService = _messagesServiceFactory.Create(contexts);
+            var messagesService = this._messagesServiceFactory.Create(contexts);
             messagesService.SendResponse(x => x.NewUserArrived(contexts), contexts);
             return Task.CompletedTask;
         }

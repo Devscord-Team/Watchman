@@ -17,11 +17,11 @@ namespace Watchman.Web.Areas.Messages.Models.Dtos
 
         public MessageDto(Message message)
         {
-            Content = message.Content;
-            User = new MessageUserDto(message.Author.Id, message.Author.Name);
-            Channel = new MessageChannelDto(message.Channel.Id, message.Channel.Name);
-            Server = new MessageServerDto(message.Server.Id, message.Server.Name, new MessageServerOwnerDto(message.Server.Owner.Id, message.Server.Owner.Name));
-            SentAt = message.SentAt;
+            this.Content = message.Content;
+            this.User = new MessageUserDto(message.Author.Id, message.Author.Name);
+            this.Channel = new MessageChannelDto(message.Channel.Id, message.Channel.Name);
+            this.Server = new MessageServerDto(message.Server.Id, message.Server.Name, new MessageServerOwnerDto(message.Server.Owner.Id, message.Server.Owner.Name));
+            this.SentAt = message.SentAt;
         }
     }
 }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Watchman.Common.Models;
+﻿using Watchman.Common.Models;
 
 namespace Watchman.DomainModel.Messages.Services
 {
@@ -12,8 +9,8 @@ namespace Watchman.DomainModel.Messages.Services
 
         public PeriodStatistic(TimeRange timeRange, int count)
         {
-            TimeRange = timeRange;
-            Count = count;
+            this.TimeRange = timeRange;
+            this.Count = count;
         }
     }
 }

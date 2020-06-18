@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Commons.Calculators.Statistics;
 

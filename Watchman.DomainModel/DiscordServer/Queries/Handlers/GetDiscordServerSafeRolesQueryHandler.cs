@@ -8,17 +8,14 @@ namespace Watchman.DomainModel.DiscordServer.Queries.Handlers
     {
         private readonly ISessionFactory _sessionFactory;
 
-        public GetDiscordServerSafeRolesQueryHandler(ISessionFactory sessionFactory)
-        {
-            _sessionFactory = sessionFactory;
-        }
+        public GetDiscordServerSafeRolesQueryHandler(ISessionFactory sessionFactory) => this._sessionFactory = sessionFactory;
 
         public GetDiscordServerSafeRolesQueryResult Handle(GetDiscordServerSafeRolesQuery query)
         {
-            var session = _sessionFactory.Create();
+            var session = this._sessionFactory.Create();
             var safeRoles = session.Get<Role>()
                 .Where(x => x.ServerId == query.ServerId);
-            
+
             return new GetDiscordServerSafeRolesQueryResult(safeRoles);
         }
     }

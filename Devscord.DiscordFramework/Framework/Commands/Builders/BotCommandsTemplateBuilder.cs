@@ -11,15 +11,12 @@ namespace Devscord.DiscordFramework.Framework.Commands.Builders
     {
         public BotCommandTemplate GetCommandTemplate(Type commandType)
         {
-            var properties = GetBotCommandProperties(commandType);
+            var properties = this.GetBotCommandProperties(commandType);
             var template = new BotCommandTemplate(commandType.Name, properties);
             return template;
         }
 
-        private IEnumerable<BotCommandProperty> GetBotCommandProperties(Type commandType)
-        {
-            return commandType.GetProperties().Select(x => this.GetBotCommandProperty(x));
-        }
+        private IEnumerable<BotCommandProperty> GetBotCommandProperties(Type commandType) => commandType.GetProperties().Select(x => this.GetBotCommandProperty(x));
 
         private BotCommandProperty GetBotCommandProperty(PropertyInfo commandProperty)
         {

@@ -14,11 +14,11 @@ namespace Watchman.Web.Areas.Helps.Models.Dtos
 
         public HelpInformationDto(HelpInformation helpInformation)
         {
-            Name = helpInformation.Names.First();
-            MethodFullName = helpInformation.MethodFullName;
-            Arguments = helpInformation.ArgumentInfos.Select(x => new ArgumentInfoDto(x));
-            Descriptions = helpInformation.Descriptions.Select(x => new DescriptionDto(x));
-            IsDefault = helpInformation.IsDefault;
+            this.Name = helpInformation.Names.First();
+            this.MethodFullName = helpInformation.MethodFullName;
+            this.Arguments = helpInformation.ArgumentInfos.Select(x => new ArgumentInfoDto(x));
+            this.Descriptions = helpInformation.Descriptions.Select(x => new DescriptionDto(x));
+            this.IsDefault = helpInformation.IsDefault;
         }
     }
 }

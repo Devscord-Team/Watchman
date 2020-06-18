@@ -1,5 +1,4 @@
 ﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
-
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -17,9 +16,6 @@ namespace Devscord.DiscordFramework
             this.Methods = methods ?? this.GetMethods(controller);
         }
 
-        private IEnumerable<MethodInfo> GetMethods(IController controller)
-        {
-            return controller.GetType().GetMethods().ToList();
-        }
+        private IEnumerable<MethodInfo> GetMethods(IController controller) => controller.GetType().GetMethods().ToList();
     }
 }

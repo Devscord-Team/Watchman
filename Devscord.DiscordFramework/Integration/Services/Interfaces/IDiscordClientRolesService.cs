@@ -1,8 +1,8 @@
-﻿using Devscord.DiscordFramework.Middlewares.Contexts;
+﻿using Devscord.DiscordFramework.Commons;
+using Devscord.DiscordFramework.Middlewares.Contexts;
 using Discord.WebSocket;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Devscord.DiscordFramework.Commons;
 
 namespace Devscord.DiscordFramework.Integration.Services.Interfaces
 {

@@ -6,9 +6,6 @@ namespace Watchman.DomainModel.Users.Commands
     {
         public MuteEvent MuteEvent { get; }
 
-        public AddMuteEventCommand(MuteEvent muteEvent)
-        {
-            MuteEvent = muteEvent;
-        }
+        public AddMuteEventCommand(MuteEvent muteEvent) => this.MuteEvent = muteEvent;
     }
 }
