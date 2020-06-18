@@ -12,4 +12,4 @@ namespace Watchman.Web.Areas.LogsViewer.Models.Dtos
         public string MessageTemplate { get; set; }
         public Dictionary<string, string> Properties { get; set; }
     }
-}
+} 
