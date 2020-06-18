@@ -20,13 +20,18 @@ namespace Watchman.Discord.Areas.Responses.Services
 
         public async Task PrintResponses(string commandArgument, Contexts contexts)
         {
-            var sendMessages = commandArgument switch
+            if (commandArgument == "default")
             {
-                "default" => async () => await this._embedMessageSplittingService.SendEmbedSplitMessage("Domyślne responses:", DESCRIPTION, this.GetDefaultResponses(), contexts),
-                "custom" => async () => await this._embedMessageSplittingService.SendEmbedSplitMessage("Nadpisane responses:", DESCRIPTION, this.GetCustomResponses(contexts.Server.Id), contexts),
-                _ => async () => await this._embedMessageSplittingService.SendEmbedSplitMessage("Wszystkie responses:", DESCRIPTION, this.GetAllResponses(), contexts),
-            };
-            await sendMessages();
+                await this._embedMessageSplittingService.SendEmbedSplitMessage("Domyślne responses:", DESCRIPTION, this.GetDefaultResponses(), contexts);
+            }
+            else if (commandArgument == "custom")
+            {
+                await this._embedMessageSplittingService.SendEmbedSplitMessage("Nadpisane responses:", DESCRIPTION, this.GetCustomResponses(contexts.Server.Id), contexts);
+            }
+            else
+            {
+                await this._embedMessageSplittingService.SendEmbedSplitMessage("Wszystkie responses:", DESCRIPTION, this.GetAllResponses(), contexts);
+            }
         }
 
         private IEnumerable<KeyValuePair<string, string>> GetDefaultResponses()
