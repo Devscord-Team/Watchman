@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,15 +45,30 @@ namespace Watchman.Web.Areas.LogsViewer.Services
             {
                 return false;
             }
-            if (!string.IsNullOrEmpty(request.Level) && request.Level != log.Level)
+            if(request.AcceptedLevels != null)
+            {
+                if (request.AcceptedLevels.All(x => x != log.Level))
+                    return false;
+            }
+            if(!string.IsNullOrEmpty(request.Template) && !log.MessageTemplate.Contains(request.Template))
             {
                 return false;
             }
-            foreach (var searchPhrase in request.SearchPhrases)
+            if (request.SearchPhrases != null)
             {
-                if (log.Properties.All(x => !x.Value.Contains(searchPhrase)))
+                if (log.Properties == null || !log.Properties.Any())
+                {
                     return false;
+                }
+                foreach (var searchPhrase in request.SearchPhrases.Where(x => !string.IsNullOrWhiteSpace(x)))
+                {
+                    if (log.Properties.All(x => !x.Value.Contains(searchPhrase)))
+                    {
+                        return false;
+                    }
+                }
             }
+
             return true;
         }
     }
