@@ -12,15 +12,17 @@ namespace Watchman.Web.Areas.LogsViewer.Controllers
     {
         private readonly LogsService logsService;
 
-        public LogsController(LogsService logsService)
-        {
-            this.logsService = logsService;
-        }
+        public LogsController(LogsService logsService) => this.logsService = logsService;
 
         [HttpGet]
-        public IEnumerable<LogDto> GetLogs()
+        public IEnumerable<LogDto> GetLogs([FromQuery]GetLogsRequest request = null)
         {
-            return this.logsService.GetLogs();
+            if (request.Limit > 200)
+            {
+                request.Limit = 200;
+            }
+
+            return this.logsService.GetLogs(request);
         }
     }
 }
