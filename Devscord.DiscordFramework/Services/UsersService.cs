@@ -1,11 +1,12 @@
-﻿using Devscord.DiscordFramework.Integration;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Devscord.DiscordFramework.Integration;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Middlewares.Factories;
 using Discord.Rest;
 using Discord.WebSocket;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework.Services
 {
@@ -13,15 +14,15 @@ namespace Devscord.DiscordFramework.Services
     {
         public Task AddRole(UserRole role, UserContext user, DiscordServerContext server)
         {
-            var socketUser = this.GetRestUser(user, server);
-            var socketRole = this.GetRole(role.Id, server);
+            var socketUser = GetRestUser(user, server);
+            var socketRole = GetRole(role.Id, server);
             return socketUser.AddRoleAsync(socketRole);
         }
 
         public Task RemoveRole(UserRole role, UserContext user, DiscordServerContext server)
         {
-            var socketUser = this.GetRestUser(user, server);
-            var socketRole = this.GetRole(role.Id, server);
+            var socketUser = GetRestUser(user, server);
+            var socketRole = GetRole(role.Id, server);
             return socketUser.RemoveRoleAsync(socketRole);
         }
 
@@ -36,15 +37,29 @@ namespace Devscord.DiscordFramework.Services
 
         public UserContext GetUserByMention(DiscordServerContext server, string mention)
         {
-            var user = this.GetUsers(server)
+            var user = GetUsers(server)
                 .FirstOrDefault(x => x.Mention == mention);
             return user;
         }
 
-        public UserContext GetUserById(DiscordServerContext server, ulong userId) => this.GetUsers(server).FirstOrDefault(x => x.Id == userId);
+        public UserContext GetUserById(DiscordServerContext server, ulong userId)
+        {
+            return GetUsers(server).FirstOrDefault(x => x.Id == userId);
+        }
 
-        private RestGuildUser GetRestUser(UserContext user, DiscordServerContext server) => Server.GetGuildUser(user.Id, server.Id).Result;
+        public DateTime? GetUserJoinedDateTime(ulong userId, ulong serverId)
+        {
+            return Server.GetGuildUser(userId, serverId).Result?.JoinedAt?.DateTime;
+        }
 
-        private SocketRole GetRole(ulong roleId, DiscordServerContext server) => Server.GetSocketRoles(server.Id).First(x => x.Id == roleId);
+        private RestGuildUser GetRestUser(UserContext user, DiscordServerContext server)
+        {
+            return Server.GetGuildUser(user.Id, server.Id).Result;
+        }
+
+        private SocketRole GetRole(ulong roleId, DiscordServerContext server)
+        {
+            return Server.GetSocketRoles(server.Id).First(x => x.Id == roleId);
+        }
     }
 }
