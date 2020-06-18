@@ -3,7 +3,6 @@ using System;
 
 namespace Watchman.Web.ServiceProviders
 {
-
     public class AutofacServiceProvider : IServiceProvider
     {
         private readonly IContainer container;
