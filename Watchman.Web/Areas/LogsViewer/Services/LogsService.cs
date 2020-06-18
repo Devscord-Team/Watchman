@@ -62,13 +62,12 @@ namespace Watchman.Web.Areas.LogsViewer.Services
                 }
                 foreach (var searchPhrase in request.SearchPhrases.Where(x => !string.IsNullOrWhiteSpace(x)))
                 {
-                    if (log.Properties.All(x => !x.Value.Contains(searchPhrase)))
+                    if (log.Properties.All(x => !x.Key.Contains(searchPhrase) && !x.Value.Contains(searchPhrase)))
                     {
                         return false;
                     }
                 }
             }
-
             return true;
         }
     }

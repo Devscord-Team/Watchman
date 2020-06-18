@@ -22,7 +22,7 @@ namespace Watchman.Web.Areas.LogsViewer.Controllers
                 request.Limit = 200;
             }
 
-            return this.logsService.GetLogs(request).Take(request.Limit ?? 20);
+            return this.logsService.GetLogs(request).Take(request.Limit);
         }
     }
 }
