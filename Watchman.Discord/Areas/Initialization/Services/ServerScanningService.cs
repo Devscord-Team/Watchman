@@ -33,7 +33,7 @@ namespace Watchman.Discord.Areas.Initialization.Services
             var messages = ReadMessages(server, channel, limit: 1);
             if (messages.Count == 0 || LastMessageIsOlderThanStartTime(messages, startTime.Value))
             {
-                Log.Information($"Channel: {channel.Name} has no new messages");
+                Log.Information("Channel: {channel} has no new messages", channel.Name);
                 return;
             }
 
@@ -56,7 +56,7 @@ namespace Watchman.Discord.Areas.Initialization.Services
 
             } while (messages.Count == LIMIT);
 
-            Log.Information($"Channel: {channel.Name} read and saved");
+            Log.Information("Channel: {channel} read and saved", channel.Name);
         }
 
         private async Task SaveMessages(IEnumerable<Message> messages, ulong channelId)

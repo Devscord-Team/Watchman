@@ -2,6 +2,8 @@
 using Serilog;
 using Serilog.Configuration;
 using Serilog.Events;
+using Serilog.Formatting.Compact;
+using Serilog.Formatting.Json;
 using System.Diagnostics;
 
 namespace Watchman.Integrations.Logging
@@ -18,7 +20,7 @@ namespace Watchman.Integrations.Logging
                 .Enrich.WithThreadId()
                 .Enrich.WithMachineName()
                 .Enrich.WithEnvironmentUserName()
-                .WriteTo.RollingFile("logs/log-{Date}.log")
+                .WriteTo.RollingFile(new JsonFormatter(closingDelimiter: ","), "logs/log-{Date}.json")
                 .WriteTo.Console(
                     restrictedToMinimumLevel: LogEventLevel.Verbose,
                     outputTemplate: "[{Timestamp:dd-MM-yyyy} - {Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")

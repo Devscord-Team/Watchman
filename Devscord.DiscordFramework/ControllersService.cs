@@ -7,6 +7,7 @@ using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Framework.Commands.Services;
 using Devscord.DiscordFramework.Integration;
 using Devscord.DiscordFramework.Middlewares.Contexts;
+using Newtonsoft.Json;
 using Serilog;
 using Serilog.Context;
 using System;
@@ -34,16 +35,18 @@ namespace Devscord.DiscordFramework
             this._commandsContainer = commandsContainer;
         }
 
-        public async Task Run(DiscordRequest request, Contexts contexts)
+        public async Task Run(ulong messageId, DiscordRequest request, Contexts contexts)
         {
             if (this._controllersContainer == null)
             {
                 this.LoadControllers();
             }
 
-            using (LogContext.PushProperty("MessageId", Guid.NewGuid()))
-            using (LogContext.PushProperty("Request", request))
-            using (LogContext.PushProperty("Contexts", contexts))
+            using (LogContext.PushProperty("MessageId", messageId))
+            using (LogContext.PushProperty("Request", JsonConvert.SerializeObject(request)))
+            using (LogContext.PushProperty("SendByUserId", contexts.User.Id))
+            using (LogContext.PushProperty("OnChannelId", contexts.Channel.Id))
+            using (LogContext.PushProperty("OnServerId", contexts.Server.Id))
             {
                 var readAlwaysMethods = this._controllersContainer.WithReadAlways;
                 var readAlwaysTask = Task.Run(() => RunMethods(request, contexts, readAlwaysMethods, true));

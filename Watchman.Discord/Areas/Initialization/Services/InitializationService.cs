@@ -54,7 +54,7 @@ namespace Watchman.Discord.Areas.Initialization.Services
                 await _muteRoleInitService.InitForServer(server);
             }
 
-            Log.Information($"Mute role initialized: {server.Name}");
+            Log.Information("Mute role initialized: {server}", server.Name);
         }
 
         private async Task ReadServerMessagesHistory(DiscordServerContext server, DateTime lastInitDate)
@@ -64,7 +64,7 @@ namespace Watchman.Discord.Areas.Initialization.Services
                 await _serverScanningService.ScanChannelHistory(server, textChannel, lastInitDate);
             }
 
-            Log.Information($"Read messages history: {server.Name}");
+            Log.Information("Read messages history: {server}", server.Name);
         }
 
         private DateTime GetLastInitDate(DiscordServerContext server)
