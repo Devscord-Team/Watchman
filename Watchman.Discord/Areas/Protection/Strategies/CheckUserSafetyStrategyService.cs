@@ -29,17 +29,14 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             base.StartCyclicCaching();
         }
 
-        public bool IsUserSafe(ulong userId, ulong serverId)
-        {
-            return this._safeUsersOnServers.TryGetValue(serverId, out var serverUsers) && serverUsers.SafeUsers.Contains(userId);
-        }
+        public bool IsUserSafe(ulong userId, ulong serverId) => this._safeUsersOnServers.TryGetValue(serverId, out var serverUsers) && serverUsers.SafeUsers.Contains(userId);
 
         protected sealed override async Task ReloadCache()
         {
             Log.Information("Reloading cache....");
 
-            UpdateConfiguration();
-            await UpdateMessages();
+            this.UpdateConfiguration();
+            await this.UpdateMessages();
 
             Log.Information("Cache reloaded");
         }
