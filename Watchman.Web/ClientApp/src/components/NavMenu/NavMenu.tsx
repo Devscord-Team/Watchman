@@ -42,33 +42,38 @@ export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean }
                                     </NavLink>
                                 </NavItem>
                                 <NavItem>
-                                    <NavLink tag={Link} className="text-dark" to="/send-message-on-channel">
+                                    <NavLink tag={Link} className="text-dark" to="/help-configuration">
                                         Help configuration
                                     </NavLink>
                                 </NavItem>
                                 <NavItem>
-                                    <NavLink tag={Link} className="text-dark" to="/send-message-on-channel">
+                                    <NavLink tag={Link} className="text-dark" to="/server-settings">
                                         Server settings
                                     </NavLink>
                                 </NavItem>
                                 <NavItem>
-                                    <NavLink tag={Link} className="text-dark" to="/send-message-on-channel">
+                                    <NavLink tag={Link} className="text-dark" to="/messages">
                                         Messages
                                     </NavLink>
                                 </NavItem>
                                 <NavItem>
-                                    <NavLink tag={Link} className="text-dark" to="/send-message-on-channel">
+                                    <NavLink tag={Link} className="text-dark" to="/statistics">
                                         Statistics
                                     </NavLink>
                                 </NavItem>
                                 <NavItem>
-                                    <NavLink tag={Link} className="text-dark" to="/send-message-on-channel">
+                                    <NavLink tag={Link} className="text-dark" to="/safe-roles">
                                         Safe roles
                                     </NavLink>
                                 </NavItem>
                                 <NavItem>
-                                    <NavLink tag={Link} className="text-dark" to="/send-message-on-channel">
+                                    <NavLink tag={Link} className="text-dark" to="/antispam-configuration">
                                         Antispam configuration
+                                    </NavLink>
+                                </NavItem>
+                                <NavItem>
+                                    <NavLink tag={Link} className="text-dark" to="/logs-viewer">
+                                        Logs viewer
                                     </NavLink>
                                 </NavItem>
                             </ul>

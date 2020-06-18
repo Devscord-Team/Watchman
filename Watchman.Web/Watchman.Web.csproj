@@ -41,7 +41,6 @@
     <Folder Include="Areas\Helps\Services\" />
     <Folder Include="Areas\Responses\Services\" />
     <Folder Include="Areas\Statistics\Services\" />
-    <Folder Include="logs\" />
   </ItemGroup>
 
   <ItemGroup>
