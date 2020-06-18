@@ -27,41 +27,31 @@ namespace Watchman.Web.Areas.LogsViewer.Services
                 var normalizedContent = "[" + content.Trim(",[]".ToCharArray()) + "]";
                 var logs = JsonConvert.DeserializeObject<IEnumerable<LogDto>>(normalizedContent);
 
-                foreach (var log in logs.Where(x => !this.ShouldSkip(request, x)))
+                foreach (var log in logs.Where(x => this.ShouldReturn(request, x)))
                 {
                     yield return log;
                 }
             }
         }
 
-        private bool ShouldSkip(GetLogsRequest request, LogDto log)
+        private bool ShouldReturn(GetLogsRequest request, LogDto log)
         {
             if (request.FromTime.HasValue && request.FromTime < log.Timestamp)
             {
                 return false;
             }
-
             if (request.ToTime.HasValue && request.ToTime > log.Timestamp)
             {
                 return false;
             }
-
-            if (request.Level != log.Level)
+            if (!string.IsNullOrEmpty(request.Level) && request.Level != log.Level)
             {
                 return false;
             }
-
-            foreach (var requirement in request.PropertiesRequirements)
+            foreach (var searchPhrase in request.SearchPhrases)
             {
-                if (!log.Properties.ContainsKey(requirement.Key))
-                {
+                if (log.Properties.All(x => !x.Value.Contains(searchPhrase)))
                     return false;
-                }
-
-                if (log.Properties[requirement.Key] != requirement.Value)
-                {
-                    return false;
-                }
             }
             return true;
         }

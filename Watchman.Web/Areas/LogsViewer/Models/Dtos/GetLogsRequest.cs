@@ -9,6 +9,6 @@ namespace Watchman.Web.Areas.LogsViewer.Models.Dtos
         public DateTime? FromTime { get; set; }
         public DateTime? ToTime { get; set; }
         public string Level { get; set; }
-        public IEnumerable<KeyValuePair<string, string>> PropertiesRequirements { get; set; }
+        public IEnumerable<string> SearchPhrases { get; set; }
     }
 }
