@@ -11,6 +11,7 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Linq;
 using System.Net.Http;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace Watchman.Web
 {
@@ -23,19 +24,31 @@ namespace Watchman.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddDiscord(x =>
-                {
-                    x.AppId = this.Configuration["Discord:AppId"];
-                    x.AppSecret = this.Configuration["Discord:AppSecret"];
-                    x.Scope.Add("guilds");
-                    x.Scope.Add("identify");
-                });
-
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
             });
+
+            services.AddAuthentication()
+                .AddDiscord(x =>
+                {
+                    
+                    x.ClientId = this.Configuration["Discord:AppId"];
+                    x.ClientSecret = this.Configuration["Discord:AppSecret"];
+
+                    x.Validate();
+                    x.Scope.Add("email");
+
+                    x.Validate();
+                    x.Events.OnCreatingTicket = ctx =>
+                    {
+                        return Task.CompletedTask;
+                    };
+                    x.Events.OnRemoteFailure = ctx =>
+                    {
+                        return Task.CompletedTask;
+                    };
+                });
 
             services.AddControllersWithViews();
             // In production, the React files will be served from this directory
@@ -59,20 +72,19 @@ namespace Watchman.Web
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
-            app.UseSpaStaticFiles();
-
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
 
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseSpaStaticFiles();
+
             app.UseRouting();
 
             app.UseAuthentication();
-            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
@@ -80,6 +92,7 @@ namespace Watchman.Web
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
             });
+
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp";
