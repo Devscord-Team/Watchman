@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -7,6 +8,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Linq;
+using System.Net.Http;
+using System.Text.Json;
 
 namespace Watchman.Web
 {
@@ -20,12 +24,12 @@ namespace Watchman.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(o => o.LoginPath = new PathString("/Login"))
                 .AddDiscord(x =>
                 {
                     x.AppId = this.Configuration["Discord:AppId"];
                     x.AppSecret = this.Configuration["Discord:AppSecret"];
                     x.Scope.Add("guilds");
+                    x.Scope.Add("identify");
                 });
 
             services.AddSwaggerGen(c =>
