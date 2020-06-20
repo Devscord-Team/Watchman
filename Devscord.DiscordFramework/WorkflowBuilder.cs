@@ -21,16 +21,20 @@ namespace Devscord.DiscordFramework
         private readonly string _token;
         private readonly IComponentContext _context;
         private readonly Workflow _workflow;
+        private readonly ReactionsController _reactionsController;
 
         private WorkflowBuilder(string token, IComponentContext context, Assembly botAssembly)
         {
-            _client = new DiscordSocketClient(new DiscordSocketConfig
+            this._client = new DiscordSocketClient(new DiscordSocketConfig
             {
                 TotalShards = 1
             });
             this._token = token;
             this._context = context;
             this._workflow = new Workflow(botAssembly, context);
+            this._reactionsController = new ReactionsController();
+            this._client.ReactionAdded += (userMessage, socketMessageChannel, socketReaction) => this._reactionsController.OnReactionAddedEvent(socketReaction);
+            this._client.ReactionRemoved += (userMessage, socketMessageChannel, socketReaction) => this._reactionsController.OnReactionRemovedEvent(socketReaction);
         }
 
         public static WorkflowBuilder Create(string token, IComponentContext context, Assembly botAssembly) => new WorkflowBuilder(token, context, botAssembly);
