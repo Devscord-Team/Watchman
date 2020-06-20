@@ -4,7 +4,7 @@ using Discord.WebSocket;
 
 namespace Devscord.DiscordFramework
 {
-    public class ReactionInformation
+    public class ReactionContext
     {
         public ISocketMessageChannel Channel { get; set; }
         public IEmote Emote { get; set; }

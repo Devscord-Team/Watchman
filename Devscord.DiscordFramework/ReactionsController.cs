@@ -19,9 +19,9 @@ namespace Devscord.DiscordFramework
             return Task.Run(() => Server.UserRemovedReaction(GetReactionInformation(reaction)));
         }
 
-        private ReactionInformation GetReactionInformation(SocketReaction reaction)
+        private ReactionContext GetReactionInformation(SocketReaction reaction)
         {
-            return new ReactionInformation
+            return new ReactionContext
             {
                 Channel = reaction.Channel,
                 Emote = reaction.Emote,

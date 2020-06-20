@@ -17,8 +17,8 @@ namespace Devscord.DiscordFramework.Integration
 
         internal static Func<SocketGuildUser, Task> UserJoined { get; set; }
         internal static Func<SocketGuild, Task> BotAddedToServer { get; set; }
-        internal static Action<ReactionInformation> UserAddedReaction { get; set; }
-        internal static Action<ReactionInformation> UserRemovedReaction { get; set; }
+        internal static Action<ReactionContext> UserAddedReaction { get; set; }
+        internal static Action<ReactionContext> UserRemovedReaction { get; set; }
         internal static List<DateTime> ConnectedTimes => _discordClient.ServersService.ConnectedTimes;
         internal static List<DateTime> DisconnectedTimes => _discordClient.ServersService.DisconnectedTimes;
 
