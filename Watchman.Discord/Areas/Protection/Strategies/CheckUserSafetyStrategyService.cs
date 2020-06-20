@@ -26,7 +26,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             this._discordServersService = discordServersService;
             this._configurationService = configurationService;
 
-            this.ReloadCache().Wait();
+            _ = this.ReloadCache();
             base.StartCyclicCaching();
         }
 

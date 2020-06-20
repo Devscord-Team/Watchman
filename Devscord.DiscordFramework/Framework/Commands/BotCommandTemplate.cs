@@ -1,5 +1,6 @@
 ﻿using Devscord.DiscordFramework.Framework.Commands.Properties;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Devscord.DiscordFramework.Framework.Commands
 {
@@ -12,7 +13,7 @@ namespace Devscord.DiscordFramework.Framework.Commands
         public BotCommandTemplate(string commandName, IEnumerable<BotCommandProperty> properties)
         {
             this.CommandName = commandName;
-            this.Properties = properties;
+            this.Properties = properties.ToList(); // toList for optimize
             this.NormalizedCommandName = commandName.ToLowerInvariant();
             if (this.NormalizedCommandName.EndsWith("command"))
             {

@@ -12,6 +12,7 @@ using Watchman.Discord.Areas.Users.Services;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Commons.Exceptions;
 using Watchman.Discord.Areas.Commons;
+using Watchman.Discord.Areas.Users.BotCommands;
 
 namespace Watchman.Discord.Areas.Users.Controllers
 {
@@ -42,21 +43,20 @@ namespace Watchman.Discord.Areas.Users.Controllers
         }
 
         [DiscordCommand("add role")] //todo
-        public void AddRole(DiscordRequest request, Contexts contexts)
+        public void AddRole(AddRoleCommand addRoleCommand, Contexts contexts)
         {
-            var requestArguments = request.Arguments.Skip(1);
-            var rolesToAssign = requestArguments.Select(x => x.Value);
+            var rolesToAssign = addRoleCommand.RolesNames;
             if (!rolesToAssign.Any())
             {
                 throw new NotEnoughArgumentsException();
             }
-            if (requestArguments.HasDuplicates())
-            {
-                throw new ArgumentsDuplicatedException();
-            }
+            //if (requestArguments.HasDuplicates())
+            //{
+            //    throw new ArgumentsDuplicatedException();
+            //}
             var safeRoles = _queryBus.Execute(new GetDiscordServerSafeRolesQuery(contexts.Server.Id)).SafeRoles;
             var messageService = _messagesServiceFactory.Create(contexts);
-            _rolesService.AddRoleToUser(safeRoles, messageService, contexts, rolesToAssign);
+            this._rolesService.AddRoleToUser(safeRoles, messageService, contexts, rolesToAssign);
         }
 
         [DiscordCommand("remove role")] //todo
@@ -68,7 +68,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
             _rolesService.DeleteRoleFromUser(safeRoles, messagesService, contexts, commandRole);
         }
 
-        public async Task PrintRoles(Contexts contexts)
+        public async Task PrintRoles(RolesCommand rolesCommand, Contexts contexts)
         {
             var messageService = _messagesServiceFactory.Create(contexts);
             var query = new GetDiscordServerSafeRolesQuery(contexts.Server.Id);

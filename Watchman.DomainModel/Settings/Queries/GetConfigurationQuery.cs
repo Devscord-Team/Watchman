@@ -2,7 +2,7 @@
 
 namespace Watchman.DomainModel.Settings.Queries
 {
-    internal class GetConfigurationQuery : IQuery<GetConfigurationQueryResult>
+    public class GetConfigurationQuery : IQuery<GetConfigurationQueryResult>
     {
     }
 }
