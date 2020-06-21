@@ -21,16 +21,14 @@ namespace Devscord.DiscordFramework
 
         private ReactionContext GetReactionInformation(SocketReaction reaction)
         {
-            return new ReactionContext
-            {
-                Channel = reaction.Channel,
-                Emote = reaction.Emote,
-                Message = reaction.Message,
-                MessageId = reaction.MessageId,
-                User = reaction.User,
-                UserId = reaction.UserId,
-                SentAt = DateTime.Now
-            };
+            return new ReactionContext(
+                reaction.Channel, 
+                reaction.Emote, 
+                reaction.Message, 
+                reaction.MessageId, 
+                reaction.User, 
+                reaction.UserId, 
+                sentAt: DateTime.Now);
         }
     }
 }
