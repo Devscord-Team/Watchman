@@ -43,7 +43,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
         }
 
         [DiscordCommand("add role")] //todo
-        public void AddRole(AddRoleCommand addRoleCommand, Contexts contexts)
+        public void AddRole(AddCommand addRoleCommand, Contexts contexts)
         {
             var rolesToAssign = addRoleCommand.RolesNames;
             if (!rolesToAssign.Any())

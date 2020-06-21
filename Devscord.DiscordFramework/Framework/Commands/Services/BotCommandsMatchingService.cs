@@ -32,7 +32,31 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
         private bool CompareArgumentsToProperties(IReadOnlyCollection<DiscordRequestArgument> arguments, IReadOnlyCollection<BotCommandProperty> properties)
         {
             var notOptionalCount = properties.Count(x => !x.IsOptional);
-            if (arguments.Count > properties.Count || arguments.Count < notOptionalCount)
+            var notListsArgumentsCount = 0;
+            var listsArgumentsCount = 0;
+            var isNowList = false;
+            foreach (var arg in arguments)
+            {
+                if (string.IsNullOrEmpty(arg.Name))
+                {
+                    if (!isNowList)
+                    {
+                        if (notListsArgumentsCount > 0)
+                        {
+                            notListsArgumentsCount--;
+                        }
+                        listsArgumentsCount++;
+                        isNowList = true;
+                    }
+                }
+                else
+                {
+                    isNowList = false;
+                    notListsArgumentsCount++;
+                }
+            }
+            var argumentsCountSum = notListsArgumentsCount + listsArgumentsCount;
+            if (argumentsCountSum > properties.Count || argumentsCountSum < notOptionalCount)
             {
                 return false;
             }
