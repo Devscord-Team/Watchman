@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Devscord.DiscordFramework.Framework;
+using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Discord.WebSocket;
 using System;
@@ -21,7 +22,7 @@ namespace Devscord.DiscordFramework
         private readonly string _token;
         private readonly IComponentContext _context;
         private readonly Workflow _workflow;
-        private readonly ReactionsController _reactionsController;
+        private readonly ReactionsService _reactionsService;
 
         private WorkflowBuilder(string token, IComponentContext context, Assembly botAssembly)
         {
@@ -32,9 +33,9 @@ namespace Devscord.DiscordFramework
             this._token = token;
             this._context = context;
             this._workflow = new Workflow(botAssembly, context);
-            this._reactionsController = new ReactionsController();
-            this._client.ReactionAdded += (userMessage, socketMessageChannel, socketReaction) => this._reactionsController.OnReactionAddedEvent(socketReaction);
-            this._client.ReactionRemoved += (userMessage, socketMessageChannel, socketReaction) => this._reactionsController.OnReactionRemovedEvent(socketReaction);
+            this._reactionsService = context.Resolve<ReactionsService>();
+            this._client.ReactionAdded += (userMessage, socketMessageChannel, socketReaction) => this._reactionsService.OnReactionAddedEvent(socketReaction);
+            this._client.ReactionRemoved += (userMessage, socketMessageChannel, socketReaction) => this._reactionsService.OnReactionRemovedEvent(socketReaction);
         }
 
         public static WorkflowBuilder Create(string token, IComponentContext context, Assembly botAssembly) => new WorkflowBuilder(token, context, botAssembly);

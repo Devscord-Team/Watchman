@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using Devscord.DiscordFramework.Integration;
 using Discord.WebSocket;
 
-namespace Devscord.DiscordFramework
+namespace Devscord.DiscordFramework.Services
 {
-    public class ReactionsController
+    public class ReactionsService
     {
         public Task OnReactionAddedEvent(SocketReaction reaction)
         {
