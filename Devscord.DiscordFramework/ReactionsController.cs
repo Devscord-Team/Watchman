@@ -11,15 +11,15 @@ namespace Devscord.DiscordFramework
     {
         public Task OnReactionAddedEvent(SocketReaction reaction)
         {
-            return Task.Run(() => Server.UserAddedReaction(GetReactionInformation(reaction)));
+            return Task.Run(() => Server.UserAddedReaction(GetReactionContext(reaction)));
         }
 
         public Task OnReactionRemovedEvent(SocketReaction reaction)
         {
-            return Task.Run(() => Server.UserRemovedReaction(GetReactionInformation(reaction)));
+            return Task.Run(() => Server.UserRemovedReaction(GetReactionContext(reaction)));
         }
 
-        private ReactionContext GetReactionInformation(SocketReaction reaction)
+        private ReactionContext GetReactionContext(SocketReaction reaction)
         {
             return new ReactionContext(
                 reaction.Channel, 

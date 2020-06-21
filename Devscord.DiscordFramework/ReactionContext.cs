@@ -16,13 +16,13 @@ namespace Devscord.DiscordFramework
 
         public ReactionContext(ISocketMessageChannel channel, IEmote emote, Optional<SocketUserMessage> message, ulong messageId, Optional<IUser> user, ulong userId, DateTime sentAt)
         {
-            Channel = channel;
-            Emote = emote;
-            Message = message; 
-            MessageId = messageId;
-            User = user;
-            UserId = userId;
-            SentAt = sentAt;
+            this.Channel = channel;
+            this.Emote = emote;
+            this.Message = message; 
+            this.MessageId = messageId;
+            this.User = user;
+            this.UserId = userId;
+            this.SentAt = sentAt;
         }
     }
 }
