@@ -24,9 +24,9 @@ namespace Devscord.DiscordFramework.Services
             return new ReactionContext(
                 reaction.Channel, 
                 reaction.Emote, 
-                reaction.Message, 
+                reaction.Message.GetValueOrDefault(), 
                 reaction.MessageId, 
-                reaction.User, 
+                reaction.User.GetValueOrDefault(), 
                 reaction.UserId, 
                 sentAt: DateTime.Now);
         }

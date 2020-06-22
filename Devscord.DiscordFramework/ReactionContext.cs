@@ -6,21 +6,21 @@ namespace Devscord.DiscordFramework
 {
     public class ReactionContext
     {
-        public ISocketMessageChannel Channel { get; }
+        public ISocketMessageChannel ChannelContext { get; }
         public IEmote Emote { get; }
-        public Optional<SocketUserMessage> Message { get; }
+        public SocketUserMessage Message { get; }
         public ulong MessageId { get; }
-        public Optional<IUser> User { get; }
+        public IUser UserContext { get; }
         public ulong UserId { get; }
         public DateTime SentAt { get; }
 
-        public ReactionContext(ISocketMessageChannel channel, IEmote emote, Optional<SocketUserMessage> message, ulong messageId, Optional<IUser> user, ulong userId, DateTime sentAt)
+        public ReactionContext(ISocketMessageChannel channelContext, IEmote emote, SocketUserMessage message, ulong messageId, IUser userContext, ulong userId, DateTime sentAt)
         {
-            this.Channel = channel;
+            this.ChannelContext = channelContext;
             this.Emote = emote;
             this.Message = message; 
             this.MessageId = messageId;
-            this.User = user;
+            this.UserContext = userContext;
             this.UserId = userId;
             this.SentAt = sentAt;
         }
