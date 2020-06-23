@@ -51,12 +51,16 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                 {
                     return null;
                 }
-                var result = match.Groups[key].Value;
+                var value = match.Groups[key].Value;
                 if (!isList)
                 {
-                    return result;
+                    return value;
                 }
-                return result.Split(' ').ToList();
+                if(value.Contains('\"') && value.Count(x => x == '\"') % 2 == 0)
+                {
+                    return value.Split('"').Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+                }
+                return value.Split(' ').ToList();
             });
             return result;
         }
