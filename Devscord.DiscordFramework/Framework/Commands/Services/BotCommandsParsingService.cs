@@ -60,12 +60,14 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                 {
                     return value.Split(' ').ToList();
                 }
-                var results = value.Split('"').Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+                var results = value.Split('"')
+                    .Where(x => !string.IsNullOrWhiteSpace(x) && !x.StartsWith(' ') && !x.EndsWith(' '))
+                    .ToList();
                 foreach (var toRemove in results)
                 {
                     value = value.Replace($"\"{toRemove}\"", string.Empty);
                 }
-                var otherResults = value.Split(' ').Where(x => !string.IsNullOrWhiteSpace(x));
+                var otherResults = value.Split(' ').Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.Trim());
                 results.AddRange(otherResults);
                 return results;
             });
