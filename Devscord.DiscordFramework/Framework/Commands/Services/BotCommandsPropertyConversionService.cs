@@ -1,7 +1,5 @@
 ﻿using Devscord.DiscordFramework.Framework.Commands.Properties;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Devscord.DiscordFramework.Framework.Commands.Services
@@ -23,11 +21,12 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
         }
         private TimeSpan ToTimeSpan(string value)
         {
-            var match = _exTime.Match(value);
+            var match = this._exTime.Match(value);
             var unit = match.Groups["Unit"].Value.ToLowerInvariant();
             var timeValue = short.Parse(match.Groups["Value"].Value);
             return unit switch
             {
+                "d" => TimeSpan.FromDays(timeValue),
                 "h" => TimeSpan.FromHours(timeValue),
                 "m" => TimeSpan.FromMinutes(timeValue),
                 "s" => TimeSpan.FromSeconds(timeValue),

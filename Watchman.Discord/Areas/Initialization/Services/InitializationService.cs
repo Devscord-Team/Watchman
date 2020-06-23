@@ -51,18 +51,22 @@ namespace Watchman.Discord.Areas.Initialization.Services
             var customCommands = new List<AddCustomCommandsCommand>();
             foreach (var serverId in new ulong[] { 636238466899902504, 597066406521208852 })
             {
-                var command = new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.AddRoleCommand", @"-add\s*role\s*(?<Roles>[\w\s\""]*)", serverId);
-                customCommands.Add(command);
+                customCommands.AddRange(new List<AddCustomCommandsCommand>
+                {
+                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.AddRoleCommand", @"-add\s*role\s*(?<Roles>[\w\s\""]*)", serverId),
+                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.RemoveRoleCommand", @"-remove\s*role\s*(?<Roles>[\w\s\""]*)", serverId)
+                });
             }
 
-            var commandsInBase = this._queryBus.Execute(new GetCustomCommandsQuery()).CustomCommands;
+            var commandsInBase = this._queryBus.Execute(new GetCustomCommandsQuery()).CustomCommands.ToList();
             foreach (var command in customCommands)
             {
                 if (commandsInBase.Any(x => x.ServerId == command.ServerId && x.CommandFullName == command.CommandFullName))
+                {
                     continue;
+                }
                 await this._commandBus.ExecuteAsync(command);
             }
-
         }
 
         private async Task MuteRoleInit(DiscordServerContext server)

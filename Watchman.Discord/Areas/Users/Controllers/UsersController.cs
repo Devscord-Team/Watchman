@@ -1,5 +1,4 @@
 ﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
-using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
 using System.Linq;
@@ -11,7 +10,6 @@ using Watchman.DomainModel.DiscordServer.Queries;
 using Watchman.Discord.Areas.Users.Services;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Commons.Exceptions;
-using Watchman.Discord.Areas.Commons;
 using Watchman.Discord.Areas.Users.BotCommands;
 
 namespace Watchman.Discord.Areas.Users.Controllers
@@ -29,36 +27,35 @@ namespace Watchman.Discord.Areas.Users.Controllers
             this._rolesService = rolesService;
         }
 
-        public void GetAvatar(AvatarCommand avatarCommand, Contexts contexts)
+        public async Task GetAvatar(AvatarCommand avatarCommand, Contexts contexts)
         {
             var messageService = this._messagesServiceFactory.Create(contexts);
             if (string.IsNullOrEmpty(contexts.User.AvatarUrl))
             {
-                messageService.SendResponse(x => x.UserDoesntHaveAvatar(contexts.User));
+                await messageService.SendResponse(x => x.UserDoesntHaveAvatar(contexts.User));
                 return;
             }
-
-            messageService.SendMessage(contexts.User.AvatarUrl);
+            await messageService.SendMessage(contexts.User.AvatarUrl);
         }
 
-        public void AddRole(AddRoleCommand addRoleCommand, Contexts contexts)
+        public async Task AddRole(AddRoleCommand addRoleCommand, Contexts contexts)
         {
             if (!addRoleCommand.Roles.Any())
             {
                 throw new NotEnoughArgumentsException();
             }
             var safeRoles = this._queryBus.Execute(new GetDiscordServerSafeRolesQuery(contexts.Server.Id)).SafeRoles;
-            var messageService = this._messagesServiceFactory.Create(contexts);
-            this._rolesService.AddRoleToUser(safeRoles, messageService, contexts, addRoleCommand.Roles);
+            await this._rolesService.AddRoleToUser(safeRoles, contexts, addRoleCommand.Roles);
         }
 
-        [DiscordCommand("remove role")] //todo
-        public void RemoveRole(DiscordRequest request, Contexts contexts)
+        public async Task RemoveRole(RemoveRoleCommand removeRoleCommand, Contexts contexts)
         {
-            var commandRole = request.OriginalMessage.Replace("-remove role ", string.Empty); //TODO use DiscordRequest properties
+            if (!removeRoleCommand.Roles.Any())
+            {
+                throw new NotEnoughArgumentsException();
+            }
             var safeRoles = this._queryBus.Execute(new GetDiscordServerSafeRolesQuery(contexts.Server.Id)).SafeRoles;
-            var messagesService = this._messagesServiceFactory.Create(contexts);
-            this._rolesService.DeleteRoleFromUser(safeRoles, messagesService, contexts, commandRole);
+            await this._rolesService.DeleteRoleFromUser(safeRoles, contexts, removeRoleCommand.Roles);
         }
 
         public async Task PrintRoles(RolesCommand rolesCommand, Contexts contexts)
