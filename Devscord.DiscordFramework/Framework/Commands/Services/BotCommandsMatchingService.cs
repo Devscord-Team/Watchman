@@ -32,7 +32,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
         private bool CompareArgumentsToProperties(IReadOnlyCollection<DiscordRequestArgument> arguments, IReadOnlyCollection<BotCommandProperty> properties)
         {
             var notOptionalCount = properties.Count(x => !x.IsOptional);
-            var parametersCount = arguments.Where(x => !string.IsNullOrEmpty(x.Name)).Count();
+            var parametersCount = arguments.Count(x => !string.IsNullOrEmpty(x.Name));
             if (parametersCount > properties.Count || parametersCount < notOptionalCount)
             {
                 return false;
@@ -74,7 +74,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             {
                 return false;
             }
-            if (type == BotCommandPropertyType.Bool && !bool.TryParse(value, out _))
+            if (type == BotCommandPropertyType.Bool && value != null && !bool.TryParse(value, out _))
             {
                 return false;
             }

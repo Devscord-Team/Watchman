@@ -15,6 +15,7 @@ using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Discord.Areas.Commons;
 using Watchman.Discord.Areas.Users.Services;
+using Watchman.Discord.Areas.Administration.BotCommands;
 
 namespace Watchman.Discord.Areas.Administration.Controllers
 {
@@ -81,27 +82,15 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         }
 
         [AdminCommand]
-        [DiscordCommand("set role")]
-        public async Task SetRoleAsSafe(DiscordRequest request, Contexts contexts)
+        public async Task SetRoleAsSafe(SetRoleCommand setRoleCommand, Contexts contexts)
         {
-            var args = request.Arguments.Skip(1).ToList(); // 1 args is string "role", so it's not needed
-            if (args.Count < 2)
+            var roles = setRoleCommand.Roles;
+            if (roles.Count == 0 || (setRoleCommand.Safe && setRoleCommand.Unsafe) == false)
             {
                 throw new NotEnoughArgumentsException();
             }
-            if (args.HasDuplicates())
-            {
-                throw new ArgumentsDuplicatedException();
-            }
-            var lastArgument = args.Last().Value.ToLowerInvariant();
-            var shouldSetToSafe = lastArgument switch
-            {
-                "safe" => true,
-                "unsafe" => false,
-                _ => throw new NotEnoughArgumentsException()
-            };
-            var commandRoles = args.Select(x => x.Value).SkipLast(1);
-            await this._rolesService.SetRolesAsSafe(contexts, commandRoles, shouldSetToSafe);
+            var shouldSetToSafe = setRoleCommand.Safe;
+            await this._rolesService.SetRolesAsSafe(contexts, roles, shouldSetToSafe);
         }
     }
 }

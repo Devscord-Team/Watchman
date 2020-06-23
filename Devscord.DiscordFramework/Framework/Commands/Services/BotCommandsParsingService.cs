@@ -1,18 +1,18 @@
 ﻿using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
-using Devscord.DiscordFramework.Framework.Commands.PropertyAttributes;
 using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Devscord.DiscordFramework.Framework.Commands.Properties;
 
 namespace Devscord.DiscordFramework.Framework.Commands.Services
 {
     public class BotCommandsParsingService
     {
-        private readonly BotCommandsPropertyConversionService botCommandPropertyConversionService;
+        private readonly BotCommandsPropertyConversionService _botCommandPropertyConversionService;
 
-        public BotCommandsParsingService(BotCommandsPropertyConversionService botCommandPropertyConversionService) => this.botCommandPropertyConversionService = botCommandPropertyConversionService;
+        public BotCommandsParsingService(BotCommandsPropertyConversionService botCommandPropertyConversionService) => this._botCommandPropertyConversionService = botCommandPropertyConversionService;
 
         public IBotCommand ParseRequestToCommand(Type commandType, DiscordRequest request, BotCommandTemplate template)
         {
@@ -79,10 +79,10 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             var instance = Activator.CreateInstance(commandType);
             foreach (var property in commandType.GetProperties())
             {
-                var propertyType = template.Properties.FirstOrDefault(x => x.Name == property.Name).Type;
-                var isList = propertyType == Properties.BotCommandPropertyType.List;
+                var propertyType = template.Properties.FirstOrDefault(x => x.Name == property.Name)?.Type;
+                var isList = propertyType == BotCommandPropertyType.List;
                 var value = getValueByName.Invoke(property.Name, isList);
-                if (value == null)
+                if (value == null && propertyType != BotCommandPropertyType.Bool)
                 {
                     continue;
                 }
@@ -93,7 +93,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                 }
                 if (value is string valueString && !string.IsNullOrWhiteSpace(valueString))
                 {
-                    var convertedType = this.botCommandPropertyConversionService.ConvertType(valueString, propertyType);
+                    var convertedType = this._botCommandPropertyConversionService.ConvertType(valueString, propertyType.Value);
                     property.SetValue(instance, convertedType);
                 }
             }

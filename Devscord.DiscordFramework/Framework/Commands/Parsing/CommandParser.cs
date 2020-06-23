@@ -102,6 +102,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
             if (isTheOnlyArg)
             {
                 arg.Name = trimmedMessage;
+                trimmedMessage = "";
                 return arg;
             }
 
