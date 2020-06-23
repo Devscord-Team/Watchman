@@ -85,7 +85,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         public async Task SetRoleAsSafe(SetRoleCommand setRoleCommand, Contexts contexts)
         {
             var roles = setRoleCommand.Roles;
-            if (roles.Count == 0 || (setRoleCommand.Safe && setRoleCommand.Unsafe) == false)
+            if (roles.Count == 0 || !(setRoleCommand.Safe || setRoleCommand.Unsafe))
             {
                 throw new NotEnoughArgumentsException();
             }

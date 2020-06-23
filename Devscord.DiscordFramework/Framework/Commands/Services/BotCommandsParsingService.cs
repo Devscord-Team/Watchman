@@ -16,7 +16,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
 
         public IBotCommand ParseRequestToCommand(Type commandType, DiscordRequest request, BotCommandTemplate template)
         {
-            var result = this.GetFilledInstance(commandType, template, (key, isList, x) =>
+            var result = this.GetFilledInstance(commandType, template, (key, isList) =>
             {
                 var result = request.Arguments.FirstOrDefault(a => a.Name.ToLowerInvariant() == key.ToLowerInvariant());
                 if (result == null)
@@ -50,13 +50,19 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                 Log.Warning("Custom template {customTemplate} is not valid for {commandName}", customTemplate, template.CommandName);
                 return null;
             }
-            var result = this.GetFilledInstance(commandType, template, (key, isList, template) =>
+            var result = this.GetFilledInstance(commandType, template, (key, isList) =>
             {
                 if (!match.Groups.ContainsKey(key))
                 {
                     return null;
                 }
+                var lowerCaseKey = key.ToLowerInvariant();
                 var value = match.Groups[key].Value;
+                var argType = template.Properties.FirstOrDefault(x => x.Name.ToLowerInvariant() == lowerCaseKey)?.Type;
+                if (argType.HasValue && argType.Value == BotCommandPropertyType.Bool && !string.IsNullOrWhiteSpace(value))
+                {
+                    return bool.TrueString;
+                }
                 if (!isList)
                 {
                     return value;
@@ -79,14 +85,14 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             return result;
         }
 
-        private IBotCommand GetFilledInstance(Type commandType, BotCommandTemplate template, Func<string, bool, BotCommandTemplate, object> getValueByName)
+        private IBotCommand GetFilledInstance(Type commandType, BotCommandTemplate template, Func<string, bool, object> getValueByName)
         {
             var instance = Activator.CreateInstance(commandType);
             foreach (var property in commandType.GetProperties())
             {
                 var propertyType = template.Properties.FirstOrDefault(x => x.Name == property.Name)?.Type;
                 var isList = propertyType == BotCommandPropertyType.List;
-                var value = getValueByName.Invoke(property.Name, isList, template);
+                var value = getValueByName.Invoke(property.Name, isList);
                 if (value == null)
                 {
                     continue;

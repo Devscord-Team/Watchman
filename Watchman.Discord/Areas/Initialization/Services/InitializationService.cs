@@ -55,7 +55,7 @@ namespace Watchman.Discord.Areas.Initialization.Services
                 {
                     new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.AddRoleCommand", @"-add\s*role\s*(?<Roles>[\w\s\""]*)", serverId),
                     new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.RemoveRoleCommand", @"-remove\s*role\s*(?<Roles>[\w\s\""]*)", serverId),
-                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Administration.BotCommands.SetRoleCommand", @"-set\s*role\s*(?<Roles>[\w\s\""]*) (-?<Safe>[\w]+)", serverId),
+                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Administration.BotCommands.SetRoleCommand", @"-set\s*role\s*(?<Roles>[\w\s\""]*)\s*-*(?<Safe>safe)*\s*-*(?<Unsafe>unsafe)*", serverId),
                 });
             }
 
