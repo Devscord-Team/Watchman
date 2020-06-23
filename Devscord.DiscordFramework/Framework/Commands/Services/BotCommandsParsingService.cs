@@ -57,7 +57,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                     return null;
                 }
                 var lowerCaseKey = key.ToLowerInvariant();
-                var value = match.Groups[key].Value;
+                var value = match.Groups[key].Value.Trim();
                 var argType = template.Properties.FirstOrDefault(x => x.Name.ToLowerInvariant() == lowerCaseKey)?.Type;
                 if (argType.HasValue && argType.Value == BotCommandPropertyType.Bool && !string.IsNullOrWhiteSpace(value))
                 {
