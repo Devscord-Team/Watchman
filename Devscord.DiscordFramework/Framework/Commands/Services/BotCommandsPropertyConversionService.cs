@@ -1,6 +1,7 @@
 ﻿using Devscord.DiscordFramework.Framework.Commands.Properties;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Devscord.DiscordFramework.Framework.Commands.Services
@@ -17,11 +18,9 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                 BotCommandPropertyType.Time => ToTimeSpan(value),
                 BotCommandPropertyType.Number => int.Parse(value),//TODO add more types
                 BotCommandPropertyType.Bool => bool.Parse(value),
-                BotCommandPropertyType.List => new List<string>() { value },
                 _ => value
             };
         }
-
         private TimeSpan ToTimeSpan(string value)
         {
             var match = _exTime.Match(value);

@@ -29,10 +29,9 @@ namespace Watchman.Discord.Areas.Users.Controllers
             this._rolesService = rolesService;
         }
 
-        [DiscordCommand("avatar")]
-        public void GetAvatar(DiscordRequest request, Contexts contexts)
+        public void GetAvatar(AvatarCommand avatarCommand, Contexts contexts)
         {
-            var messageService = _messagesServiceFactory.Create(contexts);
+            var messageService = this._messagesServiceFactory.Create(contexts);
             if (string.IsNullOrEmpty(contexts.User.AvatarUrl))
             {
                 messageService.SendResponse(x => x.UserDoesntHaveAvatar(contexts.User));
@@ -42,21 +41,15 @@ namespace Watchman.Discord.Areas.Users.Controllers
             messageService.SendMessage(contexts.User.AvatarUrl);
         }
 
-        [DiscordCommand("add role")] //todo
-        public void AddRole(AddCommand addRoleCommand, Contexts contexts)
+        public void AddRole(AddRoleCommand addRoleCommand, Contexts contexts)
         {
-            var rolesToAssign = addRoleCommand.RolesNames;
-            if (!rolesToAssign.Any())
+            if (!addRoleCommand.Roles.Any())
             {
                 throw new NotEnoughArgumentsException();
             }
-            //if (requestArguments.HasDuplicates())
-            //{
-            //    throw new ArgumentsDuplicatedException();
-            //}
-            var safeRoles = _queryBus.Execute(new GetDiscordServerSafeRolesQuery(contexts.Server.Id)).SafeRoles;
-            var messageService = _messagesServiceFactory.Create(contexts);
-            this._rolesService.AddRoleToUser(safeRoles, messageService, contexts, rolesToAssign);
+            var safeRoles = this._queryBus.Execute(new GetDiscordServerSafeRolesQuery(contexts.Server.Id)).SafeRoles;
+            var messageService = this._messagesServiceFactory.Create(contexts);
+            this._rolesService.AddRoleToUser(safeRoles, messageService, contexts, addRoleCommand.Roles);
         }
 
         [DiscordCommand("remove role")] //todo
@@ -64,13 +57,13 @@ namespace Watchman.Discord.Areas.Users.Controllers
         {
             var commandRole = request.OriginalMessage.Replace("-remove role ", string.Empty); //TODO use DiscordRequest properties
             var safeRoles = this._queryBus.Execute(new GetDiscordServerSafeRolesQuery(contexts.Server.Id)).SafeRoles;
-            var messagesService = _messagesServiceFactory.Create(contexts);
-            _rolesService.DeleteRoleFromUser(safeRoles, messagesService, contexts, commandRole);
+            var messagesService = this._messagesServiceFactory.Create(contexts);
+            this._rolesService.DeleteRoleFromUser(safeRoles, messagesService, contexts, commandRole);
         }
 
         public async Task PrintRoles(RolesCommand rolesCommand, Contexts contexts)
         {
-            var messageService = _messagesServiceFactory.Create(contexts);
+            var messageService = this._messagesServiceFactory.Create(contexts);
             var query = new GetDiscordServerSafeRolesQuery(contexts.Server.Id);
             var safeRoles = this._queryBus.Execute(query).SafeRoles.ToList();
 

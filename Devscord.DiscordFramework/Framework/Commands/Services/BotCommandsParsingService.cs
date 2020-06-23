@@ -1,6 +1,8 @@
 ﻿using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
+using Devscord.DiscordFramework.Framework.Commands.PropertyAttributes;
 using Serilog;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -10,49 +12,84 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
     {
         private readonly BotCommandsPropertyConversionService botCommandPropertyConversionService;
 
-        public BotCommandsParsingService(BotCommandsPropertyConversionService botCommandPropertyConversionService)
-        {
-            this.botCommandPropertyConversionService = botCommandPropertyConversionService;
-        }
+        public BotCommandsParsingService(BotCommandsPropertyConversionService botCommandPropertyConversionService) => this.botCommandPropertyConversionService = botCommandPropertyConversionService;
 
         public IBotCommand ParseRequestToCommand(Type commandType, DiscordRequest request, BotCommandTemplate template)
         {
-            var result = GetFilledInstance(commandType, template, x => request.Arguments.FirstOrDefault(a => a.Name.ToLowerInvariant() == x.ToLowerInvariant())?.Value);
+            var result = this.GetFilledInstance(commandType, template, (key, isList) =>
+            {
+                var result = request.Arguments.FirstOrDefault(a => a.Name.ToLowerInvariant() == key.ToLowerInvariant());
+                if (result == null)
+                {
+                    return null;
+                }
+                if (!isList)
+                {
+                    return result.Value;
+                }
+                var argumentsList = request.Arguments.ToList();
+                var indexOf = argumentsList.IndexOf(result);
+                var nextResults = argumentsList.Skip(indexOf + 1).TakeWhile(x => x.Name == null);
+                var list = new List<string>() { result.Value };
+                list.AddRange(nextResults.Select(x => x.Value));
+                return list;
+            });
             return result;
         }
 
         public IBotCommand ParseCustomTemplate(Type commandType, BotCommandTemplate template, Regex customTemplate, string input)
         {
             var match = customTemplate.Match(input);
-            if(!this.CustomTemplateIsValid(match, template))
+            if (!this.CustomTemplateIsValid(match, template))
             {
                 Log.Warning("Custom template {customTemplate} is not valid for {commandName}", customTemplate, template.CommandName);
                 return null;
             }
-            var result = GetFilledInstance(commandType, template, x => match.Groups.ContainsKey(x) ? match.Groups[x].Value : null);
+            var result = this.GetFilledInstance(commandType, template, (key, isList) =>
+            {
+                if (!match.Groups.ContainsKey(key))
+                {
+                    return null;
+                }
+                var result = match.Groups[key].Value;
+                if (!isList)
+                {
+                    return result;
+                }
+                return result.Split(' ').ToList();
+            });
             return result;
         }
 
-        private IBotCommand GetFilledInstance(Type commandType, BotCommandTemplate template, Func<string, string> getValueByName)
+        private IBotCommand GetFilledInstance(Type commandType, BotCommandTemplate template, Func<string, bool, object> getValueByName)
         {
             var instance = Activator.CreateInstance(commandType);
             foreach (var property in commandType.GetProperties())
             {
-                var value = getValueByName.Invoke(property.Name);
-                if(string.IsNullOrWhiteSpace(value))
+                var propertyType = template.Properties.FirstOrDefault(x => x.Name == property.Name).Type;
+                var isList = propertyType == Properties.BotCommandPropertyType.List;
+                var value = getValueByName.Invoke(property.Name, isList);
+                if (value == null)
                 {
                     continue;
                 }
-                var propertyType = template.Properties.First(x => x.Name == property.Name).Type;
-                var convertedType = botCommandPropertyConversionService.ConvertType(value, propertyType);
-                property.SetValue(instance, convertedType);
+                if (isList)
+                {
+                    property.SetValue(instance, value);
+                    continue;
+                }
+                if (value is string valueString && !string.IsNullOrWhiteSpace(valueString))
+                {
+                    var convertedType = this.botCommandPropertyConversionService.ConvertType(valueString, propertyType);
+                    property.SetValue(instance, convertedType);
+                }
             }
-            return (IBotCommand)instance;
+            return (IBotCommand) instance;
         }
 
         private bool CustomTemplateIsValid(Match match, BotCommandTemplate template)
         {
-            if(!match.Success)
+            if (!match.Success)
             {
                 return false;
             }
@@ -61,7 +98,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             {
                 return false;
             }
-            if(requiredProperties.Any(x => !match.Groups.ContainsKey(x.Name)))
+            if (requiredProperties.Any(x => !match.Groups.ContainsKey(x.Name)))
             {
                 return false;
             }
