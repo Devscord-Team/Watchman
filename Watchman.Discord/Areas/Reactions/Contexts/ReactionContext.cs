@@ -2,7 +2,7 @@
 using Discord;
 using Discord.WebSocket;
 
-namespace Devscord.DiscordFramework
+namespace Watchman.Discord.Areas.Reactions.Contexts
 {
     public class ReactionContext
     {
@@ -18,7 +18,7 @@ namespace Devscord.DiscordFramework
         {
             this.ChannelContext = channelContext;
             this.Emote = emote;
-            this.Message = message; 
+            this.Message = message;
             this.MessageId = messageId;
             this.UserContext = userContext;
             this.UserId = userId;

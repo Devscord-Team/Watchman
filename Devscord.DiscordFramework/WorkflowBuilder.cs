@@ -17,12 +17,21 @@ namespace Devscord.DiscordFramework
     {
         public static List<DateTime> ConnectedTimes => Server.ConnectedTimes;
         public static List<DateTime> DisconnectedTimes => Server.DisconnectedTimes;
+        public event Func<Cacheable<IUserMessage, ulong>, ISocketMessageChannel, SocketReaction, Task> ReactionAdded
+        {
+            add { _client.ReactionAdded += value; }
+            remove { _client.ReactionAdded -= value; }
+        }
+        public event Func<Cacheable<IUserMessage, ulong>, ISocketMessageChannel, SocketReaction, Task> ReactionRemoved
+        {
+            add { _client.ReactionRemoved += value; }
+            remove { _client.ReactionRemoved -= value; }
+        }
 
         private readonly DiscordSocketClient _client;
         private readonly string _token;
         private readonly IComponentContext _context;
         private readonly Workflow _workflow;
-        private readonly ReactionsService _reactionsService;
 
         private WorkflowBuilder(string token, IComponentContext context, Assembly botAssembly)
         {
@@ -33,9 +42,6 @@ namespace Devscord.DiscordFramework
             this._token = token;
             this._context = context;
             this._workflow = new Workflow(botAssembly, context);
-            this._reactionsService = context.Resolve<ReactionsService>();
-            this._client.ReactionAdded += (userMessage, socketMessageChannel, socketReaction) => this._reactionsService.OnReactionAddedEvent(socketReaction);
-            this._client.ReactionRemoved += (userMessage, socketMessageChannel, socketReaction) => this._reactionsService.OnReactionRemovedEvent(socketReaction);
         }
 
         public static WorkflowBuilder Create(string token, IComponentContext context, Assembly botAssembly) => new WorkflowBuilder(token, context, botAssembly);
