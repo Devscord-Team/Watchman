@@ -17,8 +17,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Watchman.Cqrs", "Watchman.C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Devscord.DiscordFramework.UnitTests", "Devscord.DiscordFramework.UnitTests\Devscord.DiscordFramework.UnitTests.csproj", "{BA52AB41-7C8F-4970-BEB7-F87DD7215FB4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Watchman.ScheduleRunner", "Watchman.ScheduleRunner\Watchman.ScheduleRunner.csproj", "{229B6DE5-DA83-4B16-866C-9856375C37A5}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Watchman.Web.Server", "Watchman.Web.Server\Watchman.Web.Server.csproj", "{6BF62D5D-800D-498D-8871-83EFEEE22E27}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{C8965E11-DAB9-4615-82D4-B4FE9CF0A113}"
