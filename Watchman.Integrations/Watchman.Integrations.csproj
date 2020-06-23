@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Discord.Net.WebSocket" Version="2.2.0" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.24" />
     <PackageReference Include="MongoDB.Driver" Version="2.10.4" />
     <PackageReference Include="Serilog" Version="2.9.0" />
     <PackageReference Include="Serilog.Enrichers.Environment" Version="2.1.3" />
