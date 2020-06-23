@@ -56,11 +56,18 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                 {
                     return value;
                 }
-                if(value.Contains('\"') && value.Count(x => x == '\"') % 2 == 0)
+                if (!value.Contains('\"') || value.Count(x => x == '\"') % 2 != 0)
                 {
-                    return value.Split('"').Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+                    return value.Split(' ').ToList();
                 }
-                return value.Split(' ').ToList();
+                var results = value.Split('"').Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+                foreach (var toRemove in results)
+                {
+                    value = value.Replace($"\"{toRemove}\"", string.Empty);
+                }
+                var otherResults = value.Split(' ').Where(x => !string.IsNullOrWhiteSpace(x));
+                results.AddRange(otherResults);
+                return results;
             });
             return result;
         }

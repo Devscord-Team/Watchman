@@ -51,7 +51,7 @@ namespace Watchman.Discord.Areas.Initialization.Services
             var customCommands = new List<AddCustomCommandsCommand>();
             foreach (var serverId in new ulong[] { 636238466899902504, 597066406521208852 })
             {
-                var command = new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.AddRoleCommand", @"-add\s*role\s*(?<Roles>[\w\s]*)", serverId);
+                var command = new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.AddRoleCommand", @"-add\s*role\s*(?<Roles>[\w\s\""]*)", serverId);
                 customCommands.Add(command);
             }
 
