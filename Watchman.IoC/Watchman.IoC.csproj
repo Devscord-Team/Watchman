@@ -15,7 +15,6 @@
     <ProjectReference Include="..\Watchman.Discord\Watchman.Discord.csproj" />
     <ProjectReference Include="..\Watchman.DomainModel\Watchman.DomainModel.csproj" />
     <ProjectReference Include="..\Watchman.Integrations\Watchman.Integrations.csproj" />
-    <ProjectReference Include="..\Watchman.ScheduleRunner\Watchman.ScheduleRunner.csproj" />
   </ItemGroup>
 
 </Project>

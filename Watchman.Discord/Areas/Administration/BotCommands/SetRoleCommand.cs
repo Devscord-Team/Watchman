@@ -9,11 +9,9 @@ namespace Watchman.Discord.Areas.Administration.BotCommands
         [List]
         public List<string> Roles { get; set; }
 
-        [Optional]
         [Bool]
         public bool Safe { get; set; }
 
-        [Optional]
         [Bool]
         public bool Unsafe { get; set; }
     }

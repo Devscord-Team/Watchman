@@ -2,6 +2,6 @@
 {
     public interface IConfigurationService
     {
-        Configuration Configuration { get; set; }
+        Configuration Configuration { get; }
     }
 }

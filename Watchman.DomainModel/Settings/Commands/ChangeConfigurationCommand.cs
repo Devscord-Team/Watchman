@@ -8,7 +8,7 @@ namespace Watchman.DomainModel.Settings.Commands
 
         public ChangeConfigurationCommand(Configuration configuration)
         {
-            Configuration = configuration;
+            this.Configuration = configuration;
         }
     }
 }
