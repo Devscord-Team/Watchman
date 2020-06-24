@@ -117,6 +117,15 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AllRolesAddedToUser" xml:space="preserve">
+    <value>Dodano wszystkie role pomyślnie użytkownikowi {{user}}</value>
+  </data>
+  <data name="AllRolesRemovedFromUser" xml:space="preserve">
+    <value>Usunięto wszystkie role pomyślnie użytkownikowi {{user}}</value>
+  </data>
+  <data name="AllRolesSettingsChanged" xml:space="preserve">
+    <value>Zmieniono ustawienia wszystkich powyższych roli pomyślnie</value>
+  </data>
   <data name="ArgumentsDuplicated" xml:space="preserve">
     <value>Podane argumenty są zduplikowane.</value>
   </data>
@@ -127,7 +136,7 @@
     <value>Dla tego polecenia są dostępne tylko argumenty: {{arguments}}</value>
   </data>
   <data name="MutedUser" xml:space="preserve">
-    <value>Użytkownik {{user}} został zmutowany do {{timeEnd}}UTC</value>
+    <value>Użytkownik {{user}} został zmutowany do {{timeEnd}}</value>
   </data>
   <data name="NewUserArrived" xml:space="preserve">
     <value>Cześć {{user}}! Witamy cię na serwerze {{server}}</value>
@@ -172,7 +181,7 @@
     <value>Rola "{{role}}" już jest ustawiona jako bezpieczna.</value>
   </data>
   <data name="RoleIsUnsafeAlready" xml:space="preserve">
-    <value>Rola "{{role}}" już jest ustawiona jako niebezpieczna.</value>
+    <value>Rola "{{role}}" nie jest już ustawiona jako bezpieczna</value>
   </data>
   <data name="RoleNotFound" xml:space="preserve">
     <value>Nie znaleziono roli {{role}}.</value>

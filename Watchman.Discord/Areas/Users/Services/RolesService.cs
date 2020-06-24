@@ -34,6 +34,8 @@ namespace Watchman.Discord.Areas.Users.Services
             var messagesService = this._messagesServiceFactory.Create(contexts);
             var userRoleNames = contexts.User.Roles.Select(x => x.Name).ToList();
             var safeRoleNames = safeRoles.Select(x => x.Name).ToList();
+            var addedRoles = new List<string>();
+
             foreach (var role in rolesToAdd)
             {
                 if (userRoleNames.Contains(role))
@@ -48,7 +50,15 @@ namespace Watchman.Discord.Areas.Users.Services
                     continue;
                 }
                 await this._usersService.AddRole(serverRole, contexts.User, contexts.Server);
-                await messagesService.SendResponse(x => x.RoleAddedToUser(contexts, role));
+                addedRoles.Add(role);
+            }
+            if (addedRoles.Count > 1 && addedRoles.Count == rolesToAdd.Count())
+            {
+                await messagesService.SendResponse(x => x.AllRolesAddedToUser(contexts));
+            }
+            else
+            {
+                addedRoles.ForEach(async role => await messagesService.SendResponse(x => x.RoleAddedToUser(contexts, role)));
             }
         }
 
@@ -57,6 +67,8 @@ namespace Watchman.Discord.Areas.Users.Services
             var messagesService = this._messagesServiceFactory.Create(contexts);
             var userRoleNames = contexts.User.Roles.Select(x => x.Name).ToList();
             var safeRoleNames = safeRoles.Select(x => x.Name).ToList();
+            var removedRoles = new List<string>();
+
             foreach (var role in rolesToRemove)
             {
                 if (!userRoleNames.Contains(role))
@@ -71,7 +83,15 @@ namespace Watchman.Discord.Areas.Users.Services
                     continue;
                 }
                 await this._usersService.RemoveRole(serverRole, contexts.User, contexts.Server);
-                await messagesService.SendResponse(x => x.RoleRemovedFromUser(contexts, role));
+                removedRoles.Add(role);
+            }
+            if (removedRoles.Count > 1 && removedRoles.Count == rolesToRemove.Count())
+            {
+                await messagesService.SendResponse(x => x.AllRolesRemovedFromUser(contexts));
+            }
+            else
+            {
+                removedRoles.ForEach(async role => await messagesService.SendResponse(x => x.RoleRemovedFromUser(contexts, role)));
             }
         }
 
@@ -79,14 +99,15 @@ namespace Watchman.Discord.Areas.Users.Services
         {
             var safeRolesQuery = new GetDiscordServerSafeRolesQuery(contexts.Server.Id);
             var safeRoles = this._queryBus.Execute(safeRolesQuery).SafeRoles.ToList();
-            var messageService = this._messagesServiceFactory.Create(contexts);
+            var messagesService = this._messagesServiceFactory.Create(contexts);
+            var changedRoles = new List<string>();
 
             foreach (var roleName in commandRoles)
             {
                 var serverRole = this._usersRolesService.GetRoleByName(roleName, contexts.Server);
                 if (serverRole == null)
                 {
-                    await messageService.SendResponse(x => x.RoleNotFoundOrIsNotSafe(contexts, roleName));
+                    await messagesService.SendResponse(x => x.RoleNotFoundOrIsNotSafe(contexts, roleName));
                     continue;
                 }
                 var settingsWasChanged = setAsSafe
@@ -94,8 +115,16 @@ namespace Watchman.Discord.Areas.Users.Services
                     : await this.TryToSetAsUnsafe(safeRoles, roleName, contexts);
                 if (settingsWasChanged)
                 {
-                    await messageService.SendResponse(x => x.RoleSettingsChanged(roleName));
+                    changedRoles.Add(roleName);
                 }
+            }
+            if (changedRoles.Count > 1 && changedRoles.Count == commandRoles.Count())
+            {
+                await messagesService.SendResponse(x => x.AllRolesSettingsChanged());
+            }
+            else
+            {
+                changedRoles.ForEach(async role => await messagesService.SendResponse(x => x.RoleSettingsChanged(role)));
             }
         }
 

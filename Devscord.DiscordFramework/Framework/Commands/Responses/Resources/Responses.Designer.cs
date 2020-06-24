@@ -61,6 +61,33 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dodano wszystkie role pomyślnie użytkownikowi {{user}}.
+        /// </summary>
+        public static string AllRolesAddedToUser {
+            get {
+                return ResourceManager.GetString("AllRolesAddedToUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Usunięto wszystkie role pomyślnie użytkownikowi {{user}}.
+        /// </summary>
+        public static string AllRolesRemovedFromUser {
+            get {
+                return ResourceManager.GetString("AllRolesRemovedFromUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zmieniono ustawienia wszystkich powyższych roli pomyślnie.
+        /// </summary>
+        public static string AllRolesSettingsChanged {
+            get {
+                return ResourceManager.GetString("AllRolesSettingsChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Podane argumenty są zduplikowane..
         /// </summary>
         public static string ArgumentsDuplicated {
@@ -88,7 +115,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Użytkownik {{user}} został zmutowany do {{timeEnd}}UTC.
+        ///   Looks up a localized string similar to Użytkownik {{user}} został zmutowany do {{timeEnd}}.
         /// </summary>
         public static string MutedUser {
             get {
@@ -223,7 +250,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rola &quot;{{role}}&quot; już jest ustawiona jako niebezpieczna..
+        ///   Looks up a localized string similar to Rola &quot;{{role}}&quot; nie jest już ustawiona jako bezpieczna.
         /// </summary>
         public static string RoleIsUnsafeAlready {
             get {

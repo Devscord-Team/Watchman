@@ -223,5 +223,22 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             return responsesService.ProcessResponse("InvalidArguments",
                 new KeyValuePair<string, string>("arguments", arguments));
         }
+
+        public static string AllRolesAddedToUser(this ResponsesService responsesService, Contexts contexts)
+        {
+            return responsesService.ProcessResponse("AllRolesAddedToUser",
+                new KeyValuePair<string, string>("user", contexts.User.Name));
+        }
+        
+        public static string AllRolesRemovedFromUser(this ResponsesService responsesService, Contexts contexts)
+        {
+            return responsesService.ProcessResponse("AllRolesRemovedFromUser",
+                new KeyValuePair<string, string>("user", contexts.User.Name));
+        }
+
+        public static string AllRolesSettingsChanged(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("AllRolesSettingsChanged");
+        }
     }
 }
