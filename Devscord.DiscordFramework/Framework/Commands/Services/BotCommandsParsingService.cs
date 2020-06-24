@@ -16,30 +16,36 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
 
         public IBotCommand ParseRequestToCommand(Type commandType, DiscordRequest request, BotCommandTemplate template)
         {
-            var result = this.GetFilledInstance(commandType, template, (key, isList) =>
-            {
-                var result = request.Arguments.FirstOrDefault(a => a.Name.ToLowerInvariant() == key.ToLowerInvariant());
-                if (result == null)
-                {
-                    return null;
-                }
-                var argType = template.Properties.FirstOrDefault(x => x.Name.ToLowerInvariant() == key.ToLowerInvariant())?.Type;
-                if (argType.HasValue && argType.Value == BotCommandPropertyType.Bool)
-                {
-                    return result.Value ?? bool.TrueString;
-                }
-                if (!isList)
-                {
-                    return result.Value;
-                }
-                var argumentsList = request.Arguments.ToList();
-                var indexOf = argumentsList.IndexOf(result);
-                var nextResults = argumentsList.Skip(indexOf + 1).TakeWhile(x => x.Name == null);
-                var list = new List<string>() { result.Value };
-                list.AddRange(nextResults.Select(x => x.Value));
-                return list;
-            });
+
+            var result = this.GetFilledInstance(commandType, template, (key, isList) => GetValueByName(key, isList, request, template));
             return result;
+        }
+
+        private static object GetValueByName(string key, bool isList, DiscordRequest request, BotCommandTemplate template)
+        {
+            var result = request.Arguments.FirstOrDefault(a => a.Name.ToLowerInvariant() == key.ToLowerInvariant());
+            if (result == null)
+            {
+                return null;
+            }
+
+            var argType = template.Properties.FirstOrDefault(x => x.Name.ToLowerInvariant() == key.ToLowerInvariant())?.Type;
+            if (argType.HasValue && argType.Value == BotCommandPropertyType.Bool)
+            {
+                return result.Value ?? bool.TrueString;
+            }
+
+            if (!isList)
+            {
+                return result.Value;
+            }
+
+            var argumentsList = request.Arguments.ToList();
+            var indexOf = argumentsList.IndexOf(result);
+            var nextResults = argumentsList.Skip(indexOf + 1).TakeWhile(x => x.Name == null);
+            var list = new List<string> { result.Value };
+            list.AddRange(nextResults.Select(x => x.Value));
+            return list;
         }
 
         public IBotCommand ParseCustomTemplate(Type commandType, BotCommandTemplate template, Regex customTemplate, string input)
@@ -50,39 +56,47 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                 Log.Warning("Custom template {customTemplate} is not valid for {commandName}", customTemplate, template.CommandName);
                 return null;
             }
-            var result = this.GetFilledInstance(commandType, template, (key, isList) =>
-            {
-                if (!match.Groups.ContainsKey(key))
-                {
-                    return null;
-                }
-                var lowerCaseKey = key.ToLowerInvariant();
-                var value = match.Groups[key].Value.Trim();
-                var argType = template.Properties.FirstOrDefault(x => x.Name.ToLowerInvariant() == lowerCaseKey)?.Type;
-                if (argType.HasValue && argType.Value == BotCommandPropertyType.Bool && !string.IsNullOrWhiteSpace(value))
-                {
-                    return bool.TrueString;
-                }
-                if (!isList)
-                {
-                    return value;
-                }
-                if (!value.Contains('\"') || value.Count(x => x == '\"') % 2 != 0)
-                {
-                    return value.Split(' ').ToList();
-                }
-                var results = value.Split('"')
-                    .Where(x => !string.IsNullOrWhiteSpace(x) && !x.StartsWith(' ') && !x.EndsWith(' '))
-                    .ToList();
-                foreach (var toRemove in results)
-                {
-                    value = value.Replace($"\"{toRemove}\"", string.Empty);
-                }
-                var otherResults = value.Split(' ').Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.Trim());
-                results.AddRange(otherResults);
-                return results;
-            });
+
+            var result = this.GetFilledInstance(commandType, template, (key, isList) => GetValueByNameFromCustomCommand(key, isList, template, match));
             return result;
+        }
+
+        private static object GetValueByNameFromCustomCommand(string key, bool isList, BotCommandTemplate template, Match match)
+        {
+            if (!match.Groups.ContainsKey(key))
+            {
+                return null;
+            }
+
+            var lowerCaseKey = key.ToLowerInvariant();
+            var value = match.Groups[key].Value.Trim();
+            var argType = template.Properties.FirstOrDefault(x => x.Name.ToLowerInvariant() == lowerCaseKey)?.Type;
+            if (argType.HasValue && argType.Value == BotCommandPropertyType.Bool && !string.IsNullOrWhiteSpace(value))
+            {
+                return bool.TrueString;
+            }
+
+            if (!isList)
+            {
+                return value;
+            }
+
+            if (!value.Contains('\"') || value.Count(x => x == '\"') % 2 != 0)
+            {
+                return value.Split(' ').ToList();
+            }
+
+            var results = value.Split('"')
+                .Where(x => !string.IsNullOrWhiteSpace(x) && !x.StartsWith(' ') && !x.EndsWith(' '))
+                .ToList();
+            foreach (var toRemove in results)
+            {
+                value = value.Replace($"\"{toRemove}\"", string.Empty);
+            }
+
+            var otherResults = value.Split(' ').Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.Trim());
+            results.AddRange(otherResults);
+            return results;
         }
 
         private IBotCommand GetFilledInstance(Type commandType, BotCommandTemplate template, Func<string, bool, object> getValueByName)
