@@ -44,6 +44,10 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                 {
                     continue;
                 }
+                if (matchedByName.Type == BotCommandPropertyType.Bool)
+                {
+                    continue;
+                }
                 if (matchedByName.Type == BotCommandPropertyType.List && !string.IsNullOrEmpty(argument.Value))
                 {
                     continue;
@@ -71,10 +75,6 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                 return false;
             }
             if (type == BotCommandPropertyType.SingleWord && value.Contains(' '))
-            {
-                return false;
-            }
-            if (type == BotCommandPropertyType.Bool && value != null && !bool.TryParse(value, out _))
             {
                 return false;
             }
