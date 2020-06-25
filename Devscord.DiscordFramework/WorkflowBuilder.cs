@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Devscord.DiscordFramework.Framework;
-using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Discord.WebSocket;
 using System;
@@ -10,6 +9,7 @@ using System.Threading.Tasks;
 using Discord;
 using Devscord.DiscordFramework.Middlewares;
 using Devscord.DiscordFramework.Integration;
+using Devscord.DiscordFramework.Middlewares.Factories;
 
 namespace Devscord.DiscordFramework
 {
@@ -17,16 +17,6 @@ namespace Devscord.DiscordFramework
     {
         public static List<DateTime> ConnectedTimes => Server.ConnectedTimes;
         public static List<DateTime> DisconnectedTimes => Server.DisconnectedTimes;
-        public event Func<Cacheable<IUserMessage, ulong>, ISocketMessageChannel, SocketReaction, Task> ReactionAdded
-        {
-            add { _client.ReactionAdded += value; }
-            remove { _client.ReactionAdded -= value; }
-        }
-        public event Func<Cacheable<IUserMessage, ulong>, ISocketMessageChannel, SocketReaction, Task> ReactionRemoved
-        {
-            add { _client.ReactionRemoved += value; }
-            remove { _client.ReactionRemoved -= value; }
-        }
 
         private readonly DiscordSocketClient _client;
         private readonly string _token;
@@ -42,6 +32,26 @@ namespace Devscord.DiscordFramework
             this._token = token;
             this._context = context;
             this._workflow = new Workflow(botAssembly, context);
+            this._client.ReactionAdded += GetReactionAdded();
+            this._client.ReactionRemoved += GetReactionRemoved();
+        }
+
+        private Func<Cacheable<IUserMessage, ulong>, ISocketMessageChannel, SocketReaction, Task> GetReactionAdded()
+        {
+            return (userMessage, socketMessageChannel, socketReaction) => Task.Run(() =>
+            {
+                var reactionContext = new ReactionContextFactory().Create(socketReaction, userMessage.GetOrDownloadAsync().Result);
+                this._workflow.OnUserAddedReaction.ForEach(x => x.Invoke(reactionContext));
+            });
+        }
+
+        private Func<Cacheable<IUserMessage, ulong>, ISocketMessageChannel, SocketReaction, Task> GetReactionRemoved()
+        {
+            return (userMessage, socketMessageChannel, socketReaction) => Task.Run(() =>
+            {
+                var reactionContext = new ReactionContextFactory().Create(socketReaction, userMessage.GetOrDownloadAsync().Result);
+                this._workflow.OnUserRemovedReaction.ForEach(x => x.Invoke(reactionContext));
+            });
         }
 
         public static WorkflowBuilder Create(string token, IComponentContext context, Assembly botAssembly) => new WorkflowBuilder(token, context, botAssembly);
@@ -99,6 +109,18 @@ namespace Devscord.DiscordFramework
             {
                 workflowAction.Invoke(exceptionHandler);
             }
+        }
+
+        public WorkflowBuilder AppendOnUserAddedReaction(Action<ReactionContext> action)
+        {
+            this._workflow.OnUserAddedReaction.Add(action);
+            return this;
+        }
+
+        public WorkflowBuilder AppendOnUserRemovedReaction(Action<ReactionContext> action)
+        {
+            this._workflow.OnUserRemovedReaction.Add(action);
+            return this;
         }
 
         public WorkflowBuilder Build()

@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 using Serilog;
 using System.IO;
 using System.Threading.Tasks;
-using Watchman.Discord.Areas.Reactions.Services;
 
 namespace Watchman.Discord
 {
@@ -19,11 +18,9 @@ namespace Watchman.Discord
             var configPath = "config-prod.json";
 #endif
             var configuration = JsonConvert.DeserializeObject<DiscordConfiguration>(File.ReadAllText(configPath));
-            
+
             var watchman = new WatchmanBot(configuration);
             var workflowBuilder = watchman.GetWorkflowBuilder();
-            workflowBuilder.ReactionAdded += (userMessage, socketMessageChannel, socketReaction) => ReactionsService.OnReactionAddedEvent(socketReaction);
-            workflowBuilder.ReactionRemoved += (userMessage, socketMessageChannel, socketReaction) => ReactionsService.OnReactionRemovedEvent(socketReaction);
             var lastException = DateTime.MinValue;
             var numberOfExceptionsInLastTime = 0;
 

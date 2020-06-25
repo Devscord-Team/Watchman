@@ -10,4 +10,9 @@ namespace Devscord.DiscordFramework.Middlewares.Factories
     {
         U Create(T socketObject);
     }
+
+    interface IContextFactory<T1, T2, U> where U : IDiscordContext
+    {
+        U Create(T1 socketObject, T2 socketObject2);
+    }
 }

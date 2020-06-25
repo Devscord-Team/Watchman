@@ -29,6 +29,8 @@ namespace Devscord.DiscordFramework
         public List<Func<DiscordServerContext, Task>> OnDiscordServerAddedBot { get; set; } = new List<Func<DiscordServerContext, Task>>();
         public List<Func<SocketMessage, Task>> OnMessageReceived { get; set; } = new List<Func<SocketMessage, Task>>();
         public List<Action<Exception, Contexts>> OnWorkflowException { get; set; } = new List<Action<Exception, Contexts>>();
+        public List<Action<ReactionContext>> OnUserAddedReaction { get; set; } = new List<Action<ReactionContext>>();
+        public List<Action<ReactionContext>> OnUserRemovedReaction { get; set; } = new List<Action<ReactionContext>>();
 
         internal Workflow(Assembly botAssembly, IComponentContext context)
         {
