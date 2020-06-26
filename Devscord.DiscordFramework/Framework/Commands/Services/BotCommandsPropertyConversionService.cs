@@ -19,6 +19,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                 _ => value
             };
         }
+
         private TimeSpan ToTimeSpan(string value)
         {
             var match = this._exTime.Match(value);
