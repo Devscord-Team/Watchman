@@ -14,6 +14,8 @@ namespace Watchman.Discord.Areas.Protection.Strategies
 {
     public class CheckUserSafetyStrategyService : ICyclicCacheGenerator, IUserSafetyChecker
     {
+        public RefreshFrequent RefreshFrequent { get; } = RefreshFrequent.Daily;
+
         private Dictionary<ulong, ServerSafeUsers> _safeUsersOnServers;
         private readonly IQueryBus _queryBus;
         private readonly DiscordServersService _discordServersService;
@@ -25,8 +27,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             this._queryBus = queryBus;
             this._discordServersService = discordServersService;
             this._configurationService = configurationService;
-
-            //_ = this.ReloadCache();
+            _ = this.ReloadCache();
         }
 
         public bool IsUserSafe(ulong userId, ulong serverId)

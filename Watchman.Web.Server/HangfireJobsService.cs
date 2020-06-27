@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Autofac;
 using Devscord.DiscordFramework.Services;
 using Hangfire;
@@ -19,8 +20,24 @@ namespace Watchman.Web.Server
             var recurringJobManager = container.Resolve<IRecurringJobManager>();
             foreach (var generator in generators)
             {
-                recurringJobManager.AddOrUpdate(generator.GetType().Name, () => generator.ReloadCache(), Cron.Daily(2));
+                var cronExpression = this.GetCronExpression(generator.RefreshFrequent);
+                recurringJobManager.AddOrUpdate(generator.GetType().Name, () => generator.ReloadCache(), cronExpression);
             }
+        }
+
+        private string GetCronExpression(RefreshFrequent refreshFrequent)
+        {
+            return refreshFrequent switch
+            {
+                RefreshFrequent.Minutely => Cron.Minutely(),
+                RefreshFrequent.Quarterly => "*/15 * * * *",
+                RefreshFrequent.Hourly => Cron.Hourly(),
+                RefreshFrequent.Daily => Cron.Daily(2),
+                RefreshFrequent.Weekly => Cron.Weekly(),
+                RefreshFrequent.Monthly => Cron.Monthly(),
+                RefreshFrequent.Yearly => Cron.Yearly(),
+                _ => throw new NotImplementedException()
+            };
         }
     }
 }

@@ -12,27 +12,24 @@ using System.Linq;
 
 namespace Devscord.DiscordFramework.Services
 {
-    public class MessagesService
+    public class MessagesService : ICyclicCacheGenerator
     {
+        public RefreshFrequent RefreshFrequent { get; } = RefreshFrequent.Quarterly;
+
         public ulong GuildId { get; set; }
         public ulong ChannelId { get; set; }
 
-        private static readonly Dictionary<ulong, IEnumerable<Response>> _serversResponses;
+        private static readonly Dictionary<ulong, IEnumerable<Response>> _serversResponses = new Dictionary<ulong, IEnumerable<Response>>();
         private static ResponsesService _responsesService;
         private readonly MessageSplittingService _splittingService;
         private readonly EmbedMessagesService _embedMessagesService;
-
-        static MessagesService()
-        {
-            _serversResponses = new Dictionary<ulong, IEnumerable<Response>>();
-            RefreshResponsesCyclic();
-        }
 
         public MessagesService(ResponsesService responsesService, MessageSplittingService splittingService, EmbedMessagesService embedMessagesService)
         {
             _responsesService = responsesService;
             this._splittingService = splittingService;
             this._embedMessagesService = embedMessagesService;
+            this.ReloadCache().Wait();
         }
 
         public Task SendMessage(string message, MessageType messageType = MessageType.NormalText)
@@ -89,17 +86,14 @@ namespace Devscord.DiscordFramework.Services
             });
         }
 
-        private static async void RefreshResponsesCyclic()
+        public Task ReloadCache()
         {
-            while (true)
+            foreach (var serverId in _serversResponses.Keys.ToList())
             {
-                foreach (var serverId in _serversResponses.Keys.ToList())
-                {
-                    var responses = _responsesService.GetResponsesFunc(serverId);
-                    _serversResponses[serverId] = responses;
-                }
-                await Task.Delay(10 * 60 * 1000);
+                var responses = _responsesService.GetResponsesFunc(serverId);
+                _serversResponses[serverId] = responses;
             }
+            return Task.CompletedTask;
         }
 
         private static IEnumerable<Response> GetResponsesForNewServer(ulong serverId)

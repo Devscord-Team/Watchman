@@ -14,6 +14,8 @@ namespace Watchman.Discord.Areas.Statistics.Services
 {
     public class CyclicStatisticsGeneratorService : ICyclicCacheGenerator
     {
+        public RefreshFrequent RefreshFrequent { get; } = RefreshFrequent.Daily;
+
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
         private readonly DiscordServersService _discordServersService;
