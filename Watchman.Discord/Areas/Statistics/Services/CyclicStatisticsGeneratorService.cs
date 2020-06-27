@@ -12,7 +12,7 @@ using Watchman.DomainModel.Messages.Queries.Handlers;
 
 namespace Watchman.Discord.Areas.Statistics.Services
 {
-    public class CyclicStatisticsGeneratorService : CyclicCacheGenerator
+    public class CyclicStatisticsGeneratorService : ICyclicCacheGenerator
     {
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
@@ -50,7 +50,7 @@ namespace Watchman.Discord.Areas.Statistics.Services
             }
         }
 
-        protected override async Task ReloadCache() => await GenerateStatsForLastDay();
+        public async Task ReloadCache() => await this.GenerateStatsForLastDay();
 
         private async Task GenerateStatsForLastDay()
         {

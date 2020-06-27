@@ -55,11 +55,6 @@ namespace Watchman.Discord
                             var servers = (await serversService.GetDiscordServers()).ToList();
                             servers.ForEach(unmutingService.UnmuteUsersInit);
                         })
-                        .AddFromIoC<CyclicStatisticsGeneratorService>(cyclicStatsGenerator => () =>
-                        {
-                            cyclicStatsGenerator.StartCyclicCaching();
-                            return Task.CompletedTask;
-                        })
                         .AddFromIoC<ResponsesInitService>(responsesService => async () =>
                         {
                             await responsesService.InitNewResponsesFromResources();

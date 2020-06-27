@@ -1,4 +1,5 @@
 using Hangfire;
+using Hangfire.MemoryStorage;
 using Hangfire.Mongo;
 using Hangfire.Mongo.Migration.Strategies;
 using Hangfire.Mongo.Migration.Strategies.Backup;
@@ -44,6 +45,9 @@ namespace Watchman.Web.Server
             services.AddMvc()
                 .AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
 
+#if DEBUG
+            services.AddHangfire(x => x.UseMemoryStorage());
+#else
             services.AddHangfire(config =>
             {
                 var storageOptions = new MongoStorageOptions
@@ -56,6 +60,7 @@ namespace Watchman.Web.Server
                 };
                 config.UseMongoStorage(this.Configuration.GetConnectionString("Mongo"), storageOptions);
             });
+#endif
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -74,6 +79,7 @@ namespace Watchman.Web.Server
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseHangfireDashboard();
+            app.UseHangfireServer();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {

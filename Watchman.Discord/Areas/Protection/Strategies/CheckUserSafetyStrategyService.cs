@@ -12,7 +12,7 @@ using Watchman.DomainModel.Settings.Services;
 
 namespace Watchman.Discord.Areas.Protection.Strategies
 {
-    public class CheckUserSafetyStrategyService : CyclicCacheGenerator, IUserSafetyChecker
+    public class CheckUserSafetyStrategyService : ICyclicCacheGenerator, IUserSafetyChecker
     {
         private Dictionary<ulong, ServerSafeUsers> _safeUsersOnServers;
         private readonly IQueryBus _queryBus;
@@ -26,8 +26,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             this._discordServersService = discordServersService;
             this._configurationService = configurationService;
 
-            _ = this.ReloadCache();
-            base.StartCyclicCaching();
+            //_ = this.ReloadCache();
         }
 
         public bool IsUserSafe(ulong userId, ulong serverId)
@@ -35,10 +34,10 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             return this._safeUsersOnServers.TryGetValue(serverId, out var serverUsers) && serverUsers.SafeUsers.Contains(userId);
         }
 
-        protected sealed override async Task ReloadCache()
+        public async Task ReloadCache()
         {
             Log.Information("Reloading cache....");
-            await UpdateMessages();
+            await this.UpdateMessages();
             Log.Information("Cache reloaded");
         }
 
