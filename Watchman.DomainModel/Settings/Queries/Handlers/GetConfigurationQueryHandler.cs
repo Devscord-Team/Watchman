@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Watchman.Cqrs;
 using Watchman.Integrations.MongoDB;
 
@@ -15,9 +16,10 @@ namespace Watchman.DomainModel.Settings.Queries.Handlers
 
         public GetConfigurationQueryResult Handle(GetConfigurationQuery query)
         {
-            using var session = this._sessionFactory.Create();
-            var configuration = session.Get<Configuration>().FirstOrDefault() ?? Configuration.Default;
-            return new GetConfigurationQueryResult(configuration);
+            throw new NotImplementedException();
+            //using var session = this._sessionFactory.Create();
+            //var configuration = session.Get<ConfigurationItem>().FirstOrDefault() ?? ConfigurationItem.Default;
+            //return new GetConfigurationQueryResult(configuration);
         }
     }
 }

@@ -4,6 +4,7 @@ using Devscord.DiscordFramework.Framework.Commands.AntiSpam;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
+using Watchman.DomainModel.Settings.ConfigurationItems;
 using Watchman.DomainModel.Settings.Services;
 
 namespace Watchman.Discord.Areas.Protection.Strategies
@@ -33,8 +34,9 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             }
 
             var content = request.OriginalMessage;
-            var similarMessagesCount = lastFewMessages.Count(x => GetDifferencePercent(x.Content, content) < _configurationService.Configuration.PercentOfSimilarityBetweenMessagesToSuspectSpam);
             var serverId = contexts.Server.Id;
+            var percentOfSimilarityToSuspectSpam = this._configurationService.GetConfigurationItem<PercentOfSimilarityBetweenMessagesToSuspectSpam>(serverId).Value;
+            var similarMessagesCount = lastFewMessages.Count(x => GetDifferencePercent(x.Content, content) < percentOfSimilarityToSuspectSpam);
             var isUserSafe = this.UserSafetyChecker.IsUserSafe(userId, serverId);
 
             return similarMessagesCount switch

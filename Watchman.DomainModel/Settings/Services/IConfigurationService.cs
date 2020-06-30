@@ -2,6 +2,6 @@
 {
     public interface IConfigurationService
     {
-        Configuration Configuration { get; }
+        T GetConfigurationItem<T>(ulong serverId) where T : IMappedConfiguration;
     }
 }

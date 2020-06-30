@@ -5,7 +5,7 @@ using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
 using Devscord.DiscordFramework.Services.Models;
 using Moq;
 using Watchman.DomainModel.Messages.Queries;
-using Watchman.DomainModel.Settings;
+using Watchman.DomainModel.Settings.ConfigurationItems;
 using Watchman.DomainModel.Settings.Services;
 
 namespace Watchman.Discord.UnitTests.AntiSpam
@@ -22,8 +22,8 @@ namespace Watchman.Discord.UnitTests.AntiSpam
                 .Returns(isUserSafe);
             var configurationService = new Mock<IConfigurationService>();
             configurationService
-                .Setup(x => x.Configuration)
-                .Returns(Configuration.Default);
+                .Setup(x => x.GetConfigurationItem<PercentOfSimilarityBetweenMessagesToSuspectSpam>(It.IsAny<ulong>()))
+                .Returns(new PercentOfSimilarityBetweenMessagesToSuspectSpam());
 
             var (request, contexts) = spamTestsService.CreateRequestAndContexts(messagesContent.Last());
             var serverMessages = new ServerMessagesCacheService();

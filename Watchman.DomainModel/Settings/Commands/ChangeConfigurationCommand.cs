@@ -4,11 +4,11 @@ namespace Watchman.DomainModel.Settings.Commands
 {
     internal class ChangeConfigurationCommand : ICommand
     {
-        public Configuration Configuration { get; }
+        public IConfigurationItem ConfigurationItem { get; }
 
-        public ChangeConfigurationCommand(Configuration configuration)
+        public ChangeConfigurationCommand(IConfigurationItem configurationItem)
         {
-            this.Configuration = configuration;
+            this.ConfigurationItem = configurationItem;
         }
     }
 }

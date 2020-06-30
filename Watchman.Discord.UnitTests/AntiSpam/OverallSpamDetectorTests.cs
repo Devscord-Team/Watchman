@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Autofac.Extras.Moq;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
 using Devscord.DiscordFramework.Services.Models;
 using Moq;
 using NUnit.Framework;
-using Watchman.Cqrs;
 using Watchman.Discord.Areas.Protection.Strategies;
 using Watchman.DomainModel.Messages.Queries;
-using Watchman.DomainModel.Settings;
+using Watchman.DomainModel.Settings.ConfigurationItems;
 using Watchman.DomainModel.Settings.Services;
-using Watchman.Integrations.MongoDB;
 
 namespace Watchman.Discord.UnitTests.AntiSpam
 {
@@ -46,8 +42,8 @@ namespace Watchman.Discord.UnitTests.AntiSpam
             });
             var configurationService = new Mock<IConfigurationService>();
             configurationService
-                .Setup(x => x.Configuration)
-                .Returns(Configuration.Default);
+                .Setup(x => x.GetConfigurationItem<PercentOfSimilarityBetweenMessagesToSuspectSpam>(It.IsAny<ulong>()))
+                .Returns(new PercentOfSimilarityBetweenMessagesToSuspectSpam());
             var overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessages, userSafetyChecker.Object, configurationService.Object);
 
             // Act
@@ -79,8 +75,8 @@ namespace Watchman.Discord.UnitTests.AntiSpam
             });
             var configurationService = new Mock<IConfigurationService>();
             configurationService
-                .Setup(x => x.Configuration)
-                .Returns(Configuration.Default);
+                .Setup(x => x.GetConfigurationItem<PercentOfSimilarityBetweenMessagesToSuspectSpam>(It.IsAny<ulong>()))
+                .Returns(new PercentOfSimilarityBetweenMessagesToSuspectSpam());
             var overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessages, userSafetyChecker.Object, configurationService.Object);
 
             // Act

@@ -8,6 +8,7 @@ using Watchman.Cqrs;
 using Watchman.Discord.Areas.Protection.Models;
 using Watchman.DomainModel.Messages;
 using Watchman.DomainModel.Messages.Queries;
+using Watchman.DomainModel.Settings.ConfigurationItems;
 using Watchman.DomainModel.Settings.Services;
 
 namespace Watchman.Discord.Areas.Protection.Strategies
@@ -54,7 +55,8 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             var serversWhereBotIs = (await this._discordServersService.GetDiscordServers()).Select(x => x.Id).ToHashSet();
             var servers = messages.GroupBy(x => x.Server.Id).Where(x => serversWhereBotIs.Contains(x.Key));
 
-            this._safeUsersOnServers = servers.Select(x => new ServerSafeUsers(x, x.Key, this._configurationService.Configuration.MinAverageMessagesPerWeek))
+            this._safeUsersOnServers = servers
+                .Select(x => new ServerSafeUsers(x, x.Key, this._configurationService.GetConfigurationItem<MinAverageMessagesPerWeek>(x.Key).Value))
                 .ToDictionary(x => x.ServerId, x => x);
         }
     }

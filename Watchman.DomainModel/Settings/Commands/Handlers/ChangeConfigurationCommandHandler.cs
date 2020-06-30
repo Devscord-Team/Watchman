@@ -15,8 +15,8 @@ namespace Watchman.DomainModel.Settings.Commands.Handlers
 
         public async Task HandleAsync(ChangeConfigurationCommand command)
         {
-            var session = this._sessionFactory.Create();
-            await session.ReplaceByTypeAsync(command.Configuration);
+            //var session = this._sessionFactory.Create();
+            //await session.AddOrUpdateAsync(command.ConfigurationItem);
         }
     }
 }

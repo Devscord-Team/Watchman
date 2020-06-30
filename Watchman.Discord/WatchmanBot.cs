@@ -19,6 +19,7 @@ using Watchman.Discord.Areas.Protection.Services;
 using Watchman.Discord.Areas.Statistics.Services;
 using Watchman.Discord.Areas.Users.Services;
 using System.Diagnostics;
+using Watchman.DomainModel.Settings.Services;
 
 namespace Watchman.Discord
 {
@@ -45,6 +46,7 @@ namespace Watchman.Discord
                 {
                     builder
                         .AddHandler(() => Task.Run(() => Log.Information("Bot started and logged in...")))
+                        .AddFromIoC<ConfigurationService>(configurationService => configurationService.InitDefaultConfigurations)
                         .AddFromIoC<HelpDataCollectorService, HelpDBGeneratorService>((dataCollector, helpService) => () =>
                         {
                             Task.Run(() => helpService.FillDatabase(dataCollector.GetCommandsInfo(typeof(WatchmanBot).Assembly)));

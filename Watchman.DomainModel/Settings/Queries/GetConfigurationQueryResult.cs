@@ -4,11 +4,11 @@ namespace Watchman.DomainModel.Settings.Queries
 {
     public class GetConfigurationQueryResult : IQueryResult
     {
-        public Configuration Configuration { get; private set; }
+        public ConfigurationItem ConfigurationItem { get; private set; }
         
-        public GetConfigurationQueryResult(Configuration configuration)
+        public GetConfigurationQueryResult(ConfigurationItem configurationItem)
         {
-            this.Configuration = configuration;
+            this.ConfigurationItem = configurationItem;
         }
     }
 }
