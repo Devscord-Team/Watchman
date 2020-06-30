@@ -26,20 +26,20 @@ namespace Watchman.DomainModel.Settings.Services
         public Dictionary<Type, Dictionary<ulong, IMappedConfiguration>> GetMappedConfigurations(IEnumerable<ConfigurationItem> configurationItems)
         {
             var groupedByTypes = configurationItems.GroupBy(x => x.ConfigurationName);
-            return groupedByTypes.Select(x => MakeServersDict(x)).ToDictionary(x => x.Values.First().GetType(), x => x);
+            return groupedByTypes.Select(this.MakeServersDictionary).ToDictionary(x => x.Values.First().GetType(), x => x);
         }
 
         public ConfigurationItem MapIntoBaseFormat(IMappedConfiguration mappedConfiguration)
         {
             return new ConfigurationItem
             {
-                ServerId = ((dynamic)mappedConfiguration).ServerId,
-                ConfigurationName = mappedConfiguration.GetType().Name,
+                ServerId = mappedConfiguration.ServerId,
+                ConfigurationName = mappedConfiguration.ConfigurationName,
                 Value = ((dynamic)mappedConfiguration).Value
             };
         }
 
-        private Dictionary<ulong, IMappedConfiguration> MakeServersDict(IEnumerable<ConfigurationItem> configurationItems)
+        private Dictionary<ulong, IMappedConfiguration> MakeServersDictionary(IEnumerable<ConfigurationItem> configurationItems)
         {
             return configurationItems.ToDictionary(x => x.ServerId, x => this.MapConfiguration(x));
         }

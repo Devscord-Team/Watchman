@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Watchman.Cqrs;
-using Watchman.DomainModel.Settings.Commands;
-using Watchman.DomainModel.Settings.Queries;
 using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Settings.Services
@@ -44,13 +41,22 @@ namespace Watchman.DomainModel.Settings.Services
             return this._cachedConfigurationItem.Select(x => x.Value.GetValueOrDefault(serverId) ?? x.Value[0]);
         }
 
-        public async Task SaveNewConfiguration()
+        public async Task SaveNewConfiguration(IMappedConfiguration changedConfiguration)
         {
-        }
+            using var session = this._sessionFactory.Create();
+            var existingConfiguration = session.Get<ConfigurationItem>()
+                .FirstOrDefault(x => x.ServerId == changedConfiguration.ServerId && x.ConfigurationName == changedConfiguration.ConfigurationName);
+            var baseFormatConfigurationItem = this._configurationMapperService.MapIntoBaseFormat(changedConfiguration);
 
-        public async Task SaveNewConfiguration(ConfigurationItem configurationItem)
-        {
-
+            if (existingConfiguration == null)
+            {
+                await session.AddAsync(baseFormatConfigurationItem);
+            }
+            else
+            {
+                existingConfiguration.Value = baseFormatConfigurationItem.Value;
+                await session.AddOrUpdateAsync(existingConfiguration);
+            }
         }
 
         public async Task InitDefaultConfigurations()
@@ -61,12 +67,14 @@ namespace Watchman.DomainModel.Settings.Services
                 var conf = (IMappedConfiguration)Activator.CreateInstance(x);
                 return this._configurationMapperService.MapIntoBaseFormat(conf);
             }).ToList();
-            var session = this._sessionFactory.Create();
-            var existingConfigurations = session.Get<ConfigurationItem>().Where(x => x.ServerId == 0).ToList();
-
-            foreach (var configuration in configurations.Where(x => existingConfigurations.All(y => x.ConfigurationName != y.ConfigurationName)))
+            using (var session = this._sessionFactory.Create())
             {
-                await session.AddAsync(configuration);
+                var existingConfigurations = session.Get<ConfigurationItem>().Where(x => x.ServerId == 0).ToList();
+
+                foreach (var configuration in configurations.Where(x => existingConfigurations.All(y => x.ConfigurationName != y.ConfigurationName)))
+                {
+                    await session.AddAsync(configuration);
+                }
             }
             this.ReloadConfiguration();
         }
