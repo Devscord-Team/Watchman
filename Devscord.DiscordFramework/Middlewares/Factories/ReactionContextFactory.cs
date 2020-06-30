@@ -5,21 +5,18 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 
 namespace Devscord.DiscordFramework.Middlewares.Factories
 {
-    internal class ReactionContextFactory : IContextFactory<SocketReaction, IUserMessage, ReactionContext>
+    internal class ReactionContextFactory : IContextFactory<Tuple<SocketReaction, IUserMessage>, ReactionContext>
     {
-        public ReactionContext Create(SocketReaction reaction, IUserMessage userMessage)
+        public ReactionContext Create(Tuple<SocketReaction, IUserMessage> reactionAndUserMessage)
         {
-            return new ReactionContext(
-                reaction.Channel.Id,
-                reaction.Channel.Name,
-                reaction.Emote.Name,
-                userMessage.Content,
-                userMessage.Author.Username,
-                userMessage.Author.Id,
-                reaction.MessageId,
-                reaction.User.Value.Username,
-                reaction.UserId,
-                sentAt: DateTime.Now);
+            var reaction = reactionAndUserMessage.Item1;
+            var userMessage = reactionAndUserMessage.Item2;
+
+            var channelContext = new ChannelContextFactory().Create(reaction.Channel);
+            var userContext = new UserContextsFactory().Create(reaction.User.Value);
+            var messageContext = new MessageContextFactory().Create(userMessage);
+
+            return new ReactionContext(channelContext, userContext, messageContext, reaction.Emote.Name, sentAt: DateTime.Now);
         }
     }
 }

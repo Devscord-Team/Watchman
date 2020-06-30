@@ -40,7 +40,7 @@ namespace Devscord.DiscordFramework
         {
             return (userMessage, socketMessageChannel, socketReaction) => Task.Run(() =>
             {
-                var reactionContext = new ReactionContextFactory().Create(socketReaction, userMessage.GetOrDownloadAsync().Result);
+                var reactionContext = new ReactionContextFactory().Create(Tuple.Create(socketReaction, userMessage.GetOrDownloadAsync().Result));
                 this._workflow.OnUserAddedReaction.ForEach(x => x.Invoke(reactionContext));
             });
         }
@@ -49,7 +49,7 @@ namespace Devscord.DiscordFramework
         {
             return (userMessage, socketMessageChannel, socketReaction) => Task.Run(() =>
             {
-                var reactionContext = new ReactionContextFactory().Create(socketReaction, userMessage.GetOrDownloadAsync().Result);
+                var reactionContext = new ReactionContextFactory().Create(Tuple.Create(socketReaction, userMessage.GetOrDownloadAsync().Result));
                 this._workflow.OnUserRemovedReaction.ForEach(x => x.Invoke(reactionContext));
             });
         }
