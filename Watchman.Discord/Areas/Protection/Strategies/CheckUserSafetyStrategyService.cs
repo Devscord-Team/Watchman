@@ -33,7 +33,9 @@ namespace Watchman.Discord.Areas.Protection.Strategies
 
         public bool IsUserSafe(ulong userId, ulong serverId)
         {
-            return this._safeUsersOnServers.TryGetValue(serverId, out var serverUsers) && serverUsers.SafeUsers.Contains(userId);
+            return this._safeUsersOnServers != null 
+                   && this._safeUsersOnServers.TryGetValue(serverId, out var serverUsers) 
+                   && serverUsers.SafeUsers.Contains(userId);
         }
 
         public async Task ReloadCache()
