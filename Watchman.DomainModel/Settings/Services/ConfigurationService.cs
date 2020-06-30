@@ -61,7 +61,7 @@ namespace Watchman.DomainModel.Settings.Services
 
         public async Task InitDefaultConfigurations()
         {
-            var configurationsTypes = this._configurationTypesSearcher.GetConfigurationTypes();
+            var configurationsTypes = this._configurationTypesSearcher.ConfigurationTypes;
             var configurations = configurationsTypes.Select(x =>
             {
                 var conf = (IMappedConfiguration)Activator.CreateInstance(x);

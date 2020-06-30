@@ -1,19 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Watchman.DomainModel.Settings.ConfigurationItems;
 
 namespace Watchman.DomainModel.Settings.Services
 {
-    public class ConfigurationItemsSearcherService
-    {
-        public List<Type> GetConfigurationTypes() => new List<Type>
-        {
-            typeof(MinAverageMessagesPerWeek),
-            typeof(PercentOfSimilarityBetweenMessagesToSuspectSpam)
-        };
-    }
-
     public class ConfigurationMapperService
     {
         private readonly ConfigurationItemsSearcherService _configurationItemsSearcher;
@@ -46,7 +36,7 @@ namespace Watchman.DomainModel.Settings.Services
 
         private IMappedConfiguration MapConfiguration(ConfigurationItem configurationItem)
         {
-            var type = this._configurationItemsSearcher.GetConfigurationTypes().First(x => x.Name == configurationItem.ConfigurationName);
+            var type = this._configurationItemsSearcher.ConfigurationTypes.First(x => x.Name == configurationItem.ConfigurationName);
             return (IMappedConfiguration)Activator.CreateInstance(type);
         }
     }
