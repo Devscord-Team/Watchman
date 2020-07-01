@@ -54,7 +54,7 @@ namespace Watchman.DomainModel.Settings.Services
             }
             else
             {
-                existingConfiguration.Value = baseFormatConfigurationItem.Value;
+                existingConfiguration.SetValue(baseFormatConfigurationItem.Value);
                 await session.AddOrUpdateAsync(existingConfiguration);
             }
         }

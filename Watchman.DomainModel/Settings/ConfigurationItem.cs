@@ -4,8 +4,21 @@ namespace Watchman.DomainModel.Settings
 {
     public class ConfigurationItem : Entity, IAggregateRoot
     {
-        public object Value { get; set; }
-        public ulong ServerId { get; set; }
-        public string Name { get; set; }
+        public object Value { get; private set; }
+        public ulong ServerId { get; }
+        public string Name { get; }
+
+        public ConfigurationItem(object value, ulong serverId, string name)
+        {
+            this.Value = value;
+            this.ServerId = serverId;
+            this.Name = name;
+        }
+
+        public void SetValue(object value)
+        {
+            this.Value = value;
+            this.Update();
+        }
     }
 }
