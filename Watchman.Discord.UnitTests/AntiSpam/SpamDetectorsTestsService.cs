@@ -27,7 +27,7 @@ namespace Watchman.Discord.UnitTests.AntiSpam
 
             var (request, contexts) = spamTestsService.CreateRequestAndContexts(messagesContent.Last());
             var serverMessages = new ServerMessagesCacheService();
-            serverMessages.OverwriteMessages(messagesContent.SkipLast(1).Select(x => new SmallMessage(x, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now)));
+            serverMessages.OverwriteMessages(messagesContent.SkipLast(1).Select(x => new SmallMessage(x, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now, GetMessagesQuery.GET_ALL_SERVERS)));
 
             var needsConfiguration = typeof(T).GetConstructors().Any(x => x.GetParameters().Any(x => x.ParameterType == typeof(IConfigurationService)));
             var spamDetector = needsConfiguration 

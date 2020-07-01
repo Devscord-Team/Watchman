@@ -24,7 +24,8 @@ namespace Watchman.Discord.Areas.Protection.Strategies
         public SpamProbability GetSpamProbability(ServerMessagesCacheService serverMessagesCacheService, DiscordRequest request, Contexts contexts)
         {
             var userId = contexts.User.Id;
-            var lastFewMessages = serverMessagesCacheService.GetLastUserMessages(userId)
+            var serverId = contexts.Server.Id;
+            var lastFewMessages = serverMessagesCacheService.GetLastUserMessages(userId, serverId)
                 .TakeLast(4)
                 .ToList();
 
@@ -34,7 +35,6 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             }
 
             var content = request.OriginalMessage;
-            var serverId = contexts.Server.Id;
             var percentOfSimilarityToSuspectSpam = this._configurationService.GetConfigurationItem<PercentOfSimilarityBetweenMessagesToSuspectSpam>(serverId).Value;
             var similarMessagesCount = lastFewMessages.Count(x => GetDifferencePercent(x.Content, content) < percentOfSimilarityToSuspectSpam);
             var isUserSafe = this.UserSafetyChecker.IsUserSafe(userId, serverId);

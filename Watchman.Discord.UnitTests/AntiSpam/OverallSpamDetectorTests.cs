@@ -36,9 +36,9 @@ namespace Watchman.Discord.UnitTests.AntiSpam
             var serverMessages = new ServerMessagesCacheService();
             serverMessages.OverwriteMessages(new List<SmallMessage>
             {
-                new SmallMessage(messageContent1, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now),
-                new SmallMessage(messageContent2, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now),
-                new SmallMessage(messageContent3, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now)
+                new SmallMessage(messageContent1, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now, GetMessagesQuery.GET_ALL_SERVERS),
+                new SmallMessage(messageContent2, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now, GetMessagesQuery.GET_ALL_SERVERS),
+                new SmallMessage(messageContent3, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now, GetMessagesQuery.GET_ALL_SERVERS)
             });
             var configurationService = new Mock<IConfigurationService>();
             configurationService
@@ -69,9 +69,9 @@ namespace Watchman.Discord.UnitTests.AntiSpam
             var serverMessages = new ServerMessagesCacheService();
             serverMessages.OverwriteMessages(new List<SmallMessage>
             {
-                new SmallMessage(messageContent1, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now),
-                new SmallMessage(messageContent2, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now),
-                new SmallMessage(messageContent3, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now)
+                new SmallMessage(messageContent1, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now, GetMessagesQuery.GET_ALL_SERVERS),
+                new SmallMessage(messageContent2, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now, GetMessagesQuery.GET_ALL_SERVERS),
+                new SmallMessage(messageContent3, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now, GetMessagesQuery.GET_ALL_SERVERS)
             });
             var configurationService = new Mock<IConfigurationService>();
             configurationService
