@@ -66,7 +66,7 @@ namespace Watchman.DomainModel.Settings.Services
             {
                 var conf = (IMappedConfiguration)Activator.CreateInstance(x);
                 return this._configurationMapperService.MapIntoBaseFormat(conf);
-            }).ToList();
+            });
             using (var session = this._sessionFactory.Create())
             {
                 var existingConfigurations = session.Get<ConfigurationItem>().Where(x => x.ServerId == 0).ToList();

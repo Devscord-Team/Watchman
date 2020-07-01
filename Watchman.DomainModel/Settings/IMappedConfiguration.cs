@@ -10,9 +10,13 @@
     {
         public T Value { get; set; }
         public ulong ServerId { get; set; }
-        public abstract string Name { get; }
+        public string Name { get; }
         public abstract T DefaultValue { get; }
 
-        public MappedConfiguration() => this.Value = this.DefaultValue;
+        public MappedConfiguration()
+        {
+            this.Value = this.DefaultValue;
+            this.Name = this.GetType().Name;
+        }
     }
 }
