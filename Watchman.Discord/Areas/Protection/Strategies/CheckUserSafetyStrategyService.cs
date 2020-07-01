@@ -3,13 +3,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam;
 using Devscord.DiscordFramework.Services;
+using Devscord.DiscordFramework.Services.Models;
 using Serilog;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Protection.Models;
-using Watchman.DomainModel.Messages;
 using Watchman.DomainModel.Messages.Queries;
 using Watchman.DomainModel.Settings.ConfigurationItems;
 using Watchman.DomainModel.Settings.Services;
+using Message = Watchman.DomainModel.Messages.Message;
 
 namespace Watchman.Discord.Areas.Protection.Strategies
 {

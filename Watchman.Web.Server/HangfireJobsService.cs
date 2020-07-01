@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Autofac;
 using Devscord.DiscordFramework.Services;
+using Devscord.DiscordFramework.Services.Models;
 using Hangfire;
 using Watchman.Discord.Areas.Protection.Strategies;
 using Watchman.Discord.Areas.Statistics.Services;

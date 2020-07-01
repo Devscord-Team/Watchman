@@ -48,6 +48,7 @@ namespace Watchman.Discord
             catch (Exception e)
             {
                 HandleException(e);
+                await Task.Delay(10000);
             }
         }
 

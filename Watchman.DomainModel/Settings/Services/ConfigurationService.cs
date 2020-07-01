@@ -45,7 +45,7 @@ namespace Watchman.DomainModel.Settings.Services
         {
             using var session = this._sessionFactory.Create();
             var existingConfiguration = session.Get<ConfigurationItem>()
-                .FirstOrDefault(x => x.ServerId == changedConfiguration.ServerId && x.ConfigurationName == changedConfiguration.ConfigurationName);
+                .FirstOrDefault(x => x.ServerId == changedConfiguration.ServerId && x.Name == changedConfiguration.Name);
             var baseFormatConfigurationItem = this._configurationMapperService.MapIntoBaseFormat(changedConfiguration);
 
             if (existingConfiguration == null)
@@ -71,7 +71,7 @@ namespace Watchman.DomainModel.Settings.Services
             {
                 var existingConfigurations = session.Get<ConfigurationItem>().Where(x => x.ServerId == 0).ToList();
 
-                foreach (var configuration in configurations.Where(x => existingConfigurations.All(y => x.ConfigurationName != y.ConfigurationName)))
+                foreach (var configuration in configurations.Where(x => existingConfigurations.All(y => x.Name != y.Name)))
                 {
                     await session.AddAsync(configuration);
                 }

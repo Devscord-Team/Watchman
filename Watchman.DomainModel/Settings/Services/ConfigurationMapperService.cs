@@ -15,7 +15,7 @@ namespace Watchman.DomainModel.Settings.Services
 
         public Dictionary<Type, Dictionary<ulong, IMappedConfiguration>> GetMappedConfigurations(IEnumerable<ConfigurationItem> configurationItems)
         {
-            var groupedByTypes = configurationItems.GroupBy(x => x.ConfigurationName);
+            var groupedByTypes = configurationItems.GroupBy(x => x.Name);
             return groupedByTypes.Select(this.MakeServersDictionary).ToDictionary(x => x.Values.First().GetType(), x => x);
         }
 
@@ -24,7 +24,7 @@ namespace Watchman.DomainModel.Settings.Services
             return new ConfigurationItem
             {
                 ServerId = mappedConfiguration.ServerId,
-                ConfigurationName = mappedConfiguration.ConfigurationName,
+                Name = mappedConfiguration.Name,
                 Value = ((dynamic)mappedConfiguration).Value
             };
         }
@@ -36,7 +36,7 @@ namespace Watchman.DomainModel.Settings.Services
 
         private IMappedConfiguration MapConfiguration(ConfigurationItem configurationItem)
         {
-            var type = this._configurationItemsSearcher.ConfigurationTypes.First(x => x.Name == configurationItem.ConfigurationName);
+            var type = this._configurationItemsSearcher.ConfigurationTypes.First(x => x.Name == configurationItem.Name);
             return (IMappedConfiguration)Activator.CreateInstance(type);
         }
     }

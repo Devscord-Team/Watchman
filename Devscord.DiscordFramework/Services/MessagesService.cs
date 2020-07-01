@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Commons.Exceptions;
 using System.Linq;
+using Devscord.DiscordFramework.Services.Models;
 
 namespace Devscord.DiscordFramework.Services
 {

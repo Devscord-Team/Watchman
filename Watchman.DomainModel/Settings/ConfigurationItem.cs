@@ -6,6 +6,6 @@ namespace Watchman.DomainModel.Settings
     {
         public object Value { get; set; }
         public ulong ServerId { get; set; }
-        public string ConfigurationName { get; set; }
+        public string Name { get; set; }
     }
 }
