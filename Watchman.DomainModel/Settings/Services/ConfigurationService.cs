@@ -23,10 +23,7 @@ namespace Watchman.DomainModel.Settings.Services
 
         public T GetConfigurationItem<T>(ulong serverId) where T : IMappedConfiguration
         {
-            if (this._lastRefreshed < DateTime.Now.AddMinutes(-10))
-            {
-                this.ReloadConfiguration();
-            }
+            this.ReloadIfNeeded();
             var configurations = this._cachedConfigurationItem[typeof(T)];
             var serverConfiguration = configurations.GetValueOrDefault(serverId) ?? configurations[0];
             return (T)serverConfiguration;
@@ -34,10 +31,7 @@ namespace Watchman.DomainModel.Settings.Services
 
         public IEnumerable<IMappedConfiguration> GetConfigurationItems(ulong serverId)
         {
-            if (this._lastRefreshed < DateTime.Now.AddMinutes(-10))
-            {
-                this.ReloadConfiguration();
-            }
+            this.ReloadIfNeeded();
             return this._cachedConfigurationItem.Select(x => x.Value.GetValueOrDefault(serverId) ?? x.Value[0]);
         }
 
@@ -47,7 +41,6 @@ namespace Watchman.DomainModel.Settings.Services
             var existingConfiguration = session.Get<ConfigurationItem>()
                 .FirstOrDefault(x => x.ServerId == changedConfiguration.ServerId && x.Name == changedConfiguration.Name);
             var baseFormatConfigurationItem = this._configurationMapperService.MapIntoBaseFormat(changedConfiguration);
-
             if (existingConfiguration == null)
             {
                 await session.AddAsync(baseFormatConfigurationItem);
@@ -67,21 +60,26 @@ namespace Watchman.DomainModel.Settings.Services
                 var conf = (IMappedConfiguration)Activator.CreateInstance(x);
                 return this._configurationMapperService.MapIntoBaseFormat(conf);
             });
-            using (var session = this._sessionFactory.Create())
+            using var session = this._sessionFactory.Create();
+            var existingConfigurations = session.Get<ConfigurationItem>().Where(x => x.ServerId == 0).ToList();
+            foreach (var configuration in configurations.Where(x => existingConfigurations.All(y => x.Name != y.Name)))
             {
-                var existingConfigurations = session.Get<ConfigurationItem>().Where(x => x.ServerId == 0).ToList();
-
-                foreach (var configuration in configurations.Where(x => existingConfigurations.All(y => x.Name != y.Name)))
-                {
-                    await session.AddAsync(configuration);
-                }
+                await session.AddAsync(configuration);
             }
-            this.ReloadConfiguration();
+            this.ReloadConfiguration(session);
         }
 
-        private void ReloadConfiguration()
+        private void ReloadIfNeeded()
         {
-            using var session = this._sessionFactory.Create();
+            if (this._lastRefreshed < DateTime.Now.AddMinutes(-10))
+            {
+                using var session = this._sessionFactory.Create();
+                this.ReloadConfiguration(session);
+            }
+        }
+
+        private void ReloadConfiguration(ISession session)
+        {
             var configurationItems = session.Get<ConfigurationItem>();
             this._cachedConfigurationItem = this._configurationMapperService.GetMappedConfigurations(configurationItems);
             this._lastRefreshed = DateTime.Now;

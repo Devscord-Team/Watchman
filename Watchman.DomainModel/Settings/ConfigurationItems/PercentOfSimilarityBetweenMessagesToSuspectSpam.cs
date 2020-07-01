@@ -2,6 +2,10 @@
 {
     public class PercentOfSimilarityBetweenMessagesToSuspectSpam : MappedConfiguration<double>
     {
-        public override double DefaultValue { get; } = 0.4;
+        public override double Value { get; set; } = 0.4;
+
+        public PercentOfSimilarityBetweenMessagesToSuspectSpam(ulong serverId) : base(serverId)
+        {
+        }
     }
 }

@@ -2,6 +2,10 @@
 {
     public class MinAverageMessagesPerWeek : MappedConfiguration<int>
     {
-        public override int DefaultValue { get; } = 20;
+        public override int Value { get; set; } = 20;
+
+        public MinAverageMessagesPerWeek(ulong serverId) : base(serverId)
+        {
+        }
     }
 }
