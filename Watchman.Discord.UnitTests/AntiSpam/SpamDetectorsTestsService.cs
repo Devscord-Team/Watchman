@@ -23,7 +23,7 @@ namespace Watchman.Discord.UnitTests.AntiSpam
             var configurationService = new Mock<IConfigurationService>();
             configurationService
                 .Setup(x => x.GetConfigurationItem<PercentOfSimilarityBetweenMessagesToSuspectSpam>(It.IsAny<ulong>()))
-                .Returns(new PercentOfSimilarityBetweenMessagesToSuspectSpam());
+                .Returns(new PercentOfSimilarityBetweenMessagesToSuspectSpam(GetMessagesQuery.GET_ALL_SERVERS));
 
             var (request, contexts) = spamTestsService.CreateRequestAndContexts(messagesContent.Last());
             var serverMessages = new ServerMessagesCacheService();
