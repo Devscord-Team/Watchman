@@ -7,6 +7,5 @@ namespace Watchman.Web.Server.Areas
     [Route("[controller]/[action]")]
     public class BaseApiController : ControllerBase
     {
-
     }
 }
