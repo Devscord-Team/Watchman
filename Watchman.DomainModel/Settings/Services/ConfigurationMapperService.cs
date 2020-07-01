@@ -37,7 +37,10 @@ namespace Watchman.DomainModel.Settings.Services
         private IMappedConfiguration MapConfiguration(ConfigurationItem configurationItem)
         {
             var type = this._configurationItemsSearcher.ConfigurationTypes.First(x => x.Name == configurationItem.Name);
-            return (IMappedConfiguration)Activator.CreateInstance(type);
+            dynamic mappedConfiguration = Activator.CreateInstance(type);
+            mappedConfiguration!.Value = (dynamic)configurationItem.Value;
+            mappedConfiguration!.ServerId = configurationItem.ServerId;
+            return mappedConfiguration;
         }
     }
 }

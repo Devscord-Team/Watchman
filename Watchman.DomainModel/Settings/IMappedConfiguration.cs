@@ -2,14 +2,14 @@
 {
     public interface IMappedConfiguration
     {
-        ulong ServerId { get; }
+        ulong ServerId { get; set; }
         string Name { get; }
     }
 
     public abstract class MappedConfiguration<T> : IMappedConfiguration
     {
-        public T Value { get; }
-        public ulong ServerId { get; }
+        public T Value { get; set; }
+        public ulong ServerId { get; set; }
         public abstract string Name { get; }
         public abstract T DefaultValue { get; }
 
