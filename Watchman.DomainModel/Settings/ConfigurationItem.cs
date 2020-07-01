@@ -5,8 +5,8 @@ namespace Watchman.DomainModel.Settings
     public class ConfigurationItem : Entity, IAggregateRoot
     {
         public object Value { get; private set; }
-        public ulong ServerId { get; }
-        public string Name { get; }
+        public ulong ServerId { get; private set; }
+        public string Name { get; private set; }
 
         public ConfigurationItem(object value, ulong serverId, string name)
         {
