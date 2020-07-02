@@ -4,15 +4,12 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Help.BotCommands;
-<<<<<<< HEAD
-using Watchman.Discord.Areas.Help.Services;
-using Watchman.DomainModel.Help.Queries;
-=======
 using System.Threading.Tasks;
 using Watchman.Integrations.Google;
 using System.Linq;
 using System.Collections.Generic;
->>>>>>> master
+using Watchman.Discord.Areas.Help.Services;
+using Watchman.DomainModel.Help.Queries;
 
 namespace Watchman.Discord.Areas.Help.Controllers
 {
@@ -28,10 +25,7 @@ namespace Watchman.Discord.Areas.Help.Controllers
             this._messagesServiceFactory = messagesServiceFactory;
             this._helpMessageGenerator = messageGeneratorService;
             this._queryBus = queryBus;
-<<<<<<< HEAD
-=======
             this._googleSearchService = googleSearchService;
->>>>>>> master
         }
 
         public async Task PrintHelp(HelpCommand command, Contexts contexts)
@@ -46,11 +40,9 @@ namespace Watchman.Discord.Areas.Help.Controllers
             }
             else
             {
-<<<<<<< HEAD
-                messagesService.SendEmbedMessage("Dostępne komendy:", "Poniżej znajdziesz listę dostępnych komend wraz z ich opisami\nJeśli chcesz poznać dokładniejszy opis - zapraszamy do opisu w naszej dokumentacji\nhttps://watchman.readthedocs.io/pl/latest/156-lista-funkcjonalnosci/", this._helpMessageGenerator.MapToEmbedInput(helpInformations)); //todo add to responses - now we cannot handle this format
-=======
-                await messagesService.SendEmbedMessage("Dostępne komendy:", "Poniżej znajdziesz listę dostępnych komend wraz z ich opisami\nJeśli chcesz poznać dokładniejszy opis - zapraszamy do opisu w naszej dokumentacji\nhttps://watchman.readthedocs.io/pl/latest/156-lista-funkcjonalnosci/", this._helpMessageGenerator.MapToEmbedInput(helpInformations)); //todo add to responses - now we cannot handle this format
->>>>>>> master
+                await messagesService.SendEmbedMessage("Dostępne komendy:", 
+                    "Poniżej znajdziesz listę dostępnych komend wraz z ich opisami\nJeśli chcesz poznać dokładniejszy opis - zapraszamy do opisu w naszej dokumentacji\nhttps://watchman.readthedocs.io/pl/latest/156-lista-funkcjonalnosci/", 
+                    this._helpMessageGenerator.MapToEmbedInput(helpInformations)); //todo add to responses - now we cannot handle this format
             }
         }
 
@@ -58,7 +50,7 @@ namespace Watchman.Discord.Areas.Help.Controllers
         {
             var messagesService = this._messagesServiceFactory.Create(contexts);
             var results = this._googleSearchService.Search(command.Search);
-            await messagesService.SendEmbedMessage($"Wyniki google dla zapytania {command.Search}", "", results.Select(x => new KeyValuePair<string,string>( x.Title, x.Url + "\n" + x.Description)));
+            await messagesService.SendEmbedMessage($"Wyniki google dla zapytania {command.Search}", "", results.Select(x => new KeyValuePair<string, string>(x.Title, x.Url + "\n" + x.Description)));
         }
     }
 }
