@@ -10,6 +10,7 @@ namespace Devscord.DiscordFramework.Services
     public class UsersRolesService
     {
         public const string MUTED_ROLE_NAME = "muted";
+
         public async Task<UserRole> CreateNewRole(DiscordServerContext server, NewUserRole userRole)
         {
             return await Server.CreateNewRole(userRole, server);
