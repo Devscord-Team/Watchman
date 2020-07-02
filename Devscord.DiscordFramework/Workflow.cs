@@ -109,7 +109,7 @@ namespace Devscord.DiscordFramework
             this._stopWatch.Restart();
             Log.Information("Processing message: {content} from user {user} started", socketMessage.Content, socketMessage.Author);
             var request = this._commandParser.Parse(socketMessage.Content, socketMessage.Timestamp.UtcDateTime);
-            var elapsedParse = this._stopWatch.ElapsedMilliseconds;
+            var elapsedParse = this._stopWatch.ElapsedTicks;
             Log.Information("Parsing time: {elapsedParse}ticks", elapsedParse);
 #if DEBUG
             socketMessage.Channel.SendMessageAsync($"```Parsing time: {elapsedParse}ticks```").Wait();
