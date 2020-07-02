@@ -15,27 +15,20 @@ namespace Devscord.DiscordFramework.Services
     public class MessagesService : ICyclicCacheGenerator
     {
         public RefreshFrequent RefreshFrequent { get; } = RefreshFrequent.Quarterly;
-
         public ulong GuildId { get; set; }
         public ulong ChannelId { get; set; }
 
         private static readonly Dictionary<ulong, IEnumerable<Response>> _serversResponses = new Dictionary<ulong, IEnumerable<Response>>();
-        private static readonly ResponsesService _responsesService;
+        private readonly ResponsesService _responsesService;
         private readonly MessageSplittingService _splittingService;
         private readonly EmbedMessagesService _embedMessagesService;
 
         public MessagesService(ResponsesService responsesService, MessageSplittingService splittingService, EmbedMessagesService embedMessagesService)
         {
-<<<<<<< HEAD
-            this._responsesService = responsesService;
-            this._splittingService = splittingService;
-            this._embedMessagesService = embedMessagesService;
-=======
             _responsesService = responsesService;
             this._splittingService = splittingService;
             this._embedMessagesService = embedMessagesService;
             this.ReloadCache().Wait();
->>>>>>> master
         }
 
         public Task SendMessage(string message, MessageType messageType = MessageType.NormalText)
@@ -60,13 +53,8 @@ namespace Devscord.DiscordFramework.Services
 
         public Task SendResponse(Func<ResponsesService, string> response)
         {
-<<<<<<< HEAD
-            this._responsesService.RefreshResponses(contexts);
-            var message = response.Invoke(this._responsesService);
-=======
             _responsesService.Responses = _serversResponses.GetValueOrDefault(this.GuildId) ?? GetResponsesForNewServer(this.GuildId);
             var message = response.Invoke(_responsesService);
->>>>>>> master
             return this.SendMessage(message);
         }
 
@@ -106,8 +94,8 @@ namespace Devscord.DiscordFramework.Services
             }
             return Task.CompletedTask;
         }
-
-        private static IEnumerable<Response> GetResponsesForNewServer(ulong serverId)
+        
+        private IEnumerable<Response> GetResponsesForNewServer(ulong serverId)
         {
             var responses = _responsesService.GetResponsesFunc(serverId).ToList();
             _serversResponses.Add(serverId, responses);
@@ -118,14 +106,9 @@ namespace Devscord.DiscordFramework.Services
         {
             RestGuild guild = null;
             if (this.GuildId != default)
-<<<<<<< HEAD
             {
                 guild = Server.GetGuild(this.GuildId).Result;
             }
-
-=======
-                guild = Server.GetGuild(this.GuildId).Result;
->>>>>>> master
             var channel = (IRestMessageChannel) Server.GetChannel(this.ChannelId, guild).Result;
             return channel;
         }

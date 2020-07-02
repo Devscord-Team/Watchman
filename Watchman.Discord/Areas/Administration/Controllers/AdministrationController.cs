@@ -13,13 +13,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Commons;
-<<<<<<< HEAD
 using Watchman.DomainModel.DiscordServer.Commands;
 using Watchman.DomainModel.Messages.Queries;
-=======
 using Watchman.Discord.Areas.Users.Services;
 using Watchman.Discord.Areas.Administration.BotCommands;
->>>>>>> master
 
 namespace Watchman.Discord.Areas.Administration.Controllers
 {
@@ -37,11 +34,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             this._usersService = usersService;
             this._directMessagesService = directMessagesService;
             this._messagesServiceFactory = messagesServiceFactory;
-<<<<<<< HEAD
-            this._usersRolesService = usersRolesService;
-=======
             this._rolesService = rolesService;
->>>>>>> master
         }
 
         [AdminCommand]
@@ -97,34 +90,8 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             {
                 throw new NotEnoughArgumentsException();
             }
-<<<<<<< HEAD
-
-            var roleName = args[0].Value;
-            var toSetAsSafe = args[1].Value == "safe";
-
-            var serverRole = this._usersRolesService.GetRoleByName(roleName, contexts.Server);
-            if (serverRole == null)
-            {
-                throw new RoleNotFoundException(roleName);
-            }
-
-            if (toSetAsSafe)
-            {
-                var command = new SetRoleAsSafeCommand(roleName, contexts.Server.Id);
-                await this._commandBus.ExecuteAsync(command);
-            }
-            else
-            {
-                var command = new SetRoleAsUnsafeCommand(roleName, contexts.Server.Id);
-                await this._commandBus.ExecuteAsync(command);
-            }
-
-            var messagesService = this._messagesServiceFactory.Create(contexts);
-            await messagesService.SendResponse(x => x.RoleSettingsChanged(roleName), contexts);
-=======
             var shouldSetToSafe = setRoleCommand.Safe;
             await this._rolesService.SetRolesAsSafe(contexts, roles, shouldSetToSafe);
->>>>>>> master
         }
     }
 }
