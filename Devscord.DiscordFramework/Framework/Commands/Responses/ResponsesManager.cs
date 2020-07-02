@@ -179,7 +179,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("TimeNotSpecified");
         }
-      
+
         public static string ArgumentsDuplicated(this ResponsesService responsesService)
         {
             return responsesService.ProcessResponse("ArgumentsDuplicated");
