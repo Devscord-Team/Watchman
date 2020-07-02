@@ -32,11 +32,11 @@ namespace Devscord.DiscordFramework
             this._token = token;
             this._context = context;
             this._workflow = new Workflow(botAssembly, context);
-            this._client.ReactionAdded += GetReactionAdded();
-            this._client.ReactionRemoved += GetReactionRemoved();
+            this._client.ReactionAdded += GetDelegateCalledWhenReactionIsAdded();
+            this._client.ReactionRemoved += GetDelegateCalledWhenReactionIsRemoved();
         }
 
-        private Func<Cacheable<IUserMessage, ulong>, ISocketMessageChannel, SocketReaction, Task> GetReactionAdded()
+        private Func<Cacheable<IUserMessage, ulong>, ISocketMessageChannel, SocketReaction, Task> GetDelegateCalledWhenReactionIsAdded()
         {
             return (userMessage, socketMessageChannel, socketReaction) => Task.Run(() =>
             {
@@ -45,7 +45,7 @@ namespace Devscord.DiscordFramework
             });
         }
 
-        private Func<Cacheable<IUserMessage, ulong>, ISocketMessageChannel, SocketReaction, Task> GetReactionRemoved()
+        private Func<Cacheable<IUserMessage, ulong>, ISocketMessageChannel, SocketReaction, Task> GetDelegateCalledWhenReactionIsRemoved()
         {
             return (userMessage, socketMessageChannel, socketReaction) => Task.Run(() =>
             {

@@ -9,15 +9,15 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
         public UserContext UserContext { get; }
         public MessageContext MessageContext { get; }
         public string EmoteName { get; }
-        public DateTime SentAt { get; }
+        public DateTime ReactedAt { get; }
 
-        public ReactionContext(ChannelContext channelContext, UserContext userContext, MessageContext messageContext, string emoteName, DateTime sentAt)
+        public ReactionContext(ChannelContext channelContext, UserContext userContext, MessageContext messageContext, string emoteName, DateTime reactedAt)
         {
             this.ChannelContext = channelContext;
             this.UserContext = userContext;
             this.MessageContext = messageContext;
             this.EmoteName = emoteName;
-            this.SentAt = sentAt;
+            this.ReactedAt = reactedAt;
         }
     }
 }

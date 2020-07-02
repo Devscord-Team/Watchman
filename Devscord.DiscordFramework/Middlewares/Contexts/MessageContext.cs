@@ -5,16 +5,14 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
     public class MessageContext : IDiscordContext
     {
         public string Content { get; }
-        public string AuthorName { get; }
-        public ulong AuthorId { get; }
+        public UserContext AuthorContext { get; }
         public ulong Id { get; }
 
-        public MessageContext(string content, string authorName, ulong authorId, ulong Id)
+        public MessageContext(string content, UserContext authorContext, ulong id)
         {
             this.Content = content;
-            this.AuthorName = authorName;
-            this.AuthorId = authorId;
-            this.Id = Id;
+            this.AuthorContext = authorContext;
+            this.Id = id;
         }
     }
 }

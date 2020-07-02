@@ -1,7 +1,6 @@
 ﻿using Devscord.DiscordFramework.Middlewares.Contexts;
 using Discord;
-using Discord.Rest;
-using Discord.WebSocket;
+using System;
 
 namespace Devscord.DiscordFramework.Middlewares.Factories
 {
@@ -9,7 +8,12 @@ namespace Devscord.DiscordFramework.Middlewares.Factories
     {
         public ChannelContext Create(IMessageChannel messageChannel)
         {
-            return messageChannel == null ? null : new ChannelContext(messageChannel.Id, messageChannel.Name);
+            if (messageChannel == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            return new ChannelContext(messageChannel.Id, messageChannel.Name);
         }
     }
 }
