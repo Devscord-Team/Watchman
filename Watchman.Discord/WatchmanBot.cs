@@ -16,9 +16,15 @@ using Watchman.Discord.Areas.Initialization.Services;
 using Watchman.Discord.Areas.Protection.Services;
 using Watchman.Discord.Areas.Statistics.Services;
 using Watchman.Discord.Areas.Users.Services;
+<<<<<<< HEAD
 using Watchman.Discord.Ioc;
 using Watchman.Integrations.Logging;
 using Watchman.Integrations.MongoDB;
+=======
+using System.Diagnostics;
+using Watchman.DomainModel.Settings.Services;
+using Watchman.Discord.Integration.DevscordFramework;
+>>>>>>> master
 
 namespace Watchman.Discord
 {
@@ -45,6 +51,8 @@ namespace Watchman.Discord
                 {
                     builder
                         .AddHandler(() => Task.Run(() => Log.Information("Bot started and logged in...")))
+                        .AddFromIoC<ConfigurationService>(configurationService => configurationService.InitDefaultConfigurations)
+                        .AddFromIoC<CustomCommandsLoader>(customCommandsLoader => customCommandsLoader.InitDefaultCustomCommands)
                         .AddFromIoC<HelpDataCollectorService, HelpDBGeneratorService>((dataCollector, helpService) => () =>
                         {
                             Task.Run(() => helpService.FillDatabase(dataCollector.GetCommandsInfo(typeof(WatchmanBot).Assembly)));
@@ -54,11 +62,6 @@ namespace Watchman.Discord
                         {
                             var servers = (await serversService.GetDiscordServers()).ToList();
                             servers.ForEach(unmutingService.UnmuteUsersInit);
-                        })
-                        .AddFromIoC<CyclicStatisticsGeneratorService>(cyclicStatsGenerator => () =>
-                        {
-                            cyclicStatsGenerator.StartCyclicCaching();
-                            return Task.CompletedTask;
                         })
                         .AddFromIoC<ResponsesInitService>(responsesService => async () =>
                         {

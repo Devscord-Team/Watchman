@@ -1,29 +1,41 @@
 ﻿using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Integration;
-using Devscord.DiscordFramework.Middlewares.Contexts;
 using Discord.Rest;
 using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Devscord.DiscordFramework.Commons.Exceptions;
+using System.Linq;
+using Devscord.DiscordFramework.Services.Models;
 
 namespace Devscord.DiscordFramework.Services
 {
-    public class MessagesService
+    public class MessagesService : ICyclicCacheGenerator
     {
+        public RefreshFrequent RefreshFrequent { get; } = RefreshFrequent.Quarterly;
+
         public ulong GuildId { get; set; }
         public ulong ChannelId { get; set; }
 
-        private readonly ResponsesService _responsesService;
+        private static readonly Dictionary<ulong, IEnumerable<Response>> _serversResponses = new Dictionary<ulong, IEnumerable<Response>>();
+        private static ResponsesService _responsesService;
         private readonly MessageSplittingService _splittingService;
         private readonly EmbedMessagesService _embedMessagesService;
 
         public MessagesService(ResponsesService responsesService, MessageSplittingService splittingService, EmbedMessagesService embedMessagesService)
         {
+<<<<<<< HEAD
             this._responsesService = responsesService;
             this._splittingService = splittingService;
             this._embedMessagesService = embedMessagesService;
+=======
+            _responsesService = responsesService;
+            this._splittingService = splittingService;
+            this._embedMessagesService = embedMessagesService;
+            this.ReloadCache().Wait();
+>>>>>>> master
         }
 
         public Task SendMessage(string message, MessageType messageType = MessageType.NormalText)
@@ -46,10 +58,15 @@ namespace Devscord.DiscordFramework.Services
             return Task.CompletedTask;
         }
 
-        public Task SendResponse(Func<ResponsesService, string> response, Contexts contexts)
+        public Task SendResponse(Func<ResponsesService, string> response)
         {
+<<<<<<< HEAD
             this._responsesService.RefreshResponses(contexts);
             var message = response.Invoke(this._responsesService);
+=======
+            _responsesService.Responses = _serversResponses.GetValueOrDefault(this.GuildId) ?? GetResponsesForNewServer(this.GuildId);
+            var message = response.Invoke(_responsesService);
+>>>>>>> master
             return this.SendMessage(message);
         }
 
@@ -59,14 +76,56 @@ namespace Devscord.DiscordFramework.Services
             await channel.SendFileAsync(filePath);
         }
 
+        public async Task SendExceptionResponse(BotException botException)
+        {
+            var responseName = botException.GetType().Name.Replace("Exception", "");
+            var responseManagerMethod = typeof(ResponsesManager).GetMethod(responseName);
+            if (responseManagerMethod == null)
+            {
+                Log.Error("{name} doesn't exists as a response", responseName);
+                await this.SendMessage($"{responseName} doesn't exists as a response"); // message typed into code, bcs it's called only when there is a problem with responses
+                return;
+            }
+            await this.SendResponse(x =>
+            {
+                var arg = new object[] { x };
+                if (botException.Value != null)
+                {
+                    arg = arg.Append(botException.Value).ToArray();
+                }
+                return (string)responseManagerMethod.Invoke(null, arg);
+            });
+        }
+
+        public Task ReloadCache()
+        {
+            foreach (var serverId in _serversResponses.Keys.ToList())
+            {
+                var responses = _responsesService.GetResponsesFunc(serverId);
+                _serversResponses[serverId] = responses;
+            }
+            return Task.CompletedTask;
+        }
+
+        private static IEnumerable<Response> GetResponsesForNewServer(ulong serverId)
+        {
+            var responses = _responsesService.GetResponsesFunc(serverId).ToList();
+            _serversResponses.Add(serverId, responses);
+            return responses;
+        }
+
         private IRestMessageChannel GetChannel()
         {
             RestGuild guild = null;
             if (this.GuildId != default)
+<<<<<<< HEAD
             {
                 guild = Server.GetGuild(this.GuildId).Result;
             }
 
+=======
+                guild = Server.GetGuild(this.GuildId).Result;
+>>>>>>> master
             var channel = (IRestMessageChannel)Server.GetChannel(this.ChannelId, guild).Result;
             return channel;
         }

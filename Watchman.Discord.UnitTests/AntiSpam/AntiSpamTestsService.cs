@@ -17,10 +17,10 @@ namespace Watchman.Discord.UnitTests.AntiSpam
         {
             var exampleSmallMessages = new List<SmallMessage>
             {
-                new SmallMessage("abcde", 1, DateTime.Now.AddSeconds(-30)),
-                new SmallMessage("abcdefg", 2, DateTime.Now.AddSeconds(-20)),
-                new SmallMessage("fgdfgfa", 1, DateTime.Now.AddSeconds(-20)),
-                new SmallMessage("fgdfgfa", 1, DateTime.Now.AddSeconds(-1)),
+                new SmallMessage("abcde", 1, DateTime.Now.AddSeconds(-30), GetMessagesQuery.GET_ALL_SERVERS),
+                new SmallMessage("abcdefg", 2, DateTime.Now.AddSeconds(-20), GetMessagesQuery.GET_ALL_SERVERS),
+                new SmallMessage("fgdfgfa", 1, DateTime.Now.AddSeconds(-20), GetMessagesQuery.GET_ALL_SERVERS),
+                new SmallMessage("fgdfgfa", 1, DateTime.Now.AddSeconds(-1), GetMessagesQuery.GET_ALL_SERVERS),
             };
             this.ExampleServerMessages.OverwriteMessages(exampleSmallMessages);
         }

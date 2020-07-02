@@ -16,9 +16,16 @@ namespace Devscord.DiscordFramework.Services.Factories
             this._embedMessagesService = embedMessagesService;
         }
 
+<<<<<<< HEAD
         public MessagesService Create(Contexts contexts) => this.Create(contexts.Channel.Id);
+=======
+        public MessagesService Create(Contexts contexts)
+        {
+            return this.Create(contexts.Channel.Id, contexts.Server.Id);
+        }
+>>>>>>> master
 
-        public MessagesService Create(ulong channelId, ulong guildId = 0)
+        public MessagesService Create(ulong channelId, ulong guildId)
         {
             return new MessagesService(this._responsesService, this._splittingService, this._embedMessagesService)
             {

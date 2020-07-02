@@ -11,11 +11,18 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         public IEnumerable<Response> Responses { get; set; }
         private readonly ResponsesParser _parser;
 
-        public Func<Contexts, IEnumerable<Response>> GetResponsesFunc { get; set; } = x => throw new NotImplementedException();
+        public Func<ulong, IEnumerable<Response>> GetResponsesFunc { get; set; } = x => throw new NotImplementedException();
 
         public ResponsesService() => this._parser = new ResponsesParser();
 
+<<<<<<< HEAD
         public void RefreshResponses(Contexts contexts) => this.Responses = this.GetResponsesFunc(contexts);
+=======
+        public void RefreshResponses(ulong serverId)
+        {
+            this.Responses = this.GetResponsesFunc(serverId);
+        }
+>>>>>>> master
 
         public Response GetResponse(string name) => this.Responses.SingleOrDefault(x => x.OnEvent == name);
 

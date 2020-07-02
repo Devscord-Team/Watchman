@@ -3,18 +3,32 @@ using Serilog;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Devscord.DiscordFramework.Framework.Commands.Properties;
 
 namespace Devscord.DiscordFramework.Framework.Commands.Services
 {
     public class BotCommandsParsingService
     {
-        private readonly BotCommandsPropertyConversionService botCommandPropertyConversionService;
+        private readonly BotCommandsPropertyConversionService _botCommandPropertyConversionService;
+        private readonly BotCommandsRequestValueGetterService _botCommandsRequestValueGetterService;
 
+<<<<<<< HEAD
         public BotCommandsParsingService(BotCommandsPropertyConversionService botCommandPropertyConversionService) => this.botCommandPropertyConversionService = botCommandPropertyConversionService;
 
         public IBotCommand ParseRequestToCommand(Type commandType, DiscordRequest request, BotCommandTemplate template)
         {
             var result = this.GetFilledInstance(commandType, template, x => request.Arguments.FirstOrDefault(a => a.Name.ToLowerInvariant() == x.ToLowerInvariant())?.Value);
+=======
+        public BotCommandsParsingService(BotCommandsPropertyConversionService botCommandPropertyConversionService, BotCommandsRequestValueGetterService botCommandsRequestValueGetterService)
+        {
+            this._botCommandPropertyConversionService = botCommandPropertyConversionService;
+            this._botCommandsRequestValueGetterService = botCommandsRequestValueGetterService;
+        }
+
+        public IBotCommand ParseRequestToCommand(Type commandType, DiscordRequest request, BotCommandTemplate template)
+        {
+            var result = this.GetFilledInstance(commandType, template, (key, isList) => this._botCommandsRequestValueGetterService.GetValueByName(key, isList, request, template));
+>>>>>>> master
             return result;
         }
 
@@ -26,15 +40,20 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                 Log.Warning("Custom template {customTemplate} is not valid for {commandName}", customTemplate, template.CommandName);
                 return null;
             }
+<<<<<<< HEAD
             var result = this.GetFilledInstance(commandType, template, x => match.Groups.ContainsKey(x) ? match.Groups[x].Value : null);
+=======
+            var result = this.GetFilledInstance(commandType, template, (key, isList) => this._botCommandsRequestValueGetterService.GetValueByNameFromCustomCommand(key, isList, template, match));
+>>>>>>> master
             return result;
         }
 
-        private IBotCommand GetFilledInstance(Type commandType, BotCommandTemplate template, Func<string, string> getValueByName)
+        private IBotCommand GetFilledInstance(Type commandType, BotCommandTemplate template, Func<string, bool, object> getValueByName)
         {
             var instance = Activator.CreateInstance(commandType);
             foreach (var property in commandType.GetProperties())
             {
+<<<<<<< HEAD
                 var value = getValueByName.Invoke(property.Name);
                 if (string.IsNullOrWhiteSpace(value))
                 {
@@ -43,8 +62,27 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                 var propertyType = template.Properties.First(x => x.Name == property.Name).Type;
                 var convertedType = this.botCommandPropertyConversionService.ConvertType(value, propertyType);
                 property.SetValue(instance, convertedType);
+=======
+                var propertyType = template.Properties.FirstOrDefault(x => x.Name == property.Name)?.Type;
+                var isList = propertyType == BotCommandPropertyType.List;
+                var value = getValueByName.Invoke(property.Name, isList);
+                if (value == null)
+                {
+                    continue;
+                }
+                if (isList)
+                {
+                    property.SetValue(instance, value);
+                    continue;
+                }
+                if (value is string valueString && !string.IsNullOrWhiteSpace(valueString))
+                {
+                    var convertedType = this._botCommandPropertyConversionService.ConvertType(valueString, propertyType.Value);
+                    property.SetValue(instance, convertedType);
+                }
+>>>>>>> master
             }
-            return (IBotCommand)instance;
+            return (IBotCommand) instance;
         }
 
         private bool CustomTemplateIsValid(Match match, BotCommandTemplate template)

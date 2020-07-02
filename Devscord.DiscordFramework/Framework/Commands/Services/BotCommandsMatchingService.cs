@@ -32,14 +32,32 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
         private bool CompareArgumentsToProperties(IReadOnlyCollection<DiscordRequestArgument> arguments, IReadOnlyCollection<BotCommandProperty> properties)
         {
             var notOptionalCount = properties.Count(x => !x.IsOptional);
-            if (arguments.Count > properties.Count || arguments.Count < notOptionalCount)
+            var parametersCount = arguments.Count(x => !string.IsNullOrEmpty(x.Name));
+            if (parametersCount > properties.Count || parametersCount < notOptionalCount)
             {
                 return false;
             }
             foreach (var argument in arguments)
             {
+<<<<<<< HEAD
                 var anyIsMatched = properties.Any(property => argument.Name?.ToLowerInvariant() == property.Name.ToLowerInvariant() && this.IsMatchedPropertyType(argument.Value, property.Type));
                 if (!anyIsMatched)
+=======
+                var matchedByName = properties.FirstOrDefault(property => argument.Name?.ToLowerInvariant() == property.Name.ToLowerInvariant());
+                if (matchedByName == null)
+                {
+                    continue;
+                }
+                if (matchedByName.Type == BotCommandPropertyType.Bool)
+                {
+                    continue;
+                }
+                if (matchedByName.Type == BotCommandPropertyType.List && !string.IsNullOrEmpty(argument.Value))
+                {
+                    continue;
+                }
+                if (!this.IsMatchedPropertyType(argument.Value, matchedByName.Type))
+>>>>>>> master
                 {
                     return false;
                 }
@@ -62,10 +80,6 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                 return false;
             }
             if (type == BotCommandPropertyType.SingleWord && value.Contains(' '))
-            {
-                return false;
-            }
-            if (type == BotCommandPropertyType.Bool && !bool.TryParse(value, out _))
             {
                 return false;
             }

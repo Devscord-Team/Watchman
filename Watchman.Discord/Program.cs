@@ -1,14 +1,17 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using Serilog;
-using System;
 using System.IO;
 using System.Threading.Tasks;
+using Devscord.DiscordFramework;
 
 namespace Watchman.Discord
 {
-    internal class Program
+    class Program
     {
         private const int HOW_MANY_EXCEPTIONS_IN_SHORT_TIME_TO_STOP_BOT = 4;
+        private static int _numberOfExceptionsInLastTime;
+        private static DateTime _lastException = DateTime.MinValue;
 
         public static async Task Main(string[] args)
         {
@@ -21,25 +24,43 @@ namespace Watchman.Discord
 
             var watchman = new WatchmanBot(configuration);
             var workflowBuilder = watchman.GetWorkflowBuilder();
-            var lastException = DateTime.MinValue;
-            var numberOfExceptionsInLastTime = 0;
 
-            while (numberOfExceptionsInLastTime++ < HOW_MANY_EXCEPTIONS_IN_SHORT_TIME_TO_STOP_BOT)
+            AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
             {
-                try
-                {
-                    await workflowBuilder.Run();
-                }
-                catch (Exception e)
-                {
-                    Log.Error(e, "Not handled exception!");
-
-                    if (lastException < DateTime.Now.AddMinutes(-30))
-                    {
-                        numberOfExceptionsInLastTime = 0;
-                    }
-                }
+                HandleException((Exception)e.ExceptionObject);
+            };
+            while (true)
+            {
+                await TryToRun(workflowBuilder);
             }
+        }
+
+        private static async Task TryToRun(WorkflowBuilder workflowBuilder)
+        {
+            if (_numberOfExceptionsInLastTime++ >= HOW_MANY_EXCEPTIONS_IN_SHORT_TIME_TO_STOP_BOT)
+            {
+                throw new Exception("Too many restarts");
+            }
+            try
+            {
+                await workflowBuilder.Run();
+            }
+            catch (Exception e)
+            {
+                HandleException(e);
+                await Task.Delay(10000);
+            }
+        }
+
+        private static void HandleException(Exception e)
+        {
+            Log.Error(e, "Not handled exception!");
+
+            if (_lastException < DateTime.Now.AddMinutes(-30))
+            {
+                _numberOfExceptionsInLastTime = 0;
+            }
+            _lastException = DateTime.Now;
         }
     }
 }

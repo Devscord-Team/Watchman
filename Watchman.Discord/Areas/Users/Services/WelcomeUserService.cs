@@ -9,7 +9,14 @@ namespace Watchman.Discord.Areas.Users.Services
     {
         private readonly MessagesServiceFactory _messagesServiceFactory;
 
+<<<<<<< HEAD
         public WelcomeUserService(MessagesServiceFactory messagesServiceFactory) => this._messagesServiceFactory = messagesServiceFactory;
+=======
+        public WelcomeUserService(MessagesServiceFactory messagesServiceFactory)
+        {
+            this._messagesServiceFactory = messagesServiceFactory;
+        }
+>>>>>>> master
 
         public Task WelcomeUser(Contexts contexts)
         {
@@ -19,7 +26,11 @@ namespace Watchman.Discord.Areas.Users.Services
             }
 
             var messagesService = this._messagesServiceFactory.Create(contexts);
+<<<<<<< HEAD
             messagesService.SendResponse(x => x.NewUserArrived(contexts), contexts);
+=======
+            messagesService.SendResponse(x => x.NewUserArrived(contexts));
+>>>>>>> master
             return Task.CompletedTask;
         }
     }

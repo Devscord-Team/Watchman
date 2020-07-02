@@ -13,28 +13,35 @@ using System.Text;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Commons;
+<<<<<<< HEAD
 using Watchman.DomainModel.DiscordServer.Commands;
 using Watchman.DomainModel.Messages.Queries;
+=======
+using Watchman.Discord.Areas.Users.Services;
+using Watchman.Discord.Areas.Administration.BotCommands;
+>>>>>>> master
 
 namespace Watchman.Discord.Areas.Administration.Controllers
 {
     public class AdministrationController : IController
     {
         private readonly IQueryBus _queryBus;
-        private readonly ICommandBus _commandBus;
         private readonly UsersService _usersService;
         private readonly DirectMessagesService _directMessagesService;
         private readonly MessagesServiceFactory _messagesServiceFactory;
-        private readonly UsersRolesService _usersRolesService;
+        private readonly RolesService _rolesService;
 
-        public AdministrationController(IQueryBus queryBus, ICommandBus commandBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, UsersRolesService usersRolesService)
+        public AdministrationController(IQueryBus queryBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, RolesService rolesService)
         {
             this._queryBus = queryBus;
-            this._commandBus = commandBus;
             this._usersService = usersService;
             this._directMessagesService = directMessagesService;
             this._messagesServiceFactory = messagesServiceFactory;
+<<<<<<< HEAD
             this._usersRolesService = usersRolesService;
+=======
+            this._rolesService = rolesService;
+>>>>>>> master
         }
 
         [AdminCommand]
@@ -62,13 +69,13 @@ namespace Watchman.Discord.Areas.Administration.Controllers
 
             if (messages.Count > 200 && !hasForceArgument)
             {
-                await messagesService.SendResponse(x => x.NumberOfMessagesIsHuge(messages.Count), contexts);
+                await messagesService.SendResponse(x => x.NumberOfMessagesIsHuge(messages.Count));
                 return;
             }
 
             if (!messages.Any())
             {
-                await messagesService.SendResponse(x => x.UserDidntWriteAnyMessageInThisTime(selectedUser), contexts);
+                await messagesService.SendResponse(x => x.UserDidntWriteAnyMessageInThisTime(selectedUser));
                 return;
             }
 
@@ -79,18 +86,18 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             await this._directMessagesService.TrySendMessage(contexts.User.Id, header);
             await this._directMessagesService.TrySendMessage(contexts.User.Id, linesBuilder.ToString(), MessageType.BlockFormatted);
 
-            await messagesService.SendResponse(x => x.SentByDmMessagesOfAskedUser(messages.Count, selectedUser), contexts);
+            await messagesService.SendResponse(x => x.SentByDmMessagesOfAskedUser(messages.Count, selectedUser));
         }
 
         [AdminCommand]
-        [DiscordCommand("set role")]
-        public async Task SetRoleAsSafe(DiscordRequest request, Contexts contexts)
+        public async Task SetRoleAsSafe(SetRoleCommand setRoleCommand, Contexts contexts)
         {
-            var args = request.Arguments.Skip(1).ToArray(); // 1 args is string "role", so it's not needed
-            if (args.Length < 2)
+            var roles = setRoleCommand.Roles;
+            if (roles.Count == 0 || !(setRoleCommand.Safe || setRoleCommand.Unsafe))
             {
                 throw new NotEnoughArgumentsException();
             }
+<<<<<<< HEAD
 
             var roleName = args[0].Value;
             var toSetAsSafe = args[1].Value == "safe";
@@ -114,6 +121,10 @@ namespace Watchman.Discord.Areas.Administration.Controllers
 
             var messagesService = this._messagesServiceFactory.Create(contexts);
             await messagesService.SendResponse(x => x.RoleSettingsChanged(roleName), contexts);
+=======
+            var shouldSetToSafe = setRoleCommand.Safe;
+            await this._rolesService.SetRolesAsSafe(contexts, roles, shouldSetToSafe);
+>>>>>>> master
         }
     }
 }

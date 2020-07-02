@@ -1,6 +1,11 @@
+<<<<<<< HEAD
 ﻿using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using System;
+=======
+﻿using System;
+using System.Collections.Generic;
+>>>>>>> master
 using System.Globalization;
 using System.Linq;
 using Watchman.Common.Models;
@@ -14,7 +19,7 @@ namespace Watchman.Discord.Areas.Commons
             var mention = discordRequest.Arguments.FirstOrDefault(x => x.Value.StartsWith('<') && x.Value.EndsWith('>'))?.Value;
             if (mention == null)
             {
-                throw new UserDidntMentionAnyUser();
+                throw new UserDidntMentionAnyUserException();
             }
             return mention;
         }
@@ -31,6 +36,11 @@ namespace Watchman.Discord.Areas.Commons
             return new TimeRange(
                 start: discordRequest.SentAt - ParseToTimeSpan(discordRequest, defaultTime),
                 end: discordRequest.SentAt);
+        }
+
+        public static bool HasDuplicates(this IEnumerable<DiscordRequestArgument> requestArguments)
+        {
+            return requestArguments.Count() != requestArguments.Select(x => x.Value).Distinct().Count();
         }
 
         private static TimeSpan ParseToTimeSpan(DiscordRequest discordRequest, TimeSpan defaultTime)
@@ -50,6 +60,7 @@ namespace Watchman.Discord.Areas.Commons
             {
                 throw new TimeCannotBeNegativeException();
             }
+<<<<<<< HEAD
 
             // huge value will be too big for parsing to DateTime, so I use ushort (instead of int) to be sure that the value isn't too big
             if (timeAsNumber >= ushort.MaxValue)
@@ -57,6 +68,8 @@ namespace Watchman.Discord.Areas.Commons
                 throw new TimeIsTooBigException();
             }
 
+=======
+>>>>>>> master
             var parsedTimeSpan = lastChar switch
             {
                 's' => TimeSpan.FromSeconds(timeAsNumber),
@@ -64,6 +77,10 @@ namespace Watchman.Discord.Areas.Commons
                 'h' => TimeSpan.FromHours(timeAsNumber),
                 _ => defaultTime,
             };
+            if (parsedTimeSpan.TotalSeconds >= int.MaxValue)
+            {
+                throw new TimeIsTooBigException();
+            }
             return parsedTimeSpan;
         }
     }

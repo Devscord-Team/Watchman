@@ -56,7 +56,14 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("help", help));
         }
 
+<<<<<<< HEAD
         public static string UserIsNotAdmin(this ResponsesService responsesService) => responsesService.ProcessResponse("UserIsNotAdmin");
+=======
+        public static string NotAdminPermissions(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("NotAdminPermissions");
+        }
+>>>>>>> master
 
         public static string UserDidntMentionAnyUser(this ResponsesService responsesService) => responsesService.ProcessResponse("UserDidntMentionAnyUser");
 
@@ -96,8 +103,11 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
 
         public static string TimeIsTooBig(this ResponsesService responsesService) => responsesService.ProcessResponse("TimeIsTooBig");
 
+<<<<<<< HEAD
         public static string ReadingHistoryDone(this ResponsesService responsesService) => responsesService.ProcessResponse("ReadingHistoryDone");
 
+=======
+>>>>>>> master
         public static string UserDoesntHaveAvatar(this ResponsesService responsesService, UserContext user)
         {
             return responsesService.ProcessResponse("UserDoesntHaveAvatar",
@@ -139,8 +149,32 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("role", roleName));
         }
 
+<<<<<<< HEAD
         public static string TimeNotSpecified(this ResponsesService responsesService) => responsesService.ProcessResponse("TimeNotSpecified");
+=======
+        public static string TimeNotSpecified(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("TimeNotSpecified");
+        }
+      
+        public static string ArgumentsDuplicated(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("ArgumentsDuplicated");
+        }
+>>>>>>> master
 
+        public static string RoleIsSafeAlready(this ResponsesService responsesService, string roleName)
+        {
+            return responsesService.ProcessResponse("RoleIsSafeAlready",
+                new KeyValuePair<string, string>("role", roleName));
+        }
+
+        public static string RoleIsUnsafeAlready(this ResponsesService responsesService, string roleName)
+        {
+            return responsesService.ProcessResponse("RoleIsUnsafeAlready" ,
+                new KeyValuePair<string, string>("role", roleName));
+        }
+      
         public static string ResponseAlreadyExists(this ResponsesService responsesService, Contexts contexts, string onEvent)
         {
             return responsesService.ProcessResponse("ResponseAlreadyExists", contexts,
@@ -159,9 +193,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("onEvent", onEvent));
         }
 
-        public static string ResponseHasBeenUpdated(this ResponsesService responsesService, Contexts contexts, string onEvent,
-            string oldMessage,
-            string newMessage)
+        public static string ResponseHasBeenUpdated(this ResponsesService responsesService, Contexts contexts, string onEvent, string oldMessage, string newMessage)
         {
             return responsesService.ProcessResponse("ResponseHasBeenUpdated", contexts,
                 new KeyValuePair<string, string>("onEvent", onEvent),
@@ -179,6 +211,23 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("InvalidArguments",
                 new KeyValuePair<string, string>("arguments", arguments));
+        }
+
+        public static string AllRolesAddedToUser(this ResponsesService responsesService, Contexts contexts)
+        {
+            return responsesService.ProcessResponse("AllRolesAddedToUser",
+                new KeyValuePair<string, string>("user", contexts.User.Name));
+        }
+        
+        public static string AllRolesRemovedFromUser(this ResponsesService responsesService, Contexts contexts)
+        {
+            return responsesService.ProcessResponse("AllRolesRemovedFromUser",
+                new KeyValuePair<string, string>("user", contexts.User.Name));
+        }
+
+        public static string AllRolesSettingsChanged(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("AllRolesSettingsChanged");
         }
     }
 }

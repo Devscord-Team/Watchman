@@ -37,17 +37,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models
 
         public void AddMessage(DiscordRequest request, Contexts contexts)
         {
-            var smallMessage = new SmallMessage(request.OriginalMessage, contexts.User.Id, request.SentAt);
+            var smallMessage = new SmallMessage(request.OriginalMessage, contexts.User.Id, request.SentAt, contexts.Server.Id);
             this.AddMessage(smallMessage);
         }
 
-        public List<SmallMessage> GetLastUserMessages(ulong userId)
+        public IEnumerable<SmallMessage> GetLastUserMessages(ulong userId, ulong serverId)
         {
-            if (_usersMessages.TryGetValue(userId, out var smallMessages))
-            {
-                return smallMessages;
-            }
-            return new List<SmallMessage>();
+            return _usersMessages.TryGetValue(userId, out var smallMessages) 
+                ? smallMessages.Where(x => x.ServerId == serverId) 
+                : new List<SmallMessage>();
         }
 
         private static async void RemoveOldMessagesCyclic()

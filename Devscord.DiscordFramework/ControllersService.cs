@@ -54,12 +54,21 @@ namespace Devscord.DiscordFramework
                 if (request.IsCommandForBot)
                 {
                     var discordCommandMethods = this._controllersContainer.WithDiscordCommand;
+<<<<<<< HEAD
                     commandsTask = Task.Run(() => this.RunMethods(request, contexts, discordCommandMethods, false));
                 }
                 var discordBotCommandMethods = this._controllersContainer.WithIBotCommand;
                 //TODO zoptymalizować
                 botCommandsTask = Task.Run(() => this.RunMethodsIBotCommand(request, contexts, discordBotCommandMethods, false));
 
+=======
+                    commandsTask = Task.Run(() => RunMethods(request, contexts, discordCommandMethods, false));
+                    var discordBotCommandMethods = this._controllersContainer.WithIBotCommand;
+                    //TODO zoptymalizować
+                    botCommandsTask = Task.Run(() => RunMethodsIBotCommand(request, contexts, discordBotCommandMethods, false));
+                }
+                
+>>>>>>> master
                 // ReadAlwaysMethods should be first in throwing exception, bcs every ReadAlways exception is Error
                 await readAlwaysTask;
                 if (commandsTask != null)
@@ -118,10 +127,13 @@ namespace Devscord.DiscordFramework
                 {
                     foreach (var method in controllerInfo.Methods)
                     {
+<<<<<<< HEAD
                         if (!this.IsValid(contexts, method))
                         {
                             continue;
                         }
+=======
+>>>>>>> master
                         var commandInParameterType = method.GetParameters().First(x => typeof(IBotCommand).IsAssignableFrom(x.ParameterType)).ParameterType;
                         //TODO zoptymalizować, spokojnie można to pobierać wcześniej i używać raz, zamiast wszystko obliczać przy każdym odpaleniu
                         var template = this._botCommandsService.GetCommandTemplate(commandInParameterType);
@@ -141,7 +153,12 @@ namespace Devscord.DiscordFramework
                         {
                             command = this._botCommandsService.ParseRequestToCommand(commandInParameterType, request, template);
                         }
+                        if (!this.IsValid(contexts, method))
+                        {
+                            continue;
+                        }
                         await InvokeMethod(command, contexts, controllerInfo, method);
+                        return;
                     }
                 }
             }
