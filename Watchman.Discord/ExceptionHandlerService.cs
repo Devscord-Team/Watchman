@@ -26,7 +26,7 @@ namespace Watchman.Discord
 
             Log.Error(mostInnerException.ToString());
             var task = mostInnerException is BotException botException
-                ? messagesService.SendExceptionResponse(botException, contexts)
+                ? messagesService.SendExceptionResponse(botException)
                 : messagesService.SendMessage("Wystąpił nieznany wyjątek");
             task.Wait();
         }

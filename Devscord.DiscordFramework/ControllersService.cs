@@ -54,10 +54,10 @@ namespace Devscord.DiscordFramework
                 {
                     var discordCommandMethods = this._controllersContainer.WithDiscordCommand;
                     commandsTask = Task.Run(() => RunMethods(request, contexts, discordCommandMethods, false));
+                    var discordBotCommandMethods = this._controllersContainer.WithIBotCommand;
+                    //TODO zoptymalizować
+                    botCommandsTask = Task.Run(() => RunMethodsIBotCommand(request, contexts, discordBotCommandMethods, false));
                 }
-                var discordBotCommandMethods = this._controllersContainer.WithIBotCommand;
-                //TODO zoptymalizować
-                botCommandsTask = Task.Run(() => RunMethodsIBotCommand(request, contexts, discordBotCommandMethods, false));
                 
                 // ReadAlwaysMethods should be first in throwing exception, bcs every ReadAlways exception is Error
                 await readAlwaysTask;
@@ -117,10 +117,6 @@ namespace Devscord.DiscordFramework
                 {
                     foreach (var method in controllerInfo.Methods)
                     {
-                        if (!IsValid(contexts, method))
-                        {
-                            continue;
-                        }
                         var commandInParameterType = method.GetParameters().First(x => typeof(IBotCommand).IsAssignableFrom(x.ParameterType)).ParameterType;
                         //TODO zoptymalizować, spokojnie można to pobierać wcześniej i używać raz, zamiast wszystko obliczać przy każdym odpaleniu
                         var template = this._botCommandsService.GetCommandTemplate(commandInParameterType); 
@@ -139,6 +135,10 @@ namespace Devscord.DiscordFramework
                         else
                         {
                             command = this._botCommandsService.ParseRequestToCommand(commandInParameterType, request, template);
+                        }
+                        if (!this.IsValid(contexts, method))
+                        {
+                            continue;
                         }
                         await InvokeMethod(command, contexts, controllerInfo, method);
                         return;

@@ -65,9 +65,9 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("help", help));
         }
 
-        public static string UserIsNotAdmin(this ResponsesService responsesService)
+        public static string NotAdminPermissions(this ResponsesService responsesService)
         {
-            return responsesService.ProcessResponse("UserIsNotAdmin");
+            return responsesService.ProcessResponse("NotAdminPermissions");
         }
 
         public static string UserDidntMentionAnyUser(this ResponsesService responsesService)

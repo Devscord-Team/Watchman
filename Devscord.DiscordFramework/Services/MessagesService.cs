@@ -1,7 +1,6 @@
 ﻿using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Integration;
-using Devscord.DiscordFramework.Middlewares.Contexts;
 using Discord.Rest;
 using Serilog;
 using System;
@@ -66,7 +65,7 @@ namespace Devscord.DiscordFramework.Services
             await channel.SendFileAsync(filePath);
         }
 
-        public async Task SendExceptionResponse(BotException botException, Contexts contexts)
+        public async Task SendExceptionResponse(BotException botException)
         {
             var responseName = botException.GetType().Name.Replace("Exception", "");
             var responseManagerMethod = typeof(ResponsesManager).GetMethod(responseName);
