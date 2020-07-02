@@ -54,12 +54,12 @@ namespace Devscord.DiscordFramework
                 if (request.IsCommandForBot)
                 {
                     var discordCommandMethods = this._controllersContainer.WithDiscordCommand;
-                    commandsTask = Task.Run(() => RunMethods(request, contexts, discordCommandMethods, false));
+                    commandsTask = Task.Run(() => this.RunMethods(request, contexts, discordCommandMethods, false));
                     var discordBotCommandMethods = this._controllersContainer.WithIBotCommand;
                     //TODO zoptymalizować
-                    botCommandsTask = Task.Run(() => RunMethodsIBotCommand(request, contexts, discordBotCommandMethods, false));
+                    botCommandsTask = Task.Run(() => this.RunMethodsIBotCommand(request, contexts, discordBotCommandMethods));
                 }
-                
+
                 // ReadAlwaysMethods should be first in throwing exception, bcs every ReadAlways exception is Error
                 await readAlwaysTask;
                 if (commandsTask != null)
@@ -110,7 +110,7 @@ namespace Devscord.DiscordFramework
             Task.WaitAll(tasks.ToArray());
         }
 
-        private async Task RunMethodsIBotCommand(DiscordRequest request, Contexts contexts, IEnumerable<ControllerInfo> controllers, bool isReadAlways)
+        private async Task RunMethodsIBotCommand(DiscordRequest request, Contexts contexts, IEnumerable<ControllerInfo> controllers)
         {
             foreach (var controllerInfo in controllers)
             {
@@ -118,13 +118,10 @@ namespace Devscord.DiscordFramework
                 {
                     foreach (var method in controllerInfo.Methods)
                     {
-<<<<<<< HEAD
                         if (!this.IsValid(contexts, method))
                         {
                             continue;
                         }
-=======
->>>>>>> master
                         var commandInParameterType = method.GetParameters().First(x => typeof(IBotCommand).IsAssignableFrom(x.ParameterType)).ParameterType;
                         //TODO zoptymalizować, spokojnie można to pobierać wcześniej i używać raz, zamiast wszystko obliczać przy każdym odpaleniu
                         var template = this._botCommandsService.GetCommandTemplate(commandInParameterType);

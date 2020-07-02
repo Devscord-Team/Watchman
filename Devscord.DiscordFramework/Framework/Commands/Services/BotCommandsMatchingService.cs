@@ -39,10 +39,6 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             }
             foreach (var argument in arguments)
             {
-<<<<<<< HEAD
-                var anyIsMatched = properties.Any(property => argument.Name?.ToLowerInvariant() == property.Name.ToLowerInvariant() && this.IsMatchedPropertyType(argument.Value, property.Type));
-                if (!anyIsMatched)
-=======
                 var matchedByName = properties.FirstOrDefault(property => argument.Name?.ToLowerInvariant() == property.Name.ToLowerInvariant());
                 if (matchedByName == null)
                 {
@@ -57,7 +53,6 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                     continue;
                 }
                 if (!this.IsMatchedPropertyType(argument.Value, matchedByName.Type))
->>>>>>> master
                 {
                     return false;
                 }
