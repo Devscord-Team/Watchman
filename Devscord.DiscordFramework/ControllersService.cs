@@ -141,10 +141,6 @@ namespace Devscord.DiscordFramework
                         {
                             command = this._botCommandsService.ParseRequestToCommand(commandInParameterType, request, template);
                         }
-                        if (!this.IsValid(contexts, method))
-                        {
-                            continue;
-                        }
                         await InvokeMethod(command, contexts, controllerInfo, method);
                         return;
                     }
