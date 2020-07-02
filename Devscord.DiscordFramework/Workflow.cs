@@ -45,17 +45,16 @@ namespace Devscord.DiscordFramework
         internal void Initialize()
         {
             this.OnMessageReceived.Add(message => Task.Run(() =>
-{
-    try
-    {
-        this.MessageReceived(message);
-    }
-    catch (Exception ex)
-    {
-        Log.Error(ex, ex.StackTrace);
-    }
-
-}));
+            {
+                try
+                {
+                    this.MessageReceived(message);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, ex.StackTrace);
+                }
+            }));
         }
 
         internal void MapHandlers(DiscordSocketClient client)
