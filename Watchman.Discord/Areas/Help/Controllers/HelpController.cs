@@ -5,7 +5,6 @@ using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Help.BotCommands;
 using System.Threading.Tasks;
-using Watchman.Integrations.Google;
 using System.Linq;
 using System.Collections.Generic;
 using Watchman.Discord.Areas.Help.Services;
@@ -18,14 +17,12 @@ namespace Watchman.Discord.Areas.Help.Controllers
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly HelpMessageGeneratorService _helpMessageGenerator;
         private readonly IQueryBus _queryBus;
-        private readonly GoogleSearchService _googleSearchService;
 
-        public HelpController(MessagesServiceFactory messagesServiceFactory, HelpMessageGeneratorService messageGeneratorService, IQueryBus queryBus, GoogleSearchService googleSearchService)
+        public HelpController(MessagesServiceFactory messagesServiceFactory, HelpMessageGeneratorService messageGeneratorService, IQueryBus queryBus)
         {
             this._messagesServiceFactory = messagesServiceFactory;
             this._helpMessageGenerator = messageGeneratorService;
             this._queryBus = queryBus;
-            this._googleSearchService = googleSearchService;
         }
 
         public async Task PrintHelp(HelpCommand command, Contexts contexts)
@@ -44,13 +41,6 @@ namespace Watchman.Discord.Areas.Help.Controllers
                     "Poniżej znajdziesz listę dostępnych komend wraz z ich opisami\nJeśli chcesz poznać dokładniejszy opis - zapraszamy do opisu w naszej dokumentacji\nhttps://watchman.readthedocs.io/pl/latest/156-lista-funkcjonalnosci/",
                     this._helpMessageGenerator.MapToEmbedInput(helpInformations)); //todo add to responses - now we cannot handle this format
             }
-        }
-
-        public async Task GoogleSearch(GoogleCommand command, Contexts contexts)
-        {
-            var messagesService = this._messagesServiceFactory.Create(contexts);
-            var results = this._googleSearchService.Search(command.Search);
-            await messagesService.SendEmbedMessage($"Wyniki google dla zapytania {command.Search}", "", results.Select(x => new KeyValuePair<string, string>(x.Title, x.Url + "\n" + x.Description)));
         }
     }
 }
