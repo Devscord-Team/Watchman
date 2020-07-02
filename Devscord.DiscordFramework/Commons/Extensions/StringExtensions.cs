@@ -15,7 +15,6 @@
             {
                 return value;
             }
-
             return value[toCut.Length..];
         }
     }

@@ -22,7 +22,6 @@ namespace Devscord.DiscordFramework.Integration.Services
         {
             this._client = client;
             this._discordClientChannelsService = discordClientChannelsService;
-
             this._client.Ready += async () => await Task.Run(() =>
             {
                 return this._roles = this._client.Guilds.SelectMany(x => x.Roles).ToList();
@@ -73,7 +72,6 @@ namespace Devscord.DiscordFramework.Integration.Services
             {
                 this._roles = this._client.Guilds.SelectMany(x => x.Roles).ToList();
             }
-
             return this._roles.Where(x => x.Guild.Id == guildId);
         }
 

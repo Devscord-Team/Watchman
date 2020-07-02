@@ -5,11 +5,11 @@ namespace Watchman.Web.Areas.Messages.Models.Dtos
 {
     public class MessageDto
     {
-        public string Content { get; private set; }
-        public MessageUserDto User { get; private set; }
-        public MessageChannelDto Channel { get; private set; }
-        public MessageServerDto Server { get; private set; }
-        public DateTime SentAt { get; private set; }
+        public string Content { get; set; }
+        public MessageUserDto User { get; set; }
+        public MessageChannelDto Channel { get; set; }
+        public MessageServerDto Server { get; set; }
+        public DateTime SentAt { get; set; }
 
         public MessageDto()
         {
