@@ -48,9 +48,9 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             var wasMuted = await this._muteService.UnmuteIfNeeded(contexts.Server, userToUnmute);
             if (wasMuted)
             {
-                var messagesService = _messagesServiceFactory.Create(contexts);
+                var messagesService = this._messagesServiceFactory.Create(contexts);
                 await messagesService.SendResponse(x => x.UnmutedUser(userToUnmute));
-                await _directMessagesService.TrySendMessage(userToUnmute.Id, x => x.UnmutedUserForUser(userToUnmute, contexts.Server), contexts);
+                await this._directMessagesService.TrySendMessage(userToUnmute.Id, x => x.UnmutedUserForUser(userToUnmute, contexts.Server), contexts);
             }
         }
     }

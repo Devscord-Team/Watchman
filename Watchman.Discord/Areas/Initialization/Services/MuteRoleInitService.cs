@@ -22,8 +22,8 @@ namespace Watchman.Discord.Areas.Initialization.Services
             var changedPermissions = this.CreateChangedPermissions();
             var mutedRole = this.CreateMuteRole(changedPermissions.AllowPermissions);
 
-            var createdRole = await SetRoleToServer(server, mutedRole);
-            await SetChannelsPermissions(server, createdRole, changedPermissions);
+            var createdRole = await this.SetRoleToServer(server, mutedRole);
+            await this.SetChannelsPermissions(server, createdRole, changedPermissions);
         }
 
         private NewUserRole CreateMuteRole(ICollection<Permission> permissions)

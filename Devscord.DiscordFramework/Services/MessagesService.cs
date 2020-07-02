@@ -25,7 +25,7 @@ namespace Devscord.DiscordFramework.Services
 
         public MessagesService(ResponsesService responsesService, MessageSplittingService splittingService, EmbedMessagesService embedMessagesService)
         {
-            _responsesService = responsesService;
+            this._responsesService = responsesService;
             this._splittingService = splittingService;
             this._embedMessagesService = embedMessagesService;
             this.ReloadCache().Wait();
@@ -53,8 +53,8 @@ namespace Devscord.DiscordFramework.Services
 
         public Task SendResponse(Func<ResponsesService, string> response)
         {
-            _responsesService.Responses = _serversResponses.GetValueOrDefault(this.GuildId) ?? GetResponsesForNewServer(this.GuildId);
-            var message = response.Invoke(_responsesService);
+            this._responsesService.Responses = _serversResponses.GetValueOrDefault(this.GuildId) ?? this.GetResponsesForNewServer(this.GuildId);
+            var message = response.Invoke(this._responsesService);
             return this.SendMessage(message);
         }
 
@@ -89,15 +89,15 @@ namespace Devscord.DiscordFramework.Services
         {
             foreach (var serverId in _serversResponses.Keys.ToList())
             {
-                var responses = _responsesService.GetResponsesFunc(serverId);
+                var responses = this._responsesService.GetResponsesFunc(serverId);
                 _serversResponses[serverId] = responses;
             }
             return Task.CompletedTask;
         }
-        
+
         private IEnumerable<Response> GetResponsesForNewServer(ulong serverId)
         {
-            var responses = _responsesService.GetResponsesFunc(serverId).ToList();
+            var responses = this._responsesService.GetResponsesFunc(serverId).ToList();
             _serversResponses.Add(serverId, responses);
             return responses;
         }
