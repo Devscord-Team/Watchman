@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Devscord.DiscordFramework.Integration;
+﻿using Devscord.DiscordFramework.Integration;
 using Devscord.DiscordFramework.Middlewares.Contexts;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework.Services
 {

@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Devscord.DiscordFramework.Middlewares.Contexts;
+﻿using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Models;
 using Serilog;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Messages.Commands;
 
@@ -18,8 +18,8 @@ namespace Watchman.Discord.Areas.Initialization.Services
 
         public ServerScanningService(ICommandBus commandBus, MessagesHistoryService messagesHistoryService)
         {
-            _commandBus = commandBus;
-            _messagesHistoryService = messagesHistoryService;
+            this._commandBus = commandBus;
+            this._messagesHistoryService = messagesHistoryService;
         }
 
         public async Task ScanChannelHistory(DiscordServerContext server, ChannelContext channel, DateTime? startTime = null) // startTime ->->-> now
@@ -27,27 +27,29 @@ namespace Watchman.Discord.Areas.Initialization.Services
             const int LIMIT = 20000; // low limit to use props of startTime optimization
 
             if (channel.Name.Contains("logs"))
-                return;
-            
-            startTime ??= DateTime.UnixEpoch;
-            var messages = ReadMessages(server, channel, limit: 1);
-            if (messages.Count == 0 || LastMessageIsOlderThanStartTime(messages, startTime.Value))
             {
-                Log.Information($"Channel: {channel.Name} has no new messages");
+                return;
+            }
+
+            startTime ??= DateTime.UnixEpoch;
+            var messages = this.ReadMessages(server, channel, limit: 1);
+            if (messages.Count == 0 || this.LastMessageIsOlderThanStartTime(messages, startTime.Value))
+            {
+                Log.Information("Channel: {channel} has no new messages", channel.Name);
                 return;
             }
 
             var lastMessageId = 0UL;
             do
             {
-                messages = ReadMessages(server, channel, LIMIT, lastMessageId);
+                messages = this.ReadMessages(server, channel, LIMIT, lastMessageId);
                 if (messages.Count == 0)
                 {
                     break;
                 }
 
                 lastMessageId = messages.Last().Id;
-                await SaveMessages(messages, channel.Id);
+                await this.SaveMessages(messages, channel.Id);
 
                 if (this.LastMessageIsOlderThanStartTime(messages, startTime.Value))
                 {
@@ -56,14 +58,14 @@ namespace Watchman.Discord.Areas.Initialization.Services
 
             } while (messages.Count == LIMIT);
 
-            Log.Information($"Channel: {channel.Name} read and saved");
+            Log.Information("Channel: {channel} read and saved", channel.Name);
         }
 
         private async Task SaveMessages(IEnumerable<Message> messages, ulong channelId)
         {
-            var convertedMessages = ConvertToMessages(messages);
+            var convertedMessages = this.ConvertToMessages(messages);
             var command = new AddMessagesCommand(convertedMessages, channelId);
-            await _commandBus.ExecuteAsync(command);
+            await this._commandBus.ExecuteAsync(command);
         }
 
         private IEnumerable<DomainModel.Messages.Message> ConvertToMessages(IEnumerable<Message> messages)
@@ -83,8 +85,8 @@ namespace Watchman.Discord.Areas.Initialization.Services
         private List<Message> ReadMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong lastMessageId = 0)
         {
             var messages = lastMessageId == 0
-                ? _messagesHistoryService.ReadMessagesAsync(server, channel, limit).Result.ToList()
-                : _messagesHistoryService.ReadMessagesAsync(server, channel, limit, lastMessageId, goBefore: true).Result.ToList();
+                ? this._messagesHistoryService.ReadMessagesAsync(server, channel, limit).Result.ToList()
+                : this._messagesHistoryService.ReadMessagesAsync(server, channel, limit, lastMessageId, goBefore: true).Result.ToList();
 
             return messages;
         }

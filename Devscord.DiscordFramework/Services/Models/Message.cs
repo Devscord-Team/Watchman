@@ -11,9 +11,9 @@ namespace Devscord.DiscordFramework.Services.Models
 
         public Message(ulong id, DiscordRequest request, Contexts contexts)
         {
-            Id = id;
-            Request = request;
-            Contexts = contexts;
+            this.Id = id;
+            this.Request = request;
+            this.Contexts = contexts;
         }
     }
 }

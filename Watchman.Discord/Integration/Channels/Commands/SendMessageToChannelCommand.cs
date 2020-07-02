@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Watchman.Cqrs;
+﻿using Watchman.Cqrs;
 
 namespace Watchman.Discord.Integration.Channels.Commands
 {
@@ -13,9 +10,9 @@ namespace Watchman.Discord.Integration.Channels.Commands
 
         public SendMessageToChannelCommand(ulong guildId, ulong channelId, string message)
         {
-            GuildId = guildId;
-            ChannelId = channelId;
-            Message = message;
+            this.GuildId = guildId;
+            this.ChannelId = channelId;
+            this.Message = message;
         }
     }
 }

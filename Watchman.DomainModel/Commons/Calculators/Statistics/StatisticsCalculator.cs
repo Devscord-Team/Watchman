@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Watchman.Common.Models;
 using Watchman.DomainModel.Commons.Calculators.Statistics.Splitters;
 using Watchman.DomainModel.Messages.Services;
-using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Commons.Calculators.Statistics
 {

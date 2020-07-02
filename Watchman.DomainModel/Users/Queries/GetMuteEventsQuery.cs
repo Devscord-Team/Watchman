@@ -8,7 +8,7 @@ namespace Watchman.DomainModel.Users.Queries
 
         public GetMuteEventsQuery(ulong serverId)
         {
-            ServerId = serverId;
+            this.ServerId = serverId;
         }
     }
 }

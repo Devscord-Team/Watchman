@@ -36,7 +36,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
 
             var content = request.OriginalMessage;
             var percentOfSimilarityToSuspectSpam = this._configurationService.GetConfigurationItem<PercentOfSimilarityBetweenMessagesToSuspectSpam>(serverId).Value;
-            var similarMessagesCount = lastFewMessages.Count(x => GetDifferencePercent(x.Content, content) < percentOfSimilarityToSuspectSpam);
+            var similarMessagesCount = lastFewMessages.Count(x => this.GetDifferencePercent(x.Content, content) < percentOfSimilarityToSuspectSpam);
             var isUserSafe = this.UserSafetyChecker.IsUserSafe(userId, serverId);
 
             return similarMessagesCount switch
@@ -53,8 +53,10 @@ namespace Watchman.Discord.Areas.Protection.Strategies
         private double GetDifferencePercent(string message1, string message2)
         {
             if (message1 == message2)
+            {
                 return 0;
-            
+            }
+
             var source1Length = message1.Length;
             var source2Length = message2.Length;
 
@@ -62,14 +64,20 @@ namespace Watchman.Discord.Areas.Protection.Strategies
 
             // First calculation, if one entry is empty return full length
             if (source1Length == 0)
+            {
                 return 1;
+            }
 
             if (source2Length == 0)
+            {
                 return 1;
+            }
 
             // Initialization of matrix with row size source1Length and columns size source2Length
-            for (var i = 0; i <= source1Length; matrix[i, 0] = i++){}
-            for (var j = 0; j <= source2Length; matrix[0, j] = j++){}
+            for (var i = 0; i <= source1Length; matrix[i, 0] = i++)
+            { }
+            for (var j = 0; j <= source2Length; matrix[0, j] = j++)
+            { }
 
             // Calculate rows and columns distances
             for (var i = 1; i <= source1Length; i++)
@@ -84,7 +92,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
                 }
             }
             // return result
-            return (double)matrix[source1Length, source2Length] / source1Length;
+            return (double) matrix[source1Length, source2Length] / source1Length;
         }
     }
 }

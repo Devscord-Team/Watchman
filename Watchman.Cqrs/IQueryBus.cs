@@ -7,5 +7,5 @@ namespace Watchman.Cqrs
         W Execute<W>(IQuery<W> query) where W : IQueryResult;
         Task<W> ExecuteAsync<W>(IQuery<W> query) where W : IQueryResult;
     }
-    
+
 }

@@ -17,8 +17,8 @@ namespace Watchman.Discord.Areas.Protection.Services
 
         public AntiSpamService(MuteService muteService, MessagesServiceFactory messagesServiceFactory)
         {
-            _muteService = muteService;
-            _messagesServiceFactory = messagesServiceFactory;
+            this._muteService = muteService;
+            this._messagesServiceFactory = messagesServiceFactory;
         }
 
         public async Task SetPunishment(Contexts contexts, Punishment punishment)
@@ -31,14 +31,14 @@ namespace Watchman.Discord.Areas.Protection.Services
             Log.Information("Spam recognized! User: {user} on channel: {channel} server: {server}",
                             contexts.User.Name, contexts.Channel.Name, contexts.Server.Name);
 
-            var messagesService = _messagesServiceFactory.Create(contexts);
+            var messagesService = this._messagesServiceFactory.Create(contexts);
             switch (punishment.PunishmentOption)
             {
                 case PunishmentOption.Warn:
                     await messagesService.SendResponse(x => x.SpamAlertRecognized(contexts));
                     break;
                 case PunishmentOption.Mute:
-                    await MuteUserForSpam(contexts, punishment.ForTime!.Value);
+                    await this.MuteUserForSpam(contexts, punishment.ForTime!.Value);
                     break;
             }
         }
@@ -47,8 +47,8 @@ namespace Watchman.Discord.Areas.Protection.Services
         {
             var timeRange = new TimeRange(DateTime.Now, DateTime.Now.Add(length));
             var muteEvent = new MuteEvent(contexts.User.Id, timeRange, "Spam detected (by bot)", contexts.Server.Id);
-            await _muteService.MuteUserOrOverwrite(contexts, muteEvent, contexts.User);
-            _muteService.UnmuteInFuture(contexts, muteEvent, contexts.User);
+            await this._muteService.MuteUserOrOverwrite(contexts, muteEvent, contexts.User);
+            this._muteService.UnmuteInFuture(contexts, muteEvent, contexts.User);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Watchman.DomainModel.Responses.Commands
 
         public AddResponseCommand(Response response)
         {
-            Response = response;
+            this.Response = response;
         }
     }
 }

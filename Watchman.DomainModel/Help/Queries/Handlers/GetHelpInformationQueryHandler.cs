@@ -10,12 +10,12 @@ namespace Watchman.DomainModel.Help.Queries.Handlers
 
         public GetHelpInformationQueryHandler(ISessionFactory sessionFactory)
         {
-            _sessionFactory = sessionFactory;
+            this._sessionFactory = sessionFactory;
         }
 
         public GetHelpInformationQueryResult Handle(GetHelpInformationQuery query)
         {
-            var session = _sessionFactory.Create();
+            var session = this._sessionFactory.Create();
             var allHelpInfos = session.Get<HelpInformation>().ToList();
             var defaultHelpInfos = allHelpInfos.Where(x => x.IsDefault);
             var customHelpInfos = allHelpInfos.Where(x => x.ServerId == query.ServerId).ToList();

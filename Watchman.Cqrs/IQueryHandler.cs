@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 namespace Watchman.Cqrs
 {
     public interface IQueryHandler

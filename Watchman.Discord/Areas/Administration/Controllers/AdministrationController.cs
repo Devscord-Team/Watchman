@@ -1,19 +1,20 @@
-﻿using System;
+﻿using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
+using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
+using Devscord.DiscordFramework.Services.Factories;
+using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Devscord.DiscordFramework.Commons;
 using Watchman.Cqrs;
-using Watchman.DomainModel.Messages.Queries;
-using Devscord.DiscordFramework.Framework.Commands.Responses;
-using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Discord.Areas.Commons;
+using Watchman.DomainModel.DiscordServer.Commands;
+using Watchman.DomainModel.Messages.Queries;
 using Watchman.Discord.Areas.Users.Services;
 using Watchman.Discord.Areas.Administration.BotCommands;
 

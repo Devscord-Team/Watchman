@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Devscord.DiscordFramework.Framework.Commands.Parsing;
+﻿using Devscord.DiscordFramework.Framework.Commands.Parsing;
 using NUnit.Framework;
+using System;
 
 namespace Devscord.DiscordFramework.UnitTests.Commands.Parsing.Models
 {
@@ -30,7 +28,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.Parsing.Models
 
         [Test]
         [TestCase("-help json", "", "json", true)]
-        [TestCase("-help -json xml", "json", "xml", true)] 
+        [TestCase("-help -json xml", "json", "xml", true)]
         [TestCase("-help -json json", "json", "json", true)]
         [TestCase("-add tester", null, "tester", true)]
         [TestCase("-add tester", null, "csharp", false)]

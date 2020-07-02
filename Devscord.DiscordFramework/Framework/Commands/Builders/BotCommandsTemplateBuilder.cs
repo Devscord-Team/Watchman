@@ -11,7 +11,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Builders
     {
         public BotCommandTemplate GetCommandTemplate(Type commandType)
         {
-            var properties = GetBotCommandProperties(commandType);
+            var properties = this.GetBotCommandProperties(commandType);
             var template = new BotCommandTemplate(commandType.Name, properties);
             return template;
         }
@@ -26,7 +26,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Builders
             var name = commandProperty.Name;
             var attributes = commandProperty.GetCustomAttributes(typeof(CommandPropertyAttribute), inherit: true).Select(x => x as CommandPropertyAttribute).ToList();
             var attribute = attributes.FirstOrDefault(x => x.GetType() != typeof(Optional)) ?? new SingleWord();
-            var type = (BotCommandPropertyType)Enum.Parse(typeof(BotCommandPropertyType), attribute.GetType().Name);
+            var type = (BotCommandPropertyType) Enum.Parse(typeof(BotCommandPropertyType), attribute.GetType().Name);
             var isOptional = attributes.Any(x => x is Optional);
             return new BotCommandProperty(name, type, isOptional);
         }

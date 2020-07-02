@@ -23,21 +23,21 @@ namespace Watchman.Discord.Areas.Statistics.Services
 
         public CyclicStatisticsGeneratorService(IQueryBus queryBus, ICommandBus commandBus, DiscordServersService discordServersService)
         {
-            _queryBus = queryBus;
-            _commandBus = commandBus;
-            _discordServersService = discordServersService;
+            this._queryBus = queryBus;
+            this._commandBus = commandBus;
+            this._discordServersService = discordServersService;
         }
 
         public async Task GenerateStatsForDaysBefore(DiscordServerContext server, DateTime? lastInitDate)
         {
             var dayStatisticsQuery = new GetServerDayStatisticsQuery(server.Id);
-            var allServerDaysStatistics = (await _queryBus.ExecuteAsync(dayStatisticsQuery)).ServerDayStatistics.ToList();
+            var allServerDaysStatistics = (await this._queryBus.ExecuteAsync(dayStatisticsQuery)).ServerDayStatistics.ToList();
             var startDate = lastInitDate ?? DateTime.UnixEpoch;
             var messagesQuery = new GetMessagesQuery(server.Id)
             {
                 SentDate = new TimeRange(startDate, DateTime.Today) // it will exclude today - it should generate today's stats tomorrow
             };
-            var messages = _queryBus.Execute(messagesQuery).Messages;
+            var messages = this._queryBus.Execute(messagesQuery).Messages;
 
             var messagesNotCachedForStats = messages
                 .Where(message => allServerDaysStatistics.All(s => message.SentAt.Date != s.Date));
@@ -49,15 +49,18 @@ namespace Watchman.Discord.Areas.Statistics.Services
             var commands = serverStatistics.Select(x => new AddServerDayStatisticCommand(x));
             foreach (var command in commands)
             {
-                await _commandBus.ExecuteAsync(command);
+                await this._commandBus.ExecuteAsync(command);
             }
         }
 
-        public async Task ReloadCache() => await this.GenerateStatsForLastDay();
+        public async Task ReloadCache()
+        {
+            await this.GenerateStatsForLastDay();
+        }
 
         private async Task GenerateStatsForLastDay()
         {
-            var servers = await _discordServersService.GetDiscordServers();
+            var servers = await this._discordServersService.GetDiscordServers();
             var yesterdayDate = DateTime.Today.AddDays(-1);
             var todayDate = DateTime.Today;
             var yesterdayRange = new TimeRange(yesterdayDate, todayDate);
@@ -65,11 +68,11 @@ namespace Watchman.Discord.Areas.Statistics.Services
             foreach (var server in servers)
             {
                 var query = new GetMessagesQuery(server.Id) { SentDate = yesterdayRange };
-                var messages = _queryBus.Execute(query).Messages.ToList();
+                var messages = this._queryBus.Execute(query).Messages.ToList();
 
                 var serverStatistic = new ServerDayStatistic(messages, server.Id, DateTime.Today);
                 var command = new AddServerDayStatisticCommand(serverStatistic);
-                await _commandBus.ExecuteAsync(command);
+                await this._commandBus.ExecuteAsync(command);
             }
         }
     }

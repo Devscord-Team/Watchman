@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Devscord.DiscordFramework.Framework.Architecture.Controllers
 {
@@ -10,7 +8,7 @@ namespace Devscord.DiscordFramework.Framework.Architecture.Controllers
         public string Command { get; private set; }
         public DiscordCommand(string command)
         {
-            Command = command;
+            this.Command = command;
         }
     }
 }

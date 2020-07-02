@@ -9,7 +9,7 @@ namespace Watchman.DomainModel.Settings.Queries
 
         public GetInitEventsQueryResults(IEnumerable<InitEvent> initEvents)
         {
-            InitEvents = initEvents;
+            this.InitEvents = initEvents;
         }
     }
 }

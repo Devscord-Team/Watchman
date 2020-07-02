@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Watchman.Cqrs;
 
 namespace Watchman.DomainModel.ScheduleTasks.Commands
@@ -13,9 +12,9 @@ namespace Watchman.DomainModel.ScheduleTasks.Commands
 
         public AddScheduleTaskCommand(string commandName, IEnumerable<object> arguments, DateTime executionDate)
         {
-            CommandName = commandName;
-            Arguments = arguments;
-            ExecutionDate = executionDate;
+            this.CommandName = commandName;
+            this.Arguments = arguments;
+            this.ExecutionDate = executionDate;
         }
     }
 }

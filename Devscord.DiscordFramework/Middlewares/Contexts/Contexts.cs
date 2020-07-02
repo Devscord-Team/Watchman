@@ -1,7 +1,5 @@
 ﻿using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Devscord.DiscordFramework.Middlewares.Contexts
 {
@@ -16,15 +14,15 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
             switch (context)
             {
                 case DiscordServerContext discordServerContext:
-                    Server = discordServerContext;
+                    this.Server = discordServerContext;
                     break;
 
                 case ChannelContext channelContext:
-                    Channel = channelContext;
+                    this.Channel = channelContext;
                     break;
 
                 case UserContext userContext:
-                    User = userContext;
+                    this.User = userContext;
                     break;
 
                 default:

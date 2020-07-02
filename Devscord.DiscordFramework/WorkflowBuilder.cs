@@ -1,14 +1,14 @@
 ﻿using Autofac;
 using Devscord.DiscordFramework.Framework;
+using Devscord.DiscordFramework.Integration;
+using Devscord.DiscordFramework.Middlewares;
 using Devscord.DiscordFramework.Middlewares.Contexts;
+using Discord;
 using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
-using Discord;
-using Devscord.DiscordFramework.Middlewares;
-using Devscord.DiscordFramework.Integration;
 
 namespace Devscord.DiscordFramework
 {
@@ -24,7 +24,7 @@ namespace Devscord.DiscordFramework
 
         private WorkflowBuilder(string token, IComponentContext context, Assembly botAssembly)
         {
-            _client = new DiscordSocketClient(new DiscordSocketConfig
+            this._client = new DiscordSocketClient(new DiscordSocketConfig
             {
                 TotalShards = 1
             });
@@ -33,11 +33,14 @@ namespace Devscord.DiscordFramework
             this._workflow = new Workflow(botAssembly, context);
         }
 
-        public static WorkflowBuilder Create(string token, IComponentContext context, Assembly botAssembly) => new WorkflowBuilder(token, context, botAssembly);
+        public static WorkflowBuilder Create(string token, IComponentContext context, Assembly botAssembly)
+        {
+            return new WorkflowBuilder(token, context, botAssembly);
+        }
 
         public WorkflowBuilder SetMessageHandler(Func<SocketMessage, Task> action)
         {
-            _client.MessageReceived += action;
+            this._client.MessageReceived += action;
             return this;
         }
 
@@ -52,31 +55,31 @@ namespace Devscord.DiscordFramework
 
         public WorkflowBuilder AddOnReadyHandlers(Action<WorkflowBuilderHandlers<Func<Task>>> action)
         {
-            AddHandlers(action, this._workflow.OnReady.Add);
+            this.AddHandlers(action, this._workflow.OnReady.Add);
             return this;
         }
 
         public WorkflowBuilder AddOnUserJoinedHandlers(Action<WorkflowBuilderHandlers<Func<Contexts, Task>>> action)
         {
-            AddHandlers(action, this._workflow.OnUserJoined.Add);
+            this.AddHandlers(action, this._workflow.OnUserJoined.Add);
             return this;
         }
 
         public WorkflowBuilder AddOnMessageReceivedHandlers(Action<WorkflowBuilderHandlers<Func<SocketMessage, Task>>> action)
         {
-            AddHandlers(action, this._workflow.OnMessageReceived.Add);
+            this.AddHandlers(action, this._workflow.OnMessageReceived.Add);
             return this;
         }
 
         public WorkflowBuilder AddOnDiscordServerAddedBot(Action<WorkflowBuilderHandlers<Func<DiscordServerContext, Task>>> action)
         {
-            AddHandlers(action, this._workflow.OnDiscordServerAddedBot.Add);
+            this.AddHandlers(action, this._workflow.OnDiscordServerAddedBot.Add);
             return this;
         }
 
         public WorkflowBuilder AddOnWorkflowExceptionHandlers(Action<WorkflowBuilderHandlers<Action<Exception, Contexts>>> action)
         {
-            AddHandlers(action, this._workflow.OnWorkflowException.Add);
+            this.AddHandlers(action, this._workflow.OnWorkflowException.Add);
             return this;
         }
 
@@ -92,13 +95,13 @@ namespace Devscord.DiscordFramework
 
         public WorkflowBuilder Build()
         {
-            _workflow.Initialize();
-            _workflow.MapHandlers(_client);
+            this._workflow.Initialize();
+            this._workflow.MapHandlers(this._client);
 
-            _client.LoginAsync(TokenType.Bot, _token).Wait();
-            _client.StartAsync().Wait();
+            this._client.LoginAsync(TokenType.Bot, this._token).Wait();
+            this._client.StartAsync().Wait();
 
-            ServerInitializer.Initialize(_client);
+            ServerInitializer.Initialize(this._client);
             return this;
         }
 

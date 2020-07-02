@@ -1,9 +1,7 @@
 ﻿using Devscord.DiscordFramework.Framework.Commands.Parsing;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Devscord.DiscordFramework.UnitTests.Commands.Parsing
 {

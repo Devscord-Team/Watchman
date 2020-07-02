@@ -1,9 +1,9 @@
-﻿using System;
+using Devscord.DiscordFramework.Commons.Exceptions;
+using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using Devscord.DiscordFramework.Commons.Exceptions;
-using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Watchman.Common.Models;
 
 namespace Watchman.Discord.Areas.Commons
@@ -30,7 +30,7 @@ namespace Watchman.Discord.Areas.Commons
         public static TimeRange GetPastTimeRange(this DiscordRequest discordRequest, TimeSpan defaultTime)
         {
             return new TimeRange(
-                start: discordRequest.SentAt - ParseToTimeSpan(discordRequest, defaultTime), 
+                start: discordRequest.SentAt - ParseToTimeSpan(discordRequest, defaultTime),
                 end: discordRequest.SentAt);
         }
 
@@ -56,6 +56,7 @@ namespace Watchman.Discord.Areas.Commons
             {
                 throw new TimeCannotBeNegativeException();
             }
+
             var parsedTimeSpan = lastChar switch
             {
                 's' => TimeSpan.FromSeconds(timeAsNumber),
@@ -63,7 +64,8 @@ namespace Watchman.Discord.Areas.Commons
                 'h' => TimeSpan.FromHours(timeAsNumber),
                 _ => defaultTime,
             };
-            if (parsedTimeSpan.TotalSeconds >= int.MaxValue)
+
+            if (parsedTimeSpan.TotalMilliseconds >= int.MaxValue)
             {
                 throw new TimeIsTooBigException();
             }

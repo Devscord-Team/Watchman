@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Devscord.DiscordFramework.Services.Models;
+using System.Collections.Generic;
 using System.Linq;
-using Devscord.DiscordFramework.Services.Models;
 using Watchman.DomainModel.Help;
 
 namespace Watchman.Discord.Areas.Help.Factories
@@ -11,7 +11,7 @@ namespace Watchman.Discord.Areas.Help.Factories
 
         public HelpInformationFactory(ArgumentInfoFactory argumentInfoFactory)
         {
-            _argumentInfoFactory = argumentInfoFactory;
+            this._argumentInfoFactory = argumentInfoFactory;
         }
 
         public HelpInformation Create(CommandInfo commandInfo)
@@ -20,7 +20,7 @@ namespace Watchman.Discord.Areas.Help.Factories
             {
                 MethodFullName = commandInfo.MethodFullName,
                 Names = commandInfo.Names,
-                ArgumentInfos = commandInfo.CommandArgumentInfos.Select(x => _argumentInfoFactory.Create(x)),
+                ArgumentInfos = commandInfo.CommandArgumentInfos.Select(x => this._argumentInfoFactory.Create(x)),
                 ServerId = 0,
                 Descriptions = new List<Description>
                 {

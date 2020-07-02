@@ -1,9 +1,7 @@
-﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace Devscord.DiscordFramework.Commons.Extensions
 {
@@ -44,7 +42,7 @@ namespace Devscord.DiscordFramework.Commons.Extensions
             var commandArguments = method.GetCustomAttributesData()
                 .Where(x => x.AttributeType.FullName == typeof(T).FullName)
                 .SelectMany(x => x.ConstructorArguments, (x, arg) => arg.Value).ToArray();
-            return commandArguments.Select(x => (T)Activator.CreateInstance(typeof(T), x));
+            return commandArguments.Select(x => (T) Activator.CreateInstance(typeof(T), x));
         }
     }
 }

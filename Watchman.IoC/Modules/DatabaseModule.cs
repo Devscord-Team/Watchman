@@ -1,9 +1,6 @@
 ﻿using Autofac;
 using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using Watchman.Integrations.MongoDB;
 
 namespace Watchman.IoC.Modules
@@ -23,7 +20,7 @@ namespace Watchman.IoC.Modules
                 .GetTypeInfo()
                 .Assembly;
 
-            builder.Register((c, p) => new MongoClient(_connectionString).GetDatabase("devscord"))
+            builder.Register((c, p) => new MongoClient(this._connectionString).GetDatabase("devscord"))
                 .As<IMongoDatabase>()
                 .InstancePerLifetimeScope();
 

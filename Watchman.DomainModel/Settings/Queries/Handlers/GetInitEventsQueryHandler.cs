@@ -10,12 +10,12 @@ namespace Watchman.DomainModel.Settings.Queries.Handlers
 
         public GetInitEventsQueryHandler(ISessionFactory sessionFactory)
         {
-            _sessionFactory = sessionFactory;
+            this._sessionFactory = sessionFactory;
         }
 
         public GetInitEventsQueryResults Handle(GetInitEventsQuery query)
         {
-            using var session = _sessionFactory.Create();
+            using var session = this._sessionFactory.Create();
             var initEvents = session.Get<InitEvent>()
                 .Where(x => x.ServerId == query.ServerId);
 

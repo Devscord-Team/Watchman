@@ -15,7 +15,7 @@ namespace Watchman.DomainModel.Users.Commands.Handlers
 
         public async Task HandleAsync(MarkMuteEventAsUnmutedCommand command)
         {
-            using var session = _sessionFactory.Create();
+            using var session = this._sessionFactory.Create();
             var muteEvent = session.Get<MuteEvent>(command.MuteEventGuid);
             muteEvent.Unmuted = true;
             await session.UpdateAsync(muteEvent);

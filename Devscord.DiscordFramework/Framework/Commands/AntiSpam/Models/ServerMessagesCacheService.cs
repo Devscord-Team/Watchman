@@ -43,8 +43,8 @@ namespace Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models
 
         public IEnumerable<SmallMessage> GetLastUserMessages(ulong userId, ulong serverId)
         {
-            return _usersMessages.TryGetValue(userId, out var smallMessages) 
-                ? smallMessages.Where(x => x.ServerId == serverId) 
+            return _usersMessages.TryGetValue(userId, out var smallMessages)
+                ? smallMessages.Where(x => x.ServerId == serverId)
                 : new List<SmallMessage>();
         }
 

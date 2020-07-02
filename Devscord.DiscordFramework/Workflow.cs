@@ -1,19 +1,18 @@
 ﻿using Autofac;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Framework.Commands.Parsing;
+using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
+using Devscord.DiscordFramework.Framework.Commands.Services;
+using Devscord.DiscordFramework.Integration;
 using Devscord.DiscordFramework.Middlewares.Contexts;
+using Devscord.DiscordFramework.Middlewares.Factories;
 using Discord.WebSocket;
 using Serilog;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
-using Devscord.DiscordFramework.Middlewares.Factories;
-using System.Collections.Generic;
-using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
-using Discord.Rest;
-using System.Diagnostics;
-using Devscord.DiscordFramework.Framework.Commands.Services;
-using Devscord.DiscordFramework.Integration;
 
 namespace Devscord.DiscordFramework
 {
@@ -45,20 +44,30 @@ namespace Devscord.DiscordFramework
 
         internal void Initialize()
         {
-            this.OnMessageReceived.Add(message => Task.Run(() => this.MessageReceived(message)));
+            this.OnMessageReceived.Add(message => Task.Run(() =>
+            {
+                try
+                {
+                    this.MessageReceived(message);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, ex.StackTrace);
+                }
+            }));
         }
 
         internal void MapHandlers(DiscordSocketClient client)
         {
             this.OnReady.ForEach(x => client.Ready += x);
             this.OnMessageReceived.ForEach(x => client.MessageReceived += x);
-            Server.UserJoined += CallUserJoined;
-            Server.BotAddedToServer += CallServerAddedBot;
+            Server.UserJoined += this.CallUserJoined;
+            Server.BotAddedToServer += this.CallServerAddedBot;
         }
 
         private async void MessageReceived(SocketMessage socketMessage)
         {
-            if (ShouldIgnoreMessage(socketMessage))
+            if (this.ShouldIgnoreMessage(socketMessage))
             {
                 return;
             }
@@ -78,12 +87,12 @@ namespace Devscord.DiscordFramework
             try
             {
                 Log.Information("Starting controllers");
-                await this._controllersService.Run(request, contexts);
+                await this._controllersService.Run(socketMessage.Id, request, contexts);
             }
             catch (Exception e)
             {
                 Log.Error(e, e.StackTrace);
-                OnWorkflowException.ForEach(x => x.Invoke(e, contexts));
+                this.OnWorkflowException.ForEach(x => x.Invoke(e, contexts));
             }
             var elapsedRun = this._stopWatch.ElapsedTicks;
             Log.Information("_controllersService.Run time {elapsedRun}ticks", elapsedRun);
@@ -98,7 +107,7 @@ namespace Devscord.DiscordFramework
         {
             this._stopWatch.Restart();
             Log.Information("Processing message: {content} from user {user} started", socketMessage.Content, socketMessage.Author);
-            var request = _commandParser.Parse(socketMessage.Content, socketMessage.Timestamp.UtcDateTime);
+            var request = this._commandParser.Parse(socketMessage.Content, socketMessage.Timestamp.UtcDateTime);
             var elapsedParse = this._stopWatch.ElapsedTicks;
             Log.Information("Parsing time: {elapsedParse}ticks", elapsedParse);
 #if DEBUG
@@ -159,7 +168,7 @@ namespace Devscord.DiscordFramework
                 contexts.SetContext(landingChannel);
             }
 
-            OnUserJoined.ForEach(x => x.Invoke(contexts));
+            this.OnUserJoined.ForEach(x => x.Invoke(contexts));
         }
 
         private async Task CallServerAddedBot(SocketGuild guild)
@@ -168,7 +177,7 @@ namespace Devscord.DiscordFramework
             var restGuild = await Server.GetGuild(guild.Id);
             var discordServer = discordServerFactory.Create(restGuild);
 
-            OnDiscordServerAddedBot.ForEach(x => x.Invoke(discordServer));
+            this.OnDiscordServerAddedBot.ForEach(x => x.Invoke(discordServer));
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Watchman.DomainModel.DiscordServer.Commands.Handlers
 
         protected UpdateSafetyOfRoleCommandHandler(ISessionFactory sessionFactory)
         {
-            _sessionFactory = sessionFactory;
+            this._sessionFactory = sessionFactory;
         }
 
         public abstract Task HandleAsync(T command);

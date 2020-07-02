@@ -15,23 +15,20 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             {
                 return null;
             }
-
             var argType = template.Properties.FirstOrDefault(x => x.Name.ToLowerInvariant() == key.ToLowerInvariant())
                 ?.Type;
             if (argType.HasValue && argType.Value == BotCommandPropertyType.Bool)
             {
                 return result.Value ?? bool.TrueString;
             }
-
             if (!isList)
             {
                 return result.Value;
             }
-
             var argumentsList = request.Arguments.ToList();
             var indexOf = argumentsList.IndexOf(result);
             var nextResults = argumentsList.Skip(indexOf + 1).TakeWhile(x => x.Name == null);
-            var list = new List<string> {result.Value};
+            var list = new List<string> { result.Value };
             list.AddRange(nextResults.Select(x => x.Value));
             return list;
         }
@@ -42,7 +39,6 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             {
                 return null;
             }
-
             var lowerCaseKey = key.ToLowerInvariant();
             var value = match.Groups[key].Value.Trim();
             var argType = template.Properties.FirstOrDefault(x => x.Name.ToLowerInvariant() == lowerCaseKey)?.Type;
@@ -50,17 +46,14 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             {
                 return bool.TrueString;
             }
-
             if (!isList)
             {
                 return value;
             }
-
             if (!value.Contains('\"') || value.Count(x => x == '\"') % 2 != 0)
             {
                 return value.Split(' ').ToList();
             }
-
             var results = value.Split('"')
                 .Where(x => !string.IsNullOrWhiteSpace(x) && !x.StartsWith(' ') && !x.EndsWith(' '))
                 .ToList();
@@ -68,7 +61,6 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             {
                 value = value.Replace($"\"{toRemove}\"", string.Empty);
             }
-
             var otherResults = value.Split(' ').Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.Trim());
             results.AddRange(otherResults);
             return results;

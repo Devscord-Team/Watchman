@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Watchman.DomainModel.Commons.Calculators.Statistics.Splitters;
 using Watchman.Integrations.MongoDB;
 
@@ -10,15 +8,18 @@ namespace Watchman.DomainModel.UnitTests
     {
         public void SetUpdatedAt(DateTime dateTime)
         {
-            UpdatedAt = dateTime;
+            this.UpdatedAt = dateTime;
         }
 
         public void SetCreatedAt(DateTime dateTime)
         {
-            CreatedAt = dateTime;
-            UpdatedAt = dateTime;
+            this.CreatedAt = dateTime;
+            this.UpdatedAt = dateTime;
         }
 
-        public DateTime GetSplittable() => this.CreatedAt;
+        public DateTime GetSplittable()
+        {
+            return this.CreatedAt;
+        }
     }
 }

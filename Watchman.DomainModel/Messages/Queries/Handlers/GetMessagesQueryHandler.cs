@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using Watchman.Cqrs;
-using Watchman.DomainModel.Commons.Queries.Handlers;
 using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Messages.Queries.Handlers
@@ -16,19 +15,19 @@ namespace Watchman.DomainModel.Messages.Queries.Handlers
 
         public GetMessagesQueryResult Handle(GetMessagesQuery query)
         {
-            using var session = _sessionFactory.Create();
+            using var session = this._sessionFactory.Create();
             var messages = session.Get<Message>();
             if (query.ServerId != 0)
             {
-                messages = TakeOnlyFromOneServer(query.ServerId, messages);
+                messages = this.TakeOnlyFromOneServer(query.ServerId, messages);
             }
             if (query.ChannelId != 0)
             {
-                messages = TakeOnlyFromChannel(query.ChannelId, messages);
+                messages = this.TakeOnlyFromChannel(query.ChannelId, messages);
             }
             if (query.UserId.HasValue && query.UserId != 0)
             {
-                messages = TakeOnlyForUser(query.UserId.Value, messages);
+                messages = this.TakeOnlyForUser(query.UserId.Value, messages);
             }
             var paginated = this.Paginate(query, messages);
             if (query.UserId.HasValue)
@@ -42,10 +41,12 @@ namespace Watchman.DomainModel.Messages.Queries.Handlers
         {
             return messages.Where(x => x.Server.Id == serverId);
         }
+
         private IQueryable<Message> TakeOnlyFromChannel(ulong channelId, IQueryable<Message> messages)
         {
             return messages.Where(x => x.Channel.Id == channelId);
         }
+
         private IQueryable<Message> TakeOnlyForUser(ulong? userId, IQueryable<Message> messages)
         {
             return messages.Where(x => x.Author.Id == userId.Value);

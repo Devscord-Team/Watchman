@@ -10,8 +10,8 @@ namespace Watchman.DomainModel.Messages.Commands
 
         public AddMessagesCommand(IEnumerable<Message> messages, ulong channelId)
         {
-            Messages = messages;
-            ChannelId = channelId;
+            this.Messages = messages;
+            this.ChannelId = channelId;
         }
     }
 }

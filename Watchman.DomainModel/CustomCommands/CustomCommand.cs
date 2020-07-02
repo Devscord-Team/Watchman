@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.CustomCommands
@@ -19,6 +16,9 @@ namespace Watchman.DomainModel.CustomCommands
             this.ServerId = serverId;
         }
 
-        public Regex GetTemplate() => new Regex(this.CustomTemplateRegex, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        public Regex GetTemplate()
+        {
+            return new Regex(this.CustomTemplateRegex, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        }
     }
 }

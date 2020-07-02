@@ -9,7 +9,7 @@ namespace Watchman.DomainModel.Messages.Queries
 
         public GetServerDayStatisticsQueryResult(IEnumerable<ServerDayStatistic> serverDayStatistics)
         {
-            ServerDayStatistics = serverDayStatistics;
+            this.ServerDayStatistics = serverDayStatistics;
         }
     }
 }

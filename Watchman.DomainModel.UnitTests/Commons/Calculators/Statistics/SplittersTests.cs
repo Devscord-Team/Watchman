@@ -1,12 +1,8 @@
-﻿using AutoFixture;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Watchman.Common.Models;
 using Watchman.DomainModel.Commons.Calculators.Statistics.Splitters;
-using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.UnitTests.Commons.Calculators.Statistics
 {
@@ -54,7 +50,10 @@ namespace Watchman.DomainModel.UnitTests.Commons.Calculators.Statistics
                 .Generate(timeRange, i =>
                 {
                     if (i == 0 || items % i == 0)
+                    {
                         return null;
+                    }
+
                     var time = DateTime.UtcNow.AddDays(i);
                     var entity = new TestEntity();
                     entity.SetCreatedAt(time);

@@ -14,6 +14,9 @@ config-prod.json
 
 appsettings.json
 appsettings.Development.json
+appsettings.Production.json
+
+logs/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Watchman.Cqrs;
 
 namespace Watchman.DomainModel.Messages.Commands
@@ -25,16 +23,16 @@ namespace Watchman.DomainModel.Messages.Commands
             ulong serverOwnerId, string serverOwnerName,
             DateTime sentAt)
         {
-            Content = content;
-            AuthorId = authorId;
-            AuthorName = authorName;
-            ChannelId = channelId;
-            ChannelName = channelName;
-            ServerId = serverId;
-            ServerName = serverName;
-            ServerOwnerId = serverOwnerId;
-            ServerOwnerName = serverOwnerName;
-            SentAt = sentAt;
+            this.Content = content;
+            this.AuthorId = authorId;
+            this.AuthorName = authorName;
+            this.ChannelId = channelId;
+            this.ChannelName = channelName;
+            this.ServerId = serverId;
+            this.ServerName = serverName;
+            this.ServerOwnerId = serverOwnerId;
+            this.ServerOwnerName = serverOwnerName;
+            this.SentAt = sentAt;
         }
     }
 }

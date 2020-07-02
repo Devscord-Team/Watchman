@@ -7,7 +7,7 @@ using Devscord.DiscordFramework;
 
 namespace Watchman.Discord
 {
-    class Program
+    internal class Program
     {
         private const int HOW_MANY_EXCEPTIONS_IN_SHORT_TIME_TO_STOP_BOT = 4;
         private static int _numberOfExceptionsInLastTime;
@@ -27,7 +27,7 @@ namespace Watchman.Discord
 
             AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
             {
-                HandleException((Exception)e.ExceptionObject);
+                HandleException((Exception) e.ExceptionObject);
             };
             while (true)
             {

@@ -15,18 +15,17 @@ namespace Devscord.DiscordFramework.Services
     public class MessagesService : ICyclicCacheGenerator
     {
         public RefreshFrequent RefreshFrequent { get; } = RefreshFrequent.Quarterly;
-
         public ulong GuildId { get; set; }
         public ulong ChannelId { get; set; }
 
         private static readonly Dictionary<ulong, IEnumerable<Response>> _serversResponses = new Dictionary<ulong, IEnumerable<Response>>();
-        private static ResponsesService _responsesService;
+        private readonly ResponsesService _responsesService;
         private readonly MessageSplittingService _splittingService;
         private readonly EmbedMessagesService _embedMessagesService;
 
         public MessagesService(ResponsesService responsesService, MessageSplittingService splittingService, EmbedMessagesService embedMessagesService)
         {
-            _responsesService = responsesService;
+            this._responsesService = responsesService;
             this._splittingService = splittingService;
             this._embedMessagesService = embedMessagesService;
             this.ReloadCache().Wait();
@@ -54,14 +53,14 @@ namespace Devscord.DiscordFramework.Services
 
         public Task SendResponse(Func<ResponsesService, string> response)
         {
-            _responsesService.Responses = _serversResponses.GetValueOrDefault(this.GuildId) ?? GetResponsesForNewServer(this.GuildId);
-            var message = response.Invoke(_responsesService);
+            this._responsesService.Responses = _serversResponses.GetValueOrDefault(this.GuildId) ?? this.GetResponsesForNewServer(this.GuildId);
+            var message = response.Invoke(this._responsesService);
             return this.SendMessage(message);
         }
 
         public async Task SendFile(string filePath)
         {
-            var channel = (IRestMessageChannel)await Server.GetChannel(this.ChannelId);
+            var channel = (IRestMessageChannel) await Server.GetChannel(this.ChannelId);
             await channel.SendFileAsync(filePath);
         }
 
@@ -82,7 +81,7 @@ namespace Devscord.DiscordFramework.Services
                 {
                     arg = arg.Append(botException.Value).ToArray();
                 }
-                return (string)responseManagerMethod.Invoke(null, arg);
+                return (string) responseManagerMethod.Invoke(null, arg);
             });
         }
 
@@ -90,15 +89,15 @@ namespace Devscord.DiscordFramework.Services
         {
             foreach (var serverId in _serversResponses.Keys.ToList())
             {
-                var responses = _responsesService.GetResponsesFunc(serverId);
+                var responses = this._responsesService.GetResponsesFunc(serverId);
                 _serversResponses[serverId] = responses;
             }
             return Task.CompletedTask;
         }
 
-        private static IEnumerable<Response> GetResponsesForNewServer(ulong serverId)
+        private IEnumerable<Response> GetResponsesForNewServer(ulong serverId)
         {
-            var responses = _responsesService.GetResponsesFunc(serverId).ToList();
+            var responses = this._responsesService.GetResponsesFunc(serverId).ToList();
             _serversResponses.Add(serverId, responses);
             return responses;
         }
@@ -107,8 +106,10 @@ namespace Devscord.DiscordFramework.Services
         {
             RestGuild guild = null;
             if (this.GuildId != default)
+            {
                 guild = Server.GetGuild(this.GuildId).Result;
-            var channel = (IRestMessageChannel)Server.GetChannel(this.ChannelId, guild).Result;
+            }
+            var channel = (IRestMessageChannel) Server.GetChannel(this.ChannelId, guild).Result;
             return channel;
         }
     }

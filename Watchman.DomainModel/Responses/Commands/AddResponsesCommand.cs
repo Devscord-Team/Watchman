@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Watchman.Cqrs;
 
 namespace Watchman.DomainModel.Responses.Commands
@@ -11,7 +9,7 @@ namespace Watchman.DomainModel.Responses.Commands
 
         public AddResponsesCommand(IEnumerable<Response> responses)
         {
-            Responses = responses;
+            this.Responses = responses;
         }
     }
 }

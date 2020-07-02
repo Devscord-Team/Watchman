@@ -1,9 +1,9 @@
 ﻿using Devscord.DiscordFramework.Middlewares.Contexts;
+using Devscord.DiscordFramework.Services.Models;
 using Discord;
+using Discord.Rest;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Devscord.DiscordFramework.Services.Models;
-using Discord.Rest;
 
 namespace Devscord.DiscordFramework.Integration.Services.Interfaces
 {

@@ -13,7 +13,7 @@ namespace Watchman.Discord.Areas.Statistics.Services
 
         public ChartsService()
         {
-            _quickchartService = new QuickchartService();
+            this._quickchartService = new QuickchartService();
         }
 
         public string GetImageStatisticsPerPeriod(StatisticsReport report)
@@ -41,7 +41,7 @@ namespace Watchman.Discord.Areas.Statistics.Services
                 }
             };
 
-            var imagePath = _quickchartService.GetImage(chart);
+            var imagePath = this._quickchartService.GetImage(chart);
 
             return imagePath;
         }

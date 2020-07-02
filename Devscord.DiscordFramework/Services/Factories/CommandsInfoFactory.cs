@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Devscord.DiscordFramework.Commons.Extensions;
+﻿using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Services.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Devscord.DiscordFramework.Services.Factories
 {

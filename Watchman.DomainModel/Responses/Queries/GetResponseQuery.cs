@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Watchman.Cqrs;
+﻿using Watchman.Cqrs;
 
 namespace Watchman.DomainModel.Responses.Queries
 {
@@ -12,8 +9,8 @@ namespace Watchman.DomainModel.Responses.Queries
 
         public GetResponseQuery(string onEvent, ulong serverId = 0)
         {
-            OnEvent = onEvent;
-            ServerId = serverId;
+            this.OnEvent = onEvent;
+            this.ServerId = serverId;
         }
     }
 }

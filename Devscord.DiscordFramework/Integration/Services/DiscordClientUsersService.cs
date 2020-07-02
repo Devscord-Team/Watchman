@@ -1,16 +1,16 @@
-﻿using System;
+﻿using Devscord.DiscordFramework.Integration.Services.Interfaces;
 using Discord;
+using Discord.Rest;
 using Discord.WebSocket;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Discord.Rest;
-using Devscord.DiscordFramework.Integration.Services.Interfaces;
 
 namespace Devscord.DiscordFramework.Integration.Services
 {
     internal class DiscordClientUsersService : IDiscordClientUsersService
     {
-        private DiscordSocketRestClient _restClient => _client.Rest;
+        private DiscordSocketRestClient _restClient => this._client.Rest;
         private readonly DiscordSocketClient _client;
 
         public Func<SocketGuildUser, Task> UserJoined { get; set; }
@@ -29,13 +29,13 @@ namespace Devscord.DiscordFramework.Integration.Services
 
         public async Task<RestGuildUser> GetGuildUser(ulong userId, ulong guildId)
         {
-            var guild = await _restClient.GetGuildAsync(guildId);
+            var guild = await this._restClient.GetGuildAsync(guildId);
             return await guild.GetUserAsync(userId);
         }
 
         public async Task<IEnumerable<RestGuildUser>> GetGuildUsers(ulong guildId)
         {
-            var guild = await _restClient.GetGuildAsync(guildId);
+            var guild = await this._restClient.GetGuildAsync(guildId);
             var users = guild.GetUsersAsync();
             return await users.FlattenAsync();
         }

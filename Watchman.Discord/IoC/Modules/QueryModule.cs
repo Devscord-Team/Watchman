@@ -1,9 +1,7 @@
-using System;
+using Autofac;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using Autofac;
 using Watchman.Cqrs;
 
 namespace Watchman.Discord.Ioc.Modules

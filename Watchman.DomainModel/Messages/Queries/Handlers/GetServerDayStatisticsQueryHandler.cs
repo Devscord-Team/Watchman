@@ -11,12 +11,12 @@ namespace Watchman.DomainModel.Messages.Queries.Handlers
 
         public GetServerDayStatisticsQueryHandler(ISessionFactory sessionFactory)
         {
-            _sessionFactory = sessionFactory;
+            this._sessionFactory = sessionFactory;
         }
 
         public GetServerDayStatisticsQueryResult Handle(GetServerDayStatisticsQuery query)
         {
-            using var session = _sessionFactory.Create();
+            using var session = this._sessionFactory.Create();
             var statistics = session.Get<ServerDayStatistic>().AsEnumerable();
             statistics = this.Paginate(query, statistics);
             return new GetServerDayStatisticsQueryResult(statistics);

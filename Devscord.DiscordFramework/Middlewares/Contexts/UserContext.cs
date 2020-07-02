@@ -17,18 +17,18 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
 
         public UserContext(ulong id, string name, IEnumerable<UserRole> roles, string avatarUrl, string mention)
         {
-            Id = id;
-            Name = name;
-            Roles = roles;
-            AvatarUrl = avatarUrl;
-            Mention = mention;
-            IsAdmin = Roles.Any(x => x.Permissions.Any(x => x.HasFlag(Permission.ManageGuild)));
-            IsMuted = Roles.Any(x => x.Name == "muted");
+            this.Id = id;
+            this.Name = name;
+            this.Roles = roles;
+            this.AvatarUrl = avatarUrl;
+            this.Mention = mention;
+            this.IsAdmin = this.Roles.Any(x => x.Permissions.Any(x => x.HasFlag(Permission.ManageGuild)));
+            this.IsMuted = this.Roles.Any(x => x.Name == "muted");
         }
 
         public override string ToString()
         {
-            return Name;
+            return this.Name;
         }
     }
 }

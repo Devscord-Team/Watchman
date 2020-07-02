@@ -7,7 +7,7 @@ namespace Devscord.DiscordFramework.Commons.Extensions
     {
         internal static ulong GetRawValue(this ICollection<Permission> permissions)
         {
-            return (ulong)permissions.Sum(x => (long)x);
+            return (ulong) permissions.Sum(x => (long) x);
         }
     }
 }

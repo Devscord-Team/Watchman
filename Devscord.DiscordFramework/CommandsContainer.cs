@@ -31,7 +31,7 @@ namespace Devscord.DiscordFramework
 
         private async Task TryRefresh()
         {
-            if(this._lastRefresh > DateTime.UtcNow.AddMinutes(-15))
+            if (this._lastRefresh > DateTime.UtcNow.AddMinutes(-15))
             {
                 return;
             }

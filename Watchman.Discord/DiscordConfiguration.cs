@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Watchman.Discord
+﻿namespace Watchman.Discord
 {
     public class DiscordConfiguration
     {

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Watchman.Cqrs;
-using Watchman.DomainModel.Help;
 
 namespace Watchman.DomainModel.Help.Queries
 {

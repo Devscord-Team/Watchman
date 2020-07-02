@@ -25,17 +25,17 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
 
         public Response GetResponse(string name)
         {
-            return Responses.SingleOrDefault(x => x.OnEvent == name);
+            return this.Responses.SingleOrDefault(x => x.OnEvent == name);
         }
 
         public string ProcessResponse(string response, params KeyValuePair<string, string>[] values)
         {
-            return ProcessResponse(GetResponse(response), values);
+            return this.ProcessResponse(this.GetResponse(response), values);
         }
 
         public string ProcessResponse(string response, Contexts contexts, params KeyValuePair<string, string>[] values)
         {
-            return ProcessResponse(GetResponse(response), contexts, values);
+            return this.ProcessResponse(this.GetResponse(response), contexts, values);
         }
 
         public string ProcessResponse(Response response, params KeyValuePair<string, string>[] values)
@@ -45,7 +45,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 throw new ArgumentException($"Cannot process response {response.OnEvent}. Values must be equal to required.");
             }
             Log.Debug($"Start parsing response {response} with values {values}");
-            return _parser.Parse(response, values);
+            return this._parser.Parse(response, values);
         }
 
         public string ProcessResponse(Response response, Contexts contexts, params KeyValuePair<string, string>[] values)
@@ -54,7 +54,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             Log.Debug($"Found fields {fields} in response {response}");
             fields.AddRange(values);
             Log.Debug($"Start parsing response {response} with values {values}");
-            return _parser.Parse(response, fields);
+            return this._parser.Parse(response, fields);
         }
     }
 }

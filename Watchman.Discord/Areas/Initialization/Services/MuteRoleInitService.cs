@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Devscord.DiscordFramework.Commons;
+﻿using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Watchman.Discord.Areas.Initialization.Services
 {
@@ -13,17 +13,17 @@ namespace Watchman.Discord.Areas.Initialization.Services
 
         public MuteRoleInitService(UsersRolesService usersRolesService, ChannelsService channelsService)
         {
-            _usersRolesService = usersRolesService;
-            _channelsService = channelsService;
+            this._usersRolesService = usersRolesService;
+            this._channelsService = channelsService;
         }
 
         public async Task InitForServer(DiscordServerContext server)
         {
-            var changedPermissions = CreateChangedPermissions();
-            var mutedRole = CreateMuteRole(changedPermissions.AllowPermissions);
+            var changedPermissions = this.CreateChangedPermissions();
+            var mutedRole = this.CreateMuteRole(changedPermissions.AllowPermissions);
 
-            var createdRole = await SetRoleToServer(server, mutedRole);
-            await SetChannelsPermissions(server, createdRole, changedPermissions);
+            var createdRole = await this.SetRoleToServer(server, mutedRole);
+            await this.SetChannelsPermissions(server, createdRole, changedPermissions);
         }
 
         private NewUserRole CreateMuteRole(ICollection<Permission> permissions)
@@ -35,7 +35,6 @@ namespace Watchman.Discord.Areas.Initialization.Services
         {
             return await this._usersRolesService.CreateNewRole(server, mutedRole);
         }
-
         private async Task SetChannelsPermissions(DiscordServerContext server, UserRole mutedRole, ChangedPermissions changedPermissions)
         {
             await this._channelsService.SetPermissions(server.TextChannels, server, changedPermissions, mutedRole);

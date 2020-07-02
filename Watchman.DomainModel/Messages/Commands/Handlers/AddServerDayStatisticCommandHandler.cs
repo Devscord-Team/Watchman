@@ -10,12 +10,12 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
 
         public AddServerDayStatisticCommandHandler(ISessionFactory sessionFactory)
         {
-            _sessionFactory = sessionFactory;
+            this._sessionFactory = sessionFactory;
         }
 
         public async Task HandleAsync(AddServerDayStatisticCommand command)
         {
-            using var session = _sessionFactory.Create();
+            using var session = this._sessionFactory.Create();
             await session.AddAsync(command.ServerDayStatistic);
         }
     }

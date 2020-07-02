@@ -1,8 +1,7 @@
+using Autofac;
+using Serilog;
 using System;
 using System.Threading.Tasks;
-using Autofac;
-using Autofac.Core;
-using Serilog;
 
 namespace Watchman.Cqrs
 {
@@ -11,7 +10,7 @@ namespace Watchman.Cqrs
         private readonly IComponentContext _context;
         public QueryBus(IComponentContext context)
         {
-            _context = context;
+            this._context = context;
         }
 
         public W Execute<W>(IQuery<W> query) where W : IQueryResult
@@ -24,8 +23,8 @@ namespace Watchman.Cqrs
             }
             var handlerType = typeof(IQueryHandler<,>)
                 .MakeGenericType(query.GetType(), typeof(W));
-            dynamic handler = _context.Resolve(handlerType);
-            return handler.Handle((dynamic)query);
+            dynamic handler = this._context.Resolve(handlerType);
+            return handler.Handle((dynamic) query);
         }
 
         public Task<W> ExecuteAsync<W>(IQuery<W> query) where W : IQueryResult

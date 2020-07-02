@@ -10,12 +10,12 @@ namespace Watchman.DomainModel.Settings.Commands.Handlers
 
         public AddInitEventCommandHandler(ISessionFactory sessionFactory)
         {
-            _sessionFactory = sessionFactory;
+            this._sessionFactory = sessionFactory;
         }
 
         public async Task HandleAsync(AddInitEventCommand command)
         {
-            using var session = _sessionFactory.Create();
+            using var session = this._sessionFactory.Create();
             var initEvent = new InitEvent(command.ServerId, command.EndedAt);
             await session.AddAsync(initEvent);
         }
