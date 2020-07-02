@@ -8,6 +8,7 @@ namespace Watchman.DomainModel.Settings.Services
 {
     public class ConfigurationService : IConfigurationService
     {
+        private const ulong DEFAULT_SERVER_ID = 0;
         private readonly ISessionFactory _sessionFactory;
         private readonly ConfigurationMapperService _configurationMapperService;
         private readonly ConfigurationItemsSearcherService _configurationTypesSearcher;
@@ -32,7 +33,7 @@ namespace Watchman.DomainModel.Settings.Services
         public IEnumerable<IMappedConfiguration> GetConfigurationItems(ulong serverId)
         {
             this.ReloadIfNeeded();
-            return this._cachedConfigurationItem.Select(x => x.Value.GetValueOrDefault(serverId) ?? x.Value[0]);
+            return this._cachedConfigurationItem.Select(x => x.Value.GetValueOrDefault(serverId) ?? x.Value[DEFAULT_SERVER_ID]);
         }
 
         public async Task SaveNewConfiguration(IMappedConfiguration changedConfiguration)
@@ -57,7 +58,7 @@ namespace Watchman.DomainModel.Settings.Services
             var configurationsTypes = this._configurationTypesSearcher.ConfigurationTypes;
             var configurations = configurationsTypes.Select(x =>
             {
-                var conf = (IMappedConfiguration)Activator.CreateInstance(x);
+                var conf = (IMappedConfiguration)Activator.CreateInstance(x, DEFAULT_SERVER_ID);
                 return this._configurationMapperService.MapIntoBaseFormat(conf);
             });
             using var session = this._sessionFactory.Create();
