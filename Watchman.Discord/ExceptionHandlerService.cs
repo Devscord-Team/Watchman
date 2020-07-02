@@ -1,14 +1,8 @@
-<<<<<<< HEAD
 using Devscord.DiscordFramework.Commons.Exceptions;
-using Devscord.DiscordFramework.Framework.Commands.Responses;
-=======
 ﻿using System;
-using Devscord.DiscordFramework.Commons.Exceptions;
->>>>>>> master
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
 using Serilog;
-using System;
 
 namespace Watchman.Discord
 {
@@ -23,12 +17,7 @@ namespace Watchman.Discord
 
         public void LogException(Exception e, Contexts contexts)
         {
-<<<<<<< HEAD
-            var messagesService = this._messagesServiceFactory.Create(contexts);
-
-=======
             var messagesService = _messagesServiceFactory.Create(contexts);
->>>>>>> master
             var mostInnerException = e.InnerException ?? e;
             while (mostInnerException.InnerException != null)
             {

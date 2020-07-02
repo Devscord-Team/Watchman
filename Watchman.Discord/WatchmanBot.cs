@@ -14,17 +14,12 @@ using System.Threading.Tasks;
 using Watchman.Discord.Areas.Help.Services;
 using Watchman.Discord.Areas.Initialization.Services;
 using Watchman.Discord.Areas.Protection.Services;
-using Watchman.Discord.Areas.Statistics.Services;
 using Watchman.Discord.Areas.Users.Services;
-<<<<<<< HEAD
 using Watchman.Discord.Ioc;
 using Watchman.Integrations.Logging;
 using Watchman.Integrations.MongoDB;
-=======
-using System.Diagnostics;
 using Watchman.DomainModel.Settings.Services;
 using Watchman.Discord.Integration.DevscordFramework;
->>>>>>> master
 
 namespace Watchman.Discord
 {

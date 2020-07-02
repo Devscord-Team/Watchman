@@ -14,18 +14,12 @@ namespace Watchman.Discord.Integration.DevscordFramework
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
 
-<<<<<<< HEAD
-        public CustomCommandsLoader(IQueryBus queryBus)
-        {
-            this._queryBus = queryBus;
-        }
-=======
         public CustomCommandsLoader(IQueryBus queryBus, ICommandBus commandBus)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;
         }
->>>>>>> master
+
         public async Task<List<CustomCommand>> GetCustomCommands()
         {
             var query = new GetCustomCommandsQuery();
