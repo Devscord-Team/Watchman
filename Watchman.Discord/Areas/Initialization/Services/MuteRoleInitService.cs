@@ -22,14 +22,8 @@ namespace Watchman.Discord.Areas.Initialization.Services
             var changedPermissions = this.CreateChangedPermissions();
             var mutedRole = this.CreateMuteRole(changedPermissions.AllowPermissions);
 
-<<<<<<< HEAD
-            var createdRole = this.SetRoleToServer(server, mutedRole);
-            this.SetChannelsPermissions(server, createdRole, changedPermissions);
-            return Task.CompletedTask;
-=======
             var createdRole = await SetRoleToServer(server, mutedRole);
             await SetChannelsPermissions(server, createdRole, changedPermissions);
->>>>>>> master
         }
 
         private NewUserRole CreateMuteRole(ICollection<Permission> permissions)
@@ -37,25 +31,13 @@ namespace Watchman.Discord.Areas.Initialization.Services
             return new NewUserRole(UsersRolesService.MUTED_ROLE_NAME, permissions);
         }
 
-<<<<<<< HEAD
-        private UserRole SetRoleToServer(DiscordServerContext server, NewUserRole mutedRole)
-        {
-            return this._usersRolesService.CreateNewRole(server, mutedRole);
-        }
-=======
         private async Task<UserRole> SetRoleToServer(DiscordServerContext server, NewUserRole mutedRole)
         {
             return await this._usersRolesService.CreateNewRole(server, mutedRole);
         }
->>>>>>> master
         private async Task SetChannelsPermissions(DiscordServerContext server, UserRole mutedRole, ChangedPermissions changedPermissions)
         {
-<<<<<<< HEAD
-            this._channelsService.SetPermissions(server.TextChannels, server, changedPermissions, mutedRole);
-            return Task.CompletedTask;
-=======
             await this._channelsService.SetPermissions(server.TextChannels, server, changedPermissions, mutedRole);
->>>>>>> master
         }
 
         private ChangedPermissions CreateChangedPermissions()
