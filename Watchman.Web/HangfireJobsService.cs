@@ -11,6 +11,8 @@ namespace Watchman.Web.Server
 {
     public class HangfireJobsService
     {
+        private readonly RecurringJobManager recurringJobManager = new RecurringJobManager();
+
         public void SetDefaultJobs(IContainer container)
         {
             var generators = new List<ICyclicCacheGenerator>
@@ -18,7 +20,6 @@ namespace Watchman.Web.Server
                 container.Resolve<CyclicStatisticsGeneratorService>(),
                 container.Resolve<CheckUserSafetyStrategyService>()
             };
-            var recurringJobManager = container.Resolve<IRecurringJobManager>();
             foreach (var generator in generators)
             {
                 var cronExpression = this.GetCronExpression(generator.RefreshFrequent);
