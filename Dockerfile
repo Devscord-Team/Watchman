@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster-arm32v7 AS build 
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build 
 WORKDIR /app
 COPY . ./
 
