@@ -24,7 +24,6 @@ namespace Watchman.Web
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSwaggerGen(c =>
@@ -35,33 +34,21 @@ namespace Watchman.Web
             services.AddAuthentication()
                 .AddDiscord(x =>
                 {
-
+                    //TODO - not working, but now it is not a problem
                     x.ClientId = this.Configuration["Discord:AppId"];
                     x.ClientSecret = this.Configuration["Discord:AppSecret"];
-
                     x.Validate();
                     x.Scope.Add("email");
-
                     x.Validate();
-                    x.Events.OnCreatingTicket = ctx =>
-                    {
-                        return Task.CompletedTask;
-                    };
-                    x.Events.OnRemoteFailure = ctx =>
-                    {
-                        return Task.CompletedTask;
-                    };
                 });
 
             services.AddControllersWithViews();
-            // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/build";
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -71,7 +58,6 @@ namespace Watchman.Web
             else
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
