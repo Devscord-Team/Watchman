@@ -32,30 +32,17 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             _ = this.ReloadCache();
         }
 
-<<<<<<< HEAD
-        public bool IsUserSafe(ulong userId, ulong serverId)
-        {
-            return this._safeUsersOnServers.TryGetValue(serverId, out var serverUsers) && serverUsers.SafeUsers.Contains(userId);
-        }
-=======
         public bool IsUserSafe(ulong userId, ulong serverId)
         {
             return this._safeUsersOnServers != null 
                    && this._safeUsersOnServers.TryGetValue(serverId, out var serverUsers) 
                    && serverUsers.SafeUsers.Contains(userId);
         }
->>>>>>> master
+
         public async Task ReloadCache()
         {
             Log.Information("Reloading cache....");
-<<<<<<< HEAD
-
-            this.UpdateConfiguration();
             await this.UpdateMessages();
-
-=======
-            await this.UpdateMessages();
->>>>>>> master
             Log.Information("Cache reloaded");
         }
 
