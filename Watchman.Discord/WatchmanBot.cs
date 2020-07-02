@@ -124,7 +124,10 @@ namespace Watchman.Discord
             Console.WriteLine(exceptionMessage);
         }
 
-        private StringBuilder BuildExceptionMessage(Exception e) => new StringBuilder($"{e.Message}\r\n\r\n{e.InnerException}\r\n\r\n{e.StackTrace}```").FormatMessageIntoBlock();
+        private StringBuilder BuildExceptionMessage(Exception e)
+        {
+            return new StringBuilder($"{e.Message}\r\n\r\n{e.InnerException}\r\n\r\n{e.StackTrace}```").FormatMessageIntoBlock();
+        }
 
         private IContainer GetAutofacContainer(DiscordConfiguration configuration)
         {

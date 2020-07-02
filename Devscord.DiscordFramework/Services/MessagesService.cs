@@ -20,7 +20,7 @@ namespace Devscord.DiscordFramework.Services
         public ulong ChannelId { get; set; }
 
         private static readonly Dictionary<ulong, IEnumerable<Response>> _serversResponses = new Dictionary<ulong, IEnumerable<Response>>();
-        private static ResponsesService _responsesService;
+        private static readonly ResponsesService _responsesService;
         private readonly MessageSplittingService _splittingService;
         private readonly EmbedMessagesService _embedMessagesService;
 
@@ -72,7 +72,7 @@ namespace Devscord.DiscordFramework.Services
 
         public async Task SendFile(string filePath)
         {
-            var channel = (IRestMessageChannel)await Server.GetChannel(this.ChannelId);
+            var channel = (IRestMessageChannel) await Server.GetChannel(this.ChannelId);
             await channel.SendFileAsync(filePath);
         }
 
@@ -93,7 +93,7 @@ namespace Devscord.DiscordFramework.Services
                 {
                     arg = arg.Append(botException.Value).ToArray();
                 }
-                return (string)responseManagerMethod.Invoke(null, arg);
+                return (string) responseManagerMethod.Invoke(null, arg);
             });
         }
 
@@ -126,7 +126,7 @@ namespace Devscord.DiscordFramework.Services
 =======
                 guild = Server.GetGuild(this.GuildId).Result;
 >>>>>>> master
-            var channel = (IRestMessageChannel)Server.GetChannel(this.ChannelId, guild).Result;
+            var channel = (IRestMessageChannel) Server.GetChannel(this.ChannelId, guild).Result;
             return channel;
         }
     }

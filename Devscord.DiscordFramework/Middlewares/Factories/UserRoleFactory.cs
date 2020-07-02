@@ -9,7 +9,7 @@ namespace Devscord.DiscordFramework.Middlewares.Factories
     {
         public UserRole Create(IRole socketRole)
         {
-            var permissions = socketRole.Permissions.ToList().Select(x => (Permission)x).ToList();
+            var permissions = socketRole.Permissions.ToList().Select(x => (Permission) x).ToList();
             return new UserRole(socketRole.Id, socketRole.Name, permissions);
         }
     }

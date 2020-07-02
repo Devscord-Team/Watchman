@@ -13,22 +13,36 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
 
         public Func<ulong, IEnumerable<Response>> GetResponsesFunc { get; set; } = x => throw new NotImplementedException();
 
-        public ResponsesService() => this._parser = new ResponsesParser();
+        public ResponsesService()
+        {
+            this._parser = new ResponsesParser();
+        }
 
 <<<<<<< HEAD
-        public void RefreshResponses(Contexts contexts) => this.Responses = this.GetResponsesFunc(contexts);
+        public void RefreshResponses(Contexts contexts)
+        {
+            this.Responses = this.GetResponsesFunc(contexts);
+        }
 =======
         public void RefreshResponses(ulong serverId)
         {
             this.Responses = this.GetResponsesFunc(serverId);
         }
 >>>>>>> master
+        public Response GetResponse(string name)
+        {
+            return this.Responses.SingleOrDefault(x => x.OnEvent == name);
+        }
 
-        public Response GetResponse(string name) => this.Responses.SingleOrDefault(x => x.OnEvent == name);
+        public string ProcessResponse(string response, params KeyValuePair<string, string>[] values)
+        {
+            return this.ProcessResponse(this.GetResponse(response), values);
+        }
 
-        public string ProcessResponse(string response, params KeyValuePair<string, string>[] values) => this.ProcessResponse(this.GetResponse(response), values);
-
-        public string ProcessResponse(string response, Contexts contexts, params KeyValuePair<string, string>[] values) => this.ProcessResponse(this.GetResponse(response), contexts, values);
+        public string ProcessResponse(string response, Contexts contexts, params KeyValuePair<string, string>[] values)
+        {
+            return this.ProcessResponse(this.GetResponse(response), contexts, values);
+        }
 
         public string ProcessResponse(Response response, params KeyValuePair<string, string>[] values)
         {

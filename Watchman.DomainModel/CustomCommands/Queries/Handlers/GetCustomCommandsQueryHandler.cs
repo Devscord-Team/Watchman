@@ -7,7 +7,10 @@ namespace Watchman.DomainModel.CustomCommands.Queries.Handlers
     {
         private readonly ISessionFactory sessionFactory;
 
-        public GetCustomCommandsQueryHandler(ISessionFactory sessionFactory) => this.sessionFactory = sessionFactory;
+        public GetCustomCommandsQueryHandler(ISessionFactory sessionFactory)
+        {
+            this.sessionFactory = sessionFactory;
+        }
 
         public GetCustomCommandsQueryResult Handle(GetCustomCommandsQuery query)
         {

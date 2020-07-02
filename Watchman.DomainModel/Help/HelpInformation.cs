@@ -16,6 +16,9 @@ namespace Watchman.DomainModel.Help
         public ulong ServerId { get; set; }
         public bool IsDefault => this.ServerId == EMPTY_SERVER_ID;
 
-        public HelpInformation() => this.HelpId = Guid.NewGuid();
+        public HelpInformation()
+        {
+            this.HelpId = Guid.NewGuid();
+        }
     }
 }

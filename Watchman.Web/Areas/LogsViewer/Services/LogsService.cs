@@ -45,12 +45,14 @@ namespace Watchman.Web.Areas.LogsViewer.Services
             {
                 return false;
             }
-            if(request.AcceptedLevels != null)
+            if (request.AcceptedLevels != null)
             {
                 if (request.AcceptedLevels.All(x => x != log.Level))
+                {
                     return false;
+                }
             }
-            if(!string.IsNullOrEmpty(request.Template) && !log.MessageTemplate.Contains(request.Template))
+            if (!string.IsNullOrEmpty(request.Template) && !log.MessageTemplate.Contains(request.Template))
             {
                 return false;
             }

@@ -31,7 +31,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             var argumentsList = request.Arguments.ToList();
             var indexOf = argumentsList.IndexOf(result);
             var nextResults = argumentsList.Skip(indexOf + 1).TakeWhile(x => x.Name == null);
-            var list = new List<string> {result.Value};
+            var list = new List<string> { result.Value };
             list.AddRange(nextResults.Select(x => x.Value));
             return list;
         }

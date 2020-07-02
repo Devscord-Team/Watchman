@@ -8,7 +8,11 @@ namespace Watchman.DomainModel.Responses.Queries.Handlers
     {
         private readonly ISessionFactory _sessionFactory;
 
-        public GetResponseQueryHandler(ISessionFactory sessionFactory) => this._sessionFactory = sessionFactory;
+        public GetResponseQueryHandler(ISessionFactory sessionFactory)
+        {
+            this._sessionFactory = sessionFactory;
+        }
+
         public GetResponseQueryResult Handle(GetResponseQuery query)
         {
             using var session = this._sessionFactory.Create();

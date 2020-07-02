@@ -13,7 +13,10 @@ namespace Watchman.Web.ServiceProviders
         private readonly IConfiguration _configuration;
 
 <<<<<<< HEAD:Watchman.Web/ServiceProviders/AutofacServiceProviderFactory.cs
-        public AutofacServiceProviderFactory(IConfiguration configuration) => this.configuration = configuration;
+        public AutofacServiceProviderFactory(IConfiguration configuration)
+        {
+            this.configuration = configuration;
+        }
 
         public ContainerBuilder CreateBuilder(IServiceCollection services)
         {

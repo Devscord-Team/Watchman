@@ -15,13 +15,15 @@ namespace Watchman.Web
             CreateHostBuilder(args, configuration).Build().Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args, IConfiguration configuration) =>
-            Host.CreateDefaultBuilder(args)
-            .UseServiceProviderFactory(new AutofacServiceProviderFactory(configuration))
-            .ConfigureWebHostDefaults(webBuilder =>
-            {
-                webBuilder.UseStartup<Startup>();
-            });
+        public static IHostBuilder CreateHostBuilder(string[] args, IConfiguration configuration)
+        {
+            return Host.CreateDefaultBuilder(args)
+.UseServiceProviderFactory(new AutofacServiceProviderFactory(configuration))
+.ConfigureWebHostDefaults(webBuilder =>
+{
+    webBuilder.UseStartup<Startup>();
+});
+        }
 
         public static IConfiguration GetConfiguration()
         {

@@ -7,7 +7,10 @@ namespace Watchman.DomainModel.Messages
     {
         private readonly Message _message;
 
-        internal MessageBuilder(Message message) => this._message = message;
+        internal MessageBuilder(Message message)
+        {
+            this._message = message;
+        }
 
         public MessageBuilder WithAuthor(ulong id, string name)
         {

@@ -11,7 +11,10 @@ namespace Watchman.Discord.Areas.Statistics.Services
     {
         private readonly QuickchartService _quickchartService;
 
-        public ChartsService() => this._quickchartService = new QuickchartService();
+        public ChartsService()
+        {
+            this._quickchartService = new QuickchartService();
+        }
 
         public string GetImageStatisticsPerPeriod(StatisticsReport report)
         {

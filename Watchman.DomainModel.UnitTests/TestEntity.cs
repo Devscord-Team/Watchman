@@ -6,7 +6,10 @@ namespace Watchman.DomainModel.UnitTests
 {
     public class TestEntity : Entity, ISplittable
     {
-        public void SetUpdatedAt(DateTime dateTime) => this.UpdatedAt = dateTime;
+        public void SetUpdatedAt(DateTime dateTime)
+        {
+            this.UpdatedAt = dateTime;
+        }
 
         public void SetCreatedAt(DateTime dateTime)
         {
@@ -14,6 +17,9 @@ namespace Watchman.DomainModel.UnitTests
             this.UpdatedAt = dateTime;
         }
 
-        public DateTime GetSplittable() => this.CreatedAt;
+        public DateTime GetSplittable()
+        {
+            return this.CreatedAt;
+        }
     }
 }

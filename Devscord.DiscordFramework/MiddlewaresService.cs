@@ -34,6 +34,9 @@ namespace Devscord.DiscordFramework
             return contextsInstance;
         }
 
-        private IEnumerable<IDiscordContext> GetMiddlewaresOutput(SocketMessage socketMessage) => this._middlewares.Select(x => x.Process(socketMessage));
+        private IEnumerable<IDiscordContext> GetMiddlewaresOutput(SocketMessage socketMessage)
+        {
+            return this._middlewares.Select(x => x.Process(socketMessage));
+        }
     }
 }

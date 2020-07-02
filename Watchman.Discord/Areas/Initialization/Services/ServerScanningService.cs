@@ -91,6 +91,9 @@ namespace Watchman.Discord.Areas.Initialization.Services
             return messages;
         }
 
-        private bool LastMessageIsOlderThanStartTime(IEnumerable<Message> messages, DateTime startTime) => messages.Last().Request.SentAt < startTime;
+        private bool LastMessageIsOlderThanStartTime(IEnumerable<Message> messages, DateTime startTime)
+        {
+            return messages.Last().Request.SentAt < startTime;
+        }
     }
 }

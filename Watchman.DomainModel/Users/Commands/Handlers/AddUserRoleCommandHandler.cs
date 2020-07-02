@@ -11,6 +11,9 @@ namespace Watchman.DomainModel.Users.Commands.Handlers
 
         }
 
-        public Task HandleAsync(AddUserRoleCommand command) => throw new NotImplementedException();
+        public Task HandleAsync(AddUserRoleCommand command)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

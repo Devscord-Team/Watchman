@@ -19,15 +19,15 @@ namespace Watchman.Discord.Areas.Protection.Strategies
         public SpamProbability GetSpamProbability(ServerMessagesCacheService serverMessagesCacheService, DiscordRequest request, Contexts contexts)
         {
             var content = request.OriginalMessage;
-            if (!_linkRegex.IsMatch(content))
+            if (!this._linkRegex.IsMatch(content))
             {
                 return SpamProbability.None;
             }
 
             var userId = contexts.User.Id;
             var serverId = contexts.Server.Id;
-            return this.UserSafetyChecker.IsUserSafe(userId, serverId) 
-                ? SpamProbability.Low 
+            return this.UserSafetyChecker.IsUserSafe(userId, serverId)
+                ? SpamProbability.Low
                 : SpamProbability.Medium;
         }
     }

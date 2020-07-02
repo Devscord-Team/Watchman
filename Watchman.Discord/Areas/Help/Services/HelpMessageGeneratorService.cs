@@ -50,6 +50,8 @@ namespace Watchman.Discord.Areas.Help.Services
         }
 
         private string RemoveFirstAndLastBracket(string fullMessage) // '[' & ']'
-=> fullMessage[3..^3];
+        {
+            return fullMessage[3..^3];
+        }
     }
 }

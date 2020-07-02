@@ -32,17 +32,22 @@ namespace Watchman.Discord.Areas.Initialization.Services
 >>>>>>> master
         }
 
-        private NewUserRole CreateMuteRole(ICollection<Permission> permissions) => new NewUserRole(UsersRolesService.MUTED_ROLE_NAME, permissions);
+        private NewUserRole CreateMuteRole(ICollection<Permission> permissions)
+        {
+            return new NewUserRole(UsersRolesService.MUTED_ROLE_NAME, permissions);
+        }
 
 <<<<<<< HEAD
-        private UserRole SetRoleToServer(DiscordServerContext server, NewUserRole mutedRole) => this._usersRolesService.CreateNewRole(server, mutedRole);
+        private UserRole SetRoleToServer(DiscordServerContext server, NewUserRole mutedRole)
+        {
+            return this._usersRolesService.CreateNewRole(server, mutedRole);
+        }
 =======
         private async Task<UserRole> SetRoleToServer(DiscordServerContext server, NewUserRole mutedRole)
         {
             return await this._usersRolesService.CreateNewRole(server, mutedRole);
         }
 >>>>>>> master
-
         private async Task SetChannelsPermissions(DiscordServerContext server, UserRole mutedRole, ChangedPermissions changedPermissions)
         {
 <<<<<<< HEAD

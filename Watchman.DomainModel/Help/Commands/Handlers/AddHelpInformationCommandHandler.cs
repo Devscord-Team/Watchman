@@ -8,7 +8,10 @@ namespace Watchman.DomainModel.Help.Commands.Handlers
     {
         private readonly ISessionFactory _sessionFactory;
 
-        public AddHelpInformationCommandHandler(ISessionFactory sessionFactory) => this._sessionFactory = sessionFactory;
+        public AddHelpInformationCommandHandler(ISessionFactory sessionFactory)
+        {
+            this._sessionFactory = sessionFactory;
+        }
 
         public async Task HandleAsync(AddHelpInformationCommand command)
         {

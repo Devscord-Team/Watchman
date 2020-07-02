@@ -1,5 +1,5 @@
 <<<<<<< HEAD
-﻿using Devscord.DiscordFramework.Commons.Exceptions;
+using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using System;
 =======

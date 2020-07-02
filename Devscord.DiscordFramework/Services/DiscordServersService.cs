@@ -7,6 +7,9 @@ namespace Devscord.DiscordFramework.Services
 {
     public class DiscordServersService
     {
-        public Task<IEnumerable<DiscordServerContext>> GetDiscordServers() => Server.GetDiscordServers();
+        public Task<IEnumerable<DiscordServerContext>> GetDiscordServers()
+        {
+            return Server.GetDiscordServers();
+        }
     }
 }

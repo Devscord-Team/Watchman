@@ -8,7 +8,10 @@ namespace Watchman.Discord.Integration.Channels.Commands.Handlers
     {
         private readonly MessagesServiceFactory _messagesServiceFactory;
 
-        public SendMessageToChannelCommandHandler(MessagesServiceFactory messagesServiceFactory) => this._messagesServiceFactory = messagesServiceFactory;
+        public SendMessageToChannelCommandHandler(MessagesServiceFactory messagesServiceFactory)
+        {
+            this._messagesServiceFactory = messagesServiceFactory;
+        }
 
         public async Task HandleAsync(SendMessageToChannelCommand command)
         {

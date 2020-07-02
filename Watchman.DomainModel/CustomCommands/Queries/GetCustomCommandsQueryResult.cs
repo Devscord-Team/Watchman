@@ -7,6 +7,9 @@ namespace Watchman.DomainModel.CustomCommands.Queries
     {
         public IEnumerable<CustomCommand> CustomCommands { get; private set; }
 
-        public GetCustomCommandsQueryResult(IEnumerable<CustomCommand> customCommands) => this.CustomCommands = customCommands;
+        public GetCustomCommandsQueryResult(IEnumerable<CustomCommand> customCommands)
+        {
+            this.CustomCommands = customCommands;
+        }
     }
 }

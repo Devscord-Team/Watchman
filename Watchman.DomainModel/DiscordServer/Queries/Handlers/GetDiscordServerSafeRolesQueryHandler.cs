@@ -8,7 +8,10 @@ namespace Watchman.DomainModel.DiscordServer.Queries.Handlers
     {
         private readonly ISessionFactory _sessionFactory;
 
-        public GetDiscordServerSafeRolesQueryHandler(ISessionFactory sessionFactory) => this._sessionFactory = sessionFactory;
+        public GetDiscordServerSafeRolesQueryHandler(ISessionFactory sessionFactory)
+        {
+            this._sessionFactory = sessionFactory;
+        }
 
         public GetDiscordServerSafeRolesQueryResult Handle(GetDiscordServerSafeRolesQuery query)
         {

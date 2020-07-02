@@ -6,6 +6,9 @@ namespace Watchman.DomainModel.Settings.Queries
     {
         public ulong ServerId { get; private set; }
 
-        public GetInitEventsQuery(ulong serverId) => this.ServerId = serverId;
+        public GetInitEventsQuery(ulong serverId)
+        {
+            this.ServerId = serverId;
+        }
     }
 }

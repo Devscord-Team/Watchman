@@ -21,6 +21,9 @@ namespace Watchman.Discord.Areas.Administration.Models
             }
         }
 
-        public TimeRange GetTimeRange() => TimeRange.Create(DateTime.UtcNow.AddMinutes(-this.MinutesSince), DateTime.UtcNow);
+        public TimeRange GetTimeRange()
+        {
+            return TimeRange.Create(DateTime.UtcNow.AddMinutes(-this.MinutesSince), DateTime.UtcNow);
+        }
     }
 }

@@ -9,9 +9,15 @@ namespace Watchman.Web.Areas.Channels.Controllers
     {
         private readonly WatchmanService _watchmanService;
 
-        public ChannelsController(WatchmanService watchmanService) => this._watchmanService = watchmanService;
+        public ChannelsController(WatchmanService watchmanService)
+        {
+            this._watchmanService = watchmanService;
+        }
 
         [HttpPost]
-        public async Task SendMessageToChannel([FromBody] SendMessageToChannelRequest request) => await this._watchmanService.SendMessageToChannel(request.GetGuildId, request.GetChannelId, request.Message);
+        public async Task SendMessageToChannel([FromBody] SendMessageToChannelRequest request)
+        {
+            await this._watchmanService.SendMessageToChannel(request.GetGuildId, request.GetChannelId, request.Message);
+        }
     }
 }

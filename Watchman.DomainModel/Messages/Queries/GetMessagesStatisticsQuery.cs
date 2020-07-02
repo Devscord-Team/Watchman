@@ -8,6 +8,9 @@ namespace Watchman.DomainModel.Messages.Queries
     {
         public Period Period { get; private set; }
 
-        public GetMessagesStatisticsQuery(Period period) => this.Period = period;
+        public GetMessagesStatisticsQuery(Period period)
+        {
+            this.Period = period;
+        }
     }
 }

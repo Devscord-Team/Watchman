@@ -8,6 +8,9 @@ namespace Watchman.DomainModel.Messages.Queries
     {
         public IEnumerable<PeriodStatistic> PeriodStatistics { get; private set; }
 
-        public GetMessagesStatisticsQueryResult(IEnumerable<PeriodStatistic> periodStatistics) => this.PeriodStatistics = periodStatistics;
+        public GetMessagesStatisticsQueryResult(IEnumerable<PeriodStatistic> periodStatistics)
+        {
+            this.PeriodStatistics = periodStatistics;
+        }
     }
 }

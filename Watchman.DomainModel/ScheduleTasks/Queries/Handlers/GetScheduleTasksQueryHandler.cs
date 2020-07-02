@@ -8,7 +8,10 @@ namespace Watchman.DomainModel.ScheduleTasks.Queries.Handlers
     {
         private readonly ISessionFactory _sessionFactory;
 
-        public GetScheduleTasksQueryHandler(ISessionFactory sessionFactory) => this._sessionFactory = sessionFactory;
+        public GetScheduleTasksQueryHandler(ISessionFactory sessionFactory)
+        {
+            this._sessionFactory = sessionFactory;
+        }
 
         public GetScheduleTasksQueryResult Handle(GetScheduleTasksQuery query)
         {

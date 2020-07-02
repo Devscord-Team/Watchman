@@ -12,7 +12,10 @@ namespace Watchman.Web.Areas.LogsViewer.Controllers
     {
         private readonly LogsService logsService;
 
-        public LogsController(LogsService logsService) => this.logsService = logsService;
+        public LogsController(LogsService logsService)
+        {
+            this.logsService = logsService;
+        }
 
         [HttpGet]
         public IEnumerable<LogDto> GetLogs([FromQuery]GetLogsRequest request = null)

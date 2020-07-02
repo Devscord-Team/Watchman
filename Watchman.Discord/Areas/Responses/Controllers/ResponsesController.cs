@@ -1,5 +1,5 @@
 <<<<<<< HEAD
-﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 =======
 ﻿using System.Linq;
 using System.Threading.Tasks;

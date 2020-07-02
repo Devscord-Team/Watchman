@@ -17,7 +17,10 @@ namespace Watchman.Web
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration) => this.Configuration = configuration;
+        public Startup(IConfiguration configuration)
+        {
+            this.Configuration = configuration;
+        }
 
         public IConfiguration Configuration { get; }
 
@@ -32,7 +35,7 @@ namespace Watchman.Web
             services.AddAuthentication()
                 .AddDiscord(x =>
                 {
-                    
+
                     x.ClientId = this.Configuration["Discord:AppId"];
                     x.ClientSecret = this.Configuration["Discord:AppSecret"];
 

@@ -29,7 +29,10 @@ namespace Devscord.DiscordFramework
         public List<Func<SocketMessage, Task>> OnMessageReceived { get; set; } = new List<Func<SocketMessage, Task>>();
         public List<Action<Exception, Contexts>> OnWorkflowException { get; set; } = new List<Action<Exception, Contexts>>();
 
-        internal Workflow(Assembly botAssembly, IComponentContext context) => this._controllersService = new ControllersService(context, botAssembly, context.Resolve<BotCommandsService>(), context.Resolve<CommandsContainer>());
+        internal Workflow(Assembly botAssembly, IComponentContext context)
+        {
+            this._controllersService = new ControllersService(context, botAssembly, context.Resolve<BotCommandsService>(), context.Resolve<CommandsContainer>());
+        }
 
         internal Workflow AddMiddleware<T>()
             where T : IMiddleware
@@ -39,18 +42,21 @@ namespace Devscord.DiscordFramework
             return this;
         }
 
-        internal void Initialize() => this.OnMessageReceived.Add(message => Task.Run(() =>
+        internal void Initialize()
         {
-            try
-            {
-                this.MessageReceived(message);
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, ex.StackTrace);
-            }
+            this.OnMessageReceived.Add(message => Task.Run(() =>
+{
+    try
+    {
+        this.MessageReceived(message);
+    }
+    catch (Exception ex)
+    {
+        Log.Error(ex, ex.StackTrace);
+    }
 
-        }));
+}));
+        }
 
         internal void MapHandlers(DiscordSocketClient client)
         {

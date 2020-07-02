@@ -8,7 +8,10 @@ namespace Watchman.DomainModel.Settings.Commands.Handlers
     {
         private readonly ISessionFactory _sessionFactory;
 
-        public AddInitEventCommandHandler(ISessionFactory sessionFactory) => this._sessionFactory = sessionFactory;
+        public AddInitEventCommandHandler(ISessionFactory sessionFactory)
+        {
+            this._sessionFactory = sessionFactory;
+        }
 
         public async Task HandleAsync(AddInitEventCommand command)
         {

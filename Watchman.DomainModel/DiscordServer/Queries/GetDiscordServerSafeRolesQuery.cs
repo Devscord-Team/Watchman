@@ -6,6 +6,9 @@ namespace Watchman.DomainModel.DiscordServer.Queries
     {
         public ulong ServerId { get; }
 
-        public GetDiscordServerSafeRolesQuery(ulong serverId) => this.ServerId = serverId;
+        public GetDiscordServerSafeRolesQuery(ulong serverId)
+        {
+            this.ServerId = serverId;
+        }
     }
 }

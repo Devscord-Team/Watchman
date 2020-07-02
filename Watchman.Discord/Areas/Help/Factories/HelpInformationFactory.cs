@@ -9,7 +9,10 @@ namespace Watchman.Discord.Areas.Help.Factories
     {
         private readonly ArgumentInfoFactory _argumentInfoFactory;
 
-        public HelpInformationFactory(ArgumentInfoFactory argumentInfoFactory) => this._argumentInfoFactory = argumentInfoFactory;
+        public HelpInformationFactory(ArgumentInfoFactory argumentInfoFactory)
+        {
+            this._argumentInfoFactory = argumentInfoFactory;
+        }
 
         public HelpInformation Create(CommandInfo commandInfo)
         {

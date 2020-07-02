@@ -8,7 +8,10 @@ namespace Watchman.DomainModel.ScheduleTasks.Commands.Handlers
     {
         private readonly ISessionFactory _sessionFactory;
 
-        public AddScheduleTaskCommandHandler(ISessionFactory sessionFactory) => this._sessionFactory = sessionFactory;
+        public AddScheduleTaskCommandHandler(ISessionFactory sessionFactory)
+        {
+            this._sessionFactory = sessionFactory;
+        }
 
         public async Task HandleAsync(AddScheduleTaskCommand command)
         {

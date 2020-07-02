@@ -33,7 +33,10 @@ namespace Devscord.DiscordFramework
             this._workflow = new Workflow(botAssembly, context);
         }
 
-        public static WorkflowBuilder Create(string token, IComponentContext context, Assembly botAssembly) => new WorkflowBuilder(token, context, botAssembly);
+        public static WorkflowBuilder Create(string token, IComponentContext context, Assembly botAssembly)
+        {
+            return new WorkflowBuilder(token, context, botAssembly);
+        }
 
         public WorkflowBuilder SetMessageHandler(Func<SocketMessage, Task> action)
         {
@@ -102,6 +105,9 @@ namespace Devscord.DiscordFramework
             return this;
         }
 
-        public async Task Run() => await Task.Delay(-1);
+        public async Task Run()
+        {
+            await Task.Delay(-1);
+        }
     }
 }

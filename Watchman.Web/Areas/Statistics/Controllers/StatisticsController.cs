@@ -13,7 +13,10 @@ namespace Watchman.Web.Areas.Statistics.Controllers
     {
         private readonly IQueryBus queryBus;
 
-        public StatisticsController(IQueryBus queryBus) => this.queryBus = queryBus;
+        public StatisticsController(IQueryBus queryBus)
+        {
+            this.queryBus = queryBus;
+        }
 
         [HttpGet]
         public async Task<IEnumerable<PeriodStatisticDto>> GetMessagesStatisticsPerDay()

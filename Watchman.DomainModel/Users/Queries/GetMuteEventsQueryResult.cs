@@ -7,6 +7,9 @@ namespace Watchman.DomainModel.Users.Queries
     {
         public IEnumerable<MuteEvent> MuteEvents { get; }
 
-        public GetMuteEventsQueryResult(IEnumerable<MuteEvent> muteEvents) => this.MuteEvents = muteEvents;
+        public GetMuteEventsQueryResult(IEnumerable<MuteEvent> muteEvents)
+        {
+            this.MuteEvents = muteEvents;
+        }
     }
 }

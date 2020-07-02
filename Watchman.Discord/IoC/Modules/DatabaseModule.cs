@@ -9,7 +9,10 @@ namespace Watchman.Discord.IoC.Modules
     {
         private readonly DiscordConfiguration configuration;
 
-        public DatabaseModule(DiscordConfiguration configuration) => this.configuration = configuration;
+        public DatabaseModule(DiscordConfiguration configuration)
+        {
+            this.configuration = configuration;
+        }
 
         protected override void Load(ContainerBuilder builder)
         {

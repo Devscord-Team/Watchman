@@ -8,7 +8,10 @@ namespace Watchman.DomainModel.Settings.Queries.Handlers
     {
         private readonly ISessionFactory _sessionFactory;
 
-        public GetInitEventsQueryHandler(ISessionFactory sessionFactory) => this._sessionFactory = sessionFactory;
+        public GetInitEventsQueryHandler(ISessionFactory sessionFactory)
+        {
+            this._sessionFactory = sessionFactory;
+        }
 
         public GetInitEventsQueryResults Handle(GetInitEventsQuery query)
         {

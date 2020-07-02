@@ -10,7 +10,10 @@ namespace Watchman.DomainModel.Messages.Queries
         public ulong ChannelId { get; private set; }
         public ulong? UserId { get; private set; }
 
-        public GetMessagesQuery(ulong serverId) => this.ServerId = serverId;
+        public GetMessagesQuery(ulong serverId)
+        {
+            this.ServerId = serverId;
+        }
 
         public GetMessagesQuery(ulong serverId, ulong? userId)
         {

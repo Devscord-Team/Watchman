@@ -59,7 +59,7 @@ namespace Devscord.DiscordFramework.Integration.Services
 
         public async Task<IEnumerable<Message>> GetMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong fromMessageId = 0, bool goBefore = true)
         {
-            var textChannel = (ITextChannel)this.GetChannel(channel.Id).Result;
+            var textChannel = (ITextChannel) this.GetChannel(channel.Id).Result;
             if (!this.CanBotReadTheChannel(textChannel))
             {
                 return new List<Message>();

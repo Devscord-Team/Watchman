@@ -8,7 +8,10 @@ namespace Watchman.Cqrs
     public class QueryBus : IQueryBus
     {
         private readonly IComponentContext _context;
-        public QueryBus(IComponentContext context) => this._context = context;
+        public QueryBus(IComponentContext context)
+        {
+            this._context = context;
+        }
 
         public W Execute<W>(IQuery<W> query) where W : IQueryResult
         {
@@ -21,7 +24,7 @@ namespace Watchman.Cqrs
             var handlerType = typeof(IQueryHandler<,>)
                 .MakeGenericType(query.GetType(), typeof(W));
             dynamic handler = this._context.Resolve(handlerType);
-            return handler.Handle((dynamic)query);
+            return handler.Handle((dynamic) query);
         }
 
         public Task<W> ExecuteAsync<W>(IQuery<W> query) where W : IQueryResult

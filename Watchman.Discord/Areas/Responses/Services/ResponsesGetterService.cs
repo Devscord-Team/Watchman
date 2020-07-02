@@ -11,7 +11,10 @@ namespace Watchman.Discord.Areas.Responses.Services
         private const int DEFAULT_SERVER_ID = 0;
         private readonly IQueryBus _queryBus;
 
-        public ResponsesGetterService(IQueryBus queryBus) => this._queryBus = queryBus;
+        public ResponsesGetterService(IQueryBus queryBus)
+        {
+            this._queryBus = queryBus;
+        }
 
         public IEnumerable<Response> GetResponsesFromBase()
         {

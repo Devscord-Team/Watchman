@@ -8,7 +8,10 @@ namespace Watchman.Web.Areas.Commons.Integration
     {
         private readonly ICommandBus _commandBus;
 
-        public WatchmanService(ICommandBus commandBus) => this._commandBus = commandBus;
+        public WatchmanService(ICommandBus commandBus)
+        {
+            this._commandBus = commandBus;
+        }
 
         public async Task SendMessageToChannel(ulong guildId, ulong channelId, string message)
         {

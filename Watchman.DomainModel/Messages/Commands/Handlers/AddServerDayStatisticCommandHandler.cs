@@ -8,7 +8,10 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
     {
         private readonly ISessionFactory _sessionFactory;
 
-        public AddServerDayStatisticCommandHandler(ISessionFactory sessionFactory) => this._sessionFactory = sessionFactory;
+        public AddServerDayStatisticCommandHandler(ISessionFactory sessionFactory)
+        {
+            this._sessionFactory = sessionFactory;
+        }
 
         public async Task HandleAsync(AddServerDayStatisticCommand command)
         {

@@ -6,6 +6,9 @@ namespace Watchman.DomainModel.Responses.Queries
     {
         public Response Response { get; private set; }
 
-        public GetResponseQueryResult(Response response) => this.Response = response;
+        public GetResponseQueryResult(Response response)
+        {
+            this.Response = response;
+        }
     }
 }

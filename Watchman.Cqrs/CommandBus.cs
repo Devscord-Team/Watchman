@@ -9,7 +9,10 @@ namespace Watchman.Cqrs
     {
         private readonly IComponentContext _context;
 
-        public CommandBus(IComponentContext context) => this._context = context;
+        public CommandBus(IComponentContext context)
+        {
+            this._context = context;
+        }
 
         public async Task ExecuteAsync<T>(T command) where T : ICommand
         {

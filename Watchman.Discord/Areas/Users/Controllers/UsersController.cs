@@ -1,5 +1,5 @@
 <<<<<<< HEAD
-﻿using Devscord.DiscordFramework.Commons.Extensions;
+using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Framework.Commands.Responses;

@@ -8,7 +8,10 @@ namespace Watchman.DomainModel.Messages.Queries.Handlers
     {
         private readonly ISessionFactory _sessionFactory;
 
-        public GetMessagesQueryHandler(ISessionFactory sessionFactory) => this._sessionFactory = sessionFactory;
+        public GetMessagesQueryHandler(ISessionFactory sessionFactory)
+        {
+            this._sessionFactory = sessionFactory;
+        }
 
         public GetMessagesQueryResult Handle(GetMessagesQuery query)
         {
@@ -34,8 +37,19 @@ namespace Watchman.DomainModel.Messages.Queries.Handlers
             return new GetMessagesQueryResult(paginated);
         }
 
-        private IQueryable<Message> TakeOnlyFromOneServer(ulong serverId, IQueryable<Message> messages) => messages.Where(x => x.Server.Id == serverId);
-        private IQueryable<Message> TakeOnlyFromChannel(ulong channelId, IQueryable<Message> messages) => messages.Where(x => x.Channel.Id == channelId);
-        private IQueryable<Message> TakeOnlyForUser(ulong? userId, IQueryable<Message> messages) => messages.Where(x => x.Author.Id == userId.Value);
+        private IQueryable<Message> TakeOnlyFromOneServer(ulong serverId, IQueryable<Message> messages)
+        {
+            return messages.Where(x => x.Server.Id == serverId);
+        }
+
+        private IQueryable<Message> TakeOnlyFromChannel(ulong channelId, IQueryable<Message> messages)
+        {
+            return messages.Where(x => x.Channel.Id == channelId);
+        }
+
+        private IQueryable<Message> TakeOnlyForUser(ulong? userId, IQueryable<Message> messages)
+        {
+            return messages.Where(x => x.Author.Id == userId.Value);
+        }
     }
 }

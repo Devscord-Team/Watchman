@@ -12,7 +12,10 @@ namespace Devscord.DiscordFramework
 
         internal IEnumerable<T> Handlers => this._handlers;
 
-        public WorkflowBuilderHandlers(IComponentContext context) => this.context = context;
+        public WorkflowBuilderHandlers(IComponentContext context)
+        {
+            this.context = context;
+        }
 =======
         private readonly IComponentContext _context;
 
@@ -23,7 +26,6 @@ namespace Devscord.DiscordFramework
             this._context = context;
         }
 >>>>>>> master
-
         public WorkflowBuilderHandlers<T> AddHandler(T handler, bool onlyOnDebug = false)
         {
             if (!this.ShouldIgnore(onlyOnDebug))

@@ -27,7 +27,10 @@ namespace Watchman.DomainModel.Messages
             });
         }
 
-        public DateTime GetSplittable() => this.Date;
+        public DateTime GetSplittable()
+        {
+            return this.Date;
+        }
     }
 
     public class ChannelDayStatistic

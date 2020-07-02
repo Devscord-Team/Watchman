@@ -123,7 +123,10 @@ namespace Watchman.Discord.Areas.Protection.Services
             Log.Information("User {user} has been muted on server {server}", userToMute.ToString(), server.Name);
         }
 
-        private MuteEvent GetNotUnmutedEvent(IEnumerable<MuteEvent> userMuteEvents) => userMuteEvents.FirstOrDefault(x => x.Unmuted == false);
+        private MuteEvent GetNotUnmutedEvent(IEnumerable<MuteEvent> userMuteEvents)
+        {
+            return userMuteEvents.FirstOrDefault(x => x.Unmuted == false);
+        }
 
         private async Task UnmuteUser(UserContext mutedUser, MuteEvent muteEvent, DiscordServerContext serverContext)
         {
@@ -133,7 +136,10 @@ namespace Watchman.Discord.Areas.Protection.Services
             Log.Information("User {user} has been unmuted on server {server}", mutedUser.ToString(), serverContext.Name);
         }
 
-        private async Task RemoveMuteRoleAsync(UserRole muteRole, UserContext userToUnmute, DiscordServerContext server) => await this._usersService.RemoveRole(muteRole, userToUnmute, server);
+        private async Task RemoveMuteRoleAsync(UserRole muteRole, UserContext userToUnmute, DiscordServerContext server)
+        {
+            await this._usersService.RemoveRole(muteRole, userToUnmute, server);
+        }
 
         private async Task MarkAsUnmuted(MuteEvent muteEvent)
         {

@@ -6,6 +6,9 @@ namespace Watchman.DomainModel.Messages.Commands
     {
         public ServerDayStatistic ServerDayStatistic { get; }
 
-        public AddServerDayStatisticCommand(ServerDayStatistic serverDayStatistic) => this.ServerDayStatistic = serverDayStatistic;
+        public AddServerDayStatisticCommand(ServerDayStatistic serverDayStatistic)
+        {
+            this.ServerDayStatistic = serverDayStatistic;
+        }
     }
 }

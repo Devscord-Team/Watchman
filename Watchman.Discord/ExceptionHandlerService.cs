@@ -1,5 +1,5 @@
 <<<<<<< HEAD
-﻿using Devscord.DiscordFramework.Commons.Exceptions;
+using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 =======
 ﻿using System;
@@ -16,7 +16,10 @@ namespace Watchman.Discord
     {
         private readonly MessagesServiceFactory _messagesServiceFactory;
 
-        public ExceptionHandlerService(MessagesServiceFactory messagesServiceFactory) => this._messagesServiceFactory = messagesServiceFactory;
+        public ExceptionHandlerService(MessagesServiceFactory messagesServiceFactory)
+        {
+            this._messagesServiceFactory = messagesServiceFactory;
+        }
 
         public void LogException(Exception e, Contexts contexts)
         {

@@ -29,7 +29,10 @@ namespace Devscord.DiscordFramework.Integration.Services
             this._client.Connected += this.BotConnected;
         }
 
-        public async Task<RestGuild> GetGuild(ulong guildId) => await this._restClient.GetGuildAsync(guildId);
+        public async Task<RestGuild> GetGuild(ulong guildId)
+        {
+            return await this._restClient.GetGuildAsync(guildId);
+        }
 
         public async Task<IEnumerable<DiscordServerContext>> GetDiscordServers()
         {

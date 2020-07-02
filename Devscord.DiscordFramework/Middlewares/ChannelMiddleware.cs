@@ -6,6 +6,9 @@ namespace Devscord.DiscordFramework.Middlewares
 {
     public class ChannelMiddleware : IMiddleware
     {
-        public IDiscordContext Process(SocketMessage data) => new ChannelContext(data.Channel.Id, data.Channel.Name);
+        public IDiscordContext Process(SocketMessage data)
+        {
+            return new ChannelContext(data.Channel.Id, data.Channel.Name);
+        }
     }
 }

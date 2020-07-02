@@ -33,7 +33,10 @@ namespace Watchman.Discord.Areas.Protection.Strategies
         }
 
 <<<<<<< HEAD
-        public bool IsUserSafe(ulong userId, ulong serverId) => this._safeUsersOnServers.TryGetValue(serverId, out var serverUsers) && serverUsers.SafeUsers.Contains(userId);
+        public bool IsUserSafe(ulong userId, ulong serverId)
+        {
+            return this._safeUsersOnServers.TryGetValue(serverId, out var serverUsers) && serverUsers.SafeUsers.Contains(userId);
+        }
 =======
         public bool IsUserSafe(ulong userId, ulong serverId)
         {
@@ -42,7 +45,6 @@ namespace Watchman.Discord.Areas.Protection.Strategies
                    && serverUsers.SafeUsers.Contains(userId);
         }
 >>>>>>> master
-
         public async Task ReloadCache()
         {
             Log.Information("Reloading cache....");

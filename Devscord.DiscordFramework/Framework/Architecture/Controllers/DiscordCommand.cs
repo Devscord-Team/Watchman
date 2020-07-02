@@ -6,6 +6,9 @@ namespace Devscord.DiscordFramework.Framework.Architecture.Controllers
     public class DiscordCommand : Attribute
     {
         public string Command { get; private set; }
-        public DiscordCommand(string command) => this.Command = command;
+        public DiscordCommand(string command)
+        {
+            this.Command = command;
+        }
     }
 }

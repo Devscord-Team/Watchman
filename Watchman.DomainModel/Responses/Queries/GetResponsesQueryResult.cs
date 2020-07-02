@@ -7,6 +7,9 @@ namespace Watchman.DomainModel.Responses.Queries
     {
         public IEnumerable<Response> Responses { get; }
 
-        public GetResponsesQueryResult(IEnumerable<Response> responses) => this.Responses = responses;
+        public GetResponsesQueryResult(IEnumerable<Response> responses)
+        {
+            this.Responses = responses;
+        }
     }
 }

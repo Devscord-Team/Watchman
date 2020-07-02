@@ -7,6 +7,9 @@ namespace Watchman.DomainModel.Messages.Queries
     {
         public IEnumerable<Message> Messages { get; private set; }
 
-        public GetMessagesQueryResult(IEnumerable<Message> messages) => this.Messages = messages;
+        public GetMessagesQueryResult(IEnumerable<Message> messages)
+        {
+            this.Messages = messages;
+        }
     }
 }

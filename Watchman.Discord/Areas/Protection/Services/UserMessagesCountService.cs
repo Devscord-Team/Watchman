@@ -14,7 +14,10 @@ namespace Watchman.Discord.Areas.Protection.Services
         private DateTime _lastUpdated;
         private List<ServerMessagesCount> _everyServersMessagesQuantity;
 
-        public UserMessagesCountService(IQueryBus queryBus) => this._queryBus = queryBus;
+        public UserMessagesCountService(IQueryBus queryBus)
+        {
+            this._queryBus = queryBus;
+        }
 
         public int CountMessages(ulong userId, ulong serverId)
         {
@@ -26,7 +29,10 @@ namespace Watchman.Discord.Areas.Protection.Services
             return this.GetOneUserFromOneServerCount(userId, serverId);
         }
 
-        private bool ShouldReloadCache() => this._everyServersMessagesQuantity == null || this._lastUpdated.AddHours(12) < DateTime.UtcNow;
+        private bool ShouldReloadCache()
+        {
+            return this._everyServersMessagesQuantity == null || this._lastUpdated.AddHours(12) < DateTime.UtcNow;
+        }
 
         private void ReloadCache()
         {
@@ -37,7 +43,10 @@ namespace Watchman.Discord.Areas.Protection.Services
             this._lastUpdated = DateTime.UtcNow;
         }
 
-        private IEnumerable<IGrouping<ulong, Message>> GroupMessagesByServers(IEnumerable<Message> messages) => messages.GroupBy(x => x.Server.Id);
+        private IEnumerable<IGrouping<ulong, Message>> GroupMessagesByServers(IEnumerable<Message> messages)
+        {
+            return messages.GroupBy(x => x.Server.Id);
+        }
 
         private void UpdateServerMessagesCounts(IEnumerable<IGrouping<ulong, Message>> groups)
         {

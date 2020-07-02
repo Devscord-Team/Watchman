@@ -12,7 +12,10 @@ namespace Devscord.DiscordFramework.Services
         private const int MAX_FIELDS = 25;
         private readonly MessagesServiceFactory _messagesServiceFactory;
 
-        public EmbedMessageSplittingService(MessagesServiceFactory messagesServiceFactory) => this._messagesServiceFactory = messagesServiceFactory;
+        public EmbedMessageSplittingService(MessagesServiceFactory messagesServiceFactory)
+        {
+            this._messagesServiceFactory = messagesServiceFactory;
+        }
 
         public async Task SendEmbedSplitMessage(string title, string description, IEnumerable<KeyValuePair<string, string>> values, Contexts contexts)
         {
@@ -28,7 +31,7 @@ namespace Devscord.DiscordFramework.Services
 
         private IEnumerable<IEnumerable<KeyValuePair<string, string>>> SplitMessage(List<KeyValuePair<string, string>> values)
         {
-            for (var i = 0; i < Math.Ceiling((double)values.Count / MAX_FIELDS); i++)
+            for (var i = 0; i < Math.Ceiling((double) values.Count / MAX_FIELDS); i++)
             {
                 yield return values.Skip(MAX_FIELDS * i).Take(MAX_FIELDS);
             }

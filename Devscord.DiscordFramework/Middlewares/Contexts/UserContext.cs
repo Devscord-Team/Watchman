@@ -26,6 +26,9 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
             this.IsMuted = this.Roles.Any(x => x.Name == "muted");
         }
 
-        public override string ToString() => this.Name;
+        public override string ToString()
+        {
+            return this.Name;
+        }
     }
 }

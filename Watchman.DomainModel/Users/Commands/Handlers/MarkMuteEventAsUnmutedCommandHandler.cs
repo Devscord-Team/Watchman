@@ -8,7 +8,10 @@ namespace Watchman.DomainModel.Users.Commands.Handlers
     {
         private readonly ISessionFactory _sessionFactory;
 
-        public MarkMuteEventAsUnmutedCommandHandler(ISessionFactory sessionFactory) => this._sessionFactory = sessionFactory;
+        public MarkMuteEventAsUnmutedCommandHandler(ISessionFactory sessionFactory)
+        {
+            this._sessionFactory = sessionFactory;
+        }
 
         public async Task HandleAsync(MarkMuteEventAsUnmutedCommand command)
         {

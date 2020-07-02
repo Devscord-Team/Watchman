@@ -35,7 +35,7 @@ namespace Devscord.DiscordFramework.Services
 
         private IEnumerable<string> SplitNormalMessage(string fullMessage)
         {
-            var copiedMessage = (string)fullMessage.Clone();
+            var copiedMessage = (string) fullMessage.Clone();
             while (copiedMessage.Length > MAX_MESSAGE_LENGTH)
             {
                 var messageInChars = copiedMessage.Take(MAX_MESSAGE_LENGTH).ToList();

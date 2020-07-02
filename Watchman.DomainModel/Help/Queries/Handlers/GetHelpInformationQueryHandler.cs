@@ -8,7 +8,10 @@ namespace Watchman.DomainModel.Help.Queries.Handlers
     {
         private readonly ISessionFactory _sessionFactory;
 
-        public GetHelpInformationQueryHandler(ISessionFactory sessionFactory) => this._sessionFactory = sessionFactory;
+        public GetHelpInformationQueryHandler(ISessionFactory sessionFactory)
+        {
+            this._sessionFactory = sessionFactory;
+        }
 
         public GetHelpInformationQueryResult Handle(GetHelpInformationQuery query)
         {

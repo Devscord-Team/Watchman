@@ -7,6 +7,9 @@ namespace Watchman.DomainModel.Help.Commands
     {
         public IEnumerable<HelpInformation> HelpInformation { get; private set; }
 
-        public AddHelpInformationCommand(IEnumerable<HelpInformation> helpInformation) => this.HelpInformation = helpInformation;
+        public AddHelpInformationCommand(IEnumerable<HelpInformation> helpInformation)
+        {
+            this.HelpInformation = helpInformation;
+        }
     }
 }

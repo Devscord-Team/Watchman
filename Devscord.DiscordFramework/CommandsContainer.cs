@@ -12,7 +12,10 @@ namespace Devscord.DiscordFramework
         private Dictionary<ulong, List<CustomCommand>> _customCommandsGroupedByBotCommand;
         private DateTime _lastRefresh;
 
-        public CommandsContainer(ICustomCommandsLoader customCommandsLoader) => this._customCommandsLoader = customCommandsLoader;
+        public CommandsContainer(ICustomCommandsLoader customCommandsLoader)
+        {
+            this._customCommandsLoader = customCommandsLoader;
+        }
 
         public async Task<CustomCommand> GetCommand(DiscordRequest request, Type botCommand, ulong serverId)
         {

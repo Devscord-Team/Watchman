@@ -47,7 +47,7 @@ namespace Devscord.DiscordFramework.Integration.Services
         {
             await Task.Delay(1000);
 
-            var channelSocket = (IGuildChannel)await this._discordClientChannelsService.GetChannel(channel.Id);
+            var channelSocket = (IGuildChannel) await this._discordClientChannelsService.GetChannel(channel.Id);
             var channelPermissions = new OverwritePermissions(permissions.AllowPermissions.GetRawValue(), permissions.DenyPermissions.GetRawValue());
             var createdRole = this.GetSocketRoles(channelSocket.GuildId).FirstOrDefault(x => x.Id == role.Id);
 
@@ -62,7 +62,7 @@ namespace Devscord.DiscordFramework.Integration.Services
 
             Parallel.ForEach(channels, async c =>
             {
-                var channelSocket = (IGuildChannel)await this._discordClientChannelsService.GetChannel(c.Id);
+                var channelSocket = (IGuildChannel) await this._discordClientChannelsService.GetChannel(c.Id);
                 await channelSocket.AddPermissionOverwriteAsync(createdRole, channelPermissions);
             });
         }

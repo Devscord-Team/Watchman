@@ -53,7 +53,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands
             var parsingService = new BotCommandsParsingService(new BotCommandsPropertyConversionService(), new BotCommandsRequestValueGetterService()); //todo mock and test
 
             //Act
-            var result = (SmallTestCommand)parsingService.ParseCustomTemplate(typeof(SmallTestCommand), template, customTemplate, input);
+            var result = (SmallTestCommand) parsingService.ParseCustomTemplate(typeof(SmallTestCommand), template, customTemplate, input);
 
             //Assert
             Assert.That(result.TestNumber, Is.EqualTo(12));

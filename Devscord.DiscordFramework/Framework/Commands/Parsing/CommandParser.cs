@@ -12,7 +12,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
 
         public DiscordRequest Parse(string message, DateTime sentAt)
         {
-            var original = (string)message.Clone();
+            var original = (string) message.Clone();
             var prefix = this.GetPrefix(message);
             if (string.IsNullOrWhiteSpace(prefix))
             {
@@ -43,7 +43,10 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
             return this._possiblePrefixes.FirstOrDefault(x => withoutWhitespaces.StartsWith(x));
         }
 
-        private string GetName(string message) => message.Split(' ').First();
+        private string GetName(string message)
+        {
+            return message.Split(' ').First();
+        }
 
         private IEnumerable<DiscordRequestArgument> GetArguments(string message)
         {

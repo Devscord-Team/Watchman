@@ -7,6 +7,9 @@ namespace Watchman.DomainModel.ScheduleTasks.Commands
     {
         public Guid ScheduleTaskId { get; private set; }
 
-        public SetAsExecutedScheduleTaskCommand(Guid scheduleTaskId) => this.ScheduleTaskId = scheduleTaskId;
+        public SetAsExecutedScheduleTaskCommand(Guid scheduleTaskId)
+        {
+            this.ScheduleTaskId = scheduleTaskId;
+        }
     }
 }

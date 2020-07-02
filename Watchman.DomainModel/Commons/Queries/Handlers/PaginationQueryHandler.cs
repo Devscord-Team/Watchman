@@ -12,7 +12,7 @@ namespace Watchman.DomainModel.Commons.Queries.Handlers
             {
                 collection = collection.Where(paginationQuery.Filter);
             }
-            return this.Paginate((PaginationQuery)paginationQuery, collection);
+            return this.Paginate((PaginationQuery) paginationQuery, collection);
         }
 
         public IEnumerable<T> Paginate<T>(PaginationQuery paginationQuery, IEnumerable<T> collection) where T : Entity

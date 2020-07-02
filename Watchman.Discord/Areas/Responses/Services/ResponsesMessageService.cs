@@ -60,6 +60,9 @@ namespace Watchman.Discord.Areas.Responses.Services
                 .Select(x => new KeyValuePair<string, string>(x.OnEvent, this.GetRawMessage(x.Message)));
         }
 
-        private string GetRawMessage(string message) => message.Replace("`", @"\`").Replace("*", @"\*");
+        private string GetRawMessage(string message)
+        {
+            return message.Replace("`", @"\`").Replace("*", @"\*");
+        }
     }
 }

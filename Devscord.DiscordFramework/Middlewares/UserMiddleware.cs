@@ -8,11 +8,14 @@ namespace Devscord.DiscordFramework.Middlewares
     {
         private readonly UserContextsFactory userContextsFactory;
 
-        public UserMiddleware() => this.userContextsFactory = new UserContextsFactory();
+        public UserMiddleware()
+        {
+            this.userContextsFactory = new UserContextsFactory();
+        }
 
         public IDiscordContext Process(SocketMessage data)
         {
-            var user = (SocketGuildUser)data.Author;
+            var user = (SocketGuildUser) data.Author;
             return this.userContextsFactory.Create(user);
         }
     }

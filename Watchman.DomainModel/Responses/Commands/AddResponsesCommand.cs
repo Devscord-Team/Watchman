@@ -7,6 +7,9 @@ namespace Watchman.DomainModel.Responses.Commands
     {
         public IEnumerable<Response> Responses { get; }
 
-        public AddResponsesCommand(IEnumerable<Response> responses) => this.Responses = responses;
+        public AddResponsesCommand(IEnumerable<Response> responses)
+        {
+            this.Responses = responses;
+        }
     }
 }

@@ -8,7 +8,10 @@ namespace Watchman.Discord.Ioc
     {
         private readonly DiscordConfiguration configuration;
 
-        public ContainerModule(DiscordConfiguration configuration) => this.configuration = configuration;
+        public ContainerModule(DiscordConfiguration configuration)
+        {
+            this.configuration = configuration;
+        }
 
         public ContainerBuilder GetBuilder()
         {

@@ -21,16 +21,34 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             this.botCommandsTemplateRenderingService = botCommandsTemplateRenderingService;
         }
 
-        public string RenderTextTemplate(BotCommandTemplate template) => this.botCommandsTemplateRenderingService.RenderTextTemplate(template);
+        public string RenderTextTemplate(BotCommandTemplate template)
+        {
+            return this.botCommandsTemplateRenderingService.RenderTextTemplate(template);
+        }
 
-        public bool IsMatchedWithCommand(DiscordRequest request, BotCommandTemplate template) => this.botCommandMatchingService.IsMatchedWithCommand(request, template);
+        public bool IsMatchedWithCommand(DiscordRequest request, BotCommandTemplate template)
+        {
+            return this.botCommandMatchingService.IsMatchedWithCommand(request, template);
+        }
 
-        public BotCommandTemplate GetCommandTemplate(Type commandType) => this.botCommandsTemplateBuilder.GetCommandTemplate(commandType);
+        public BotCommandTemplate GetCommandTemplate(Type commandType)
+        {
+            return this.botCommandsTemplateBuilder.GetCommandTemplate(commandType);
+        }
 
-        public T ParseRequestToCommand<T>(DiscordRequest request, BotCommandTemplate template) where T : IBotCommand => (T)this.ParseRequestToCommand(typeof(T), request, template);
+        public T ParseRequestToCommand<T>(DiscordRequest request, BotCommandTemplate template) where T : IBotCommand
+        {
+            return (T) this.ParseRequestToCommand(typeof(T), request, template);
+        }
 
-        public IBotCommand ParseRequestToCommand(Type commandType, DiscordRequest request, BotCommandTemplate template) => this.botCommandParsingService.ParseRequestToCommand(commandType, request, template);
+        public IBotCommand ParseRequestToCommand(Type commandType, DiscordRequest request, BotCommandTemplate template)
+        {
+            return this.botCommandParsingService.ParseRequestToCommand(commandType, request, template);
+        }
 
-        public IBotCommand ParseCustomTemplate(Type commandType, BotCommandTemplate template, Regex customTemplate, string input) => this.botCommandParsingService.ParseCustomTemplate(commandType, template, customTemplate, input);
+        public IBotCommand ParseCustomTemplate(Type commandType, BotCommandTemplate template, Regex customTemplate, string input)
+        {
+            return this.botCommandParsingService.ParseCustomTemplate(commandType, template, customTemplate, input);
+        }
     }
 }

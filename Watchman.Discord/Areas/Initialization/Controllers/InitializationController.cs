@@ -10,11 +10,17 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
     {
         private readonly InitializationService _initializationService;
 
-        public InitializationController(InitializationService initializationService) => this._initializationService = initializationService;
+        public InitializationController(InitializationService initializationService)
+        {
+            this._initializationService = initializationService;
+        }
 
         [AdminCommand]
         [DiscordCommand("init")]
         //[IgnoreForHelp] TODO //TODO co to za TODO?
-        public async Task Init(DiscordRequest request, Contexts contexts) => await this._initializationService.InitServer(contexts.Server);
+        public async Task Init(DiscordRequest request, Contexts contexts)
+        {
+            await this._initializationService.InitServer(contexts.Server);
+        }
     }
 }

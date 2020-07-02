@@ -7,7 +7,10 @@ namespace Watchman.IoC
     {
         private readonly string _connectionString;
 
-        public ContainerModule(string connectionString) => this._connectionString = connectionString;
+        public ContainerModule(string connectionString)
+        {
+            this._connectionString = connectionString;
+        }
 
         public ContainerBuilder GetBuilder()
         {

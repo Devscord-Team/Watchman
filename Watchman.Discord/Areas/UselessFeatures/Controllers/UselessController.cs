@@ -10,7 +10,10 @@ namespace Watchman.Discord.Areas.UselessFeatures.Controllers
     {
         private readonly MessagesServiceFactory _messagesServiceFactory;
 
-        public UselessController(MessagesServiceFactory messagesServiceFactory) => this._messagesServiceFactory = messagesServiceFactory;
+        public UselessController(MessagesServiceFactory messagesServiceFactory)
+        {
+            this._messagesServiceFactory = messagesServiceFactory;
+        }
 
         public async Task PrintMarchew(MarchewCommand command, Contexts contexts)
         {

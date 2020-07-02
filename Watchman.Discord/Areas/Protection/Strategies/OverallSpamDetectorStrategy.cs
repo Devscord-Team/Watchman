@@ -30,8 +30,8 @@ namespace Watchman.Discord.Areas.Protection.Strategies
 
         public SpamProbability GetOverallSpamProbability(DiscordRequest request, Contexts contexts)
         {
-            var probabilities = _spamDetectors
-                .Select(x => x.GetSpamProbability(_serverMessagesCacheService, request, contexts))
+            var probabilities = this._spamDetectors
+                .Select(x => x.GetSpamProbability(this._serverMessagesCacheService, request, contexts))
                 .Where(x => x != SpamProbability.None)
                 .ToList();
 

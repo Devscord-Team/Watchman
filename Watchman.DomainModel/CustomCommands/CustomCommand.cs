@@ -16,6 +16,9 @@ namespace Watchman.DomainModel.CustomCommands
             this.ServerId = serverId;
         }
 
-        public Regex GetTemplate() => new Regex(this.CustomTemplateRegex, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        public Regex GetTemplate()
+        {
+            return new Regex(this.CustomTemplateRegex, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        }
     }
 }

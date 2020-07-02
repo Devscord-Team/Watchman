@@ -10,7 +10,10 @@ namespace Devscord.DiscordFramework.Middlewares.Factories
     {
         private readonly UserRoleFactory _userRoleFactory;
 
-        public UserContextsFactory() => this._userRoleFactory = new UserRoleFactory();
+        public UserContextsFactory()
+        {
+            this._userRoleFactory = new UserRoleFactory();
+        }
 
         public UserContext Create(IUser user)
         {

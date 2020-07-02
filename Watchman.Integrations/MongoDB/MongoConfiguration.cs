@@ -18,7 +18,10 @@ namespace Watchman.Integrations.MongoDB
             _initialized = true;
         }
 
-        private static void RegisterConventions() => ConventionRegistry.Register("DevscordConventions", new MongoConventions(), x => true);
+        private static void RegisterConventions()
+        {
+            ConventionRegistry.Register("DevscordConventions", new MongoConventions(), x => true);
+        }
 
         private class MongoConventions : IConventionPack
         {

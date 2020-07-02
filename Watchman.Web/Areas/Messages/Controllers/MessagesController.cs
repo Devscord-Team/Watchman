@@ -12,7 +12,10 @@ namespace Watchman.Web.Areas.Messages.Controllers
     {
         private readonly IQueryBus _queryBus;
         private const int LimitForQuery = 100;
-        public MessagesController(IQueryBus queryBus) => this._queryBus = queryBus;
+        public MessagesController(IQueryBus queryBus)
+        {
+            this._queryBus = queryBus;
+        }
 
         [HttpPost]
         public async Task<IEnumerable<MessageDto>> GetMessages([FromBody]GetMessagesRequest request)

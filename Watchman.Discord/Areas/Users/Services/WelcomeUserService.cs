@@ -10,14 +10,16 @@ namespace Watchman.Discord.Areas.Users.Services
         private readonly MessagesServiceFactory _messagesServiceFactory;
 
 <<<<<<< HEAD
-        public WelcomeUserService(MessagesServiceFactory messagesServiceFactory) => this._messagesServiceFactory = messagesServiceFactory;
+        public WelcomeUserService(MessagesServiceFactory messagesServiceFactory)
+        {
+            this._messagesServiceFactory = messagesServiceFactory;
+        }
 =======
         public WelcomeUserService(MessagesServiceFactory messagesServiceFactory)
         {
             this._messagesServiceFactory = messagesServiceFactory;
         }
 >>>>>>> master
-
         public Task WelcomeUser(Contexts contexts)
         {
             if (contexts.Channel == null)

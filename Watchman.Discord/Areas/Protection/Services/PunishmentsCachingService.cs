@@ -20,7 +20,7 @@ namespace Watchman.Discord.Areas.Protection.Services
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;
-            _punishments = LoadUsersPunishmentsFromDomain();
+            _punishments = this.LoadUsersPunishmentsFromDomain();
         }
 
         public List<Punishment> GetUserPunishments(ulong userId)
@@ -64,8 +64,8 @@ namespace Watchman.Discord.Areas.Protection.Services
             {
                 _punishments.Add(userId, new List<Punishment> { punishment });
             }
-            
-            var option = (ProtectionPunishmentOption)(int)punishment.PunishmentOption;
+
+            var option = (ProtectionPunishmentOption) (int) punishment.PunishmentOption;
             var protectionPunishment = new ProtectionPunishment(option, userId, punishment.GivenAt, punishment.ForTime);
             var command = new AddProtectionPunishmentCommand(protectionPunishment);
             await this._commandBus.ExecuteAsync(command);
@@ -82,7 +82,7 @@ namespace Watchman.Discord.Areas.Protection.Services
                     var userId = x.Key;
                     var punishments = x.Select(x =>
                     {
-                        var option = (PunishmentOption)(int)x.Option;
+                        var option = (PunishmentOption) (int) x.Option;
                         return new Punishment(option, x.GivenAt, x.Time);
                     });
                     return new KeyValuePair<ulong, IEnumerable<Punishment>>(userId, punishments);

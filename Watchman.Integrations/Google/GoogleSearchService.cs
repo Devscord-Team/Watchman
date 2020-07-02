@@ -17,15 +17,15 @@ namespace Watchman.Integrations.Google
 
         public IEnumerable<GoogleSearchResult> Search(string query)
         {
-            var url = GetGoogleSearchUrl(query);
+            var url = this.GetGoogleSearchUrl(query);
             var page = this._client.GetAsync(url).Result.Content.ReadAsStringAsync().Result;
-            _html.LoadHtml(page);
+            this._html.LoadHtml(page);
 
 
-            var googleResults = _html.DocumentNode.SelectNodes("//div[@class='g']");
+            var googleResults = this._html.DocumentNode.SelectNodes("//div[@class='g']");
             foreach (var googleResult in googleResults)
             {
-                
+
             }
 
             return default;

@@ -13,7 +13,10 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
         private readonly BotCommandsRequestValueGetterService _botCommandsRequestValueGetterService;
 
 <<<<<<< HEAD
-        public BotCommandsParsingService(BotCommandsPropertyConversionService botCommandPropertyConversionService) => this.botCommandPropertyConversionService = botCommandPropertyConversionService;
+        public BotCommandsParsingService(BotCommandsPropertyConversionService botCommandPropertyConversionService)
+        {
+            this.botCommandPropertyConversionService = botCommandPropertyConversionService;
+        }
 
         public IBotCommand ParseRequestToCommand(Type commandType, DiscordRequest request, BotCommandTemplate template)
         {

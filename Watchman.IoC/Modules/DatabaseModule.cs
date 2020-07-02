@@ -9,7 +9,10 @@ namespace Watchman.IoC.Modules
     {
         private readonly string _connectionString;
 
-        public DatabaseModule(string connectionString) => this._connectionString = connectionString;
+        public DatabaseModule(string connectionString)
+        {
+            this._connectionString = connectionString;
+        }
 
         protected override void Load(ContainerBuilder builder)
         {

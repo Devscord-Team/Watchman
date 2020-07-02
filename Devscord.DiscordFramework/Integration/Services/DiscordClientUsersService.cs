@@ -22,7 +22,10 @@ namespace Devscord.DiscordFramework.Integration.Services
             this._client.UserJoined += user => this.UserJoined(user);
         }
 
-        public async Task<RestUser> GetUser(ulong userId) => await this._restClient.GetUserAsync(userId);
+        public async Task<RestUser> GetUser(ulong userId)
+        {
+            return await this._restClient.GetUserAsync(userId);
+        }
 
         public async Task<RestGuildUser> GetGuildUser(ulong userId, ulong guildId)
         {

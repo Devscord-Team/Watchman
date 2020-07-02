@@ -9,11 +9,14 @@ namespace Devscord.DiscordFramework.Middlewares
     {
         private readonly DiscordServerContextFactory discordServerContextsFactory;
 
-        public ServerMiddleware() => this.discordServerContextsFactory = new DiscordServerContextFactory();
+        public ServerMiddleware()
+        {
+            this.discordServerContextsFactory = new DiscordServerContextFactory();
+        }
 
         public IDiscordContext Process(SocketMessage data)
         {
-            var serverInfo = ((SocketGuildChannel)data.Channel).Guild;
+            var serverInfo = ((SocketGuildChannel) data.Channel).Guild;
             var guild = Server.GetGuild(serverInfo.Id).Result;
             return this.discordServerContextsFactory.Create(guild);
         }
