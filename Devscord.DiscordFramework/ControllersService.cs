@@ -118,10 +118,6 @@ namespace Devscord.DiscordFramework
                 {
                     foreach (var method in controllerInfo.Methods)
                     {
-                        if (!this.IsValid(contexts, method))
-                        {
-                            continue;
-                        }
                         var commandInParameterType = method.GetParameters().First(x => typeof(IBotCommand).IsAssignableFrom(x.ParameterType)).ParameterType;
                         //TODO zoptymalizować, spokojnie można to pobierać wcześniej i używać raz, zamiast wszystko obliczać przy każdym odpaleniu
                         var template = this._botCommandsService.GetCommandTemplate(commandInParameterType);
@@ -140,6 +136,10 @@ namespace Devscord.DiscordFramework
                         else
                         {
                             command = this._botCommandsService.ParseRequestToCommand(commandInParameterType, request, template);
+                        }
+                        if (!this.IsValid(contexts, method))
+                        {
+                            continue;
                         }
                         await InvokeMethod(command, contexts, controllerInfo, method);
                         return;
