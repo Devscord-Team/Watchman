@@ -1,3 +1,8 @@
+using Hangfire;
+using Hangfire.MemoryStorage;
+using Hangfire.Mongo;
+using Hangfire.Mongo.Migration.Strategies;
+using Hangfire.Mongo.Migration.Strategies.Backup;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Builder;
@@ -8,10 +13,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json.Linq;
-using System.Net.Http;
-using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Watchman.Web
 {
@@ -47,6 +48,23 @@ namespace Watchman.Web
             {
                 configuration.RootPath = "ClientApp/build";
             });
+
+#if DEBUG
+            services.AddHangfire(x => x.UseMemoryStorage());
+#else
+            services.AddHangfire(config =>
+            {
+                var storageOptions = new MongoStorageOptions
+                {
+                    MigrationOptions = new MongoMigrationOptions
+                    {
+                        MigrationStrategy = new MigrateMongoMigrationStrategy(),
+                        BackupStrategy = new CollectionMongoBackupStrategy()
+                    }
+                };
+                config.UseMongoStorage(this.Configuration.GetConnectionString("Mongo"), storageOptions);
+            });
+#endif
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -72,7 +90,8 @@ namespace Watchman.Web
             app.UseSpaStaticFiles();
 
             app.UseRouting();
-
+            app.UseHangfireDashboard();
+            app.UseHangfireServer();
             app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>

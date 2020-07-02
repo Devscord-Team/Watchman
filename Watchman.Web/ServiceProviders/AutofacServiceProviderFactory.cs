@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using Watchman.Discord;
 using Watchman.IoC;
-using Watchman.Web.Server;
 
 namespace Watchman.Web.ServiceProviders
 {
