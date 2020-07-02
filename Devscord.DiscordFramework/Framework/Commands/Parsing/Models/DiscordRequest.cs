@@ -13,21 +13,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing.Models
         public bool IsCommandForBot => !string.IsNullOrEmpty(this.Prefix);
         public DateTime SentAt { get; set; }
 
-        public bool HasArgument(string name)
-        {
-            return Arguments.Any(x => x.Name == name);
-        }
+        public bool HasArgument(string name) => this.Arguments.Any(x => x.Name == name);
 
         public bool HasArgument(string name, string value)
         {
             return string.IsNullOrEmpty(name)
-                ? Arguments.Any(a => a.Value == value)
+                ? this.Arguments.Any(a => a.Value == value)
                 : this.Arguments.Any(x => x.Name == name && x.Value == value);
         }
 
-        public override string ToString()
-        {
-            return OriginalMessage;
-        }
+        public override string ToString() => this.OriginalMessage;
     }
 }

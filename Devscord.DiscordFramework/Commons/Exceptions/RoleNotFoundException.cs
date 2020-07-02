@@ -1,14 +1,9 @@
-﻿using System;
-
-namespace Devscord.DiscordFramework.Commons.Exceptions
+﻿namespace Devscord.DiscordFramework.Commons.Exceptions
 {
-    public class RoleNotFoundException : Exception
+    public class RoleNotFoundException : BotException
     {
-        public string RoleName { get; }
-
-        public RoleNotFoundException(string roleName)
+        public RoleNotFoundException(string roleName) : base(roleName)
         {
-            RoleName = roleName;
         }
     }
 }

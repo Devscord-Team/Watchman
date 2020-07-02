@@ -10,6 +10,7 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Serilog;
 using Watchman.Discord.Areas.Protection.Services;
 using Watchman.Discord.Areas.Protection.Strategies;
+using Watchman.DomainModel.Settings.Services;
 
 namespace Watchman.Discord.Areas.Protection.Controllers
 {
@@ -26,12 +27,12 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         // it's really needed - to avoid multiple warning and muting the same user
         private static bool _isNowChecking;
 
-        public AntiSpamController(ServerMessagesCacheService serverMessagesCacheService, CheckUserSafetyStrategyService checkUserSafetyStrategyService, PunishmentsCachingService punishmentsCachingService, AntiSpamService antiSpamService)
+        public AntiSpamController(ServerMessagesCacheService serverMessagesCacheService, CheckUserSafetyStrategyService checkUserSafetyStrategyService, PunishmentsCachingService punishmentsCachingService, AntiSpamService antiSpamService, ConfigurationService configurationService)
         {
             this._serverMessagesCacheService = serverMessagesCacheService;
             this._punishmentsCachingService = punishmentsCachingService;
             this._antiSpamService = antiSpamService;
-            this._overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessagesCacheService, checkUserSafetyStrategyService);
+            this._overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessagesCacheService, checkUserSafetyStrategyService, configurationService);
             this._spamPunishmentStrategy = new SpamPunishmentStrategy(punishmentsCachingService);
         }
 
@@ -41,7 +42,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             var stopwatch = Stopwatch.StartNew();
             Log.Information("Started scanning the message");
 
-            if (ShouldCheckThisMessage(contexts.User.Id, request.SentAt))
+            if (ShouldCheckThisMessage(contexts.User.Id, request))
             {
                 _isNowChecking = true;
                 var spamProbability = this._overallSpamDetector.GetOverallSpamProbability(request, contexts);
@@ -57,13 +58,13 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             Log.Information("antispam: {ticks}ticks", stopwatch.ElapsedTicks);
         }
 
-        private bool ShouldCheckThisMessage(ulong userId, DateTime messageSentAt)
+        private bool ShouldCheckThisMessage(ulong userId, DiscordRequest request)
         {
-            if (_isNowChecking)
+            if (_isNowChecking || request.IsCommandForBot) // interactions with bot shouldn't be considered as spam
             {
                 return false;
             }
-            return !_lastUserPunishmentDate.TryGetValue(userId, out var time) || time < messageSentAt.AddSeconds(-5);
+            return !_lastUserPunishmentDate.TryGetValue(userId, out var time) || time < request.SentAt.AddSeconds(-5);
         }
 
         private async Task HandlePossibleSpam(Contexts contexts, SpamProbability spamProbability, DateTime messageSentAt)

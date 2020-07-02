@@ -14,27 +14,26 @@ using Watchman.DomainModel.Messages.Queries;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Discord.Areas.Commons;
-using Watchman.DomainModel.DiscordServer.Commands;
+using Watchman.Discord.Areas.Users.Services;
+using Watchman.Discord.Areas.Administration.BotCommands;
 
 namespace Watchman.Discord.Areas.Administration.Controllers
 {
     public class AdministrationController : IController
     {
         private readonly IQueryBus _queryBus;
-        private readonly ICommandBus _commandBus;
         private readonly UsersService _usersService;
         private readonly DirectMessagesService _directMessagesService;
         private readonly MessagesServiceFactory _messagesServiceFactory;
-        private readonly UsersRolesService _usersRolesService;
+        private readonly RolesService _rolesService;
 
-        public AdministrationController(IQueryBus queryBus, ICommandBus commandBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, UsersRolesService usersRolesService)
+        public AdministrationController(IQueryBus queryBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, RolesService rolesService)
         {
             this._queryBus = queryBus;
-            this._commandBus = commandBus;
             this._usersService = usersService;
             this._directMessagesService = directMessagesService;
             this._messagesServiceFactory = messagesServiceFactory;
-            _usersRolesService = usersRolesService;
+            this._rolesService = rolesService;
         }
 
         [AdminCommand]
@@ -42,7 +41,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         public async Task ReadUserMessages(DiscordRequest request, Contexts contexts)
         {
             var mention = request.GetMention();
-            var selectedUser = _usersService.GetUserByMention(contexts.Server, mention);
+            var selectedUser = this._usersService.GetUserByMention(contexts.Server, mention);
             if (selectedUser == null)
             {
                 throw new UserNotFoundException(mention);
@@ -53,22 +52,22 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             {
                 SentDate = timeRange
             };
-            var messages = _queryBus.Execute(query).Messages
+            var messages = this._queryBus.Execute(query).Messages
                 .OrderBy(x => x.SentAt)
                 .ToList();
 
-            var messagesService = _messagesServiceFactory.Create(contexts);
+            var messagesService = this._messagesServiceFactory.Create(contexts);
             var hasForceArgument = request.HasArgument("force") || request.HasArgument("f");
 
             if (messages.Count > 200 && !hasForceArgument)
             {
-                await messagesService.SendResponse(x => x.NumberOfMessagesIsHuge(messages.Count), contexts);
+                await messagesService.SendResponse(x => x.NumberOfMessagesIsHuge(messages.Count));
                 return;
             }
 
             if (!messages.Any())
             {
-                await messagesService.SendResponse(x => x.UserDidntWriteAnyMessageInThisTime(selectedUser), contexts);
+                await messagesService.SendResponse(x => x.UserDidntWriteAnyMessageInThisTime(selectedUser));
                 return;
             }
 
@@ -76,44 +75,22 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             var lines = messages.Select(x => $"{x.SentAt:yyyy-MM-dd HH:mm:ss} {x.Author.Name}: {x.Content.Replace("```", "")}");
             var linesBuilder = new StringBuilder().PrintManyLines(lines.ToArray(), contentStyleBox: true);
 
-            await _directMessagesService.TrySendMessage(contexts.User.Id, header);
-            await _directMessagesService.TrySendMessage(contexts.User.Id, linesBuilder.ToString(), MessageType.BlockFormatted);
+            await this._directMessagesService.TrySendMessage(contexts.User.Id, header);
+            await this._directMessagesService.TrySendMessage(contexts.User.Id, linesBuilder.ToString(), MessageType.BlockFormatted);
 
-            await messagesService.SendResponse(x => x.SentByDmMessagesOfAskedUser(messages.Count, selectedUser), contexts);
+            await messagesService.SendResponse(x => x.SentByDmMessagesOfAskedUser(messages.Count, selectedUser));
         }
 
         [AdminCommand]
-        [DiscordCommand("set role")]
-        public async Task SetRoleAsSafe(DiscordRequest request, Contexts contexts)
+        public async Task SetRoleAsSafe(SetRoleCommand setRoleCommand, Contexts contexts)
         {
-            var args = request.Arguments.Skip(1).ToArray(); // 1 args is string "role", so it's not needed
-            if (args.Length < 2)
+            var roles = setRoleCommand.Roles;
+            if (roles.Count == 0 || !(setRoleCommand.Safe || setRoleCommand.Unsafe))
             {
                 throw new NotEnoughArgumentsException();
             }
-
-            var roleName = args[0].Value;
-            var toSetAsSafe = args[1].Value == "safe";
-
-            var serverRole = _usersRolesService.GetRoleByName(roleName, contexts.Server);
-            if (serverRole == null)
-            {
-                throw new RoleNotFoundException(roleName);
-            }
-
-            if (toSetAsSafe)
-            {
-                var command = new SetRoleAsSafeCommand(roleName, contexts.Server.Id);
-                await _commandBus.ExecuteAsync(command);
-            }
-            else
-            {
-                var command = new SetRoleAsUnsafeCommand(roleName, contexts.Server.Id);
-                await _commandBus.ExecuteAsync(command);
-            }
-
-            var messagesService = _messagesServiceFactory.Create(contexts);
-            await messagesService.SendResponse(x => x.RoleSettingsChanged(roleName), contexts);
+            var shouldSetToSafe = setRoleCommand.Safe;
+            await this._rolesService.SetRolesAsSafe(contexts, roles, shouldSetToSafe);
         }
     }
 }

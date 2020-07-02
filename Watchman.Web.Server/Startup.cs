@@ -1,17 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Autofac;
-using Autofac.Extensions.DependencyInjection;
+using Hangfire;
+using Hangfire.MemoryStorage;
+using Hangfire.Mongo;
+using Hangfire.Mongo.Migration.Strategies;
+using Hangfire.Mongo.Migration.Strategies.Backup;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 
@@ -23,7 +19,7 @@ namespace Watchman.Web.Server
 
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            this.Configuration = configuration;
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -47,8 +43,24 @@ namespace Watchman.Web.Server
 
             services.AddControllers();
             services.AddMvc()
-                .AddNewtonsoftJson(options => 
-                    options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
+                .AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
+
+#if DEBUG
+            services.AddHangfire(x => x.UseMemoryStorage());
+#else
+            services.AddHangfire(config =>
+            {
+                var storageOptions = new MongoStorageOptions
+                {
+                    MigrationOptions = new MongoMigrationOptions
+                    {
+                        MigrationStrategy = new MigrateMongoMigrationStrategy(),
+                        BackupStrategy = new CollectionMongoBackupStrategy()
+                    }
+                };
+                config.UseMongoStorage(this.Configuration.GetConnectionString("Mongo"), storageOptions);
+            });
+#endif
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -62,10 +74,12 @@ namespace Watchman.Web.Server
             app.UseSwaggerUI(c => 
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Watchman API");
-                c.RoutePrefix = "";
+                c.RoutePrefix = "swagger";
             });
             app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseHangfireDashboard();
+            app.UseHangfireServer();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {

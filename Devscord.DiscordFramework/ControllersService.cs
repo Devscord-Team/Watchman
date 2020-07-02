@@ -141,6 +141,7 @@ namespace Devscord.DiscordFramework
                             command = this._botCommandsService.ParseRequestToCommand(commandInParameterType, request, template);
                         }
                         await InvokeMethod(command, contexts, controllerInfo, method);
+                        return;
                     }
                 }
             }

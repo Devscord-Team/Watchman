@@ -7,21 +7,21 @@ namespace Devscord.DiscordFramework
 {
     public class WorkflowBuilderHandlers<T>
     {
-        private List<T> _handlers = new List<T>();
-        private readonly IComponentContext context;
+        private readonly List<T> _handlers = new List<T>();
+        private readonly IComponentContext _context;
 
-        internal IEnumerable<T> Handlers => _handlers;
+        internal IEnumerable<T> Handlers => this._handlers;
 
         public WorkflowBuilderHandlers(IComponentContext context)
         {
-            this.context = context;
+            this._context = context;
         }
 
         public WorkflowBuilderHandlers<T> AddHandler(T handler, bool onlyOnDebug = false)
         {
             if(!ShouldIgnore(onlyOnDebug))
             {
-                _handlers.Add(handler);
+                this._handlers.Add(handler);
             }
             
             return this;
@@ -31,7 +31,7 @@ namespace Devscord.DiscordFramework
         {
             if (!ShouldIgnore(onlyOnDebug))
             {
-                var resolved = context.Resolve<A>();
+                var resolved = this._context.Resolve<A>();
                 var handler = func.Invoke(resolved);
                 AddHandler(handler);
             }
@@ -42,8 +42,8 @@ namespace Devscord.DiscordFramework
         {
             if (!ShouldIgnore(onlyOnDebug))
             {
-                var resolvedA = this.context.Resolve<A>();
-                var resolvedB = this.context.Resolve<B>();
+                var resolvedA = this._context.Resolve<A>();
+                var resolvedB = this._context.Resolve<B>();
                 var handler = func.Invoke(resolvedA, resolvedB);
                 AddHandler(handler);
             }

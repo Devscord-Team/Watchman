@@ -4,6 +4,7 @@ using Devscord.DiscordFramework.Framework.Commands.AntiSpam;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
+using Watchman.DomainModel.Settings.Services;
 
 namespace Watchman.Discord.Areas.Protection.Strategies
 {
@@ -12,12 +13,12 @@ namespace Watchman.Discord.Areas.Protection.Strategies
         private readonly ServerMessagesCacheService _serverMessagesCacheService;
         private readonly List<ISpamDetector> _spamDetectors;
 
-        public static OverallSpamDetectorStrategy GetStrategyWithDefaultDetectors(ServerMessagesCacheService serverMessagesCacheService, IUserSafetyChecker userSafetyChecker)
+        public static OverallSpamDetectorStrategy GetStrategyWithDefaultDetectors(ServerMessagesCacheService serverMessagesCacheService, IUserSafetyChecker userSafetyChecker, IConfigurationService configurationService)
         {
             return new OverallSpamDetectorStrategy(serverMessagesCacheService, new List<ISpamDetector>
             {
                 new LinksDetectorStrategy(userSafetyChecker),
-                new DuplicatedMessagesDetectorStrategy(userSafetyChecker)
+                new DuplicatedMessagesDetectorStrategy(userSafetyChecker, configurationService)
             });
         }
 

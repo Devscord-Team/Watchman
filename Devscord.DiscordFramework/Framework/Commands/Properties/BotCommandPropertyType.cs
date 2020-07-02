@@ -8,6 +8,7 @@
         Time = 8,
         UserMention = 16,
         ChannelMention = 32,
-        Bool = 64
+        Bool = 64,
+        List = 128
     }
 }

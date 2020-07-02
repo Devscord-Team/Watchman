@@ -38,11 +38,36 @@ namespace Watchman.Discord.Areas.Initialization.Services
 
         public async Task InitServer(DiscordServerContext server)
         {
+            await AddDefaultCustomCommands();
             await MuteRoleInit(server);
             var lastInitDate = GetLastInitDate(server);
             await ReadServerMessagesHistory(server, lastInitDate);
             await _cyclicStatisticsGeneratorService.GenerateStatsForDaysBefore(server, lastInitDate);
             await NotifyDomainAboutInit(server);
+        }
+
+        private async Task AddDefaultCustomCommands()
+        {
+            var customCommands = new List<AddCustomCommandsCommand>();
+            foreach (var serverId in new ulong[] { 636238466899902504, 597066406521208852 })
+            {
+                customCommands.AddRange(new List<AddCustomCommandsCommand>
+                {
+                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.AddRoleCommand", @"-add\s*role\s*(?<Roles>[\w\s\""]*)", serverId),
+                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.RemoveRoleCommand", @"-remove\s*role\s*(?<Roles>[\w\s\""]*)", serverId),
+                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Administration.BotCommands.SetRoleCommand", @"-set\s*role\s*(?<Roles>[\w\s\""]*)\s*-((?<Safe>safe)|(?<Unsafe>unsafe))", serverId),
+                });
+            }
+
+            var commandsInBase = this._queryBus.Execute(new GetCustomCommandsQuery()).CustomCommands.ToList();
+            foreach (var command in customCommands)
+            {
+                if (commandsInBase.Any(x => x.ServerId == command.ServerId && x.CommandFullName == command.CommandFullName))
+                {
+                    continue;
+                }
+                await this._commandBus.ExecuteAsync(command);
+            }
         }
 
         private async Task MuteRoleInit(DiscordServerContext server)

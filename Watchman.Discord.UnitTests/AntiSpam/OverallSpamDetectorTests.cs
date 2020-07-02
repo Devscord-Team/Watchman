@@ -7,6 +7,8 @@ using Moq;
 using NUnit.Framework;
 using Watchman.Discord.Areas.Protection.Strategies;
 using Watchman.DomainModel.Messages.Queries;
+using Watchman.DomainModel.Settings.ConfigurationItems;
+using Watchman.DomainModel.Settings.Services;
 
 namespace Watchman.Discord.UnitTests.AntiSpam
 {
@@ -29,16 +31,20 @@ namespace Watchman.Discord.UnitTests.AntiSpam
             userSafetyChecker
                 .Setup(x => x.IsUserSafe(AntiSpamTestsService.DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
                 .Returns(isUserSafe);
-
+            
             var (request, contexts) = spamTestsService.CreateRequestAndContexts(messageContent4);
             var serverMessages = new ServerMessagesCacheService();
             serverMessages.OverwriteMessages(new List<SmallMessage>
             {
-                new SmallMessage(messageContent1, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now),
-                new SmallMessage(messageContent2, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now),
-                new SmallMessage(messageContent3, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now)
+                new SmallMessage(messageContent1, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now, GetMessagesQuery.GET_ALL_SERVERS),
+                new SmallMessage(messageContent2, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now, GetMessagesQuery.GET_ALL_SERVERS),
+                new SmallMessage(messageContent3, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now, GetMessagesQuery.GET_ALL_SERVERS)
             });
-            var overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessages, userSafetyChecker.Object);
+            var configurationService = new Mock<IConfigurationService>();
+            configurationService
+                .Setup(x => x.GetConfigurationItem<PercentOfSimilarityBetweenMessagesToSuspectSpam>(It.IsAny<ulong>()))
+                .Returns(new PercentOfSimilarityBetweenMessagesToSuspectSpam(GetMessagesQuery.GET_ALL_SERVERS));
+            var overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessages, userSafetyChecker.Object, configurationService.Object);
 
             // Act
             var overallSpamProbability = overallSpamDetector.GetOverallSpamProbability(request, contexts);
@@ -63,11 +69,15 @@ namespace Watchman.Discord.UnitTests.AntiSpam
             var serverMessages = new ServerMessagesCacheService();
             serverMessages.OverwriteMessages(new List<SmallMessage>
             {
-                new SmallMessage(messageContent1, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now),
-                new SmallMessage(messageContent2, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now),
-                new SmallMessage(messageContent3, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now)
+                new SmallMessage(messageContent1, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now, GetMessagesQuery.GET_ALL_SERVERS),
+                new SmallMessage(messageContent2, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now, GetMessagesQuery.GET_ALL_SERVERS),
+                new SmallMessage(messageContent3, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now, GetMessagesQuery.GET_ALL_SERVERS)
             });
-            var overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessages, userSafetyChecker.Object);
+            var configurationService = new Mock<IConfigurationService>();
+            configurationService
+                .Setup(x => x.GetConfigurationItem<PercentOfSimilarityBetweenMessagesToSuspectSpam>(It.IsAny<ulong>()))
+                .Returns(new PercentOfSimilarityBetweenMessagesToSuspectSpam(GetMessagesQuery.GET_ALL_SERVERS));
+            var overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessages, userSafetyChecker.Object, configurationService.Object);
 
             // Act
             var overallSpamProbability = overallSpamDetector.GetOverallSpamProbability(request, contexts);

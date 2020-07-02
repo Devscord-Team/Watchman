@@ -117,6 +117,18 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AllRolesAddedToUser" xml:space="preserve">
+    <value>Dodano wszystkie role pomyślnie użytkownikowi {{user}}</value>
+  </data>
+  <data name="AllRolesRemovedFromUser" xml:space="preserve">
+    <value>Usunięto wszystkie role pomyślnie użytkownikowi {{user}}</value>
+  </data>
+  <data name="AllRolesSettingsChanged" xml:space="preserve">
+    <value>Zmieniono ustawienia wszystkich powyższych roli pomyślnie</value>
+  </data>
+  <data name="ArgumentsDuplicated" xml:space="preserve">
+    <value>Podane argumenty są zduplikowane.</value>
+  </data>
   <data name="AvailableSafeRoles" xml:space="preserve">
     <value>Dostępne role: {{roles}}</value>
   </data>
@@ -124,10 +136,13 @@
     <value>Dla tego polecenia są dostępne tylko argumenty: {{arguments}}</value>
   </data>
   <data name="MutedUser" xml:space="preserve">
-    <value>Użytkownik {{user}} został zmutowany do {{timeEnd}}UTC</value>
+    <value>Użytkownik {{user}} został zmutowany do {{timeEnd}}</value>
   </data>
   <data name="NewUserArrived" xml:space="preserve">
     <value>Cześć {{user}}! Witamy cię na serwerze {{server}}</value>
+  </data>
+  <data name="NotAdminPermissions" xml:space="preserve">
+    <value>Nie masz wystarczających uprawnień do wywołania tej komendy.</value>
   </data>
   <data name="NotEnoughArguments" xml:space="preserve">
     <value>Podano niewystarczającą liczbę argumentów!</value>
@@ -161,6 +176,12 @@
   </data>
   <data name="RoleIsInUserAlready" xml:space="preserve">
     <value>Użytkownik {{user}} posiada już role {{role}}</value>
+  </data>
+  <data name="RoleIsSafeAlready" xml:space="preserve">
+    <value>Rola "{{role}}" już jest ustawiona jako bezpieczna.</value>
+  </data>
+  <data name="RoleIsUnsafeAlready" xml:space="preserve">
+    <value>Rola "{{role}}" nie jest już ustawiona jako bezpieczna</value>
   </data>
   <data name="RoleNotFound" xml:space="preserve">
     <value>Nie znaleziono roli {{role}}.</value>
@@ -215,9 +236,6 @@
   </data>
   <data name="UserDoesntHaveAvatar" xml:space="preserve">
     <value>Użytkownik {{user}} nie posiada avatara.</value>
-  </data>
-  <data name="UserIsNotAdmin" xml:space="preserve">
-    <value>Nie masz wystarczających uprawnień do wywołania tej komendy.</value>
   </data>
   <data name="UserNotFound" xml:space="preserve">
     <value>Użytkownik {{user}} nie istnieje.</value>

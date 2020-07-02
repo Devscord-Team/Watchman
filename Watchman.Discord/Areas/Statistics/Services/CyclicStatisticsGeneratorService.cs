@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
+using Devscord.DiscordFramework.Services.Models;
 using Watchman.Common.Models;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Messages;
@@ -12,8 +13,10 @@ using Watchman.DomainModel.Messages.Queries.Handlers;
 
 namespace Watchman.Discord.Areas.Statistics.Services
 {
-    public class CyclicStatisticsGeneratorService : CyclicCacheGenerator
+    public class CyclicStatisticsGeneratorService : ICyclicCacheGenerator
     {
+        public RefreshFrequent RefreshFrequent { get; } = RefreshFrequent.Daily;
+
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
         private readonly DiscordServersService _discordServersService;
@@ -50,7 +53,7 @@ namespace Watchman.Discord.Areas.Statistics.Services
             }
         }
 
-        protected override async Task ReloadCache() => await GenerateStatsForLastDay();
+        public async Task ReloadCache() => await this.GenerateStatsForLastDay();
 
         private async Task GenerateStatsForLastDay()
         {

@@ -22,7 +22,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             {
                 return false;
             }
-            if (!CompareArgumentsToProperties(request.Arguments.ToList(), template.Properties.ToList()))
+            if (!this.CompareArgumentsToProperties(request.Arguments.ToList(), template.Properties.ToList()))
             {
                 return false;
             }
@@ -32,14 +32,27 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
         private bool CompareArgumentsToProperties(IReadOnlyCollection<DiscordRequestArgument> arguments, IReadOnlyCollection<BotCommandProperty> properties)
         {
             var notOptionalCount = properties.Count(x => !x.IsOptional);
-            if (arguments.Count > properties.Count || arguments.Count < notOptionalCount)
+            var parametersCount = arguments.Count(x => !string.IsNullOrEmpty(x.Name));
+            if (parametersCount > properties.Count || parametersCount < notOptionalCount)
             {
                 return false;
             }
             foreach (var argument in arguments)
             {
-                var anyIsMatched = properties.Any(property => argument.Name?.ToLowerInvariant() == property.Name.ToLowerInvariant() && IsMatchedPropertyType(argument.Value, property.Type));
-                if (!anyIsMatched)
+                var matchedByName = properties.FirstOrDefault(property => argument.Name?.ToLowerInvariant() == property.Name.ToLowerInvariant());
+                if (matchedByName == null)
+                {
+                    continue;
+                }
+                if (matchedByName.Type == BotCommandPropertyType.Bool)
+                {
+                    continue;
+                }
+                if (matchedByName.Type == BotCommandPropertyType.List && !string.IsNullOrEmpty(argument.Value))
+                {
+                    continue;
+                }
+                if (!this.IsMatchedPropertyType(argument.Value, matchedByName.Type))
                 {
                     return false;
                 }
@@ -53,19 +66,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             {
                 return false;
             }
-            if (type == BotCommandPropertyType.Time && !_exTime.IsMatch(value))
+            if (type == BotCommandPropertyType.Time && !this._exTime.IsMatch(value))
             {
                 return false;
             }
-            if (type == BotCommandPropertyType.UserMention || type == BotCommandPropertyType.ChannelMention && !_exMention.IsMatch(value))
+            if (type == BotCommandPropertyType.UserMention || type == BotCommandPropertyType.ChannelMention && !this._exMention.IsMatch(value))
             {
                 return false;
             }
             if (type == BotCommandPropertyType.SingleWord && value.Contains(' '))
-            {
-                return false;
-            }
-            if (type == BotCommandPropertyType.Bool && !bool.TryParse(value, out _))
             {
                 return false;
             }

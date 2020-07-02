@@ -117,11 +117,6 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             return responsesService.ProcessResponse("TimeIsTooBig");
         }
 
-        public static string ReadingHistoryDone(this ResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("ReadingHistoryDone");
-        }
-
         public static string UserDoesntHaveAvatar(this ResponsesService responsesService, UserContext user)
         {
             return responsesService.ProcessResponse("UserDoesntHaveAvatar",
@@ -173,7 +168,24 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("TimeNotSpecified");
         }
+      
+        public static string ArgumentsDuplicated(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("ArgumentsDuplicated");
+        }
 
+        public static string RoleIsSafeAlready(this ResponsesService responsesService, string roleName)
+        {
+            return responsesService.ProcessResponse("RoleIsSafeAlready",
+                new KeyValuePair<string, string>("role", roleName));
+        }
+
+        public static string RoleIsUnsafeAlready(this ResponsesService responsesService, string roleName)
+        {
+            return responsesService.ProcessResponse("RoleIsUnsafeAlready" ,
+                new KeyValuePair<string, string>("role", roleName));
+        }
+      
         public static string ResponseAlreadyExists(this ResponsesService responsesService, Contexts contexts, string onEvent)
         {
             return responsesService.ProcessResponse("ResponseAlreadyExists", contexts,
@@ -192,9 +204,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("onEvent", onEvent));
         }
 
-        public static string ResponseHasBeenUpdated(this ResponsesService responsesService, Contexts contexts, string onEvent,
-            string oldMessage,
-            string newMessage)
+        public static string ResponseHasBeenUpdated(this ResponsesService responsesService, Contexts contexts, string onEvent, string oldMessage, string newMessage)
         {
             return responsesService.ProcessResponse("ResponseHasBeenUpdated", contexts,
                 new KeyValuePair<string, string>("onEvent", onEvent),
@@ -212,6 +222,23 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("InvalidArguments",
                 new KeyValuePair<string, string>("arguments", arguments));
+        }
+
+        public static string AllRolesAddedToUser(this ResponsesService responsesService, Contexts contexts)
+        {
+            return responsesService.ProcessResponse("AllRolesAddedToUser",
+                new KeyValuePair<string, string>("user", contexts.User.Name));
+        }
+        
+        public static string AllRolesRemovedFromUser(this ResponsesService responsesService, Contexts contexts)
+        {
+            return responsesService.ProcessResponse("AllRolesRemovedFromUser",
+                new KeyValuePair<string, string>("user", contexts.User.Name));
+        }
+
+        public static string AllRolesSettingsChanged(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("AllRolesSettingsChanged");
         }
     }
 }

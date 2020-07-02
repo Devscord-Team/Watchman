@@ -1,14 +1,9 @@
-﻿using System;
-
-namespace Devscord.DiscordFramework.Commons.Exceptions
+﻿namespace Devscord.DiscordFramework.Commons.Exceptions
 {
-    public class UserNotFoundException : Exception
+    public class UserNotFoundException : BotException
     {
-        public string Mention { get; }
-
-        public UserNotFoundException(string mention)
+        public UserNotFoundException(string mention) : base(mention)
         {
-            this.Mention = mention;
         }
     }
 }

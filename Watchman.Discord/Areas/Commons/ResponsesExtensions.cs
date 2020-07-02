@@ -9,14 +9,15 @@ namespace Watchman.Discord.Areas.Commons
     {
         public static ResponsesService SetGetResponsesFromDatabase(this ResponsesService service, IQueryBus queryBus)
         {
-            service.GetResponsesFunc = contexts =>
+            service.GetResponsesFunc = serverId =>
             {
-                var responsesInBase = queryBus.Execute(new GetResponsesQuery()).Responses;
-                var serverResponses = responsesInBase.Where(x => x.ServerId == contexts.Server.Id);
+                var responsesInBase = queryBus.Execute(new GetResponsesQuery()).Responses.ToList();
+                var serverResponses = responsesInBase.Where(x => x.ServerId == serverId).ToList();
+                var defaultResponses = responsesInBase.Where(x => x.ServerId == 0).ToList();
 
                 var overridedOnEvents = serverResponses.Select(x => x.OnEvent).ToList();
 
-                var responsesNotOverridedByServer = responsesInBase.Where(x => !overridedOnEvents.Contains(x.OnEvent)).ToList();
+                var responsesNotOverridedByServer = defaultResponses.Where(x => !overridedOnEvents.Contains(x.OnEvent)).ToList();
                 responsesNotOverridedByServer.AddRange(serverResponses);
 
                 var mapped = responsesNotOverridedByServer.Select(x => new Response
