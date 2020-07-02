@@ -18,11 +18,11 @@ namespace Watchman.Web
         public static IHostBuilder CreateHostBuilder(string[] args, IConfiguration configuration)
         {
             return Host.CreateDefaultBuilder(args)
-.UseServiceProviderFactory(new AutofacServiceProviderFactory(configuration))
-.ConfigureWebHostDefaults(webBuilder =>
-{
-    webBuilder.UseStartup<Startup>();
-});
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory(configuration))
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                });
         }
 
         public static IConfiguration GetConfiguration()
