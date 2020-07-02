@@ -65,7 +65,7 @@ namespace Watchman.Discord.Areas.Commons
                 _ => defaultTime,
             };
 
-            if (parsedTimeSpan.TotalSeconds >= int.MaxValue)
+            if (parsedTimeSpan.TotalMilliseconds >= int.MaxValue)
             {
                 throw new TimeIsTooBigException();
             }
