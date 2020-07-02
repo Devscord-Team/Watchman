@@ -21,11 +21,7 @@ namespace Devscord.DiscordFramework.Services
 
         public Task<bool> TrySendMessage(ulong userId, Func<ResponsesService, string> response, Contexts contexts)
         {
-<<<<<<< HEAD
-            this._responsesService.RefreshResponses(contexts);
-=======
-            _responsesService.RefreshResponses(contexts.Server.Id);
->>>>>>> master
+            this._responsesService.RefreshResponses(contexts.Server.Id);
             var message = response.Invoke(this._responsesService);
             return this.TrySendMessage(userId, message);
         }

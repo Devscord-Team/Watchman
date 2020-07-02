@@ -18,17 +18,11 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             this._parser = new ResponsesParser();
         }
 
-<<<<<<< HEAD
-        public void RefreshResponses(Contexts contexts)
-        {
-            this.Responses = this.GetResponsesFunc(contexts);
-        }
-=======
         public void RefreshResponses(ulong serverId)
         {
             this.Responses = this.GetResponsesFunc(serverId);
         }
->>>>>>> master
+
         public Response GetResponse(string name)
         {
             return this.Responses.SingleOrDefault(x => x.OnEvent == name);
