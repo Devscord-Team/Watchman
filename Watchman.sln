@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Watchman.IoC", "Watchman.Io
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Watchman.Web", "Watchman.Web\Watchman.Web.csproj", "{2AFC38BE-1023-4749-A265-38C53A06EE60}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Watchman.Discord.UnitTests", "Watchman.Discord.UnitTests\Watchman.Discord.UnitTests.csproj", "{63D475DB-0C76-4ABE-89D6-A4D70938BF1D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,10 @@ Global
 		{2AFC38BE-1023-4749-A265-38C53A06EE60}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2AFC38BE-1023-4749-A265-38C53A06EE60}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2AFC38BE-1023-4749-A265-38C53A06EE60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63D475DB-0C76-4ABE-89D6-A4D70938BF1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63D475DB-0C76-4ABE-89D6-A4D70938BF1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63D475DB-0C76-4ABE-89D6-A4D70938BF1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63D475DB-0C76-4ABE-89D6-A4D70938BF1D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
