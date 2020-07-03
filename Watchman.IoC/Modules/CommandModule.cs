@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Autofac;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Autofac;
 using Watchman.Cqrs;
 
 namespace Watchman.IoC.Modules

@@ -80,6 +80,9 @@ namespace Watchman.DomainModel.Messages
             this.Update();
         }
 
-        public DateTime GetSplittable() => this.SentAt;
+        public DateTime GetSplittable()
+        {
+            return this.SentAt;
+        }
     }
 }

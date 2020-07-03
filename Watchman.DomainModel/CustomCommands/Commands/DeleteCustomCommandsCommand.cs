@@ -9,8 +9,8 @@ namespace Watchman.DomainModel.CustomCommands.Commands
 
         public DeleteCustomCommandsCommand(string commandFullName, ulong serverId)
         {
-            CommandFullName = commandFullName;
-            ServerId = serverId;
+            this.CommandFullName = commandFullName;
+            this.ServerId = serverId;
         }
     }
 }

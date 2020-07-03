@@ -13,10 +13,10 @@ namespace Watchman.DomainModel.Users
 
         public MuteEvent(ulong userId, TimeRange timeRange, string reason, ulong serverId)
         {
-            UserId = userId;
-            TimeRange = timeRange;
-            Reason = reason;
-            ServerId = serverId;
+            this.UserId = userId;
+            this.TimeRange = timeRange;
+            this.Reason = reason;
+            this.ServerId = serverId;
         }
     }
 }

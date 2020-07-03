@@ -14,11 +14,11 @@ namespace Watchman.DomainModel.Help
         public IEnumerable<ArgumentInfo> ArgumentInfos { get; set; }
         public IEnumerable<Description> Descriptions { get; set; }
         public ulong ServerId { get; set; }
-        public bool IsDefault => ServerId == EMPTY_SERVER_ID;
+        public bool IsDefault => this.ServerId == EMPTY_SERVER_ID;
 
         public HelpInformation()
         {
-            HelpId = Guid.NewGuid();
+            this.HelpId = Guid.NewGuid();
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Devscord.DiscordFramework.Middlewares.Contexts;
 using Discord.Rest;
-using Discord.WebSocket;
 
 namespace Devscord.DiscordFramework.Middlewares.Factories
 {

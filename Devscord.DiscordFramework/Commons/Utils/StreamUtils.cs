@@ -7,11 +7,11 @@ namespace Devscord.DiscordFramework.Commons.Utils
     {
         public static MemoryStream ConvertStreamToMemoryStream(Stream stream)
         {
-            MemoryStream memoryStream = new MemoryStream();
+            var memoryStream = new MemoryStream();
 
             if (stream != null)
             {
-                byte[] buffer = stream.ReadFully();
+                var buffer = stream.ReadFully();
 
                 if (buffer != null)
                 {

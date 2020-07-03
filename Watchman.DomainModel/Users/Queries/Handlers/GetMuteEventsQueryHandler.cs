@@ -10,13 +10,13 @@ namespace Watchman.DomainModel.Users.Queries.Handlers
 
         public GetMuteEventsQueryHandler(ISessionFactory sessionFactory)
         {
-            _sessionFactory = sessionFactory;
+            this._sessionFactory = sessionFactory;
         }
 
         public GetMuteEventsQueryResult Handle(GetMuteEventsQuery query)
         {
-            using var session = _sessionFactory.Create();
-            
+            using var session = this._sessionFactory.Create();
+
             var muteEvents = session.Get<MuteEvent>()
                 .Where(x => x.ServerId == query.ServerId);
 

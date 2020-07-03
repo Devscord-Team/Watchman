@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
 using Watchman.DomainModel.Help;
 
 namespace Watchman.Discord.Areas.Help.Services
@@ -10,13 +10,13 @@ namespace Watchman.Discord.Areas.Help.Services
         public string GenerateJsonHelp(IEnumerable<HelpInformation> helpInformations)
         {
             var serialized = JsonConvert.SerializeObject(helpInformations, Formatting.Indented);
-            serialized = RemoveFirstAndLastBracket(serialized);
+            serialized = this.RemoveFirstAndLastBracket(serialized);
             return serialized;
         }
 
         public IEnumerable<KeyValuePair<string, string>> MapToEmbedInput(IEnumerable<HelpInformation> helpInformations)
         {
-            foreach(var helpInfo in helpInformations)
+            foreach (var helpInfo in helpInformations)
             {
                 var name = "-" + helpInfo.Names.Aggregate((a, b) => $"{a} / {b}");
 
@@ -31,12 +31,12 @@ namespace Watchman.Discord.Areas.Help.Services
                     .ToList();
 
                 var content = string.Empty;
-                if(descriptions.Any())
+                if (descriptions.Any())
                 {
                     var commandDescription = descriptions.Aggregate((a, b) => a + "\n" + b);
                     content = commandDescription + "\n\n";
                 }
-                if(arguments.Any())
+                if (arguments.Any())
                 {
                     content += arguments.Aggregate((a, b) => a + "\n" + b);
                 }

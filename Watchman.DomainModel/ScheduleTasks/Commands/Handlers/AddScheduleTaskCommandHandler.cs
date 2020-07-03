@@ -16,7 +16,7 @@ namespace Watchman.DomainModel.ScheduleTasks.Commands.Handlers
         public async Task HandleAsync(AddScheduleTaskCommand command)
         {
             var scheduleTask = new ScheduleTask(command.CommandName, command.Arguments, command.ExecutionDate);
-            using var session = _sessionFactory.Create();
+            using var session = this._sessionFactory.Create();
             await session.AddAsync(scheduleTask);
         }
     }

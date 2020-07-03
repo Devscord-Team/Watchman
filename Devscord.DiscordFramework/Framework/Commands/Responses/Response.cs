@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Devscord.DiscordFramework.Framework.Commands.Responses
@@ -15,7 +13,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
 
         public IEnumerable<string> GetFields()
         {
-            var fields = exField.Matches(Message).Cast<Match>().Select(x => x.Groups["field"].Value);
+            var fields = this.exField.Matches(this.Message).Cast<Match>().Select(x => x.Groups["field"].Value);
             return fields;
         }
     }

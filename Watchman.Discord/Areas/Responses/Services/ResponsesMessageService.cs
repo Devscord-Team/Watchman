@@ -1,13 +1,8 @@
-﻿using Devscord.DiscordFramework.Commons.Extensions;
-using Devscord.DiscordFramework.Framework.Commands.Responses;
+﻿using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Tasks;
-using Devscord.DiscordFramework.Middlewares.Contexts;
 
 namespace Watchman.Discord.Areas.Responses.Services
 {
@@ -25,27 +20,32 @@ namespace Watchman.Discord.Areas.Responses.Services
 
         public async Task PrintResponses(string commandArgument, Contexts contexts)
         {
-            Func<Task> sendMessages = commandArgument switch
+            if (commandArgument == "default")
             {
-                "default" => async () => await _embedMessageSplittingService.SendEmbedSplitMessage("Domyślne responses:", DESCRIPTION, GetDefaultResponses(), contexts),
-                "custom" => async () => await _embedMessageSplittingService.SendEmbedSplitMessage("Nadpisane responses:", DESCRIPTION, GetCustomResponses(contexts.Server.Id), contexts),
-                _ => async () => await _embedMessageSplittingService.SendEmbedSplitMessage("Wszystkie responses:", DESCRIPTION, GetAllResponses(), contexts),
-            };
-            await sendMessages();
+                await this._embedMessageSplittingService.SendEmbedSplitMessage("Domyślne responses:", DESCRIPTION, this.GetDefaultResponses(), contexts);
+            }
+            else if (commandArgument == "custom")
+            {
+                await this._embedMessageSplittingService.SendEmbedSplitMessage("Nadpisane responses:", DESCRIPTION, this.GetCustomResponses(contexts.Server.Id), contexts);
+            }
+            else
+            {
+                await this._embedMessageSplittingService.SendEmbedSplitMessage("Wszystkie responses:", DESCRIPTION, this.GetAllResponses(), contexts);
+            }
         }
 
         private IEnumerable<KeyValuePair<string, string>> GetDefaultResponses()
         {
-            return _responsesDatabase.GetResponsesFromBase()
+            return this._responsesDatabase.GetResponsesFromBase()
                 .Where(x => x.IsDefault)
-                .Select(x => new KeyValuePair<string, string>(x.OnEvent, GetRawMessage(x.Message)));
+                .Select(x => new KeyValuePair<string, string>(x.OnEvent, this.GetRawMessage(x.Message)));
         }
 
         private IEnumerable<KeyValuePair<string, string>> GetCustomResponses(ulong serverId)
         {
-            var responses = _responsesDatabase.GetResponsesFromBase()
+            var responses = this._responsesDatabase.GetResponsesFromBase()
                 .Where(x => x.ServerId == serverId)
-                .Select(x => new KeyValuePair<string, string>(x.OnEvent, GetRawMessage(x.Message)));
+                .Select(x => new KeyValuePair<string, string>(x.OnEvent, this.GetRawMessage(x.Message)));
 
             if (!responses.Any())
             {
@@ -56,8 +56,8 @@ namespace Watchman.Discord.Areas.Responses.Services
 
         private IEnumerable<KeyValuePair<string, string>> GetAllResponses()
         {
-            return _responsesDatabase.GetResponsesFromBase()
-                .Select(x => new KeyValuePair<string, string>(x.OnEvent, GetRawMessage(x.Message)));
+            return this._responsesDatabase.GetResponsesFromBase()
+                .Select(x => new KeyValuePair<string, string>(x.OnEvent, this.GetRawMessage(x.Message)));
         }
 
         private string GetRawMessage(string message)

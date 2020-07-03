@@ -1,7 +1,6 @@
-﻿using System.Linq;
-using Devscord.DiscordFramework.Middlewares.Contexts;
+﻿using Devscord.DiscordFramework.Middlewares.Contexts;
 using Discord.Rest;
-using Discord.WebSocket;
+using System.Linq;
 
 namespace Devscord.DiscordFramework.Middlewares.Factories
 {

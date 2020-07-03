@@ -1,7 +1,7 @@
-﻿using System.Threading.Tasks;
-using Devscord.DiscordFramework.Framework.Commands.Responses;
+﻿using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
+using System.Threading.Tasks;
 
 namespace Watchman.Discord.Areas.Users.Services
 {

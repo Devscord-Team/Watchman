@@ -12,7 +12,7 @@ namespace Watchman.DomainModel.DiscordServer.Commands.Handlers
 
         public override async Task HandleAsync(SetRoleAsSafeCommand command)
         {
-            using var session = _sessionFactory.Create();
+            using var session = this._sessionFactory.Create();
             var roles = session.Get<Role>()
                 .Where(x => x.ServerId == command.ServerId);
             if (roles.Any(x => x.Name == command.RoleName))

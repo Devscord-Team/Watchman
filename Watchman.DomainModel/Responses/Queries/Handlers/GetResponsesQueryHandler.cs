@@ -15,7 +15,7 @@ namespace Watchman.DomainModel.Responses.Queries.Handlers
 
         public GetResponsesQueryResult Handle(GetResponsesQuery query)
         {
-            using var session = _sessionFactory.Create();
+            using var session = this._sessionFactory.Create();
             var responses = session.Get<Response>().ToList();
             return new GetResponsesQueryResult(responses);
         }

@@ -10,7 +10,7 @@ namespace Devscord.DiscordFramework
     internal class MiddlewaresService
     {
         private readonly List<IMiddleware> _middlewares = new List<IMiddleware>();
-        public IEnumerable<IMiddleware> Middlewares => _middlewares;
+        public IEnumerable<IMiddleware> Middlewares => this._middlewares;
 
         public void AddMiddleware<T>()
             where T : IMiddleware

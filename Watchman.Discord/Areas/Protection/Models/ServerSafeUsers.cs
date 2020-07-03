@@ -48,12 +48,12 @@ namespace Watchman.Discord.Areas.Protection.Models
         private static int GetHowManyDaysUserIsOnThisServer(ulong userId, ulong serverId)
         {
             var joinedAt = UsersService.GetUserJoinedDateTime(userId, serverId) ?? DateTime.Now;
-            return (int)(DateTime.Now.Date - joinedAt.Date).TotalDays;
+            return (int) (DateTime.Now.Date - joinedAt.Date).TotalDays;
         }
 
         private static DateTime StartOfWeek(DateTime date)
         {
-            return date.AddDays(-1 * (int)date.DayOfWeek).Date;
+            return date.AddDays(-1 * (int) date.DayOfWeek).Date;
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
     public class BotCommandsPropertyConversionService
     {
         private readonly Regex _exTime = new Regex(@"(?<Value>\d+)(?<Unit>(ms|d|h|m|s))", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-        private readonly Regex _exMention = new Regex(@"<@&?\d+>", RegexOptions.Compiled);
+        //private readonly Regex _exMention = new Regex(@"<@&?\d+>", RegexOptions.Compiled);
 
         public object ConvertType(string value, BotCommandPropertyType type)
         {

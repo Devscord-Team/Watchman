@@ -1,7 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
-using Autofac;
+﻿using Autofac;
 using Serilog;
+using System;
+using System.Threading.Tasks;
 
 namespace Watchman.Cqrs
 {
@@ -11,7 +11,7 @@ namespace Watchman.Cqrs
 
         public CommandBus(IComponentContext context)
         {
-            _context = context;
+            this._context = context;
         }
 
         public async Task ExecuteAsync<T>(T command) where T : ICommand
@@ -22,7 +22,7 @@ namespace Watchman.Cqrs
                 throw new ArgumentNullException(nameof(command),
                     $"Command: '{typeof(T).Name}' can not be null.");
             }
-            var handler = _context.Resolve<ICommandHandler<T>>();
+            var handler = this._context.Resolve<ICommandHandler<T>>();
 
             await handler.HandleAsync(command);
         }

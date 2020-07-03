@@ -1,8 +1,6 @@
 ﻿using Devscord.DiscordFramework.Framework.Commands.Builders;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Devscord.DiscordFramework.Framework.Commands.Services
@@ -14,7 +12,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
         private readonly BotCommandsMatchingService botCommandMatchingService;
         private readonly BotCommandsTemplateRenderingService botCommandsTemplateRenderingService;
 
-        public BotCommandsService(BotCommandsTemplateBuilder botCommandsTemplateBuilder, BotCommandsParsingService botCommandParsingService, 
+        public BotCommandsService(BotCommandsTemplateBuilder botCommandsTemplateBuilder, BotCommandsParsingService botCommandParsingService,
             BotCommandsMatchingService botCommandMatchingService, BotCommandsTemplateRenderingService botCommandsTemplateRenderingService)
         {
             this.botCommandsTemplateBuilder = botCommandsTemplateBuilder;
@@ -35,12 +33,12 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
 
         public BotCommandTemplate GetCommandTemplate(Type commandType)
         {
-            return botCommandsTemplateBuilder.GetCommandTemplate(commandType);
+            return this.botCommandsTemplateBuilder.GetCommandTemplate(commandType);
         }
 
         public T ParseRequestToCommand<T>(DiscordRequest request, BotCommandTemplate template) where T : IBotCommand
         {
-            return (T)ParseRequestToCommand(typeof(T), request, template);
+            return (T) this.ParseRequestToCommand(typeof(T), request, template);
         }
 
         public IBotCommand ParseRequestToCommand(Type commandType, DiscordRequest request, BotCommandTemplate template)

@@ -21,7 +21,7 @@ namespace Watchman.DomainModel.Settings.Services
 
         public ConfigurationItem MapIntoBaseFormat(IMappedConfiguration mappedConfiguration)
         {
-            return new ConfigurationItem(((dynamic)mappedConfiguration).Value, mappedConfiguration.ServerId, mappedConfiguration.Name);
+            return new ConfigurationItem(((dynamic) mappedConfiguration).Value, mappedConfiguration.ServerId, mappedConfiguration.Name);
         }
 
         private Dictionary<ulong, IMappedConfiguration> MakeServersDictionary(IEnumerable<ConfigurationItem> configurationItems)
@@ -33,7 +33,7 @@ namespace Watchman.DomainModel.Settings.Services
         {
             var type = this._configurationItemsSearcher.ConfigurationTypes.First(x => x.Name == configurationItem.Name);
             dynamic mappedConfiguration = Activator.CreateInstance(type, configurationItem.ServerId);
-            mappedConfiguration!.Value = (dynamic)configurationItem.Value;
+            mappedConfiguration!.Value = (dynamic) configurationItem.Value;
             return mappedConfiguration;
         }
     }

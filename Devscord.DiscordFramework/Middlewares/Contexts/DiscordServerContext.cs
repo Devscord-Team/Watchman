@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
+﻿using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
+using System.Collections.Generic;
 
 namespace Devscord.DiscordFramework.Middlewares.Contexts
 {
@@ -13,11 +13,11 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
 
         public DiscordServerContext(ulong id, string name, UserContext owner, ChannelContext landingChannel, IEnumerable<ChannelContext> textChannels)
         {
-            Id = id;
-            Name = name;
-            Owner = owner;
-            LandingChannel = landingChannel;
-            TextChannels = textChannels;
+            this.Id = id;
+            this.Name = name;
+            this.Owner = owner;
+            this.LandingChannel = landingChannel;
+            this.TextChannels = textChannels;
         }
     }
 }

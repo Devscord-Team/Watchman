@@ -1,5 +1,5 @@
-﻿using System;
-using Devscord.DiscordFramework.Middlewares.Contexts;
+﻿using Devscord.DiscordFramework.Middlewares.Contexts;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 
@@ -65,6 +65,11 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("help", help));
         }
 
+        public static string UserIsNotAdmin(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("UserIsNotAdmin");
+        }
+
         public static string NotAdminPermissions(this ResponsesService responsesService)
         {
             return responsesService.ProcessResponse("NotAdminPermissions");
@@ -115,6 +120,11 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         public static string TimeIsTooBig(this ResponsesService responsesService)
         {
             return responsesService.ProcessResponse("TimeIsTooBig");
+        }
+
+        public static string ReadingHistoryDone(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("ReadingHistoryDone");
         }
 
         public static string UserDoesntHaveAvatar(this ResponsesService responsesService, UserContext user)
@@ -168,7 +178,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("TimeNotSpecified");
         }
-      
+
         public static string ArgumentsDuplicated(this ResponsesService responsesService)
         {
             return responsesService.ProcessResponse("ArgumentsDuplicated");
@@ -182,10 +192,10 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
 
         public static string RoleIsUnsafeAlready(this ResponsesService responsesService, string roleName)
         {
-            return responsesService.ProcessResponse("RoleIsUnsafeAlready" ,
+            return responsesService.ProcessResponse("RoleIsUnsafeAlready",
                 new KeyValuePair<string, string>("role", roleName));
         }
-      
+
         public static string ResponseAlreadyExists(this ResponsesService responsesService, Contexts contexts, string onEvent)
         {
             return responsesService.ProcessResponse("ResponseAlreadyExists", contexts,
@@ -229,7 +239,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             return responsesService.ProcessResponse("AllRolesAddedToUser",
                 new KeyValuePair<string, string>("user", contexts.User.Name));
         }
-        
+
         public static string AllRolesRemovedFromUser(this ResponsesService responsesService, Contexts contexts)
         {
             return responsesService.ProcessResponse("AllRolesRemovedFromUser",

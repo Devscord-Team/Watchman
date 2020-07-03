@@ -8,12 +8,12 @@ namespace Watchman.Integrations.MongoDB
 
         public SessionFactory(IMongoDatabase database)
         {
-            _database = database;
+            this._database = database;
         }
 
         public ISession Create()
         {
-            return new Session(_database);
+            return new Session(this._database);
         }
     }
 }

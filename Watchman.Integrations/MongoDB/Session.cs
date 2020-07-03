@@ -1,8 +1,8 @@
-﻿using System;
+﻿using MongoDB.Driver;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MongoDB.Driver;
 
 namespace Watchman.Integrations.MongoDB
 {
@@ -12,7 +12,7 @@ namespace Watchman.Integrations.MongoDB
 
         public Session(IMongoDatabase database)
         {
-            _database = database;
+            this._database = database;
         }
 
         public T Get<T>(Guid id) where T : Entity
@@ -69,7 +69,7 @@ namespace Watchman.Integrations.MongoDB
 
         private IMongoCollection<T> GetCollection<T>() where T : Entity
         {
-            return _database.GetCollection<T>($"{typeof(T).Name}s");
+            return this._database.GetCollection<T>($"{typeof(T).Name}s");
         }
     }
 }

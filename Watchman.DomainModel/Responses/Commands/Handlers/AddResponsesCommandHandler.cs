@@ -15,7 +15,7 @@ namespace Watchman.DomainModel.Responses.Commands.Handlers
 
         public async Task HandleAsync(AddResponsesCommand command)
         {
-            using var session = _sessionFactory.Create();
+            using var session = this._sessionFactory.Create();
             await session.AddAsync(command.Responses);
         }
     }

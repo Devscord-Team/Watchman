@@ -1,7 +1,7 @@
-﻿using System.Threading.Tasks;
-using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
+using System.Threading.Tasks;
 using Watchman.Discord.Areas.Initialization.Services;
 
 namespace Watchman.Discord.Areas.Initialization.Controllers
@@ -12,7 +12,7 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
 
         public InitializationController(InitializationService initializationService)
         {
-            _initializationService = initializationService;
+            this._initializationService = initializationService;
         }
 
         [AdminCommand]
@@ -20,7 +20,7 @@ namespace Watchman.Discord.Areas.Initialization.Controllers
         //[IgnoreForHelp] TODO //TODO co to za TODO?
         public async Task Init(DiscordRequest request, Contexts contexts)
         {
-            await _initializationService.InitServer(contexts.Server);
+            await this._initializationService.InitServer(contexts.Server);
         }
     }
 }

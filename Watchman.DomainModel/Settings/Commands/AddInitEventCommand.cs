@@ -10,8 +10,8 @@ namespace Watchman.DomainModel.Settings.Commands
 
         public AddInitEventCommand(ulong serverId, DateTime endedAt)
         {
-            ServerId = serverId;
-            EndedAt = endedAt;
+            this.ServerId = serverId;
+            this.EndedAt = endedAt;
         }
     }
 }

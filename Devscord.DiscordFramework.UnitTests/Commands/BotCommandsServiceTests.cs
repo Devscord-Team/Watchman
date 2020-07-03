@@ -2,10 +2,7 @@
 using Devscord.DiscordFramework.Framework.Commands.Properties;
 using Devscord.DiscordFramework.Framework.Commands.Services;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Devscord.DiscordFramework.UnitTests.Commands

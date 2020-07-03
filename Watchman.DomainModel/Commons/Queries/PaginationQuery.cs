@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Watchman.Common.Models;
 
 namespace Watchman.DomainModel.Commons.Queries

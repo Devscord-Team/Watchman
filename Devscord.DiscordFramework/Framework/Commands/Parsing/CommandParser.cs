@@ -3,7 +3,6 @@ using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Devscord.DiscordFramework.Framework.Commands.Parsing
 {
@@ -13,7 +12,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
 
         public DiscordRequest Parse(string message, DateTime sentAt)
         {
-            var original = (string)message.Clone();
+            var original = (string) message.Clone();
             var prefix = this.GetPrefix(message);
             if (string.IsNullOrWhiteSpace(prefix))
             {
@@ -41,7 +40,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
         private string GetPrefix(string message)
         {
             var withoutWhitespaces = message.Trim();
-            return _possiblePrefixes.FirstOrDefault(x => withoutWhitespaces.StartsWith(x));
+            return this._possiblePrefixes.FirstOrDefault(x => withoutWhitespaces.StartsWith(x));
         }
 
         private string GetName(string message)
@@ -64,17 +63,17 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
 
             while (trimmedMess.Length > 0)
             {
-                var prefix = GetPrefix(trimmedMess);
+                var prefix = this.GetPrefix(trimmedMess);
                 var isStartingWithValue = prefix == null;
 
                 if (isStartingWithValue)
                 {
-                    var onlyValueArg = GetJustValue(ref trimmedMess);
+                    var onlyValueArg = this.GetJustValue(ref trimmedMess);
                     arguments.Add(onlyValueArg);
                     continue;
                 }
 
-                var arg = GetOneArg(ref trimmedMess, prefix);
+                var arg = this.GetOneArg(ref trimmedMess, prefix);
                 arguments.Add(arg);
             }
             return arguments;
@@ -86,7 +85,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
             {
                 Prefix = null,
                 Name = null,
-                Value = GetValue(trimmedMessage, out var nextIndexAfterValue)
+                Value = this.GetValue(trimmedMessage, out var nextIndexAfterValue)
             };
             trimmedMessage = trimmedMessage.Remove(0, nextIndexAfterValue).TrimStart();
             return arg;
@@ -95,7 +94,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
         private DiscordRequestArgument GetOneArg(ref string trimmedMessage, string prefix)
         {
             var arg = new DiscordRequestArgument { Prefix = prefix };
-                    
+
             trimmedMessage = trimmedMessage.CutStart(prefix);
             var isTheOnlyArg = !trimmedMessage.Contains(' ');
 
@@ -110,7 +109,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
             arg.Name = trimmedMessage[..lastArgNameIndex];
 
             trimmedMessage = trimmedMessage.CutStart(arg.Name).TrimStart();
-            arg.Value = GetValue(trimmedMessage, out var nextIndexAfterValue);
+            arg.Value = this.GetValue(trimmedMessage, out var nextIndexAfterValue);
 
             trimmedMessage = trimmedMessage[nextIndexAfterValue..].TrimStart();
             return arg;
@@ -123,9 +122,9 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
             //"value val2" ...
             var isLongValue = valuesSegment[0] == '\"';
 
-            return isLongValue 
-                ? GetLongValue(valuesSegment, out nextIndexAfterValue) 
-                : GetSingleValue(valuesSegment, out nextIndexAfterValue);
+            return isLongValue
+                ? this.GetLongValue(valuesSegment, out nextIndexAfterValue)
+                : this.GetSingleValue(valuesSegment, out nextIndexAfterValue);
         }
 
         private string GetLongValue(string valuesSegment, out int nextIndexAfterValue)

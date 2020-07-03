@@ -18,7 +18,7 @@ namespace Watchman.DomainModel.CustomCommands.Commands.Handlers
         {
             using var session = this.sessionFactory.Create();
             var customCommand = session.Get<CustomCommand>().FirstOrDefault(x => x.ServerId == command.ServerId && x.CommandFullName == command.CommandFullName);
-            if(customCommand != null)
+            if (customCommand != null)
             {
                 await session.DeleteAsync(customCommand);
             }

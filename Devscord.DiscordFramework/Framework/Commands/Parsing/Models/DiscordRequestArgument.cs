@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Devscord.DiscordFramework.Framework.Commands.Parsing.Models
+﻿namespace Devscord.DiscordFramework.Framework.Commands.Parsing.Models
 {
     public class DiscordRequestArgument
     {

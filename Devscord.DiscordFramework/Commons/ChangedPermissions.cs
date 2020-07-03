@@ -9,8 +9,8 @@ namespace Devscord.DiscordFramework.Commons
 
         public ChangedPermissions(ICollection<Permission> allowPermissions, ICollection<Permission> denyPermissions)
         {
-            AllowPermissions = allowPermissions;
-            DenyPermissions = denyPermissions;
+            this.AllowPermissions = allowPermissions;
+            this.DenyPermissions = denyPermissions;
         }
     }
 }

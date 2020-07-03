@@ -9,8 +9,8 @@ namespace Watchman.DomainModel.DiscordServer.Commands
 
         protected UpdateSafetyOfRoleCommand(string roleName, ulong serverId)
         {
-            RoleName = roleName;
-            ServerId = serverId;
+            this.RoleName = roleName;
+            this.ServerId = serverId;
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using Watchman.Cqrs;
+﻿using Watchman.Cqrs;
 
 namespace Watchman.DomainModel.Responses.Commands
 {
@@ -10,8 +9,8 @@ namespace Watchman.DomainModel.Responses.Commands
 
         public RemoveResponseCommand(string onEvent, ulong serverId)
         {
-            ServerId = serverId;
-            OnEvent = onEvent;
+            this.ServerId = serverId;
+            this.OnEvent = onEvent;
         }
     }
 }

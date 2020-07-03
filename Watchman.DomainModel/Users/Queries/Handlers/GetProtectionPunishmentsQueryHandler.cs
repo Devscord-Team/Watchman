@@ -9,12 +9,12 @@ namespace Watchman.DomainModel.Users.Queries.Handlers
 
         public GetProtectionPunishmentsQueryHandler(ISessionFactory sessionFactory)
         {
-            _sessionFactory = sessionFactory;
+            this._sessionFactory = sessionFactory;
         }
 
         public GetProtectionPunishmentsQueryResult Handle(GetProtectionPunishmentsQuery query)
         {
-            using var session = _sessionFactory.Create();
+            using var session = this._sessionFactory.Create();
             return new GetProtectionPunishmentsQueryResult(session.Get<ProtectionPunishment>());
         }
     }

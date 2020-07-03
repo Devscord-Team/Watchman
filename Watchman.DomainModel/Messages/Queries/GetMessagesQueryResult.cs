@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Watchman.Cqrs;
 
 namespace Watchman.DomainModel.Messages.Queries
@@ -11,7 +9,7 @@ namespace Watchman.DomainModel.Messages.Queries
 
         public GetMessagesQueryResult(IEnumerable<Message> messages)
         {
-            Messages = messages;
+            this.Messages = messages;
         }
     }
 }

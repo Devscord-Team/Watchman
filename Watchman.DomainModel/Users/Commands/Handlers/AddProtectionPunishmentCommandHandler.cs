@@ -15,7 +15,7 @@ namespace Watchman.DomainModel.Users.Commands.Handlers
 
         public async Task HandleAsync(AddProtectionPunishmentCommand command)
         {
-            using var session = _sessionFactory.Create();
+            using var session = this._sessionFactory.Create();
             await session.AddAsync(command.ProtectionPunishment);
         }
     }

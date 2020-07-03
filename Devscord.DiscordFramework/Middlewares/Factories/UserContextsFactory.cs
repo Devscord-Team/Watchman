@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Devscord.DiscordFramework.Middlewares.Contexts;
+﻿using Devscord.DiscordFramework.Middlewares.Contexts;
 using Discord;
 using Discord.WebSocket;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Devscord.DiscordFramework.Middlewares.Factories
 {
@@ -18,7 +18,7 @@ namespace Devscord.DiscordFramework.Middlewares.Factories
         public UserContext Create(IUser user)
         {
             var socketGuildUser = user as SocketGuildUser;
-            var roles = socketGuildUser?.Roles.Select(x => _userRoleFactory.Create(x)) ?? new List<UserRole>();
+            var roles = socketGuildUser?.Roles.Select(x => this._userRoleFactory.Create(x)) ?? new List<UserRole>();
             var avatarUrl = user.GetAvatarUrl(ImageFormat.Png, 2048);
 
             return new UserContext(user.Id, user.ToString(), roles, avatarUrl, user.Mention);

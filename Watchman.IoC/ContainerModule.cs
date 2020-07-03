@@ -15,7 +15,7 @@ namespace Watchman.IoC
         public ContainerBuilder GetBuilder()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterModule(new DatabaseModule(_connectionString));
+            builder.RegisterModule(new DatabaseModule(this._connectionString));
             builder.RegisterModule<CommandModule>();
             builder.RegisterModule<QueryModule>();
             builder.RegisterModule<ServiceModule>();

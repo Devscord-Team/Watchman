@@ -15,14 +15,14 @@ namespace Watchman.DomainModel.Messages
         public MessageBuilder WithAuthor(ulong id, string name)
         {
             var author = new User(id, name);
-            _message.SetAuthor(author);
+            this._message.SetAuthor(author);
             return this;
         }
 
         public MessageBuilder WithChannel(ulong id, string name)
         {
             var channel = new Channel(id, name);
-            _message.SetChannel(channel);
+            this._message.SetChannel(channel);
             return this;
         }
 
@@ -30,13 +30,13 @@ namespace Watchman.DomainModel.Messages
         {
             var owner = new User(ownerId, ownerName);
             var server = new Server(id, name, owner);
-            _message.SetServer(server);
+            this._message.SetServer(server);
             return this;
         }
 
         public MessageBuilder WithSentAtDate(DateTime sentAt)
         {
-            _message.SetSentAt(sentAt);
+            this._message.SetSentAt(sentAt);
             return this;
         }
 

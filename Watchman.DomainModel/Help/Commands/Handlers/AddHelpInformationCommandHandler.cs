@@ -10,12 +10,12 @@ namespace Watchman.DomainModel.Help.Commands.Handlers
 
         public AddHelpInformationCommandHandler(ISessionFactory sessionFactory)
         {
-            _sessionFactory = sessionFactory;
+            this._sessionFactory = sessionFactory;
         }
 
         public async Task HandleAsync(AddHelpInformationCommand command)
         {
-            using var session = _sessionFactory.Create();
+            using var session = this._sessionFactory.Create();
             await session.AddAsync(command.HelpInformation);
         }
     }

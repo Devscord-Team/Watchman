@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Watchman.Cqrs;
+﻿using Watchman.Cqrs;
 
 namespace Watchman.DomainModel.Responses.Queries
 {
@@ -11,7 +8,7 @@ namespace Watchman.DomainModel.Responses.Queries
 
         public GetResponseQueryResult(Response response)
         {
-            Response = response;
+            this.Response = response;
         }
     }
 }

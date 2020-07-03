@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework
 {
@@ -16,36 +15,35 @@ namespace Devscord.DiscordFramework
         {
             this._context = context;
         }
-
         public WorkflowBuilderHandlers<T> AddHandler(T handler, bool onlyOnDebug = false)
         {
-            if(!ShouldIgnore(onlyOnDebug))
+            if (!this.ShouldIgnore(onlyOnDebug))
             {
                 this._handlers.Add(handler);
             }
-            
+
             return this;
         }
 
         public WorkflowBuilderHandlers<T> AddFromIoC<A>(Func<A, T> func, bool onlyOnDebug = false)
         {
-            if (!ShouldIgnore(onlyOnDebug))
+            if (!this.ShouldIgnore(onlyOnDebug))
             {
                 var resolved = this._context.Resolve<A>();
                 var handler = func.Invoke(resolved);
-                AddHandler(handler);
+                this.AddHandler(handler);
             }
             return this;
         }
 
         public WorkflowBuilderHandlers<T> AddFromIoC<A, B>(Func<A, B, T> func, bool onlyOnDebug = false)
         {
-            if (!ShouldIgnore(onlyOnDebug))
+            if (!this.ShouldIgnore(onlyOnDebug))
             {
                 var resolvedA = this._context.Resolve<A>();
                 var resolvedB = this._context.Resolve<B>();
                 var handler = func.Invoke(resolvedA, resolvedB);
-                AddHandler(handler);
+                this.AddHandler(handler);
             }
             return this;
         }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace Devscord.DiscordFramework.Framework.Commands.Responses
@@ -16,7 +14,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 var group = match.Groups[param.Key];
                 message = message.Replace(group.Value, param.Value);
             }
-            return message.Replace(@"\n", "\n").Replace(@"\r","\r");
+            return message.Replace(@"\n", "\n").Replace(@"\r", "\r");
         }
     }
 }

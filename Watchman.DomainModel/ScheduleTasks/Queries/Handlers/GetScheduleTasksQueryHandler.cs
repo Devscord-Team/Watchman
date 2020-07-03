@@ -15,9 +15,9 @@ namespace Watchman.DomainModel.ScheduleTasks.Queries.Handlers
 
         public GetScheduleTasksQueryResult Handle(GetScheduleTasksQuery query)
         {
-            using var session = _sessionFactory.Create();
+            using var session = this._sessionFactory.Create();
             var results = session.Get<ScheduleTask>();
-            if(query.LoadOnlyActive)
+            if (query.LoadOnlyActive)
             {
                 results = results.Where(x => !x.IsExecuted);
             }

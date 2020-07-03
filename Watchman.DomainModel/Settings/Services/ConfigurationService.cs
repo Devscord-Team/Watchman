@@ -27,7 +27,7 @@ namespace Watchman.DomainModel.Settings.Services
             this.ReloadIfNeeded();
             var configurations = this._cachedConfigurationItem[typeof(T)];
             var serverConfiguration = configurations.GetValueOrDefault(serverId) ?? configurations[0];
-            return (T)serverConfiguration;
+            return (T) serverConfiguration;
         }
 
         public IEnumerable<IMappedConfiguration> GetConfigurationItems(ulong serverId)
@@ -58,7 +58,7 @@ namespace Watchman.DomainModel.Settings.Services
             var configurationsTypes = this._configurationTypesSearcher.ConfigurationTypes;
             var configurations = configurationsTypes.Select(x =>
             {
-                var conf = (IMappedConfiguration)Activator.CreateInstance(x, DEFAULT_SERVER_ID);
+                var conf = (IMappedConfiguration) Activator.CreateInstance(x, DEFAULT_SERVER_ID);
                 return this._configurationMapperService.MapIntoBaseFormat(conf);
             });
             using var session = this._sessionFactory.Create();

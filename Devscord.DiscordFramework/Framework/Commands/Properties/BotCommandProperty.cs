@@ -8,9 +8,9 @@
 
         public BotCommandProperty(string name, BotCommandPropertyType type, bool isOptional)
         {
-            Name = name;
-            Type = type;
-            IsOptional = isOptional;
+            this.Name = name;
+            this.Type = type;
+            this.IsOptional = isOptional;
         }
     }
 }

@@ -10,9 +10,9 @@ namespace Watchman.DomainModel.CustomCommands.Commands
 
         public AddCustomCommandsCommand(string commandFullName, string customTemplateRegex, ulong serverId)
         {
-            CommandFullName = commandFullName;
-            CustomTemplateRegex = customTemplateRegex;
-            ServerId = serverId;
+            this.CommandFullName = commandFullName;
+            this.CustomTemplateRegex = customTemplateRegex;
+            this.ServerId = serverId;
         }
     }
 }

@@ -1,13 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using Autofac;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Autofac;
 using Watchman.Cqrs;
 
 namespace Watchman.Discord.Ioc.Modules
 {
     public class CommandModule : Autofac.Module
-    { 
+    {
         protected override void Load(ContainerBuilder builder)
         {
             var list = new List<string>();
@@ -29,7 +29,7 @@ namespace Watchman.Discord.Ioc.Modules
                 foreach (var reference in asm.GetReferencedAssemblies())
                 {
                     if (!list.Contains(reference.FullName))
-                    { 
+                    {
                         stack.Push(Assembly.Load(reference));
                         list.Add(reference.FullName);
                     }

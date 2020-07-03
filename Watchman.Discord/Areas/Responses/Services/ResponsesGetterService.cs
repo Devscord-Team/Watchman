@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Watchman.Cqrs;
-using Watchman.DomainModel.Responses.Queries;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Watchman.Cqrs;
 using Watchman.DomainModel.Responses;
+using Watchman.DomainModel.Responses.Queries;
 
 namespace Watchman.Discord.Areas.Responses.Services
 {

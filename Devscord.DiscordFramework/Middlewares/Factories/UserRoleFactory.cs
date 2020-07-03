@@ -1,7 +1,7 @@
-﻿using System.Linq;
-using Devscord.DiscordFramework.Commons;
+﻿using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Discord;
+using System.Linq;
 
 namespace Devscord.DiscordFramework.Middlewares.Factories
 {

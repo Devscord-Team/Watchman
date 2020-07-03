@@ -8,7 +8,7 @@ namespace Watchman.DomainModel.Messages.Commands
 
         public AddServerDayStatisticCommand(ServerDayStatistic serverDayStatistic)
         {
-            ServerDayStatistic = serverDayStatistic;
+            this.ServerDayStatistic = serverDayStatistic;
         }
     }
 }
