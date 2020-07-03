@@ -5,7 +5,7 @@ using Discord.WebSocket;
 
 namespace Devscord.DiscordFramework.Middlewares.Factories
 {
-    internal class DiscordServerContextFactory : IContextFactory<RestGuild, DiscordServerContext>
+    public class DiscordServerContextFactory : IContextFactory<RestGuild, DiscordServerContext>
     {
         public DiscordServerContext Create(RestGuild restGuild)
         {

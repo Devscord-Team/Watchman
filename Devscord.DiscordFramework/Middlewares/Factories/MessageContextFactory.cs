@@ -4,24 +4,19 @@ using System;
 
 namespace Devscord.DiscordFramework.Middlewares.Factories
 {
-    public class MessageContextFactory : IContextFactory<IUserMessage, MessageContext>
+    internal class MessageContextFactory : IContextFactory<IUserMessage, MessageContext>
     {
         private readonly UserContextsFactory _userContextsFactory;
 
-        public MessageContextFactory()
+        public MessageContextFactory(UserContextsFactory userContextsFactory)
         {
-            this._userContextsFactory = new UserContextsFactory();
+            this._userContextsFactory = userContextsFactory;
         }
 
         public MessageContext Create(IUserMessage userMessage)
         {
-            if (userMessage == null)
-            {
-                throw new ArgumentNullException();
-            }
-
             var authorContext = this._userContextsFactory.Create(userMessage.Author);
-            return new MessageContext(userMessage.Content, authorContext, userMessage.Id);
+            return new MessageContext(userMessage.Id, userMessage.Content, authorContext);
         }
     }
 }

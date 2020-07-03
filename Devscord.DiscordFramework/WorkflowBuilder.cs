@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using Discord;
 using Devscord.DiscordFramework.Middlewares;
 using Devscord.DiscordFramework.Integration;
-using Devscord.DiscordFramework.Middlewares.Factories;
 
 namespace Devscord.DiscordFramework
 {
@@ -32,26 +31,6 @@ namespace Devscord.DiscordFramework
             this._token = token;
             this._context = context;
             this._workflow = new Workflow(botAssembly, context);
-            this._client.ReactionAdded += GetDelegateCalledWhenReactionIsAdded();
-            this._client.ReactionRemoved += GetDelegateCalledWhenReactionIsRemoved();
-        }
-
-        private Func<Cacheable<IUserMessage, ulong>, ISocketMessageChannel, SocketReaction, Task> GetDelegateCalledWhenReactionIsAdded()
-        {
-            return (userMessage, socketMessageChannel, socketReaction) => Task.Run(() =>
-            {
-                var reactionContext = new ReactionContextFactory().Create(Tuple.Create(socketReaction, userMessage.GetOrDownloadAsync().Result));
-                this._workflow.OnUserAddedReaction.ForEach(x => x.Invoke(reactionContext));
-            });
-        }
-
-        private Func<Cacheable<IUserMessage, ulong>, ISocketMessageChannel, SocketReaction, Task> GetDelegateCalledWhenReactionIsRemoved()
-        {
-            return (userMessage, socketMessageChannel, socketReaction) => Task.Run(() =>
-            {
-                var reactionContext = new ReactionContextFactory().Create(Tuple.Create(socketReaction, userMessage.GetOrDownloadAsync().Result));
-                this._workflow.OnUserRemovedReaction.ForEach(x => x.Invoke(reactionContext));
-            });
         }
 
         public static WorkflowBuilder Create(string token, IComponentContext context, Assembly botAssembly) => new WorkflowBuilder(token, context, botAssembly);
@@ -101,25 +80,15 @@ namespace Devscord.DiscordFramework
             return this;
         }
 
-        private void AddHandlers<T>(Action<WorkflowBuilderHandlers<T>> action, Action<T> workflowAction)
+        public WorkflowBuilder AddOnUserAddedReaction(Action<WorkflowBuilderHandlers<Action<ReactionContext>>> action)
         {
-            var workflowBuilderHandlers = new WorkflowBuilderHandlers<T>(this._context);
-            action.Invoke(workflowBuilderHandlers);
-            foreach (var exceptionHandler in workflowBuilderHandlers.Handlers)
-            {
-                workflowAction.Invoke(exceptionHandler);
-            }
-        }
-
-        public WorkflowBuilder AppendOnUserAddedReaction(Action<ReactionContext> action)
-        {
-            this._workflow.OnUserAddedReaction.Add(action);
+            AddHandlers(action, this._workflow.OnUserAddedReaction.Add);
             return this;
         }
 
-        public WorkflowBuilder AppendOnUserRemovedReaction(Action<ReactionContext> action)
+        public WorkflowBuilder AddOnUserRemovedReaction(Action<WorkflowBuilderHandlers<Action<ReactionContext>>> action)
         {
-            this._workflow.OnUserRemovedReaction.Add(action);
+            AddHandlers(action, this._workflow.OnUserRemovedReaction.Add);
             return this;
         }
 
@@ -138,6 +107,16 @@ namespace Devscord.DiscordFramework
         public async Task Run()
         {
             await Task.Delay(-1);
+        }
+
+        private void AddHandlers<T>(Action<WorkflowBuilderHandlers<T>> action, Action<T> workflowAction)
+        {
+            var workflowBuilderHandlers = new WorkflowBuilderHandlers<T>(this._context);
+            action.Invoke(workflowBuilderHandlers);
+            foreach (var exceptionHandler in workflowBuilderHandlers.Handlers)
+            {
+                workflowAction.Invoke(exceptionHandler);
+            }
         }
     }
 }

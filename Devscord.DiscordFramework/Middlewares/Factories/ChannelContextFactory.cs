@@ -8,11 +8,6 @@ namespace Devscord.DiscordFramework.Middlewares.Factories
     {
         public ChannelContext Create(IMessageChannel messageChannel)
         {
-            if (messageChannel == null)
-            {
-                throw new ArgumentNullException();
-            }
-
             return new ChannelContext(messageChannel.Id, messageChannel.Name);
         }
     }

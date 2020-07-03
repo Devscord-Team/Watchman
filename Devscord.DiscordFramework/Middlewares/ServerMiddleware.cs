@@ -13,18 +13,19 @@ namespace Devscord.DiscordFramework.Middlewares
 {
     public class ServerMiddleware : IMiddleware
     {
-        private readonly DiscordServerContextFactory discordServerContextsFactory;
+        private readonly DiscordServerContextFactory _discordServerContextsFactory;
+        private readonly RestGuildGetterService _restGuildGetterService; 
 
         public ServerMiddleware()
         {
-            this.discordServerContextsFactory = new DiscordServerContextFactory();
+            this._discordServerContextsFactory = new DiscordServerContextFactory();
+            this._restGuildGetterService = new RestGuildGetterService();
         }
 
         public IDiscordContext Process(SocketMessage data)
         {
-            var serverInfo = ((SocketGuildChannel)data.Channel).Guild;
-            var guild = Server.GetGuild(serverInfo.Id).Result;
-            return this.discordServerContextsFactory.Create(guild);
+            var guild = this._restGuildGetterService.GetRestGuild(data.Channel);
+            return this._discordServerContextsFactory.Create(guild);
         }
     }
 }

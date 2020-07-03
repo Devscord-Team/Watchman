@@ -24,21 +24,12 @@ namespace Watchman.Discord.Areas.Responses.Controllers
         private readonly ResponsesMessageService _responsesMessageService;
         private readonly string[] possibleArguments = new string[] { "all", "default", "custom" };
 
-        // do testu obsługi reakcji:
-        private ReactionsService _reactionsService;
-        bool IsReactionSupportDelegateAdded = false;
-        //
-
         public ResponsesController(IQueryBus queryBus, ICommandBus commandBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, 
-            Services.ResponsesService responsesService, ResponsesMessageService responsesMessageService, ReactionsService reactionsService)
+            Services.ResponsesService responsesService, ResponsesMessageService responsesMessageService)
         {
             this._messagesServiceFactory = messagesServiceFactory;
             this._responsesService = responsesService;
             this._responsesMessageService = responsesMessageService;
-
-            // do testu obsługi reakcji:
-            this._reactionsService = reactionsService;
-            //
         }
 
     [AdminCommand]
@@ -116,19 +107,6 @@ namespace Watchman.Discord.Areas.Responses.Controllers
         [DiscordCommand("responses")]
         public async Task Responses(DiscordRequest request, Contexts contexts)
         {
-            // do testu obsługi reakcji:
-            if (!IsReactionSupportDelegateAdded)
-            {
-                _reactionsService.UserAddedReaction += rc => _messagesServiceFactory.Create(contexts)
-                .SendMessage($"treść: {rc.MessageContext.Content} nazwa emoji: {rc.EmoteName} user: {rc.UserContext.Id} Id user: {rc.UserContext.Name}");
-
-                _reactionsService.UserRemovedReaction += rc => _messagesServiceFactory.Create(contexts)
-                    .SendMessage($"autor: {rc.MessageContext.AuthorContext.Name} id wiadomości: {rc.MessageContext.Id} kanał: {rc.ChannelContext.Name} dzień reakcji: {rc.ReactedAt.Day}");
-
-                IsReactionSupportDelegateAdded = true;
-            }    
-            //
-
             var argument = request.Arguments?.FirstOrDefault()?.Name?.ToLowerInvariant();
             if (!possibleArguments.Contains(argument))
             {

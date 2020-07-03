@@ -5,16 +5,14 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
 {
     public class ReactionContext : IDiscordContext
     {
-        public ChannelContext ChannelContext { get; }
-        public UserContext UserContext { get; }
+        public Contexts Contexts { get; }
         public MessageContext MessageContext { get; }
         public string EmoteName { get; }
         public DateTime ReactedAt { get; }
 
-        public ReactionContext(ChannelContext channelContext, UserContext userContext, MessageContext messageContext, string emoteName, DateTime reactedAt)
+        public ReactionContext(Contexts contexts, MessageContext messageContext, string emoteName, DateTime reactedAt)
         {
-            this.ChannelContext = channelContext;
-            this.UserContext = userContext;
+            this.Contexts = contexts;
             this.MessageContext = messageContext;
             this.EmoteName = emoteName;
             this.ReactedAt = reactedAt;

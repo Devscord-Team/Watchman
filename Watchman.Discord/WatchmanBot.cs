@@ -105,8 +105,16 @@ namespace Watchman.Discord
                         .AddHandler(this.PrintDebugExceptionInfo, onlyOnDebug: true)
                         .AddHandler(this.PrintExceptionOnConsole);
                 })
-                .AppendOnUserAddedReaction(reactionContext => _context.Resolve<ReactionsService>().UserAddedReaction(reactionContext))
-                .AppendOnUserRemovedReaction(reactionContext => _context.Resolve<ReactionsService>().UserRemovedReaction(reactionContext))
+                .AddOnUserAddedReaction(builder =>
+                {
+                    builder
+                        .AddFromIoC<ReactionsService>(service => reactionContext => service.OnUserAddedReaction(reactionContext));
+                })
+                .AddOnUserRemovedReaction(builder =>
+                {
+                    builder
+                        .AddFromIoC<ReactionsService>(service => reactionContext => service.OnUserRemovedReaction(reactionContext));
+                })
                 .Build();
         }
 

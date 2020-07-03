@@ -14,6 +14,7 @@ using Discord.Rest;
 using System.Diagnostics;
 using Devscord.DiscordFramework.Framework.Commands.Services;
 using Devscord.DiscordFramework.Integration;
+using Discord;
 
 namespace Devscord.DiscordFramework
 {
@@ -23,6 +24,7 @@ namespace Devscord.DiscordFramework
         private readonly MiddlewaresService _middlewaresService = new MiddlewaresService();
         private readonly ControllersService _controllersService;
         private readonly Stopwatch _stopWatch = new Stopwatch();
+        private readonly IComponentContext _context;
 
         public List<Func<Task>> OnReady { get; set; } = new List<Func<Task>>();
         public List<Func<Contexts, Task>> OnUserJoined { get; set; } = new List<Func<Contexts, Task>>();
@@ -35,6 +37,7 @@ namespace Devscord.DiscordFramework
         internal Workflow(Assembly botAssembly, IComponentContext context)
         {
             this._controllersService = new ControllersService(context, botAssembly, context.Resolve<BotCommandsService>(), context.Resolve<CommandsContainer>());
+            this._context = context;
         }
 
         internal Workflow AddMiddleware<T>()
@@ -56,6 +59,26 @@ namespace Devscord.DiscordFramework
             this.OnMessageReceived.ForEach(x => client.MessageReceived += x);
             Server.UserJoined += CallUserJoined;
             Server.BotAddedToServer += CallServerAddedBot;
+            client.ReactionAdded += GetDelegateCalledWhenReactionIsAdded();
+            client.ReactionRemoved += GetDelegateCalledWhenReactionIsRemoved();
+        }
+
+        private Func<Cacheable<IUserMessage, ulong>, ISocketMessageChannel, SocketReaction, Task> GetDelegateCalledWhenReactionIsAdded()
+        {
+            return (userMessage, socketMessageChannel, socketReaction) => Task.Run(() =>
+            {
+                var reactionContext = _context.Resolve<ReactionContextFactory>().Create((socketReaction, userMessage.GetOrDownloadAsync().Result));
+                OnUserAddedReaction.ForEach(x => x.Invoke(reactionContext));
+            });
+        }
+
+        private Func<Cacheable<IUserMessage, ulong>, ISocketMessageChannel, SocketReaction, Task> GetDelegateCalledWhenReactionIsRemoved()
+        {
+            return (userMessage, socketMessageChannel, socketReaction) => Task.Run(() =>
+            {
+                var reactionContext = _context.Resolve<ReactionContextFactory>().Create((socketReaction, userMessage.GetOrDownloadAsync().Result));
+                OnUserRemovedReaction.ForEach(x => x.Invoke(reactionContext));
+            });
         }
 
         private async void MessageReceived(SocketMessage socketMessage)
