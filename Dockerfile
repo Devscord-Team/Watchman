@@ -3,7 +3,7 @@ WORKDIR /app
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 RUN apt-get install -y nodejs
 
-COPY Watchman.Web/ClientApp/package.json Watchman.Web/ClientApp/
+COPY Watchman.Web/ClientApp/package*.json Watchman.Web/ClientApp/
 RUN npm install Watchman.Web/ClientApp/
 
 COPY . ./
