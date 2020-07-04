@@ -4,31 +4,15 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Discord.Areas.UselessFeatures.BotCommands;
 
-// do obsługi reakcji:
-using Devscord.DiscordFramework.Framework.Commands.Parsing.Models; 
-using System.Linq;
-using Devscord.DiscordFramework.Services;
-//
-
 namespace Watchman.Discord.Areas.UselessFeatures.Controllers
 {
     public class UselessController : IController
     {
         private readonly MessagesServiceFactory _messagesServiceFactory;
-        private readonly UsersService _usersService;
-        //
-        private readonly UsersRolesService _usersRolesService;
-        private readonly ReactionsService _reactionsService;
-        //
 
-        public UselessController(MessagesServiceFactory messagesServiceFactory, UsersService usersService, UsersRolesService usersRolesService, ReactionsService reactionsService)
+        public UselessController(MessagesServiceFactory messagesServiceFactory)
         {
             _messagesServiceFactory = messagesServiceFactory;
-            _usersService = usersService;
-            //
-            _usersRolesService = usersRolesService;
-            _reactionsService = reactionsService;
-            //
         }
 
         public async Task PrintMarchew(MarchewCommand command, Contexts contexts)
@@ -37,33 +21,5 @@ namespace Watchman.Discord.Areas.UselessFeatures.Controllers
             var messagesService = _messagesServiceFactory.Create(contexts);
             await messagesService.SendMessage(text);
         }
-
-        // do testu obsługi reackji
-        // ta komenda z parametrem "on" aktywuje możliwość przyznania roli python i usunięcia tej roli gdy zareaguje się na konkretną wiadomość (w sensie o konkretnej treści)
-        [DiscordCommand("MessageRoleOnRequest")]
-        public void AddRoleOnRequest(DiscordRequest request, Contexts contexts)
-        {
-            if (request.Arguments?.FirstOrDefault()?.Name == "on")
-            {
-                _reactionsService.AddOnUserAddedReaction(rc => 
-                {
-                    if (rc.MessageContext.Content.Trim() == "Like = dostajesz role python" && rc.EmoteName == "👍") 
-                    {
-                        var pythonRole = _usersRolesService.GetRoleByName("python", rc.Contexts.Server);
-                        _usersService.AddRole(pythonRole, rc.Contexts.User, rc.Contexts.Server).Wait();
-                    }        
-                });
-
-                _reactionsService.AddOnUserRemovedReaction(rc => 
-                {
-                    if (rc.MessageContext.Content.Trim() == "Like = tracisz role python" && rc.EmoteName == "👍")
-                    {
-                        var pythonRole = _usersRolesService.GetRoleByName("python", rc.Contexts.Server);
-                        _usersService.RemoveRole(pythonRole, rc.Contexts.User, rc.Contexts.Server).Wait();
-                    }
-                });
-            }
-        }
-        //
     }
 }

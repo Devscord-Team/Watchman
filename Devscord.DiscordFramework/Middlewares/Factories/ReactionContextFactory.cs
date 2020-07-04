@@ -33,7 +33,6 @@ namespace Devscord.DiscordFramework.Middlewares.Factories
             contexts.SetContext(discordServerContext);
             contexts.SetContext(channelContext);
             contexts.SetContext(userContext);
-
             var messageContext = this._messageContextFactory.Create(reactionAndUserMessage.userMessage);
             
             return new ReactionContext(contexts, messageContext, reactionAndUserMessage.socketReaction.Emote.Name, reactedAt: DateTime.Now);

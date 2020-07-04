@@ -32,7 +32,7 @@ namespace Watchman.Discord.Areas.Responses.Controllers
             this._responsesMessageService = responsesMessageService;
         }
 
-    [AdminCommand]
+        [AdminCommand]
         [DiscordCommand("add response")]
         public async Task AddResponse(DiscordRequest request, Contexts contexts)
         {

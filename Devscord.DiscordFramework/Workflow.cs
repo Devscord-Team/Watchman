@@ -59,11 +59,11 @@ namespace Devscord.DiscordFramework
             this.OnMessageReceived.ForEach(x => client.MessageReceived += x);
             Server.UserJoined += CallUserJoined;
             Server.BotAddedToServer += CallServerAddedBot;
-            client.ReactionAdded += GetDelegateCalledWhenReactionIsAdded();
-            client.ReactionRemoved += GetDelegateCalledWhenReactionIsRemoved();
+            client.ReactionAdded += GetReactionAddedFunc();
+            client.ReactionRemoved += GetReactionRemovedFunc();
         }
 
-        private Func<Cacheable<IUserMessage, ulong>, ISocketMessageChannel, SocketReaction, Task> GetDelegateCalledWhenReactionIsAdded()
+        private Func<Cacheable<IUserMessage, ulong>, ISocketMessageChannel, SocketReaction, Task> GetReactionAddedFunc()
         {
             return (userMessage, socketMessageChannel, socketReaction) => Task.Run(() =>
             {
@@ -72,7 +72,7 @@ namespace Devscord.DiscordFramework
             });
         }
 
-        private Func<Cacheable<IUserMessage, ulong>, ISocketMessageChannel, SocketReaction, Task> GetDelegateCalledWhenReactionIsRemoved()
+        private Func<Cacheable<IUserMessage, ulong>, ISocketMessageChannel, SocketReaction, Task> GetReactionRemovedFunc()
         {
             return (userMessage, socketMessageChannel, socketReaction) => Task.Run(() =>
             {
