@@ -1,0 +1,7 @@
+/.git
+/.vs
+/docs
+*/bin
+*/obj
+*/logs
+*/*/node_modules

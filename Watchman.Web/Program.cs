@@ -19,17 +19,14 @@ namespace Watchman.Web
         {
             return Host.CreateDefaultBuilder(args)
                 .UseServiceProviderFactory(new AutofacServiceProviderFactory(configuration))
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+                .ConfigureWebHostDefaults(webBuilder => webBuilder.UseConfiguration(configuration).UseStartup<Startup>());
         }
 
         public static IConfiguration GetConfiguration()
         {
             var builder = new ConfigurationBuilder()
 #if !DEBUG
-                .AddJsonFile("appsettings.Production.json", optional: false)
+                .AddJsonFile("appsettings.json", optional: false)
 #else
                 .AddJsonFile("appsettings.Development.json", optional: false)
 #endif

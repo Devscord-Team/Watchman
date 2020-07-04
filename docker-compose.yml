@@ -1,0 +1,9 @@
+version: '3'
+services: 
+    watchman-web:
+        image: gagyn/watchman
+        ports:
+            - "8080:80"
+        restart: "unless-stopped"
+        volumes:
+            - ./appsettings.json:/app/appsettings.json

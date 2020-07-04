@@ -1,3 +1,4 @@
+using System.Net;
 using Hangfire;
 using Hangfire.MemoryStorage;
 using Hangfire.Mongo;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,7 +33,7 @@ namespace Watchman.Web
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
             });
-
+            services.Configure<ForwardedHeadersOptions>(options => options.KnownProxies.Add(IPAddress.Parse("10.0.0.100")));
             services.AddAuthentication()
                 .AddDiscord(x =>
                 {
@@ -92,6 +94,10 @@ namespace Watchman.Web
             app.UseRouting();
             app.UseHangfireDashboard();
             app.UseHangfireServer();
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
             app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
