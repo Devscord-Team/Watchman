@@ -24,8 +24,7 @@ namespace Watchman.Discord.Areas.Responses.Controllers
         private readonly ResponsesMessageService _responsesMessageService;
         private readonly string[] possibleArguments = new string[] { "all", "default", "custom" };
 
-        public ResponsesController(IQueryBus queryBus, ICommandBus commandBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, 
-            Services.ResponsesService responsesService, ResponsesMessageService responsesMessageService)
+        public ResponsesController(IQueryBus queryBus, ICommandBus commandBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, Services.ResponsesService responsesService, ResponsesMessageService responsesMessageService)
         {
             this._messagesServiceFactory = messagesServiceFactory;
             this._responsesService = responsesService;

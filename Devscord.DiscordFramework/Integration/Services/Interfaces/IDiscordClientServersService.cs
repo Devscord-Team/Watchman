@@ -16,5 +16,6 @@ namespace Devscord.DiscordFramework.Integration.Services.Interfaces
         Task<IEnumerable<DiscordServerContext>> GetDiscordServers();
         Task<IEnumerable<string>> GetExistingInviteLinks(ulong serverId);
         Task<RestGuild> GetGuild(ulong guildId);
+        Task<RestGuild> GetGuild(ISocketMessageChannel data);
     }
 }

@@ -75,5 +75,8 @@ namespace Devscord.DiscordFramework.Integration
 
         internal static Task<RestGuild> GetGuild(ulong guildId)
             => _discordClient.ServersService.GetGuild(guildId);
+
+        internal static Task<RestGuild> GetGuild(ISocketMessageChannel data)
+            => _discordClient.ServersService.GetGuild(data);
     }
 }

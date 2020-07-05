@@ -59,26 +59,8 @@ namespace Devscord.DiscordFramework
             this.OnMessageReceived.ForEach(x => client.MessageReceived += x);
             Server.UserJoined += CallUserJoined;
             Server.BotAddedToServer += CallServerAddedBot;
-            client.ReactionAdded += GetReactionAddedFunc();
-            client.ReactionRemoved += GetReactionRemovedFunc();
-        }
-
-        private Func<Cacheable<IUserMessage, ulong>, ISocketMessageChannel, SocketReaction, Task> GetReactionAddedFunc()
-        {
-            return (userMessage, socketMessageChannel, socketReaction) => Task.Run(() =>
-            {
-                var reactionContext = _context.Resolve<ReactionContextFactory>().Create((socketReaction, userMessage.GetOrDownloadAsync().Result));
-                OnUserAddedReaction.ForEach(x => x.Invoke(reactionContext));
-            });
-        }
-
-        private Func<Cacheable<IUserMessage, ulong>, ISocketMessageChannel, SocketReaction, Task> GetReactionRemovedFunc()
-        {
-            return (userMessage, socketMessageChannel, socketReaction) => Task.Run(() =>
-            {
-                var reactionContext = _context.Resolve<ReactionContextFactory>().Create((socketReaction, userMessage.GetOrDownloadAsync().Result));
-                OnUserRemovedReaction.ForEach(x => x.Invoke(reactionContext));
-            });
+            client.ReactionAdded += CallReactionAdded;
+            client.ReactionRemoved += CallReactionRemoved;
         }
 
         private async void MessageReceived(SocketMessage socketMessage)
@@ -194,6 +176,24 @@ namespace Devscord.DiscordFramework
             var discordServer = discordServerFactory.Create(restGuild);
 
             OnDiscordServerAddedBot.ForEach(x => x.Invoke(discordServer));
+        }
+
+        private Task CallReactionAdded(Cacheable<IUserMessage, ulong> userMessage, ISocketMessageChannel socketMessageChannel, SocketReaction socketReaction)
+        {
+            return Task.Run(() =>
+            {
+                var reactionContext = _context.Resolve<ReactionContextFactory>().Create((socketReaction, userMessage.GetOrDownloadAsync().Result));
+                OnUserAddedReaction.ForEach(x => x.Invoke(reactionContext));
+            });
+        }
+
+        private Task CallReactionRemoved(Cacheable<IUserMessage, ulong> userMessage, ISocketMessageChannel socketMessageChannel, SocketReaction socketReaction)
+        {
+            return Task.Run(() =>
+            {
+                var reactionContext = _context.Resolve<ReactionContextFactory>().Create((socketReaction, userMessage.GetOrDownloadAsync().Result));
+                OnUserRemovedReaction.ForEach(x => x.Invoke(reactionContext));
+            });
         }
     }
 }

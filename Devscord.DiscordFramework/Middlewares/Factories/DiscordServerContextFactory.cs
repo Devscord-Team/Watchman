@@ -13,7 +13,8 @@ namespace Devscord.DiscordFramework.Middlewares.Factories
             var channelFactory = new ChannelContextFactory();
 
             var owner = userFactory.Create(restGuild.GetOwnerAsync().Result);
-            var systemChannel = channelFactory.Create(restGuild.GetSystemChannelAsync().Result);
+            var restTextChannel = restGuild.GetSystemChannelAsync().Result;
+            var systemChannel = restTextChannel != null ? channelFactory.Create(restTextChannel) : null;
             var textChannels = restGuild.GetTextChannelsAsync().Result.Select(x => channelFactory.Create(x));
 
             return new DiscordServerContext(restGuild.Id, restGuild.Name, owner, systemChannel, textChannels);

@@ -34,6 +34,12 @@ namespace Devscord.DiscordFramework.Integration.Services
             return await _restClient.GetGuildAsync(guildId);
         }
 
+        public async Task<RestGuild> GetGuild(ISocketMessageChannel data)
+        {
+            var serverId = (data as SocketGuildChannel).Guild.Id;
+            return await GetGuild(serverId);
+        }
+
         public async Task<IEnumerable<DiscordServerContext>> GetDiscordServers()
         {
             var serverContextFactory = new DiscordServerContextFactory();

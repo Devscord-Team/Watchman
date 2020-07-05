@@ -2,6 +2,7 @@
 using Discord;
 using Discord.WebSocket;
 using Devscord.DiscordFramework.Middlewares.Contexts;
+using Devscord.DiscordFramework.Integration;
 
 namespace Devscord.DiscordFramework.Middlewares.Factories
 {
@@ -10,21 +11,19 @@ namespace Devscord.DiscordFramework.Middlewares.Factories
         private readonly ChannelContextFactory _channelContextFactory;
         private readonly UserContextsFactory _userContextsFactory;
         private readonly MessageContextFactory _messageContextFactory;
-        private readonly RestGuildGetterService _restGuildGetterService;
         private readonly DiscordServerContextFactory _discordServerContextsFactory;
 
-        public ReactionContextFactory(ChannelContextFactory channelContextFactory, UserContextsFactory userContextsFactory, MessageContextFactory messageContextFactory, RestGuildGetterService restGuildGetterService, DiscordServerContextFactory discordServerContextsFactory)
+        public ReactionContextFactory(ChannelContextFactory channelContextFactory, UserContextsFactory userContextsFactory, MessageContextFactory messageContextFactory, DiscordServerContextFactory discordServerContextsFactory)
         {
             this._channelContextFactory = channelContextFactory;
             this._userContextsFactory = userContextsFactory;
             this._messageContextFactory = messageContextFactory;
-            this._restGuildGetterService = restGuildGetterService;
             this._discordServerContextsFactory = discordServerContextsFactory;
         }
 
         public ReactionContext Create((SocketReaction socketReaction, IUserMessage userMessage) reactionAndUserMessage)
         {
-            var guild = _restGuildGetterService.GetRestGuild(reactionAndUserMessage.socketReaction.Channel);
+            var guild = Server.GetGuild(reactionAndUserMessage.socketReaction.Channel).Result;
             var discordServerContext = this._discordServerContextsFactory.Create(guild);
             var channelContext = this._channelContextFactory.Create(reactionAndUserMessage.socketReaction.Channel);
             var userContext = this._userContextsFactory.Create(reactionAndUserMessage.socketReaction.User.Value);
@@ -35,7 +34,7 @@ namespace Devscord.DiscordFramework.Middlewares.Factories
             contexts.SetContext(userContext);
             var messageContext = this._messageContextFactory.Create(reactionAndUserMessage.userMessage);
             
-            return new ReactionContext(contexts, messageContext, reactionAndUserMessage.socketReaction.Emote.Name, reactedAt: DateTime.Now);
+            return new ReactionContext(contexts, messageContext, reactionAndUserMessage.socketReaction.Emote.Name, reactedAt: DateTime.Now); // it is not possible to retrieve the reaction date, so DateTime.Now is used. Although it should be remembered that the reaction date may be delayed.
         }
     }
 }

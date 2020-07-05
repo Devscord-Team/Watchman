@@ -5,17 +5,27 @@ namespace Watchman.Discord
 {
     public class ReactionsService
     {
-        public Action<ReactionContext> OnUserAddedReaction { get; private set; }
-        public Action<ReactionContext> OnUserRemovedReaction { get; private set; }
+        private Action<ReactionContext> _userAddedReaction;
+        private Action<ReactionContext> _userRemovedReaction;
 
-        public void AddOnUserAddedReaction(Action<ReactionContext> action)
+        public void OnUserAddedReaction(ReactionContext context)
         {
-            OnUserAddedReaction += action;
+            _userAddedReaction(context);
         }
 
-        public void AddOnUserRemovedReaction(Action<ReactionContext> action)
+        public void OnUserRemovedReaction(ReactionContext context)
         {
-            OnUserRemovedReaction += action;
+            _userRemovedReaction(context);
+        }
+
+        public void AddUserAddedReaction(Action<ReactionContext> action)
+        {
+            _userAddedReaction += action;
+        }
+
+        public void AddUserRemovedReaction(Action<ReactionContext> action)
+        {
+            _userRemovedReaction += action;
         }
     }
 }
