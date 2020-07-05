@@ -1,7 +1,8 @@
 language: csharp
-dist: xenial
-sudo: required
+dist: bionic
 mono: none
+services:
+  - docker
 addons:
   snaps:
   - name: dotnet-sdk
@@ -11,6 +12,12 @@ before_script:
   - chmod -R a+x scripts
 script:
   - ./scripts/travis-build.sh
+deploy:
+  provider: script
+  script: bash ./scripts/travis-deploy.sh
+  on:
+    all_branches: true
+    condition: $TRAVIS_BRANCH =~ ^v\d+\.\d+$
 notifications:
   email:
     on_success: never
