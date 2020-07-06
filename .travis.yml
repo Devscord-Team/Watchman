@@ -4,7 +4,6 @@ mono: none
 services:
   - docker
 addons:
-  ssh_known_hosts: $SERVER_ADDRESS
   snaps:
   - name: dotnet-sdk
     classic: true
