@@ -20,10 +20,10 @@ before_deploy:
     - ssh-add /tmp/deploy_rsa
 deploy:
   provider: script
-  script: bash ./scripts/travis-deploy.sh $DOCKERHUB_LOGIN $DOCKERHUB_PASS
+  script: bash ./scripts/travis-deploy.sh
   on:
     tags: true
-    all_branches: true
+    branch: master
     condition: "$TRAVIS_TAG =~ ^v[0-9]+\\.[0-9]+(\\.[0-9])?$"
 notifications:
   email:
