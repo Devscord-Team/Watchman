@@ -24,7 +24,7 @@ deploy:
   on:
     tags: true
     all_branches: true
-    condition: true # "$TRAVIS_TAG =~ ^v[0-9]+\\.[0-9]+(\\.[0-9])?$"
+    condition: "$TRAVIS_TAG =~ ^v[0-9]+\\.[0-9]+(\\.[0-9])?$"
 notifications:
   email:
     on_success: never
