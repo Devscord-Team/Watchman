@@ -38,7 +38,7 @@ namespace Devscord.DiscordFramework.Services
         public UserContext GetUserByMention(DiscordServerContext server, string mention)
         {
             var user = this.GetUsers(server)
-                .FirstOrDefault(x => x.Mention == mention);
+                .FirstOrDefault(x => x.Mention.Trim("<@!>".ToCharArray()) == mention.Trim("<@!>".ToCharArray()));
             return user;
         }
 
