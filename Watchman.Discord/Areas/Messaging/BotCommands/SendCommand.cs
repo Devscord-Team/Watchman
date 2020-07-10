@@ -8,6 +8,5 @@ namespace Watchman.Discord.Areas.Messaging.BotCommands
 {
     public class SendCommand : IBotCommand
     {
-       
     }
 }

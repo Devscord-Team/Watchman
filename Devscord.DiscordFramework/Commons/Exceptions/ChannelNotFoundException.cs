@@ -4,7 +4,6 @@
     {
         public ChannelNotFoundException(string mention) : base(mention)
         {
-
         }
     }
 }

@@ -14,14 +14,12 @@ namespace Watchman.Discord.Areas.Messaging.Services
         private Contexts _contexts;
         private ChannelsService _channelsService;
 
-        public SendRequestParser(DiscordRequest request, Contexts contexts, ChannelsService channelsService)
-        {
+        public SendRequestParser(DiscordRequest request, Contexts contexts, ChannelsService channelsService) {
             this._request = request;
             this._contexts = contexts;
             this._channelsService = channelsService;
         }
 
-        
         public ChannelContext GetChannel()
         {
             var channel = _request.GetMention();

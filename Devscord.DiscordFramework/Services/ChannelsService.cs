@@ -23,7 +23,6 @@ namespace Devscord.DiscordFramework.Services
         public IEnumerable<ChannelContext> GetTextChannels(DiscordServerContext server)
         {
             return server.TextChannels;
-
         }
         public ChannelContext GetChannelByMention(DiscordServerContext context, string mention)
         {

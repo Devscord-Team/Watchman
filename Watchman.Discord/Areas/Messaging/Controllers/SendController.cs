@@ -38,6 +38,5 @@ namespace Watchman.Discord.Areas.Messaging.Controllers
             var messagesService = this._messagesServiceFactory.Create(contexts);
             await messagesService.SendMessage(messageToSend);
         }
-        
     }
 }
