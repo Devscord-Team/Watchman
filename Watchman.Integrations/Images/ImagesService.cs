@@ -15,7 +15,7 @@ namespace Watchman.Integrations.Images
                 if (selector == null || selector.Invoke(image.Name))
                 {
                     var imageAsByteArray = (byte[])image.GetValue(image);
-                    yield return new KeyValuePair<string, Stream>(image.Name, new MemoryStream(imageAsByteArray));
+                    yield return new KeyValuePair<string, Stream>(image.Name + ".png", new MemoryStream(imageAsByteArray));
                 }
             }
         }

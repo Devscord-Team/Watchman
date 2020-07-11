@@ -67,7 +67,7 @@ namespace Devscord.DiscordFramework.Services
         public async Task SendFile(string fileName, Stream stream)
         {
             var channel = (IRestMessageChannel) await Server.GetChannel(this.ChannelId);
-            await channel.SendFileAsync(stream, fileName + ".png");
+            await channel.SendFileAsync(stream, fileName);
         }
         public async Task SendExceptionResponse(BotException botException)
         {
