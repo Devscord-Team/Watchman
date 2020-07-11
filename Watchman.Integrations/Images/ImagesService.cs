@@ -10,7 +10,6 @@ namespace Watchman.Integrations.Images
         public IEnumerable<KeyValuePair<string,Stream>> GetImagesFromResources(Func<string, bool> selector = null)
         {
             var imagesProperty = typeof(Images).GetProperties().Where(x => x.PropertyType.Name == "Byte[]");
-
             foreach (var image in imagesProperty)
             {
                 if (selector == null || selector.Invoke(image.Name))
