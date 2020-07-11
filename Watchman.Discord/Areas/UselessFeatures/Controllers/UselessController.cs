@@ -13,6 +13,7 @@ namespace Watchman.Discord.Areas.UselessFeatures.Controllers
     {
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly ImagesService _imagesService;
+
         public UselessController(MessagesServiceFactory messagesServiceFactory, ImagesService imageService)
         {
             this._messagesServiceFactory = messagesServiceFactory;
