@@ -31,7 +31,7 @@ namespace Watchman.Discord
             };
             while (true)
             {
-                await TryToRun(workflowBuilder);
+                TryToRun(workflowBuilder).Wait();
             }
         }
 
