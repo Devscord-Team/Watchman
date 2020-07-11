@@ -30,8 +30,7 @@ namespace Watchman.Discord.Areas.UselessFeatures.Controllers
             var allImages = imagesService.GetImagesFromResources(x => x.StartsWith("maruda"));
             var randomImage = allImages.ElementAt(new Random().Next(allImages.Count()));
 
-            var messagesService = this._messagesServiceFactory.Create(contexts);
-            await messagesService.SendFile(randomImage.Value, randomImage.Key);
+            await this._messagesServiceFactory.Create(contexts).SendFile(randomImage.Key, randomImage.Value);
         }
     }
 }
