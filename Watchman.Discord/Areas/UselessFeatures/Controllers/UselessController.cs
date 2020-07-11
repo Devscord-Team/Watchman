@@ -12,10 +12,11 @@ namespace Watchman.Discord.Areas.UselessFeatures.Controllers
     public class UselessController : IController
     {
         private readonly MessagesServiceFactory _messagesServiceFactory;
-
-        public UselessController(MessagesServiceFactory messagesServiceFactory)
+        private readonly ImagesService _imagesService;
+        public UselessController(MessagesServiceFactory messagesServiceFactory, ImagesService imageService)
         {
             this._messagesServiceFactory = messagesServiceFactory;
+            this._imagesService = imageService;
         }
 
         public async Task PrintMarchew(MarchewCommand command, Contexts contexts)
@@ -26,10 +27,8 @@ namespace Watchman.Discord.Areas.UselessFeatures.Controllers
         }
         public async Task SendMarudaImage(MarudaCommand command, Contexts contexts)
         {
-            var imagesService = new ImagesService();
-            var allImages = imagesService.GetImagesFromResources(x => x.StartsWith("maruda"));
+            var allImages = this._imagesService.GetImagesFromResources(x => x.StartsWith("maruda"));
             var randomImage = allImages.ElementAt(new Random().Next(allImages.Count()));
-
             await this._messagesServiceFactory.Create(contexts).SendFile(randomImage.Name, randomImage.Stream);
         }
     }
