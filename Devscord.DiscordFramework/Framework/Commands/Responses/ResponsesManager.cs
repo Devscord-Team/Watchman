@@ -96,7 +96,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("MutedUser",
                 new KeyValuePair<string, string>("user", mutedUser.Name),
-                new KeyValuePair<string, string>("timeEnd", timeEnd.ToString("dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture)));
+                new KeyValuePair<string, string>("timeEnd", TimeZoneInfo.ConvertTimeFromUtc(timeEnd, TimeZoneInfo.FindSystemTimeZoneById("Central Europe Standard Time")).ToString("dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture)));
         }
 
         public static string UnmutedUser(this ResponsesService responsesService, UserContext unmutedUser)

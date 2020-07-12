@@ -104,10 +104,5 @@ namespace Devscord.DiscordFramework
             ServerInitializer.Initialize(this._client);
             return this;
         }
-
-        public async Task Run()
-        {
-            await Task.Delay(-1);
-        }
     }
 }
