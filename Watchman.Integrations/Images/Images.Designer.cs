@@ -63,6 +63,16 @@ namespace Watchman.Integrations.Images {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        public static byte[] maruda1 {
+            get {
+                object obj = ResourceManager.GetObject("maruda1", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         public static byte[] maruda2 {
             get {
                 object obj = ResourceManager.GetObject("maruda2", resourceCulture);
