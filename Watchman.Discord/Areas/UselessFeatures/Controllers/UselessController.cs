@@ -26,6 +26,7 @@ namespace Watchman.Discord.Areas.UselessFeatures.Controllers
             var messagesService = this._messagesServiceFactory.Create(contexts);
             await messagesService.SendMessage(text);
         }
+
         public async Task SendMarudaImage(MarudaCommand command, Contexts contexts)
         {
             var allImages = this._imagesService.GetImagesFromResources(x => x.StartsWith("maruda"));

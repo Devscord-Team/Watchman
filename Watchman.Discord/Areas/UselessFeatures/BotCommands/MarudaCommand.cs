@@ -2,7 +2,7 @@
 
 namespace Watchman.Discord.Areas.UselessFeatures.BotCommands
 {
-    public class MarudaCommand: IBotCommand
+    public class MarudaCommand : IBotCommand
     {
     }
 }
