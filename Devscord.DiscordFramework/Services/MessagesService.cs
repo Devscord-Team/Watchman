@@ -69,6 +69,7 @@ namespace Devscord.DiscordFramework.Services
         {
             var channel = (IRestMessageChannel) await Server.GetChannel(this.ChannelId);
             await channel.SendFileAsync(stream, fileName);
+            await stream.DisposeAsync();
         }
 
         public async Task SendExceptionResponse(BotException botException)
