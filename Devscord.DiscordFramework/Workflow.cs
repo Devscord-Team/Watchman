@@ -18,6 +18,7 @@ namespace Devscord.DiscordFramework
 {
     internal class Workflow
     {
+        private readonly IComponentContext _context;
         private readonly CommandParser _commandParser = new CommandParser();
         private readonly MiddlewaresService _middlewaresService = new MiddlewaresService();
         private readonly ControllersService _controllersService;
@@ -26,16 +27,20 @@ namespace Devscord.DiscordFramework
         public List<Func<Task>> OnReady { get; set; } = new List<Func<Task>>();
         public List<Func<Contexts, Task>> OnUserJoined { get; set; } = new List<Func<Contexts, Task>>();
         public List<Func<DiscordServerContext, Task>> OnDiscordServerAddedBot { get; set; } = new List<Func<DiscordServerContext, Task>>();
+        public List<Func<ChannelContext, DiscordServerContext, Task>> OnChannelCreated { get; set; } = new List<Func<ChannelContext, DiscordServerContext, Task>>();
+        public List<Func<UserRole, UserRole, Task>> OnRoleUpdated { get; set; } = new List<Func<UserRole, UserRole, Task>>();
+        public List<Func<UserRole, Task>> OnRoleCreated { get; set; } = new List<Func<UserRole, Task>>();
+        public List<Func<UserRole, Task>> OnRoleRemoved { get; set; } = new List<Func<UserRole, Task>>();
         public List<Func<SocketMessage, Task>> OnMessageReceived { get; set; } = new List<Func<SocketMessage, Task>>();
         public List<Action<Exception, Contexts>> OnWorkflowException { get; set; } = new List<Action<Exception, Contexts>>();
 
         internal Workflow(Assembly botAssembly, IComponentContext context)
         {
+            this._context = context;
             this._controllersService = new ControllersService(context, botAssembly, context.Resolve<BotCommandsService>(), context.Resolve<CommandsContainer>());
         }
 
-        internal Workflow AddMiddleware<T>()
-            where T : IMiddleware
+        internal Workflow AddMiddleware<T>() where T : IMiddleware
         {
             this._middlewaresService.AddMiddleware<T>();
             Log.Debug("Added Middleware: {middlewareName}", nameof(T));
@@ -63,6 +68,10 @@ namespace Devscord.DiscordFramework
             this.OnMessageReceived.ForEach(x => client.MessageReceived += x);
             Server.UserJoined += this.CallUserJoined;
             Server.BotAddedToServer += this.CallServerAddedBot;
+            Server.ChannelCreated += this.CallChannelCreated;
+            Server.RoleRemoved += this.CallRoleRemoved;
+            Server.RoleCreated += this.CallRoleCreated;
+            Server.RoleUpdated += this.CallRoleUpdated;
         }
 
         private async void MessageReceived(SocketMessage socketMessage)
@@ -178,6 +187,45 @@ namespace Devscord.DiscordFramework
             var discordServer = discordServerFactory.Create(restGuild);
 
             this.OnDiscordServerAddedBot.ForEach(x => x.Invoke(discordServer));
+        }
+
+        private async Task CallChannelCreated(SocketChannel socketChannel)
+        {
+            var channelFactory = this._context.Resolve<ChannelContextFactory>();
+            var channel = channelFactory.Create(socketChannel);
+            var guildChannel = await Server.GetGuildChannel(socketChannel.Id);
+            var discordServerFactory = this._context.Resolve<DiscordServerContextFactory>();
+            var server = discordServerFactory.Create(guildChannel.Guild);
+
+            this.OnChannelCreated.ForEach(x => x.Invoke(channel, server));
+        }
+
+        private Task CallRoleUpdated(SocketRole from, SocketRole to)
+        {
+            var roleFactory = this._context.Resolve<UserRoleFactory>();
+            var fromRole = roleFactory.Create(from);
+            var toRole = roleFactory.Create(to);
+
+            this.OnRoleUpdated.ForEach(x => x.Invoke(fromRole, toRole));
+            return Task.CompletedTask;
+        }
+
+        private Task CallRoleCreated(SocketRole role)
+        {
+            var roleFactory = this._context.Resolve<UserRoleFactory>();
+            var userRole = roleFactory.Create(role);
+
+            this.OnRoleCreated.ForEach(x => x.Invoke(userRole));
+            return Task.CompletedTask;
+        }
+
+        private Task CallRoleRemoved(SocketRole role)
+        {
+            var roleFactory = this._context.Resolve<UserRoleFactory>();
+            var userRole = roleFactory.Create(role);
+
+            this.OnRoleRemoved.ForEach(x => x.Invoke(userRole));
+            return Task.CompletedTask;
         }
     }
 }

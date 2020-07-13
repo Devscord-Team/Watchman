@@ -1,4 +1,5 @@
-﻿using Devscord.DiscordFramework.Commons;
+﻿using System;
+using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Integration.Services.Interfaces;
 using Devscord.DiscordFramework.Middlewares.Contexts;
@@ -14,6 +15,10 @@ namespace Devscord.DiscordFramework.Integration.Services
 {
     internal class DiscordClientRolesService : IDiscordClientRolesService
     {
+        public Func<SocketRole, SocketRole, Task> RoleUpdated { get; set; } = (x, _) => Task.CompletedTask;
+        public Func<SocketRole, Task> RoleCreated { get; set; } = x => Task.CompletedTask;
+        public Func<SocketRole, Task> RoleRemoved { get; set; } = x => Task.CompletedTask;
+
         private DiscordSocketRestClient _restClient => this._client.Rest;
         private readonly DiscordSocketClient _client;
         private readonly IDiscordClientChannelsService _discordClientChannelsService;
@@ -28,7 +33,10 @@ namespace Devscord.DiscordFramework.Integration.Services
                 return this._roles = this._client.Guilds.SelectMany(x => x.Roles).ToList();
             });
             this._client.RoleCreated += this.AddRole;
+            this._client.RoleCreated += this.RoleCreated;
             this._client.RoleDeleted += this.RemoveRole;
+            this._client.RoleDeleted += this.RoleRemoved;
+            this._client.RoleUpdated += this.UpdateRole;
             this._client.RoleUpdated += this.RoleUpdated;
         }
 
@@ -102,7 +110,7 @@ namespace Devscord.DiscordFramework.Integration.Services
             return Task.CompletedTask;
         }
 
-        private Task RoleUpdated(SocketRole from, SocketRole to)
+        private Task UpdateRole(SocketRole from, SocketRole to)
         {
             this._roles.Remove(from);
             this._roles.Add(to);

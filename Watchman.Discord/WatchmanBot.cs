@@ -102,6 +102,11 @@ namespace Watchman.Discord
                         .AddFromIoC<ExceptionHandlerService>(x => x.LogException)
                         .AddHandler(this.PrintDebugExceptionInfo, onlyOnDebug: true)
                         .AddHandler(this.PrintExceptionOnConsole);
+                })
+                .AddOnChannelCreated(builder =>
+                {
+                    builder
+                        .AddFromIoC<MuteRoleInitService>(x => (_, server) => x.InitForServer(server));
                 });
         }
 
