@@ -161,17 +161,14 @@ namespace Devscord.DiscordFramework
 
         private async Task CallUserJoined(SocketGuildUser guildUser)
         {
-            var userFactory = new UserContextsFactory();
-            var serverFactory = new DiscordServerContextFactory();
-
-            var userContext = userFactory.Create(guildUser);
+            var userContext = this._context.Resolve<UserContextsFactory>().Create(guildUser);
             var guild = await Server.GetGuild(guildUser.Guild.Id);
-            var discordServerContext = serverFactory.Create(guild);
-            var landingChannel = discordServerContext.LandingChannel;
+            var discordServer = this._context.Resolve<DiscordServerContextFactory>().Create(guild);
+            var landingChannel = discordServer.LandingChannel;
 
             var contexts = new Contexts();
             contexts.SetContext(userContext);
-            contexts.SetContext(discordServerContext);
+            contexts.SetContext(discordServer);
             if (landingChannel != null)
             {
                 contexts.SetContext(landingChannel);
@@ -182,17 +179,15 @@ namespace Devscord.DiscordFramework
 
         private async Task CallServerAddedBot(SocketGuild guild)
         {
-            var discordServerFactory = new DiscordServerContextFactory();
             var restGuild = await Server.GetGuild(guild.Id);
-            var discordServer = discordServerFactory.Create(restGuild);
+            var discordServer = this._context.Resolve<DiscordServerContextFactory>().Create(restGuild);
 
             this.OnDiscordServerAddedBot.ForEach(x => x.Invoke(discordServer));
         }
 
         private async Task CallChannelCreated(SocketChannel socketChannel)
         {
-            var channelFactory = this._context.Resolve<ChannelContextFactory>();
-            var channel = channelFactory.Create(socketChannel);
+            var channel = this._context.Resolve<ChannelContextFactory>().Create(socketChannel);
             var guildChannel = await Server.GetGuildChannel(socketChannel.Id);
             var discordServerFactory = this._context.Resolve<DiscordServerContextFactory>();
             var guild = await Server.GetGuild(guildChannel.GuildId); // must get guild by id (not from guildChannel.Guild) - in opposite way it won't work
@@ -213,8 +208,7 @@ namespace Devscord.DiscordFramework
 
         private Task CallRoleCreated(SocketRole role)
         {
-            var roleFactory = this._context.Resolve<UserRoleFactory>();
-            var userRole = roleFactory.Create(role);
+            var userRole = this._context.Resolve<UserRoleFactory>().Create(role);
 
             this.OnRoleCreated.ForEach(x => x.Invoke(userRole));
             return Task.CompletedTask;
@@ -222,8 +216,7 @@ namespace Devscord.DiscordFramework
 
         private Task CallRoleRemoved(SocketRole role)
         {
-            var roleFactory = this._context.Resolve<UserRoleFactory>();
-            var userRole = roleFactory.Create(role);
+            var userRole = this._context.Resolve<UserRoleFactory>().Create(role);
 
             this.OnRoleRemoved.ForEach(x => x.Invoke(userRole));
             return Task.CompletedTask;

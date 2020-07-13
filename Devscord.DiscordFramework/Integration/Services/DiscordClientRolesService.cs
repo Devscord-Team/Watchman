@@ -65,7 +65,7 @@ namespace Devscord.DiscordFramework.Integration.Services
             var createdRole = this.GetSocketRoles(server.Id).FirstOrDefault(x => x.Id == role.Id);
             if (createdRole == null)
             {
-                Log.Error("Created role (name: {roleName}) was null", role.Name);
+                Log.Error("Created role {roleName} was null", role.Name);
                 return;
             }
 

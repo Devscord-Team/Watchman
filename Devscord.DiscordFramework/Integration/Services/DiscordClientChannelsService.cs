@@ -51,12 +51,12 @@ namespace Devscord.DiscordFramework.Integration.Services
             IChannel channel;
             try
             {
-                channel = await this._restClient.GetChannelAsync(channelId);
+                channel = this._client.GetChannel(channelId);
             }
             catch
             {
+                channel = await this._restClient.GetChannelAsync(channelId);
                 Log.Warning($"RestClient couldn't get channel: {channelId}");
-                channel = this._client.GetChannel(channelId);
             }
             return channel;
         }
@@ -71,12 +71,12 @@ namespace Devscord.DiscordFramework.Integration.Services
             IGuildChannel channel;
             try
             {
-                channel = (IGuildChannel)await this._restClient.GetChannelAsync(channelId);
+                channel = (IGuildChannel)this._client.GetChannel(channelId);
             }
             catch
             {
+                channel = (IGuildChannel)await this._restClient.GetChannelAsync(channelId);
                 Log.Warning($"RestClient couldn't get channel: {channelId}");
-                channel = (IGuildChannel)this._client.GetChannel(channelId);
             }
             return channel;
         }

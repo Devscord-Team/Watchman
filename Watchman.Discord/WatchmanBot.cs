@@ -66,7 +66,7 @@ namespace Watchman.Discord
                         {
                             var stopwatch = Stopwatch.StartNew();
 
-                            // when bot was offline for less than 5 minutes, it doesn't make sense to init all servers
+                            // when bot was offline for less than 1 minutes, it doesn't make sense to init all servers
                             if (WorkflowBuilder.DisconnectedTimes.LastOrDefault() > DateTime.Now.AddMinutes(-1))
                             {
                                 Log.Information("Bot was connected less than 1 minute ago");
