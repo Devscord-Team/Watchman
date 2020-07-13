@@ -1,12 +1,12 @@
 ﻿using Newtonsoft.Json;
 using System.IO;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace Watchman.Discord
 {
     internal class Program
     {
-        public static async Task Main(string[] args)
+        public static void Main(string[] args)
         {
 #if DEBUG
             var configPath = "config.json";
@@ -18,7 +18,7 @@ namespace Watchman.Discord
             var watchman = new WatchmanBot(configuration);
             var workflowBuilder = watchman.GetWorkflowBuilder();
             workflowBuilder.Build();
-            await Task.Delay(-1);
+            Thread.Sleep(Timeout.Infinite);
         }
     }
 }

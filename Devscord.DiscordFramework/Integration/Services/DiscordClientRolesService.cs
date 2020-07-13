@@ -5,6 +5,7 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Middlewares.Factories;
 using Discord;
 using Discord.WebSocket;
+using Serilog;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -57,12 +58,20 @@ namespace Devscord.DiscordFramework.Integration.Services
         {
             await Task.Delay(1000);
             var createdRole = this.GetSocketRoles(server.Id).FirstOrDefault(x => x.Id == role.Id);
-            var channelPermissions = new OverwritePermissions(permissions.AllowPermissions.GetRawValue(), permissions.DenyPermissions.GetRawValue());
+            if (createdRole == null)
+            {
+                Log.Error("Created role was null");
+                return;
+            }
 
+            var channelPermissions = new OverwritePermissions(permissions.AllowPermissions.GetRawValue(), permissions.DenyPermissions.GetRawValue());
             Parallel.ForEach(channels, async c =>
             {
                 var channelSocket = (IGuildChannel) await this._discordClientChannelsService.GetChannel(c.Id);
-                await channelSocket.AddPermissionOverwriteAsync(createdRole, channelPermissions);
+                if (channelSocket.PermissionOverwrites.All(x => x.TargetId != createdRole.Id))
+                {
+                    await channelSocket.AddPermissionOverwriteAsync(createdRole, channelPermissions);
+                }
             });
         }
 
