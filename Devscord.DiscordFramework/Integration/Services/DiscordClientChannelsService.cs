@@ -16,7 +16,7 @@ namespace Devscord.DiscordFramework.Integration.Services
 {
     internal class DiscordClientChannelsService : IDiscordClientChannelsService
     {
-        public Func<SocketChannel, Task> ChannelCreated { get; set; } = x => Task.CompletedTask;
+        public Func<SocketChannel, Task> ChannelCreated { get; set; }
 
         private DiscordSocketRestClient _restClient => this._client.Rest;
         private readonly DiscordSocketClient _client;
@@ -26,7 +26,7 @@ namespace Devscord.DiscordFramework.Integration.Services
         {
             this._client = client;
             this._discordClientUsersService = discordClientUsersService;
-            this._client.ChannelCreated += this.ChannelCreated;
+            this._client.ChannelCreated += x => this.ChannelCreated(x);
         }
 
         public async Task SendDirectMessage(ulong userId, string message)

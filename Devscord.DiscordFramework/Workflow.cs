@@ -195,7 +195,8 @@ namespace Devscord.DiscordFramework
             var channel = channelFactory.Create(socketChannel);
             var guildChannel = await Server.GetGuildChannel(socketChannel.Id);
             var discordServerFactory = this._context.Resolve<DiscordServerContextFactory>();
-            var server = discordServerFactory.Create(guildChannel.Guild);
+            var guild = await Server.GetGuild(guildChannel.GuildId); // must get guild by id (not from guildChannel.Guild) - in opposite way it won't work
+            var server = discordServerFactory.Create(guild);
 
             this.OnChannelCreated.ForEach(x => x.Invoke(channel, server));
         }
