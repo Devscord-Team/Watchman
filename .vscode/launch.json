@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build Web",
-            "program": "${workspaceFolder}/Watchman.Web/bin/Debug/netcoreapp3.1/Watchman.Web.dll>",
+            "program": "${workspaceFolder}/Watchman.Web/bin/Debug/netcoreapp3.1/Watchman.Web.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
             "stopAtEntry": false,
