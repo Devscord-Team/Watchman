@@ -46,24 +46,18 @@ namespace Watchman.Discord
                 {
                     builder
                         .AddHandler(() => Task.Run(() => Log.Information("Bot started and logged in...")))
-                        .AddFromIoC<ConfigurationService>(configurationService =>
-                            configurationService.InitDefaultConfigurations)
-                        .AddFromIoC<CustomCommandsLoader>(customCommandsLoader =>
-                            customCommandsLoader.InitDefaultCustomCommands)
-                        .AddFromIoC<HelpDataCollectorService, HelpDBGeneratorService>((dataCollector, helpService) =>
-                            () =>
-                            {
-                                Task.Run(() =>
-                                    helpService.FillDatabase(
-                                        dataCollector.GetCommandsInfo(typeof(WatchmanBot).Assembly)));
-                                return Task.CompletedTask;
-                            })
-                        .AddFromIoC<UnmutingExpiredMuteEventsService, DiscordServersService>(
-                            (unmutingService, serversService) => async () =>
-                            {
-                                var servers = (await serversService.GetDiscordServers()).ToList();
-                                servers.ForEach(unmutingService.UnmuteUsersInit);
-                            })
+                        .AddFromIoC<ConfigurationService>(configurationService => configurationService.InitDefaultConfigurations)
+                        .AddFromIoC<CustomCommandsLoader>(customCommandsLoader => customCommandsLoader.InitDefaultCustomCommands)
+                        .AddFromIoC<HelpDataCollectorService, HelpDBGeneratorService>((dataCollector, helpService) => () =>
+                        {
+                            Task.Run(() => helpService.FillDatabase(dataCollector.GetCommandsInfo(typeof(WatchmanBot).Assembly)));
+                            return Task.CompletedTask;
+                        })
+                        .AddFromIoC<UnmutingExpiredMuteEventsService, DiscordServersService>((unmutingService, serversService) => async () =>
+                        {
+                            var servers = (await serversService.GetDiscordServers()).ToList();
+                            servers.ForEach(unmutingService.UnmuteUsersInit);
+                        })
                         .AddFromIoC<ResponsesInitService>(responsesService => async () =>
                         {
                             await responsesService.InitNewResponsesFromResources();
@@ -73,12 +67,11 @@ namespace Watchman.Discord
                             var stopwatch = Stopwatch.StartNew();
 
                             // when bot was offline for less than 5 minutes, it doesn't make sense to init all servers
-                            if (WorkflowBuilder.DisconnectedTimes.LastOrDefault() > DateTime.Now.AddMinutes(-5))
+                            if (WorkflowBuilder.DisconnectedTimes.LastOrDefault() > DateTime.Now.AddMinutes(-1))
                             {
-                                Log.Information("Bot was connected less than 5 minutes ago");
+                                Log.Information("Bot was connected less than 1 minute ago");
                                 return Task.CompletedTask;
                             }
-
                             var servers = serversService.GetDiscordServers().Result;
                             Task.WaitAll(servers.Select(async server =>
                             {
