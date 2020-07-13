@@ -25,7 +25,7 @@ namespace Watchman.Discord.Areas.Messaging.Services
             var channel = _request.GetMention();
             var channelToSendMessageTo = this._channelsService.GetChannelByMention(this._contexts.Server, channel);
 
-            if (channelToSendMessageTo==null)
+            if (channelToSendMessageTo == null)
             {
                 throw new ChannelNotFoundException(channel);
             }
