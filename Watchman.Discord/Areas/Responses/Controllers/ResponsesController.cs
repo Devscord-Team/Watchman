@@ -12,6 +12,7 @@ namespace Watchman.Discord.Areas.Responses.Controllers
 {
     public class ResponsesController : IController
     {
+        private const int DefaultServerId = 0;
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly Services.ResponsesService _responsesService;
         private readonly ResponsesMessageService _responsesMessageService;
@@ -48,6 +49,14 @@ namespace Watchman.Discord.Areas.Responses.Controllers
                 await messageService.SendResponse(x => x.ResponseAlreadyExists(contexts, onEvent));
                 return;
             }
+
+            var defaultResponse = await this._responsesService.GetResponseByOnEvent(onEvent, DefaultServerId);
+            if(defaultResponse.Message == message)
+            {
+                await messageService.SendResponse(x => x.ResponseHasBeenAdded(contexts, onEvent));
+                return;
+            }
+
             await this._responsesService.AddResponse(onEvent, message, contexts.Server.Id);
             await messageService.SendResponse(x => x.ResponseHasBeenAdded(contexts, onEvent));
         }
