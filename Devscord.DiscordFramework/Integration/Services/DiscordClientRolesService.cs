@@ -65,17 +65,17 @@ namespace Devscord.DiscordFramework.Integration.Services
             var createdRole = this.GetSocketRoles(server.Id).FirstOrDefault(x => x.Id == role.Id);
             if (createdRole == null)
             {
-                Log.Error("Created role was null");
+                Log.Error("Created role (name: {roleName}) was null", role.Name);
                 return;
             }
 
             var channelPermissions = new OverwritePermissions(permissions.AllowPermissions.GetRawValue(), permissions.DenyPermissions.GetRawValue());
-            Parallel.ForEach(channels, async c =>
+            Parallel.ForEach(channels, c =>
             {
-                var channelSocket = (IGuildChannel) await this._discordClientChannelsService.GetChannel(c.Id);
+                var channelSocket = (IGuildChannel)this._discordClientChannelsService.GetChannel(c.Id).Result;
                 if (channelSocket != null && channelSocket.PermissionOverwrites.All(x => x.TargetId != createdRole.Id))
                 {
-                    await channelSocket.AddPermissionOverwriteAsync(createdRole, channelPermissions);
+                    channelSocket.AddPermissionOverwriteAsync(createdRole, channelPermissions).Wait();
                 }
             });
         }
