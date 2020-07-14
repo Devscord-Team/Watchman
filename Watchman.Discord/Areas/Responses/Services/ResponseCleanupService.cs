@@ -17,7 +17,7 @@ namespace Watchman.Discord.Areas.Responses.Services
 
         public async Task CleanDuplicatedResponses()
         {
-            var allResponses = _responsesGetterService.GetResponsesFromBase().ToList();
+            var allResponses = this._responsesGetterService.GetResponsesFromBase().ToList();
             var defaultResponses = allResponses.Where(resp => resp.ServerId == 0);
             var serverResponses = allResponses.Where(resp => resp.ServerId != 0);
             var responsesToDelete = serverResponses
@@ -25,12 +25,13 @@ namespace Watchman.Discord.Areas.Responses.Services
 
             foreach (var response in responsesToDelete)
             {
-                await _responsesService.RemoveResponse(response.OnEvent, response.ServerId);
+                await this._responsesService.RemoveResponse(response.OnEvent, response.ServerId);
             }
         }
 
-        private static bool IsTheSame(Response serverResponse, Response defaultResponse) => 
-            defaultResponse.Message == serverResponse.Message &&
+        private static bool IsTheSame(Response serverResponse, Response defaultResponse) {
+            return defaultResponse.Message == serverResponse.Message &&
             defaultResponse.OnEvent == serverResponse.OnEvent;
+        }
     }
 }
