@@ -11,6 +11,7 @@ using Watchman.DomainModel.DiscordServer.Queries;
 using Watchman.Discord.Areas.Users.Services;
 using Devscord.DiscordFramework.Commons.Exceptions;
 using Watchman.Discord.Areas.Users.BotCommands;
+using Watchman.DomainModel.Users.Commands.Handlers;
 
 namespace Watchman.Discord.Areas.Users.Controllers
 {

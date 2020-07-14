@@ -5,33 +5,16 @@ using Devscord.DiscordFramework.Services;
 using System;
 using System.Linq;
 using Watchman.Discord.Areas.Commons;
+using Watchman.DomainModel.Messages;
 using Watchman.DomainModel.Users;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {
-    public class MuteRequestParser
+    public class MuteRequestParser : RequestParser
     {
-        private readonly DiscordRequest _request;
-        private readonly UsersService _usersService;
-        private readonly Contexts _contexts;
 
-        public MuteRequestParser(DiscordRequest request, UsersService usersService, Contexts contexts)
+        public MuteRequestParser(DiscordRequest request, UsersService usersService, Contexts contexts) : base(request, usersService, contexts)
         {
-            this._request = request;
-            this._usersService = usersService;
-            this._contexts = contexts;
-        }
-
-        public UserContext GetUser()
-        {
-            var mention = this._request.GetMention();
-            var userToMute = this._usersService.GetUserByMention(this._contexts.Server, mention);
-
-            if (userToMute == null)
-            {
-                throw new UserNotFoundException(mention);
-            }
-            return userToMute;
         }
 
         public MuteEvent GetMuteEvent(ulong userId, Contexts contexts, DiscordRequest request)

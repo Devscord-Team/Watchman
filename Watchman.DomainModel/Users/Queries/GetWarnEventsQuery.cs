@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Watchman.Cqrs;
+
+namespace Watchman.DomainModel.Users.Queries
+{
+    public class GetWarnEventsQuery : IQuery<GetWarnEventsQueryResults>
+    {
+        public ulong ServerId { get; }
+        public ulong UserId { get; }
+
+        public GetWarnEventsQuery(ulong serverId, ulong userId)
+        {
+            this.ServerId = serverId;
+            this.UserId = userId;
+        }
+    }
+}
