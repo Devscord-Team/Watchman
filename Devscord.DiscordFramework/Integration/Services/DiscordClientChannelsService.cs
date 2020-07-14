@@ -1,4 +1,5 @@
-﻿using Devscord.DiscordFramework.Framework.Commands.Parsing;
+﻿using System;
+using Devscord.DiscordFramework.Framework.Commands.Parsing;
 using Devscord.DiscordFramework.Integration.Services.Interfaces;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Middlewares.Factories;
@@ -15,6 +16,8 @@ namespace Devscord.DiscordFramework.Integration.Services
 {
     internal class DiscordClientChannelsService : IDiscordClientChannelsService
     {
+        public Func<SocketChannel, Task> ChannelCreated { get; set; }
+
         private DiscordSocketRestClient _restClient => this._client.Rest;
         private readonly DiscordSocketClient _client;
         private readonly IDiscordClientUsersService _discordClientUsersService;
@@ -23,6 +26,7 @@ namespace Devscord.DiscordFramework.Integration.Services
         {
             this._client = client;
             this._discordClientUsersService = discordClientUsersService;
+            this._client.ChannelCreated += x => this.ChannelCreated(x);
         }
 
         public async Task SendDirectMessage(ulong userId, string message)
@@ -47,19 +51,39 @@ namespace Devscord.DiscordFramework.Integration.Services
             IChannel channel;
             try
             {
-                channel = await this._restClient.GetChannelAsync(channelId);
+                channel = this._client.GetChannel(channelId);
             }
             catch
             {
-                Log.Warning($"RestClient couldn't get channel: {channelId}");
-                channel = this._client.GetChannel(channelId);
+                channel = await this._restClient.GetChannelAsync(channelId);
+                Log.Warning("RestClient couldn't get channel: {channelId}", channelId);
+            }
+            return channel;
+        }
+
+        public async Task<IGuildChannel> GetGuildChannel(ulong channelId, RestGuild guild = null)
+        {
+            if (guild != null)
+            {
+                return await guild.GetChannelAsync(channelId);
+            }
+
+            IGuildChannel channel;
+            try
+            {
+                channel = (IGuildChannel)this._client.GetChannel(channelId);
+            }
+            catch
+            {
+                channel = (IGuildChannel)await this._restClient.GetChannelAsync(channelId);
+                Log.Warning("RestClient couldn't get channel: {channelId}", channelId);
             }
             return channel;
         }
 
         public async Task<IEnumerable<Message>> GetMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong fromMessageId = 0, bool goBefore = true)
         {
-            var textChannel = (ITextChannel) this.GetChannel(channel.Id).Result;
+            var textChannel = (ITextChannel)this.GetChannel(channel.Id).Result;
             if (!this.CanBotReadTheChannel(textChannel))
             {
                 return new List<Message>();

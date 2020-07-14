@@ -1,12 +1,12 @@
 ﻿using Devscord.DiscordFramework.Middlewares.Contexts;
-using Discord.Rest;
+using Discord;
 using System.Linq;
 
 namespace Devscord.DiscordFramework.Middlewares.Factories
 {
-    internal class DiscordServerContextFactory : IContextFactory<RestGuild, DiscordServerContext>
+    internal class DiscordServerContextFactory : IContextFactory<IGuild, DiscordServerContext>
     {
-        public DiscordServerContext Create(RestGuild restGuild)
+        public DiscordServerContext Create(IGuild restGuild)
         {
             var userFactory = new UserContextsFactory();
             var channelFactory = new ChannelContextFactory();

@@ -1,4 +1,5 @@
-﻿using Devscord.DiscordFramework.Commons;
+﻿using System;
+using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Discord.WebSocket;
 using System.Collections.Generic;
@@ -8,6 +9,9 @@ namespace Devscord.DiscordFramework.Integration.Services.Interfaces
 {
     internal interface IDiscordClientRolesService
     {
+        Func<SocketRole, SocketRole, Task> RoleUpdated { get; set; }
+        Func<SocketRole, Task> RoleCreated { get; set; }
+        Func<SocketRole, Task> RoleRemoved { get; set; }
         Task<UserRole> CreateNewRole(NewUserRole role, DiscordServerContext discordServer);
         IEnumerable<UserRole> GetRoles(ulong guildId);
         IEnumerable<SocketRole> GetSocketRoles(ulong guildId);
