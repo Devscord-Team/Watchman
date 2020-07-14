@@ -21,7 +21,7 @@ namespace Watchman.Discord.Areas.Responses.Services
             var defaultResponses = allResponses.Where(resp => resp.ServerId == 0);
             var serverResponses = allResponses.Where(resp => resp.ServerId != 0);
             var responsesToDelete = serverResponses
-                .Where(serverResponse => defaultResponses.Any(defaultResponse => IsTheSame(serverResponse, defaultResponse)));
+                .Where(serverResponse => defaultResponses.Any(defaultResponse => CompareResponses(serverResponse, defaultResponse)));
 
             foreach (var response in responsesToDelete)
             {
@@ -29,10 +29,10 @@ namespace Watchman.Discord.Areas.Responses.Services
             }
         }
 
-        private static bool IsTheSame(Response serverResponse, Response defaultResponse) 
+        private static bool CompareResponses(Response serverResponse, Response defaultResponse) 
         {
-            return defaultResponse.Message == serverResponse.Message &&
-            defaultResponse.OnEvent == serverResponse.OnEvent;
+            return defaultResponse.Message == serverResponse.Message 
+                && defaultResponse.OnEvent == serverResponse.OnEvent;
         }
     }
 }
