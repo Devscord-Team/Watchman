@@ -209,7 +209,6 @@ namespace Devscord.DiscordFramework
         private Task CallRoleCreated(SocketRole role)
         {
             var userRole = this._context.Resolve<UserRoleFactory>().Create(role);
-
             this.OnRoleCreated.ForEach(x => x.Invoke(userRole));
             return Task.CompletedTask;
         }
@@ -217,7 +216,6 @@ namespace Devscord.DiscordFramework
         private Task CallRoleRemoved(SocketRole role)
         {
             var userRole = this._context.Resolve<UserRoleFactory>().Create(role);
-
             this.OnRoleRemoved.ForEach(x => x.Invoke(userRole));
             return Task.CompletedTask;
         }

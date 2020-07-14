@@ -56,7 +56,7 @@ namespace Devscord.DiscordFramework.Integration.Services
             catch
             {
                 channel = await this._restClient.GetChannelAsync(channelId);
-                Log.Warning($"RestClient couldn't get channel: {channelId}");
+                Log.Warning("RestClient couldn't get channel: {channelId}", channelId);
             }
             return channel;
         }
@@ -76,7 +76,7 @@ namespace Devscord.DiscordFramework.Integration.Services
             catch
             {
                 channel = (IGuildChannel)await this._restClient.GetChannelAsync(channelId);
-                Log.Warning($"RestClient couldn't get channel: {channelId}");
+                Log.Warning("RestClient couldn't get channel: {channelId}", channelId);
             }
             return channel;
         }
