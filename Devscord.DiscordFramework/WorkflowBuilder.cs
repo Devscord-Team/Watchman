@@ -77,6 +77,30 @@ namespace Devscord.DiscordFramework
             return this;
         }
 
+        public WorkflowBuilder AddOnChannelCreated(Action<WorkflowBuilderHandlers<Func<ChannelContext, DiscordServerContext, Task>>> action)
+        {
+            this.AddHandlers(action, this._workflow.OnChannelCreated.Add);
+            return this;
+        }
+
+        public WorkflowBuilder AddOnRoleUpdated(Action<WorkflowBuilderHandlers<Func<UserRole, UserRole, Task>>> action)
+        {
+            this.AddHandlers(action, this._workflow.OnRoleUpdated.Add);
+            return this;
+        }
+
+        public WorkflowBuilder AddOnRoleCreated(Action<WorkflowBuilderHandlers<Func<UserRole, Task>>> action)
+        {
+            this.AddHandlers(action, this._workflow.OnRoleCreated.Add);
+            return this;
+        }
+
+        public WorkflowBuilder AddOnRoleRemoved(Action<WorkflowBuilderHandlers<Func<UserRole, Task>>> action)
+        {
+            this.AddHandlers(action, this._workflow.OnRoleRemoved.Add);
+            return this;
+        }
+
         public WorkflowBuilder AddOnWorkflowExceptionHandlers(Action<WorkflowBuilderHandlers<Action<Exception, Contexts>>> action)
         {
             this.AddHandlers(action, this._workflow.OnWorkflowException.Add);

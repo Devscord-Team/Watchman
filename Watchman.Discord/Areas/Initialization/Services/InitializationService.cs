@@ -41,13 +41,7 @@ namespace Watchman.Discord.Areas.Initialization.Services
 
         private async Task MuteRoleInit(DiscordServerContext server)
         {
-            var mutedRole = this._usersRolesService.GetRoleByName(UsersRolesService.MUTED_ROLE_NAME, server);
-
-            if (mutedRole == null)
-            {
-                await this._muteRoleInitService.InitForServer(server);
-            }
-
+            await this._muteRoleInitService.InitForServer(server);
             Log.Information("Mute role initialized: {server}", server.Name);
         }
 
