@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+using Devscord.DiscordFramework.Framework.Commands;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
@@ -21,20 +22,18 @@ namespace Watchman.Discord.Areas.Messaging.Controllers
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly ChannelsService _channelsService;
 
-        public SendController(MessagesServiceFactory messagesServiceFactory,ChannelsService channelsService)
+
+        public SendController(MessagesServiceFactory messagesServiceFactory, ChannelsService channelsService)
         {
             this._messagesServiceFactory = messagesServiceFactory;
             this._channelsService = channelsService;
+
         }
-        [DiscordCommand("send")]
-        public async Task SendCommand(DiscordRequest request, Contexts contexts)
+        public async Task Send(SendCommand sendCommand, Contexts contexts)
         {
-            var requestParser = new SendRequestParser(request, contexts, _channelsService);
-            var channelToSendMessageTo = requestParser.GetChannel();
+            var channelToSendMessageTo = sendCommand.ChannelMention;
             
-            string messageToSend = requestParser.ParseMessage();
-            contexts.SetContext(channelToSendMessageTo);
-           
+            var messageToSend = sendCommand.Message;
             var messagesService = this._messagesServiceFactory.Create(contexts);
             await messagesService.SendMessage(messageToSend);
         }

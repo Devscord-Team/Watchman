@@ -8,5 +8,10 @@ namespace Watchman.Discord.Areas.Messaging.BotCommands
 {
     public class SendCommand : IBotCommand
     {
+        [ChannelMention]
+        public string ChannelMention { get; set; }
+
+        [Text]
+        public string Message { get; set; }
     }
 }
