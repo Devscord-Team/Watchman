@@ -29,7 +29,8 @@ namespace Watchman.Discord.Areas.Responses.Services
             }
         }
 
-        private static bool IsTheSame(Response serverResponse, Response defaultResponse) {
+        private static bool IsTheSame(Response serverResponse, Response defaultResponse) 
+        {
             return defaultResponse.Message == serverResponse.Message &&
             defaultResponse.OnEvent == serverResponse.OnEvent;
         }
