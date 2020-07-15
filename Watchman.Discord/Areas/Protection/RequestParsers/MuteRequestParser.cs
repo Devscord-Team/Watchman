@@ -12,7 +12,6 @@ namespace Watchman.Discord.Areas.Protection.Services
 {
     public class MuteRequestParser : RequestParser
     {
-
         public MuteRequestParser(DiscordRequest request, UsersService usersService, Contexts contexts) : base(request, usersService, contexts)
         {
         }
