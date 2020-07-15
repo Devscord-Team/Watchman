@@ -27,10 +27,10 @@ namespace Watchman.Discord.Areas.Protection.Services
 
             var reason = _request.Arguments.FirstOrDefault(x => x.Name == "reason" || x.Name == "r")?.Value;
             var warnTime = _request.SentAt;
-            return new WarnEvent(grantor, receiver, reason ?? "No reason specified", warnTime, _contexts.Server.Id);
+            return new WarnEvent(grantor, receiver, reason, warnTime, _contexts.Server.Id);
         }
 
-        public ulong GetWarnsServerId()
+        public ulong GetServerIdForWarns()
         {
             bool allServers = _request.Arguments.Any(x => x.Name == "all");
 

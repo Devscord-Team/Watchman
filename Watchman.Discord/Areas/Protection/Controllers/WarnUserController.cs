@@ -35,17 +35,24 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         {
             var requestParser = new WarnRequestParser(request, this._usersService, contexts);
             var warnEvent = requestParser.GetWarnEvent();
-            await _warnService.WarnUser(warnEvent);
-
             var msgService = _messagesServiceFactory.Create(contexts);
-            await msgService.SendMessage("User " + warnEvent.Receiver.Name + " has been warned by " + warnEvent.Grantor.Name + " for: " + warnEvent.Reason, MessageType.Json);
+
+            if (string.IsNullOrEmpty(warnEvent.Reason) || string.IsNullOrWhiteSpace(warnEvent.Reason))
+            {
+                await msgService.SendMessage("You have to specify warn reason -reason -r \"reason\"", MessageType.Json);
+            }
+            else
+            {
+                await _warnService.WarnUser(warnEvent);
+                await msgService.SendMessage("User " + warnEvent.Receiver.Name + " has been warned by " + warnEvent.Grantor.Name + " for: " + warnEvent.Reason, MessageType.Json);
+            }
         }
 
         [DiscordCommand("warns")]
         public async Task GetWarns(DiscordRequest request, Contexts contexts)
         {
             var requestParser = new WarnRequestParser(request, this._usersService, contexts);
-            var serverId = requestParser.GetWarnsServerId();
+            var serverId = requestParser.GetServerIdForWarns();
             UserContext user = null;
 
             try
