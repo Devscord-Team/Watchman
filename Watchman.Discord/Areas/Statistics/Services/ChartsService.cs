@@ -43,8 +43,8 @@ namespace Watchman.Discord.Areas.Statistics.Services
                 }
             };
 
-            var imagePath = await this._quickchartService.GetImage(chart);
-            return imagePath;
+            var image = await this._quickchartService.GetImage(chart);
+            return image;
         }
     }
 }

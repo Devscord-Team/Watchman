@@ -19,6 +19,7 @@ namespace Watchman.Integrations.Quickchart
             var url = baseUrl + $"?c={{type:'{chart.Type}',data:{{labels:[{labels}], datasets:[{{label:'{chart.Data.Label}',data:[{datasetValues}]}}]}}}}" + "&backgroundColor=white";
 
             var response = await this.httpClient.GetAsync(url);
+            response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStreamAsync();
         }
     }

@@ -59,7 +59,7 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
             {
                 var query = new GetMessagesStatisticsQuery(period);
                 var result = await this._queryBus.ExecuteAsync(query);
-                var periodStats = result.PeriodStatistics.Where(x => x.Count > 0); // todo
+                var periodStats = result.PeriodStatistics.Where(x => x.Count > 0);
                 return;
             }
 
