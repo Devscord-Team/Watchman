@@ -52,7 +52,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         public string ProcessResponse(Response response, Contexts contexts, params KeyValuePair<string, string>[] values)
         {
             var fields = contexts.ConvertToResponseFields(response.GetFields()).ToList();
-            Log.Debug("Found fields {fields} in response {response}", fields, response);
+            Log.Debug("Found fields {fields} in response {response}", fields.ToJson(), response.ToJson());
             fields.AddRange(values);
             Log.Debug("Start parsing response {response} with values {values}", response.ToJson(), values.ToJson());
             return this._parser.Parse(response, fields);
