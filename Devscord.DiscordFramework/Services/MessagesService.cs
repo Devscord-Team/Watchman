@@ -61,13 +61,13 @@ namespace Devscord.DiscordFramework.Services
 
         public async Task SendFile(string filePath)
         {
-            var channel = (IRestMessageChannel) await Server.GetChannel(this.ChannelId);
+            var channel = this.GetChannel();
             await channel.SendFileAsync(filePath);
         }
 
         public async Task SendFile(string fileName, Stream stream)
         {
-            var channel = (IRestMessageChannel) await Server.GetChannel(this.ChannelId);
+            var channel = this.GetChannel();
             await channel.SendFileAsync(stream, fileName);
             await stream.DisposeAsync();
         }

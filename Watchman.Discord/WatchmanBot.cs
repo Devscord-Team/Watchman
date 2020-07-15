@@ -66,10 +66,10 @@ namespace Watchman.Discord
                         {
                             var stopwatch = Stopwatch.StartNew();
 
-                            // when bot was offline for less than 5 minutes, it doesn't make sense to init all servers
-                            if (WorkflowBuilder.DisconnectedTimes.LastOrDefault() > DateTime.Now.AddMinutes(-5))
+                            // when bot was offline for less than 1 minutes, it doesn't make sense to init all servers
+                            if (WorkflowBuilder.DisconnectedTimes.LastOrDefault() > DateTime.Now.AddMinutes(-1))
                             {
-                                Log.Information("Bot was connected less than 5 minutes ago");
+                                Log.Information("Bot was connected less than 1 minute ago");
                                 return Task.CompletedTask;
                             }
                             var servers = serversService.GetDiscordServers().Result;
@@ -103,7 +103,11 @@ namespace Watchman.Discord
                         .AddHandler(this.PrintDebugExceptionInfo, onlyOnDebug: true)
                         .AddHandler(this.PrintExceptionOnConsole);
                 })
-                .Build();
+                .AddOnChannelCreated(builder =>
+                {
+                    builder
+                        .AddFromIoC<MuteRoleInitService>(x => (_, server) => x.InitForServer(server));
+                });
         }
 
         private void PrintDebugExceptionInfo(Exception e, Contexts contexts)

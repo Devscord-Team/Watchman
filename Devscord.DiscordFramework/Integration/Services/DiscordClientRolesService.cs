@@ -1,10 +1,12 @@
-﻿using Devscord.DiscordFramework.Commons;
+﻿using System;
+using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Integration.Services.Interfaces;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Middlewares.Factories;
 using Discord;
 using Discord.WebSocket;
+using Serilog;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,6 +15,10 @@ namespace Devscord.DiscordFramework.Integration.Services
 {
     internal class DiscordClientRolesService : IDiscordClientRolesService
     {
+        public Func<SocketRole, SocketRole, Task> RoleUpdated { get; set; }
+        public Func<SocketRole, Task> RoleCreated { get; set; }
+        public Func<SocketRole, Task> RoleRemoved { get; set; }
+
         private DiscordSocketRestClient _restClient => this._client.Rest;
         private readonly DiscordSocketClient _client;
         private readonly IDiscordClientChannelsService _discordClientChannelsService;
@@ -22,13 +28,13 @@ namespace Devscord.DiscordFramework.Integration.Services
         {
             this._client = client;
             this._discordClientChannelsService = discordClientChannelsService;
-            this._client.Ready += async () => await Task.Run(() =>
-            {
-                return this._roles = this._client.Guilds.SelectMany(x => x.Roles).ToList();
-            });
+            this._client.Ready += async () => await Task.Run(() => this._roles = this._client.Guilds.SelectMany(x => x.Roles).ToList());
             this._client.RoleCreated += this.AddRole;
+            this._client.RoleCreated += x => this.RoleCreated(x);
             this._client.RoleDeleted += this.RemoveRole;
-            this._client.RoleUpdated += this.RoleUpdated;
+            this._client.RoleDeleted += x => this.RoleRemoved(x);
+            this._client.RoleUpdated += this.UpdateRole;
+            this._client.RoleUpdated += (from, to) => this.RoleUpdated(from, to);
         }
 
         public async Task<UserRole> CreateNewRole(NewUserRole role, DiscordServerContext discordServer)
@@ -57,12 +63,20 @@ namespace Devscord.DiscordFramework.Integration.Services
         {
             await Task.Delay(1000);
             var createdRole = this.GetSocketRoles(server.Id).FirstOrDefault(x => x.Id == role.Id);
-            var channelPermissions = new OverwritePermissions(permissions.AllowPermissions.GetRawValue(), permissions.DenyPermissions.GetRawValue());
-
-            Parallel.ForEach(channels, async c =>
+            if (createdRole == null)
             {
-                var channelSocket = (IGuildChannel) await this._discordClientChannelsService.GetChannel(c.Id);
-                await channelSocket.AddPermissionOverwriteAsync(createdRole, channelPermissions);
+                Log.Error("Created role {roleName} was null", role.Name);
+                return;
+            }
+
+            var channelPermissions = new OverwritePermissions(permissions.AllowPermissions.GetRawValue(), permissions.DenyPermissions.GetRawValue());
+            Parallel.ForEach(channels, c =>
+            {
+                var channelSocket = (IGuildChannel)this._discordClientChannelsService.GetChannel(c.Id).Result;
+                if (channelSocket != null && channelSocket.PermissionOverwrites.All(x => x.TargetId != createdRole.Id))
+                {
+                    channelSocket.AddPermissionOverwriteAsync(createdRole, channelPermissions).Wait();
+                }
             });
         }
 
@@ -93,7 +107,7 @@ namespace Devscord.DiscordFramework.Integration.Services
             return Task.CompletedTask;
         }
 
-        private Task RoleUpdated(SocketRole from, SocketRole to)
+        private Task UpdateRole(SocketRole from, SocketRole to)
         {
             this._roles.Remove(from);
             this._roles.Add(to);
