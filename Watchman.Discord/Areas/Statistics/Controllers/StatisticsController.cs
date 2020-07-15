@@ -70,9 +70,9 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
 #if DEBUG
             PrintDebugStats(report);
 #endif
-            var path = this._chartsService.GetImageStatisticsPerPeriod(report);
+            var stream = await this._chartsService.GetImageStatisticsPerPeriod(report);
             var messagesService = this._messagesServiceFactory.Create(contexts);
-            await messagesService.SendFile(path);
+            await messagesService.SendFile("Statistics.png", stream);
         }
 
         private static void PrintDebugStats(StatisticsReport report)
