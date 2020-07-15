@@ -10,6 +10,6 @@ namespace Devscord.DiscordFramework.UnitTests.Commands
 
         [UserMention]
         [Optional]
-        public string TestUser { get; set; }
+        public ulong TestUser { get; set; }
     }
 }

@@ -14,6 +14,6 @@ namespace Devscord.DiscordFramework.UnitTests.Commands
         public int TestNumber { get; set; }
 
         [UserMention]
-        public string TestUser { get; set; }
+        public ulong TestUser { get; set; }
     }
 }
