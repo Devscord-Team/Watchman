@@ -1,10 +1,12 @@
 ﻿using Autofac;
 using Devscord.DiscordFramework.Framework;
+using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Integration;
 using Devscord.DiscordFramework.Middlewares;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Discord;
 using Discord.WebSocket;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -46,6 +48,7 @@ namespace Devscord.DiscordFramework
 
         public WorkflowBuilder SetDefaultMiddlewares()
         {
+            Log.Debug("Default middlewares added");
             this._workflow
                 .AddMiddleware<ChannelMiddleware>()
                 .AddMiddleware<ServerMiddleware>()
@@ -53,57 +56,73 @@ namespace Devscord.DiscordFramework
             return this;
         }
 
+        public WorkflowBuilder AddCustomMiddleware<T>() where T : IMiddleware
+        {
+            Log.Debug("Custom middleware {middleware} added", nameof(T));
+            this._workflow.AddMiddleware<T>();
+            return this;
+        }
+
         public WorkflowBuilder AddOnReadyHandlers(Action<WorkflowBuilderHandlers<Func<Task>>> action)
         {
             this.AddHandlers(action, this._workflow.OnReady.Add);
+            Log.Debug("OnReady handlers have been set");
             return this;
         }
 
         public WorkflowBuilder AddOnUserJoinedHandlers(Action<WorkflowBuilderHandlers<Func<Contexts, Task>>> action)
         {
             this.AddHandlers(action, this._workflow.OnUserJoined.Add);
+            Log.Debug("OnUserJoined handlers have been set");
             return this;
         }
 
         public WorkflowBuilder AddOnMessageReceivedHandlers(Action<WorkflowBuilderHandlers<Func<SocketMessage, Task>>> action)
         {
             this.AddHandlers(action, this._workflow.OnMessageReceived.Add);
+            Log.Debug("OnMessageReceived handlers have been set");
             return this;
         }
 
-        public WorkflowBuilder AddOnDiscordServerAddedBot(Action<WorkflowBuilderHandlers<Func<DiscordServerContext, Task>>> action)
+        public WorkflowBuilder AddOnDiscordServerAddedBotHandlers(Action<WorkflowBuilderHandlers<Func<DiscordServerContext, Task>>> action)
         {
             this.AddHandlers(action, this._workflow.OnDiscordServerAddedBot.Add);
+            Log.Debug("OnDiscordServerAddedBot handlers have been set");
             return this;
         }
 
-        public WorkflowBuilder AddOnChannelCreated(Action<WorkflowBuilderHandlers<Func<ChannelContext, DiscordServerContext, Task>>> action)
+        public WorkflowBuilder AddOnChannelCreatedHandlers(Action<WorkflowBuilderHandlers<Func<ChannelContext, DiscordServerContext, Task>>> action)
         {
             this.AddHandlers(action, this._workflow.OnChannelCreated.Add);
+            Log.Debug("OnChannelCreated handlers have been set");
             return this;
         }
 
-        public WorkflowBuilder AddOnRoleUpdated(Action<WorkflowBuilderHandlers<Func<UserRole, UserRole, Task>>> action)
+        public WorkflowBuilder AddOnRoleUpdatedHandlers(Action<WorkflowBuilderHandlers<Func<UserRole, UserRole, Task>>> action)
         {
             this.AddHandlers(action, this._workflow.OnRoleUpdated.Add);
+            Log.Debug("OnRoleUpdated handlers have been set");
             return this;
         }
 
-        public WorkflowBuilder AddOnRoleCreated(Action<WorkflowBuilderHandlers<Func<UserRole, Task>>> action)
+        public WorkflowBuilder AddOnRoleCreatedHandlers(Action<WorkflowBuilderHandlers<Func<UserRole, Task>>> action)
         {
             this.AddHandlers(action, this._workflow.OnRoleCreated.Add);
+            Log.Debug("OnRoleCreated handlers have been set");
             return this;
         }
 
-        public WorkflowBuilder AddOnRoleRemoved(Action<WorkflowBuilderHandlers<Func<UserRole, Task>>> action)
+        public WorkflowBuilder AddOnRoleRemovedHandlers(Action<WorkflowBuilderHandlers<Func<UserRole, Task>>> action)
         {
             this.AddHandlers(action, this._workflow.OnRoleRemoved.Add);
+            Log.Debug("OnRoleRemoved handlers have been set");
             return this;
         }
 
         public WorkflowBuilder AddOnWorkflowExceptionHandlers(Action<WorkflowBuilderHandlers<Action<Exception, Contexts>>> action)
         {
             this.AddHandlers(action, this._workflow.OnWorkflowException.Add);
+            Log.Debug("OnWorkflowException handlers have been set");
             return this;
         }
 
@@ -111,9 +130,9 @@ namespace Devscord.DiscordFramework
         {
             var workflowBuilderHandlers = new WorkflowBuilderHandlers<T>(this._context);
             action.Invoke(workflowBuilderHandlers);
-            foreach (var exceptionHandler in workflowBuilderHandlers.Handlers)
+            foreach (var handler in workflowBuilderHandlers.Handlers)
             {
-                workflowAction.Invoke(exceptionHandler);
+                workflowAction.Invoke(handler);
             }
         }
 
