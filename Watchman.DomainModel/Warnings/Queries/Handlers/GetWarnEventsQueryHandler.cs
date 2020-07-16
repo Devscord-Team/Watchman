@@ -22,12 +22,12 @@ namespace Watchman.DomainModel.Warnings.Queries.Handlers
 
             if (query.ServerId == 0)
             {
-                var filteredEvents = session.Get<WarnEvent>().Where(x => (x.ReceiverId == query.UserId));
+                var filteredEvents = session.Get<WarnEvent>().Where(x => x.ReceiverId == query.UserId);
                 return new GetWarnEventsQueryResults(filteredEvents);
             }
             else
             {
-                var filteredEvents = session.Get<WarnEvent>().Where(x => (x.ReceiverId == query.UserId) && (x.ServerId == query.ServerId));
+                var filteredEvents = session.Get<WarnEvent>().Where(x => x.ReceiverId == query.UserId && x.ServerId == query.ServerId);
                 return new GetWarnEventsQueryResults(filteredEvents);
             }
         }
