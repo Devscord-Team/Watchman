@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Watchman.DomainModel.Messages;
 using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Warnings
