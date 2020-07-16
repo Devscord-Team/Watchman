@@ -57,7 +57,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands
 
             //Assert
             Assert.That(result.TestNumber, Is.EqualTo(12));
-            Assert.That(result.TestUser, Is.EqualTo("<@1234567890>"));
+            Assert.That(result.TestUser, Is.EqualTo(1234567890));
         }
     }
 }

@@ -65,7 +65,6 @@ namespace Watchman.Discord
                         .AddFromIoC<InitializationService, DiscordServersService>((initService, serversService) => () =>
                         {
                             var stopwatch = Stopwatch.StartNew();
-
                             // when bot was offline for less than 1 minutes, it doesn't make sense to init all servers
                             if (WorkflowBuilder.DisconnectedTimes.LastOrDefault() > DateTime.Now.AddMinutes(-1))
                             {
@@ -75,9 +74,9 @@ namespace Watchman.Discord
                             var servers = serversService.GetDiscordServers().Result;
                             Task.WaitAll(servers.Select(async server =>
                             {
-                                Log.Information($"Initializing server: {server.Name}");
+                                Log.Information("Initializing server: {server}", server.ToJson());
                                 await initService.InitServer(server);
-                                Log.Information($"Done server: {server.Name}");
+                                Log.Information("Done server: {server}", server.ToJson());
                             }).ToArray());
 
                             Log.Information(stopwatch.ElapsedMilliseconds.ToString());
@@ -91,7 +90,7 @@ namespace Watchman.Discord
                         .AddFromIoC<WelcomeUserService>(x => x.WelcomeUser)
                         .AddFromIoC<MutingRejoinedUsersService>(x => x.MuteAgainIfNeeded);
                 })
-                .AddOnDiscordServerAddedBot(builder =>
+                .AddOnDiscordServerAddedBotHandlers(builder =>
                 {
                     builder
                         .AddFromIoC<InitializationService>(initService => initService.InitServer);
@@ -103,7 +102,7 @@ namespace Watchman.Discord
                         .AddHandler(this.PrintDebugExceptionInfo, onlyOnDebug: true)
                         .AddHandler(this.PrintExceptionOnConsole);
                 })
-                .AddOnChannelCreated(builder =>
+                .AddOnChannelCreatedHandlers(builder =>
                 {
                     builder
                         .AddFromIoC<MuteRoleInitService>(x => (_, server) => x.InitForServer(server));
