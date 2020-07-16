@@ -53,7 +53,7 @@ namespace Watchman.Discord.Areas.Responses.Controllers
             var defaultResponse = await this._responsesService.GetResponseByOnEvent(onEvent, DomainResponse.DEFAULT_SERVER_ID);
             if (defaultResponse.Message == message)
             {
-                await messageService.SendResponse(x => x.ResponseHasBeenAdded(contexts, onEvent));
+                await messageService.SendResponse(x => x.ResponseAlreadyExists(contexts, onEvent));
                 return;
             }
 
@@ -84,6 +84,7 @@ namespace Watchman.Discord.Areas.Responses.Controllers
             if (defaultResponse.Message == message)
             {
                 await this._responsesService.RemoveResponse(response.OnEvent, response.ServerId);
+                await messageService.SendResponse(x => x.ResponseTheSameAsDefault(contexts, onEvent));
                 return;
             }
 
