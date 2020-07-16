@@ -10,7 +10,8 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
     {
 
         private readonly Regex _exTime = new Regex(@"\d+(h|m|s)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-        private readonly Regex _exMention = new Regex(@"<@&?\d+>", RegexOptions.Compiled);
+        private readonly Regex _exUserMention = new Regex(@"\<@[^\d]*\d+\>", RegexOptions.Compiled);
+        private readonly Regex _exChannelMention = new Regex(@"\<#[^\d]*\d+\>", RegexOptions.Compiled);
 
         public bool IsMatchedWithCommand(DiscordRequest request, BotCommandTemplate template)
         {
@@ -70,7 +71,11 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             {
                 return false;
             }
-            if (type == BotCommandPropertyType.UserMention || type == BotCommandPropertyType.ChannelMention && !this._exMention.IsMatch(value))
+            if (type == BotCommandPropertyType.UserMention && !this._exUserMention.IsMatch(value))
+            {
+                return false;
+            }
+            if (type == BotCommandPropertyType.ChannelMention && !this._exChannelMention.IsMatch(value))
             {
                 return false;
             }
