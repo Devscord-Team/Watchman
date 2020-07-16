@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Framework.Commands.Parsing;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
@@ -72,6 +73,7 @@ namespace Devscord.DiscordFramework
             Server.RoleRemoved += this.CallRoleRemoved;
             Server.RoleCreated += this.CallRoleCreated;
             Server.RoleUpdated += this.CallRoleUpdated;
+            Log.Debug("Handlers have been mapped");
         }
 
         private async void MessageReceived(SocketMessage socketMessage)
@@ -122,7 +124,7 @@ namespace Devscord.DiscordFramework
 #if DEBUG
             socketMessage.Channel.SendMessageAsync($"```Parsing time: {elapsedParse}ticks```").Wait();
 #endif
-            Log.Information("Request parsed");
+            Log.Information("Request parsed {request}", request.ToJson());
             return request;
         }
 
@@ -135,7 +137,7 @@ namespace Devscord.DiscordFramework
 #if DEBUG
             socketMessage.Channel.SendMessageAsync($"```Middlewares time: {elapsedMiddlewares}ticks```").Wait();
 #endif
-            Log.Information("Contexts created");
+            Log.Information("Contexts created {contexts}", contexts.ToJson());
             return contexts;
         }
 
@@ -144,15 +146,18 @@ namespace Devscord.DiscordFramework
 #if DEBUG
             if (!socketMessage.Channel.Name.Contains("test"))
             {
+                Log.Information("MESSAGE {message}\nSKIPPED BECAUSE THIS IS NOT TEST CHANNEL - try to write it on channel with \"test\" word in name\nFor example \"test-1\"", socketMessage.Content);
                 return true;
             }
 #endif
             if (socketMessage.Author.IsBot || socketMessage.Author.IsWebhook)
             {
+                Log.Debug("Message {message} skipped because is from bot or webhook", socketMessage.Content);
                 return true;
             }
             if (socketMessage.Channel.Name.Contains("logs"))
             {
+                Log.Debug("Message {message} skipped because is from logs channel", socketMessage.Content);
                 return true;
             }
 
@@ -173,7 +178,7 @@ namespace Devscord.DiscordFramework
             {
                 contexts.SetContext(landingChannel);
             }
-
+            Log.Information("User joined to server {contexts}", contexts.ToJson());
             this.OnUserJoined.ForEach(x => x.Invoke(contexts));
         }
 
@@ -181,13 +186,14 @@ namespace Devscord.DiscordFramework
         {
             var restGuild = await Server.GetGuild(guild.Id);
             var discordServer = this._context.Resolve<DiscordServerContextFactory>().Create(restGuild);
-
+            Log.Information("Bot added to server {server} with owner: {owner}", discordServer.ToJson(), guild.Owner.ToString());
             this.OnDiscordServerAddedBot.ForEach(x => x.Invoke(discordServer));
         }
 
         private async Task CallChannelCreated(SocketChannel socketChannel)
         {
             var channel = this._context.Resolve<ChannelContextFactory>().Create(socketChannel);
+            Log.Information("Channel has been created {channel}", channel.ToJson());
             var guildChannel = await Server.GetGuildChannel(socketChannel.Id);
             var discordServerFactory = this._context.Resolve<DiscordServerContextFactory>();
             var guild = await Server.GetGuild(guildChannel.GuildId); // must get guild by id (not from guildChannel.Guild) - in opposite way it won't work
@@ -201,6 +207,7 @@ namespace Devscord.DiscordFramework
             var roleFactory = this._context.Resolve<UserRoleFactory>();
             var fromRole = roleFactory.Create(from);
             var toRole = roleFactory.Create(to);
+            Log.Information("Role has been updated from {fromRole} to {toRole}", fromRole.ToJson(), toRole.ToJson());
 
             this.OnRoleUpdated.ForEach(x => x.Invoke(fromRole, toRole));
             return Task.CompletedTask;
@@ -209,6 +216,7 @@ namespace Devscord.DiscordFramework
         private Task CallRoleCreated(SocketRole role)
         {
             var userRole = this._context.Resolve<UserRoleFactory>().Create(role);
+            Log.Information("Role has been created {role}", userRole.ToJson());
             this.OnRoleCreated.ForEach(x => x.Invoke(userRole));
             return Task.CompletedTask;
         }
@@ -216,6 +224,7 @@ namespace Devscord.DiscordFramework
         private Task CallRoleRemoved(SocketRole role)
         {
             var userRole = this._context.Resolve<UserRoleFactory>().Create(role);
+            Log.Information("Role has been removed {role}", userRole.ToJson());
             this.OnRoleRemoved.ForEach(x => x.Invoke(userRole));
             return Task.CompletedTask;
         }

@@ -1,4 +1,5 @@
-﻿using Devscord.DiscordFramework.Middlewares.Contexts;
+﻿using Devscord.DiscordFramework.Commons.Extensions;
+using Devscord.DiscordFramework.Middlewares.Contexts;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -42,18 +43,18 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             if (values.Length != response.GetFields().Count())
             {
-                throw new ArgumentException($"Cannot process response {response.OnEvent}. Values must be equal to required.");
+                throw new ArgumentException("Cannot process response {response}. Values must be equal to required.", response.ToJson());
             }
-            Log.Debug($"Start parsing response {response} with values {values}");
+            Log.Debug("Start parsing response {response} with values {values}", response.ToJson(), values.ToJson());
             return this._parser.Parse(response, values);
         }
 
         public string ProcessResponse(Response response, Contexts contexts, params KeyValuePair<string, string>[] values)
         {
             var fields = contexts.ConvertToResponseFields(response.GetFields()).ToList();
-            Log.Debug($"Found fields {fields} in response {response}");
+            Log.Debug("Found fields {fields} in response {response}", fields.ToJson(), response.ToJson());
             fields.AddRange(values);
-            Log.Debug($"Start parsing response {response} with values {values}");
+            Log.Debug("Start parsing response {response} with values {values}", response.ToJson(), values.ToJson());
             return this._parser.Parse(response, fields);
         }
     }

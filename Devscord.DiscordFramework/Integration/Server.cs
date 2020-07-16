@@ -94,9 +94,9 @@ namespace Devscord.DiscordFramework.Integration
             return _discordClient.RolesService.GetSocketRoles(guildId);
         }
 
-        internal static Task SetRolePermissions(ChannelContext channel, ChangedPermissions permissions, UserRole role)
+        internal static Task SetRolePermissions(ChannelContext channel, DiscordServerContext server, ChangedPermissions permissions, UserRole role)
         {
-            return _discordClient.RolesService.SetRolePermissions(channel, permissions, role);
+            return _discordClient.RolesService.SetRolePermissions(channel, server, permissions, role);
         }
 
         internal static Task SetRolePermissions(IEnumerable<ChannelContext> channels, DiscordServerContext server, ChangedPermissions permissions, UserRole role)
