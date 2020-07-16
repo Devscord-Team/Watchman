@@ -10,7 +10,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
     {
         public object GetValueByName(string key, bool isList, DiscordRequest request, BotCommandTemplate template)
         {
-            var result = request.Arguments.FirstOrDefault(a => a.Name.ToLowerInvariant() == key.ToLowerInvariant());
+            var result = request.Arguments.FirstOrDefault(a => (a.Name?.ToLowerInvariant() ?? string.Empty) == key.ToLowerInvariant());
             if (result == null)
             {
                 return null;
@@ -23,7 +23,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             }
             if (!isList)
             {
-                return result.Value;
+                return result.Value ?? string.Empty;
             }
             var argumentsList = request.Arguments.ToList();
             var indexOf = argumentsList.IndexOf(result);

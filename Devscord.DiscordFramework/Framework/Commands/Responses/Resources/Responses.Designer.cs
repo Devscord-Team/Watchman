@@ -106,6 +106,24 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Parametr {{arg}} jest nieprawidłowy..
+        /// </summary>
+        public static string EmptyArgument {
+            get {
+                return ResourceManager.GetString("EmptyArgument", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ostrzeżenia użytkownika {{user}}: {{warns}}.
+        /// </summary>
+        public static string GetUserWarns {
+            get {
+                return ResourceManager.GetString("GetUserWarns", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dla tego polecenia są dostępne tylko argumenty: {{arguments}}.
         /// </summary>
         public static string InvalidArguments {
@@ -417,6 +435,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         public static string UserDoesntHaveAvatar {
             get {
                 return ResourceManager.GetString("UserDoesntHaveAvatar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Użytkownik {{receiver}} dostał ostrzeżenie od {{granter}} z powodu: {{reason}}..
+        /// </summary>
+        public static string UserHasBeenWarned {
+            get {
+                return ResourceManager.GetString("UserHasBeenWarned", resourceCulture);
             }
         }
         

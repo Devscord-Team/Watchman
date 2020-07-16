@@ -250,5 +250,26 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("AllRolesSettingsChanged");
         }
+
+        public static string UserHasBeenWarned(this ResponsesService responsesService, string granter, string receiver, string reason)
+        {
+            return responsesService.ProcessResponse("UserHasBeenWarned",
+                new KeyValuePair<string, string>("granter", granter),
+                new KeyValuePair<string, string>("receiver", receiver),
+                new KeyValuePair<string, string>("reason", reason));
+        }
+
+        public static string GetUserWarns(this ResponsesService responsesService, string user, string warns)
+        {
+            return responsesService.ProcessResponse("GetUserWarns",
+                new KeyValuePair<string, string>("user", user),
+                new KeyValuePair<string, string>("warns", warns));
+        }
+
+        public static string EmptyArgument(this ResponsesService responsesService, string argName)
+        {
+            return responsesService.ProcessResponse("EmptyArgument",
+                new KeyValuePair<string, string>("arg", argName));        
+        }
     }
 }

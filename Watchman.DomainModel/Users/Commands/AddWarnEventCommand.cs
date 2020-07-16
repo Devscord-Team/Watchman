@@ -9,9 +9,14 @@ namespace Watchman.DomainModel.Users.Commands.Handlers
     {
         public WarnEvent WarnEvent { get; }
 
-        public AddWarnEventCommand(WarnEvent warnEvent)
+        public AddWarnEventCommand(ulong receiverId, ulong granterId, string reason, ulong serverId)
         {
-            this.WarnEvent = warnEvent;
+            WarnEvent = new WarnEvent(
+                    receiverId,
+                    granterId,
+                    reason,
+                    serverId
+                );
         }
     }
 }

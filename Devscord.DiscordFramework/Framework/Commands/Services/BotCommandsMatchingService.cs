@@ -79,7 +79,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             {
                 return false;
             }
-            if (type == BotCommandPropertyType.SingleWord && value.Contains(' '))
+            if (type == BotCommandPropertyType.SingleWord && (value?.Contains(' ') ?? false))
             {
                 return false;
             }

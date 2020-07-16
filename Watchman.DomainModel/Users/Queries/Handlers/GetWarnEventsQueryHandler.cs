@@ -20,19 +20,16 @@ namespace Watchman.DomainModel.Users.Queries.Handlers
         {
             using var session = this._sessionFactory.Create();
 
-            var warnEvents = session.Get<WarnEvent>().ToList();
-            List<WarnEvent> filteredEvents = new List<WarnEvent>();
-
             if (query.ServerId == 0)
             {
-                filteredEvents = warnEvents.Where(x => (x.Receiver.Id == query.UserId)).ToList();
+                var filteredEvents = session.Get<WarnEvent>().Where(x => (x.ReceiverId == query.UserId));
+                return new GetWarnEventsQueryResults(filteredEvents);
             }
             else
             {
-                filteredEvents = warnEvents.Where(x => (x.Receiver.Id == query.UserId) && (x.ServerId == query.ServerId)).ToList();
+                var filteredEvents = session.Get<WarnEvent>().Where(x => (x.ReceiverId == query.UserId) && (x.ServerId == query.ServerId));
+                return new GetWarnEventsQueryResults(filteredEvents);
             }
-
-            return new GetWarnEventsQueryResults(filteredEvents);
         }
     }
 }

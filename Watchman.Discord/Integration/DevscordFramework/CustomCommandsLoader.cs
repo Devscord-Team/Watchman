@@ -35,13 +35,16 @@ namespace Watchman.Discord.Integration.DevscordFramework
         public async Task InitDefaultCustomCommands()
         {
             var customCommands = new List<AddCustomCommandsCommand>();
-            foreach (var serverId in new ulong[] { 636238466899902504, 597066406521208852 })
+            foreach (var serverId in new ulong[] { 636238466899902504, 597066406521208852, 732635141456789535, 732294259641679923 })
             {
                 customCommands.AddRange(new List<AddCustomCommandsCommand>
                 {
                     new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.AddRoleCommand", @"-add\s*role\s*(?<Roles>[\w\W\s\""]*)", serverId),
                     new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.RemoveRoleCommand", @"-remove\s*role\s*(?<Roles>[\w\W\s\""]*)", serverId),
                     new AddCustomCommandsCommand("Watchman.Discord.Areas.Administration.BotCommands.SetRoleCommand", @"-set\s*role\s*(?<Roles>[\w\W\s\""]*)\s*-((?<Safe>safe)|(?<Unsafe>unsafe))", serverId),
+                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.Warns.AddWarnCommand", @"-addwarn\s*-user\s*<@&?\d+>\s*-reason\s*.+", serverId),
+                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.Warns.GetWarnsCommand", @"-warns\s*-user\s*<@&?\d+>\s*", serverId)
+
                 });
             }
             var commandsInBase = this._queryBus.Execute(new GetCustomCommandsQuery()).CustomCommands.ToList();

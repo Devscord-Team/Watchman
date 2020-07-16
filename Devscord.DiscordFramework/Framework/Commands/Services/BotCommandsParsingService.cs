@@ -53,7 +53,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                     property.SetValue(instance, value);
                     continue;
                 }
-                if (value is string valueString && !string.IsNullOrWhiteSpace(valueString))
+                if (value is string valueString)
                 {
                     var convertedType = this._botCommandPropertyConversionService.ConvertType(valueString, propertyType.Value);
                     property.SetValue(instance, convertedType);

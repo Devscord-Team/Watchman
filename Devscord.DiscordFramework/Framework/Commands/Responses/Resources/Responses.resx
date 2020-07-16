@@ -132,6 +132,12 @@
   <data name="AvailableSafeRoles" xml:space="preserve">
     <value>Dostępne role: {{roles}}</value>
   </data>
+  <data name="EmptyArgument" xml:space="preserve">
+    <value>Parametr {{arg}} jest nieprawidłowy.</value>
+  </data>
+  <data name="GetUserWarns" xml:space="preserve">
+    <value>Ostrzeżenia użytkownika {{user}}: {{warns}}</value>
+  </data>
   <data name="InvalidArguments" xml:space="preserve">
     <value>Dla tego polecenia są dostępne tylko argumenty: {{arguments}}</value>
   </data>
@@ -236,6 +242,9 @@
   </data>
   <data name="UserDoesntHaveAvatar" xml:space="preserve">
     <value>Użytkownik {{user}} nie posiada avatara.</value>
+  </data>
+  <data name="UserHasBeenWarned" xml:space="preserve">
+    <value>Użytkownik {{receiver}} dostał ostrzeżenie od {{granter}} z powodu: {{reason}}.</value>
   </data>
   <data name="UserNotFound" xml:space="preserve">
     <value>Użytkownik {{user}} nie istnieje.</value>
