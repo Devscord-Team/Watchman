@@ -22,12 +22,10 @@ namespace Watchman.Discord.Areas.Messaging.Controllers
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly ChannelsService _channelsService;
 
-
         public SendController(MessagesServiceFactory messagesServiceFactory, ChannelsService channelsService)
         {
             this._messagesServiceFactory = messagesServiceFactory;
             this._channelsService = channelsService;
-
         }
         public async Task Send(SendCommand sendCommand, Contexts contexts)
         {
