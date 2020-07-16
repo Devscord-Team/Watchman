@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
@@ -20,19 +21,21 @@ namespace Watchman.Discord.Areas.Messaging.Controllers
     public class SendController : IController
     {
         private readonly MessagesServiceFactory _messagesServiceFactory;
-        private readonly ChannelsService _channelsService;
-
-        public SendController(MessagesServiceFactory messagesServiceFactory, ChannelsService channelsService)
+        
+        public SendController(MessagesServiceFactory messagesServiceFactory)
         {
             this._messagesServiceFactory = messagesServiceFactory;
-            this._channelsService = channelsService;
         }
         public async Task Send(SendCommand sendCommand, Contexts contexts)
         {
-            var channelToSendMessageTo = sendCommand.ChannelMention;
-            
+            var channelToSendMessageTo = sendCommand.Channel;
             var messageToSend = sendCommand.Message;
+            if (messageToSend==null)
+            {
+                throw new NotEnoughArgumentsException();
+            }
             var messagesService = this._messagesServiceFactory.Create(contexts);
+            messagesService.ChannelId = channelToSendMessageTo;
             await messagesService.SendMessage(messageToSend);
         }
     }
