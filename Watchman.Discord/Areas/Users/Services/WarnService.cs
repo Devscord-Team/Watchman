@@ -12,6 +12,9 @@ using Watchman.DomainModel.Messages;
 using Watchman.DomainModel.Users;
 using Watchman.DomainModel.Users.Commands.Handlers;
 using Watchman.DomainModel.Users.Queries;
+using Watchman.DomainModel.Warnings;
+using Watchman.DomainModel.Warnings.Commands;
+using Watchman.DomainModel.Warnings.Queries;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {
