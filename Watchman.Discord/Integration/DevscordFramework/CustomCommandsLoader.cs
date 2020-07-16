@@ -35,7 +35,7 @@ namespace Watchman.Discord.Integration.DevscordFramework
         public async Task InitDefaultCustomCommands()
         {
             var customCommands = new List<AddCustomCommandsCommand>();
-            foreach (var serverId in new ulong[] { 636238466899902504, 597066406521208852, 732635141456789535, 732294259641679923 })
+            foreach (var serverId in new ulong[] { 636238466899902504, 597066406521208852 })
             {
                 customCommands.AddRange(new List<AddCustomCommandsCommand>
                 {
