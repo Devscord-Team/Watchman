@@ -56,6 +56,10 @@ namespace Watchman.Discord.Areas.Protection.Services
         {
             var userMuteEvents = this.GetUserMuteEvents(server, userToUnmute.Id);
             var eventToUnmute = userMuteEvents.FirstOrDefault(x => x.Unmuted == false);
+            if (eventToUnmute == null)
+            {
+                return false;
+            }
             return await this.UnmuteIfNeededSpecificEvent(server, userToUnmute, eventToUnmute);
         }
 
