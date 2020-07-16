@@ -3,7 +3,7 @@ using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Warnings
 {
-    public class WarnEvent : Entity
+    public class WarnEvent : Entity, IAggregateRoot
     {
         public ulong GrantorId { get; private set; }
         public ulong ReceiverId { get; private set; }
