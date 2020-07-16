@@ -46,7 +46,7 @@ namespace Watchman.Discord.Areas.Protection.Services
         private async Task MuteUserForSpam(Contexts contexts, TimeSpan length)
         {
             var timeRange = new TimeRange(DateTime.UtcNow, DateTime.UtcNow.Add(length));
-            var muteEvent = new MuteEvent(contexts.User.Id, timeRange, "Spam detected (by bot)", contexts.Server.Id);
+            var muteEvent = new MuteEvent(contexts.User.Id, timeRange, "Spam detected (by bot)", contexts.Server.Id, contexts.Channel.Id);
             await this._muteService.MuteUserOrOverwrite(contexts, muteEvent, contexts.User);
             this._muteService.UnmuteInFuture(contexts, muteEvent, contexts.User);
         }

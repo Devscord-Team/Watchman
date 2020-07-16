@@ -1,4 +1,5 @@
-﻿using Devscord.DiscordFramework.Commons.Exceptions;
+﻿using System;
+using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
@@ -63,13 +64,14 @@ namespace Watchman.Discord.Areas.Protection.Services
             return await this.UnmuteIfNeededSpecificEvent(server, userToUnmute, eventToUnmute);
         }
 
-        public async void UnmuteInFuture(Contexts contexts, MuteEvent muteEvent, UserContext userToUnmute)
+        public async void UnmuteInFuture(Contexts contexts, MuteEvent muteEvent, UserContext userToUnmute, bool sendMessageAfterUnmute = true)
         {
-            var timeRange = muteEvent.TimeRange;
-            await Task.Delay(timeRange.End - timeRange.Start);
-
+            if (muteEvent.TimeRange.End > DateTime.UtcNow)
+            {
+                await Task.Delay(muteEvent.TimeRange.End - DateTime.UtcNow);
+            }
             var wasNeededToUnmute = await this.UnmuteIfNeededSpecificEvent(contexts.Server, userToUnmute, muteEvent);
-            if (wasNeededToUnmute)
+            if (wasNeededToUnmute && sendMessageAfterUnmute)
             {
                 var messagesService = this._messagesServiceFactory.Create(contexts);
                 await messagesService.SendResponse(x => x.UnmutedUser(userToUnmute));
@@ -77,7 +79,7 @@ namespace Watchman.Discord.Areas.Protection.Services
             }
         }
 
-        private async Task<bool> UnmuteIfNeededSpecificEvent(DiscordServerContext server, UserContext userToUnmute, MuteEvent muteEvent)
+        public async Task<bool> UnmuteIfNeededSpecificEvent(DiscordServerContext server, UserContext userToUnmute, MuteEvent muteEvent)
         {
             var userMuteEvents = this.GetUserMuteEvents(server, userToUnmute.Id);
             var eventToUnmute = userMuteEvents.FirstOrDefault(x => x.Id == muteEvent.Id);

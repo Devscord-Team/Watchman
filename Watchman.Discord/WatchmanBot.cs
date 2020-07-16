@@ -56,7 +56,7 @@ namespace Watchman.Discord
                         .AddFromIoC<UnmutingExpiredMuteEventsService, DiscordServersService>((unmutingService, serversService) => async () =>
                         {
                             var servers = (await serversService.GetDiscordServers()).ToList();
-                            servers.ForEach(unmutingService.UnmuteUsersInit);
+                            servers.ForEach(async context => await unmutingService.UnmuteUsersInit(context));
                         })
                         .AddFromIoC<ResponsesInitService>(responsesService => async () =>
                         {

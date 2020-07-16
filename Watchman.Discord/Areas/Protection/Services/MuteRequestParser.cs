@@ -42,7 +42,7 @@ namespace Watchman.Discord.Areas.Protection.Services
                 throw new NotEnoughArgumentsException();
             }
             var timeRange = request.GetFutureTimeRange(defaultTime: TimeSpan.FromHours(1));
-            return new MuteEvent(userId, timeRange, reason, contexts.Server.Id);
+            return new MuteEvent(userId, timeRange, reason, contexts.Server.Id, contexts.Channel.Id);
         }
     }
 }

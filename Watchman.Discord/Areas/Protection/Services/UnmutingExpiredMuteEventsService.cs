@@ -1,7 +1,5 @@
 ﻿using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
@@ -17,16 +15,18 @@ namespace Watchman.Discord.Areas.Protection.Services
         private readonly ICommandBus _commandBus;
         private readonly UsersService _usersService;
         private readonly UsersRolesService _usersRolesService;
+        private readonly MuteService _muteService;
 
-        public UnmutingExpiredMuteEventsService(IQueryBus queryBus, ICommandBus commandBus, UsersService usersService, UsersRolesService usersRolesService)
+        public UnmutingExpiredMuteEventsService(IQueryBus queryBus, ICommandBus commandBus, UsersService usersService, UsersRolesService usersRolesService, MuteService muteService)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;
             this._usersService = usersService;
             this._usersRolesService = usersRolesService;
+            this._muteService = muteService;
         }
 
-        public void UnmuteUsersInit(DiscordServerContext server)
+        public async Task UnmuteUsersInit(DiscordServerContext server)
         {
             var users = this._usersService.GetUsers(server).ToList();
             var muteRole = this._usersRolesService.GetRoleByName(UsersRolesService.MUTED_ROLE_NAME, server);
@@ -41,36 +41,33 @@ namespace Watchman.Discord.Areas.Protection.Services
                 .Where(x => x.Unmuted == false)
                 .ToList();
 
+            var contexts = new Contexts();
+            contexts.SetContext(server);
             foreach (var muteEvent in notUnmutedEvents)
             {
-                if (muteEvent.TimeRange.End < DateTime.UtcNow)
+                var user = this._usersService.GetUserById(server, muteEvent.UserId);
+                var channel = server.TextChannels.FirstOrDefault(x => x.Id == muteEvent.ChannelWhereGivenId);
+                if (user == null)
                 {
-                    this.RemoveMuteRole(muteEvent, server, users, muteRole);
+                    await this.MarkAsUnmuted(muteEvent);
+                    continue;
                 }
-                else
+                contexts.SetContext(user);
+                if (channel == null)
                 {
-                    this.RemoveInFuture(muteEvent, server, users, muteRole);
+                    this._muteService.UnmuteInFuture(contexts, muteEvent, user, sendMessageAfterUnmute: false);
+                    continue;
                 }
+                contexts.SetContext(channel);
+
+                this._muteService.UnmuteInFuture(contexts, muteEvent, user);
             }
         }
 
-        private async void RemoveMuteRole(MuteEvent muteEvent, DiscordServerContext server, IEnumerable<UserContext> users, UserRole muteRole)
+        private async Task MarkAsUnmuted(MuteEvent muteEvent)
         {
-            var user = users.FirstOrDefault(userContext => userContext.Id == muteEvent.UserId);
-            if (user == null)
-            {
-                return;
-            }
-
-            await this._usersService.RemoveRole(muteRole, user, server);
             var command = new MarkMuteEventAsUnmutedCommand(muteEvent.Id);
             await this._commandBus.ExecuteAsync(command);
-        }
-
-        private async void RemoveInFuture(MuteEvent muteEvent, DiscordServerContext server, IEnumerable<UserContext> users, UserRole muteRole)
-        {
-            await Task.Delay(muteEvent.TimeRange.End - DateTime.UtcNow);
-            this.RemoveMuteRole(muteEvent, server, users, muteRole);
         }
     }
 }
