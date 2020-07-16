@@ -48,18 +48,18 @@ namespace Devscord.DiscordFramework
 
         public WorkflowBuilder SetDefaultMiddlewares()
         {
-            Log.Debug("Default middlewares added");
             this._workflow
                 .AddMiddleware<ChannelMiddleware>()
                 .AddMiddleware<ServerMiddleware>()
                 .AddMiddleware<UserMiddleware>();
+            Log.Debug("Default middlewares added");
             return this;
         }
 
         public WorkflowBuilder AddCustomMiddleware<T>() where T : IMiddleware
         {
-            Log.Debug("Custom middleware {middleware} added", nameof(T));
             this._workflow.AddMiddleware<T>();
+            Log.Debug("Custom middleware {middleware} added", nameof(T));
             return this;
         }
 
