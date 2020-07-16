@@ -13,7 +13,7 @@ using Devscord.DiscordFramework.Services.Models;
 
 namespace Devscord.DiscordFramework.Services
 {
-    public class MessagesService : ICyclicCacheGenerator
+    public class MessagesService : ICyclicService
     {
         public RefreshFrequent RefreshFrequent { get; } = RefreshFrequent.Quarterly;
         public ulong GuildId { get; set; }
@@ -29,7 +29,7 @@ namespace Devscord.DiscordFramework.Services
             this._responsesService = responsesService;
             this._splittingService = splittingService;
             this._embedMessagesService = embedMessagesService;
-            this.ReloadCache().Wait();
+            this.Refresh().Wait();
         }
 
         public Task SendMessage(string message, MessageType messageType = MessageType.NormalText)
@@ -93,7 +93,7 @@ namespace Devscord.DiscordFramework.Services
             });
         }
 
-        public Task ReloadCache()
+        public Task Refresh()
         {
             foreach (var serverId in _serversResponses.Keys.ToList())
             {

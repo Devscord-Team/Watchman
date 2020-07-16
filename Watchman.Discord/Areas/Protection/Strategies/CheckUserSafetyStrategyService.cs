@@ -14,7 +14,7 @@ using Message = Watchman.DomainModel.Messages.Message;
 
 namespace Watchman.Discord.Areas.Protection.Strategies
 {
-    public class CheckUserSafetyStrategyService : ICyclicCacheGenerator, IUserSafetyChecker
+    public class CheckUserSafetyStrategyService : ICyclicService, IUserSafetyChecker
     {
         public RefreshFrequent RefreshFrequent { get; } = RefreshFrequent.Daily;
 
@@ -29,7 +29,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             this._queryBus = queryBus;
             this._discordServersService = discordServersService;
             this._configurationService = configurationService;
-            _ = this.ReloadCache();
+            _ = this.Refresh();
         }
 
         public bool IsUserSafe(ulong userId, ulong serverId)
@@ -39,7 +39,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
                    && serverUsers.SafeUsers.Contains(userId);
         }
 
-        public async Task ReloadCache()
+        public async Task Refresh()
         {
             Log.Information("Reloading cache....");
             await this.UpdateMessages();

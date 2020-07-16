@@ -4,6 +4,7 @@ using Autofac;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Models;
 using Hangfire;
+using Watchman.Discord.Areas.Protection.Services;
 using Watchman.Discord.Areas.Protection.Strategies;
 using Watchman.Discord.Areas.Statistics.Services;
 
@@ -13,16 +14,17 @@ namespace Watchman.Web
     {
         public void SetDefaultJobs(IContainer container)
         {
-            var generators = new List<ICyclicCacheGenerator>
+            var generators = new List<ICyclicService>
             {
                 container.Resolve<CyclicStatisticsGeneratorService>(),
-                container.Resolve<CheckUserSafetyStrategyService>()
+                container.Resolve<CheckUserSafetyStrategyService>(),
+                container.Resolve<UnmutingService>()
             };
             var recurringJobManager = container.Resolve<IRecurringJobManager>();
             foreach (var generator in generators)
             {
                 var cronExpression = this.GetCronExpression(generator.RefreshFrequent);
-                recurringJobManager.AddOrUpdate(generator.GetType().Name, () => generator.ReloadCache(), cronExpression);
+                recurringJobManager.AddOrUpdate(generator.GetType().Name, () => generator.Refresh(), cronExpression);
             }
         }
 

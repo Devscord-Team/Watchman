@@ -3,10 +3,10 @@ using Devscord.DiscordFramework.Services.Models;
 
 namespace Devscord.DiscordFramework.Services
 {
-    public interface ICyclicCacheGenerator
+    public interface ICyclicService
     {
         public RefreshFrequent RefreshFrequent { get; }
 
-        public Task ReloadCache();
+        public Task Refresh();
     }
 }

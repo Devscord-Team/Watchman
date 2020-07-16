@@ -3,8 +3,6 @@ using Devscord.DiscordFramework.Services;
 using System.Linq;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
-using Watchman.DomainModel.Users;
-using Watchman.DomainModel.Users.Commands;
 using Watchman.DomainModel.Users.Queries;
 
 namespace Watchman.Discord.Areas.Protection.Services
@@ -12,18 +10,18 @@ namespace Watchman.Discord.Areas.Protection.Services
     public class UnmutingExpiredMuteEventsService
     {
         private readonly IQueryBus _queryBus;
-        private readonly ICommandBus _commandBus;
         private readonly UsersService _usersService;
         private readonly UsersRolesService _usersRolesService;
-        private readonly MuteService _muteService;
+        private readonly UnmutingService _unmutingService;
+        private readonly MutingHelperService _mutingHelperService;
 
-        public UnmutingExpiredMuteEventsService(IQueryBus queryBus, ICommandBus commandBus, UsersService usersService, UsersRolesService usersRolesService, MuteService muteService)
+        public UnmutingExpiredMuteEventsService(IQueryBus queryBus, UsersService usersService, UsersRolesService usersRolesService, UnmutingService unmutingService, MutingHelperService mutingHelperService)
         {
             this._queryBus = queryBus;
-            this._commandBus = commandBus;
             this._usersService = usersService;
             this._usersRolesService = usersRolesService;
-            this._muteService = muteService;
+            this._unmutingService = unmutingService;
+            this._mutingHelperService = mutingHelperService;
         }
 
         public async Task UnmuteUsersInit(DiscordServerContext server)
@@ -35,10 +33,9 @@ namespace Watchman.Discord.Areas.Protection.Services
             {
                 return;
             }
-
             var query = new GetMuteEventsQuery(server.Id);
             var notUnmutedEvents = this._queryBus.Execute(query).MuteEvents
-                .Where(x => x.Unmuted == false)
+                .Where(x => x.IsUnmuted == false)
                 .ToList();
 
             var contexts = new Contexts();
@@ -46,28 +43,19 @@ namespace Watchman.Discord.Areas.Protection.Services
             foreach (var muteEvent in notUnmutedEvents)
             {
                 var user = this._usersService.GetUserById(server, muteEvent.UserId);
-                var channel = server.TextChannels.FirstOrDefault(x => x.Id == muteEvent.ChannelWhereGivenId);
+                var channel = server.TextChannels.FirstOrDefault(x => x.Id == muteEvent.MutedOnChannelId);
                 if (user == null)
                 {
-                    await this.MarkAsUnmuted(muteEvent);
+                    await this._mutingHelperService.MarkAsUnmuted(muteEvent);
                     continue;
                 }
                 contexts.SetContext(user);
-                if (channel == null)
+                if (channel != null)
                 {
-                    this._muteService.UnmuteInFuture(contexts, muteEvent, user, sendMessageAfterUnmute: false);
-                    continue;
+                    contexts.SetContext(channel);
                 }
-                contexts.SetContext(channel);
-
-                this._muteService.UnmuteInFuture(contexts, muteEvent, user);
+                this._unmutingService.UnmuteInFuture(contexts, muteEvent, user);
             }
-        }
-
-        private async Task MarkAsUnmuted(MuteEvent muteEvent)
-        {
-            var command = new MarkMuteEventAsUnmutedCommand(muteEvent.Id);
-            await this._commandBus.ExecuteAsync(command);
         }
     }
 }

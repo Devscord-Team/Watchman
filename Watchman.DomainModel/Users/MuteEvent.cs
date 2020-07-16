@@ -1,5 +1,4 @@
-﻿using System;
-using Watchman.Common.Models;
+﻿using Watchman.Common.Models;
 using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Users
@@ -10,19 +9,19 @@ namespace Watchman.DomainModel.Users
         public string Reason { get; private set; }
         public TimeRange TimeRange { get; private set; }
         public ulong ServerId { get; private set; }
-        public ulong ChannelWhereGivenId { get; private set; }
+        public ulong MutedOnChannelId { get; private set; }
 
-        public bool Unmuted
+        public bool IsUnmuted
         {
-            get => this._unmuted;
+            get => this._isUnmuted;
             set
             {
-                this._unmuted = value;
+                this._isUnmuted = value;
                 this.Update();
             }
         }
 
-        private bool _unmuted;
+        private bool _isUnmuted;
 
         public MuteEvent(ulong userId, TimeRange timeRange, string reason, ulong serverId, ulong channelId)
         {
@@ -30,7 +29,7 @@ namespace Watchman.DomainModel.Users
             this.TimeRange = timeRange;
             this.Reason = reason;
             this.ServerId = serverId;
-            this.ChannelWhereGivenId = channelId;
+            this.MutedOnChannelId = channelId;
         }
     }
 }

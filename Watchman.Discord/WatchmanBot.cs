@@ -53,11 +53,6 @@ namespace Watchman.Discord
                             Task.Run(() => helpService.FillDatabase(dataCollector.GetCommandsInfo(typeof(WatchmanBot).Assembly)));
                             return Task.CompletedTask;
                         })
-                        .AddFromIoC<UnmutingExpiredMuteEventsService, DiscordServersService>((unmutingService, serversService) => async () =>
-                        {
-                            var servers = (await serversService.GetDiscordServers()).ToList();
-                            servers.ForEach(async context => await unmutingService.UnmuteUsersInit(context));
-                        })
                         .AddFromIoC<ResponsesInitService>(responsesService => async () =>
                         {
                             await responsesService.InitNewResponsesFromResources();
