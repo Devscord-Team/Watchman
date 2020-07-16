@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Watchman.Common.Models;
 using Watchman.Discord.Areas.Statistics.Models;
 using Watchman.Integrations.Quickchart;
@@ -16,7 +18,7 @@ namespace Watchman.Discord.Areas.Statistics.Services
             this._quickchartService = new QuickchartService();
         }
 
-        public string GetImageStatisticsPerPeriod(StatisticsReport report)
+        public async Task<Stream> GetImageStatisticsPerPeriod(StatisticsReport report)
         {
             var dates = report.StatisticsPerPeriod.Select(x => x.TimeRange.Start);
             var period = report.StatisticsPerPeriod.First().Period;
@@ -41,9 +43,8 @@ namespace Watchman.Discord.Areas.Statistics.Services
                 }
             };
 
-            var imagePath = this._quickchartService.GetImage(chart);
-
-            return imagePath;
+            var image = await this._quickchartService.GetImage(chart);
+            return image;
         }
     }
 }

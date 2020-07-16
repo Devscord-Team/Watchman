@@ -5,6 +5,7 @@ using Discord.Rest;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Commons.Exceptions;
 using System.Linq;
@@ -60,8 +61,15 @@ namespace Devscord.DiscordFramework.Services
 
         public async Task SendFile(string filePath)
         {
-            var channel = (IRestMessageChannel) await Server.GetChannel(this.ChannelId);
+            var channel = this.GetChannel();
             await channel.SendFileAsync(filePath);
+        }
+
+        public async Task SendFile(string fileName, Stream stream)
+        {
+            var channel = this.GetChannel();
+            await channel.SendFileAsync(stream, fileName);
+            await stream.DisposeAsync();
         }
 
         public async Task SendExceptionResponse(BotException botException)

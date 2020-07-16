@@ -1,11 +1,11 @@
 ﻿using Devscord.DiscordFramework.Middlewares.Contexts;
-using Discord.Rest;
+using Discord;
 
 namespace Devscord.DiscordFramework.Middlewares.Factories
 {
-    internal class ChannelContextFactory : IContextFactory<IRestMessageChannel, ChannelContext>
+    internal class ChannelContextFactory : IContextFactory<IChannel, ChannelContext>
     {
-        public ChannelContext Create(IRestMessageChannel restChannel)
+        public ChannelContext Create(IChannel restChannel)
         {
             return restChannel == null ? null : new ChannelContext(restChannel.Id, restChannel.Name);
         }

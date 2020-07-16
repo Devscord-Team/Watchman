@@ -15,14 +15,14 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
         public bool IsAdmin { get; private set; }
         public bool IsMuted { get; private set; }
 
-        public UserContext(ulong id, string name, IEnumerable<UserRole> roles, string avatarUrl, string mention)
+        public UserContext(ulong id, string name, List<UserRole> roles, string avatarUrl, string mention, bool isOwner)
         {
             this.Id = id;
             this.Name = name;
             this.Roles = roles;
             this.AvatarUrl = avatarUrl;
             this.Mention = mention;
-            this.IsAdmin = this.Roles.Any(x => x.Permissions.Any(x => x.HasFlag(Permission.ManageGuild)));
+            this.IsAdmin = isOwner || this.Roles.Any(x => x.Permissions.Any(x => x.HasFlag(Permission.ManageGuild)));
             this.IsMuted = this.Roles.Any(x => x.Name == "muted");
         }
 

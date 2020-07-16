@@ -14,10 +14,9 @@ namespace Devscord.DiscordFramework.Services
     public class ChannelsService
     {
         private readonly Regex exMention = new Regex(@"\d+", RegexOptions.Compiled);
-
-        public Task SetPermissions(ChannelContext channel, ChangedPermissions permissions, UserRole userRole)
+        public Task SetPermissions(ChannelContext channel, DiscordServerContext server, ChangedPermissions permissions, UserRole userRole)
         {
-            return Server.SetRolePermissions(channel, permissions, userRole);
+            return Server.SetRolePermissions(channel, server, permissions, userRole);
         }
         public Task SetPermissions(IEnumerable<ChannelContext> channels, DiscordServerContext server, ChangedPermissions permissions, UserRole userRole)
         {

@@ -35,7 +35,7 @@ namespace Watchman.Discord.UnitTests.AntiSpam
         private Contexts GetDefaultContexts()
         {
             var contexts = new Contexts();
-            contexts.SetContext(new UserContext(DEFAULT_TEST_USER_ID, null, new List<UserRole>(), null, null));
+            contexts.SetContext(new UserContext(DEFAULT_TEST_USER_ID, null, new List<UserRole>(), null, null, false));
             contexts.SetContext(new DiscordServerContext(GetMessagesQuery.GET_ALL_SERVERS, null, null, null, null));
             return contexts;
         }
