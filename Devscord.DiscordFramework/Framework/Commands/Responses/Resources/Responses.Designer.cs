@@ -428,5 +428,14 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
                 return ResourceManager.GetString("UserNotFound", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cześć {{user}}! Zostałeś wyciszony za {{reason}} do {{timeEnd}}. Po tym czasie będziesz mógł pisać ponownie.
+        /// </summary>
+        public static string YouHaveBeenMuted {
+            get {
+                return ResourceManager.GetString("YouHaveBeenMuted", resourceCulture);
+            }
+        }
     }
 }

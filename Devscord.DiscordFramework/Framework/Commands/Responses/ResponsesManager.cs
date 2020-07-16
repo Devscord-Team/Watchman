@@ -99,6 +99,14 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("timeEnd", TimeZoneInfo.ConvertTimeFromUtc(timeEnd, TimeZoneInfo.FindSystemTimeZoneById("Central Europe Standard Time")).ToString("dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture)));
         }
 
+        public static string YouHaveBeenMuted(this ResponsesService responsesService, UserContext mutedUser, DateTime timeEnd, string reason)
+        {
+            return responsesService.ProcessResponse("YouHaveBeenMuted",
+                new KeyValuePair<string, string>("user", mutedUser.Name),
+                new KeyValuePair<string, string>("timeEnd", TimeZoneInfo.ConvertTimeFromUtc(timeEnd, TimeZoneInfo.FindSystemTimeZoneById("Central Europe Standard Time")).ToString("dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture)),
+                new KeyValuePair<string, string>("reason", reason));
+        }
+
         public static string UnmutedUser(this ResponsesService responsesService, UserContext unmutedUser)
         {
             return responsesService.ProcessResponse("UnmutedUser",

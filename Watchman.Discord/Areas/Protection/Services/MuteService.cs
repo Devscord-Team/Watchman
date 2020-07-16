@@ -49,6 +49,7 @@ namespace Watchman.Discord.Areas.Protection.Services
 
             var messagesService = this._messagesServiceFactory.Create(contexts);
             await messagesService.SendResponse(x => x.MutedUser(userToMute, muteEvent.TimeRange.End));
+            await this._directMessagesService.TrySendMessage(userToMute.Id, x => x.YouHaveBeenMuted(userToMute, muteEvent.TimeRange.End, muteEvent.Reason), contexts);
         }
 
         public async Task<bool> UnmuteIfNeeded(DiscordServerContext server, UserContext userToUnmute)
