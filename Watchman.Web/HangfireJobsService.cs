@@ -4,7 +4,9 @@ using Autofac;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Models;
 using Hangfire;
+using Watchman.Discord.Areas.Protection.Services;
 using Watchman.Discord.Areas.Protection.Strategies;
+using Watchman.Discord.Areas.Responses.Services;
 using Watchman.Discord.Areas.Statistics.Services;
 
 namespace Watchman.Web
@@ -24,6 +26,8 @@ namespace Watchman.Web
                 var cronExpression = this.GetCronExpression(generator.RefreshFrequent);
                 recurringJobManager.AddOrUpdate(generator.GetType().Name, () => generator.ReloadCache(), cronExpression);
             }
+            var responseCleanupService = container.Resolve<ResponseCleanupService>();
+            recurringJobManager.AddOrUpdate(nameof(ResponseCleanupService), () => responseCleanupService.CleanDuplicatedResponses(), Cron.Daily());
         }
 
         private string GetCronExpression(RefreshFrequent refreshFrequent)
