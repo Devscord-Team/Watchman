@@ -10,7 +10,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
     {
         public object GetValueByName(string key, bool isList, DiscordRequest request, BotCommandTemplate template)
         {
-            var result = request.Arguments.FirstOrDefault(a => (a.Name?.ToLowerInvariant() ?? string.Empty) == key.ToLowerInvariant());
+            var result = request.Arguments.FirstOrDefault(a => a.Name.ToLowerInvariant() == key.ToLowerInvariant());
             if (result == null)
             {
                 return null;

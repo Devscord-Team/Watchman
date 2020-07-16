@@ -61,11 +61,10 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         public async Task Warns(WarnsCommand command, Contexts contexts)
         {
             var mentionedUser = command.User == null ? contexts.User : _usersService.GetUserByMention(contexts.Server, command.User);
-            var serverId = command.All != null ? 0 : contexts.Server.Id;
-            var requestedDataFromAllServers = command.All != null;
+            var serverId = command.All ? 0 : contexts.Server.Id;
             var msgService = _messagesServiceFactory.Create(contexts);
 
-            if (requestedDataFromAllServers)
+            if (command.All)
             {
                 if (contexts.User.IsAdmin)
                 {

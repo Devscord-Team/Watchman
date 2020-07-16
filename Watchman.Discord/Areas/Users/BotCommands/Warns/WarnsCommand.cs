@@ -8,7 +8,7 @@ namespace Watchman.Discord.Areas.Users.BotCommands.Warns
         [Optional]
         public string User { get; set; }
 
-        [Optional]
-        public string All { get; set; }
+        [Bool]
+        public bool All { get; set; }
     }
 }
