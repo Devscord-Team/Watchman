@@ -52,11 +52,18 @@ namespace Devscord.DiscordFramework.Integration.Services
         {
             await Task.Delay(1000);
 
+            Log.Information("Setting role {roleName} for {channel}", role.Name, c.Name);
             var channelSocket = (IGuildChannel) await this._discordClientChannelsService.GetChannel(channel.Id);
+            if (channelSocket == null)
+            {
+                Log.Warning("{channel} after casting to IGuildChannel is null", channel.Name);
+                return;
+            }
             var channelPermissions = new OverwritePermissions(permissions.AllowPermissions.GetRawValue(), permissions.DenyPermissions.GetRawValue());
             var createdRole = this.GetSocketRoles(channelSocket.GuildId).FirstOrDefault(x => x.Id == role.Id);
 
             await channelSocket.AddPermissionOverwriteAsync(createdRole, channelPermissions);
+            Log.Information("{roleName} set for {channel}", role.Name, c.Name);
         }
 
         public async Task SetRolePermissions(IEnumerable<ChannelContext> channels, DiscordServerContext server, ChangedPermissions permissions, UserRole role)
@@ -72,10 +79,17 @@ namespace Devscord.DiscordFramework.Integration.Services
             var channelPermissions = new OverwritePermissions(permissions.AllowPermissions.GetRawValue(), permissions.DenyPermissions.GetRawValue());
             Parallel.ForEach(channels, c =>
             {
+                Log.Information("Setting role {roleName} for {channel}", role.Name, c.Name);
                 var channelSocket = (IGuildChannel)this._discordClientChannelsService.GetChannel(c.Id).Result;
-                if (channelSocket != null && channelSocket.PermissionOverwrites.All(x => x.TargetId != createdRole.Id))
+                if (channelSocket == null)
+                {
+                    Log.Warning("{channel} after casting to IGuildChannel is null", c.Name);
+                    return;
+                }
+                if (channelSocket.PermissionOverwrites.All(x => x.TargetId != createdRole.Id))
                 {
                     channelSocket.AddPermissionOverwriteAsync(createdRole, channelPermissions).Wait();
+                    Log.Information("{roleName} set for {channel}", role.Name, c.Name);
                 }
             });
         }
