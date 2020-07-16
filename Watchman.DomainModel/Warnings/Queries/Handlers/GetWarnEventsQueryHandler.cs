@@ -5,7 +5,7 @@ using System.Text;
 using Watchman.Cqrs;
 using Watchman.Integrations.MongoDB;
 
-namespace Watchman.DomainModel.Users.Queries.Handlers
+namespace Watchman.DomainModel.Warnings.Queries.Handlers
 {
     public class GetWarnEventsQueryHandler : IQueryHandler<GetWarnEventsQuery, GetWarnEventsQueryResults>
     {

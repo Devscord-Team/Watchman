@@ -4,7 +4,7 @@ using System.Text;
 using Watchman.DomainModel.Messages;
 using Watchman.Integrations.MongoDB;
 
-namespace Watchman.DomainModel.Users
+namespace Watchman.DomainModel.Warnings
 {
     public class WarnEvent : Entity
     {
@@ -19,6 +19,7 @@ namespace Watchman.DomainModel.Users
             this.ReceiverId = receiverId;
             this.Reason = reason;
             this.ServerId = serverId;
+            this.CreatedAt = DateTime.Now;
         }
     }
 }

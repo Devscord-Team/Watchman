@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Watchman.Cqrs;
+﻿using Watchman.Cqrs;
+using Watchman.DomainModel.Warnings;
 
-namespace Watchman.DomainModel.Users.Commands.Handlers
+namespace Watchman.DomainModel.Warnings.Commands
 {
     public class AddWarnEventCommand : ICommand
     {
