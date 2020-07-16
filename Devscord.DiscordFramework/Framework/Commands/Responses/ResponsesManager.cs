@@ -208,6 +208,12 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("onEvent", onEvent));
         }
 
+        public static string ResponseTheSameAsDefault(this ResponsesService responsesService, Contexts contexts, string onEvent)
+        {
+            return responsesService.ProcessResponse("ResponseTheSameAsDefault", contexts,
+                new KeyValuePair<string, string>("onEvent", onEvent));
+        }
+
         public static string ResponseNotFound(this ResponsesService responsesService, Contexts contexts, string onEvent)
         {
             return responsesService.ProcessResponse("ResponseNotFound", contexts,
