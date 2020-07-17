@@ -1,7 +1,6 @@
 ﻿using Watchman.Cqrs;
-using Watchman.DomainModel.Warnings;
 
-namespace Watchman.DomainModel.Warnings.Commands
+namespace Watchman.DomainModel.Warns.Commands
 {
     public class AddWarnEventCommand : ICommand
     {

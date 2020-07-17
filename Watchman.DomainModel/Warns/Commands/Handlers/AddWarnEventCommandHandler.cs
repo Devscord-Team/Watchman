@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Watchman.Cqrs;
 using Watchman.Integrations.MongoDB;
 
-namespace Watchman.DomainModel.Warnings.Commands.Handlers
+namespace Watchman.DomainModel.Warns.Commands.Handlers
 {
     public class AddWarnEventCommandHandler : ICommandHandler<AddWarnEventCommand>
     {

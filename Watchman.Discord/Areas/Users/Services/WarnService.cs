@@ -8,13 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Users.BotCommands;
-using Watchman.DomainModel.Messages;
-using Watchman.DomainModel.Users;
-using Watchman.DomainModel.Users.Commands.Handlers;
-using Watchman.DomainModel.Users.Queries;
-using Watchman.DomainModel.Warnings;
-using Watchman.DomainModel.Warnings.Commands;
-using Watchman.DomainModel.Warnings.Queries;
+using Watchman.DomainModel.Warns;
+using Watchman.DomainModel.Warns.Commands;
+using Watchman.DomainModel.Warns.Queries;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {

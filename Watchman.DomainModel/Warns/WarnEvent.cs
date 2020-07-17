@@ -1,7 +1,7 @@
 ﻿using System;
 using Watchman.Integrations.MongoDB;
 
-namespace Watchman.DomainModel.Warnings
+namespace Watchman.DomainModel.Warns
 {
     public class WarnEvent : Entity, IAggregateRoot
     {

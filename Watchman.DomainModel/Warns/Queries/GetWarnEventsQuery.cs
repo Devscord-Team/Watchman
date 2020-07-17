@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Watchman.Cqrs;
 
-namespace Watchman.DomainModel.Warnings.Queries
+namespace Watchman.DomainModel.Warns.Queries
 {
     public class GetWarnEventsQuery : IQuery<GetWarnEventsQueryResults>
     {
