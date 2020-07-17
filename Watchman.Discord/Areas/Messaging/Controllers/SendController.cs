@@ -13,7 +13,6 @@ using Watchman.Cqrs;
 using Watchman.Discord.Areas.Help.BotCommands;
 using Watchman.Discord.Areas.Help.Services;
 using Watchman.Discord.Areas.Messaging.BotCommands;
-using Watchman.Discord.Areas.Messaging.Services;
 using Watchman.DomainModel.Help.Queries;
 
 namespace Watchman.Discord.Areas.Messaging.Controllers
