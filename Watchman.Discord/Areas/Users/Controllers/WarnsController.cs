@@ -39,22 +39,15 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         {
             var msgService = _messagesServiceFactory.Create(contexts);
 
-            if (contexts.User.IsAdmin)
+            if (string.IsNullOrEmpty(command.Reason) || string.IsNullOrWhiteSpace(command.Reason))
             {
-                if (string.IsNullOrEmpty(command.Reason) || string.IsNullOrWhiteSpace(command.Reason))
-                {
-                    await msgService.SendResponse(x => x.EmptyArgument("-reason"));
-                } 
-                else
-                {
-                    var mentionedUser = _usersService.GetUserByMention(contexts.Server, command.User);
-                    await _warnService.AddWarnToUser(command, contexts, mentionedUser);
-                    await msgService.SendResponse(x => x.UserHasBeenWarned(contexts.User.Name, mentionedUser.Name, command.Reason));
-                }
-            }
+                await msgService.SendResponse(x => x.EmptyArgument("-reason"));
+            } 
             else
             {
-                await msgService.SendResponse(x => x.NotAdminPermissions());
+                var mentionedUser = _usersService.GetUserByMention(contexts.Server, command.User);
+                await _warnService.AddWarnToUser(command, contexts, mentionedUser);
+                await msgService.SendResponse(x => x.UserHasBeenWarned(contexts.User.Name, mentionedUser.Name, command.Reason));
             }
         }
 
