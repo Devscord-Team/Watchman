@@ -275,7 +275,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         public static string EmptyArgument(this ResponsesService responsesService, string argName)
         {
             return responsesService.ProcessResponse("EmptyArgument",
-                new KeyValuePair<string, string>("botCommandArgument", argName));        
+                new KeyValuePair<string, string>("argument", argName));        
         }
     }
 }

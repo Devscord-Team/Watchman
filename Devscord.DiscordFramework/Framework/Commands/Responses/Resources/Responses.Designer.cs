@@ -106,7 +106,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Parametr {{botCommandArgument}} jest nieprawidłowy..
+        ///   Looks up a localized string similar to Parametr {{argument}} jest nieprawidłowy..
         /// </summary>
         public static string EmptyArgument {
             get {
