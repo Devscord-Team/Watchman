@@ -10,10 +10,29 @@ using Watchman.DomainModel.Users;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {
-    public class MuteRequestParser : RequestParser
+    public class MuteRequestParser
     {
-        public MuteRequestParser(DiscordRequest request, UsersService usersService, Contexts contexts) : base(request, usersService, contexts)
+        protected readonly DiscordRequest _request;
+        protected readonly UsersService _usersService;
+        protected readonly Contexts _contexts;
+
+        public MuteRequestParser(DiscordRequest request, UsersService usersService, Contexts contexts)
         {
+            this._request = request;
+            this._usersService = usersService;
+            this._contexts = contexts;
+        }
+
+        public UserContext GetUser()
+        {
+            var mention = this._request.GetMention();
+            var user = this._usersService.GetUserByMention(this._contexts.Server, mention);
+
+            if (user == null)
+            {
+                throw new UserNotFoundException(mention);
+            }
+            return user;
         }
 
         public MuteEvent GetMuteEvent(ulong userId, Contexts contexts, DiscordRequest request)
