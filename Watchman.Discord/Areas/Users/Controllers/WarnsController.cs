@@ -37,28 +37,28 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         [AdminCommand]
         public async Task AddWarn(AddWarnCommand command, Contexts contexts)
         {
-            var msgService = _messagesServiceFactory.Create(contexts);
+            var messageService = _messagesServiceFactory.Create(contexts);
             var mentionedUser = _usersService.GetUserByMention(contexts.Server, command.User.ToString());
             await _warnService.AddWarnToUser(command, contexts, mentionedUser);
-            await msgService.SendResponse(x => x.UserHasBeenWarned(contexts.User.Name, mentionedUser.Name, command.Reason));
+            await messageService.SendResponse(x => x.UserHasBeenWarned(contexts.User.Name, mentionedUser.Name, command.Reason));
         }
 
         public async Task Warns(WarnsCommand command, Contexts contexts)
         {
             var mentionedUser = command.User == 0 ? contexts.User : _usersService.GetUserById(contexts.Server, command.User);
             var serverId = command.All ? 0 : contexts.Server.Id;
-            var msgService = _messagesServiceFactory.Create(contexts);
+            var messageService = _messagesServiceFactory.Create(contexts);
 
             if (!command.All)
             {
                 if (mentionedUser == null)
                 {
-                    await msgService.SendResponse(x => x.UserNotFound(command.User.ToString()));
+                    await messageService.SendResponse(x => x.UserNotFound(command.User.ToString()));
                 }
                 else
                 {
                     var warnsStr = await _warnService.GetWarnsToString(serverId, mentionedUser.Id);
-                    await msgService.SendResponse(x => x.GetUserWarns(mentionedUser.Name, warnsStr));
+                    await messageService.SendResponse(x => x.GetUserWarns(mentionedUser.Name, warnsStr));
                 }
                 return;
             }
