@@ -76,11 +76,12 @@ namespace Watchman.Discord.Areas.Protection.Controllers
                 if (mentionedUser == null)
                 {
                     await _directMessagesService.TrySendMessage(contexts.User.Id, x => x.UserNotFound(command.User.ToString()), contexts);
-                    return;
                 }
-
-                var warnsStr = await _warnService.GetWarnsToString(serverId, mentionedUser.Id);
-                await _directMessagesService.TrySendMessage(contexts.User.Id, x => x.GetUserWarns(mentionedUser.Name, warnsStr), contexts);
+                else
+                {
+                    var warnsStr = await _warnService.GetWarnsToString(serverId, mentionedUser.Id);
+                    await _directMessagesService.TrySendMessage(contexts.User.Id, x => x.GetUserWarns(mentionedUser.Name, warnsStr), contexts);
+                }                
                 return;
             }
 
