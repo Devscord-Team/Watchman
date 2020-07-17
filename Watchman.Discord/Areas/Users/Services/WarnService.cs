@@ -51,14 +51,14 @@ namespace Watchman.Discord.Areas.Protection.Services
 
             foreach (var warnEvent in warns)
             {
-                builder.Append("\n\nDate: ").Append(Convert.ToString(warnEvent.CreatedAt))
+                builder.Append("\n\nDate: ").Append(warnEvent.CreatedAt.ToString())
                     .Append("\nGranted by: ").Append(warnEvent.GrantorId)
                     .Append("\nReceiver: ").Append(warnEvent.ReceiverId)
                     .Append("\nReason: ").Append(warnEvent.Reason);
 
                 if (serverId == 0)
                 {
-                    builder.Append("\nServer id: ").Append(Convert.ToString(warnEvent.ServerId));
+                    builder.Append("\nServer id: ").Append(warnEvent.ServerId.ToString());
                 }
             }
 
