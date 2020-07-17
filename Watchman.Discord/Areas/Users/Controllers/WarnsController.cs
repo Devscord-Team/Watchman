@@ -45,7 +45,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             } 
             else
             {
-                var mentionedUser = _usersService.GetUserByMention(contexts.Server, command.User);
+                var mentionedUser = _usersService.GetUserByMention(contexts.Server, command.User.ToString());
                 await _warnService.AddWarnToUser(command, contexts, mentionedUser);
                 await msgService.SendResponse(x => x.UserHasBeenWarned(contexts.User.Name, mentionedUser.Name, command.Reason));
             }
@@ -53,7 +53,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
 
         public async Task Warns(WarnsCommand command, Contexts contexts)
         {
-            var mentionedUser = command.User == null ? contexts.User : _usersService.GetUserByMention(contexts.Server, command.User);
+            var mentionedUser = command.User == 0 ? contexts.User : _usersService.GetUserById(contexts.Server, command.User);
             var serverId = command.All ? 0 : contexts.Server.Id;
             var msgService = _messagesServiceFactory.Create(contexts);
 
@@ -63,7 +63,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
                 {
                     if (mentionedUser == null)
                     {
-                        await _directMessagesService.TrySendMessage(contexts.User.Id, x => x.UserNotFound(command.User), contexts);
+                        await _directMessagesService.TrySendMessage(contexts.User.Id, x => x.UserNotFound(command.User.ToString()), contexts);
                     }
                     else
                     {
@@ -80,7 +80,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             {
                 if (mentionedUser == null)
                 {
-                    await msgService.SendResponse(x => x.UserNotFound(command.User));
+                    await msgService.SendResponse(x => x.UserNotFound(command.User.ToString()));
                 }
                 else
                 {

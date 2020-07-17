@@ -46,7 +46,7 @@ namespace Watchman.Discord.Areas.Protection.Services
 
         public async Task<string> GetWarnsToString(ulong serverId, ulong userId)
         {
-            var warns = await GetWarns(serverId, userId);
+            var warns = (await GetWarns(serverId, userId)).ToList();
             var builder = new StringBuilder();
 
             foreach (var warnEvent in warns)

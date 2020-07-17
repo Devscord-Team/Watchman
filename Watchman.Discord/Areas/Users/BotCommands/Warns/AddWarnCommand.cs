@@ -1,4 +1,5 @@
 ﻿using Devscord.DiscordFramework.Framework.Commands;
+using Devscord.DiscordFramework.Framework.Commands.PropertyAttributes;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -8,7 +9,8 @@ namespace Watchman.Discord.Areas.Users.BotCommands
 {
     public class AddWarnCommand : IBotCommand
     {
-        public string User { get; set; }
+        [UserMention]
+        public ulong User { get; set; }
         public string Reason { get; set; }
     }
 }
