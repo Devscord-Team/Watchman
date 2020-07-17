@@ -165,6 +165,9 @@
   <data name="ResponseHasBeenAdded" xml:space="preserve">
     <value>Odpowiedź `{{onEvent}}` została dodana dla serwera **{{server}}**.</value>
   </data>
+  <data name="ResponseTheSameAsDefault" xml:space="preserve">
+    <value>Odpowiedź `{{onEvent}}` po zmianie odpowiedź jest identyczna jak domyślna, usunięto odpowiedź na serwerze **{{server}}**.</value>
+  </data>
   <data name="ResponseHasBeenRemoved" xml:space="preserve">
     <value>Odpowiedź `{{onEvent}}` została usunięta dla serwera **{{server}}**.</value>
   </data>
