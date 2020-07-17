@@ -33,7 +33,7 @@ namespace Watchman.Discord.Areas.Protection.Services
             var allServerMuteEvents = this._queryBus.Execute(getMuteEvents).MuteEvents;
             var userMuteEvents = allServerMuteEvents.Where(x => x.UserId == userContext.Id);
 
-            return userMuteEvents.FirstOrDefault(x => x.IsUnmuted == false);
+            return userMuteEvents.FirstOrDefault(x => !x.IsUnmuted);
         }
     }
 }
