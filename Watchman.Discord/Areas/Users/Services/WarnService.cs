@@ -46,7 +46,6 @@ namespace Watchman.Discord.Areas.Protection.Services
 
         public async Task<string> GetWarnsToString(ulong serverId, ulong userId)
         {
-            var showServerIdOfWarn = serverId == 0;
             var warns = await GetWarns(serverId, userId);
             var builder = new StringBuilder();
 
@@ -57,7 +56,7 @@ namespace Watchman.Discord.Areas.Protection.Services
                     .Append("\nReceiver: ").Append(warnEvent.ReceiverId)
                     .Append("\nReason: ").Append(warnEvent.Reason);
 
-                if (showServerIdOfWarn)
+                if (serverId == 0)
                 {
                     builder.Append("\nServer id: ").Append(Convert.ToString(warnEvent.ServerId));
                 }
