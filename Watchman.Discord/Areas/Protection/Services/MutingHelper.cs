@@ -34,10 +34,17 @@ namespace Watchman.Discord.Areas.Protection.Services
             return muteRole;
         }
 
-        public IEnumerable<MuteEvent> GetServerNotUnmutedMuteEvents(ulong serverId)
+        public IEnumerable<MuteEvent> GetNotUnmutedMuteEvents(ulong serverId)
         {
-            var query = new GetMuteEventsQuery(serverId);
-            return this._queryBus.Execute(query).MuteEvents.Where(x => !x.IsUnmuted);
+            var query = new GetMuteEventsQuery(serverId, takeOnlyNotUnmuted: true);
+            return this._queryBus.Execute(query).MuteEvents;
+        }
+
+        public MuteEvent GetNotUnmutedUserMuteEvent(ulong serverId, ulong userId)
+        {
+            var query = new GetMuteEventsQuery(serverId, takeOnlyNotUnmuted: true, userId);
+            // in the same time there should exists only one MUTED MuteEvent per user per server (FirstOrDefault)
+            return this._queryBus.Execute(query).MuteEvents.FirstOrDefault();
         }
 
         public async Task MarkAsUnmuted(MuteEvent muteEvent)

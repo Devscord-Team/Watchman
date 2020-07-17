@@ -25,7 +25,7 @@ namespace Watchman.Discord.Areas.Protection.Services
         public UserContext GetUser()
         {
             var mention = this._request.GetMention();
-            var userToMute = this._usersService.GetUserByMentionAsync(this._contexts.Server, mention);
+            var userToMute = this._usersService.GetUserByMentionAsync(this._contexts.Server, mention).Result;
 
             if (userToMute == null)
             {

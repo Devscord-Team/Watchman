@@ -3,7 +3,6 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
 using Serilog;
-using System.Linq;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Users;
@@ -30,7 +29,7 @@ namespace Watchman.Discord.Areas.Protection.Services
 
         public async Task MuteUserOrOverwrite(Contexts contexts, MuteEvent muteEvent, UserContext userToMute)
         {
-            var possiblePreviousUserMuteEvent = this.GetNotUnmutedUserMuteEvent(contexts.Server, userToMute);
+            var possiblePreviousUserMuteEvent = this._mutingHelper.GetNotUnmutedUserMuteEvent(contexts.Server.Id, userToMute.Id);
             var shouldJustMuteAgainTheSameMuteEvent = possiblePreviousUserMuteEvent?.Id == muteEvent.Id;
 
             if (possiblePreviousUserMuteEvent != null && !shouldJustMuteAgainTheSameMuteEvent)
@@ -43,13 +42,6 @@ namespace Watchman.Discord.Areas.Protection.Services
             var messagesService = this._messagesServiceFactory.Create(contexts);
             await messagesService.SendResponse(x => x.MutedUser(userToMute, muteEvent.TimeRange.End));
             await this._directMessagesService.TrySendMessage(userToMute.Id, x => x.YouHaveBeenMuted(userToMute, muteEvent.TimeRange.End, muteEvent.Reason), contexts);
-        }
-
-        private MuteEvent GetNotUnmutedUserMuteEvent(DiscordServerContext server, UserContext userContext)
-        {
-            var serverMuteEvents = this._mutingHelper.GetServerNotUnmutedMuteEvents(server.Id);
-            // in the same time there should exists only one MUTED MuteEvent per user per server
-            return serverMuteEvents.FirstOrDefault(x => x.UserId == userContext.Id);
         }
 
         private async Task MuteUser(UserContext userToMute, DiscordServerContext serverContext)

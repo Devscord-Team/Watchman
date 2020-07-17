@@ -35,7 +35,7 @@ namespace Watchman.Discord.Areas.Protection.Services
         {
             foreach (var server in await this._discordServersService.GetDiscordServers())
             {
-                var serverMuteEvents = this._mutingHelper.GetServerNotUnmutedMuteEvents(server.Id).ToList();
+                var serverMuteEvents = this._mutingHelper.GetNotUnmutedMuteEvents(server.Id).ToList();
                 if (serverMuteEvents.Count == 0)
                 {
                     continue;
@@ -75,8 +75,7 @@ namespace Watchman.Discord.Areas.Protection.Services
 
         public async Task UnmuteNow(Contexts contexts, UserContext userToUnmute)
         {
-            var serverMuteEvents = this._mutingHelper.GetServerNotUnmutedMuteEvents(contexts.Server.Id);
-            var eventToUnmute = serverMuteEvents.FirstOrDefault(x => x.UserId == userToUnmute.Id);
+            var eventToUnmute = this._mutingHelper.GetNotUnmutedUserMuteEvent(contexts.Server.Id, userToUnmute.Id);
             if (eventToUnmute == null)
             {
                 return;
@@ -91,6 +90,10 @@ namespace Watchman.Discord.Areas.Protection.Services
 
         private async void UnmuteInShortTime(Contexts contexts, MuteEvent muteEvent, UserContext userToUnmute)
         {
+            if (muteEvent.UserId != userToUnmute.Id)
+            {
+                throw new ArgumentException($"value of {nameof(muteEvent.UserId)} is different than {nameof(userToUnmute.Id)}");
+            }
             if (muteEvent.TimeRange.End > DateTime.UtcNow)
             {
                 await Task.Delay(muteEvent.TimeRange.End - DateTime.UtcNow);
@@ -100,7 +103,7 @@ namespace Watchman.Discord.Areas.Protection.Services
 
         private async Task UnmuteSpecificEvent(Contexts contexts, UserContext userToUnmute, MuteEvent muteEvent)
         {
-            var serverMuteEvents = this._mutingHelper.GetServerNotUnmutedMuteEvents(contexts.Server.Id);
+            var serverMuteEvents = this._mutingHelper.GetNotUnmutedMuteEvents(contexts.Server.Id);
             var eventToUnmute = serverMuteEvents.FirstOrDefault(x => x.Id == muteEvent.Id);
             if (eventToUnmute == null)
             {
