@@ -42,7 +42,7 @@ namespace Devscord.DiscordFramework.Integration
             return _discordClient.UsersService.GetGuildUser(userId, guildId);
         }
 
-        internal static Task<IEnumerable<RestGuildUser>> GetGuildUsers(ulong guildId)
+        internal static IAsyncEnumerable<RestGuildUser> GetGuildUsers(ulong guildId)
         {
             return _discordClient.UsersService.GetGuildUsers(guildId);
         }
@@ -50,6 +50,11 @@ namespace Devscord.DiscordFramework.Integration
         internal static Task<RestUser> GetUser(ulong userId)
         {
             return _discordClient.UsersService.GetUser(userId);
+        }
+
+        internal static Task<bool> IsUserStillOnServer(ulong userId, ulong guildId)
+        {
+            return _discordClient.UsersService.IsUserStillOnServer(userId, guildId);
         }
 
         //Channels

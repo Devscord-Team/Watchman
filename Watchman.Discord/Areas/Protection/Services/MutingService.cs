@@ -60,7 +60,7 @@ namespace Watchman.Discord.Areas.Protection.Services
 
         private async Task AssignMuteRoleAsync(UserRole muteRole, UserContext userToMute, DiscordServerContext server)
         {
-            await this._usersService.AddRole(muteRole, userToMute, server);
+            await this._usersService.AddRoleAsync(muteRole, userToMute, server);
             Log.Information("User {user} has been muted on server {server}", userToMute.ToString(), server.Name);
         }
     }

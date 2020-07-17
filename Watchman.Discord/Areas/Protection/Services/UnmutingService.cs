@@ -48,7 +48,7 @@ namespace Watchman.Discord.Areas.Protection.Services
                     {
                         continue;
                     }
-                    var user = this._usersService.GetUserById(server, muteEvent.UserId);
+                    var user = await this._usersService.GetUserByIdAsync(server, muteEvent.UserId);
                     var channel = server.TextChannels.FirstOrDefault(x => x.Id == muteEvent.MutedOnChannelId);
                     if (user == null)
                     {
@@ -106,8 +106,8 @@ namespace Watchman.Discord.Areas.Protection.Services
             {
                 return;
             }
-            userToUnmute = this._usersService.GetUserById(contexts.Server, userToUnmute.Id);
-            if (userToUnmute == null) // user could left the server
+            var isStillOnServer = await this._usersService.IsUserStillOnServerAsync(contexts.Server, userToUnmute.Id);
+            if (!isStillOnServer)
             {
                 return;
             }
@@ -118,7 +118,7 @@ namespace Watchman.Discord.Areas.Protection.Services
         private async Task UnmuteUser(UserContext mutedUser, MuteEvent muteEvent, DiscordServerContext serverContext)
         {
             var muteRole = this._mutingHelper.GetMuteRole(serverContext);
-            await this._usersService.RemoveRole(muteRole, mutedUser, serverContext);
+            await this._usersService.RemoveRoleAsync(muteRole, mutedUser, serverContext);
             await this._mutingHelper.MarkAsUnmuted(muteEvent);
             Log.Information("User {user} has been unmuted on server {server}", mutedUser.ToString(), serverContext.Name);
         }
