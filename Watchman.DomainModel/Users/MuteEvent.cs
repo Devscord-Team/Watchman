@@ -10,18 +10,7 @@ namespace Watchman.DomainModel.Users
         public TimeRange TimeRange { get; private set; }
         public ulong ServerId { get; private set; }
         public ulong MutedOnChannelId { get; private set; }
-
-        public bool IsUnmuted
-        {
-            get => this._isUnmuted;
-            set
-            {
-                this._isUnmuted = value;
-                this.Update();
-            }
-        }
-
-        private bool _isUnmuted;
+        public bool IsUnmuted { get; private set; }
 
         public MuteEvent(ulong userId, TimeRange timeRange, string reason, ulong serverId, ulong channelId)
         {
@@ -30,6 +19,16 @@ namespace Watchman.DomainModel.Users
             this.Reason = reason;
             this.ServerId = serverId;
             this.MutedOnChannelId = channelId;
+        }
+
+        public void Unmute()
+        {
+            if(this.IsUnmuted)
+            {
+                return;
+            }
+            this.IsUnmuted = true;
+            this.Update();
         }
     }
 }
