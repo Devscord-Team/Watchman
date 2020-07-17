@@ -9,12 +9,7 @@ namespace Watchman.DomainModel.Warnings.Commands
 
         public AddWarnEventCommand(ulong receiverId, ulong granterId, string reason, ulong serverId)
         {
-            WarnEvent = new WarnEvent(
-                    receiverId,
-                    granterId,
-                    reason,
-                    serverId
-                );
+            WarnEvent = new WarnEvent(receiverId, granterId, reason, serverId);
         }
     }
 }
