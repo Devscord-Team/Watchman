@@ -19,7 +19,8 @@ namespace Watchman.DomainModel.Warns.Commands.Handlers
         public async Task HandleAsync(AddWarnEventCommand command)
         {
             using var session = this._sessionFactory.Create();
-            await session.AddAsync(command.WarnEvent);
+            var warnEvent = new WarnEvent(command.ReceiverId, command.GranterId, command.Reason, command.ServerId);
+            await session.AddAsync(warnEvent);
         }
     }
 }
