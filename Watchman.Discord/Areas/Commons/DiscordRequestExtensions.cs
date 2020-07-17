@@ -12,7 +12,7 @@ namespace Watchman.Discord.Areas.Commons
     {
         public static string GetMention(this DiscordRequest discordRequest)
         {
-            var mention = discordRequest.Arguments.FirstOrDefault(x => (x.Value?.StartsWith('<') ?? false) && (x.Value?.EndsWith('>') ?? false))?.Value;
+            var mention = discordRequest.Arguments.FirstOrDefault(x => x.Value.StartsWith('<') && x.Value.EndsWith('>'))?.Value;
             if (mention == null)
             {
                 throw new UserDidntMentionAnyUserException();

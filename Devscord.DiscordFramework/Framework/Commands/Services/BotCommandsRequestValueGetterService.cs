@@ -23,7 +23,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             }
             if (!isList)
             {
-                return result.Value ?? string.Empty;
+                return result.Value;
             }
             var argumentsList = request.Arguments.ToList();
             var indexOf = argumentsList.IndexOf(result);
