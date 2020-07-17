@@ -203,6 +203,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
                 return ResourceManager.GetString("ResponseHasBeenAdded", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Odpowiedź `{{onEvent}}` po zmianie odpowiedź jest identyczna jak domyślna, usunięto odpowiedź na serwerze **{{server}}**..
+        /// </summary>
+        public static string ResponseTheSameAsDefault {
+            get {
+                return ResourceManager.GetString("ResponseTheSameAsDefault", resourceCulture);
+            }
+        }
         
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Odpowiedź `{{onEvent}}` została usunięta dla serwera **{{server}}**..
