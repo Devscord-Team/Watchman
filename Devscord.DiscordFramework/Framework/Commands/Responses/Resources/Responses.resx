@@ -133,7 +133,7 @@
     <value>Dostępne role: {{roles}}</value>
   </data>
   <data name="EmptyArgument" xml:space="preserve">
-    <value>Parametr {{botCommandArgument}} jest nieprawidłowy.</value>
+    <value>Parametr {{argument}} jest nieprawidłowy.</value>
   </data>
   <data name="GetUserWarns" xml:space="preserve">
     <value>Ostrzeżenia użytkownika {{user}}: {{warns}}</value>
