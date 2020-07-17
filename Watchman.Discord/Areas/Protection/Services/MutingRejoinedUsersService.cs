@@ -10,12 +10,12 @@ namespace Watchman.Discord.Areas.Protection.Services
     public class MutingRejoinedUsersService
     {
         private readonly IQueryBus _queryBus;
-        private readonly MuteService _muteService;
+        private readonly MutingService _mutingService;
 
-        public MutingRejoinedUsersService(IQueryBus queryBus, MuteService muteService)
+        public MutingRejoinedUsersService(IQueryBus queryBus, MutingService mutingService)
         {
             this._queryBus = queryBus;
-            this._muteService = muteService;
+            this._mutingService = mutingService;
         }
 
         public async Task MuteAgainIfNeeded(Contexts contexts)
@@ -23,7 +23,7 @@ namespace Watchman.Discord.Areas.Protection.Services
             var notUnmuted = this.GetNotUnmutedMuteEvent(contexts.Server, contexts.User);
             if (notUnmuted != null)
             {
-                await this._muteService.MuteUserOrOverwrite(contexts, notUnmuted, contexts.User);
+                await this._mutingService.MuteUserOrOverwrite(contexts, notUnmuted, contexts.User);
             }
         }
 

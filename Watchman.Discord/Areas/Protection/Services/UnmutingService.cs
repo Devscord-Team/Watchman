@@ -20,22 +20,22 @@ namespace Watchman.Discord.Areas.Protection.Services
         private readonly DirectMessagesService _directMessagesService;
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly DiscordServersService _discordServersService;
-        private readonly MutingHelperService _mutingHelperService;
+        private readonly MutingHelper _mutingHelper;
 
-        public UnmutingService(UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, DiscordServersService discordServersService, MutingHelperService mutingHelperService)
+        public UnmutingService(UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, DiscordServersService discordServersService, MutingHelper mutingHelper)
         {
             this._usersService = usersService;
             this._directMessagesService = directMessagesService;
             this._messagesServiceFactory = messagesServiceFactory;
             this._discordServersService = discordServersService;
-            this._mutingHelperService = mutingHelperService;
+            this._mutingHelper = mutingHelper;
         }
 
         public async Task Refresh()
         {
             foreach (var server in await this._discordServersService.GetDiscordServers())
             {
-                var serverMuteEvents = this._mutingHelperService.GetServerNotUnmutedMuteEvents(server.Id).ToList();
+                var serverMuteEvents = this._mutingHelper.GetServerNotUnmutedMuteEvents(server.Id).ToList();
                 if (serverMuteEvents.Count == 0)
                 {
                     continue;
@@ -52,7 +52,7 @@ namespace Watchman.Discord.Areas.Protection.Services
                     var channel = server.TextChannels.FirstOrDefault(x => x.Id == muteEvent.MutedOnChannelId);
                     if (user == null)
                     {
-                        await this._mutingHelperService.MarkAsUnmuted(muteEvent);
+                        await this._mutingHelper.MarkAsUnmuted(muteEvent);
                         continue;
                     }
                     contexts.SetContext(user);
@@ -75,7 +75,7 @@ namespace Watchman.Discord.Areas.Protection.Services
 
         public async Task UnmuteNow(Contexts contexts, UserContext userToUnmute)
         {
-            var serverMuteEvents = this._mutingHelperService.GetServerNotUnmutedMuteEvents(contexts.Server.Id);
+            var serverMuteEvents = this._mutingHelper.GetServerNotUnmutedMuteEvents(contexts.Server.Id);
             var eventToUnmute = serverMuteEvents.FirstOrDefault(x => x.UserId == userToUnmute.Id);
             if (eventToUnmute == null)
             {
@@ -100,7 +100,7 @@ namespace Watchman.Discord.Areas.Protection.Services
 
         private async Task UnmuteSpecificEvent(Contexts contexts, UserContext userToUnmute, MuteEvent muteEvent)
         {
-            var serverMuteEvents = this._mutingHelperService.GetServerNotUnmutedMuteEvents(contexts.Server.Id);
+            var serverMuteEvents = this._mutingHelper.GetServerNotUnmutedMuteEvents(contexts.Server.Id);
             var eventToUnmute = serverMuteEvents.FirstOrDefault(x => x.Id == muteEvent.Id);
             if (eventToUnmute == null)
             {
@@ -117,9 +117,9 @@ namespace Watchman.Discord.Areas.Protection.Services
 
         private async Task UnmuteUser(UserContext mutedUser, MuteEvent muteEvent, DiscordServerContext serverContext)
         {
-            var muteRole = this._mutingHelperService.GetMuteRole(serverContext);
+            var muteRole = this._mutingHelper.GetMuteRole(serverContext);
             await this._usersService.RemoveRole(muteRole, mutedUser, serverContext);
-            await this._mutingHelperService.MarkAsUnmuted(muteEvent);
+            await this._mutingHelper.MarkAsUnmuted(muteEvent);
             Log.Information("User {user} has been unmuted on server {server}", mutedUser.ToString(), serverContext.Name);
         }
 

@@ -10,13 +10,13 @@ namespace Watchman.Discord.Areas.Protection.Controllers
 {
     public class MuteUserController : IController
     {
-        private readonly MuteService _muteService;
+        private readonly MutingService _mutingService;
         private readonly UnmutingService _unmutingService;
         private readonly UsersService _usersService;
 
-        public MuteUserController(MuteService muteService, UnmutingService unmutingService, UsersService usersService)
+        public MuteUserController(MutingService mutingService, UnmutingService unmutingService, UsersService usersService)
         {
-            this._muteService = muteService;
+            this._mutingService = mutingService;
             this._unmutingService = unmutingService;
             this._usersService = usersService;
         }
@@ -29,7 +29,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             var userToMute = requestParser.GetUser();
             var muteEvent = requestParser.GetMuteEvent(userToMute.Id, contexts, request);
 
-            await this._muteService.MuteUserOrOverwrite(contexts, muteEvent, userToMute);
+            await this._mutingService.MuteUserOrOverwrite(contexts, muteEvent, userToMute);
             this._unmutingService.UnmuteInFuture(contexts, muteEvent, userToMute);
         }
 

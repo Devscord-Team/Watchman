@@ -6,7 +6,6 @@ namespace Devscord.DiscordFramework.Services
     public interface ICyclicService
     {
         public RefreshFrequent RefreshFrequent { get; }
-
         public Task Refresh();
     }
 }

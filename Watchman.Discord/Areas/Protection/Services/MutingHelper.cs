@@ -11,13 +11,13 @@ using Watchman.DomainModel.Users.Queries;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {
-    public class MutingHelperService
+    public class MutingHelper
     {
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
         private readonly UsersRolesService _usersRolesService;
 
-        public MutingHelperService(IQueryBus queryBus, ICommandBus commandBus, UsersRolesService usersRolesService)
+        public MutingHelper(IQueryBus queryBus, ICommandBus commandBus, UsersRolesService usersRolesService)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;

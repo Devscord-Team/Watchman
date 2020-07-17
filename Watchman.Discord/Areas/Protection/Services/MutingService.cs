@@ -11,21 +11,21 @@ using Watchman.DomainModel.Users.Commands;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {
-    public class MuteService
+    public class MutingService
     {
         private readonly ICommandBus _commandBus;
         private readonly UsersService _usersService;
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly DirectMessagesService _directMessagesService;
-        private readonly MutingHelperService _mutingHelperService;
+        private readonly MutingHelper _mutingHelper;
 
-        public MuteService(ICommandBus commandBus, UsersService usersService, MessagesServiceFactory messagesServiceFactory, DirectMessagesService directMessagesService, MutingHelperService mutingHelperService)
+        public MutingService(ICommandBus commandBus, UsersService usersService, MessagesServiceFactory messagesServiceFactory, DirectMessagesService directMessagesService, MutingHelper mutingHelper)
         {
             this._commandBus = commandBus;
             this._usersService = usersService;
             this._messagesServiceFactory = messagesServiceFactory;
             this._directMessagesService = directMessagesService;
-            this._mutingHelperService = mutingHelperService;
+            this._mutingHelper = mutingHelper;
         }
 
         public async Task MuteUserOrOverwrite(Contexts contexts, MuteEvent muteEvent, UserContext userToMute)
@@ -35,7 +35,7 @@ namespace Watchman.Discord.Areas.Protection.Services
 
             if (possiblePreviousUserMuteEvent != null && !shouldJustMuteAgainTheSameMuteEvent)
             {
-                await this._mutingHelperService.MarkAsUnmuted(possiblePreviousUserMuteEvent);
+                await this._mutingHelper.MarkAsUnmuted(possiblePreviousUserMuteEvent);
             }
             await this.MuteUser(userToMute, contexts.Server);
             await this._commandBus.ExecuteAsync(new AddMuteEventCommand(muteEvent));
@@ -47,14 +47,14 @@ namespace Watchman.Discord.Areas.Protection.Services
 
         private MuteEvent GetNotUnmutedUserMuteEvent(DiscordServerContext server, UserContext userContext)
         {
-            var serverMuteEvents = this._mutingHelperService.GetServerNotUnmutedMuteEvents(server.Id);
+            var serverMuteEvents = this._mutingHelper.GetServerNotUnmutedMuteEvents(server.Id);
             // in the same time there should exists only one MUTED MuteEvent per user per server
             return serverMuteEvents.FirstOrDefault(x => x.UserId == userContext.Id);
         }
 
         private async Task MuteUser(UserContext userToMute, DiscordServerContext serverContext)
         {
-            var muteRole = this._mutingHelperService.GetMuteRole(serverContext);
+            var muteRole = this._mutingHelper.GetMuteRole(serverContext);
             await this.AssignMuteRoleAsync(muteRole, userToMute, serverContext);
         }
 
