@@ -38,17 +38,9 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         public async Task AddWarn(AddWarnCommand command, Contexts contexts)
         {
             var msgService = _messagesServiceFactory.Create(contexts);
-
-            if (string.IsNullOrEmpty(command.Reason) || string.IsNullOrWhiteSpace(command.Reason))
-            {
-                await msgService.SendResponse(x => x.EmptyArgument("-reason"));
-            } 
-            else
-            {
-                var mentionedUser = _usersService.GetUserByMention(contexts.Server, command.User.ToString());
-                await _warnService.AddWarnToUser(command, contexts, mentionedUser);
-                await msgService.SendResponse(x => x.UserHasBeenWarned(contexts.User.Name, mentionedUser.Name, command.Reason));
-            }
+            var mentionedUser = _usersService.GetUserByMention(contexts.Server, command.User.ToString());
+            await _warnService.AddWarnToUser(command, contexts, mentionedUser);
+            await msgService.SendResponse(x => x.UserHasBeenWarned(contexts.User.Name, mentionedUser.Name, command.Reason));
         }
 
         public async Task Warns(WarnsCommand command, Contexts contexts)
