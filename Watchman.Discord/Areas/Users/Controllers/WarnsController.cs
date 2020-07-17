@@ -57,26 +57,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             var serverId = command.All ? 0 : contexts.Server.Id;
             var msgService = _messagesServiceFactory.Create(contexts);
 
-            if (command.All)
-            {
-                if (contexts.User.IsAdmin)
-                {
-                    if (mentionedUser == null)
-                    {
-                        await _directMessagesService.TrySendMessage(contexts.User.Id, x => x.UserNotFound(command.User.ToString()), contexts);
-                    }
-                    else
-                    {
-                        var warnsStr = await _warnService.GetWarnsToString(serverId, mentionedUser.Id);
-                        await _directMessagesService.TrySendMessage(contexts.User.Id, x => x.GetUserWarns(mentionedUser.Name, warnsStr), contexts);
-                    }
-                }
-                else
-                {
-                    throw new NotAdminPermissionsException();
-                }
-            }
-            else
+            if (!command.All)
             {
                 if (mentionedUser == null)
                 {
@@ -87,7 +68,23 @@ namespace Watchman.Discord.Areas.Protection.Controllers
                     var warnsStr = await _warnService.GetWarnsToString(serverId, mentionedUser.Id);
                     await msgService.SendResponse(x => x.GetUserWarns(mentionedUser.Name, warnsStr));
                 }
+                return;
             }
+
+            if (contexts.User.IsAdmin)
+            {
+                if (mentionedUser == null)
+                {
+                    await _directMessagesService.TrySendMessage(contexts.User.Id, x => x.UserNotFound(command.User.ToString()), contexts);
+                    return;
+                }
+
+                var warnsStr = await _warnService.GetWarnsToString(serverId, mentionedUser.Id);
+                await _directMessagesService.TrySendMessage(contexts.User.Id, x => x.GetUserWarns(mentionedUser.Name, warnsStr), contexts);
+                return;
+            }
+
+            throw new NotAdminPermissionsException();
         }
     }
 }
