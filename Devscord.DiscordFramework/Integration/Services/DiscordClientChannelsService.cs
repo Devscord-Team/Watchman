@@ -109,7 +109,7 @@ namespace Devscord.DiscordFramework.Integration.Services
                 contexts.SetContext(user);
 
                 var commandParser = new CommandParser();
-                var request = commandParser.Parse(message.Content, message.Timestamp.UtcDateTime);
+                var request = commandParser.Parse(server.Id, message.Content, message.Timestamp.UtcDateTime);
                 return new Message(message.Id, request, contexts);
             });
             return messages;

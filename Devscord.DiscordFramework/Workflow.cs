@@ -20,10 +20,10 @@ namespace Devscord.DiscordFramework
     internal class Workflow
     {
         private readonly IComponentContext _context;
-        private readonly CommandParser _commandParser = new CommandParser();
         private readonly MiddlewaresService _middlewaresService = new MiddlewaresService();
         private readonly ControllersService _controllersService;
         private readonly Stopwatch _stopWatch = new Stopwatch();
+        private readonly CommandParser _commandParser = new CommandParser();
 
         public List<Func<Task>> OnReady { get; set; } = new List<Func<Task>>();
         public List<Func<Contexts, Task>> OnUserJoined { get; set; } = new List<Func<Contexts, Task>>();
@@ -46,6 +46,11 @@ namespace Devscord.DiscordFramework
             this._middlewaresService.AddMiddleware<T>();
             Log.Debug("Added Middleware: {middlewareName}", nameof(T));
             return this;
+        }
+
+        internal void SetServersPrefixes(Dictionary<ulong, string[]>  prefixes)
+        {
+            this._commandParser.SetServersPrefixes(prefixes);
         }
 
         internal void Initialize()
@@ -118,7 +123,8 @@ namespace Devscord.DiscordFramework
         {
             this._stopWatch.Restart();
             Log.Information("Processing message: {content} from user {user} started", socketMessage.Content, socketMessage.Author);
-            var request = this._commandParser.Parse(socketMessage.Content, socketMessage.Timestamp.UtcDateTime);
+            var serverId = ((SocketGuildChannel) socketMessage.Channel).Guild.Id;
+            var request = this._commandParser.Parse(serverId, socketMessage.Content, socketMessage.Timestamp.UtcDateTime);
             var elapsedParse = this._stopWatch.ElapsedTicks;
             Log.Information("Parsing time: {elapsedParse}ticks", elapsedParse);
 #if DEBUG

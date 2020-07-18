@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Framework;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Integration;
@@ -53,6 +54,13 @@ namespace Devscord.DiscordFramework
                 .AddMiddleware<ServerMiddleware>()
                 .AddMiddleware<UserMiddleware>();
             Log.Debug("Default middlewares added");
+            return this;
+        }
+
+        public WorkflowBuilder SetServersPrefixes(Dictionary<ulong,string[]> serverPrefixes)
+        {
+            this._workflow.SetServersPrefixes(serverPrefixes);
+            Log.Debug("Servers prefixes have been set to {prefixes}", serverPrefixes.ToJson());
             return this;
         }
 

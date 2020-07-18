@@ -6,14 +6,22 @@ using System.Linq;
 
 namespace Devscord.DiscordFramework.Framework.Commands.Parsing
 {
-    public class CommandParser
+    internal class CommandParser
     {
-        private readonly string[] _possiblePrefixes = { "!", "--", "-", "^", "$", "%" };
+        private readonly Dictionary<ulong, string[]> _serversPrefixes = new Dictionary<ulong, string[]>();
 
-        public DiscordRequest Parse(string message, DateTime sentAt)
+        internal void SetServersPrefixes(Dictionary<ulong, string[]> prefixes)
+        {
+            foreach (var serverprefixes in prefixes)
+            {
+                _serversPrefixes.Add(serverprefixes.Key, serverprefixes.Value);
+            }
+        }
+
+        internal DiscordRequest Parse(ulong serverId, string message, DateTime sentAt)
         {
             var original = (string) message.Clone();
-            var prefix = this.GetPrefix(message);
+            var prefix = this.GetPrefix(serverId, message);
             if (string.IsNullOrWhiteSpace(prefix))
             {
                 return new DiscordRequest { OriginalMessage = original, SentAt = sentAt };
@@ -25,7 +33,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
 
             var arguments = string.IsNullOrWhiteSpace(message)
                 ? new List<DiscordRequestArgument>()
-                : this.GetArguments(message);
+                : this.GetArguments(serverId, message);
 
             return new DiscordRequest
             {
@@ -37,10 +45,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
             };
         }
 
-        private string GetPrefix(string message)
+        private string GetPrefix(ulong serverId, string message)
         {
             var withoutWhitespaces = message.Trim();
-            return this._possiblePrefixes.FirstOrDefault(x => withoutWhitespaces.StartsWith(x));
+            if(!_serversPrefixes.ContainsKey(serverId))
+            {
+                return "-";
+            }
+            var prefixesForCurrentServer = _serversPrefixes[serverId];
+            return prefixesForCurrentServer.FirstOrDefault(x => withoutWhitespaces.StartsWith(x));
         }
 
         private string GetName(string message)
@@ -48,7 +61,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
             return message.Split(' ').First();
         }
 
-        private IEnumerable<DiscordRequestArgument> GetArguments(string message)
+        private IEnumerable<DiscordRequestArgument> GetArguments(ulong serverId, string message)
         {
             // possible messages:
             // ... -arg val1 val2
@@ -63,7 +76,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
 
             while (trimmedMess.Length > 0)
             {
-                var prefix = this.GetPrefix(trimmedMess);
+                var prefix = this.GetPrefix(serverId, trimmedMess);
                 var isStartingWithValue = prefix == null;
 
                 if (isStartingWithValue)
