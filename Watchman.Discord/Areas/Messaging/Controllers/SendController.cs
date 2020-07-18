@@ -27,15 +27,9 @@ namespace Watchman.Discord.Areas.Messaging.Controllers
         }
         public async Task Send(SendCommand sendCommand, Contexts contexts)
         {
-            var channelToSendMessageTo = sendCommand.Channel;
-            var messageToSend = sendCommand.Message;
-            if (messageToSend==null)
-            {
-                throw new NotEnoughArgumentsException();
-            }
             var messagesService = this._messagesServiceFactory.Create(contexts);
-            messagesService.ChannelId = channelToSendMessageTo;
-            await messagesService.SendMessage(messageToSend);
+            messagesService.ChannelId = sendCommand.Channel;
+            await messagesService.SendMessage(sendCommand.Message);
         }
     }
 }
