@@ -163,6 +163,11 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("roles", rolesLines));
         }
 
+        public static string PrefixesNotFound(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("PrefixesNotFound");
+        }
+
         public static string ServerPrefixes(this ResponsesService responsesService, string prefixes)
         {
             return responsesService.ProcessResponse("ServerPrefixes",

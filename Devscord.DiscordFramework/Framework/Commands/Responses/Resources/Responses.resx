@@ -258,4 +258,7 @@
   <data name="ServerPrefixes" xml:space="preserve">
     <value>Dostepne prefixy: {{prefixes}}</value>
   </data>
+  <data name="PrefixesNotFound" xml:space="preserve">
+    <value>Serwer {[server}} nie posiada żadnych prefixów.</value>
+  </data>
 </root>

@@ -187,6 +187,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Serwer {[server}} nie posiada żadnych prefixów..
+        /// </summary>
+        public static string PrefixesNotFound {
+            get {
+                return ResourceManager.GetString("PrefixesNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Prefix **{{prefix}}** został usunięty..
         /// </summary>
         public static string PrefixRemoved {
