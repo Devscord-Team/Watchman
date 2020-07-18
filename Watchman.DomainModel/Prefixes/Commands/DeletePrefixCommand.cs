@@ -7,10 +7,12 @@ namespace Watchman.DomainModel.ServerPrefixes.Commands
 {
     public class DeletePrefixCommand : ICommand
     {
-        public ServerPrefixes Prefix { get; }
+        public ulong ServerId { get; }
+        public string Prefix { get; }
 
-        public DeletePrefixCommand(ServerPrefixes prefix)
+        public DeletePrefixCommand(ulong serverId, string prefix)
         {
+            this.ServerId = serverId;
             this.Prefix = prefix;
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
@@ -19,7 +20,13 @@ namespace Watchman.DomainModel.ServerPrefixes.Commands.Handlers
         public async Task HandleAsync(DeletePrefixCommand command)
         {
             using var session = this._sessionFactory.Create();
-            await session.DeleteAsync(command.Prefix);
+            var prefixes = session.Get<ServerPrefixes>().FirstOrDefault(x => x.ServerId == command.ServerId);
+            if (prefixes == null)
+            {
+                prefixes = new ServerPrefixes(command.ServerId);
+            }
+            prefixes.DeletePrefix(command.Prefix);
+            await session.AddOrUpdateAsync(prefixes);
         }
     }
 }

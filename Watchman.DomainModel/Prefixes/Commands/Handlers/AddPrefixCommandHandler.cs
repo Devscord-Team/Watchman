@@ -20,8 +20,13 @@ namespace Watchman.DomainModel.ServerPrefixes.Commands.Handlers
         public async Task HandleAsync(AddPrefixCommand command)
         {
             using var session = this._sessionFactory.Create();
-            var prefix = new ServerPrefixes(command.ServerId, command.Value);
-            await session.AddAsync(prefix);
+            var prefixes = session.Get<ServerPrefixes>().FirstOrDefault(x => x.ServerId == command.ServerId);
+            if(prefixes == null)
+            {
+                prefixes = new ServerPrefixes(command.ServerId);
+            }
+            prefixes.AddPrefix(command.Prefix);
+            await session.AddOrUpdateAsync(prefixes);
         }
     }
 }

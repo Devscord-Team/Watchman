@@ -7,9 +7,9 @@ namespace Watchman.DomainModel.ServerPrefixes.Queries
 {
     public class GetPrefixesQueryResult : IQueryResult
     {
-        public IEnumerable<ServerPrefixes> Prefixes { get; }
+        public ServerPrefixes Prefixes { get; }
 
-        public GetPrefixesQueryResult(IEnumerable<ServerPrefixes> prefixes)
+        public GetPrefixesQueryResult(ServerPrefixes prefixes)
         {
             this.Prefixes = prefixes;
         }

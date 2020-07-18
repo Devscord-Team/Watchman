@@ -8,12 +8,12 @@ namespace Watchman.DomainModel.ServerPrefixes.Commands
     public class AddPrefixCommand : ICommand
     {
         public ulong ServerId { get; }
-        public string Value { get; }
+        public string Prefix { get; }
 
-        public AddPrefixCommand(ulong serverId, string value)
+        public AddPrefixCommand(ulong serverId, string prefix)
         {
             this.ServerId = serverId;
-            this.Value = value;
+            this.Prefix = prefix;
         }
     }
 }
