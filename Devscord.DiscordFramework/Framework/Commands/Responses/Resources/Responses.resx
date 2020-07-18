@@ -243,4 +243,19 @@
   <data name="UserNotFound" xml:space="preserve">
     <value>Użytkownik {{user}} nie istnieje.</value>
   </data>
+  <data name="CannotRemovePrefix" xml:space="preserve">
+    <value>Nie można usunąć prefixu **{{prefix}}**</value>
+  </data>
+  <data name="PrefixAdded" xml:space="preserve">
+    <value>Prefix **{{prefix}}** został dodany.</value>
+  </data>
+  <data name="PrefixAlreadyExists" xml:space="preserve">
+    <value>Prefix** {{prefix}}** już istnieje.</value>
+  </data>
+  <data name="PrefixRemoved" xml:space="preserve">
+    <value>Prefix **{{prefix}}** został usunięty.</value>
+  </data>
+  <data name="ServerPrefixes" xml:space="preserve">
+    <value>Dostepne prefixy: {{prefixes}}</value>
+  </data>
 </root>

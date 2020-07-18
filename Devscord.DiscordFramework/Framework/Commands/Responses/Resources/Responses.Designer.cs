@@ -106,6 +106,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Nie można usunąć prefixu **{{prefix}}**.
+        /// </summary>
+        public static string CannotRemovePrefix {
+            get {
+                return ResourceManager.GetString("CannotRemovePrefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dla tego polecenia są dostępne tylko argumenty: {{arguments}}.
         /// </summary>
         public static string InvalidArguments {
@@ -160,6 +169,33 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Prefix **{{prefix}}** został dodany..
+        /// </summary>
+        public static string PrefixAdded {
+            get {
+                return ResourceManager.GetString("PrefixAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Prefix** {{prefix}}** już istnieje..
+        /// </summary>
+        public static string PrefixAlreadyExists {
+            get {
+                return ResourceManager.GetString("PrefixAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Prefix **{{prefix}}** został usunięty..
+        /// </summary>
+        public static string PrefixRemoved {
+            get {
+                return ResourceManager.GetString("PrefixRemoved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dostępne komendy: ```{{help}}```.
         /// </summary>
         public static string PrintHelp {
@@ -194,15 +230,6 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
                 return ResourceManager.GetString("ResponseHasBeenAdded", resourceCulture);
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Odpowiedź `{{onEvent}}` po zmianie odpowiedź jest identyczna jak domyślna, usunięto odpowiedź na serwerze **{{server}}**..
-        /// </summary>
-        public static string ResponseTheSameAsDefault {
-            get {
-                return ResourceManager.GetString("ResponseTheSameAsDefault", resourceCulture);
-            }
-        }
         
         /// <summary>
         ///   Looks up a localized string similar to Odpowiedź `{{onEvent}}` została usunięta dla serwera **{{server}}**..
@@ -228,6 +255,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         public static string ResponseNotFound {
             get {
                 return ResourceManager.GetString("ResponseNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Odpowiedź `{{onEvent}}` po zmianie odpowiedź jest identyczna jak domyślna, usunięto odpowiedź na serwerze **{{server}}**..
+        /// </summary>
+        public static string ResponseTheSameAsDefault {
+            get {
+                return ResourceManager.GetString("ResponseTheSameAsDefault", resourceCulture);
             }
         }
         
@@ -327,6 +363,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         public static string ServerDoesntHaveAnySafeRoles {
             get {
                 return ResourceManager.GetString("ServerDoesntHaveAnySafeRoles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dostepne prefixy: {{prefixes}}.
+        /// </summary>
+        public static string ServerPrefixes {
+            get {
+                return ResourceManager.GetString("ServerPrefixes", resourceCulture);
             }
         }
         

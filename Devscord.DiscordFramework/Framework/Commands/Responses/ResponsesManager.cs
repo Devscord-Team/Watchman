@@ -163,6 +163,36 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("roles", rolesLines));
         }
 
+        public static string ServerPrefixes(this ResponsesService responsesService, string prefixes)
+        {
+            return responsesService.ProcessResponse("ServerPrefixes",
+                new KeyValuePair<string, string>("prefixes", prefixes));
+        }
+
+        public static string PrefixAdded(this ResponsesService responsesService, string prefix)
+        {
+            return responsesService.ProcessResponse("PrefixAdded",
+                new KeyValuePair<string, string>("prefix", prefix));
+        }
+
+        public static string PrefixAlreadyExists(this ResponsesService responsesService, string prefix)
+        {
+            return responsesService.ProcessResponse("PrefixAlreadyExists",
+                new KeyValuePair<string, string>("prefix", prefix));
+        }
+
+        public static string PrefixRemoved(this ResponsesService responsesService, string prefix)
+        {
+            return responsesService.ProcessResponse("PrefixRemoved",
+                new KeyValuePair<string, string>("prefix", prefix));
+        }
+
+        public static string CannotRemovePrefix(this ResponsesService responsesService, string prefix)
+        {
+            return responsesService.ProcessResponse("PrefixRemoved",
+                new KeyValuePair<string, string>("prefix", prefix));
+        }
+
         public static string NotEnoughArguments(this ResponsesService responsesService)
         {
             return responsesService.ProcessResponse("NotEnoughArguments");

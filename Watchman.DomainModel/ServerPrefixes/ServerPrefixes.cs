@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Watchman.DomainModel.Commons.Exceptions;
 using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.ServerPrefixes
@@ -22,7 +23,7 @@ namespace Watchman.DomainModel.ServerPrefixes
         {
             if (this._prefixes.Any(x => x == prefix))
             {
-                return;
+                throw new AlreadyExistsException();
             }
             this._prefixes.Add(prefix);
             this.Update();

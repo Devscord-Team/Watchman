@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Prefixes.Commands;
+using Watchman.DomainModel.Commons.Exceptions;
 using Watchman.DomainModel.ServerPrefixes.Commands;
 using Watchman.DomainModel.ServerPrefixes.Queries;
 
@@ -36,7 +37,7 @@ namespace Watchman.Discord.Areas.Prefixes
             var prefixes = (await this._queryBus.ExecuteAsync(query)).Prefixes;
 
             var output = new StringBuilder().PrintManyLines(prefixes.Prefixes.ToArray(), contentStyleBox: false, spacesBetweenLines: false);
-            //await messageService.SendResponse(x => x.Response(output.ToString()));
+            await messageService.SendResponse(x => x.ServerPrefixes(output.ToString()));
         }
 
         public async Task AddPrefix(Commands.AddPrefixCommand command, Contexts contexts)
@@ -44,9 +45,17 @@ namespace Watchman.Discord.Areas.Prefixes
             var messageService = this._messagesServiceFactory.Create(contexts);
 
             var addPrefixCommand = new DomainModel.ServerPrefixes.Commands.AddPrefixCommand(contexts.Server.Id, command.Prefix);
-            await this._commandBus.ExecuteAsync(addPrefixCommand);
+            try
+            {
+                await this._commandBus.ExecuteAsync(addPrefixCommand);
+            }
+            catch (AlreadyExistsException ex)
+            {
+                await messageService.SendResponse(x => x.PrefixAlreadyExists(command.Prefix));
+                return;
+            }
 
-            //await messageService.SendResponse(x => x.Response(output.ToString()));
+            await messageService.SendResponse(x => x.PrefixAdded(command.Prefix));
         }
 
         public async Task RemovePrefix(RemovePrefixCommand command, Contexts contexts)
@@ -54,9 +63,17 @@ namespace Watchman.Discord.Areas.Prefixes
             var messageService = this._messagesServiceFactory.Create(contexts);
 
             var deletePrefixCommand = new DeletePrefixCommand(contexts.Server.Id, command.Prefix);
-            await this._commandBus.ExecuteAsync(deletePrefixCommand);
+            try
+            {
+                await this._commandBus.ExecuteAsync(deletePrefixCommand);
+            }
+            catch (NotUpdatedException ex)
+            {
+                await messageService.SendResponse(x => x.CannotRemovePrefix(command.Prefix));
+                return;
+            }
 
-            //await messageService.SendResponse(x => x.Response(output.ToString()));
+            await messageService.SendResponse(x => x.PrefixRemoved(command.Prefix));
         }
     }
 }

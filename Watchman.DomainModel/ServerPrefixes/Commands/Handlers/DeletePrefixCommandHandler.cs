@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
+using Watchman.DomainModel.Commons.Exceptions;
 using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.ServerPrefixes.Commands.Handlers
@@ -25,7 +26,12 @@ namespace Watchman.DomainModel.ServerPrefixes.Commands.Handlers
             {
                 prefixes = new ServerPrefixes(command.ServerId);
             }
+            var version = prefixes.Version;
             prefixes.DeletePrefix(command.Prefix);
+            if(prefixes.Version == version)
+            {
+                throw new NotUpdatedException();
+            }
             await session.AddOrUpdateAsync(prefixes);
         }
     }
