@@ -115,7 +115,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Użytkownik {{user}} został zmutowany do {{timeEnd}}.
+        ///   Looks up a localized string similar to Użytkownik {{user}} został wyciszony do {{timeEnd}}.
         /// </summary>
         public static string MutedUser {
             get {
@@ -165,15 +165,6 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         public static string PrintHelp {
             get {
                 return ResourceManager.GetString("PrintHelp", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Zakończono wczytywanie historii wiadomości..
-        /// </summary>
-        public static string ReadingHistoryDone {
-            get {
-                return ResourceManager.GetString("ReadingHistoryDone", resourceCulture);
             }
         }
         
@@ -327,24 +318,6 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         public static string SpamAlertRecognized {
             get {
                 return ResourceManager.GetString("SpamAlertRecognized", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Spam alert! Uzytkownik {{user}} został zmutowany..
-        /// </summary>
-        public static string SpamAlertUserIsMuted {
-            get {
-                return ResourceManager.GetString("SpamAlertUserIsMuted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Spam alert! Użytkownik {{user}} został zmutowany na dłużej.
-        /// </summary>
-        public static string SpamAlertUserIsMutedForLong {
-            get {
-                return ResourceManager.GetString("SpamAlertUserIsMutedForLong", resourceCulture);
             }
         }
         

@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Devscord.DiscordFramework.Framework.Commands.PropertyAttributes;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
@@ -19,6 +21,7 @@ namespace Watchman.Discord.Areas.Protection.Services
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly DiscordServersService _discordServersService;
         private readonly MutingHelper _mutingHelper;
+        private readonly HashSet<Guid> _muteEventsAlreadyBeingHandled = new HashSet<Guid>();
 
         public UnmutingService(UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, DiscordServersService discordServersService, MutingHelper mutingHelper)
         {
@@ -93,6 +96,10 @@ namespace Watchman.Discord.Areas.Protection.Services
 
         private async void UnmuteInShortTime(Contexts contexts, MuteEvent muteEvent, UserContext userToUnmute)
         {
+            if (this._muteEventsAlreadyBeingHandled.Contains(muteEvent.Id))
+            {
+                return;
+            }
             if (muteEvent.UserId != userToUnmute.Id)
             {
                 throw new ArgumentException($"value of {nameof(muteEvent.UserId)} is different than {nameof(userToUnmute.Id)}");
@@ -100,9 +107,11 @@ namespace Watchman.Discord.Areas.Protection.Services
             if (muteEvent.TimeRange.End > DateTime.UtcNow)
             {
                 Log.Information("Waiting short time for unmute user {userName} for muteEventId {muteEventId}", userToUnmute.Name, muteEvent.Id);
+                this._muteEventsAlreadyBeingHandled.Add(muteEvent.Id);
                 await Task.Delay(muteEvent.TimeRange.End - DateTime.UtcNow);
             }
             await this.UnmuteSpecificEvent(contexts, userToUnmute, muteEvent);
+            this._muteEventsAlreadyBeingHandled.Remove(muteEvent.Id);
         }
 
         private async Task UnmuteSpecificEvent(Contexts contexts, UserContext userToUnmute, MuteEvent muteEvent)

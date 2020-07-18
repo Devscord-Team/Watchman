@@ -136,7 +136,7 @@
     <value>Dla tego polecenia są dostępne tylko argumenty: {{arguments}}</value>
   </data>
   <data name="MutedUser" xml:space="preserve">
-    <value>Użytkownik {{user}} został zmutowany do {{timeEnd}}</value>
+    <value>Użytkownik {{user}} został wyciszony do {{timeEnd}}</value>
   </data>
   <data name="NewUserArrived" xml:space="preserve">
     <value>Cześć {{user}}! Witamy cię na serwerze {{server}}</value>
@@ -152,9 +152,6 @@
   </data>
   <data name="PrintHelp" xml:space="preserve">
     <value>Dostępne komendy: ```{{help}}```</value>
-  </data>
-  <data name="ReadingHistoryDone" xml:space="preserve">
-    <value>Zakończono wczytywanie historii wiadomości.</value>
   </data>
   <data name="ResponseAlreadyExists" xml:space="preserve">
     <value>Odpowiedź `{{onEvent}}` już istnieje dla serwera **{{server}}**.</value>
@@ -206,12 +203,6 @@
   </data>
   <data name="SpamAlertRecognized" xml:space="preserve">
     <value>Spam alert! Wykryto spam u użytkownika {{user}} na kanale {{channel}}. Poczekaj chwile zanim coś napiszesz.</value>
-  </data>
-  <data name="SpamAlertUserIsMuted" xml:space="preserve">
-    <value>Spam alert! Uzytkownik {{user}} został zmutowany.</value>
-  </data>
-  <data name="SpamAlertUserIsMutedForLong" xml:space="preserve">
-    <value>Spam alert! Użytkownik {{user}} został zmutowany na dłużej</value>
   </data>
   <data name="TimeCannotBeNegative" xml:space="preserve">
     <value>Czas nie może być ujemny!</value>
