@@ -5,6 +5,7 @@ using Devscord.DiscordFramework.Services;
 using System;
 using System.Linq;
 using Watchman.Discord.Areas.Commons;
+using Watchman.DomainModel.Mutes;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {
