@@ -32,16 +32,14 @@ namespace Devscord.DiscordFramework.Services
             this.ReloadCache().Wait();
         }
 
-        public Task SendMessage(string message, MessageType messageType = MessageType.NormalText)
+        public async Task SendMessage(string message, MessageType messageType = MessageType.NormalText)
         {
             var channel = this.GetChannel();
             foreach (var mess in this._splittingService.SplitMessage(message, messageType))
             {
-                channel.SendMessageAsync(mess);
+                await channel.SendMessageAsync(mess);
                 Log.Information("Bot sent message {splitted} {message}", mess, messageType != MessageType.NormalText ? "splitted" : string.Empty);
             }
-
-            return Task.CompletedTask;
         }
 
         public Task SendEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, string>> values)

@@ -37,7 +37,7 @@ namespace Watchman.Discord.Areas.Prefixes
             var prefixes = (await this._queryBus.ExecuteAsync(query)).Prefixes;
             if(prefixes == null)
             {
-                await messageService.SendResponse(x => x.PrefixesNotFound());
+                await messageService.SendResponse(x => x.PrefixesNotFound(contexts));
                 return;
             }
             var output = new StringBuilder().PrintManyLines(prefixes.Prefixes.ToArray(), contentStyleBox: false, spacesBetweenLines: false);

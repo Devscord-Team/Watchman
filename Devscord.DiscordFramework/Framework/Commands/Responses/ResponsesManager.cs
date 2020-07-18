@@ -163,9 +163,9 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("roles", rolesLines));
         }
 
-        public static string PrefixesNotFound(this ResponsesService responsesService)
+        public static string PrefixesNotFound(this ResponsesService responsesService, Contexts contexts)
         {
-            return responsesService.ProcessResponse("PrefixesNotFound");
+            return responsesService.ProcessResponse("PrefixesNotFound", contexts);
         }
 
         public static string ServerPrefixes(this ResponsesService responsesService, string prefixes)
@@ -194,7 +194,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
 
         public static string CannotRemovePrefix(this ResponsesService responsesService, string prefix)
         {
-            return responsesService.ProcessResponse("PrefixRemoved",
+            return responsesService.ProcessResponse("CannotRemovePrefix",
                 new KeyValuePair<string, string>("prefix", prefix));
         }
 
