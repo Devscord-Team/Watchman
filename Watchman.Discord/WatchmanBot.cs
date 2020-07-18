@@ -88,7 +88,7 @@ namespace Watchman.Discord
                 .AddOnDiscordServerAddedBotHandlers(builder =>
                 {
                     builder
-                        .AddFromIoC<InitializationService>(initService => initService.InitServer);
+                        .AddFromIoC<InitializationService>(initService => async server => await initService.InitServer(server));
                 })
                 .AddOnWorkflowExceptionHandlers(builder =>
                 {
