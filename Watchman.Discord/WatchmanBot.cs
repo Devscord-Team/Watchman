@@ -20,6 +20,8 @@ using Watchman.Integrations.Logging;
 using Watchman.Integrations.MongoDB;
 using Watchman.DomainModel.Settings.Services;
 using Watchman.Discord.Integration.DevscordFramework;
+using Watchman.Cqrs;
+using Watchman.DomainModel.ServerPrefixes.Queries;
 
 namespace Watchman.Discord
 {
@@ -40,7 +42,8 @@ namespace Watchman.Discord
         {
             MongoConfiguration.Initialize();
 
-            return WorkflowBuilder.Create(this._configuration.Token, this._context, typeof(WatchmanBot).Assembly)
+            var workflowBuilder = WorkflowBuilder.Create(this._configuration.Token, this._context, typeof(WatchmanBot).Assembly);
+            return workflowBuilder
                 .SetDefaultMiddlewares()
                 .AddOnReadyHandlers(builder =>
                 {
@@ -82,6 +85,7 @@ namespace Watchman.Discord
                             Log.Information(stopwatch.ElapsedMilliseconds.ToString());
                             return Task.CompletedTask;
                         })
+                        .AddFromIoC<IQueryBus, DiscordServersService>((queryBus, serversService) => () => this.SetPrefixes(workflowBuilder, queryBus, serversService)) //TODO add events to update after prefix update
                         .AddHandler(() => Task.Run(() => Log.Information("Bot has done every Ready tasks.")));
                 })
                 .AddOnUserJoinedHandlers(builder =>
@@ -107,6 +111,15 @@ namespace Watchman.Discord
                     builder
                         .AddFromIoC<MuteRoleInitService>(x => (_, server) => x.InitForServer(server));
                 });
+        }
+
+        private Task SetPrefixes(WorkflowBuilder workflowBuilder,IQueryBus queryBus, DiscordServersService serversService)
+        {
+            var servers = serversService.GetDiscordServers().Result;
+            var prefixesForServers = servers.Select(server => queryBus.Execute(new GetPrefixesQuery(server.Id)).Prefixes);
+            var result = prefixesForServers.ToDictionary(x => x.ServerId, x => x.Prefixes.ToArray());
+            workflowBuilder.SetServersPrefixes(result);
+            return Task.CompletedTask;
         }
 
         private void PrintDebugExceptionInfo(Exception e, Contexts contexts)
