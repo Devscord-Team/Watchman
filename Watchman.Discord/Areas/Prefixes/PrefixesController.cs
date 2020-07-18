@@ -35,7 +35,7 @@ namespace Watchman.Discord.Areas.Prefixes
 
             var query = new GetPrefixesQuery(contexts.Server.Id);
             var prefixes = (await this._queryBus.ExecuteAsync(query)).Prefixes;
-            if(!prefixes.Prefixes.Any())
+            if(prefixes == null)
             {
                 await messageService.SendResponse(x => x.PrefixesNotFound());
                 return;

@@ -187,7 +187,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Serwer {[server}} nie posiada żadnych prefixów..
+        ///   Looks up a localized string similar to Serwer {{server}} nie posiada żadnych prefixów..
         /// </summary>
         public static string PrefixesNotFound {
             get {
