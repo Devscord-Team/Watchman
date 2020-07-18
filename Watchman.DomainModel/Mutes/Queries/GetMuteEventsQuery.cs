@@ -1,6 +1,6 @@
 ﻿using Watchman.Cqrs;
 
-namespace Watchman.DomainModel.Users.Queries
+namespace Watchman.DomainModel.Mutes.Queries
 {
     public class GetMuteEventsQuery : IQuery<GetMuteEventsQueryResult>
     {

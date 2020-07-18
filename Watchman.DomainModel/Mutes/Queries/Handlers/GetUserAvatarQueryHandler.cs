@@ -1,7 +1,7 @@
 ﻿using System;
 using Watchman.Cqrs;
 
-namespace Watchman.DomainModel.Users.Queries.Handlers
+namespace Watchman.DomainModel.Mutes.Queries.Handlers
 {
     public class GetUserAvatarQueryHandler : IQueryHandler<GetUserAvatarQuery, GetUserAvatarQueryResult>
     {

@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Watchman.Cqrs;
 
-namespace Watchman.DomainModel.Users.Commands.Handlers
+namespace Watchman.DomainModel.Mutes.Commands.Handlers
 {
     public class AddUserRoleCommandHandler : ICommandHandler<AddUserRoleCommand>
     {

@@ -8,9 +8,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
-using Watchman.DomainModel.Users;
-using Watchman.DomainModel.Users.Commands;
-using Watchman.DomainModel.Users.Queries;
+using Watchman.DomainModel.Mutes;
+using Watchman.DomainModel.Mutes.Commands;
+using Watchman.DomainModel.Mutes.Queries;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {

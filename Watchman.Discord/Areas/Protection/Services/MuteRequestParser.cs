@@ -5,7 +5,6 @@ using Devscord.DiscordFramework.Services;
 using System;
 using System.Linq;
 using Watchman.Discord.Areas.Commons;
-using Watchman.DomainModel.Users;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {

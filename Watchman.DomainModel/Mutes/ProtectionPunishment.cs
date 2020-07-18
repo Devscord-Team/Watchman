@@ -1,7 +1,7 @@
 ﻿using System;
 using Watchman.Integrations.MongoDB;
 
-namespace Watchman.DomainModel.Users
+namespace Watchman.DomainModel.Mutes
 {
     public class ProtectionPunishment : Entity, IAggregateRoot
     {
