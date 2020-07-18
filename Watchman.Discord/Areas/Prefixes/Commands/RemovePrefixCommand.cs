@@ -7,5 +7,7 @@ namespace Watchman.Discord.Areas.Prefixes.Commands
 {
     public class RemovePrefixCommand : IBotCommand
     {
+        [Text]
+        public string Prefix { get; set; }
     }
 }
