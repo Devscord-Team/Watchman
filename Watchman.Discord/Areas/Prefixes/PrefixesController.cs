@@ -54,7 +54,6 @@ namespace Watchman.Discord.Areas.Prefixes
                 await messageService.SendResponse(x => x.PrefixAlreadyExists(command.Prefix));
                 return;
             }
-
             await messageService.SendResponse(x => x.PrefixAdded(command.Prefix));
         }
 
@@ -72,7 +71,6 @@ namespace Watchman.Discord.Areas.Prefixes
                 await messageService.SendResponse(x => x.CannotRemovePrefix(command.Prefix));
                 return;
             }
-
             await messageService.SendResponse(x => x.PrefixRemoved(command.Prefix));
         }
     }
