@@ -7,5 +7,11 @@ namespace Watchman.DomainModel.Prefixes.Queries
 {
     public class GetPrefixesQuery : IQuery<GetPrefixesQueryResult>
     {
+        public ulong ServerId { get; }
+
+        public GetPrefixesQuery(ulong serverId)
+        {
+            this.ServerId = serverId;
+        }
     }
 }

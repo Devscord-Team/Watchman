@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
@@ -8,20 +7,19 @@ using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Prefixes.Commands.Handlers
 {
-    public class AddPrefixCommandHandler : ICommandHandler<AddPrefixCommand>
+    public class DeletePrefixCommandHandler : ICommandHandler<DeletePrefixCommand>
     {
         private readonly ISessionFactory _sessionFactory;
 
-        public AddPrefixCommandHandler(ISessionFactory sessionFactory)
+        public DeletePrefixCommandHandler(ISessionFactory sessionFactory)
         {
             this._sessionFactory = sessionFactory;
         }
 
-        public async Task HandleAsync(AddPrefixCommand command)
+        public async Task HandleAsync(DeletePrefixCommand command)
         {
             using var session = this._sessionFactory.Create();
-            var prefix = new Prefix(command.ServerId, command.Value);
-            await session.AddAsync(prefix);
+            await session.DeleteAsync(command.Prefix);
         }
     }
 }
