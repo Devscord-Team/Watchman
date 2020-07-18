@@ -18,7 +18,7 @@ namespace Watchman.Web
             {
                 {container.Resolve<CyclicStatisticsGeneratorService>(), RefreshFrequent.Daily},
                 {container.Resolve<CheckUserSafetyStrategyService>(), RefreshFrequent.Daily},
-                {container.Resolve<UnmutingService>(), RefreshFrequent.Quarterly},
+                {container.Resolve<UnmutingService>(), RefreshFrequent.Quarterly}, // if RefreshFrequent changed remember to change SHORT_MUTE_TIME_IN_MINUTES in unmutingService!
                 {container.Resolve<MessagesService>(), RefreshFrequent.Quarterly}
             };
             var recurringJobManager = container.Resolve<IRecurringJobManager>();

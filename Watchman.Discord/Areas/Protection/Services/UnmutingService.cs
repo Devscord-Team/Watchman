@@ -5,7 +5,6 @@ using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
-using Devscord.DiscordFramework.Services.Models;
 using Serilog;
 using Watchman.DomainModel.Users;
 
@@ -13,7 +12,7 @@ namespace Watchman.Discord.Areas.Protection.Services
 {
     public class UnmutingService : ICyclicService
     {
-        private const int MINUTES_LEFT_WHEN_MUTE_IS_SHORT = 15;
+        private const int SHORT_MUTE_TIME_IN_MINUTES = 15;
 
         private readonly UsersService _usersService;
         private readonly DirectMessagesService _directMessagesService;
@@ -88,7 +87,7 @@ namespace Watchman.Discord.Areas.Protection.Services
 
         private bool ShouldBeConsideredAsShortMute(MuteEvent muteEvent)
         {
-            return muteEvent.TimeRange.End < DateTime.UtcNow.AddMinutes(MINUTES_LEFT_WHEN_MUTE_IS_SHORT);
+            return muteEvent.TimeRange.End < DateTime.UtcNow.AddMinutes(SHORT_MUTE_TIME_IN_MINUTES);
         }
 
         private async void UnmuteInShortTime(Contexts contexts, MuteEvent muteEvent, UserContext userToUnmute)
