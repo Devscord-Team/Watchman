@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 using Watchman.Cqrs;
 
-namespace Watchman.DomainModel.Prefixes.Queries
+namespace Watchman.DomainModel.ServerPrefixes.Queries
 {
     public class GetPrefixesQueryResult : IQueryResult
     {
-        public IEnumerable<Prefix> Prefixes { get; }
+        public IEnumerable<ServerPrefixes> Prefixes { get; }
 
-        public GetPrefixesQueryResult(IEnumerable<Prefix> prefixes)
+        public GetPrefixesQueryResult(IEnumerable<ServerPrefixes> prefixes)
         {
             this.Prefixes = prefixes;
         }

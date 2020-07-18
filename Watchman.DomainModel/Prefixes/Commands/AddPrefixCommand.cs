@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Watchman.Cqrs;
 
-namespace Watchman.DomainModel.Prefixes.Commands
+namespace Watchman.DomainModel.ServerPrefixes.Commands
 {
     public class AddPrefixCommand : ICommand
     {

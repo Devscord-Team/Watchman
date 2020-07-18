@@ -4,7 +4,7 @@ using System.Text;
 using Watchman.Cqrs;
 using Watchman.Integrations.MongoDB;
 
-namespace Watchman.DomainModel.Prefixes.Queries.Handlers
+namespace Watchman.DomainModel.ServerPrefixes.Queries.Handlers
 {
     public class GetPrefixesQueryHandler : IQueryHandler<GetPrefixesQuery, GetPrefixesQueryResult>
     {
@@ -17,7 +17,9 @@ namespace Watchman.DomainModel.Prefixes.Queries.Handlers
 
         public GetPrefixesQueryResult Handle(GetPrefixesQuery query)
         {
-            throw new NotImplementedException();
+            using var session = this._sessionFactory.Create();
+            var prefixes = session.Get<ServerPrefixes>();
+            return new GetPrefixesQueryResult(prefixes);
         }
     }
 }

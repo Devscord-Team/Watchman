@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Watchman.Cqrs;
 using Watchman.Integrations.MongoDB;
 
-namespace Watchman.DomainModel.Prefixes.Commands.Handlers
+namespace Watchman.DomainModel.ServerPrefixes.Commands.Handlers
 {
     public class DeletePrefixCommandHandler : ICommandHandler<DeletePrefixCommand>
     {

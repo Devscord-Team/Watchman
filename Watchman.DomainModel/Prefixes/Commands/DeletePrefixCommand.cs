@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 using Watchman.Cqrs;
 
-namespace Watchman.DomainModel.Prefixes.Commands
+namespace Watchman.DomainModel.ServerPrefixes.Commands
 {
     public class DeletePrefixCommand : ICommand
     {
-        public Prefix Prefix { get; }
+        public ServerPrefixes Prefix { get; }
 
-        public DeletePrefixCommand(Prefix prefix)
+        public DeletePrefixCommand(ServerPrefixes prefix)
         {
             this.Prefix = prefix;
         }

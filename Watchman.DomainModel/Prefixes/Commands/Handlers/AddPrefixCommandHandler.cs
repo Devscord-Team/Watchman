@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Watchman.Cqrs;
 using Watchman.Integrations.MongoDB;
 
-namespace Watchman.DomainModel.Prefixes.Commands.Handlers
+namespace Watchman.DomainModel.ServerPrefixes.Commands.Handlers
 {
     public class AddPrefixCommandHandler : ICommandHandler<AddPrefixCommand>
     {
@@ -20,7 +20,7 @@ namespace Watchman.DomainModel.Prefixes.Commands.Handlers
         public async Task HandleAsync(AddPrefixCommand command)
         {
             using var session = this._sessionFactory.Create();
-            var prefix = new Prefix(command.ServerId, command.Value);
+            var prefix = new ServerPrefixes(command.ServerId, command.Value);
             await session.AddAsync(prefix);
         }
     }

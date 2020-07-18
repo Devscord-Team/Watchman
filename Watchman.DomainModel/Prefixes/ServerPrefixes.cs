@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Text;
 using Watchman.Integrations.MongoDB;
 
-namespace Watchman.DomainModel.Prefixes
+namespace Watchman.DomainModel.ServerPrefixes
 {
-    public class Prefix : Entity, IAggregateRoot
+    public class ServerPrefixes : Entity, IAggregateRoot
     {
         public ulong ServerId { get; private set; }
         public string Value { get; private set; }
 
-        public Prefix(ulong serverId, string value)
+        public ServerPrefixes(ulong serverId, string value)
         {
             this.ServerId = serverId;
             this.Value = value;
