@@ -14,16 +14,17 @@ namespace Watchman.Web
     {
         public void SetDefaultJobs(IContainer container)
         {
-            var generators = new List<ICyclicService>
+            var generators = new Dictionary<ICyclicService, RefreshFrequent>
             {
-                container.Resolve<CyclicStatisticsGeneratorService>(),
-                container.Resolve<CheckUserSafetyStrategyService>(),
-                container.Resolve<UnmutingService>()
+                {container.Resolve<CyclicStatisticsGeneratorService>(), RefreshFrequent.Daily},
+                {container.Resolve<CheckUserSafetyStrategyService>(), RefreshFrequent.Daily},
+                {container.Resolve<UnmutingService>(), RefreshFrequent.Quarterly},
+                {container.Resolve<MessagesService>(), RefreshFrequent.Quarterly}
             };
             var recurringJobManager = container.Resolve<IRecurringJobManager>();
-            foreach (var generator in generators)
+            foreach (var (generator, refreshFrequent) in generators)
             {
-                var cronExpression = this.GetCronExpression(generator.RefreshFrequent);
+                var cronExpression = this.GetCronExpression(refreshFrequent);
                 recurringJobManager.AddOrUpdate(generator.GetType().Name, () => generator.Refresh(), cronExpression);
             }
         }

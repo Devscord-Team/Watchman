@@ -17,7 +17,7 @@ namespace Devscord.DiscordFramework.Services
         private readonly UserContextsFactory _userContextsFactory;
         private readonly Regex _exMention = new Regex(@"\d+", RegexOptions.Compiled);
 
-        internal UsersService()
+        public UsersService()
         {
             this._userContextsFactory = new UserContextsFactory();
         }

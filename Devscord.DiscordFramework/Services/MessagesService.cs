@@ -15,7 +15,6 @@ namespace Devscord.DiscordFramework.Services
 {
     public class MessagesService : ICyclicService
     {
-        public RefreshFrequent RefreshFrequent { get; } = RefreshFrequent.Quarterly;
         public ulong GuildId { get; set; }
         public ulong ChannelId { get; set; }
 
@@ -95,11 +94,13 @@ namespace Devscord.DiscordFramework.Services
 
         public Task Refresh()
         {
+            Log.Information("Refreshing responses cache...");
             foreach (var serverId in _serversResponses.Keys.ToList())
             {
                 var responses = this._responsesService.GetResponsesFunc(serverId);
                 _serversResponses[serverId] = responses;
             }
+            Log.Information("Responses cache refreshed");
             return Task.CompletedTask;
         }
 

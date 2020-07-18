@@ -13,7 +13,6 @@ namespace Watchman.Discord.Areas.Protection.Services
 {
     public class UnmutingService : ICyclicService
     {
-        public RefreshFrequent RefreshFrequent { get; } = RefreshFrequent.Quarterly;
         private const int MINUTES_LEFT_WHEN_MUTE_IS_SHORT = 15;
 
         private readonly UsersService _usersService;
@@ -33,6 +32,7 @@ namespace Watchman.Discord.Areas.Protection.Services
 
         public async Task Refresh()
         {
+            Log.Information("Refreshing unmuting...");
             foreach (var server in await this._discordServersService.GetDiscordServers())
             {
                 var serverMuteEvents = this._mutingHelper.GetNotUnmutedMuteEvents(server.Id).ToList();
@@ -63,6 +63,7 @@ namespace Watchman.Discord.Areas.Protection.Services
                     this.UnmuteInShortTime(contexts, muteEvent, user);
                 }
             }
+            Log.Information("Unmuting refreshed");
         }
 
         public void UnmuteInFuture(Contexts contexts, MuteEvent muteEvent, UserContext userToUnmute)
@@ -71,6 +72,7 @@ namespace Watchman.Discord.Areas.Protection.Services
             {
                 this.UnmuteInShortTime(contexts, muteEvent, userToUnmute);
             }
+            Log.Information("Mute {muteEventId} of user {userName} is considered as longer mute", muteEvent.Id, userToUnmute.Name);
         }
 
         public async Task UnmuteNow(Contexts contexts, UserContext userToUnmute)
@@ -78,6 +80,7 @@ namespace Watchman.Discord.Areas.Protection.Services
             var eventToUnmute = this._mutingHelper.GetNotUnmutedUserMuteEvent(contexts.Server.Id, userToUnmute.Id);
             if (eventToUnmute == null)
             {
+                Log.Information("{userName} is not muted", userToUnmute.Name);
                 return;
             }
             await this.UnmuteSpecificEvent(contexts, userToUnmute, eventToUnmute);
@@ -96,6 +99,7 @@ namespace Watchman.Discord.Areas.Protection.Services
             }
             if (muteEvent.TimeRange.End > DateTime.UtcNow)
             {
+                Log.Information("Waiting short time for unmute user {userName} for muteEventId {muteEventId}", userToUnmute.Name, muteEvent.Id);
                 await Task.Delay(muteEvent.TimeRange.End - DateTime.UtcNow);
             }
             await this.UnmuteSpecificEvent(contexts, userToUnmute, muteEvent);
@@ -103,15 +107,18 @@ namespace Watchman.Discord.Areas.Protection.Services
 
         private async Task UnmuteSpecificEvent(Contexts contexts, UserContext userToUnmute, MuteEvent muteEvent)
         {
+            Log.Information("Unmuting {muteEventId} mute event of user {userName}", muteEvent.Id, userToUnmute.Name);
             var serverMuteEvents = this._mutingHelper.GetNotUnmutedMuteEvents(contexts.Server.Id);
             var eventToUnmute = serverMuteEvents.FirstOrDefault(x => x.Id == muteEvent.Id);
             if (eventToUnmute == null)
             {
+                Log.Information("Mute event {muteEventId} of user {userName} doesn't exists or was unmuted earlier", muteEvent.Id, userToUnmute.Name);
                 return;
             }
             var isStillOnServer = await this._usersService.IsUserStillOnServerAsync(contexts.Server, userToUnmute.Id);
             if (!isStillOnServer)
             {
+                Log.Information("User {userName} left server {serverName} so he/she's not going to be unmuted", userToUnmute.Name, contexts.Server.Name);
                 return;
             }
             await this.UnmuteUser(userToUnmute, eventToUnmute, contexts.Server);
@@ -130,6 +137,7 @@ namespace Watchman.Discord.Areas.Protection.Services
         {
             if (contexts.Channel == null || contexts.User == null)
             {
+                Log.Information("User or channel doesn't exist");
                 return;
             }
             var messagesService = this._messagesServiceFactory.Create(contexts);

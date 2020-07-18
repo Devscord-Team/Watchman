@@ -1,6 +1,7 @@
 ﻿using Devscord.DiscordFramework.Integration.Services.Interfaces;
 using Discord.Rest;
 using Discord.WebSocket;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -22,7 +23,16 @@ namespace Devscord.DiscordFramework.Integration.Services
 
         public async Task<RestUser> GetUser(ulong userId)
         {
-            return await this._restClient.GetUserAsync(userId);
+            var user = await this._restClient.GetUserAsync(userId);
+            if (user == null)
+            {
+                Log.Information("Couldn't get user {userId}", userId);
+            }
+            else
+            {
+                Log.Information("Got {userName}", user.Username);
+            }
+            return user;
         }
 
         public async Task<bool> IsUserStillOnServer(ulong userId, ulong guildId)
@@ -33,7 +43,16 @@ namespace Devscord.DiscordFramework.Integration.Services
         public async Task<RestGuildUser> GetGuildUser(ulong userId, ulong guildId)
         {
             var guild = await this._restClient.GetGuildAsync(guildId);
-            return await guild.GetUserAsync(userId);
+            var user = await guild.GetUserAsync(userId);
+            if (user == null)
+            {
+                Log.Information("Couldn't get user {userId} on server {guildId}", userId, guildId);
+            }
+            else
+            {
+                Log.Information("Got {userName}", user.Username);
+            }
+            return user;
         }
 
         public async IAsyncEnumerable<RestGuildUser> GetGuildUsers(ulong guildId)

@@ -8,13 +8,7 @@ namespace Watchman.DomainModel.Users.Queries
         public bool TakeOnlyNotUnmuted { get; }
         public ulong? UserId { get; }
 
-        public GetMuteEventsQuery(ulong serverId, bool takeOnlyNotUnmuted)
-        {
-            this.ServerId = serverId;
-            this.TakeOnlyNotUnmuted = takeOnlyNotUnmuted;
-        }
-
-        public GetMuteEventsQuery(ulong serverId, bool takeOnlyNotUnmuted, ulong userId)
+        public GetMuteEventsQuery(ulong serverId, bool takeOnlyNotUnmuted, ulong? userId = null)
         {
             this.ServerId = serverId;
             this.TakeOnlyNotUnmuted = takeOnlyNotUnmuted;
