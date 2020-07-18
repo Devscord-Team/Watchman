@@ -37,7 +37,6 @@ namespace Watchman.Web.ServiceProviders
             }, container.Resolve<IComponentContext>()).GetWorkflowBuilder();
 
             workflowBuilder.Build();
-            GlobalConfiguration.Configuration.UseActivator(new ContainerJobActivator(container));
             container.Resolve<HangfireJobsService>().SetDefaultJobs(container);
             return new AutofacServiceProvider(container);
         }

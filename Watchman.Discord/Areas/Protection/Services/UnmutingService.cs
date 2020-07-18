@@ -70,6 +70,7 @@ namespace Watchman.Discord.Areas.Protection.Services
             if (this.ShouldBeConsideredAsShortMute(muteEvent))
             {
                 this.UnmuteInShortTime(contexts, muteEvent, userToUnmute);
+                return;
             }
             Log.Information("Mute {muteEventId} of user {userName} is considered as longer mute", muteEvent.Id, userToUnmute.Name);
         }

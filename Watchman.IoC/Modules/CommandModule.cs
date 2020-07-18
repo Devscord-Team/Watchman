@@ -42,7 +42,8 @@ namespace Watchman.IoC.Modules
 
             builder.RegisterType<CommandBus>()
                 .As<ICommandBus>()
-                .InstancePerLifetimeScope();
+                .InstancePerLifetimeScope()
+                .SingleInstance();
         }
     }
 }

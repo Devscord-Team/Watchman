@@ -14,18 +14,22 @@ namespace Watchman.Web
     {
         public void SetDefaultJobs(IContainer container)
         {
-            var generators = new Dictionary<ICyclicService, RefreshFrequent>
+            var generators = new List<(ICyclicService, RefreshFrequent, bool shouldTriggerNow)>
             {
-                {container.Resolve<CyclicStatisticsGeneratorService>(), RefreshFrequent.Daily},
-                {container.Resolve<CheckUserSafetyStrategyService>(), RefreshFrequent.Daily},
-                {container.Resolve<UnmutingService>(), RefreshFrequent.Quarterly}, // if RefreshFrequent changed remember to change SHORT_MUTE_TIME_IN_MINUTES in unmutingService!
-                {container.Resolve<MessagesService>(), RefreshFrequent.Quarterly}
+                (container.Resolve<MessagesService>(), RefreshFrequent.Quarterly, true),
+                (container.Resolve<UnmutingService>(), RefreshFrequent.Quarterly, true), // if RefreshFrequent changed remember to change SHORT_MUTE_TIME_IN_MINUTES in unmutingService!
+                (container.Resolve<CheckUserSafetyStrategyService>(), RefreshFrequent.Daily, true),
+                (container.Resolve<CyclicStatisticsGeneratorService>(), RefreshFrequent.Daily, false)
             };
             var recurringJobManager = container.Resolve<IRecurringJobManager>();
-            foreach (var (generator, refreshFrequent) in generators)
+            foreach (var (generator, refreshFrequent, shouldTrigger) in generators)
             {
                 var cronExpression = this.GetCronExpression(refreshFrequent);
                 recurringJobManager.AddOrUpdate(generator.GetType().Name, () => generator.Refresh(), cronExpression);
+                if (shouldTrigger)
+                {
+                    recurringJobManager.Trigger(generator.GetType().Name);
+                }
             }
         }
 
