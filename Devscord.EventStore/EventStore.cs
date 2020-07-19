@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Devscord.EventStore
 {
-    public static class EventStore
+    public static class EventStore //in memory event "store" TODO change it to correct event store
     {
         private static readonly Mapper _mapper = new Mapper(new MapperConfiguration(x => { }));
         private static List<KeyValuePair<string, Action<object>>> _eventHandlers = new List<KeyValuePair<string, Action<object>>>();
