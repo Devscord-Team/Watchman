@@ -12,14 +12,25 @@ namespace Devscord.EventStore.Tests
         public void ShouldReactOnEvents()
         {
             var isWorking = false;
-            EventStore.Subscribe<TestEvent>(x => isWorking = true);
-            new TestEvent().Publish().Wait();
+            EventStore.Subscribe<ToSubscribe.TestEvent>(x => isWorking = x.Test == "ABCD");
+            new ToPublish.TestEvent() { Test = "ABCD" }.Publish().Wait();
             Assert.That(isWorking, Is.True);
         }
     }
+}
 
+namespace Devscord.EventStore.Tests.ToPublish
+{
     public class TestEvent : Event
     {
-        public override string Name => nameof(TestEvent);
+        public string Test { get; set; }
+    }
+}
+
+namespace Devscord.EventStore.Tests.ToSubscribe
+{
+    public class TestEvent : Event
+    {
+        public string Test { get; set; }
     }
 }
