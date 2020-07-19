@@ -9,6 +9,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
     public class CommandParser
     {
         private readonly Dictionary<ulong, string[]> _serversPrefixes = new Dictionary<ulong, string[]>();
+        private readonly string[] _defaultPrefixes = new string[] { "!", "--", "-", "^", "$", "%" };
 
         public void SetServersPrefixes(Dictionary<ulong, string[]> prefixes)
         {
@@ -55,9 +56,9 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
             var withoutWhitespaces = message.Trim();
             if(!_serversPrefixes.ContainsKey(serverId))
             {
-                return "-";
+                return this._defaultPrefixes.FirstOrDefault(x => withoutWhitespaces.StartsWith(x));
             }
-            var prefixesForCurrentServer = _serversPrefixes[serverId];
+            var prefixesForCurrentServer = this._serversPrefixes[serverId];
             return prefixesForCurrentServer.FirstOrDefault(x => withoutWhitespaces.StartsWith(x));
         }
 
