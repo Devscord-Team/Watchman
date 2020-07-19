@@ -1,14 +1,6 @@
-﻿using System;
-
-namespace Devscord.DiscordFramework.Commons.Exceptions
+﻿namespace Devscord.DiscordFramework.Commons.Exceptions
 {
-    public class InvalidArgumentsException : Exception
+    public class InvalidArgumentsException : BotException
     {
-        public string AvailableArguments { get; }
-
-        public InvalidArgumentsException(string arguments)
-        {
-            this.AvailableArguments = arguments;
-        }
     }
 }

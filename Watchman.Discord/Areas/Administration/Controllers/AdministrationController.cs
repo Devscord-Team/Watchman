@@ -42,7 +42,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         public async Task ReadUserMessages(DiscordRequest request, Contexts contexts)
         {
             var mention = request.GetMention();
-            var selectedUser = this._usersService.GetUserByMention(contexts.Server, mention);
+            var selectedUser = await this._usersService.GetUserByMentionAsync(contexts.Server, mention);
             if (selectedUser == null)
             {
                 throw new UserNotFoundException(mention);

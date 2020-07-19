@@ -36,9 +36,9 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             if (punishmentOption == PunishmentOption.Mute)
             {
                 var mutesCount = this._punishmentsCachingService.GetUserMutesCount(userId, takeFromTime);
-                return new Punishment(PunishmentOption.Mute, DateTime.Now, this.GetTimeForMute(mutesCount));
+                return new Punishment(PunishmentOption.Mute, DateTime.UtcNow, this.GetTimeForMute(mutesCount));
             }
-            return new Punishment(punishmentOption, DateTime.Now);
+            return new Punishment(punishmentOption, DateTime.UtcNow);
         }
 
         private TimeSpan GetTimeForMute(int userMutesCount)
