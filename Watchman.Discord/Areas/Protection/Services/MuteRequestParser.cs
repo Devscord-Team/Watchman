@@ -5,28 +5,31 @@ using Devscord.DiscordFramework.Services;
 using System;
 using System.Linq;
 using Watchman.Discord.Areas.Commons;
+using Watchman.Discord.Areas.Protection.BotCommands;
 using Watchman.DomainModel.Users;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {
     public class MuteRequestParser
     {
-        private readonly DiscordRequest _request;
         private readonly UsersService _usersService;
         private readonly Contexts _contexts;
+        private readonly ParserTime _parserTime;
 
-        public MuteRequestParser(DiscordRequest request, UsersService usersService, Contexts contexts)
+        public MuteRequestParser(UsersService usersService, Contexts contexts)
         {
-            this._request = request;
             this._usersService = usersService;
             this._contexts = contexts;
+            this._parserTime = new ParserTime();
         }
 
-        public UserContext GetUser()
+        public UserContext GetUser(string mention)
         {
-            var mention = this._request.GetMention();
+            if (mention == null)
+            {
+                throw new UserDidntMentionAnyUserException();
+            }
             var userToMute = this._usersService.GetUserByMention(this._contexts.Server, mention);
-
             if (userToMute == null)
             {
                 throw new UserNotFoundException(mention);
@@ -34,10 +37,9 @@ namespace Watchman.Discord.Areas.Protection.Services
             return userToMute;
         }
 
-        public MuteEvent GetMuteEvent(ulong userId, Contexts contexts, DiscordRequest request)
+        public MuteEvent GetMuteEvent(ulong userId, Contexts contexts, string reason, string timeAsString)
         {
-            var reason = this._request.Arguments.FirstOrDefault(x => x.Name == "reason" || x.Name == "r")?.Value;
-            var timeRange = request.GetFutureTimeRange(defaultTime: TimeSpan.FromHours(1));
+            var timeRange = this._parserTime.GetFutureTimeRange(timeAsString, defaultTime: TimeSpan.FromHours(1));
             return new MuteEvent(userId, timeRange, reason, contexts.Server.Id);
         }
     }

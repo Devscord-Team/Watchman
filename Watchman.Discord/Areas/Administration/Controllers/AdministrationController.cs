@@ -37,18 +37,65 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             this._rolesService = rolesService;
         }
 
+        //discordRequest.Arguments.FirstOrDefault(x => x.Value.StartsWith('<') && x.Value.EndsWith('>'))
+
+        //[AdminCommand]
+        //[DiscordCommand("messages")]
+        //public async Task ReadUserMessages(DiscordRequest request, Contexts contexts)
+        //{
+        //    var mention = request.GetMention();
+        //    var selectedUser = this._usersService.GetUserByMention(contexts.Server, mention);
+        //    if (selectedUser == null)
+        //    {
+        //        throw new UserNotFoundException(mention);
+        //    }
+
+        //    var timeRange = request.GetPastTimeRange(defaultTime: TimeSpan.FromHours(1));
+        //    var query = new GetMessagesQuery(contexts.Server.Id, selectedUser.Id)
+        //    {
+        //        SentDate = timeRange
+        //    };
+        //    var messages = this._queryBus.Execute(query).Messages
+        //        .OrderBy(x => x.SentAt)
+        //        .ToList();
+
+        //    var messagesService = this._messagesServiceFactory.Create(contexts);
+        //    var hasForceArgument = request.HasArgument("force") || request.HasArgument("f");
+
+        //    if (messages.Count > 200 && !hasForceArgument)
+        //    {
+        //        await messagesService.SendResponse(x => x.NumberOfMessagesIsHuge(messages.Count));
+        //        return;
+        //    }
+
+        //    if (!messages.Any())
+        //    {
+        //        await messagesService.SendResponse(x => x.UserDidntWriteAnyMessageInThisTime(selectedUser));
+        //        return;
+        //    }
+
+        //    var header = $"Messages from user {selectedUser} starting at {timeRange.Start}";
+        //    var lines = messages.Select(x => $"{x.SentAt:yyyy-MM-dd HH:mm:ss} {x.Author.Name}: {x.Content.Replace("```", "")}");
+        //    var linesBuilder = new StringBuilder().PrintManyLines(lines.ToArray(), contentStyleBox: true);
+
+        //    await this._directMessagesService.TrySendMessage(contexts.User.Id, header);
+        //    await this._directMessagesService.TrySendMessage(contexts.User.Id, linesBuilder.ToString(), MessageType.BlockFormatted);
+
+        //    await messagesService.SendResponse(x => x.SentByDmMessagesOfAskedUser(messages.Count, selectedUser));
+        //}
+
         [AdminCommand]
-        [DiscordCommand("messages")]
-        public async Task ReadUserMessages(DiscordRequest request, Contexts contexts)
+        public async Task ReadUserMessages(MessagesCommand command, Contexts contexts)
         {
-            var mention = request.GetMention();
+            var mention = command.Users?.FirstOrDefault(x => x.StartsWith('<') && x.EndsWith('>'));
             var selectedUser = this._usersService.GetUserByMention(contexts.Server, mention);
             if (selectedUser == null)
             {
                 throw new UserNotFoundException(mention);
             }
 
-            var timeRange = request.GetPastTimeRange(defaultTime: TimeSpan.FromHours(1));
+            var parserTime = new ParserTime();
+            var timeRange = parserTime.GetPastTimeRange(timeAsString: command.Times?.FirstOrDefault(), defaultTime: TimeSpan.FromHours(1));
             var query = new GetMessagesQuery(contexts.Server.Id, selectedUser.Id)
             {
                 SentDate = timeRange
@@ -58,7 +105,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
                 .ToList();
 
             var messagesService = this._messagesServiceFactory.Create(contexts);
-            var hasForceArgument = request.HasArgument("force") || request.HasArgument("f");
+            bool hasForceArgument = command.Force; //command.Forces?.FirstOrDefault(x => x == "-f" || x == "-force") != null;//command.HasArgument("force") || command.HasArgument("f");
 
             if (messages.Count > 200 && !hasForceArgument)
             {

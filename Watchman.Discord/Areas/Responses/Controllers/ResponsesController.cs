@@ -7,6 +7,8 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
 using System;
 using Watchman.Discord.Areas.Responses.Services;
+using Watchman.Discord.Areas.Responses.BotCommands;
+using Serilog;
 
 namespace Watchman.Discord.Areas.Responses.Controllers
 {
@@ -15,7 +17,6 @@ namespace Watchman.Discord.Areas.Responses.Controllers
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly Services.ResponsesService _responsesService;
         private readonly ResponsesMessageService _responsesMessageService;
-        private readonly string[] _possibleArguments = { "all", "default", "custom" };
 
         public ResponsesController(MessagesServiceFactory messagesServiceFactory, Services.ResponsesService responsesService, ResponsesMessageService responsesMessageService)
         {
@@ -25,12 +26,11 @@ namespace Watchman.Discord.Areas.Responses.Controllers
         }
 
         [AdminCommand]
-        [DiscordCommand("add response")]
-        public async Task AddResponse(DiscordRequest request, Contexts contexts)
+        public async Task AddResponse(AddResponseCommand command, Contexts contexts)
         {
             var messageService = this._messagesServiceFactory.Create(contexts);
-            var onEvent = request.Arguments.FirstOrDefault(x => x.Name?.ToLowerInvariant() == "onevent")?.Value;
-            var message = request.Arguments.FirstOrDefault(x => x.Name?.ToLowerInvariant() == "message")?.Value;
+            var onEvent = command.OnEvents?.FirstOrDefault();
+            var message = command.Messages?.FirstOrDefault();
             if (onEvent == null || message == null)
             {
                 await messageService.SendResponse(x => x.NotEnoughArguments());
@@ -53,12 +53,11 @@ namespace Watchman.Discord.Areas.Responses.Controllers
         }
 
         [AdminCommand]
-        [DiscordCommand("update response")]
-        public async Task UpdateResponse(DiscordRequest request, Contexts contexts)
+        public async Task UpdateResponse(UpdateResponseCommand command, Contexts contexts)
         {
             var messageService = this._messagesServiceFactory.Create(contexts);
-            var onEvent = request.Arguments.FirstOrDefault(x => x.Name?.ToLowerInvariant() == "onevent")?.Value;
-            var message = request.Arguments.FirstOrDefault(x => x.Name?.ToLowerInvariant() == "message")?.Value;
+            var onEvent = command.OnEvents?.FirstOrDefault();
+            var message = command.Messages?.FirstOrDefault();
             if (onEvent == null || message == null)
             {
                 await messageService.SendResponse(x => x.NotEnoughArguments());
@@ -75,11 +74,10 @@ namespace Watchman.Discord.Areas.Responses.Controllers
         }
 
         [AdminCommand]
-        [DiscordCommand("remove response")]
-        public async Task RemoveResponse(DiscordRequest request, Contexts contexts)
+        public async Task RemoveResponse(RemoveResponseCommand command, Contexts contexts)
         {
             var messageService = this._messagesServiceFactory.Create(contexts);
-            var onEvent = request.Arguments.FirstOrDefault(x => x.Name?.ToLowerInvariant() == "onevent")?.Value;
+            var onEvent = command.OnEvents?.FirstOrDefault();
             if (onEvent == null)
             {
                 await messageService.SendResponse(x => x.NotEnoughArguments());
@@ -96,11 +94,18 @@ namespace Watchman.Discord.Areas.Responses.Controllers
         }
 
         [AdminCommand]
-        [DiscordCommand("responses")]
-        public async Task Responses(DiscordRequest request, Contexts contexts)
+        public async Task Responses(ResponsesCommand responseCommand, Contexts contexts)
         {
-            var argument = request.Arguments?.FirstOrDefault()?.Name?.ToLowerInvariant();
-            if (!this._possibleArguments.Contains(argument))
+            string argument;
+            if (responseCommand.Default)
+            {
+                argument = "default";
+            }
+            else if (responseCommand.Custom)
+            {
+                argument = "custom";
+            }
+            else
             {
                 argument = "all";
             }
