@@ -1,6 +1,7 @@
 ﻿using Devscord.DiscordFramework.Framework.Commands.Parsing;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Devscord.DiscordFramework.UnitTests.Commands.Parsing
@@ -127,6 +128,32 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.Parsing
 
             //Assert
             Assert.That(result.HasArgument(null, expectedValue));
+        }
+
+        [Test]
+        [TestCase("w!help", "w!", true)]
+        [TestCase("w!help", "-", false)]
+        [TestCase("testhelp", "test", true)]
+        [TestCase("aa bbtest", "aa bb", true)]
+        public void ShouldSelectPrefixes(string message, string prefix, bool shouldAssert)
+        {
+            //Arrange
+            var commandParser = new CommandParser();
+            var prefixes = new Dictionary<ulong, string[]>() { { 0, new string[] { prefix } } };
+            commandParser.SetServersPrefixes(prefixes);
+
+            //Act
+            var result = commandParser.Parse(message, DateTime.UtcNow);
+
+            //Assert
+            if(shouldAssert)
+            {
+                Assert.That(result.Prefix, Is.EqualTo(prefix));
+            }
+            else
+            {
+                Assert.That(result.Prefix, Is.Not.EqualTo(prefix));
+            }
         }
     }
 }

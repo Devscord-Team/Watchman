@@ -6,11 +6,11 @@ using System.Linq;
 
 namespace Devscord.DiscordFramework.Framework.Commands.Parsing
 {
-    internal class CommandParser
+    public class CommandParser
     {
         private readonly Dictionary<ulong, string[]> _serversPrefixes = new Dictionary<ulong, string[]>();
 
-        internal void SetServersPrefixes(Dictionary<ulong, string[]> prefixes)
+        public void SetServersPrefixes(Dictionary<ulong, string[]> prefixes)
         {
             foreach (var serverprefixes in prefixes)
             {
@@ -18,7 +18,12 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
             }
         }
 
-        internal DiscordRequest Parse(ulong serverId, string message, DateTime sentAt)
+        public DiscordRequest Parse(string message, DateTime sentAt)
+        {
+            return this.Parse(0, message, sentAt);
+        }
+
+        public DiscordRequest Parse(ulong serverId, string message, DateTime sentAt)
         {
             var original = (string) message.Clone();
             var prefix = this.GetPrefix(serverId, message);
