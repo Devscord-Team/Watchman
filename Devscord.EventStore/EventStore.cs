@@ -4,43 +4,47 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Devscord.EventStore
 {
     public static class EventStore //in memory event "store" TODO change it to correct event store
     {
         private static readonly Mapper _mapper = new Mapper(new MapperConfiguration(x => { }));
-        private static List<KeyValuePair<string, Action<object>>> _eventHandlers = new List<KeyValuePair<string, Action<object>>>();
+        private static readonly List<KeyValuePair<string, dynamic>> _eventHandlers = new List<KeyValuePair<string, dynamic>>();
 
-        public static void Publish<T>(T @event) where T : IEvent 
+        public static async Task Publish<T>(string eventName, T @event) where T : Event
         {
-            var eventName = typeof(T).Name;
             //todo save event
-            RunHandlers(eventName, @event);
+            await RunHandlers(eventName, @event);
         }
 
-        public static void Subscribe<T>(Action<T> action) where T : IEvent
+        public static void Subscribe<T>(Action<T> action) where T : Event
         {
             var eventName = typeof(T).Name;
-            _eventHandlers.Add(new KeyValuePair<string, Action<object>>(eventName, (dynamic)action));
+            _eventHandlers.Add(new KeyValuePair<string, dynamic>(eventName, action));
         }
 
-        private static void RunHandlers<T>(string eventName, T @event) where T : IEvent
+        private static Task RunHandlers<T>(string eventName, T @event) where T : Event
         {
             var handlers = _eventHandlers.Where(x => x.Key == eventName);
-            foreach (var handler in handlers)
+            Parallel.ForEach(handlers, handler =>
             {
                 try
                 {
-                    var handlerEventType = handler.Value.Method.GetParameters().First().ParameterType;
-                    var mappedEvent = _mapper.Map(@event, typeof(T), handlerEventType);
+                    var method = (MethodInfo) handler.Value.Method;
+                    var parameters = method.GetParameters();
+                    var handlerEventType = parameters.FirstOrDefault().ParameterType;
+                    var mappedEvent = (Event) _mapper.Map(@event, @event.GetType(), handlerEventType);
                     handler.Value.Invoke(mappedEvent);
                 }
                 catch (Exception ex)
                 {
                     Log.Error("Cannot run handler for event {event}", JsonConvert.SerializeObject(@event, Formatting.Indented));
                 }
-            }
+            });
+            return Task.CompletedTask;
         }
     }
 }

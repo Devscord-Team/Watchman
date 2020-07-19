@@ -31,6 +31,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Watchman.Integration.Tests"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Devscord.EventStore", "Devscord.EventStore\Devscord.EventStore.csproj", "{EC296946-179F-440A-85FD-540C6FE507D6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Devscord.EventStore.Tests", "Devscord.EventStore.Tests\Devscord.EventStore.Tests.csproj", "{86567A92-A882-4011-8C12-810877B7ACBF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -89,6 +91,10 @@ Global
 		{EC296946-179F-440A-85FD-540C6FE507D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC296946-179F-440A-85FD-540C6FE507D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC296946-179F-440A-85FD-540C6FE507D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86567A92-A882-4011-8C12-810877B7ACBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86567A92-A882-4011-8C12-810877B7ACBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86567A92-A882-4011-8C12-810877B7ACBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86567A92-A882-4011-8C12-810877B7ACBF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -98,6 +104,7 @@ Global
 		{74200B98-8DCB-4D8A-A34C-EC81CF0FF171} = {C8965E11-DAB9-4615-82D4-B4FE9CF0A113}
 		{63D475DB-0C76-4ABE-89D6-A4D70938BF1D} = {C8965E11-DAB9-4615-82D4-B4FE9CF0A113}
 		{16F0CD33-126A-4255-B147-476E6597E02C} = {C8965E11-DAB9-4615-82D4-B4FE9CF0A113}
+		{86567A92-A882-4011-8C12-810877B7ACBF} = {C8965E11-DAB9-4615-82D4-B4FE9CF0A113}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FDAA872C-31E2-41AC-BFA5-83BFE52E108D}
