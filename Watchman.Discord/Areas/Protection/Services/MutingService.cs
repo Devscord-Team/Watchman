@@ -71,7 +71,7 @@ namespace Watchman.Discord.Areas.Protection.Services
             var values = new Dictionary<string, string>
             {
                 {"Serwer:", server.Name},
-                {"Powód:", $"**{muteEvent.Reason}**"},
+                {"Powód:", $"{muteEvent.Reason}"},
                 {"Czas wygaśnięcia:", TimeZoneInfo.ConvertTimeFromUtc(muteEvent.TimeRange.End, TimeZoneInfo.FindSystemTimeZoneById("Central Europe Standard Time")).ToString("dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture)}
             };
             return (title, description, values);
