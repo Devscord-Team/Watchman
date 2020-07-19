@@ -56,7 +56,6 @@ namespace Devscord.DiscordFramework.Services
             {
                 await Server.SendDirectEmbedMessage(userId, embed);
                 Log.Information("Bot sent embed message {messageTitle}", embed.Title);
-                
                 return true;
             }
             catch (Exception ex)

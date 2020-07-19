@@ -49,12 +49,6 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("server", contexts.Server.Name));
         }
 
-        public static string PrintHelp(this ResponsesService responsesService, string help)
-        {
-            return responsesService.ProcessResponse("PrintHelp",
-                new KeyValuePair<string, string>("help", help));
-        }
-
         public static string UserIsNotAdmin(this ResponsesService responsesService)
         {
             return responsesService.ProcessResponse("UserIsNotAdmin");
@@ -87,14 +81,6 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             return responsesService.ProcessResponse("MutedUser",
                 new KeyValuePair<string, string>("user", mutedUser.Name),
                 new KeyValuePair<string, string>("timeEnd", TimeZoneInfo.ConvertTimeFromUtc(timeEnd, TimeZoneInfo.FindSystemTimeZoneById("Central Europe Standard Time")).ToString("dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture)));
-        }
-
-        public static string YouHaveBeenMuted(this ResponsesService responsesService, UserContext mutedUser, DateTime timeEnd, string reason)
-        {
-            return responsesService.ProcessResponse("YouHaveBeenMuted",
-                new KeyValuePair<string, string>("user", mutedUser.Name),
-                new KeyValuePair<string, string>("timeEnd", TimeZoneInfo.ConvertTimeFromUtc(timeEnd, TimeZoneInfo.FindSystemTimeZoneById("Central Europe Standard Time")).ToString("dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture)),
-                new KeyValuePair<string, string>("reason", reason));
         }
 
         public static string UnmutedUser(this ResponsesService responsesService, UserContext unmutedUser)
@@ -221,10 +207,9 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("onEvent", onEvent));
         }
 
-        public static string InvalidArguments(this ResponsesService responsesService, string arguments)
+        public static string InvalidArguments(this ResponsesService responsesService)
         {
-            return responsesService.ProcessResponse("InvalidArguments",
-                new KeyValuePair<string, string>("arguments", arguments));
+            return responsesService.ProcessResponse("InvalidArguments");
         }
 
         public static string AllRolesAddedToUser(this ResponsesService responsesService, Contexts contexts)

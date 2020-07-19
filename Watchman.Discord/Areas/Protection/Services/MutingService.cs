@@ -57,7 +57,7 @@ namespace Watchman.Discord.Areas.Protection.Services
         }
 
         private async Task NotifyUserAboutMute(Contexts contexts, UserContext mutedUser, MuteEvent muteEvent)
-        {
+        {   
             var messagesService = this._messagesServiceFactory.Create(contexts);
             await messagesService.SendResponse(x => x.MutedUser(mutedUser, muteEvent.TimeRange.End));
             var (title, description, values) = this.GetMuteEmbedMessage(mutedUser, contexts.Server, muteEvent);

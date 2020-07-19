@@ -23,7 +23,7 @@ namespace Watchman.DomainModel.Users
 
         public void Unmute()
         {
-            if(this.IsUnmuted)
+            if (this.IsUnmuted)
             {
                 return;
             }

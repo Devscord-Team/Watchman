@@ -160,15 +160,6 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dostępne komendy: ```{{help}}```.
-        /// </summary>
-        public static string PrintHelp {
-            get {
-                return ResourceManager.GetString("PrintHelp", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Odpowiedź `{{onEvent}}` już istnieje dla serwera **{{server}}**..
         /// </summary>
         public static string ResponseAlreadyExists {
@@ -399,15 +390,6 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         public static string UserNotFound {
             get {
                 return ResourceManager.GetString("UserNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cześć {{user}}! Zostałeś wyciszony za **{{reason}}** do {{timeEnd}}.\nPo tym czasie będziesz mógł pisać ponownie.
-        /// </summary>
-        public static string YouHaveBeenMuted {
-            get {
-                return ResourceManager.GetString("YouHaveBeenMuted", resourceCulture);
             }
         }
     }

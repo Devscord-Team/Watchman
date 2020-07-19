@@ -93,9 +93,24 @@ namespace Devscord.DiscordFramework
                 Log.Error(e, e.StackTrace);
                 return;
             }
+
+            DiscordRequest request;
             try
             {
-                var request = this.ParseRequest(socketMessage);
+                request = this.ParseRequest(socketMessage);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, e.StackTrace);
+                this.OnWorkflowException.ForEach(x => x.Invoke(e, contexts));
+                request = new DiscordRequest
+                {
+                    OriginalMessage = socketMessage.Content,
+                    SentAt = socketMessage.Timestamp.UtcDateTime
+                };
+            }
+            try
+            {
                 Log.Information("Starting controllers");
                 await this._controllersService.Run(socketMessage.Id, request, contexts);
             }

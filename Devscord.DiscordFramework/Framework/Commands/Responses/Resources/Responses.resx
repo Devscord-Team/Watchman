@@ -150,9 +150,6 @@
   <data name="NumberOfMessagesIsHuge" xml:space="preserve">
     <value>Liczba wiadomości w podanym zakresie jest ogromna ({{messagesCount}} wiadomości). Czy na pewno chcesz wszystkie przeczytać? (użyj parametru -force)</value>
   </data>
-  <data name="PrintHelp" xml:space="preserve">
-    <value>Dostępne komendy: ```{{help}}```</value>
-  </data>
   <data name="ResponseAlreadyExists" xml:space="preserve">
     <value>Odpowiedź `{{onEvent}}` już istnieje dla serwera **{{server}}**.</value>
   </data>
@@ -230,8 +227,5 @@
   </data>
   <data name="UserNotFound" xml:space="preserve">
     <value>Użytkownik {{user}} nie istnieje.</value>
-  </data>
-  <data name="YouHaveBeenMuted" xml:space="preserve">
-    <value>Cześć {{user}}! Zostałeś wyciszony za **{{reason}}** do {{timeEnd}}.\nPo tym czasie będziesz mógł pisać ponownie</value>
   </data>
 </root>
