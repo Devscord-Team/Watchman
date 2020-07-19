@@ -133,7 +133,7 @@
     <value>Dostępne role: {{roles}}</value>
   </data>
   <data name="InvalidArguments" xml:space="preserve">
-    <value>Dla tego polecenia są dostępne tylko argumenty: {{arguments}}</value>
+    <value>Podane argumenty są niepoprawne</value>
   </data>
   <data name="MutedUser" xml:space="preserve">
     <value>Użytkownik {{user}} został wyciszony do {{timeEnd}}</value>

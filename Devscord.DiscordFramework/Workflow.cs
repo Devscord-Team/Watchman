@@ -83,11 +83,9 @@ namespace Devscord.DiscordFramework
                 return;
             }
 
-            DiscordRequest request;
             Contexts contexts;
             try
             {
-                request = this.ParseRequest(socketMessage);
                 contexts = this.GetContexts(socketMessage);
             }
             catch (Exception e)
@@ -97,6 +95,7 @@ namespace Devscord.DiscordFramework
             }
             try
             {
+                var request = this.ParseRequest(socketMessage);
                 Log.Information("Starting controllers");
                 await this._controllersService.Run(socketMessage.Id, request, contexts);
             }

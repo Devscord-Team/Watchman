@@ -106,7 +106,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dla tego polecenia są dostępne tylko argumenty: {{arguments}}.
+        ///   Looks up a localized string similar to Podane argumenty są niepoprawne.
         /// </summary>
         public static string InvalidArguments {
             get {
