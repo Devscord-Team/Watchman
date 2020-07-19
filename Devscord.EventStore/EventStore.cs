@@ -15,7 +15,6 @@ namespace Devscord.EventStore
 
         public static void Subscribe<T>(Action<T> action) where T : IEvent
         {
-
         }
     }
 

@@ -23,7 +23,7 @@ namespace Devscord.DiscordFramework
         private readonly MiddlewaresService _middlewaresService = new MiddlewaresService();
         private readonly ControllersService _controllersService;
         private readonly Stopwatch _stopWatch = new Stopwatch();
-        private readonly CommandParser _commandParser = new CommandParser();
+        private readonly CommandParser _commandParser;
 
         public List<Func<Task>> OnReady { get; set; } = new List<Func<Task>>();
         public List<Func<Contexts, Task>> OnUserJoined { get; set; } = new List<Func<Contexts, Task>>();
@@ -39,6 +39,7 @@ namespace Devscord.DiscordFramework
         {
             this._context = context;
             this._controllersService = new ControllersService(context, botAssembly, context.Resolve<BotCommandsService>(), context.Resolve<CommandsContainer>());
+            this._commandParser = new CommandParser();
         }
 
         internal Workflow AddMiddleware<T>() where T : IMiddleware
