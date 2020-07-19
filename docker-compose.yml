@@ -1,9 +1,10 @@
 version: '3'
 services: 
     watchman-web:
-        image: gagyn/watchman
+        build: .
         ports:
             - "8080:80"
         restart: "unless-stopped"
         volumes:
             - ./appsettings.json:/app/appsettings.json
+            - /etc/localtime:/etc/localtime:ro
