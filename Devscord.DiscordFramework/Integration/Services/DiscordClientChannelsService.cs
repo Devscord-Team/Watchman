@@ -108,7 +108,7 @@ namespace Devscord.DiscordFramework.Integration.Services
                 contexts.SetContext(channel);
                 contexts.SetContext(user);
 
-                var commandParser = new CommandParser();
+                var commandParser = new CommandParser(); //TODO get prefixes from database or get instance from workflow
                 var request = commandParser.Parse(server.Id, message.Content, message.Timestamp.UtcDateTime);
                 return new Message(message.Id, request, contexts);
             });
