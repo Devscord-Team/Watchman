@@ -3,6 +3,9 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
 using Serilog;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Users;
@@ -38,10 +41,7 @@ namespace Watchman.Discord.Areas.Protection.Services
             }
             await this.MuteUser(userToMute, contexts.Server);
             await this._commandBus.ExecuteAsync(new AddMuteEventCommand(muteEvent));
-
-            var messagesService = this._messagesServiceFactory.Create(contexts);
-            await messagesService.SendResponse(x => x.MutedUser(userToMute, muteEvent.TimeRange.End));
-            await this._directMessagesService.TrySendMessage(userToMute.Id, x => x.YouHaveBeenMuted(userToMute, muteEvent.TimeRange.End, muteEvent.Reason), contexts);
+            await this.NotifyUserAboutMute(contexts, userToMute, muteEvent);
         }
 
         private async Task MuteUser(UserContext userToMute, DiscordServerContext serverContext)
@@ -54,6 +54,27 @@ namespace Watchman.Discord.Areas.Protection.Services
         {
             await this._usersService.AddRoleAsync(muteRole, userToMute, server);
             Log.Information("User {user} has been muted on server {server}", userToMute.ToString(), server.Name);
+        }
+
+        private async Task NotifyUserAboutMute(Contexts contexts, UserContext mutedUser, MuteEvent muteEvent)
+        {
+            var messagesService = this._messagesServiceFactory.Create(contexts);
+            await messagesService.SendResponse(x => x.MutedUser(mutedUser, muteEvent.TimeRange.End));
+            var (title, description, values) = this.GetMuteEmbedMessage(mutedUser, contexts.Server, muteEvent);
+            await this._directMessagesService.TrySendEmbedMessage(mutedUser.Id, title, description, values);
+        }
+
+        private (string title, string description, IEnumerable<KeyValuePair<string, string>> values) GetMuteEmbedMessage(UserContext user, DiscordServerContext server, MuteEvent muteEvent)
+        {
+            var title = "Zostałeś wyciszony";
+            var description = $"Cześć {user.Mention}! Zostałeś wyciszony przez moderatora na serwerze {server.Name}";
+            var values = new Dictionary<string, string>
+            {
+                {"Serwer:", server.Name},
+                {"Powód:", $"**{muteEvent.Reason}**"},
+                {"Czas wygaśnięcia:", TimeZoneInfo.ConvertTimeFromUtc(muteEvent.TimeRange.End, TimeZoneInfo.FindSystemTimeZoneById("Central Europe Standard Time")).ToString("dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture)}
+            };
+            return (title, description, values);
         }
     }
 }

@@ -403,7 +403,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cześć {{user}}! Zostałeś wyciszony za {{reason}} do {{timeEnd}}. Po tym czasie będziesz mógł pisać ponownie.
+        ///   Looks up a localized string similar to Cześć {{user}}! Zostałeś wyciszony za **{{reason}}** do {{timeEnd}}.\nPo tym czasie będziesz mógł pisać ponownie.
         /// </summary>
         public static string YouHaveBeenMuted {
             get {

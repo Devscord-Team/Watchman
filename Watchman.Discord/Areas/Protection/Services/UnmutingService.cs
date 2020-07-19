@@ -151,7 +151,19 @@ namespace Watchman.Discord.Areas.Protection.Services
             }
             var messagesService = this._messagesServiceFactory.Create(contexts);
             await messagesService.SendResponse(x => x.UnmutedUser(unmutedUser));
-            await this._directMessagesService.TrySendMessage(unmutedUser.Id, x => x.UnmutedUserForUser(unmutedUser, contexts.Server), contexts);
+            var (title, description, values) = this.GetUnmuteEmbedMessage(unmutedUser, contexts.Server);
+            await this._directMessagesService.TrySendEmbedMessage(unmutedUser.Id, title, description, values);
+        }
+
+        private (string title, string description, IEnumerable<KeyValuePair<string, string>> values) GetUnmuteEmbedMessage(UserContext user, DiscordServerContext server)
+        {
+            var title = "Wyciszenie wygasło";
+            var description = $"Cześć {user.Mention}! Możesz już ponownie pisać na serwerze {server.Name}!";
+            var values = new Dictionary<string, string>
+            {
+                {"Serwer:", server.Name}
+            };
+            return (title, description, values);
         }
     }
 }

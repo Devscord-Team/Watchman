@@ -232,6 +232,6 @@
     <value>Użytkownik {{user}} nie istnieje.</value>
   </data>
   <data name="YouHaveBeenMuted" xml:space="preserve">
-    <value>Cześć {{user}}! Zostałeś wyciszony za {{reason}} do {{timeEnd}}. Po tym czasie będziesz mógł pisać ponownie</value>
+    <value>Cześć {{user}}! Zostałeś wyciszony za **{{reason}}** do {{timeEnd}}.\nPo tym czasie będziesz mógł pisać ponownie</value>
   </data>
 </root>
