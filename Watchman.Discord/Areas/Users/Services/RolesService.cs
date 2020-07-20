@@ -49,7 +49,7 @@ namespace Watchman.Discord.Areas.Users.Services
                     await messagesService.SendResponse(x => x.RoleNotFoundOrIsNotSafe(contexts, role));
                     continue;
                 }
-                await this._usersService.AddRole(serverRole, contexts.User, contexts.Server);
+                await this._usersService.AddRoleAsync(serverRole, contexts.User, contexts.Server);
                 addedRoles.Add(role);
             }
             if (addedRoles.Count > 1 && addedRoles.Count == rolesToAdd.Count())
@@ -82,7 +82,7 @@ namespace Watchman.Discord.Areas.Users.Services
                     await messagesService.SendResponse(x => x.RoleNotFoundOrIsNotSafe(contexts, role));
                     continue;
                 }
-                await this._usersService.RemoveRole(serverRole, contexts.User, contexts.Server);
+                await this._usersService.RemoveRoleAsync(serverRole, contexts.User, contexts.Server);
                 removedRoles.Add(role);
             }
             if (removedRoles.Count > 1 && removedRoles.Count == rolesToRemove.Count())

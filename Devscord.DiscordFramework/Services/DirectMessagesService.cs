@@ -4,6 +4,7 @@ using Devscord.DiscordFramework.Integration;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Serilog;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework.Services
@@ -12,11 +13,15 @@ namespace Devscord.DiscordFramework.Services
     {
         private readonly ResponsesService _responsesService;
         private readonly MessageSplittingService _messageSplittingService;
+        private readonly EmbedMessagesService _embedMessagesService;
+        private readonly EmbedMessageSplittingService _embedMessageSplittingService;
 
-        public DirectMessagesService(ResponsesService responsesService, MessageSplittingService messageSplittingService)
+        public DirectMessagesService(ResponsesService responsesService, MessageSplittingService messageSplittingService, EmbedMessagesService embedMessagesService, EmbedMessageSplittingService embedMessageSplittingService)
         {
             this._responsesService = responsesService;
             this._messageSplittingService = messageSplittingService;
+            this._embedMessagesService = embedMessagesService;
+            this._embedMessageSplittingService = embedMessageSplittingService;
         }
 
         public Task<bool> TrySendMessage(ulong userId, Func<ResponsesService, string> response, Contexts contexts)
@@ -33,8 +38,24 @@ namespace Devscord.DiscordFramework.Services
                 foreach (var smallMessages in this._messageSplittingService.SplitMessage(message, messageType))
                 {
                     await Server.SendDirectMessage(userId, smallMessages);
-                    Log.Information($"Bot sent message {smallMessages}");
+                    Log.Information("Bot sent message {smallMessages}", smallMessages);
                 }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Warning(ex.Message, ex);
+                return false;
+            }
+        }
+
+        public async Task<bool> TrySendEmbedMessage(ulong userId, string title, string description, IEnumerable<KeyValuePair<string, string>> values)
+        {
+            var embed = this._embedMessagesService.Generate(title, description, values);
+            try
+            {
+                await Server.SendDirectEmbedMessage(userId, embed);
+                Log.Information("Bot sent embed message {messageTitle}", embed.Title);
                 return true;
             }
             catch (Exception ex)

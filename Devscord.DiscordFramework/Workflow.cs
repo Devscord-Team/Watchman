@@ -83,17 +83,31 @@ namespace Devscord.DiscordFramework
                 return;
             }
 
-            DiscordRequest request;
             Contexts contexts;
             try
             {
-                request = this.ParseRequest(socketMessage);
                 contexts = this.GetContexts(socketMessage);
             }
             catch (Exception e)
             {
                 Log.Error(e, e.StackTrace);
                 return;
+            }
+
+            DiscordRequest request;
+            try
+            {
+                request = this.ParseRequest(socketMessage);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, e.StackTrace);
+                this.OnWorkflowException.ForEach(x => x.Invoke(e, contexts));
+                request = new DiscordRequest
+                {
+                    OriginalMessage = socketMessage.Content,
+                    SentAt = socketMessage.Timestamp.UtcDateTime
+                };
             }
             try
             {

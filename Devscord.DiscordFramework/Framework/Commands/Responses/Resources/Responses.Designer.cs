@@ -106,16 +106,8 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Nie znaleziono kanału {{channel}} .
-        /// </summary>
-        public static string ChannelNotFound {
-            get {
-                return ResourceManager.GetString("ChannelNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Dla tego polecenia są dostępne tylko argumenty: {{arguments}}.
+        ///   Looks up a localized string similar to Podane argumenty są niepoprawne.
+
         /// </summary>
         public static string InvalidArguments {
             get {
@@ -124,7 +116,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Użytkownik {{user}} został zmutowany do {{timeEnd}}.
+        ///   Looks up a localized string similar to Użytkownik {{user}} został wyciszony do {{timeEnd}}.
         /// </summary>
         public static string MutedUser {
             get {
@@ -169,25 +161,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Dostępne komendy: ```{{help}}```.
-        /// </summary>
-        public static string PrintHelp {
-            get {
-                return ResourceManager.GetString("PrintHelp", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Zakończono wczytywanie historii wiadomości..
-        /// </summary>
-        public static string ReadingHistoryDone {
-            get {
-                return ResourceManager.GetString("ReadingHistoryDone", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Odpowiedź `{{onEvent}}` już istnieje dla serwera **{{server}}**..
+        ///   Looks up a localized string similar to Odpowiedź `{{onEvent}}` już istnieje dla serwera **{{server}}**..
         /// </summary>
         public static string ResponseAlreadyExists {
             get {
@@ -349,25 +323,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Spam alert! Uzytkownik {{user}} został zmutowany..
-        /// </summary>
-        public static string SpamAlertUserIsMuted {
-            get {
-                return ResourceManager.GetString("SpamAlertUserIsMuted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Spam alert! Użytkownik {{user}} został zmutowany na dłużej.
-        /// </summary>
-        public static string SpamAlertUserIsMutedForLong {
-            get {
-                return ResourceManager.GetString("SpamAlertUserIsMutedForLong", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Czas nie może być ujemny!.
+        ///   Looks up a localized string similar to Czas nie może być ujemny!.
         /// </summary>
         public static string TimeCannotBeNegative {
             get {
