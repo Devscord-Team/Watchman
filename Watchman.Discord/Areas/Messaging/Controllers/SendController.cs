@@ -25,6 +25,7 @@ namespace Watchman.Discord.Areas.Messaging.Controllers
         {
             this._messagesServiceFactory = messagesServiceFactory;
         }
+
         public async Task Send(SendCommand sendCommand, Contexts contexts)
         {
             var messagesService = this._messagesServiceFactory.Create(contexts);
