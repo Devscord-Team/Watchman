@@ -1,4 +1,5 @@
-﻿using Devscord.DiscordFramework.Services.Models;
+﻿using Devscord.DiscordFramework.Commons.Extensions;
+using Devscord.DiscordFramework.Services.Models;
 using Serilog;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,7 +51,7 @@ namespace Watchman.Discord.Areas.Help.Services
             var oldUselessHelps = helpInfos.Where(h => commandInfosFromAssembly.All(c => c.MethodFullName != h.MethodFullName));
             foreach (var oldHelp in oldUselessHelps)
             {
-                Log.Warning($"Useless help info for method {oldHelp.MethodFullName}");
+                Log.Warning("Useless help info for method {oldHelp}", oldHelp.ToJson());
             }
             return Task.CompletedTask;
         }

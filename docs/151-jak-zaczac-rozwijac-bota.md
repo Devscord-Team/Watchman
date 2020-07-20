@@ -56,3 +56,7 @@ Przejdź po ten adres, wybierz serwer oraz przydziel uprawnienia.
 
 Od tego momentu możesz już korzystać z bota na własnym serwerze.  
 Aby dowiedzieć się więcej o działaniu bota - kliknij w zakładkę "Dokumentacja techniczna" w głównym  menu.  
+
+#### Konfiguracja serwera
+
+**Uwaga!** Bot w wersji Debug będzie odpowiadać na komendy tylko i wyłącznie na kanałach zawierających w nazwie słowo "test". Dlatego aby testować bota utwórz na swoim serwerze kanał nazwany np. "test".  

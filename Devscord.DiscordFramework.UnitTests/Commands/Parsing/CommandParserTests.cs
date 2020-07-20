@@ -1,4 +1,6 @@
-﻿using Devscord.DiscordFramework.Framework.Commands.Parsing;
+﻿using Devscord.DiscordFramework.Commons.Exceptions;
+using Devscord.DiscordFramework.Framework.Commands.Parsing;
+using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using NUnit.Framework;
 using System;
 using System.Linq;
@@ -127,6 +129,20 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.Parsing
 
             //Assert
             Assert.That(result.HasArgument(null, expectedValue));
+        }
+
+        [Test]
+        [TestCase("-mute <@12345678> -t 10s -r \"test")]
+        public void ShouldThrowException(string message)
+        {
+            // Arrange
+            var commandParser = new CommandParser();
+
+            // Act
+            void ParseFunc() => commandParser.Parse(message, DateTime.UtcNow);
+
+            // Assert
+            Assert.Throws<InvalidArgumentsException>(ParseFunc);
         }
     }
 }

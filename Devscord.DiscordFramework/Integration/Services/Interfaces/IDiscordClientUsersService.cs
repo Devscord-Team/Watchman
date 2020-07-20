@@ -10,7 +10,8 @@ namespace Devscord.DiscordFramework.Integration.Services.Interfaces
     {
         Func<SocketGuildUser, Task> UserJoined { get; set; }
         Task<RestGuildUser> GetGuildUser(ulong userId, ulong guildId);
-        Task<IEnumerable<RestGuildUser>> GetGuildUsers(ulong guildId);
+        Task<bool> IsUserStillOnServer(ulong userId, ulong guildId);
+        IAsyncEnumerable<RestGuildUser> GetGuildUsers(ulong guildId);
         Task<RestUser> GetUser(ulong userId);
     }
 }

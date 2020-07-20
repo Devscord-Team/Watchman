@@ -42,27 +42,11 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             return responsesService.ProcessResponse("SpamAlertRecognized", contexts);
         }
 
-        public static string SpamAlertUserIsMutedForLong(this ResponsesService responsesService, Contexts contexts)
-        {
-            return responsesService.ProcessResponse("SpamAlertUserIsMutedForLong", contexts);
-        }
-
-        public static string SpamAlertUserIsMuted(this ResponsesService responsesService, Contexts contexts)
-        {
-            return responsesService.ProcessResponse("SpamAlertUserIsMuted", contexts);
-        }
-
         public static string NewUserArrived(this ResponsesService responsesService, Contexts contexts)
         {
             return responsesService.ProcessResponse("NewUserArrived",
                 new KeyValuePair<string, string>("user", contexts.User.Mention),
                 new KeyValuePair<string, string>("server", contexts.Server.Name));
-        }
-
-        public static string PrintHelp(this ResponsesService responsesService, string help)
-        {
-            return responsesService.ProcessResponse("PrintHelp",
-                new KeyValuePair<string, string>("help", help));
         }
 
         public static string UserIsNotAdmin(this ResponsesService responsesService)
@@ -96,7 +80,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("MutedUser",
                 new KeyValuePair<string, string>("user", mutedUser.Name),
-                new KeyValuePair<string, string>("timeEnd", timeEnd.ToString("dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture)));
+                new KeyValuePair<string, string>("timeEnd", TimeZoneInfo.ConvertTimeFromUtc(timeEnd, TimeZoneInfo.Local).ToString("dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture)));
         }
 
         public static string UnmutedUser(this ResponsesService responsesService, UserContext unmutedUser)
@@ -120,11 +104,6 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         public static string TimeIsTooBig(this ResponsesService responsesService)
         {
             return responsesService.ProcessResponse("TimeIsTooBig");
-        }
-
-        public static string ReadingHistoryDone(this ResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("ReadingHistoryDone");
         }
 
         public static string UserDoesntHaveAvatar(this ResponsesService responsesService, UserContext user)
@@ -208,6 +187,12 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("onEvent", onEvent));
         }
 
+        public static string ResponseTheSameAsDefault(this ResponsesService responsesService, Contexts contexts, string onEvent)
+        {
+            return responsesService.ProcessResponse("ResponseTheSameAsDefault", contexts,
+                new KeyValuePair<string, string>("onEvent", onEvent));
+        }
+
         public static string ResponseNotFound(this ResponsesService responsesService, Contexts contexts, string onEvent)
         {
             return responsesService.ProcessResponse("ResponseNotFound", contexts,
@@ -228,10 +213,9 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("onEvent", onEvent));
         }
 
-        public static string InvalidArguments(this ResponsesService responsesService, string arguments)
+        public static string InvalidArguments(this ResponsesService responsesService)
         {
-            return responsesService.ProcessResponse("InvalidArguments",
-                new KeyValuePair<string, string>("arguments", arguments));
+            return responsesService.ProcessResponse("InvalidArguments");
         }
 
         public static string AllRolesAddedToUser(this ResponsesService responsesService, Contexts contexts)

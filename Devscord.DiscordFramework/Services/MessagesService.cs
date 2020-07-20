@@ -5,16 +5,15 @@ using Discord.Rest;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Commons.Exceptions;
 using System.Linq;
-using Devscord.DiscordFramework.Services.Models;
 
 namespace Devscord.DiscordFramework.Services
 {
-    public class MessagesService : ICyclicCacheGenerator
+    public class MessagesService : ICyclicService
     {
-        public RefreshFrequent RefreshFrequent { get; } = RefreshFrequent.Quarterly;
         public ulong GuildId { get; set; }
         public ulong ChannelId { get; set; }
 
@@ -28,7 +27,10 @@ namespace Devscord.DiscordFramework.Services
             this._responsesService = responsesService;
             this._splittingService = splittingService;
             this._embedMessagesService = embedMessagesService;
-            this.ReloadCache().Wait();
+            if (_serversResponses.Count == 0)
+            {
+                this.Refresh().Wait();
+            }
         }
 
         public Task SendMessage(string message, MessageType messageType = MessageType.NormalText)
@@ -60,8 +62,15 @@ namespace Devscord.DiscordFramework.Services
 
         public async Task SendFile(string filePath)
         {
-            var channel = (IRestMessageChannel) await Server.GetChannel(this.ChannelId);
+            var channel = this.GetChannel();
             await channel.SendFileAsync(filePath);
+        }
+
+        public async Task SendFile(string fileName, Stream stream)
+        {
+            var channel = this.GetChannel();
+            await channel.SendFileAsync(stream, fileName);
+            await stream.DisposeAsync();
         }
 
         public async Task SendExceptionResponse(BotException botException)
@@ -85,13 +94,15 @@ namespace Devscord.DiscordFramework.Services
             });
         }
 
-        public Task ReloadCache()
+        public Task Refresh()
         {
+            Log.Information("Refreshing responses cache...");
             foreach (var serverId in _serversResponses.Keys.ToList())
             {
                 var responses = this._responsesService.GetResponsesFunc(serverId);
                 _serversResponses[serverId] = responses;
             }
+            Log.Information("Responses cache refreshed");
             return Task.CompletedTask;
         }
 

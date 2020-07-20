@@ -19,11 +19,14 @@ namespace Watchman.Integrations.Logging
             Serilog.Debugging.SelfLog.Enable(msg => Debug.WriteLine(msg));
 #endif
             var logger = new LoggerConfiguration()
+                .MinimumLevel.Verbose()
                 .Enrich.FromLogContext()
                 .Enrich.WithThreadId()
                 .Enrich.WithMachineName()
                 .Enrich.WithEnvironmentUserName()
-                .WriteTo.RollingFile(new JsonFormatter(closingDelimiter: ","), "logs/log-{Date}.json", shared: true, flushToDiskInterval: TimeSpan.FromSeconds(15))
+                .WriteTo.RollingFile(new JsonFormatter(closingDelimiter: ","), "logs/all/log-{Date}.json", shared: true, flushToDiskInterval: TimeSpan.FromSeconds(15), restrictedToMinimumLevel: LogEventLevel.Verbose)
+                .WriteTo.RollingFile(new JsonFormatter(closingDelimiter: ","), "logs/warningplus/log-{Date}.json", shared: true, flushToDiskInterval: TimeSpan.FromSeconds(15), restrictedToMinimumLevel: LogEventLevel.Warning)
+                .WriteTo.RollingFile(new JsonFormatter(closingDelimiter: ","), "logs/errorplus/log-{Date}.json", shared: true, flushToDiskInterval: TimeSpan.FromSeconds(15), restrictedToMinimumLevel: LogEventLevel.Error)
                 .WriteTo.Console(
                     restrictedToMinimumLevel: LogEventLevel.Verbose,
                     outputTemplate: "[{Timestamp:dd-MM-yyyy} - {Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")

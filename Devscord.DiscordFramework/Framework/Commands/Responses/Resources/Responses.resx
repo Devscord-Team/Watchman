@@ -133,10 +133,10 @@
     <value>Dostępne role: {{roles}}</value>
   </data>
   <data name="InvalidArguments" xml:space="preserve">
-    <value>Dla tego polecenia są dostępne tylko argumenty: {{arguments}}</value>
+    <value>Podane argumenty są niepoprawne</value>
   </data>
   <data name="MutedUser" xml:space="preserve">
-    <value>Użytkownik {{user}} został zmutowany do {{timeEnd}}</value>
+    <value>Użytkownik {{user}} został wyciszony do {{timeEnd}}</value>
   </data>
   <data name="NewUserArrived" xml:space="preserve">
     <value>Cześć {{user}}! Witamy cię na serwerze {{server}}</value>
@@ -150,17 +150,14 @@
   <data name="NumberOfMessagesIsHuge" xml:space="preserve">
     <value>Liczba wiadomości w podanym zakresie jest ogromna ({{messagesCount}} wiadomości). Czy na pewno chcesz wszystkie przeczytać? (użyj parametru -force)</value>
   </data>
-  <data name="PrintHelp" xml:space="preserve">
-    <value>Dostępne komendy: ```{{help}}```</value>
-  </data>
-  <data name="ReadingHistoryDone" xml:space="preserve">
-    <value>Zakończono wczytywanie historii wiadomości.</value>
-  </data>
   <data name="ResponseAlreadyExists" xml:space="preserve">
     <value>Odpowiedź `{{onEvent}}` już istnieje dla serwera **{{server}}**.</value>
   </data>
   <data name="ResponseHasBeenAdded" xml:space="preserve">
     <value>Odpowiedź `{{onEvent}}` została dodana dla serwera **{{server}}**.</value>
+  </data>
+  <data name="ResponseTheSameAsDefault" xml:space="preserve">
+    <value>Odpowiedź `{{onEvent}}` po zmianie odpowiedź jest identyczna jak domyślna, usunięto odpowiedź na serwerze **{{server}}**.</value>
   </data>
   <data name="ResponseHasBeenRemoved" xml:space="preserve">
     <value>Odpowiedź `{{onEvent}}` została usunięta dla serwera **{{server}}**.</value>
@@ -206,12 +203,6 @@
   </data>
   <data name="SpamAlertRecognized" xml:space="preserve">
     <value>Spam alert! Wykryto spam u użytkownika {{user}} na kanale {{channel}}. Poczekaj chwile zanim coś napiszesz.</value>
-  </data>
-  <data name="SpamAlertUserIsMuted" xml:space="preserve">
-    <value>Spam alert! Uzytkownik {{user}} został zmutowany.</value>
-  </data>
-  <data name="SpamAlertUserIsMutedForLong" xml:space="preserve">
-    <value>Spam alert! Użytkownik {{user}} został zmutowany na dłużej</value>
   </data>
   <data name="TimeCannotBeNegative" xml:space="preserve">
     <value>Czas nie może być ujemny!</value>

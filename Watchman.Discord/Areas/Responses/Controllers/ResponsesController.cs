@@ -1,14 +1,15 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
-using System;
 using Watchman.Discord.Areas.Responses.Services;
 using Watchman.Discord.Areas.Responses.BotCommands;
 using Serilog;
+using DomainResponse = Watchman.DomainModel.Responses.Response;
 
 namespace Watchman.Discord.Areas.Responses.Controllers
 {
@@ -48,6 +49,14 @@ namespace Watchman.Discord.Areas.Responses.Controllers
                 await messageService.SendResponse(x => x.ResponseAlreadyExists(contexts, onEvent));
                 return;
             }
+
+            var defaultResponse = await this._responsesService.GetResponseByOnEvent(onEvent, DomainResponse.DEFAULT_SERVER_ID);
+            if (defaultResponse.Message == message)
+            {
+                await messageService.SendResponse(x => x.ResponseAlreadyExists(contexts, onEvent));
+                return;
+            }
+
             await this._responsesService.AddResponse(onEvent, message, contexts.Server.Id);
             await messageService.SendResponse(x => x.ResponseHasBeenAdded(contexts, onEvent));
         }
@@ -69,6 +78,15 @@ namespace Watchman.Discord.Areas.Responses.Controllers
                 await messageService.SendResponse(x => x.ResponseNotFound(contexts, onEvent));
                 return;
             }
+
+            var defaultResponse = await this._responsesService.GetResponseByOnEvent(onEvent, DomainResponse.DEFAULT_SERVER_ID);
+            if (defaultResponse.Message == message)
+            {
+                await this._responsesService.RemoveResponse(response.OnEvent, response.ServerId);
+                await messageService.SendResponse(x => x.ResponseTheSameAsDefault(contexts, onEvent));
+                return;
+            }
+
             await this._responsesService.UpdateResponse(response.Id, message);
             await messageService.SendResponse(x => x.ResponseHasBeenUpdated(contexts, onEvent, response.Message, message));
         }

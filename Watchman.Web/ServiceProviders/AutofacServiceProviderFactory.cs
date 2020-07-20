@@ -30,14 +30,14 @@ namespace Watchman.Web.ServiceProviders
         {
             var container = containerBuilder.Build();
 
-            _ = new WatchmanBot(new DiscordConfiguration
+            var workflowBuilder = new WatchmanBot(new DiscordConfiguration
             {
                 MongoDbConnectionString = this._configuration.GetConnectionString("Mongo"),
                 Token = this._configuration["Discord:Token"]
             }, container.Resolve<IComponentContext>()).GetWorkflowBuilder();
 
+            workflowBuilder.Build();
             container.Resolve<HangfireJobsService>().SetDefaultJobs(container);
-
             return new AutofacServiceProvider(container);
         }
     }

@@ -4,10 +4,10 @@ using Devscord.DiscordFramework.Services.Models;
 using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
-using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace Devscord.DiscordFramework.Integration
 {
@@ -17,6 +17,10 @@ namespace Devscord.DiscordFramework.Integration
 
         internal static Func<SocketGuildUser, Task> UserJoined { get; set; }
         internal static Func<SocketGuild, Task> BotAddedToServer { get; set; }
+        internal static Func<SocketChannel, Task> ChannelCreated { get; set; }
+        internal static Func<SocketRole, SocketRole, Task> RoleUpdated { get; set; }
+        internal static Func<SocketRole, Task> RoleRemoved { get; set; }
+        internal static Func<SocketRole, Task> RoleCreated { get; set; }
         internal static List<DateTime> ConnectedTimes => _discordClient.ServersService.ConnectedTimes;
         internal static List<DateTime> DisconnectedTimes => _discordClient.ServersService.DisconnectedTimes;
 
@@ -25,6 +29,10 @@ namespace Devscord.DiscordFramework.Integration
             _discordClient = discordClient;
             _discordClient.UsersService.UserJoined += UserJoined;
             _discordClient.ServersService.BotAddedToServer += BotAddedToServer;
+            _discordClient.ChannelsService.ChannelCreated += ChannelCreated;
+            _discordClient.RolesService.RoleUpdated += RoleUpdated;
+            _discordClient.RolesService.RoleCreated += RoleCreated;
+            _discordClient.RolesService.RoleRemoved += RoleRemoved;
             Log.Information("Server initialized");
         }
 
@@ -34,7 +42,7 @@ namespace Devscord.DiscordFramework.Integration
             return _discordClient.UsersService.GetGuildUser(userId, guildId);
         }
 
-        internal static Task<IEnumerable<RestGuildUser>> GetGuildUsers(ulong guildId)
+        internal static IAsyncEnumerable<RestGuildUser> GetGuildUsers(ulong guildId)
         {
             return _discordClient.UsersService.GetGuildUsers(guildId);
         }
@@ -44,10 +52,20 @@ namespace Devscord.DiscordFramework.Integration
             return _discordClient.UsersService.GetUser(userId);
         }
 
+        internal static Task<bool> IsUserStillOnServer(ulong userId, ulong guildId)
+        {
+            return _discordClient.UsersService.IsUserStillOnServer(userId, guildId);
+        }
+
         //Channels
         internal static Task<IChannel> GetChannel(ulong channelId, RestGuild guild = null)
         {
             return _discordClient.ChannelsService.GetChannel(channelId, guild);
+        }
+
+        internal static Task<IGuildChannel> GetGuildChannel(ulong channelId, RestGuild guild = null)
+        {
+            return _discordClient.ChannelsService.GetGuildChannel(channelId, guild);
         }
 
         internal static Task SendDirectEmbedMessage(ulong userId, Embed embed)
@@ -81,9 +99,9 @@ namespace Devscord.DiscordFramework.Integration
             return _discordClient.RolesService.GetSocketRoles(guildId);
         }
 
-        internal static Task SetRolePermissions(ChannelContext channel, ChangedPermissions permissions, UserRole role)
+        internal static Task SetRolePermissions(ChannelContext channel, DiscordServerContext server, ChangedPermissions permissions, UserRole role)
         {
-            return _discordClient.RolesService.SetRolePermissions(channel, permissions, role);
+            return _discordClient.RolesService.SetRolePermissions(channel, server, permissions, role);
         }
 
         internal static Task SetRolePermissions(IEnumerable<ChannelContext> channels, DiscordServerContext server, ChangedPermissions permissions, UserRole role)

@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam;
 using Devscord.DiscordFramework.Services;
-using Devscord.DiscordFramework.Services.Models;
 using Serilog;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Protection.Models;
@@ -14,10 +13,8 @@ using Message = Watchman.DomainModel.Messages.Message;
 
 namespace Watchman.Discord.Areas.Protection.Strategies
 {
-    public class CheckUserSafetyStrategyService : ICyclicCacheGenerator, IUserSafetyChecker
+    public class CheckUserSafetyStrategyService : ICyclicService, IUserSafetyChecker
     {
-        public RefreshFrequent RefreshFrequent { get; } = RefreshFrequent.Daily;
-
         private Dictionary<ulong, ServerSafeUsers> _safeUsersOnServers;
         private readonly IQueryBus _queryBus;
         private readonly DiscordServersService _discordServersService;
@@ -29,7 +26,6 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             this._queryBus = queryBus;
             this._discordServersService = discordServersService;
             this._configurationService = configurationService;
-            _ = this.ReloadCache();
         }
 
         public bool IsUserSafe(ulong userId, ulong serverId)
@@ -39,11 +35,11 @@ namespace Watchman.Discord.Areas.Protection.Strategies
                    && serverUsers.SafeUsers.Contains(userId);
         }
 
-        public async Task ReloadCache()
+        public async Task Refresh()
         {
-            Log.Information("Reloading cache....");
+            Log.Information("Reloading user safety cache....");
             await this.UpdateMessages();
-            Log.Information("Cache reloaded");
+            Log.Information("Cache user safety reloaded");
         }
 
         private async Task UpdateMessages()

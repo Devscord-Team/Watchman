@@ -97,3 +97,9 @@ Branche zaczynające się od `D/` powinny być używane tylko wtedy, kiedy dotyc
 6. Popraw kod lub skomentuj komentarze.  
 7. Zaczekaj aż dostaniesz zgode na merge.  
 8. Zrób merge, lub zaczekaj aż osoba która wyraziła zgodę to zrobi (czasami merge robimy od razu po wyrażeniu zgody).  
+
+#### Etykiety  
+  
+Do pull requestów możemy dodawać etykiety  
+Przykładowo `ready for review` lub `help needed`  
+Zachęcam do używania ich, szczególnie wspomnianego `ready for review`
