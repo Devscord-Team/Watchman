@@ -132,6 +132,9 @@
   <data name="AvailableSafeRoles" xml:space="preserve">
     <value>Dostępne role: {{roles}}</value>
   </data>
+  <data name="ChannelNotFound" xml:space="preserve">
+    <value>Nie znaleziono kanału {{channel}} </value>
+  </data>
   <data name="InvalidArguments" xml:space="preserve">
     <value>Podane argumenty są niepoprawne</value>
   </data>

@@ -39,6 +39,7 @@
 
   <ItemGroup>
     <Folder Include="Areas\Administration\Models\" />
+    <Folder Include="Areas\Messaging\Services\" />
   </ItemGroup>
 
   <ItemGroup>
