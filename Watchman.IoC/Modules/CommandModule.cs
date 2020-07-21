@@ -26,7 +26,7 @@ namespace Watchman.IoC.Modules
                 {
                     builder.RegisterType(handler)
                         .As(handler.GetInterfaces().First())
-                        .InstancePerLifetimeScope();
+                        .SingleInstance();
                 }
 
                 foreach (var reference in asm.GetReferencedAssemblies())
@@ -42,7 +42,6 @@ namespace Watchman.IoC.Modules
 
             builder.RegisterType<CommandBus>()
                 .As<ICommandBus>()
-                .InstancePerLifetimeScope()
                 .SingleInstance();
         }
     }
