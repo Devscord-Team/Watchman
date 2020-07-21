@@ -234,4 +234,7 @@
   <data name="UserNotFound" xml:space="preserve">
     <value>Użytkownik {{user}} nie istnieje.</value>
   </data>
+  <data name="UserWasntMuted" xml:space="preserve">
+    <value>Użytkownik {{user}} nie jest wyciszony.</value>
+  </data>
 </root>

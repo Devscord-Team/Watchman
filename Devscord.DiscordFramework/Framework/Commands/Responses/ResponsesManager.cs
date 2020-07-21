@@ -234,5 +234,11 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("AllRolesSettingsChanged");
         }
+
+        public static string UserWasntMuted(this ResponsesService responsesService, UserContext user)
+        {
+            return responsesService.ProcessResponse("UserWasntMuted",
+                new KeyValuePair<string, string>("user", user.Name));
+        }
     }
 }

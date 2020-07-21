@@ -37,7 +37,7 @@ namespace Watchman.Discord.Areas.Protection.Services
         public MuteEvent GetMuteEvent(ulong userId, Contexts contexts, DiscordRequest request)
         {
             var reason = this._request.Arguments.FirstOrDefault(x => x.Name == "reason" || x.Name == "r")?.Value;
-            if (reason == null)
+            if (string.IsNullOrWhiteSpace(reason))
             {
                 throw new NotEnoughArgumentsException();
             }
