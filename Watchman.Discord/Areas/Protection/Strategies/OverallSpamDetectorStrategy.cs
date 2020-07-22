@@ -18,7 +18,8 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             return new OverallSpamDetectorStrategy(serverMessagesCacheService, new List<ISpamDetector>
             {
                 new LinksDetectorStrategy(userSafetyChecker),
-                new DuplicatedMessagesDetectorStrategy(userSafetyChecker, configurationService)
+                new DuplicatedMessagesDetectorStrategy(userSafetyChecker, configurationService),
+                new CapslockDetectorStrategy(userSafetyChecker, configurationService)
             });
         }
 

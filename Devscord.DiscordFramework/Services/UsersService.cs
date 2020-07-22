@@ -79,6 +79,11 @@ namespace Devscord.DiscordFramework.Services
             return Server.GetGuildUser(userId, serverId).Result?.JoinedAt?.DateTime;
         }
 
+        public UserContext GetBot()
+        {
+            return this._userContextsFactory.Create(Server.GetBotUser());
+        }
+
         private async Task<RestGuildUser> GetRestUser(UserContext user, DiscordServerContext server)
         {
             return await Server.GetGuildUser(user.Id, server.Id);

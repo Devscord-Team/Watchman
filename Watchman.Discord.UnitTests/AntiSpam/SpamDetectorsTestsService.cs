@@ -24,7 +24,9 @@ namespace Watchman.Discord.UnitTests.AntiSpam
             configurationService
                 .Setup(x => x.GetConfigurationItem<PercentOfSimilarityBetweenMessagesToSuspectSpam>(It.IsAny<ulong>()))
                 .Returns(new PercentOfSimilarityBetweenMessagesToSuspectSpam(GetMessagesQuery.GET_ALL_SERVERS));
-
+            configurationService
+                .Setup(x => x.GetConfigurationItem<MinUpperLettersCount>(It.IsAny<ulong>()))
+                .Returns(new MinUpperLettersCount(GetMessagesQuery.GET_ALL_SERVERS));
             var (request, contexts) = spamTestsService.CreateRequestAndContexts(messagesContent.Last());
             var serverMessages = new ServerMessagesCacheService();
             serverMessages.OverwriteMessages(messagesContent.SkipLast(1).Select(x => new SmallMessage(x, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now, GetMessagesQuery.GET_ALL_SERVERS)));

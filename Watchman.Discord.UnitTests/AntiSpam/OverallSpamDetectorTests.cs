@@ -44,6 +44,9 @@ namespace Watchman.Discord.UnitTests.AntiSpam
             configurationService
                 .Setup(x => x.GetConfigurationItem<PercentOfSimilarityBetweenMessagesToSuspectSpam>(It.IsAny<ulong>()))
                 .Returns(new PercentOfSimilarityBetweenMessagesToSuspectSpam(GetMessagesQuery.GET_ALL_SERVERS));
+            configurationService
+                .Setup(x => x.GetConfigurationItem<MinUpperLettersCount>(It.IsAny<ulong>()))
+                .Returns(new MinUpperLettersCount(GetMessagesQuery.GET_ALL_SERVERS));
             var overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessages, userSafetyChecker.Object, configurationService.Object);
 
             // Act
@@ -77,6 +80,9 @@ namespace Watchman.Discord.UnitTests.AntiSpam
             configurationService
                 .Setup(x => x.GetConfigurationItem<PercentOfSimilarityBetweenMessagesToSuspectSpam>(It.IsAny<ulong>()))
                 .Returns(new PercentOfSimilarityBetweenMessagesToSuspectSpam(GetMessagesQuery.GET_ALL_SERVERS));
+            configurationService
+                .Setup(x => x.GetConfigurationItem<MinUpperLettersCount>(It.IsAny<ulong>()))
+                .Returns(new MinUpperLettersCount(GetMessagesQuery.GET_ALL_SERVERS));
             var overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessages, userSafetyChecker.Object, configurationService.Object);
 
             // Act

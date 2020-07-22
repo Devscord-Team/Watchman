@@ -57,6 +57,11 @@ namespace Devscord.DiscordFramework.Integration
             return _discordClient.UsersService.IsUserStillOnServer(userId, guildId);
         }
 
+        internal static RestUser GetBotUser()
+        {
+            return _discordClient.UsersService.GetBotUser();
+        }
+
         //Channels
         internal static Task<IChannel> GetChannel(ulong channelId, RestGuild guild = null)
         {

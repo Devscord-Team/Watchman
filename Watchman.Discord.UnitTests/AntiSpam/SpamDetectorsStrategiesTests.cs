@@ -65,5 +65,32 @@ namespace Watchman.Discord.UnitTests.AntiSpam
             // Assert
             Assert.That(spamProbability, Is.EqualTo(SpamProbability.None));
         }
+
+        [Test]
+        [TestCase(SpamProbability.Low, "not capslock", "not capslock", "not capslock", "not capslock", "not capslock", "CAPSLOCK")]
+        [TestCase(SpamProbability.Medium, "ALSO CAPSLOCK abc", "not capslock", "not capslock", "not capslock", "not capslock", "CAPSLOCK")]
+        [TestCase(SpamProbability.Sure, "ALSO CAPSLOCK abc", "ANOTHER CAPSLOCK", "NOT capslock", "not capslock XDD", "not capslock", "CAPSLOCK")]
+        public void CapslockDetector_ShouldDetectSpam(SpamProbability exceptedSpamProbability, string m1, string m2, string m3, string m4, string m5, string m6) // not using params to force 6 messages
+        {
+            var spamDetectorsTestsService = new SpamDetectorsTestsService<CapslockDetectorStrategy>();
+            var spamProbability = spamDetectorsTestsService.GetSpamProbability(isUserSafe: false, m1, m2, m3, m4, m5, m6);
+
+            // Assert
+            Assert.That(spamProbability, Is.EqualTo(exceptedSpamProbability));
+        }
+
+        [Test]
+        [TestCase("not capslock", "not capslock", "not capslock", "not capslock", "not capslock", "not capslock")]
+        [TestCase("REST API", "not capslock", "not capslock", "not capslock", "NOT CApslock", "XDDD")]
+        [TestCase("not capslock", "not capslock", "not capslock", "not capslock", "REST API", "XDDD")]
+        [TestCase("not capslock", "not capslock", "not capslock", "not capslock", "REST API", "NOT CApslock")]
+        public void CapslockDetector_ShouldNotDetectSpam(string m1, string m2, string m3, string m4, string m5, string m6) // not using params to force 6 messages
+        {
+            var spamDetectorsTestsService = new SpamDetectorsTestsService<CapslockDetectorStrategy>();
+            var spamProbability = spamDetectorsTestsService.GetSpamProbability(isUserSafe: false, m1, m2, m3, m4, m5, m6);
+
+            // Assert
+            Assert.That(spamProbability, Is.EqualTo(SpamProbability.None));
+        }
     }
 }
