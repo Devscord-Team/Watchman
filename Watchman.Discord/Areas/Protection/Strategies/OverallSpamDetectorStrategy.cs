@@ -19,7 +19,8 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             {
                 new LinksDetectorStrategy(userSafetyChecker),
                 new DuplicatedMessagesDetectorStrategy(userSafetyChecker, configurationService),
-                new CapslockDetectorStrategy(userSafetyChecker, configurationService)
+                new CapslockDetectorStrategy(userSafetyChecker, configurationService),
+                new FloodDetectorStrategy(userSafetyChecker, configurationService)
             });
         }
 

@@ -7,7 +7,6 @@ using Moq;
 using NUnit.Framework;
 using Watchman.Discord.Areas.Protection.Strategies;
 using Watchman.DomainModel.Messages.Queries;
-using Watchman.DomainModel.Settings.ConfigurationItems;
 using Watchman.DomainModel.Settings.Services;
 
 namespace Watchman.Discord.UnitTests.AntiSpam
@@ -15,6 +14,15 @@ namespace Watchman.Discord.UnitTests.AntiSpam
     [TestFixture]
     internal class OverallSpamDetectorTests
     {
+        private readonly IConfigurationService _configurationService;
+        private readonly AntiSpamTestsService _antiSpamTestsService;
+
+        public OverallSpamDetectorTests()
+        {
+            this._antiSpamTestsService = new AntiSpamTestsService();
+            this._configurationService = AntiSpamTestsService.GetConfigurationsMock().Object;
+        }
+
         [Test]
         [TestCase("abc", "xyz", "spam", "spam", false, SpamProbability.Low)]
         [TestCase("xyz", "aaa", "abc", "https://discord.gg/example", true, SpamProbability.Low)]
@@ -26,29 +34,21 @@ namespace Watchman.Discord.UnitTests.AntiSpam
         public void OverallSpamDetectorStrategy_ShouldDetectSpam(string messageContent1, string messageContent2, string messageContent3, string messageContent4, bool isUserSafe, SpamProbability exceptedSpamProbability)
         {
             // Arrange
-            var spamTestsService = new AntiSpamTestsService();
             var userSafetyChecker = new Mock<IUserSafetyChecker>();
             userSafetyChecker
                 .Setup(x => x.IsUserSafe(AntiSpamTestsService.DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
                 .Returns(isUserSafe);
             
-            var (request, contexts) = spamTestsService.CreateRequestAndContexts(messageContent4);
+            var (request, contexts) = this._antiSpamTestsService.CreateRequestAndContexts(messageContent4);
             var serverMessages = new ServerMessagesCacheService();
             serverMessages.OverwriteMessages(new List<SmallMessage>
             {
-                new SmallMessage(messageContent1, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now, GetMessagesQuery.GET_ALL_SERVERS),
-                new SmallMessage(messageContent2, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now, GetMessagesQuery.GET_ALL_SERVERS),
-                new SmallMessage(messageContent3, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now, GetMessagesQuery.GET_ALL_SERVERS)
+                new SmallMessage(messageContent1, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.UtcNow.AddSeconds(-20), GetMessagesQuery.GET_ALL_SERVERS),
+                new SmallMessage(messageContent2, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.UtcNow.AddSeconds(-16), GetMessagesQuery.GET_ALL_SERVERS),
+                new SmallMessage(messageContent3, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.UtcNow.AddSeconds(-10), GetMessagesQuery.GET_ALL_SERVERS)
             });
-            var configurationService = new Mock<IConfigurationService>();
-            configurationService
-                .Setup(x => x.GetConfigurationItem<PercentOfSimilarityBetweenMessagesToSuspectSpam>(It.IsAny<ulong>()))
-                .Returns(new PercentOfSimilarityBetweenMessagesToSuspectSpam(GetMessagesQuery.GET_ALL_SERVERS));
-            configurationService
-                .Setup(x => x.GetConfigurationItem<MinUpperLettersCount>(It.IsAny<ulong>()))
-                .Returns(new MinUpperLettersCount(GetMessagesQuery.GET_ALL_SERVERS));
-            var overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessages, userSafetyChecker.Object, configurationService.Object);
-
+            var overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessages, userSafetyChecker.Object, this._configurationService);
+            
             // Act
             var overallSpamProbability = overallSpamDetector.GetOverallSpamProbability(request, contexts);
 
@@ -62,28 +62,20 @@ namespace Watchman.Discord.UnitTests.AntiSpam
         public void OverallSpamDetectorStrategy_ShouldNotDetectSpam(string messageContent1, string messageContent2, string messageContent3, string messageContent4, bool isUserSafe)
         {
             // Arrange
-            var spamTestsService = new AntiSpamTestsService();
             var userSafetyChecker = new Mock<IUserSafetyChecker>();
             userSafetyChecker
                 .Setup(x => x.IsUserSafe(AntiSpamTestsService.DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
                 .Returns(isUserSafe);
 
-            var (request, contexts) = spamTestsService.CreateRequestAndContexts(messageContent4);
+            var (request, contexts) = this._antiSpamTestsService.CreateRequestAndContexts(messageContent4);
             var serverMessages = new ServerMessagesCacheService();
             serverMessages.OverwriteMessages(new List<SmallMessage>
             {
-                new SmallMessage(messageContent1, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now, GetMessagesQuery.GET_ALL_SERVERS),
-                new SmallMessage(messageContent2, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now, GetMessagesQuery.GET_ALL_SERVERS),
-                new SmallMessage(messageContent3, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.Now, GetMessagesQuery.GET_ALL_SERVERS)
+                new SmallMessage(messageContent1, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.UtcNow.AddSeconds(-20), GetMessagesQuery.GET_ALL_SERVERS),
+                new SmallMessage(messageContent2, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.UtcNow.AddSeconds(-16), GetMessagesQuery.GET_ALL_SERVERS),
+                new SmallMessage(messageContent3, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.UtcNow.AddSeconds(-10), GetMessagesQuery.GET_ALL_SERVERS)
             });
-            var configurationService = new Mock<IConfigurationService>();
-            configurationService
-                .Setup(x => x.GetConfigurationItem<PercentOfSimilarityBetweenMessagesToSuspectSpam>(It.IsAny<ulong>()))
-                .Returns(new PercentOfSimilarityBetweenMessagesToSuspectSpam(GetMessagesQuery.GET_ALL_SERVERS));
-            configurationService
-                .Setup(x => x.GetConfigurationItem<MinUpperLettersCount>(It.IsAny<ulong>()))
-                .Returns(new MinUpperLettersCount(GetMessagesQuery.GET_ALL_SERVERS));
-            var overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessages, userSafetyChecker.Object, configurationService.Object);
+            var overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessages, userSafetyChecker.Object, this._configurationService);
 
             // Act
             var overallSpamProbability = overallSpamDetector.GetOverallSpamProbability(request, contexts);
