@@ -76,23 +76,23 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("role", role));
         }
 
-        public static string MutedUser(this ResponsesService responsesService, UserContext mutedUser, DateTime timeEnd)
+        public static string MutedUser(this ResponsesService responsesService, UserContext user, DateTime timeEnd)
         {
             return responsesService.ProcessResponse("MutedUser",
-                new KeyValuePair<string, string>("user", mutedUser.Name),
+                new KeyValuePair<string, string>("user", user.Name),
                 new KeyValuePair<string, string>("timeEnd", TimeZoneInfo.ConvertTimeFromUtc(timeEnd, TimeZoneInfo.Local).ToString("dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture)));
         }
 
-        public static string UnmutedUser(this ResponsesService responsesService, UserContext unmutedUser)
+        public static string UnmutedUser(this ResponsesService responsesService, UserContext user)
         {
             return responsesService.ProcessResponse("UnmutedUser",
-                new KeyValuePair<string, string>("user", unmutedUser.Name));
+                new KeyValuePair<string, string>("user", user.Name));
         }
 
-        public static string UnmutedUserForUser(this ResponsesService responsesService, UserContext unmutedUser, DiscordServerContext server)
+        public static string UnmutedUserForUser(this ResponsesService responsesService, UserContext user, DiscordServerContext server)
         {
             return responsesService.ProcessResponse("UnmutedUserForUser",
-                new KeyValuePair<string, string>("user", unmutedUser.Name),
+                new KeyValuePair<string, string>("user", user.Name),
                 new KeyValuePair<string, string>("server", server.Name));
         }
 
