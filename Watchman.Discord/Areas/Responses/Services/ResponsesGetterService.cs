@@ -42,7 +42,7 @@ namespace Watchman.Discord.Areas.Responses.Services
                     var availableVariables = new HashSet<string>();
                     foreach (var parameter in parameters)
                     {
-                        if (parameter.ParameterType.Name == "Contexts")
+                        if (parameter.ParameterType.Name == nameof(Contexts))
                         {
                             availableVariables.Add("user");
                             availableVariables.Add("channel");
