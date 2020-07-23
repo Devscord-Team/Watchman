@@ -74,7 +74,7 @@ namespace Watchman.Discord.Areas.Responses.Services
                 result += " brak";
             }
 
-            return GetRawMessage(response.Message) + result;
+            return this.GetRawMessage(response.Message) + result;
         }
         
         private string GetRawMessage(string message)
