@@ -8,13 +8,15 @@ namespace Watchman.DomainModel.Responses
         public string OnEvent { get; private set; }
         public string Message { get; private set; }
         public ulong ServerId { get; private set; }
+        public string[] AvailableVariables { get; private set; }
         public bool IsDefault => this.ServerId == DEFAULT_SERVER_ID;
 
-        public Response(string onEvent, string message, ulong serverId)
+        public Response(string onEvent, string message, ulong serverId, string[] availableVariables)
         {
             this.OnEvent = onEvent;
             this.Message = message;
             this.ServerId = serverId;
+            this.AvailableVariables = availableVariables;
         }
 
         public void SetOnEvent(string onEvent)

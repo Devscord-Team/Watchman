@@ -2,7 +2,9 @@
 using Devscord.DiscordFramework.Services;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using Watchman.DomainModel.Responses;
 
 namespace Watchman.Discord.Areas.Responses.Services
 {
@@ -38,14 +40,14 @@ namespace Watchman.Discord.Areas.Responses.Services
         {
             return this._responsesDatabase.GetResponsesFromBase()
                 .Where(x => x.IsDefault)
-                .Select(x => new KeyValuePair<string, string>(x.OnEvent, this.GetRawMessage(x.Message)));
+                .Select(x => new KeyValuePair<string, string>(x.OnEvent, this.GetResponseWithVariableList(x)));
         }
 
         private IEnumerable<KeyValuePair<string, string>> GetCustomResponses(ulong serverId)
         {
             var responses = this._responsesDatabase.GetResponsesFromBase()
                 .Where(x => x.ServerId == serverId)
-                .Select(x => new KeyValuePair<string, string>(x.OnEvent, this.GetRawMessage(x.Message)));
+                .Select(x => new KeyValuePair<string, string>(x.OnEvent, this.GetResponseWithVariableList(x)));
 
             if (!responses.Any())
             {
@@ -57,12 +59,30 @@ namespace Watchman.Discord.Areas.Responses.Services
         private IEnumerable<KeyValuePair<string, string>> GetAllResponses()
         {
             return this._responsesDatabase.GetResponsesFromBase()
-                .Select(x => new KeyValuePair<string, string>(x.OnEvent, this.GetRawMessage(x.Message)));
+                .Select(x => new KeyValuePair<string, string>(x.OnEvent, this.GetResponseWithVariableList(x)));
         }
 
         private string GetRawMessage(string message)
         {
             return message.Replace("`", @"\`").Replace("*", @"\*");
+        }
+
+        private string GetResponseWithVariableList(Response response)
+        {
+            var sb = new StringBuilder("\n__Dostępne zmienne:__");
+            if (response.AvailableVariables.Any())
+            {
+                foreach (var variable in response.AvailableVariables)
+                {
+                    sb.Append($" `{variable}`");
+                }
+            }
+            else
+            {
+                sb.Append(" brak");
+            }
+
+            return GetRawMessage(response.Message) + sb;
         }
     }
 }

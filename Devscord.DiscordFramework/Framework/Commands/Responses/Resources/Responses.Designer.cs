@@ -106,15 +106,6 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Nie znaleziono kanału {{channel}} .
-        /// </summary>
-        public static string ChannelNotFound {
-            get {
-                return ResourceManager.GetString("ChannelNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Podane argumenty są niepoprawne.
         /// </summary>
         public static string InvalidArguments {

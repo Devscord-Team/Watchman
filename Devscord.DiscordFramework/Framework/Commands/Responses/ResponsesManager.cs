@@ -64,16 +64,16 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             return responsesService.ProcessResponse("UserDidntMentionAnyUser");
         }
 
-        public static string UserNotFound(this ResponsesService responsesService, string userMention)
+        public static string UserNotFound(this ResponsesService responsesService, string user)
         {
             return responsesService.ProcessResponse("UserNotFound",
-                new KeyValuePair<string, string>("user", userMention));
+                new KeyValuePair<string, string>("user", user));
         }
 
-        public static string RoleNotFound(this ResponsesService responsesService, string roleName)
+        public static string RoleNotFound(this ResponsesService responsesService, string role)
         {
             return responsesService.ProcessResponse("RoleNotFound",
-                new KeyValuePair<string, string>("role", roleName));
+                new KeyValuePair<string, string>("role", role));
         }
 
         public static string MutedUser(this ResponsesService responsesService, UserContext mutedUser, DateTime timeEnd)
@@ -118,17 +118,17 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("user", user.Name));
         }
 
-        public static string SentByDmMessagesOfAskedUser(this ResponsesService responsesService, int numberOfMessages, UserContext user)
+        public static string SentByDmMessagesOfAskedUser(this ResponsesService responsesService, int messagesCount, UserContext user)
         {
             return responsesService.ProcessResponse("SentByDmMessagesOfAskedUser",
-                new KeyValuePair<string, string>("messagesCount", numberOfMessages.ToString()),
+                new KeyValuePair<string, string>("messagesCount", messagesCount.ToString()),
                 new KeyValuePair<string, string>("user", user.Name));
         }
 
-        public static string NumberOfMessagesIsHuge(this ResponsesService responsesService, int numberOfMessages)
+        public static string NumberOfMessagesIsHuge(this ResponsesService responsesService, int messagesCount)
         {
             return responsesService.ProcessResponse("NumberOfMessagesIsHuge",
-                new KeyValuePair<string, string>("messagesCount", numberOfMessages.ToString()));
+                new KeyValuePair<string, string>("messagesCount", messagesCount.ToString()));
         }
 
         public static string ServerDoesntHaveAnySafeRoles(this ResponsesService responsesService)
@@ -136,10 +136,10 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             return responsesService.ProcessResponse("ServerDoesntHaveAnySafeRoles");
         }
 
-        public static string AvailableSafeRoles(this ResponsesService responsesService, string rolesLines)
+        public static string AvailableSafeRoles(this ResponsesService responsesService, string roles)
         {
             return responsesService.ProcessResponse("AvailableSafeRoles",
-                new KeyValuePair<string, string>("roles", rolesLines));
+                new KeyValuePair<string, string>("roles", roles));
         }
 
         public static string NotEnoughArguments(this ResponsesService responsesService)
@@ -147,10 +147,10 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             return responsesService.ProcessResponse("NotEnoughArguments");
         }
 
-        public static string RoleSettingsChanged(this ResponsesService responsesService, string roleName)
+        public static string RoleSettingsChanged(this ResponsesService responsesService, string role)
         {
             return responsesService.ProcessResponse("RoleSettingsChanged",
-                new KeyValuePair<string, string>("role", roleName));
+                new KeyValuePair<string, string>("role", role));
         }
 
         public static string TimeNotSpecified(this ResponsesService responsesService)
@@ -163,16 +163,16 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             return responsesService.ProcessResponse("ArgumentsDuplicated");
         }
 
-        public static string RoleIsSafeAlready(this ResponsesService responsesService, string roleName)
+        public static string RoleIsSafeAlready(this ResponsesService responsesService, string role)
         {
             return responsesService.ProcessResponse("RoleIsSafeAlready",
-                new KeyValuePair<string, string>("role", roleName));
+                new KeyValuePair<string, string>("role", role));
         }
 
-        public static string RoleIsUnsafeAlready(this ResponsesService responsesService, string roleName)
+        public static string RoleIsUnsafeAlready(this ResponsesService responsesService, string role)
         {
             return responsesService.ProcessResponse("RoleIsUnsafeAlready",
-                new KeyValuePair<string, string>("role", roleName));
+                new KeyValuePair<string, string>("role", role));
         }
 
         public static string ResponseAlreadyExists(this ResponsesService responsesService, Contexts contexts, string onEvent)
