@@ -62,11 +62,6 @@ namespace Watchman.Discord.Areas.Responses.Services
                 .Select(x => new KeyValuePair<string, string>(x.OnEvent, this.GetResponseWithVariableList(x)));
         }
 
-        private string GetRawMessage(string message)
-        {
-            return message.Replace("`", @"\`").Replace("*", @"\*");
-        }
-
         private string GetResponseWithVariableList(Response response)
         {
             var sb = new StringBuilder("\n__Dostępne zmienne:__");
@@ -83,6 +78,11 @@ namespace Watchman.Discord.Areas.Responses.Services
             }
 
             return GetRawMessage(response.Message) + sb;
+        }
+        
+        private string GetRawMessage(string message)
+        {
+            return message.Replace("`", @"\`").Replace("*", @"\*");
         }
     }
 }
