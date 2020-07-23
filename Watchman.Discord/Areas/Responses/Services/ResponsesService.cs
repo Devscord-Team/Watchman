@@ -29,8 +29,8 @@ namespace Watchman.Discord.Areas.Responses.Services
         public async Task AddResponse(string onEvent, string message, ulong serverId = 0)
         {
             var query = new GetResponseQuery(onEvent);
-            var queryResult = await this._queryBus.ExecuteAsync(query);
-            var addResponse = new Response(onEvent, message, serverId, queryResult.Response.AvailableVariables);
+            var response = (await this._queryBus.ExecuteAsync(query)).Response;
+            var addResponse = new Response(onEvent, message, serverId, response.AvailableVariables);
             var command = new AddResponseCommand(addResponse);
             await this._commandBus.ExecuteAsync(command);
         }

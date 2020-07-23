@@ -37,6 +37,7 @@ namespace Watchman.Discord.Areas.Responses.Services
                 {
                     var onEvent = prop.Name;
                     var message = prop.GetValue(prop)?.ToString();
+                    // .Skip(1) bo pierwszym argumentem jest ResponsesService, który nie wchodzi w skład listy pól
                     var parameters = managerMethods.First(info => info.Name == onEvent).GetParameters().Skip(1);
                     var availableVariables = new HashSet<string>();
                     foreach (var parameter in parameters)

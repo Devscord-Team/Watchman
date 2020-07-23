@@ -64,20 +64,17 @@ namespace Watchman.Discord.Areas.Responses.Services
 
         private string GetResponseWithVariableList(Response response)
         {
-            var stringBuilder = new StringBuilder("\n__Dostępne zmienne:__");
+            var result = "\n__Dostępne zmienne:__";
             if (response.AvailableVariables.Any())
             {
-                foreach (var variable in response.AvailableVariables)
-                {
-                    stringBuilder.Append($" `{variable}`");
-                }
+                result += response.AvailableVariables.Select(s => $" `{s}`").Aggregate((a, b) => a+b);
             }
             else
             {
-                stringBuilder.Append(" brak");
+                result += " brak";
             }
 
-            return GetRawMessage(response.Message) + stringBuilder;
+            return GetRawMessage(response.Message) + result;
         }
         
         private string GetRawMessage(string message)
