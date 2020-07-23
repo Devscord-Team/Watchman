@@ -8,7 +8,7 @@ namespace Watchman.Discord.Areas.Protection.BotCommands
 {
     public class UnmuteCommand : IBotCommand
     {
-        [List]
-        public List<string> Users { get; set; }
+        [Text]
+        public string Mention { get; set; }
     }
 }

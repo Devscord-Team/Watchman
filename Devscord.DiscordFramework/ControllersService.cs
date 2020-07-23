@@ -121,12 +121,13 @@ namespace Devscord.DiscordFramework
                         var commandInParameterType = method.GetParameters().First(x => typeof(IBotCommand).IsAssignableFrom(x.ParameterType)).ParameterType;
                         //TODO zoptymalizować, spokojnie można to pobierać wcześniej i używać raz, zamiast wszystko obliczać przy każdym odpaleniu
                         var template = this._botCommandsService.GetCommandTemplate(commandInParameterType);
-                        var isToContinue = !this._botCommandsService.IsMatchedWithCommand(request, template);
+                        var customCommand = await this._commandsContainer.GetCommand(request, commandInParameterType, contexts.Server.Id);
+                        var isCommandCustom = customCommand != null;
+                        var isToContinue = !this._botCommandsService.IsMatchedWithCommand(request, template, isCommandCustom);
                         IBotCommand command;
                         if (isToContinue)
                         {
-                            var customCommand = await this._commandsContainer.GetCommand(request, commandInParameterType, contexts.Server.Id);
-                            if (customCommand == null)
+                            if (!isCommandCustom)
                             {
                                 continue;
                             }

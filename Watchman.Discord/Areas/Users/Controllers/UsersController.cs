@@ -40,7 +40,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
 
         public async Task AddRole(AddRoleCommand addRoleCommand, Contexts contexts)
         {
-            if (!addRoleCommand.Roles.Any())
+            if (!addRoleCommand.Roles.Any() || string.IsNullOrWhiteSpace(addRoleCommand.Roles.First()))
             {
                 throw new NotEnoughArgumentsException();
             }
@@ -50,7 +50,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
 
         public async Task RemoveRole(RemoveRoleCommand removeRoleCommand, Contexts contexts)
         {
-            if (!removeRoleCommand.Roles.Any())
+            if (!removeRoleCommand.Roles.Any() || string.IsNullOrWhiteSpace(removeRoleCommand.Roles.First()))
             {
                 throw new NotEnoughArgumentsException();
             }

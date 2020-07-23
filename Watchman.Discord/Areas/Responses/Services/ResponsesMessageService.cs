@@ -18,13 +18,13 @@ namespace Watchman.Discord.Areas.Responses.Services
             this._embedMessageSplittingService = embedMessageSplittingService;
         }
 
-        public async Task PrintResponses(string commandArgument, Contexts contexts)
+        public async Task PrintResponses(string typeOfResponses, Contexts contexts)
         {
-            if (commandArgument == "default")
+            if (typeOfResponses == "default")
             {
                 await this._embedMessageSplittingService.SendEmbedSplitMessage("Domyślne responses:", DESCRIPTION, this.GetDefaultResponses(), contexts);
             }
-            else if (commandArgument == "custom")
+            else if (typeOfResponses == "custom")
             {
                 await this._embedMessageSplittingService.SendEmbedSplitMessage("Nadpisane responses:", DESCRIPTION, this.GetCustomResponses(contexts.Server.Id), contexts);
             }

@@ -25,19 +25,14 @@ namespace Watchman.Discord.Areas
 
         private TimeSpan ParseToTimeSpan(string timeAsString, TimeSpan defaultTime)
         {
-            if (string.IsNullOrWhiteSpace(timeAsString))
-            {
-                return defaultTime;
-            }
-
-            var lastChar = timeAsString[^1];
-            timeAsString = timeAsString[..^1];
-            timeAsString = timeAsString.Replace(',', '.');
+            var lastChar = timeAsString?[^1];
+            timeAsString = timeAsString?[..^1];
+            timeAsString = timeAsString?.Replace(',', '.');
             double.TryParse(timeAsString, NumberStyles.Any, CultureInfo.InvariantCulture, out var timeAsNumber);
 
             if (timeAsNumber <= 0)
             {
-                throw new TimeCannotBeNegativeException();
+                throw new InvalidArgumentsException();
             }
 
             var parsedTimeSpan = lastChar switch

@@ -26,9 +26,9 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             return this.botCommandsTemplateRenderingService.RenderTextTemplate(template);
         }
 
-        public bool IsMatchedWithCommand(DiscordRequest request, BotCommandTemplate template)
+        public bool IsMatchedWithCommand(DiscordRequest request, BotCommandTemplate template, bool isCommandCustom)
         {
-            return this.botCommandMatchingService.IsMatchedWithCommand(request, template);
+            return this.botCommandMatchingService.IsMatchedWithCommand(request, template, isCommandCustom);
         }
 
         public BotCommandTemplate GetCommandTemplate(Type commandType)

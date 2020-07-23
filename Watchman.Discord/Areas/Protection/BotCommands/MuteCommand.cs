@@ -8,11 +8,11 @@ namespace Watchman.Discord.Areas.Protection.BotCommands
 {
     public class MuteCommand : IBotCommand
     {
-        [List]
-        public List<string> Users { get; set; }
-        [List]
-        public List<string> Times { get; set; }
-        [List]
-        public List<string> Reasons { get; set; }
+        [Text]
+        public string Mention { get; set; }
+        [Text]
+        public string Time { get; set; }
+        [Text]
+        public string Reason { get; set; }
     }
 }

@@ -8,12 +8,11 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
 {
     public class BotCommandsMatchingService
     {
-
         private readonly Regex _exTime = new Regex(@"\d+(h|m|s)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         private readonly Regex _exUserMention = new Regex(@"\<@[^\d]*\d+\>", RegexOptions.Compiled);
         private readonly Regex _exChannelMention = new Regex(@"\<#[^\d]*\d+\>", RegexOptions.Compiled);
 
-        public bool IsMatchedWithCommand(DiscordRequest request, BotCommandTemplate template)
+        public bool IsMatchedWithCommand(DiscordRequest request, BotCommandTemplate template, bool isCommandCustom)
         {
             if (!request.IsCommandForBot)
             {
@@ -23,11 +22,11 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             {
                 return false;
             }
-            if (!this.CompareArgumentsToProperties(request.Arguments.ToList(), template.Properties.ToList()))
+            if (isCommandCustom)
             {
                 return false;
             }
-            return true;
+            return this.CompareArgumentsToProperties(request.Arguments.ToList(), template.Properties.ToList());
         }
 
         private bool CompareArgumentsToProperties(IReadOnlyCollection<DiscordRequestArgument> arguments, IReadOnlyCollection<BotCommandProperty> properties)

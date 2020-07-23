@@ -4,6 +4,7 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Watchman.Discord.Areas.Commons;
 using Watchman.Discord.Areas.Protection.BotCommands;
 using Watchman.DomainModel.Users;
@@ -23,13 +24,13 @@ namespace Watchman.Discord.Areas.Protection.Services
             this._parserTime = new ParserTime();
         }
 
-        public UserContext GetUser(string mention)
+        public async Task<UserContext> GetUser(string mention)
         {
-            if (mention == null)
+            if (mention == null || !mention.StartsWith("<@!") || !mention.EndsWith('>'))
             {
                 throw new UserDidntMentionAnyUserException();
             }
-            var userToMute = this._usersService.GetUserByMentionAsync(this._contexts.Server, mention).Result;
+            var userToMute = await this._usersService.GetUserByMentionAsync(this._contexts.Server, mention);
             if (userToMute == null)
             {
                 throw new UserNotFoundException(mention);

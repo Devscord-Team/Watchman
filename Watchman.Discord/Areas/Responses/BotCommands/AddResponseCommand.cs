@@ -8,9 +8,9 @@ namespace Watchman.Discord.Areas.Responses.BotCommands
 {
     public class AddResponseCommand : IBotCommand
     {
-        [List]
-        public List<string> OnEvents { get; set; }
-        [List]
-        public List<string> Messages { get; set; }
+        [Text]
+        public string OnEvent { get; set; }
+        [Text]
+        public string Message { get; set; }
     }
 }
