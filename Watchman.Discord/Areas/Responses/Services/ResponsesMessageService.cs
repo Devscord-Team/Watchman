@@ -1,4 +1,4 @@
-﻿using Devscord.DiscordFramework.Middlewares.Contexts;
+using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,20 +64,20 @@ namespace Watchman.Discord.Areas.Responses.Services
 
         private string GetResponseWithVariableList(Response response)
         {
-            var sb = new StringBuilder("\n__Dostępne zmienne:__");
+            var stringBuilder = new StringBuilder("\n__Dostępne zmienne:__");
             if (response.AvailableVariables.Any())
             {
                 foreach (var variable in response.AvailableVariables)
                 {
-                    sb.Append($" `{variable}`");
+                    stringBuilder.Append($" `{variable}`");
                 }
             }
             else
             {
-                sb.Append(" brak");
+                stringBuilder.Append(" brak");
             }
 
-            return GetRawMessage(response.Message) + sb;
+            return GetRawMessage(response.Message) + stringBuilder;
         }
         
         private string GetRawMessage(string message)
