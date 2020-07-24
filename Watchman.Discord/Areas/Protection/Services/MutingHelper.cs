@@ -6,6 +6,8 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Mutes;
+using Watchman.DomainModel.Mutes.Commands;
+using Watchman.DomainModel.Mutes.Queries;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {
