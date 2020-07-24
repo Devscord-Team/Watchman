@@ -3,11 +3,11 @@ using Watchman.Cqrs;
 
 namespace Watchman.DomainModel.Responses.Commands
 {
-    public class AddResponsesCommand : ICommand
+    public class UpdateResponsesCommand : ICommand
     {
         public IEnumerable<Response> Responses { get; }
 
-        public AddResponsesCommand(IEnumerable<Response> responses)
+        public UpdateResponsesCommand(IEnumerable<Response> responses)
         {
             this.Responses = responses;
         }

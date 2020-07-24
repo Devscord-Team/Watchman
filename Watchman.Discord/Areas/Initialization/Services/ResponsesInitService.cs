@@ -22,8 +22,13 @@ namespace Watchman.Discord.Areas.Initialization.Services
 
         public async Task InitNewResponsesFromResources()
         {
-            var responsesInBase = this._responsesGetterService.GetResponsesFromBase();
             var defaultResponses = this._responsesGetterService.GetResponsesFromResources();
+            var responsesInBase = this._responsesGetterService.GetResponsesFromBase().Select(response =>
+            {
+                // Update every response in the DB with availableVariables from defaultResponses
+                return new Response(response.OnEvent, response.Message, response.ServerId, 
+                    defaultResponses.First(responseNew => responseNew.OnEvent == response.OnEvent).AvailableVariables);
+            });
             var responsesToAdd = defaultResponses
                 .Where(def => responsesInBase.All(@base => @base.OnEvent != def.OnEvent))
                 .ToList();
@@ -39,7 +44,7 @@ namespace Watchman.Discord.Areas.Initialization.Services
                 return;
             }
 
-            var command = new AddResponsesCommand(responsesToAdd);
+            var command = new UpdateResponsesCommand(responsesToAdd);
             await this._commandBus.ExecuteAsync(command);
             Log.Information("Responses initialized");
         }

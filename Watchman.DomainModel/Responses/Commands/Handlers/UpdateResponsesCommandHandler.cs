@@ -4,19 +4,22 @@ using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Responses.Commands.Handlers
 {
-    public class AddResponsesCommandHandler : ICommandHandler<AddResponsesCommand>
+    public class UpdateResponsesCommandHandler : ICommandHandler<UpdateResponsesCommand>
     {
         private readonly ISessionFactory _sessionFactory;
 
-        public AddResponsesCommandHandler(ISessionFactory sessionFactory)
+        public UpdateResponsesCommandHandler(ISessionFactory sessionFactory)
         {
             this._sessionFactory = sessionFactory;
         }
 
-        public async Task HandleAsync(AddResponsesCommand command)
+        public async Task HandleAsync(UpdateResponsesCommand command)
         {
             using var session = this._sessionFactory.Create();
-            await session.AddAsync(command.Responses);
+            foreach (var response in command.Responses)
+            {
+                await session.AddOrUpdateAsync(response);
+            }
         }
     }
 }
