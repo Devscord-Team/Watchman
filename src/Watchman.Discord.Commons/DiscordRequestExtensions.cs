@@ -6,7 +6,7 @@ using System.Globalization;
 using System.Linq;
 using Watchman.Common.Models;
 
-namespace Watchman.Discord.Areas.Commons
+namespace Watchman.Discord.Commons
 {
     public static class DiscordRequestExtensions
     {

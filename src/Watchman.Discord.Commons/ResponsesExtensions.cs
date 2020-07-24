@@ -3,7 +3,7 @@ using System.Linq;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Responses.Queries;
 
-namespace Watchman.Discord.Areas.Commons
+namespace Watchman.Discord.Commons
 {
     public static class ResponsesExtensions
     {
