@@ -26,7 +26,7 @@ namespace Watchman.IoC.Modules
                 {
                     builder.RegisterType(handler)
                         .As(handler.GetInterfaces().First())
-                        .SingleInstance();
+                        .InstancePerLifetimeScope();
                 }
 
                 foreach (var reference in asm.GetReferencedAssemblies())
