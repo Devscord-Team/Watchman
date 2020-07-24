@@ -10,7 +10,7 @@ namespace Devscord.EventStore
 {
     public static class EventStore //in memory event "store" TODO change it to correct event store
     {
-        private static readonly List<KeyValuePair<string, dynamic>> _eventHandlers = new List<KeyValuePair<string, dynamic>>();
+        private static readonly List<KeyValuePair<string, Action<Event>>> _eventHandlers = new List<KeyValuePair<string, Action<Event>>>();
 
         public static async Task Publish<T>(T @event) where T : Event
         {
@@ -20,8 +20,9 @@ namespace Devscord.EventStore
 
         public static void Subscribe<T>(Action<T> action) where T : Event
         {
+            var casted = (Action<Event>) action;
             var eventName = typeof(T).Name;
-            _eventHandlers.Add(new KeyValuePair<string, dynamic>(eventName, action));
+            _eventHandlers.Add(new KeyValuePair<string, Action<Event>>(eventName, casted));
         }
 
         private static Task RunHandlers<T>(string eventName, T @event) where T : Event
@@ -31,15 +32,12 @@ namespace Devscord.EventStore
             {
                 try
                 {
-                    var method = (MethodInfo) handler.Value.Method;
                     var eventType = @event.GetType();
-                    var handlerEventType = method.GetParameters()[0].ParameterType;
+                    var handlerEventType = handler.Value.Method.GetParameters()[0].ParameterType;
 
-                    var mappedEvent = Activator.CreateInstance(handlerEventType);
-                    Copy(@event, mappedEvent); //po tym obiekt wygląda prawidłowo
-
-                    var action = Delegate.CreateDelegate(typeof(Action), handlerEventType, method); //wywala wyjątek
-                    handler.Value.Invoke(mappedEvent); //to też wywala wyjątek
+                    var mappedEvent = (Event) Activator.CreateInstance(handlerEventType);
+                    Copy(@event, mappedEvent);
+                    handler.Value.Invoke(mappedEvent); 
                 }
                 catch (Exception ex)
                 {
