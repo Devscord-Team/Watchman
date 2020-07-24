@@ -2,7 +2,7 @@
 
 namespace Watchman.DomainModel.DiscordServer
 {
-    public class Role : Entity
+    public class Role : Entity, IAggregateRoot
     {
         public string Name { get; private set; }
         public ulong ServerId { get; private set; }
