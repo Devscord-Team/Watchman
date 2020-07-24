@@ -4,4 +4,9 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Watchman.Cqrs\Watchman.Cqrs.csproj" />
+    <ProjectReference Include="..\Watchman.DomainModel\Watchman.DomainModel.csproj" />
+  </ItemGroup>
+
 </Project>
