@@ -11,6 +11,7 @@ using Serilog;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 
 namespace Devscord.DiscordFramework.Integration.Services
 {
@@ -108,8 +109,20 @@ namespace Devscord.DiscordFramework.Integration.Services
                 contexts.SetContext(channel);
                 contexts.SetContext(user);
 
-                var commandParser = new CommandParser(); //TODO get prefixes from database or get instance from workflow
-                var request = commandParser.Parse(server.Id, message.Content, message.Timestamp.UtcDateTime);
+                var commandParser = new CommandParser(); //TODO inject server prefixes
+                DiscordRequest request;
+                try
+                {
+                    request = commandParser.Parse(message.Content, message.Timestamp.UtcDateTime);
+                }
+                catch // should almost never go to catch block, but in rare cases Parse() can throw an exception
+                {
+                    request = new DiscordRequest
+                    {
+                        OriginalMessage = message.Content, 
+                        SentAt = message.Timestamp.UtcDateTime
+                    };
+                }
                 return new Message(message.Id, request, contexts);
             });
             return messages;

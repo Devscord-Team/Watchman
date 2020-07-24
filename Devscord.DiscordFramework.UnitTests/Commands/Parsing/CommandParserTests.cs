@@ -1,4 +1,6 @@
-﻿using Devscord.DiscordFramework.Framework.Commands.Parsing;
+﻿using Devscord.DiscordFramework.Commons.Exceptions;
+using Devscord.DiscordFramework.Framework.Commands.Parsing;
+using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -146,7 +148,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.Parsing
             var result = commandParser.Parse(message, DateTime.UtcNow);
 
             //Assert
-            if(shouldAssert)
+            if (shouldAssert)
             {
                 Assert.That(result.Prefix, Is.EqualTo(prefix));
             }
@@ -154,6 +156,20 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.Parsing
             {
                 Assert.That(result.Prefix, Is.Not.EqualTo(prefix));
             }
+        }
+
+        [TestCase("-mute <@12345678> -t 10s -r \"test")]
+        public void ShouldThrowException(string message)
+        {
+            // Arrange
+            var commandParser = new CommandParser();
+
+            // Act
+            void ParseFunc() => commandParser.Parse(message, DateTime.UtcNow);
+
+            // Assert
+            Assert.Throws<InvalidArgumentsException>(ParseFunc);
+
         }
     }
 }

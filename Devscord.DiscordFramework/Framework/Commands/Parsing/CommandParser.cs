@@ -1,4 +1,5 @@
-﻿using Devscord.DiscordFramework.Commons.Extensions;
+﻿using Devscord.DiscordFramework.Commons.Exceptions;
+using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using System;
 using System.Collections.Generic;
@@ -149,6 +150,10 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
         private string GetLongValue(string valuesSegment, out int nextIndexAfterValue)
         {
             var lastValuesIndex = valuesSegment[1..].IndexOf('\"') + 1; // adding 1 bcs [1..]
+            if (lastValuesIndex == 0)
+            {
+                throw new InvalidArgumentsException();
+            }
             var valueString = valuesSegment[1..lastValuesIndex];
             nextIndexAfterValue = lastValuesIndex + 1;
             return valueString;
