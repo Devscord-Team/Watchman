@@ -25,7 +25,7 @@ namespace Watchman.DomainModel.ServerPrefixes.Commands.Handlers
             {
                 prefixes = new ServerPrefixes(command.ServerId);
             }
-            prefixes.AddPrefix(command.Prefix);
+            await prefixes.AddPrefix(command.Prefix);
             await session.AddOrUpdateAsync(prefixes);
         }
     }

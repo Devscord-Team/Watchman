@@ -27,7 +27,7 @@ namespace Watchman.DomainModel.ServerPrefixes.Commands.Handlers
                 prefixes = new ServerPrefixes(command.ServerId);
             }
             var version = prefixes.Version;
-            prefixes.DeletePrefix(command.Prefix);
+            await prefixes.DeletePrefix(command.Prefix);
             if(prefixes.Version == version)
             {
                 throw new NotUpdatedException();

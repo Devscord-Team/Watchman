@@ -4,65 +4,46 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace Devscord.EventStore
 {
     public static class EventStore //in memory event "store" TODO change it to correct event store
     {
-        private static readonly List<KeyValuePair<string, Action<Event>>> _eventHandlers = new List<KeyValuePair<string, Action<Event>>>();
+        private static readonly List<IEventBus> _eventBuses = new List<IEventBus>();
 
-        public static async Task Publish<T>(T @event) where T : Event
+        public static void Initialize(Assembly assembly)
         {
-            //todo save event
-            await RunHandlers(@event.GetType().Name, @event);
+            var eventTypes = assembly.GetTypes().Where(x => x.IsAssignableFrom(typeof(Event))).ToList();
+            eventTypes.ForEach(x => GetOrAddEventBus(x));
+        }
+
+        public static Task Publish<T>(T @event) where T : Event
+        {
+            var eventBus = GetOrAddEventBus(@event.GetType());
+            var mapTo = eventBus.GetType().GenericTypeArguments.First();
+            var mapped = Mapper.Map(@event, mapTo);
+            ((dynamic)eventBus).Run(mapped);
+            return Task.CompletedTask;
         }
 
         public static void Subscribe<T>(Action<T> action) where T : Event
         {
-            var casted = (Action<Event>) action;
-            var eventName = typeof(T).Name;
-            _eventHandlers.Add(new KeyValuePair<string, Action<Event>>(eventName, casted));
+            var type = action.Method.GetParameters().First().ParameterType;
+            var eventBus = (dynamic) GetOrAddEventBus(type);
+            eventBus.AddEventHandler(action);
         }
 
-        private static Task RunHandlers<T>(string eventName, T @event) where T : Event
+        private static IEventBus GetOrAddEventBus(Type type)
         {
-            var handlers = _eventHandlers.Where(x => x.Key == eventName);
-            foreach (var handler in handlers)
+            var eventBus = _eventBuses.FirstOrDefault(x => x.GetType().GenericTypeArguments.Any(generic => generic.Name == type.Name));
+            if(eventBus == null)
             {
-                try
-                {
-                    var eventType = @event.GetType();
-                    var handlerEventType = handler.Value.Method.GetParameters()[0].ParameterType;
-
-                    var mappedEvent = (Event) Activator.CreateInstance(handlerEventType);
-                    Copy(@event, mappedEvent);
-                    handler.Value.Invoke(mappedEvent); 
-                }
-                catch (Exception ex)
-                {
-                    Log.Error("Cannot run handler for event {event}", JsonConvert.SerializeObject(@event, Formatting.Indented));
-                }
+                eventBus = (IEventBus) Activator.CreateInstance(typeof(EventBus<>).MakeGenericType(type));
+                _eventBuses.Add(eventBus);
             }
-            return Task.CompletedTask;
-        }
-
-        private static void Copy(object input, object output) //todo move to commons
-        {
-            var parentProperties = input.GetType().GetProperties();
-            var childProperties = output.GetType().GetProperties();
-
-            foreach (var parentProperty in parentProperties)
-            {
-                foreach (var childProperty in childProperties)
-                {
-                    if (parentProperty.Name == childProperty.Name && parentProperty.PropertyType == childProperty.PropertyType)
-                    {
-                        childProperty.SetValue(output, parentProperty.GetValue(input));
-                        break;
-                    }
-                }
-            }
+            return eventBus;
         }
     }
 }

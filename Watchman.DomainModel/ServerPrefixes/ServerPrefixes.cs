@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Watchman.DomainModel.Commons.Exceptions;
+using Watchman.DomainModel.ServerPrefixes.Events;
 using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.ServerPrefixes
@@ -19,7 +21,7 @@ namespace Watchman.DomainModel.ServerPrefixes
             this.ServerId = serverId;
         }
 
-        public void AddPrefix(string prefix)
+        public async Task AddPrefix(string prefix)
         {
             if (this._prefixes.Any(x => x == prefix))
             {
@@ -27,9 +29,10 @@ namespace Watchman.DomainModel.ServerPrefixes
             }
             this._prefixes.Add(prefix);
             this.Update();
+            await new PrefixAddedToServerEvent(this.ServerId, prefix).Publish();
         }
 
-        public void DeletePrefix(string prefix)
+        public async Task DeletePrefix(string prefix)
         {
             if (!this._prefixes.Any(x => x == prefix))
             {
@@ -41,6 +44,7 @@ namespace Watchman.DomainModel.ServerPrefixes
             }
             this._prefixes.Remove(prefix);
             this.Update();
+            await new PrefixRemovedFromServerEvent(this.ServerId, prefix).Publish();
         }
     }
 }
