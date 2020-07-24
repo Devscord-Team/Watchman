@@ -2,8 +2,8 @@
 {
     public class ArgumentInfo
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string ExampleValues { get; set; }
+        public string Name { get; private set; }
+        public string Description { get; private set; }
+        public string ExampleValues { get; private set; }
     }
 }

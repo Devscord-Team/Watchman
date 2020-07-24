@@ -2,7 +2,7 @@
 {
     public class Description
     {
-        public string Name { get; set; }
-        public string Details { get; set; }
+        public string Name { get; private set; }
+        public string Details { get; private set; }
     }
 }
