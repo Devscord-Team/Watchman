@@ -39,18 +39,19 @@ namespace Watchman.Discord.UnitTests.AntiSpam
                 .Setup(x => x.IsUserSafe(AntiSpamTestsService.DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
                 .Returns(isUserSafe);
             
-            var (request, contexts) = this._antiSpamTestsService.CreateRequestAndContexts(messageContent4);
+            var contexts = this._antiSpamTestsService.GetDefaultContexts();
             var serverMessages = new ServerMessagesCacheService();
             serverMessages.OverwriteMessages(new List<SmallMessage>
             {
                 new SmallMessage(messageContent1, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.UtcNow.AddSeconds(-20), GetMessagesQuery.GET_ALL_SERVERS),
                 new SmallMessage(messageContent2, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.UtcNow.AddSeconds(-16), GetMessagesQuery.GET_ALL_SERVERS),
-                new SmallMessage(messageContent3, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.UtcNow.AddSeconds(-10), GetMessagesQuery.GET_ALL_SERVERS)
+                new SmallMessage(messageContent3, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.UtcNow.AddSeconds(-15), GetMessagesQuery.GET_ALL_SERVERS),
+                new SmallMessage(messageContent4, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.UtcNow.AddSeconds(-10), GetMessagesQuery.GET_ALL_SERVERS)
             });
             var overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessages, userSafetyChecker.Object, this._configurationService);
             
             // Act
-            var overallSpamProbability = overallSpamDetector.GetOverallSpamProbability(request, contexts);
+            var overallSpamProbability = overallSpamDetector.GetOverallSpamProbability(contexts);
 
             // Assert
             Assert.That(overallSpamProbability, Is.EqualTo(exceptedSpamProbability));
@@ -67,18 +68,19 @@ namespace Watchman.Discord.UnitTests.AntiSpam
                 .Setup(x => x.IsUserSafe(AntiSpamTestsService.DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
                 .Returns(isUserSafe);
 
-            var (request, contexts) = this._antiSpamTestsService.CreateRequestAndContexts(messageContent4);
+            var contexts = this._antiSpamTestsService.GetDefaultContexts();
             var serverMessages = new ServerMessagesCacheService();
             serverMessages.OverwriteMessages(new List<SmallMessage>
             {
                 new SmallMessage(messageContent1, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.UtcNow.AddSeconds(-20), GetMessagesQuery.GET_ALL_SERVERS),
                 new SmallMessage(messageContent2, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.UtcNow.AddSeconds(-16), GetMessagesQuery.GET_ALL_SERVERS),
-                new SmallMessage(messageContent3, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.UtcNow.AddSeconds(-10), GetMessagesQuery.GET_ALL_SERVERS)
+                new SmallMessage(messageContent3, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.UtcNow.AddSeconds(-15), GetMessagesQuery.GET_ALL_SERVERS),
+                new SmallMessage(messageContent4, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.UtcNow.AddSeconds(-10), GetMessagesQuery.GET_ALL_SERVERS)
             });
             var overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessages, userSafetyChecker.Object, this._configurationService);
 
             // Act
-            var overallSpamProbability = overallSpamDetector.GetOverallSpamProbability(request, contexts);
+            var overallSpamProbability = overallSpamDetector.GetOverallSpamProbability(contexts);
 
             // Assert
             Assert.That(overallSpamProbability, Is.EqualTo(SpamProbability.None));

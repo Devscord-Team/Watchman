@@ -33,10 +33,11 @@ namespace Watchman.Discord.UnitTests.AntiSpam
             userSafetyChecker
                 .Setup(x => x.IsUserSafe(AntiSpamTestsService.DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
                 .Returns(isUserSafe);
-            
-            var (request, contexts) = this._antiSpamTestsService.CreateRequestAndContexts(smallMessages.Last());
+
+            var lastMessage = smallMessages.Last();
+            var contexts = this._antiSpamTestsService.GetDefaultContexts(lastMessage.UserId, lastMessage.ServerId);
             var serverMessages = new ServerMessagesCacheService();
-            serverMessages.OverwriteMessages(smallMessages.SkipLast(1));
+            serverMessages.OverwriteMessages(smallMessages);
 
             var needsConfiguration = typeof(T).GetConstructors().Any(x => x.GetParameters().Any(x => x.ParameterType == typeof(IConfigurationService)));
             var spamDetector = needsConfiguration 
@@ -44,7 +45,7 @@ namespace Watchman.Discord.UnitTests.AntiSpam
                 : (T)Activator.CreateInstance(typeof(T), userSafetyChecker.Object);
 
             // Act
-            return spamDetector!.GetSpamProbability(serverMessages, request, contexts);
+            return spamDetector!.GetSpamProbability(serverMessages, contexts);
         }
     }
 }

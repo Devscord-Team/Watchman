@@ -42,10 +42,11 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             var stopwatch = Stopwatch.StartNew();
             Log.Information("Started scanning the message");
 
+            this._serverMessagesCacheService.AddMessage(request, contexts);
             if (this.ShouldCheckThisMessage(contexts.User.Id, request))
             {
                 _isNowChecking = true;
-                var spamProbability = this._overallSpamDetector.GetOverallSpamProbability(request, contexts);
+                var spamProbability = this._overallSpamDetector.GetOverallSpamProbability(contexts);
                 if (spamProbability != SpamProbability.None)
                 {
                     Log.Information("{SpamProbability} for {user}", spamProbability, contexts.User.Name);
@@ -53,7 +54,6 @@ namespace Watchman.Discord.Areas.Protection.Controllers
                 }
                 _isNowChecking = false;
             }
-            this._serverMessagesCacheService.AddMessage(request, contexts);
             Log.Information("Scanned");
             Log.Information("antispam: {ticks}ticks", stopwatch.ElapsedTicks);
         }

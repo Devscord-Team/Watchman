@@ -2,7 +2,6 @@
 using System.Linq;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
-using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Watchman.DomainModel.Settings.Services;
 
@@ -30,10 +29,10 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             this._spamDetectors = spamDetectors;
         }
 
-        public SpamProbability GetOverallSpamProbability(DiscordRequest request, Contexts contexts)
+        public SpamProbability GetOverallSpamProbability(Contexts contexts)
         {
             var probabilities = this._spamDetectors
-                .Select(x => x.GetSpamProbability(this._serverMessagesCacheService, request, contexts))
+                .Select(x => x.GetSpamProbability(this._serverMessagesCacheService, contexts))
                 .Where(x => x != SpamProbability.None)
                 .ToList();
 
