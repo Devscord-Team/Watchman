@@ -3,7 +3,7 @@ using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Mutes
 {
-    public class MuteEvent : Entity
+    public class MuteEvent : Entity, IAggregateRoot
     {
         public ulong UserId { get; private set; }
         public string Reason { get; private set; }
