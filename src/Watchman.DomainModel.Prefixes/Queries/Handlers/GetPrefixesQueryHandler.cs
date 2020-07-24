@@ -5,7 +5,7 @@ using System.Text;
 using Watchman.Cqrs;
 using Watchman.Integrations.MongoDB;
 
-namespace Watchman.DomainModel.ServerPrefixes.Queries.Handlers
+namespace Watchman.DomainModel.Prefixes.Queries.Handlers
 {
     public class GetPrefixesQueryHandler : IQueryHandler<GetPrefixesQuery, GetPrefixesQueryResult>
     {

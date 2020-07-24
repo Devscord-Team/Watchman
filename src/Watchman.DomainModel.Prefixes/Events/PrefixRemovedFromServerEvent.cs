@@ -1,6 +1,6 @@
 ﻿using Devscord.EventStore;
 
-namespace Watchman.DomainModel.ServerPrefixes.Events
+namespace Watchman.DomainModel.Prefixes.Events
 {
     public class PrefixRemovedFromServerEvent : Event
     {

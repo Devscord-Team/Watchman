@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Watchman.Cqrs;
 using Watchman.Integrations.MongoDB;
 
-namespace Watchman.DomainModel.ServerPrefixes.Commands.Handlers
+namespace Watchman.DomainModel.Prefixes.Commands.Handlers
 {
     public class AddPrefixCommandHandler : ICommandHandler<AddPrefixCommand>
     {
@@ -21,7 +21,7 @@ namespace Watchman.DomainModel.ServerPrefixes.Commands.Handlers
         {
             using var session = this._sessionFactory.Create();
             var prefixes = session.Get<ServerPrefixes>().FirstOrDefault(x => x.ServerId == command.ServerId);
-            if(prefixes == null)
+            if (prefixes == null)
             {
                 prefixes = new ServerPrefixes(command.ServerId);
             }

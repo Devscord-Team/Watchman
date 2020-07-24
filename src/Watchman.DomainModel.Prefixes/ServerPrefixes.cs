@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Watchman.DomainModel.Commons.Exceptions;
-using Watchman.DomainModel.ServerPrefixes.Events;
+using Watchman.DomainModel.Prefixes.Events;
 using Watchman.Integrations.MongoDB;
 
-namespace Watchman.DomainModel.ServerPrefixes
+namespace Watchman.DomainModel.Prefixes
 {
     public class ServerPrefixes : Entity, IAggregateRoot
     {
@@ -38,7 +38,7 @@ namespace Watchman.DomainModel.ServerPrefixes
             {
                 return;
             }
-            if(this._prefixes.Count <= 1)
+            if (this._prefixes.Count <= 1)
             {
                 return;
             }

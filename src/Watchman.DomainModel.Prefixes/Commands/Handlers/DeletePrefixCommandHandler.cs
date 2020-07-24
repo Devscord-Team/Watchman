@@ -7,7 +7,7 @@ using Watchman.Cqrs;
 using Watchman.DomainModel.Commons.Exceptions;
 using Watchman.Integrations.MongoDB;
 
-namespace Watchman.DomainModel.ServerPrefixes.Commands.Handlers
+namespace Watchman.DomainModel.Prefixes.Commands.Handlers
 {
     public class DeletePrefixCommandHandler : ICommandHandler<DeletePrefixCommand>
     {
@@ -28,7 +28,7 @@ namespace Watchman.DomainModel.ServerPrefixes.Commands.Handlers
             }
             var version = prefixes.Version;
             await prefixes.DeletePrefix(command.Prefix);
-            if(prefixes.Version == version)
+            if (prefixes.Version == version)
             {
                 throw new NotUpdatedException();
             }

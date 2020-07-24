@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Watchman.DomainModel.ServerPrefixes.Events
+namespace Watchman.DomainModel.Prefixes.Events
 {
     public class PrefixAddedToServerEvent : Event
     {
