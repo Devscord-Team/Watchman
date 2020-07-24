@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework
 {
+    //TODO release to nuget
     internal class Workflow
     {
         private readonly IComponentContext _context;

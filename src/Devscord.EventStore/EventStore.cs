@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace Devscord.EventStore
 {
+    //TODO release to nuget
     public static class EventStore //in memory event "store" TODO change it to correct event store
     {
         private static readonly List<IEventBus> _eventBuses = new List<IEventBus>();
