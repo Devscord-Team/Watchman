@@ -4,4 +4,9 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Watchman.Common\Watchman.Common.csproj" />
+    <ProjectReference Include="..\Watchman.Integrations\Watchman.Integrations.csproj" />
+  </ItemGroup>
+
 </Project>

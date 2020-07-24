@@ -1,4 +1,4 @@
-﻿namespace Watchman.DomainModel.Settings
+﻿namespace Watchman.DomainModel.Configuration
 {
     public abstract class MappedConfiguration<T> : IMappedConfiguration
     {

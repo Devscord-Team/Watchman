@@ -1,4 +1,4 @@
-﻿namespace Watchman.DomainModel.Settings.ConfigurationItems
+﻿namespace Watchman.DomainModel.Configuration.ConfigurationItems
 {
     public class PercentOfSimilarityBetweenMessagesToSuspectSpam : MappedConfiguration<double>
     {

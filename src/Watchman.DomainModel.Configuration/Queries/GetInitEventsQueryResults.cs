@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Watchman.Cqrs;
 
-namespace Watchman.DomainModel.Settings.Queries
+namespace Watchman.DomainModel.Configuration.Queries
 {
     public class GetInitEventsQueryResults : IQueryResult
     {

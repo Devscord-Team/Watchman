@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Watchman.DomainModel.Settings.ConfigurationItems;
+using Watchman.DomainModel.Configuration.ConfigurationItems;
 
-namespace Watchman.DomainModel.Settings.Services
+namespace Watchman.DomainModel.Configuration.Services
 {
     public class ConfigurationItemsSearcherService
     {

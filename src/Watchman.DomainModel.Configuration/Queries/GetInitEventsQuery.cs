@@ -1,6 +1,6 @@
 ﻿using Watchman.Cqrs;
 
-namespace Watchman.DomainModel.Settings.Queries
+namespace Watchman.DomainModel.Configuration.Queries
 {
     public class GetInitEventsQuery : IQuery<GetInitEventsQueryResults>
     {

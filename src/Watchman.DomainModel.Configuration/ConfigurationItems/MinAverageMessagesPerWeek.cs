@@ -1,4 +1,5 @@
-﻿namespace Watchman.DomainModel.Settings.ConfigurationItems
+﻿
+namespace Watchman.DomainModel.Configuration.ConfigurationItems
 {
     public class MinAverageMessagesPerWeek : MappedConfiguration<int>
     {
