@@ -23,28 +23,31 @@ namespace Watchman.Discord.Areas.Initialization.Services
         public async Task InitNewResponsesFromResources()
         {
             var defaultResponses = this._responsesGetterService.GetResponsesFromResources();
-            var responsesInBase = this._responsesGetterService.GetResponsesFromBase().Select(response =>
+            var responsesInBase = this._responsesGetterService.GetResponsesFromBase().Select(baseResponse =>
             {
                 // Update every response in the DB with availableVariables from defaultResponses
-                return new Response(response.OnEvent, response.Message, response.ServerId, 
-                    defaultResponses.First(responseNew => responseNew.OnEvent == response.OnEvent).AvailableVariables);
+                var newAvailableVariables = defaultResponses
+                    .FirstOrDefault(defaultResponse => defaultResponse.OnEvent == baseResponse.OnEvent);
+                if (newAvailableVariables?.AvailableVariables != null)
+                {
+                    baseResponse.UpdateAvailableVariables(newAvailableVariables.AvailableVariables);
+                }
+                return baseResponse;
             });
-            var responsesToAdd = defaultResponses
-                .Where(def => responsesInBase.All(@base => @base.OnEvent != def.OnEvent))
-                .ToList();
+            var responsesToUpdate = defaultResponses.Concat(responsesInBase).ToList();
 
-            await this.AddNewResponses(responsesToAdd);
+            await this.UpdateResponses(responsesToUpdate);
         }
 
-        private async Task AddNewResponses(IReadOnlyCollection<Response> responsesToAdd)
+        private async Task UpdateResponses(IReadOnlyCollection<Response> responsesToUpdate)
         {
-            if (!responsesToAdd.Any())
+            if (!responsesToUpdate.Any())
             {
                 Log.Information("No new responses");
                 return;
             }
 
-            var command = new UpdateResponsesCommand(responsesToAdd);
+            var command = new UpdateResponsesCommand(responsesToUpdate);
             await this._commandBus.ExecuteAsync(command);
             Log.Information("Responses initialized");
         }

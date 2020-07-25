@@ -38,5 +38,11 @@ namespace Watchman.DomainModel.Responses
             this.Message = message;
             this.Update();
         }
+
+        public void UpdateAvailableVariables(string[] newAvailableVariables)
+        {
+            this.AvailableVariables = newAvailableVariables;
+            this.Update();
+        }
     }
 }
