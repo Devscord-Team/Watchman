@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
@@ -27,8 +28,11 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         {
             var requestParser = new MuteRequestParser(request, this._usersService, contexts);
             var userToMute = requestParser.GetUser();
+            if (userToMute.Id == this._usersService.GetBot().Id)
+            {
+                throw new UserDidntMentionAnyUserException();
+            }
             var muteEvent = requestParser.GetMuteEvent(userToMute.Id, contexts, request);
-
             await this._mutingService.MuteUserOrOverwrite(contexts, muteEvent, userToMute);
             this._unmutingService.UnmuteInFuture(contexts, muteEvent, userToMute);
         }

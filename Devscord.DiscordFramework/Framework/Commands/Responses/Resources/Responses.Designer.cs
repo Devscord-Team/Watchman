@@ -19,7 +19,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Responses {
@@ -102,6 +102,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         public static string AvailableSafeRoles {
             get {
                 return ResourceManager.GetString("AvailableSafeRoles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nie znaleziono kanału {{channel}} .
+        /// </summary>
+        public static string ChannelNotFound {
+            get {
+                return ResourceManager.GetString("ChannelNotFound", resourceCulture);
             }
         }
         
@@ -399,6 +408,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         public static string UserNotFound {
             get {
                 return ResourceManager.GetString("UserNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Użytkownik {{user}} nie jest wyciszony..
+        /// </summary>
+        public static string UserWasntMuted {
+            get {
+                return ResourceManager.GetString("UserWasntMuted", resourceCulture);
             }
         }
     }

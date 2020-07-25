@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Autofac;
+using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Models;
 using Hangfire;
@@ -19,8 +20,9 @@ namespace Watchman.Web
             {
                 (container.Resolve<MessagesService>(), RefreshFrequent.Quarterly, true),
                 (container.Resolve<UnmutingService>(), RefreshFrequent.Quarterly, true), // if RefreshFrequent changed remember to change SHORT_MUTE_TIME_IN_MINUTES in unmutingService!
-                (container.Resolve<CheckUserSafetyStrategyService>(), RefreshFrequent.Daily, true),
-                (container.Resolve<CyclicStatisticsGeneratorService>(), RefreshFrequent.Daily, false)
+                (container.Resolve<CheckUserSafetyService>(), RefreshFrequent.Daily, true),
+                (container.Resolve<CyclicStatisticsGeneratorService>(), RefreshFrequent.Daily, false),
+                (container.Resolve<ServerMessagesCacheService>(), RefreshFrequent.Quarterly, false)
             };
             var recurringJobManager = container.Resolve<IRecurringJobManager>();
             foreach (var (generator, refreshFrequent, shouldTrigger) in generators)

@@ -4,11 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
+using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Models;
 
 namespace Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models
 {
-    public class ServerMessagesCacheService
+    public class ServerMessagesCacheService : ICyclicService
     {
         private static Dictionary<ulong, List<SmallMessage>> _usersMessages;
 
@@ -48,10 +49,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models
                 : new List<SmallMessage>();
         }
 
-        private static async void RemoveOldMessagesCyclic()
+        public Task Refresh()
         {
-            await Task.Delay(TimeSpan.FromMinutes(2));
-            var minTimeInPast = DateTime.UtcNow.AddMinutes(-5);
+            RemoveOldMessagesCyclic();
+            return Task.CompletedTask;
+        }
+
+        private static void RemoveOldMessagesCyclic()
+        {
+            var minTimeInPast = DateTime.UtcNow.AddMinutes(-15);
             var smallMessages = _usersMessages.Values.Select(list =>
             {
                 list.RemoveAll(message => message.SentAt < minTimeInPast);
