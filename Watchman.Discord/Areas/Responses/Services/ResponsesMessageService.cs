@@ -67,7 +67,7 @@ namespace Watchman.Discord.Areas.Responses.Services
             var result = "\n__Dostępne zmienne:__";
             if (response.AvailableVariables.Any())
             {
-                result += response.AvailableVariables.Select(s => $" `{s}`").Aggregate((a, b) => a+b);
+                result += response.AvailableVariables.Select(s => $" `{s}`").Aggregate((a, b) => a + b);
             }
             else
             {
