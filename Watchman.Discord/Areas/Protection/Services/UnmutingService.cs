@@ -85,7 +85,7 @@ namespace Watchman.Discord.Areas.Protection.Services
             {
                 Log.Information("{userName} is not muted", userToUnmute.Name);
                 var messagesService = this._messagesServiceFactory.Create(contexts);
-                messagesService.SendResponse(x => x.UserWasntMuted(userToUnmute));
+                await messagesService.SendResponse(x => x.UserWasntMuted(userToUnmute));
                 return;
             }
             await this.UnmuteSpecificEvent(contexts, userToUnmute, eventToUnmute);
