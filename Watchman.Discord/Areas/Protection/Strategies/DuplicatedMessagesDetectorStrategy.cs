@@ -2,7 +2,6 @@
 using System.Linq;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
-using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Watchman.DomainModel.Settings.ConfigurationItems;
 using Watchman.DomainModel.Settings.Services;
@@ -11,34 +10,34 @@ namespace Watchman.Discord.Areas.Protection.Strategies
 {
     public class DuplicatedMessagesDetectorStrategy : ISpamDetector
     {
-        public IUserSafetyChecker UserSafetyChecker { get; set; }
-
+        private readonly IUserSafetyChecker _userSafetyChecker;
         private readonly IConfigurationService _configurationService;
 
         public DuplicatedMessagesDetectorStrategy(IUserSafetyChecker userSafetyChecker, IConfigurationService configurationService)
         {
+            this._userSafetyChecker = userSafetyChecker;
             this._configurationService = configurationService;
-            this.UserSafetyChecker = userSafetyChecker;
         }
 
-        public SpamProbability GetSpamProbability(ServerMessagesCacheService serverMessagesCacheService, DiscordRequest request, Contexts contexts)
+        public SpamProbability GetSpamProbability(ServerMessagesCacheService serverMessagesCacheService, Contexts contexts)
         {
             var userId = contexts.User.Id;
             var serverId = contexts.Server.Id;
             var lastFewMessages = serverMessagesCacheService.GetLastUserMessages(userId, serverId)
-                .TakeLast(4)
+                .TakeLast(5)
                 .ToList();
 
             if (lastFewMessages.Count < 2)
             {
                 return SpamProbability.None;
             }
-
-            var content = request.OriginalMessage;
             var percentOfSimilarityToSuspectSpam = this._configurationService.GetConfigurationItem<PercentOfSimilarityBetweenMessagesToSuspectSpam>(serverId).Value;
-            var similarMessagesCount = lastFewMessages.Count(x => this.GetDifferencePercent(x.Content, content) < percentOfSimilarityToSuspectSpam);
-            var isUserSafe = this.UserSafetyChecker.IsUserSafe(userId, serverId);
+            var content = lastFewMessages.Last().Content;
+            var similarMessagesCount = lastFewMessages
+                .SkipLast(1) // because I'm comparing all the other messages to the last message
+                .Count(x => this.GetDifferencePercent(x.Content, content) < percentOfSimilarityToSuspectSpam);
 
+            var isUserSafe = this._userSafetyChecker.IsUserSafe(userId, serverId);
             return similarMessagesCount switch
             {
                 0 => SpamProbability.None,

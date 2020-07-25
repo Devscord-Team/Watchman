@@ -13,14 +13,14 @@ using Message = Watchman.DomainModel.Messages.Message;
 
 namespace Watchman.Discord.Areas.Protection.Strategies
 {
-    public class CheckUserSafetyStrategyService : ICyclicService, IUserSafetyChecker
+    public class CheckUserSafetyService : ICyclicService, IUserSafetyChecker
     {
         private Dictionary<ulong, ServerSafeUsers> _safeUsersOnServers;
         private readonly IQueryBus _queryBus;
         private readonly DiscordServersService _discordServersService;
         private readonly ConfigurationService _configurationService;
 
-        public CheckUserSafetyStrategyService(IQueryBus queryBus, UsersService usersService, DiscordServersService discordServersService, ConfigurationService configurationService)
+        public CheckUserSafetyService(IQueryBus queryBus, UsersService usersService, DiscordServersService discordServersService, ConfigurationService configurationService)
         {
             ServerSafeUsers.UsersService = usersService;
             this._queryBus = queryBus;

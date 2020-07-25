@@ -13,5 +13,6 @@ namespace Devscord.DiscordFramework.Integration.Services.Interfaces
         Task<bool> IsUserStillOnServer(ulong userId, ulong guildId);
         IAsyncEnumerable<RestGuildUser> GetGuildUsers(ulong guildId);
         Task<RestUser> GetUser(ulong userId);
+        RestUser GetBotUser();
     }
 }
