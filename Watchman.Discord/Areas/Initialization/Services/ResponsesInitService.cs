@@ -22,37 +22,46 @@ namespace Watchman.Discord.Areas.Initialization.Services
 
         public async Task InitNewResponsesFromResources()
         {
-            var defaultResponses = this._responsesGetterService.GetResponsesFromResources();
+            var defaultResponses = this._responsesGetterService.GetResponsesFromResources().ToList();
+            var responsesInBase = this._responsesGetterService.GetResponsesFromBase();
+            var responsesToUpdate = new List<Response>();
+            var responsesToRemove = new List<Response>();
             
-            var responsesToUpdate = this._responsesGetterService.GetResponsesFromBase().Select(baseResponse =>
+            foreach (var baseResponse in responsesInBase)
             {
-                // Update every response in the DB with availableVariables from defaultResponses
-                var matchingDefaultResponse = defaultResponses
-                    .FirstOrDefault(defaultResponse => defaultResponse.OnEvent == baseResponse.OnEvent);
+                // Check if there's a matching default response in resources
+                var matchingDefaultResponse = defaultResponses.FirstOrDefault(defaultResponse => defaultResponse.OnEvent == baseResponse.OnEvent);
                 if (matchingDefaultResponse != null)
                 {
+                    // there's a matching default response, update existing db response
                     baseResponse.UpdateAvailableVariables(matchingDefaultResponse.AvailableVariables);
                     baseResponse.SetMessage(matchingDefaultResponse.Message);
+                    responsesToUpdate.Add(baseResponse);
                 }
-                return baseResponse;
-            }).ToArray();
+                else
+                {
+                    // there's no matching default response, remove the db one
+                    responsesToRemove.Add(baseResponse);
+                }
+            }
             
             var responsesToAdd = defaultResponses
-                .Where(def => responsesToUpdate.All(@base => @base.OnEvent != def.OnEvent))
-                .ToArray();
-
-            await this.UpdateResponses(responsesToUpdate, responsesToAdd);
+                .Where(def => responsesToUpdate.All(@base => @base.OnEvent != def.OnEvent));
+            
+            var command = new RemoveResponsesCommand(responsesToRemove);
+            await this._commandBus.ExecuteAsync(command);
+            await this.AddOrUpdateResponses(responsesToAdd.Concat(responsesToUpdate).ToList());
         }
 
-        private async Task UpdateResponses(IReadOnlyCollection<Response> responsesToUpdate, IReadOnlyCollection<Response> responsesToAdd)
+        private async Task AddOrUpdateResponses(IReadOnlyCollection<Response> responsesToUpdate)
         {
-            if (!responsesToUpdate.Any() && !responsesToAdd.Any())
+            if (!responsesToUpdate.Any())
             {
                 Log.Information("No new responses");
                 return;
             }
 
-            var command = new UpdateResponsesCommand(responsesToUpdate, responsesToAdd);
+            var command = new AddOrUpdateResponsesCommand(responsesToUpdate);
             await this._commandBus.ExecuteAsync(command);
             Log.Information("Responses initialized");
         }

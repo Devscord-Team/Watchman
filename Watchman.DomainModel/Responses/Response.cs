@@ -1,4 +1,5 @@
-﻿using Watchman.Integrations.MongoDB;
+﻿using System.Linq;
+using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Responses
 {
@@ -41,6 +42,10 @@ namespace Watchman.DomainModel.Responses
 
         public void UpdateAvailableVariables(string[] newAvailableVariables)
         {
+            if (this.AvailableVariables.SequenceEqual(newAvailableVariables))
+            {
+                return;
+            }
             this.AvailableVariables = newAvailableVariables;
             this.Update();
         }
