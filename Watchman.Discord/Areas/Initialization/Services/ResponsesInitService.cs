@@ -23,17 +23,20 @@ namespace Watchman.Discord.Areas.Initialization.Services
         public async Task InitNewResponsesFromResources()
         {
             var defaultResponses = this._responsesGetterService.GetResponsesFromResources();
+            
             var responsesToUpdate = this._responsesGetterService.GetResponsesFromBase().Select(baseResponse =>
             {
                 // Update every response in the DB with availableVariables from defaultResponses
-                var newAvailableVariables = defaultResponses
+                var matchingDefaultResponse = defaultResponses
                     .FirstOrDefault(defaultResponse => defaultResponse.OnEvent == baseResponse.OnEvent);
-                if (newAvailableVariables?.AvailableVariables != null)
+                if (matchingDefaultResponse != null)
                 {
-                    baseResponse.UpdateAvailableVariables(newAvailableVariables.AvailableVariables);
+                    baseResponse.UpdateAvailableVariables(matchingDefaultResponse.AvailableVariables);
+                    baseResponse.SetMessage(matchingDefaultResponse.Message);
                 }
                 return baseResponse;
             }).ToArray();
+            
             var responsesToAdd = defaultResponses
                 .Where(def => responsesToUpdate.All(@base => @base.OnEvent != def.OnEvent))
                 .ToArray();
