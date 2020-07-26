@@ -5,11 +5,13 @@ namespace Watchman.DomainModel.Responses.Commands
 {
     public class UpdateResponsesCommand : ICommand
     {
-        public IEnumerable<Response> Responses { get; }
+        public IEnumerable<Response> ResponsesToUpdate { get; }
+        public IEnumerable<Response> ResponsesToAdd { get; }
 
-        public UpdateResponsesCommand(IEnumerable<Response> responses)
+        public UpdateResponsesCommand(IEnumerable<Response> responsesToUpdate, IEnumerable<Response> responsesToAdd = null)
         {
-            this.Responses = responses;
+            this.ResponsesToUpdate = responsesToUpdate;
+            this.ResponsesToAdd = responsesToAdd;
         }
     }
 }

@@ -18,20 +18,14 @@ namespace Watchman.DomainModel.Responses.Commands.Handlers
         {
             using var session = this._sessionFactory.Create();
             var responses = session.Get<Response>();
-            foreach (var response in command.Responses)
+            foreach (var response in command.ResponsesToUpdate)
             {
-                var existingResponse = responses.FirstOrDefault(dbResponse => dbResponse.OnEvent == response.OnEvent);
-                if (existingResponse == null)
-                {
-                    // there's no response with supplied onEvent in the database, add a new one
-                    await session.AddAsync(response);
-                }
-                else
-                {
-                    // there's a response with supplied onEvent in the database, update existing one
-                    response.Id = existingResponse.Id;
-                    
-                }
+                await session.UpdateAsync(response);
+            }
+
+            if (command.ResponsesToAdd != null && command.ResponsesToAdd.Any())
+            {
+                await session.AddAsync(command.ResponsesToAdd);
             }
         }
     }

@@ -23,7 +23,7 @@ namespace Watchman.Discord.Areas.Initialization.Services
         public async Task InitNewResponsesFromResources()
         {
             var defaultResponses = this._responsesGetterService.GetResponsesFromResources();
-            var responsesInBase = this._responsesGetterService.GetResponsesFromBase().Select(baseResponse =>
+            var responsesToUpdate = this._responsesGetterService.GetResponsesFromBase().Select(baseResponse =>
             {
                 // Update every response in the DB with availableVariables from defaultResponses
                 var newAvailableVariables = defaultResponses
@@ -33,21 +33,23 @@ namespace Watchman.Discord.Areas.Initialization.Services
                     baseResponse.UpdateAvailableVariables(newAvailableVariables.AvailableVariables);
                 }
                 return baseResponse;
-            });
-            var responsesToUpdate = defaultResponses.Concat(responsesInBase).ToList();
+            }).ToArray();
+            var responsesToAdd = defaultResponses
+                .Where(def => responsesToUpdate.All(@base => @base.OnEvent != def.OnEvent))
+                .ToArray();
 
-            await this.UpdateResponses(responsesToUpdate);
+            await this.UpdateResponses(responsesToUpdate, responsesToAdd);
         }
 
-        private async Task UpdateResponses(IReadOnlyCollection<Response> responsesToUpdate)
+        private async Task UpdateResponses(IReadOnlyCollection<Response> responsesToUpdate, IReadOnlyCollection<Response> responsesToAdd)
         {
-            if (!responsesToUpdate.Any())
+            if (!responsesToUpdate.Any() && !responsesToAdd.Any())
             {
                 Log.Information("No new responses");
                 return;
             }
 
-            var command = new UpdateResponsesCommand(responsesToUpdate);
+            var command = new UpdateResponsesCommand(responsesToUpdate, responsesToAdd);
             await this._commandBus.ExecuteAsync(command);
             Log.Information("Responses initialized");
         }
