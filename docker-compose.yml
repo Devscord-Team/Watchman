@@ -8,3 +8,4 @@ services:
         volumes:
             - ./appsettings.json:/app/appsettings.json
             - /etc/localtime:/etc/localtime:ro
+            - ./logs:/app/logs
