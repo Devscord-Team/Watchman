@@ -11,9 +11,9 @@ namespace Devscord.DiscordFramework.Middlewares
     {
         private readonly DiscordServerContextFactory _discordServerContextFactory;
 
-        public ServerMiddleware(UsersService usersService, IComponentContext context)
+        public ServerMiddleware(UsersService usersService, UsersRolesService usersRolesService, IComponentContext context)
         {
-            this._discordServerContextFactory = new DiscordServerContextFactory(usersService, context.Resolve<UserContextsFactory>(), context.Resolve<ChannelContextFactory>());
+            this._discordServerContextFactory = new DiscordServerContextFactory(usersService, usersRolesService, context.Resolve<UserContextsFactory>(), context.Resolve<ChannelContextFactory>());
         }
 
         public IDiscordContext Process(SocketMessage data)

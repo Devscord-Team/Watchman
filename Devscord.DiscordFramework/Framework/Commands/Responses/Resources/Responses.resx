@@ -237,4 +237,16 @@
   <data name="UserWasntMuted" xml:space="preserve">
     <value>Użytkownik {{user}} nie jest wyciszony.</value>
   </data>
+  <data name="RoleAlreadyIsTrusted" xml:space="preserve">
+    <value>Rola {{role}} jest już ustawiona jako zaufana.</value>
+  </data>
+  <data name="RoleAlreadyIsUntrusted" xml:space="preserve">
+    <value>Rola {{role}} nie jest ustawiona jako zaufana.</value>
+  </data>
+  <data name="RoleSetAsTrusted" xml:space="preserve">
+    <value>Ustawiono rolę {{role}} jako zaufaną.</value>
+  </data>
+  <data name="RoleSetAsUntrusted" xml:space="preserve">
+    <value>Ustawiono rolę {{role}} jako niezaufaną.</value>
+  </data>
 </root>

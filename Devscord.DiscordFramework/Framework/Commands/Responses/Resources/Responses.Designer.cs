@@ -232,6 +232,24 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rola {{role}} jest już ustawiona jako zaufana..
+        /// </summary>
+        public static string RoleAlreadyIsTrusted {
+            get {
+                return ResourceManager.GetString("RoleAlreadyIsTrusted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rola {{role}} nie jest ustawiona jako zaufana..
+        /// </summary>
+        public static string RoleAlreadyIsUntrusted {
+            get {
+                return ResourceManager.GetString("RoleAlreadyIsUntrusted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Użytkownik {{user}} posiada już role {{role}}.
         /// </summary>
         public static string RoleIsInUserAlready {
@@ -291,6 +309,24 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         public static string RoleRemovedFromUser {
             get {
                 return ResourceManager.GetString("RoleRemovedFromUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ustawiono rolę {{role}} jako zaufaną..
+        /// </summary>
+        public static string RoleSetAsTrusted {
+            get {
+                return ResourceManager.GetString("RoleSetAsTrusted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ustawiono rolę {{role}} jako niezaufaną..
+        /// </summary>
+        public static string RoleSetAsUntrusted {
+            get {
+                return ResourceManager.GetString("RoleSetAsUntrusted", resourceCulture);
             }
         }
         

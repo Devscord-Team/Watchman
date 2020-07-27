@@ -60,7 +60,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
                 .ToDictionary(x => x.Key, x =>
                 {
                     var minAverageMessagesPerWeek = this._configurationService.GetConfigurationItem<MinAverageMessagesPerWeek>(x.Key).Value;
-                    var safeUserRolesNames = this._configurationService.GetConfigurationItem<SafeUserRolesNames>(x.Key).Value;
+                    var safeUserRolesNames = this._configurationService.GetConfigurationItem<TrustedUserRolesNames>(x.Key).Value;
                     return new ServerSafeUsers(x, x.Key, minAverageMessagesPerWeek, safeUserRolesNames.ToHashSet());
                 });
         }

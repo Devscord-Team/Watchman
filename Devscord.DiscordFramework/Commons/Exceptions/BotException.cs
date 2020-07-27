@@ -6,7 +6,7 @@ namespace Devscord.DiscordFramework.Commons.Exceptions
     {
         public string Value { get; }
 
-        public BotException(string value = null)
+        protected BotException(string value = null)
         {
             this.Value = value;
         }

@@ -9,12 +9,14 @@ namespace Devscord.DiscordFramework.Middlewares.Factories
     internal class DiscordServerContextFactory : IContextFactory<IGuild, DiscordServerContext>
     {
         private readonly UsersService _usersService;
+        private readonly UsersRolesService _usersRolesService;
         private readonly UserContextsFactory _userContextsFactory;
         private readonly ChannelContextFactory _channelContextFactory;
 
-        public DiscordServerContextFactory(UsersService usersService, UserContextsFactory userContextsFactory, ChannelContextFactory channelContextFactory)
+        public DiscordServerContextFactory(UsersService usersService, UsersRolesService usersRolesService, UserContextsFactory userContextsFactory, ChannelContextFactory channelContextFactory)
         {
             this._usersService = usersService;
+            this._usersRolesService = usersRolesService;
             this._userContextsFactory = userContextsFactory;
             this._channelContextFactory = channelContextFactory;
         }
@@ -26,7 +28,8 @@ namespace Devscord.DiscordFramework.Middlewares.Factories
             var textChannels = restGuild.GetTextChannelsAsync().Result.Select(x => this._channelContextFactory.Create(x));
 
             IAsyncEnumerable<UserContext> GetServerUsers(DiscordServerContext server) => this._usersService.GetUsersAsync(server);
-            return new DiscordServerContext(restGuild.Id, restGuild.Name, owner, systemChannel, textChannels, GetServerUsers);
+            IEnumerable<UserRole> GetServerRoles(DiscordServerContext server) => this._usersRolesService.GetRoles(server);
+            return new DiscordServerContext(restGuild.Id, restGuild.Name, owner, systemChannel, textChannels, GetServerUsers, GetServerRoles);
         }
     }
 }

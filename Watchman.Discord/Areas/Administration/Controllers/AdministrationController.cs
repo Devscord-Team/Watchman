@@ -13,10 +13,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Commons;
-using Watchman.DomainModel.DiscordServer.Commands;
 using Watchman.DomainModel.Messages.Queries;
 using Watchman.Discord.Areas.Users.Services;
 using Watchman.Discord.Areas.Administration.BotCommands;
+using Watchman.Discord.Areas.Administration.Services;
 
 namespace Watchman.Discord.Areas.Administration.Controllers
 {
@@ -27,14 +27,16 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         private readonly DirectMessagesService _directMessagesService;
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly RolesService _rolesService;
+        private readonly TrustRolesService _trustRolesService;
 
-        public AdministrationController(IQueryBus queryBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, RolesService rolesService)
+        public AdministrationController(IQueryBus queryBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, RolesService rolesService, TrustRolesService trustRolesService)
         {
             this._queryBus = queryBus;
             this._usersService = usersService;
             this._directMessagesService = directMessagesService;
             this._messagesServiceFactory = messagesServiceFactory;
             this._rolesService = rolesService;
+            this._trustRolesService = trustRolesService;
         }
 
         [AdminCommand]
@@ -92,6 +94,18 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             }
             var shouldSetToSafe = setRoleCommand.Safe;
             await this._rolesService.SetRolesAsSafe(contexts, roles, shouldSetToSafe);
+        }
+
+        [AdminCommand]
+        public async Task SetRoleAsTrusted(TrustCommand trustCommand, Contexts contexts)
+        {
+            await this._trustRolesService.TrustThisRole(trustCommand.RoleName, contexts);
+        }
+        
+        [AdminCommand]
+        public async Task SetRoleAsUntrusted(UntrustCommand trustCommand, Contexts contexts)
+        {
+            await this._trustRolesService.DontTrustThisRole(trustCommand.RoleName, contexts);
         }
     }
 }
