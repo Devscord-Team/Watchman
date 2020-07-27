@@ -36,6 +36,11 @@ namespace Watchman.Discord.Areas.Protection.Strategies
                    && serverUsers.SafeUsers.Contains(userId);
         }
 
+        public HashSet<ulong> GetSafeUsersIds(ulong serverId)
+        {
+            return this._safeUsersOnServers?.GetValueOrDefault(serverId).SafeUsers ?? new HashSet<ulong>();
+        }
+
         public async Task Refresh()
         {
             Log.Information("Reloading user safety cache....");
