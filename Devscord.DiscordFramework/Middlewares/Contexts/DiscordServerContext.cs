@@ -1,4 +1,5 @@
 ﻿using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
+using System;
 using System.Collections.Generic;
 
 namespace Devscord.DiscordFramework.Middlewares.Contexts
@@ -10,9 +11,14 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
         public UserContext Owner { get; private set; }
         public ChannelContext LandingChannel { get; private set; }
         public IEnumerable<ChannelContext> TextChannels { get; private set; }
+        public IAsyncEnumerable<UserContext> Users => this._users ??= this._getServerUsers.Invoke(this);
 
-        public DiscordServerContext(ulong id, string name, UserContext owner, ChannelContext landingChannel, IEnumerable<ChannelContext> textChannels)
+        private readonly Func<DiscordServerContext, IAsyncEnumerable<UserContext>> _getServerUsers;
+        private IAsyncEnumerable<UserContext> _users;
+
+        public DiscordServerContext(ulong id, string name, UserContext owner, ChannelContext landingChannel, IEnumerable<ChannelContext> textChannels, Func<DiscordServerContext, IAsyncEnumerable<UserContext>> getServerUsers)
         {
+            this._getServerUsers = getServerUsers;
             this.Id = id;
             this.Name = name;
             this.Owner = owner;

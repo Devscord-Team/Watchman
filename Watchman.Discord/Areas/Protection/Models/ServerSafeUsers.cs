@@ -1,39 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Watchman.DomainModel.Messages;
 
 namespace Watchman.Discord.Areas.Protection.Models
 {
-    public struct ServerSafeUsers
+    public readonly struct ServerSafeUsers
     {
         public static UsersService UsersService { get; set; }
+        public static DiscordServersService DiscordServersService { get; set; }
 
         public ulong ServerId { get; }
-        public HashSet<ulong> SafeUsers { get; private set; }
+        public HashSet<ulong> SafeUsers { get; }
 
-        public ServerSafeUsers(IEnumerable<Message> serverMessages, ulong serverId, int minAverageMessagesPerWeek)
+        public ServerSafeUsers(IEnumerable<Message> serverMessages, ulong serverId, int minAverageMessagesPerWeek, HashSet<string> safeUserRolesNames)
         {
             this.ServerId = serverId;
+            var users = DiscordServersService.GetDiscordServerAsync(serverId).Result.Users.ToDictionaryAsync(x => x.Id, x => x).Result;
             this.SafeUsers = serverMessages
                 .GroupBy(x => x.Author.Id)
-                .Where(u => IsUserSafe(u, u.Key, serverId, minAverageMessagesPerWeek))
+                .Where(u => IsUserSafe(u.ToList(), users.GetValueOrDefault(u.Key), serverId, minAverageMessagesPerWeek, safeUserRolesNames))
                 .Select(x => x.Key)
                 .ToHashSet();
         }
 
-        private static bool IsUserSafe(IEnumerable<Message> userMessages, ulong userId, ulong serverId, int minAverageMessagesPerWeek)
+        private static bool IsUserSafe(IReadOnlyCollection<Message> userMessages, UserContext user, ulong serverId, int minAverageMessagesPerWeek, HashSet<string> safeUserRolesNames)
         {
-            var days = GetHowManyDaysUserIsOnThisServer(userId, serverId);
+            if (user == null || userMessages.Count < minAverageMessagesPerWeek)
+            {
+                return false;
+            }
+            var days = GetHowManyDaysUserIsOnThisServer(user.Id, serverId);
             if (days < 30)
             {
                 return false;
+            }
+            if (user.Roles.Any(x => safeUserRolesNames.Contains(x.Name)))
+            {
+                return true;
             }
 
             var weeks = userMessages.GroupBy(x => StartOfWeek(x.SentAt))
                 .Select(x => x.Count())
                 .ToList();
+
             var sum = weeks.Sum();
             var cutWeeks = weeks.Select(x =>
             {
@@ -41,19 +53,19 @@ namespace Watchman.Discord.Areas.Protection.Models
                 return x < maxCountPerWeek ? x : maxCountPerWeek;
             });
 
-            var avg = cutWeeks.Sum() / days;
+            var avg = cutWeeks.Sum() / (days / 7);
             return avg > minAverageMessagesPerWeek;
         }
 
         private static int GetHowManyDaysUserIsOnThisServer(ulong userId, ulong serverId)
         {
             var joinedAt = UsersService.GetUserJoinedDateTime(userId, serverId) ?? DateTime.Now;
-            return (int) (DateTime.Now.Date - joinedAt.Date).TotalDays;
+            return (int)(DateTime.Now.Date - joinedAt.Date).TotalDays;
         }
 
         private static DateTime StartOfWeek(DateTime date)
         {
-            return date.AddDays(-1 * (int) date.DayOfWeek).Date;
+            return date.AddDays(-1 * (int)date.DayOfWeek).Date;
         }
     }
 }

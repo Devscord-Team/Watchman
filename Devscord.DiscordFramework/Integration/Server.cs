@@ -115,9 +115,14 @@ namespace Devscord.DiscordFramework.Integration
         }
 
         //Server
-        internal static Task<IEnumerable<DiscordServerContext>> GetDiscordServers()
+        internal static IAsyncEnumerable<DiscordServerContext> GetDiscordServersAsync()
         {
-            return _discordClient.ServersService.GetDiscordServers();
+            return _discordClient.ServersService.GetDiscordServersAsync();
+        }
+
+        internal static Task<DiscordServerContext> GetDiscordServerAsync(ulong serverId)
+        {
+            return _discordClient.ServersService.GetDiscordServerAsync(serverId);
         }
 
         internal static Task<IEnumerable<string>> GetExistingInviteLinks(ulong serverId)

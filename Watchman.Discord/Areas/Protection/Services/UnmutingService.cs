@@ -35,7 +35,7 @@ namespace Watchman.Discord.Areas.Protection.Services
         public async Task Refresh()
         {
             Log.Information("Refreshing unmuting...");
-            foreach (var server in await this._discordServersService.GetDiscordServers())
+            await foreach (var server in this._discordServersService.GetDiscordServersAsync())
             {
                 var serverMuteEvents = this._mutingHelper.GetNotUnmutedMuteEvents(server.Id).ToList();
                 if (serverMuteEvents.Count == 0)
@@ -44,12 +44,8 @@ namespace Watchman.Discord.Areas.Protection.Services
                 }
                 var contexts = new Contexts();
                 contexts.SetContext(server);
-                foreach (var muteEvent in serverMuteEvents)
+                foreach (var muteEvent in serverMuteEvents.Where(this.ShouldBeConsideredAsShortMute))
                 {
-                    if (!this.ShouldBeConsideredAsShortMute(muteEvent))
-                    {
-                        continue;
-                    }
                     var user = await this._usersService.GetUserByIdAsync(server, muteEvent.UserId);
                     var channel = server.TextChannels.FirstOrDefault(x => x.Id == muteEvent.MutedOnChannelId);
                     if (user == null)

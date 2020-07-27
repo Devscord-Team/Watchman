@@ -23,6 +23,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
         public CheckUserSafetyService(IQueryBus queryBus, UsersService usersService, DiscordServersService discordServersService, ConfigurationService configurationService)
         {
             ServerSafeUsers.UsersService = usersService;
+            ServerSafeUsers.DiscordServersService = discordServersService;
             this._queryBus = queryBus;
             this._discordServersService = discordServersService;
             this._configurationService = configurationService;
@@ -39,6 +40,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
         {
             Log.Information("Reloading user safety cache....");
             await this.UpdateMessages();
+            this._safeUsersOnServers.Values.ToList().ForEach(s => s.SafeUsers.ToList().ForEach(x => Log.Information("{user} is safe on {server}", x.ToString(), s.ServerId)));
             Log.Information("Cache user safety reloaded");
         }
 
@@ -51,12 +53,16 @@ namespace Watchman.Discord.Areas.Protection.Strategies
 
         private async Task UpdateSafetyUsersStates(IEnumerable<Message> messages)
         {
-            var serversWhereBotIs = (await this._discordServersService.GetDiscordServers()).Select(x => x.Id).ToHashSet();
+            var serversWhereBotIs = await this._discordServersService.GetDiscordServersAsync().Select(x => x.Id).ToHashSetAsync();
             var servers = messages.GroupBy(x => x.Server.Id).Where(x => serversWhereBotIs.Contains(x.Key));
 
             this._safeUsersOnServers = servers
-                .Select(x => new ServerSafeUsers(x, x.Key, this._configurationService.GetConfigurationItem<MinAverageMessagesPerWeek>(x.Key).Value))
-                .ToDictionary(x => x.ServerId, x => x);
+                .ToDictionary(x => x.Key, x =>
+                {
+                    var minAverageMessagesPerWeek = this._configurationService.GetConfigurationItem<MinAverageMessagesPerWeek>(x.Key).Value;
+                    var safeUserRolesNames = this._configurationService.GetConfigurationItem<SafeUserRolesNames>(x.Key).Value;
+                    return new ServerSafeUsers(x, x.Key, minAverageMessagesPerWeek, safeUserRolesNames.ToHashSet());
+                });
         }
     }
 }
