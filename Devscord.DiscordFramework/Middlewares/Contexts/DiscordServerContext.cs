@@ -1,4 +1,5 @@
 ﻿using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
@@ -11,13 +12,11 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
         public UserContext Owner { get; private set; }
         public ChannelContext LandingChannel { get; private set; }
         public IEnumerable<ChannelContext> TextChannels { get; private set; }
-        public IAsyncEnumerable<UserContext> Users => this._users ??= this._getServerUsers.Invoke(this);
-        public IEnumerable<UserRole> Roles => this._roles ??= this._getServerRoles.Invoke(this);
+        [JsonIgnore] public IAsyncEnumerable<UserContext> Users => this._getServerUsers.Invoke(this); // todo: use static list and events
+        [JsonIgnore] public IEnumerable<UserRole> Roles => this._getServerRoles.Invoke(this);
 
         private readonly Func<DiscordServerContext, IAsyncEnumerable<UserContext>> _getServerUsers;
         private readonly Func<DiscordServerContext, IEnumerable<UserRole>> _getServerRoles;
-        private IAsyncEnumerable<UserContext> _users;
-        private IEnumerable<UserRole> _roles;
 
         public DiscordServerContext(ulong id, string name, UserContext owner, ChannelContext landingChannel, IEnumerable<ChannelContext> textChannels, Func<DiscordServerContext, IAsyncEnumerable<UserContext>> getServerUsers, Func<DiscordServerContext, IEnumerable<UserRole>> getServerRoles)
         {

@@ -114,6 +114,11 @@ namespace Devscord.DiscordFramework.Integration
             return _discordClient.RolesService.SetRolePermissions(channels, server, permissions, role);
         }
 
+        internal static UserRole GetRole(ulong roleId, ulong guildId)
+        {
+            return _discordClient.RolesService.GetRole(roleId, guildId);
+        }
+
         //Server
         internal static IAsyncEnumerable<DiscordServerContext> GetDiscordServersAsync()
         {

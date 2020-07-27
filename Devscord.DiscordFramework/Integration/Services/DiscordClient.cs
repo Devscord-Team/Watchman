@@ -31,9 +31,11 @@ namespace Devscord.DiscordFramework.Integration.Services
                 return;
             }
             var serverContextFactory = this._context.Resolve<DiscordServerContextFactory>();
+            var userRoleFactory = this._context.Resolve<UserRoleFactory>();
+            var userContextFactory = this._context.Resolve<UserContextsFactory>();
             this.UsersService = new DiscordClientUsersService(this._client);
-            this.ChannelsService = new DiscordClientChannelsService(this._client, this.UsersService);
-            this.RolesService = new DiscordClientRolesService(this._client, this.ChannelsService);
+            this.ChannelsService = new DiscordClientChannelsService(this._client, this.UsersService, userContextFactory);
+            this.RolesService = new DiscordClientRolesService(this._client, this.ChannelsService, userRoleFactory);
             this.ServersService = new DiscordClientServersService(this._client, serverContextFactory);
 
             this._initialized = true;

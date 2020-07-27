@@ -17,9 +17,9 @@ namespace Devscord.DiscordFramework.Services
         private readonly UserContextsFactory _userContextsFactory;
         private readonly Regex _exMention = new Regex(@"\d+", RegexOptions.Compiled);
 
-        public UsersService()
+        public UsersService(UsersRolesService usersRolesService, DiscordServersService discordServersService)
         {
-            this._userContextsFactory = new UserContextsFactory();
+            this._userContextsFactory = new UserContextsFactory(usersRolesService, discordServersService);
         }
 
         public async Task AddRoleAsync(UserRole role, UserContext user, DiscordServerContext server)
