@@ -8,7 +8,7 @@ namespace Watchman.Discord.Areas.Responses.BotCommands
 {
     public class UpdateResponseCommand : IBotCommand
     {
-        [Text]
+        [SingleWord]
         public string OnEvent { get; set; }
         [Text]
         public string Message { get; set; }

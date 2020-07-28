@@ -25,7 +25,7 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
         private readonly MessagesServiceFactory _messagesServiceFactory;
-        private readonly Period[] implementedBySplitter = new Period[] { Period.Day };
+        private readonly Period[] implementedBySplitter = new Period[] { Period.Day }; //TODO remove when all splitters will be done
 
         public StatisticsController(IQueryBus queryBus, ICommandBus commandBus, MessagesServiceFactory messagesServiceFactory, ReportsService reportsService, ChartsService chartsService)
         {

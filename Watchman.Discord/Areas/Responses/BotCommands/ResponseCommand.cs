@@ -9,7 +9,9 @@ namespace Watchman.Discord.Areas.Responses.BotCommands
 {
     public class ResponsesCommand : IBotCommand
     {
-        [Text]
-        public string Type { get; set; }
+        [Bool]
+        public bool Default { get; set; }
+        [Bool]
+        public bool Custom { get; set; }
     }
 }

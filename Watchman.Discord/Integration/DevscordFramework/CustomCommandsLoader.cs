@@ -45,10 +45,9 @@ namespace Watchman.Discord.Integration.DevscordFramework
                     new AddCustomCommandsCommand("Watchman.Discord.Areas.Responses.BotCommands.AddResponseCommand", @"-add\s*response\s*-onevent\s*(?<OnEvent>.*)\s*-message\s*(?<Message>.*)", serverId),
                     new AddCustomCommandsCommand("Watchman.Discord.Areas.Responses.BotCommands.UpdateResponseCommand", @"-update\s*response\s*-onevent\s*(?<OnEvent>.*)\s*-message\s*(?<Message>.*)", serverId),
                     new AddCustomCommandsCommand("Watchman.Discord.Areas.Responses.BotCommands.RemoveResponseCommand", @"-remove\s*response\s*-onevent\s*(?<OnEvent>.*)", serverId),
-                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Responses.BotCommands.ResponsesCommand", @"-responses\s*-?(?<Type>.*)", serverId),
-                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Protection.BotCommands.MuteCommand", @"-mute\s*(?<Mention>.*)\s*-t\s*(?<Time>.*)\s*-reason\s*(?<Reason>.*)", serverId),
-                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Protection.BotCommands.UnmuteCommand", @"-unmute\s*(?<Mention>.*)", serverId),
-                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Administration.BotCommands.MessagesCommand", @"-messages\s*(?<Mention>.*)\s*-t\s*(?<Time>[^\s]*)\s*(?<HasForceArgument>-force|-f)?", serverId),                  
+                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Protection.BotCommands.MuteCommand", @"-mute\s*(?<User>.*)\s*-t\s*(?<Time>.*)\s*-reason\s*(?<Reason>.*)", serverId),
+                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Protection.BotCommands.UnmuteCommand", @"-unmute\s*(?<User>.*)", serverId),
+                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Administration.BotCommands.MessagesCommand", @"-messages\s*(?<User>.*)\s*-t\s*(?<Time>[^\s]*)\s*(?<HasForceArgument>-force|-f)?", serverId),                  
                 });
             }
             var commandsInBase = this._queryBus.Execute(new GetCustomCommandsQuery()).CustomCommands.ToList();

@@ -4,6 +4,9 @@ using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Devscord.DiscordFramework.Framework.Commands.Properties;
+using Devscord.DiscordFramework.Commons.Exceptions;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework.Framework.Commands.Services
 {
@@ -18,13 +21,13 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             this._botCommandsRequestValueGetterService = botCommandsRequestValueGetterService;
         }
 
-        public IBotCommand ParseRequestToCommand(Type commandType, DiscordRequest request, BotCommandTemplate template)
+        public async Task<IBotCommand> ParseRequestToCommand(Type commandType, DiscordRequest request, BotCommandTemplate template)
         {
-            var result = this.GetFilledInstance(commandType, template, (key, isList) => this._botCommandsRequestValueGetterService.GetValueByName(key, isList, request, template));
+            var result = await this.GetFilledInstance(commandType, template, (key, isList) => this._botCommandsRequestValueGetterService.GetValueByName(key, isList, request, template));
             return result;
         }
 
-        public IBotCommand ParseCustomTemplate(Type commandType, BotCommandTemplate template, Regex customTemplate, string input)
+        public async Task<IBotCommand> ParseCustomTemplate(Type commandType, BotCommandTemplate template, Regex customTemplate, string input)
         {
             var match = customTemplate.Match(input);
             if (!this.CustomTemplateIsValid(match, template))
@@ -32,30 +35,44 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                 Log.Warning("Custom template {customTemplate} is not valid for {commandName}", customTemplate, template.CommandName);
                 return null;
             }
-            var result = this.GetFilledInstance(commandType, template, (key, isList) => this._botCommandsRequestValueGetterService.GetValueByNameFromCustomCommand(key, isList, template, match));
+            var result = await this.GetFilledInstance(commandType, template, (key, isList) => this._botCommandsRequestValueGetterService.GetValueByNameFromCustomCommand(key, isList, template, match));
             return result;
         }
 
-        private IBotCommand GetFilledInstance(Type commandType, BotCommandTemplate template, Func<string, bool, object> getValueByName)
+        private async Task<IBotCommand> GetFilledInstance(Type commandType, BotCommandTemplate template, Func<string, bool, object> getValueByName)
         {
             var instance = Activator.CreateInstance(commandType);
             foreach (var property in commandType.GetProperties())
             {
-                var propertyType = template.Properties.FirstOrDefault(x => x.Name == property.Name)?.Type;
-                var isList = propertyType == BotCommandPropertyType.List;
+                var propertyType = (template.Properties.FirstOrDefault(x => x.Name == property.Name)?.Type).Value;
+                var isList = propertyType == BotCommandPropertyType.List;         
                 var value = getValueByName.Invoke(property.Name, isList);
+                var isPropertyOptional = (template.Properties.FirstOrDefault(x => x.Name == property.Name)?.IsOptional).Value;
                 if (value == null)
-                {
+                { 
+                    if (!isPropertyOptional)
+                    {
+                        throw new NotEnoughArgumentsException();
+                    }
                     continue;
                 }
-                if (isList)
+                if (isList && value is List<string> valueList)
                 {
+                    var IsEmptyList = !valueList.Any() || string.IsNullOrWhiteSpace(valueList.First());
+                    if (IsEmptyList && !isPropertyOptional)
+                    {
+                        throw new NotEnoughArgumentsException();
+                    }
                     property.SetValue(instance, value);
                     continue;
                 }
-                if (value is string valueString && !string.IsNullOrWhiteSpace(valueString))
+                if (value is string valueString)
                 {
-                    var convertedType = this._botCommandPropertyConversionService.ConvertType(valueString, propertyType.Value);
+                    if (string.IsNullOrWhiteSpace(valueString) && !isPropertyOptional)
+                    {
+                        throw new NotEnoughArgumentsException();
+                    }
+                    var convertedType = await this._botCommandPropertyConversionService.ConvertType(valueString, propertyType);
                     property.SetValue(instance, convertedType);
                 }
             }

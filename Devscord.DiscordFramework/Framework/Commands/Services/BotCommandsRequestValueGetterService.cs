@@ -10,7 +10,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
     {
         public object GetValueByName(string key, bool isList, DiscordRequest request, BotCommandTemplate template)
         {
-            var result = request.Arguments.FirstOrDefault(a => a.Name.ToLowerInvariant() == key.ToLowerInvariant());
+            var result = request.Arguments.FirstOrDefault(a => a.Name?.ToLowerInvariant() == key.ToLowerInvariant());
             if (result == null)
             {
                 return null;
@@ -19,7 +19,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                 ?.Type;
             if (argType.HasValue && argType.Value == BotCommandPropertyType.Bool)
             {
-                return result.Value ?? bool.TrueString;
+                return bool.TrueString;
             }
             if (!isList)
             {
@@ -42,9 +42,9 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             var lowerCaseKey = key.ToLowerInvariant();
             var value = match.Groups[key].Value.Trim();
             var argType = template.Properties.FirstOrDefault(x => x.Name.ToLowerInvariant() == lowerCaseKey)?.Type;
-            if (argType.HasValue && argType.Value == BotCommandPropertyType.Bool && !string.IsNullOrWhiteSpace(value))
+            if (argType.HasValue && argType.Value == BotCommandPropertyType.Bool)
             {
-                return bool.TrueString;
+                return !string.IsNullOrWhiteSpace(value) ? bool.TrueString : null;
             }
             if (!isList)
             {

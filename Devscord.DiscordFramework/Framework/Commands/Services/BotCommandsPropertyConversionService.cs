@@ -1,7 +1,11 @@
-﻿using Devscord.DiscordFramework.Framework.Commands.Properties;
+﻿using Devscord.DiscordFramework.Commons.Exceptions;
+using Devscord.DiscordFramework.Framework.Commands.Properties;
+using Devscord.DiscordFramework.Integration;
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework.Framework.Commands.Services
 {
@@ -10,17 +14,25 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
         private readonly Regex _exTime = new Regex(@"(?<Value>\d+)(?<Unit>(ms|d|h|m|s))", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         private readonly Regex _exMention = new Regex(@"\d+", RegexOptions.Compiled);
 
-        public object ConvertType(string value, BotCommandPropertyType type)
+        public async Task<object> ConvertType(string value, BotCommandPropertyType type)
         {
-            return type switch
+            try
             {
-                BotCommandPropertyType.Time => this.ToTimeSpan(value),
-                BotCommandPropertyType.Number => int.Parse(value),
-                BotCommandPropertyType.Bool => bool.Parse(value),
-                BotCommandPropertyType.UserMention => ulong.Parse(_exMention.Match(value).Value),
-                BotCommandPropertyType.ChannelMention => ulong.Parse(_exMention.Match(value).Value),
-                _ => value
-            };
+                return type switch
+                {
+                    BotCommandPropertyType.Time => this.ToTimeSpan(value),
+                    BotCommandPropertyType.Number => int.Parse(value),
+                    BotCommandPropertyType.Bool => bool.Parse(value),
+                    BotCommandPropertyType.UserMention => await this.ParseToUserId(value),
+                    BotCommandPropertyType.ChannelMention => await this.ParseToChannelId(value),
+                    BotCommandPropertyType.SingleWord => !value.Any(char.IsWhiteSpace) ? value : throw new InvalidArgumentsException(),
+                    _ => value
+                };
+            }
+            catch
+            {
+                throw new InvalidArgumentsException();
+            }  
         }
 
         private TimeSpan ToTimeSpan(string value)
@@ -37,6 +49,20 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                 "ms" => TimeSpan.FromMilliseconds(timeValue),
                 _ => throw new ArgumentNullException()
             };
+        }
+
+        private async Task<ulong> ParseToUserId(string value)
+        {
+            var id = ulong.Parse(_exMention.Match(value).Value);
+            var user = await Server.GetUser(id);
+            return user != null ? id : throw new InvalidArgumentsException();
+        }
+
+        private async Task<ulong> ParseToChannelId(string value)
+        {
+            var id = ulong.Parse(_exMention.Match(value).Value);
+            var channel = await Server.GetChannel(id);
+            return channel != null ? id : throw new InvalidArgumentsException();
         }
     }
 }

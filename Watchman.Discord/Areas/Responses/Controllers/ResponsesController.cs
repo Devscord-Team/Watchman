@@ -18,7 +18,6 @@ namespace Watchman.Discord.Areas.Responses.Controllers
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly Services.ResponsesService _responsesService;
         private readonly ResponsesMessageService _responsesMessageService;
-        private readonly string[] _possibleArguments = { "all", "default", "custom" };
 
         public ResponsesController(MessagesServiceFactory messagesServiceFactory, Services.ResponsesService responsesService, ResponsesMessageService responsesMessageService)
         {
@@ -31,11 +30,6 @@ namespace Watchman.Discord.Areas.Responses.Controllers
         public async Task AddResponse(AddResponseCommand command, Contexts contexts)
         {
             var messageService = this._messagesServiceFactory.Create(contexts);
-            if (command.OnEvent == null || command.Message == null)
-            {
-                await messageService.SendResponse(x => x.NotEnoughArguments());
-                return;
-            }
             var response = await this._responsesService.GetResponseByOnEvent(command.OnEvent);
             if (response == null)
             {
@@ -64,11 +58,6 @@ namespace Watchman.Discord.Areas.Responses.Controllers
         public async Task UpdateResponse(UpdateResponseCommand command, Contexts contexts)
         {
             var messageService = this._messagesServiceFactory.Create(contexts);
-            if (command.OnEvent == null || command.Message == null)
-            {
-                await messageService.SendResponse(x => x.NotEnoughArguments());
-                return;
-            }
             var response = await this._responsesService.GetResponseByOnEvent(command.OnEvent, contexts.Server.Id);
             if (response == null)
             {
@@ -92,11 +81,6 @@ namespace Watchman.Discord.Areas.Responses.Controllers
         public async Task RemoveResponse(RemoveResponseCommand command, Contexts contexts)
         {
             var messageService = this._messagesServiceFactory.Create(contexts);
-            if (command.OnEvent == null)
-            {
-                await messageService.SendResponse(x => x.NotEnoughArguments());
-                return;
-            }
             var response = await this._responsesService.GetResponseByOnEvent(command.OnEvent, contexts.Server.Id);
             if (response == null)
             {
@@ -110,8 +94,16 @@ namespace Watchman.Discord.Areas.Responses.Controllers
         [AdminCommand]
         public async Task Responses(ResponsesCommand command, Contexts contexts)
         {
-            var typeOfResponses = command.Type?.ToLowerInvariant();
-            if (!this._possibleArguments.Contains(typeOfResponses))
+            string typeOfResponses;
+            if (command.Default)
+            {
+                typeOfResponses = "default";
+            }
+            else if (command.Custom)
+            {
+                typeOfResponses = "custom";
+            }
+            else
             {
                 typeOfResponses = "all";
             }

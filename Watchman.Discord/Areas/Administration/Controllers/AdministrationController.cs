@@ -18,7 +18,6 @@ using Watchman.DomainModel.DiscordServer.Commands;
 using Watchman.DomainModel.Messages.Queries;
 using Watchman.Discord.Areas.Users.Services;
 using Watchman.Discord.Areas.Administration.BotCommands;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Watchman.Discord.Areas.Administration.Controllers
 {
@@ -29,41 +28,23 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         private readonly DirectMessagesService _directMessagesService;
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly RolesService _rolesService;
-        private readonly ParserTime _parserTime;
 
-        public AdministrationController(IQueryBus queryBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, RolesService rolesService, ParserTime parserTime)
+        public AdministrationController(IQueryBus queryBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, RolesService rolesService)
         {
             this._queryBus = queryBus;
             this._usersService = usersService;
             this._directMessagesService = directMessagesService;
             this._messagesServiceFactory = messagesServiceFactory;
             this._rolesService = rolesService;
-            this._parserTime = parserTime;
         }
 
         [AdminCommand]
         public async Task ReadUserMessages(MessagesCommand command, Contexts contexts)
         {
-            var mention = command.Mention.StartsWith("<@!") && command.Mention.EndsWith('>') 
-                ? command.Mention
-                : throw new UserDidntMentionAnyUserException();
-
-            var selectedUser = await this._usersService.GetUserByMentionAsync(contexts.Server, mention) ?? throw new UserNotFoundException(mention);
-
+            var selectedUser = await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
             var messagesService = this._messagesServiceFactory.Create(contexts);
-            TimeRange timeRange = null;
-            try
-            {
-                timeRange = this._parserTime.GetPastTimeRange(timeAsString: command.Time, defaultTime: TimeSpan.FromHours(1));
-            }
-            catch (InvalidArgumentsException)
-            {
-                await messagesService.SendResponse(x => x.InvalidArguments());
-            }
-            catch (TimeIsTooBigException)
-            {
-                await messagesService.SendResponse(x => x.TimeIsTooBig());
-            }
+            var timeRange = new TimeRange(DateTime.UtcNow - command.Time, DateTime.UtcNow);
+
             var query = new GetMessagesQuery(contexts.Server.Id, selectedUser.Id)
             {
                 SentDate = timeRange
@@ -95,15 +76,10 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         }
 
         [AdminCommand]
-        public async Task SetRoleAsSafe(SetRoleCommand setRoleCommand, Contexts contexts)
+        public async Task SetRoleAsSafe(SetRoleCommand command, Contexts contexts)
         {
-            var roles = setRoleCommand.Roles;
-            if (roles.Count == 0 || string.IsNullOrWhiteSpace(roles.First()) || !(setRoleCommand.Safe || setRoleCommand.Unsafe))
-            {
-                throw new NotEnoughArgumentsException();
-            }
-            var shouldSetToSafe = setRoleCommand.Safe;
-            await this._rolesService.SetRolesAsSafe(contexts, roles, shouldSetToSafe);
+            var shouldSetToSafe = command.Safe;
+            await this._rolesService.SetRolesAsSafe(contexts, command.Roles, shouldSetToSafe);
         }
     }
 }

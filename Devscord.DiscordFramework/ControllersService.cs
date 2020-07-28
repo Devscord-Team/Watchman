@@ -122,28 +122,17 @@ namespace Devscord.DiscordFramework
                         //TODO zoptymalizować, spokojnie można to pobierać wcześniej i używać raz, zamiast wszystko obliczać przy każdym odpaleniu
                         var template = this._botCommandsService.GetCommandTemplate(commandInParameterType);
                         var customCommand = await this._commandsContainer.GetCommand(request, commandInParameterType, contexts.Server.Id);
-                        var isCommandCustom = customCommand != null;
-                        var isToContinue = !this._botCommandsService.IsMatchedWithCommand(request, template, isCommandCustom);
-                        IBotCommand command;
-                        if (isToContinue)
+                        if (customCommand != null || this._botCommandsService.IsMatchedWithCommand(request, template))
                         {
-                            if (!isCommandCustom)
+                            if (this.IsValid(contexts, method))
                             {
-                                continue;
+                                var command = customCommand == null
+                                    ? await this._botCommandsService.ParseRequestToCommand(commandInParameterType, request, template)
+                                    : await this._botCommandsService.ParseCustomTemplate(commandInParameterType, template, customCommand.Template, request.OriginalMessage);
+                                await InvokeMethod(command, contexts, controllerInfo, method);
+                                return;
                             }
-                            //TODO optional parameters validation
-                            command = this._botCommandsService.ParseCustomTemplate(commandInParameterType, template, customCommand.Template, request.OriginalMessage);
-                        }
-                        else
-                        {
-                            command = this._botCommandsService.ParseRequestToCommand(commandInParameterType, request, template);
-                        }
-                        if (!this.IsValid(contexts, method))
-                        {
-                            continue;
-                        }
-                        await InvokeMethod(command, contexts, controllerInfo, method);
-                        return;
+                        }      
                     }
                 }
             }

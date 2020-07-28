@@ -8,10 +8,10 @@ namespace Watchman.Discord.Areas.Administration.BotCommands
 {
     public class MessagesCommand : IBotCommand
     {  
-        [Text]
-        public string Mention { get; set; }
-        [Text]
-        public string Time { get; set; }
+        [UserMention]
+        public ulong User { get; set; }
+        [Time]
+        public TimeSpan Time { get; set; }
         [Bool]
         public bool HasForceArgument { get; set; }
     }
