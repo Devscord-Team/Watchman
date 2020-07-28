@@ -2,6 +2,7 @@
 using Devscord.DiscordFramework.Services;
 using Discord;
 using Discord.Rest;
+using Discord.WebSocket;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -20,14 +21,13 @@ namespace Devscord.DiscordFramework.Middlewares.Factories
 
         public UserContext Create(IUser user)
         {
-            var socketGuildUser = user as RestGuildUser;
             var avatarUrl = user.GetAvatarUrl(ImageFormat.Png, 2048);
-            if (socketGuildUser is null)
+            if (!(user is IGuildUser guildUser))
             {
                 return new UserContext(user.Id, user.ToString(), new List<UserRole>(), avatarUrl, user.Mention, false);
             }
-            var roles = socketGuildUser.RoleIds.Select(x => this._usersRolesService.GetRole(x, socketGuildUser.GuildId));
-            var owner = this._discordServersService.GetDiscordServerAsync(socketGuildUser.GuildId).Result;
+            var roles = guildUser.RoleIds.Select(x => this._usersRolesService.GetRole(x, guildUser.GuildId));
+            var owner = this._discordServersService.GetDiscordServerAsync(guildUser.GuildId).Result;
             var isOwner = owner.Id == user.Id;
             return new UserContext(user.Id, user.ToString(), roles.ToList(), avatarUrl, user.Mention, isOwner);
         }

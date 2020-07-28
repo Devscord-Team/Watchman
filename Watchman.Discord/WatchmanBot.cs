@@ -66,15 +66,7 @@ namespace Watchman.Discord
                                 Log.Information("Bot was connected less than 1 minute ago");
                                 return;
                             }
-                            var servers = serversService.GetDiscordServersAsync();
-
-                            Task.WaitAll(await servers.Select(async server =>
-                            {
-                                Log.Information("Initializing server: {server}", server.ToJson());
-                                await initService.InitServer(server);
-                                Log.Information("Done server: {server}", server.ToJson());
-                            }).ToArrayAsync());
-
+                            await serversService.GetDiscordServersAsync().ForEachAwaitAsync(initService.InitServer);
                             Log.Information(stopwatch.ElapsedMilliseconds.ToString());
                         })
                         .AddHandler(() => Task.Run(() => Log.Information("Bot has done every Ready tasks.")));

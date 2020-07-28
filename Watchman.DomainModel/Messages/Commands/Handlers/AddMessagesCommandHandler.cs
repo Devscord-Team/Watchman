@@ -9,7 +9,7 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
 {
     public class AddMessagesCommandHandler : ICommandHandler<AddMessagesCommand>
     {
-        private List<string> _cashedExistingMessagesHashes;
+        private HashSet<string> _cashedExistingMessagesHashes;
         private ulong _cashedChannelId;
 
         private readonly ISessionFactory _sessionFactory;
@@ -23,7 +23,7 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
 
         public async Task HandleAsync(AddMessagesCommand command)
         {
-            var newMessages = this.GetOnlyNewMessages(command.Messages, command.ChannelId).ToList();
+            var newMessages = this.GetOnlyNewMessages(command.Messages, command.ChannelId);
             using var session = this._sessionFactory.Create();
             foreach (var message in newMessages)
             {
@@ -33,30 +33,21 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
 
         private IEnumerable<Message> GetOnlyNewMessages(IEnumerable<Message> messages, ulong channelId)
         {
-            using var session = this._sessionFactory.Create();
             var existingHashes = this.GetExistingHashes(channelId);
-
-            return messages.Where(x =>
-            {
-                var isMessageNew = existingHashes.BinarySearch(this._md5HashService.GetHash(x)) < 0;
-                return isMessageNew;
-            });
+            return messages.Where(x => !existingHashes.Contains(this._md5HashService.GetHash(x)));
         }
 
-        private List<string> GetExistingHashes(ulong channelId)
+        private HashSet<string> GetExistingHashes(ulong channelId)
         {
             if (this._cashedChannelId == channelId)
             {
                 return this._cashedExistingMessagesHashes;
             }
-
             using var session = this._sessionFactory.Create();
             var channelMessagesHashes = session.Get<Message>()
                 .Where(x => x.Channel.Id == channelId)
                 .Select(x => x.Md5Hash)
-                .ToList() // ToList must be here
-                .OrderBy(x => x)
-                .ToList();
+                .ToHashSet();
 
             this._cashedChannelId = channelId;
             this._cashedExistingMessagesHashes = channelMessagesHashes;

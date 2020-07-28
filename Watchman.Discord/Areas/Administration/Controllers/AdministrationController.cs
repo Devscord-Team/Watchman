@@ -31,9 +31,8 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         private readonly RolesService _rolesService;
         private readonly TrustRolesService _trustRolesService;
         private readonly CheckUserSafetyService _checkUserSafetyService;
-        private readonly EmbedMessagesService _embedMessagesService;
 
-        public AdministrationController(IQueryBus queryBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, RolesService rolesService, TrustRolesService trustRolesService, CheckUserSafetyService checkUserSafetyService, EmbedMessagesService embedMessagesService)
+        public AdministrationController(IQueryBus queryBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, RolesService rolesService, TrustRolesService trustRolesService, CheckUserSafetyService checkUserSafetyService)
         {
             this._queryBus = queryBus;
             this._usersService = usersService;
@@ -42,7 +41,6 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             this._rolesService = rolesService;
             this._trustRolesService = trustRolesService;
             this._checkUserSafetyService = checkUserSafetyService;
-            this._embedMessagesService = embedMessagesService;
         }
 
         [AdminCommand]

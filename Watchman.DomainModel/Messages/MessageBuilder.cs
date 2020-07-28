@@ -26,10 +26,9 @@ namespace Watchman.DomainModel.Messages
             return this;
         }
 
-        public MessageBuilder WithServer(ulong id, string name, ulong ownerId, string ownerName)
+        public MessageBuilder WithServer(ulong id, string name)
         {
-            var owner = new User(ownerId, ownerName);
-            var server = new Server(id, name, owner);
+            var server = new Server(id, name);
             this._message.SetServer(server);
             return this;
         }

@@ -42,7 +42,6 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
                 contexts.User.Id, contexts.User.Name,
                 contexts.Channel.Id, contexts.Channel.Name,
                 contexts.Server.Id, contexts.Server.Name,
-                contexts.Server.Owner.Id, contexts.Server.Owner.Name,
                 request.SentAt);
             Log.Information("Command created");
             await this._commandBus.ExecuteAsync(command);
