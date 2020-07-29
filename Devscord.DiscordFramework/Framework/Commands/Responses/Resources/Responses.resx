@@ -249,4 +249,7 @@
   <data name="RoleSetAsUntrusted" xml:space="preserve">
     <value>Ustawiono rolę {{role}} jako niezaufaną.</value>
   </data>
+  <data name="ServerDoesntHaveAnyTrustedRole" xml:space="preserve">
+    <value>Serwer nie ma żadnych roli ustawionych jako zaufane.</value>
+  </data>
 </root>

@@ -129,8 +129,13 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         [AdminCommand]
         public async Task GetTrustedRoles(TrustedRolesCommand trustedRolesCommand, Contexts contexts)
         {
-            var safeRolesNames = this._trustRolesService.GetTrustedRolesNames(contexts.Server.Id);
+            var safeRolesNames = this._trustRolesService.GetTrustedRolesNames(contexts.Server.Id).ToList();
             var messagesService = this._messagesServiceFactory.Create(contexts);
+            if (safeRolesNames.Count == 0)
+            {
+                await messagesService.SendResponse(x => x.ServerDoesntHaveAnyTrustedRole());
+                return;
+            }
             await messagesService.SendEmbedMessage(
                 "Zaufane role",
                 $"Lista zaufanych roli na serwerze {contexts.Server.Name}",

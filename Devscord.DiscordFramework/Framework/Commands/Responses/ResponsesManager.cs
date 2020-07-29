@@ -264,5 +264,10 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             return responsesService.ProcessResponse("RoleSetAsUntrusted",
                 new KeyValuePair<string, string>("role", roleName));
         }
+
+        public static string ServerDoesntHaveAnyTrustedRole(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("ServerDoesntHaveAnyTrustedRole");
+        }
     }
 }

@@ -358,6 +358,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Serwer nie ma żadnych roli ustawionych jako zaufane..
+        /// </summary>
+        public static string ServerDoesntHaveAnyTrustedRole {
+            get {
+                return ResourceManager.GetString("ServerDoesntHaveAnyTrustedRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Spam alert! Wykryto spam u użytkownika {{user}} na kanale {{channel}}. Poczekaj chwile zanim coś napiszesz..
         /// </summary>
         public static string SpamAlertRecognized {
