@@ -9,7 +9,7 @@ namespace Watchman.DomainModel.Responses.Commands
         
         public RemoveResponsesCommand(IEnumerable<Response> responsesToRemove)
         {
-            ResponsesToRemove = responsesToRemove;
+            this.ResponsesToRemove = responsesToRemove;
         }
     }
 }

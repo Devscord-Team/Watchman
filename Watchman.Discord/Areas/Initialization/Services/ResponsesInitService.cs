@@ -29,24 +29,18 @@ namespace Watchman.Discord.Areas.Initialization.Services
             
             foreach (var baseResponse in responsesInBase)
             {
-                // Check if there's a matching default response in resources
                 var matchingDefaultResponse = defaultResponses.FirstOrDefault(defaultResponse => defaultResponse.OnEvent == baseResponse.OnEvent);
-                if (matchingDefaultResponse != null)
+                if (matchingDefaultResponse == null)
                 {
-                    // there's a matching default response, update existing db response
-                    baseResponse.UpdateAvailableVariables(matchingDefaultResponse.AvailableVariables);
-                    baseResponse.SetMessage(matchingDefaultResponse.Message);
-                    responsesToUpdate.Add(baseResponse);
-                }
-                else
-                {
-                    // there's no matching default response, remove the db one
                     responsesToRemove.Add(baseResponse);
+                    continue;
                 }
+                baseResponse.UpdateAvailableVariables(matchingDefaultResponse.AvailableVariables);
+                baseResponse.SetMessage(matchingDefaultResponse.Message);
+                responsesToUpdate.Add(baseResponse);
             }
             
-            var responsesToAdd = defaultResponses
-                .Where(def => responsesToUpdate.All(@base => @base.OnEvent != def.OnEvent));
+            var responsesToAdd = defaultResponses.Where(def => responsesToUpdate.All(@base => @base.OnEvent != def.OnEvent));
             
             var command = new RemoveResponsesCommand(responsesToRemove);
             await this._commandBus.ExecuteAsync(command);
@@ -60,7 +54,6 @@ namespace Watchman.Discord.Areas.Initialization.Services
                 Log.Information("No new responses");
                 return;
             }
-
             var command = new AddOrUpdateResponsesCommand(responsesToUpdate);
             await this._commandBus.ExecuteAsync(command);
             Log.Information("Responses initialized");
