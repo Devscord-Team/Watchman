@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Autofac;
 using Devscord.DiscordFramework.Integration;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Middlewares.Factories;
@@ -17,9 +18,9 @@ namespace Devscord.DiscordFramework.Services
         private readonly UserContextsFactory _userContextsFactory;
         private readonly Regex _exMention = new Regex(@"\d+", RegexOptions.Compiled);
 
-        public UsersService(UsersRolesService usersRolesService, DiscordServersService discordServersService)
+        public UsersService(IComponentContext context)
         {
-            this._userContextsFactory = new UserContextsFactory(usersRolesService, discordServersService);
+            this._userContextsFactory = new UserContextsFactory(context, this);
         }
 
         public async Task AddRoleAsync(UserRole role, UserContext user, DiscordServerContext server)
@@ -74,7 +75,7 @@ namespace Devscord.DiscordFramework.Services
             return this._userContextsFactory.Create(user);
         }
 
-        public DateTime? GetUserJoinedDateTime(ulong userId, ulong serverId)
+        public DateTime? GetUserJoinedServerAt(ulong userId, ulong serverId)
         {
             return Server.GetGuildUser(userId, serverId).Result?.JoinedAt?.DateTime;
         }

@@ -2,7 +2,7 @@
 
 namespace Watchman.Discord.Areas.Administration.BotCommands
 {
-    public class GetSafeUsersCommand : IBotCommand
+    public class SafeUsersCommand : IBotCommand
     {
     }
 }

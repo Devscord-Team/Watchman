@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autofac;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Watchman.DomainModel.Messages;
@@ -9,8 +10,7 @@ namespace Watchman.Discord.Areas.Protection.Models
 {
     public readonly struct ServerSafeUsers
     {
-        public static UsersService UsersService { get; set; }
-        public static DiscordServersService DiscordServersService { get; set; }
+        public static IComponentContext ComponentContext { get; set; }
 
         public ulong ServerId { get; }
         public HashSet<ulong> SafeUsers { get; }
@@ -18,7 +18,7 @@ namespace Watchman.Discord.Areas.Protection.Models
         public ServerSafeUsers(IEnumerable<Message> serverMessages, ulong serverId, int minAverageMessagesPerWeek, HashSet<string> safeUserRolesNames)
         {
             this.ServerId = serverId;
-            var users = DiscordServersService.GetDiscordServerAsync(serverId).Result.Users.ToDictionaryAsync(x => x.Id, x => x).Result;
+            var users = ComponentContext.Resolve<DiscordServersService>().GetDiscordServerAsync(serverId).Result.Users.ToDictionaryAsync(x => x.Id, x => x).Result;
             this.SafeUsers = serverMessages
                 .GroupBy(x => x.Author.Id)
                 .Where(u => IsUserSafe(u.ToList(), users.GetValueOrDefault(u.Key), serverId, minAverageMessagesPerWeek, safeUserRolesNames))
@@ -59,7 +59,7 @@ namespace Watchman.Discord.Areas.Protection.Models
 
         private static int GetHowManyDaysUserIsOnThisServer(ulong userId, ulong serverId)
         {
-            var joinedAt = UsersService.GetUserJoinedDateTime(userId, serverId) ?? DateTime.Now;
+            var joinedAt = ComponentContext.Resolve<UsersService>().GetUserJoinedServerAt(userId, serverId) ?? DateTime.Now;
             return (int)(DateTime.Now.Date - joinedAt.Date).TotalDays;
         }
 

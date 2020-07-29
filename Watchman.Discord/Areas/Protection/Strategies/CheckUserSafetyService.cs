@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam;
 using Devscord.DiscordFramework.Services;
 using Serilog;
@@ -20,10 +21,9 @@ namespace Watchman.Discord.Areas.Protection.Strategies
         private readonly DiscordServersService _discordServersService;
         private readonly ConfigurationService _configurationService;
 
-        public CheckUserSafetyService(IQueryBus queryBus, UsersService usersService, DiscordServersService discordServersService, ConfigurationService configurationService)
+        public CheckUserSafetyService(IQueryBus queryBus, DiscordServersService discordServersService, ConfigurationService configurationService, IComponentContext context)
         {
-            ServerSafeUsers.UsersService = usersService;
-            ServerSafeUsers.DiscordServersService = discordServersService;
+            ServerSafeUsers.ComponentContext = context;
             this._queryBus = queryBus;
             this._discordServersService = discordServersService;
             this._configurationService = configurationService;

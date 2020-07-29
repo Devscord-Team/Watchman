@@ -2,7 +2,6 @@
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Integration;
 using Devscord.DiscordFramework.Middlewares.Factories;
-using Devscord.DiscordFramework.Services;
 using Discord.WebSocket;
 
 namespace Devscord.DiscordFramework.Middlewares
@@ -11,9 +10,9 @@ namespace Devscord.DiscordFramework.Middlewares
     {
         private readonly DiscordServerContextFactory _discordServerContextFactory;
 
-        public ServerMiddleware(UsersService usersService, UsersRolesService usersRolesService, IComponentContext context)
+        public ServerMiddleware(IComponentContext context)
         {
-            this._discordServerContextFactory = new DiscordServerContextFactory(usersService, usersRolesService, context.Resolve<UserContextsFactory>(), context.Resolve<ChannelContextFactory>());
+            this._discordServerContextFactory = new DiscordServerContextFactory(context);
         }
 
         public IDiscordContext Process(SocketMessage data)

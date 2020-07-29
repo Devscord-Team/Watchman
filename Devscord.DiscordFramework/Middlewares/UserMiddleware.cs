@@ -1,4 +1,5 @@
-﻿using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
+﻿using Autofac;
+using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Middlewares.Factories;
 using Devscord.DiscordFramework.Services;
 using Discord.WebSocket;
@@ -9,9 +10,9 @@ namespace Devscord.DiscordFramework.Middlewares
     {
         private readonly UserContextsFactory _userContextsFactory;
 
-        public UserMiddleware(UsersRolesService usersRolesService, DiscordServersService discordServersService)
+        public UserMiddleware(IComponentContext context)
         {
-            this._userContextsFactory = new UserContextsFactory(usersRolesService, discordServersService);
+            this._userContextsFactory = new UserContextsFactory(context, context.Resolve<UsersService>());
         }
 
         public IDiscordContext Process(SocketMessage data)

@@ -19,6 +19,7 @@ using Watchman.Discord.Areas.Administration.BotCommands;
 using Watchman.Discord.Areas.Administration.Services;
 using Watchman.Discord.Areas.Protection.Strategies;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Watchman.Discord.Areas.Administration.Controllers
 {
@@ -113,7 +114,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         }
 
         [AdminCommand]
-        public async Task GetSafeUsers(GetSafeUsersCommand getSafeUsersCommand, Contexts contexts)
+        public async Task GetSafeUsers(SafeUsersCommand safeUsersCommand, Contexts contexts)
         {
             var safeUsersIds = this._checkUserSafetyService.GetSafeUsersIds(contexts.Server.Id);
             var serverUsers = await contexts.Server.Users.ToDictionaryAsync(x => x.Id, x => x);
@@ -122,7 +123,18 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             await messagesService.SendEmbedMessage(
                 "Zaufani użytkownicy",
                 $"Lista zaufanych użytkowników na serwerze {contexts.Server.Name}",
-                safeUsers.Select(x => new KeyValuePair<string, string>("Nazwa użytkownika:", x.Name)));
+                safeUsers.Select(x => new KeyValuePair<string, string>(x.Name, x.JoinedServerAt?.ToString(CultureInfo.CurrentCulture))));
+        }
+
+        [AdminCommand]
+        public async Task GetTrustedRoles(TrustedRolesCommand trustedRolesCommand, Contexts contexts)
+        {
+            var safeRolesNames = this._trustRolesService.GetTrustedRolesNames(contexts.Server.Id);
+            var messagesService = this._messagesServiceFactory.Create(contexts);
+            await messagesService.SendEmbedMessage(
+                "Zaufane role",
+                $"Lista zaufanych roli na serwerze {contexts.Server.Name}",
+                safeRolesNames.Select(x => new KeyValuePair<string, string>("Nazwa roli:", x)));
         }
     }
 }
