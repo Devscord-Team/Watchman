@@ -14,7 +14,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
         private readonly Regex _exTime = new Regex(@"(?<Value>\d+)(?<Unit>(ms|d|h|m|s))", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         private readonly Regex _exMention = new Regex(@"\d+", RegexOptions.Compiled);
 
-        public async Task<object> ConvertType(string value, BotCommandPropertyType type)
+        public object ConvertType(string value, BotCommandPropertyType type)
         {
             try
             {
@@ -23,8 +23,8 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                     BotCommandPropertyType.Time => this.ToTimeSpan(value),
                     BotCommandPropertyType.Number => int.Parse(value),
                     BotCommandPropertyType.Bool => bool.Parse(value),
-                    BotCommandPropertyType.UserMention => await this.ParseToUserId(value),
-                    BotCommandPropertyType.ChannelMention => await this.ParseToChannelId(value),
+                    BotCommandPropertyType.UserMention => this.ParseToUserId(value),
+                    BotCommandPropertyType.ChannelMention => this.ParseToChannelId(value),
                     BotCommandPropertyType.SingleWord => !value.Any(char.IsWhiteSpace) ? value : throw new InvalidArgumentsException(),
                     _ => value
                 };
@@ -51,17 +51,17 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             };
         }
 
-        private async Task<ulong> ParseToUserId(string value)
+        private ulong ParseToUserId(string value)
         {
             var id = ulong.Parse(_exMention.Match(value).Value);
-            var user = await Server.GetUser(id);
+            var user = Server.GetUser(id).Result;
             return user != null ? id : throw new InvalidArgumentsException();
         }
 
-        private async Task<ulong> ParseToChannelId(string value)
+        private ulong ParseToChannelId(string value)
         {
             var id = ulong.Parse(_exMention.Match(value).Value);
-            var channel = await Server.GetChannel(id);
+            var channel = Server.GetChannel(id).Result;
             return channel != null ? id : throw new InvalidArgumentsException();
         }
     }

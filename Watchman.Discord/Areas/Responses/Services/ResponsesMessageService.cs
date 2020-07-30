@@ -1,8 +1,10 @@
 ﻿using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Watchman.Discord.Areas.Responses.BotCommands;
 
 namespace Watchman.Discord.Areas.Responses.Services
 {
@@ -18,19 +20,19 @@ namespace Watchman.Discord.Areas.Responses.Services
             this._embedMessageSplittingService = embedMessageSplittingService;
         }
 
-        public async Task PrintResponses(string typeOfResponses, Contexts contexts)
+        public async Task PrintResponses(ResponsesCommand command, Contexts contexts)
         {
-            switch (typeOfResponses)
+            if (command.Default)
             {
-                case "default":
-                    await _embedMessageSplittingService.SendEmbedSplitMessage("Domyślne responses:", DESCRIPTION, GetDefaultResponses(), contexts);
-                    break;
-                case "custom":
-                    await _embedMessageSplittingService.SendEmbedSplitMessage("Nadpisane responses:", DESCRIPTION, GetCustomResponses(contexts.Server.Id), contexts);
-                    break;
-                default:
-                    await _embedMessageSplittingService.SendEmbedSplitMessage("Wszystkie responses:", DESCRIPTION, GetAllResponses(), contexts);
-                    break;
+                await _embedMessageSplittingService.SendEmbedSplitMessage("Domyślne responses:", DESCRIPTION, GetDefaultResponses(), contexts);
+            }
+            else if (command.Custom)
+            {
+                await _embedMessageSplittingService.SendEmbedSplitMessage("Nadpisane responses:", DESCRIPTION, GetCustomResponses(contexts.Server.Id), contexts);
+            }
+            else
+            {
+                await _embedMessageSplittingService.SendEmbedSplitMessage("Wszystkie responses:", DESCRIPTION, GetAllResponses(), contexts);
             }
         }
 

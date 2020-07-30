@@ -37,19 +37,19 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             return this.botCommandsTemplateBuilder.GetCommandTemplate(commandType);
         }
 
-        public async Task<T> ParseRequestToCommand<T>(DiscordRequest request, BotCommandTemplate template) where T : IBotCommand
+        public T ParseRequestToCommand<T>(DiscordRequest request, BotCommandTemplate template) where T : IBotCommand
         {
-            return (T) await this.ParseRequestToCommand(typeof(T), request, template);
+            return (T) this.ParseRequestToCommand(typeof(T), request, template);
         }
 
-        public async Task<IBotCommand> ParseRequestToCommand(Type commandType, DiscordRequest request, BotCommandTemplate template)
+        public IBotCommand ParseRequestToCommand(Type commandType, DiscordRequest request, BotCommandTemplate template)
         {
-            return await this.botCommandParsingService.ParseRequestToCommand(commandType, request, template);
+            return this.botCommandParsingService.ParseRequestToCommand(commandType, request, template);
         }
 
-        public async Task<IBotCommand> ParseCustomTemplate(Type commandType, BotCommandTemplate template, Regex customTemplate, string input)
+        public IBotCommand ParseCustomTemplate(Type commandType, BotCommandTemplate template, Regex customTemplate, string input)
         {
-            return await this.botCommandParsingService.ParseCustomTemplate(commandType, template, customTemplate, input);
+            return this.botCommandParsingService.ParseCustomTemplate(commandType, template, customTemplate, input);
         }
     }
 }

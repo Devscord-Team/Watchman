@@ -94,20 +94,7 @@ namespace Watchman.Discord.Areas.Responses.Controllers
         [AdminCommand]
         public async Task Responses(ResponsesCommand command, Contexts contexts)
         {
-            string typeOfResponses;
-            if (command.Default)
-            {
-                typeOfResponses = "default";
-            }
-            else if (command.Custom)
-            {
-                typeOfResponses = "custom";
-            }
-            else
-            {
-                typeOfResponses = "all";
-            }
-            await this._responsesMessageService.PrintResponses(typeOfResponses, contexts);
+            await this._responsesMessageService.PrintResponses(command, contexts);
         }
     }
 }

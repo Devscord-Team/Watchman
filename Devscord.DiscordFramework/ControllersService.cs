@@ -127,8 +127,8 @@ namespace Devscord.DiscordFramework
                             if (this.IsValid(contexts, method))
                             {
                                 var command = customCommand == null
-                                    ? await this._botCommandsService.ParseRequestToCommand(commandInParameterType, request, template)
-                                    : await this._botCommandsService.ParseCustomTemplate(commandInParameterType, template, customCommand.Template, request.OriginalMessage);
+                                    ? this._botCommandsService.ParseRequestToCommand(commandInParameterType, request, template)
+                                    : this._botCommandsService.ParseCustomTemplate(commandInParameterType, template, customCommand.Template, request.OriginalMessage);
                                 await InvokeMethod(command, contexts, controllerInfo, method);
                                 return;
                             }

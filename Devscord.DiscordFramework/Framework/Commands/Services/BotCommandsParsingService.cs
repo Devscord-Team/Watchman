@@ -21,13 +21,13 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             this._botCommandsRequestValueGetterService = botCommandsRequestValueGetterService;
         }
 
-        public async Task<IBotCommand> ParseRequestToCommand(Type commandType, DiscordRequest request, BotCommandTemplate template)
+        public IBotCommand ParseRequestToCommand(Type commandType, DiscordRequest request, BotCommandTemplate template)
         {
-            var result = await this.GetFilledInstance(commandType, template, (key, isList) => this._botCommandsRequestValueGetterService.GetValueByName(key, isList, request, template));
+            var result = this.GetFilledInstance(commandType, template, (key, isList) => this._botCommandsRequestValueGetterService.GetValueByName(key, isList, request, template));
             return result;
         }
 
-        public async Task<IBotCommand> ParseCustomTemplate(Type commandType, BotCommandTemplate template, Regex customTemplate, string input)
+        public IBotCommand ParseCustomTemplate(Type commandType, BotCommandTemplate template, Regex customTemplate, string input)
         {
             var match = customTemplate.Match(input);
             if (!this.CustomTemplateIsValid(match, template))
@@ -35,11 +35,11 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                 Log.Warning("Custom template {customTemplate} is not valid for {commandName}", customTemplate, template.CommandName);
                 return null;
             }
-            var result = await this.GetFilledInstance(commandType, template, (key, isList) => this._botCommandsRequestValueGetterService.GetValueByNameFromCustomCommand(key, isList, template, match));
+            var result = this.GetFilledInstance(commandType, template, (key, isList) => this._botCommandsRequestValueGetterService.GetValueByNameFromCustomCommand(key, isList, template, match));
             return result;
         }
 
-        private async Task<IBotCommand> GetFilledInstance(Type commandType, BotCommandTemplate template, Func<string, bool, object> getValueByName)
+        private IBotCommand GetFilledInstance(Type commandType, BotCommandTemplate template, Func<string, bool, object> getValueByName)
         {
             var instance = Activator.CreateInstance(commandType);
             foreach (var property in commandType.GetProperties())
@@ -72,7 +72,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                     {
                         throw new NotEnoughArgumentsException();
                     }
-                    var convertedType = await this._botCommandPropertyConversionService.ConvertType(valueString, propertyType);
+                    var convertedType = this._botCommandPropertyConversionService.ConvertType(valueString, propertyType);
                     property.SetValue(instance, convertedType);
                 }
             }
