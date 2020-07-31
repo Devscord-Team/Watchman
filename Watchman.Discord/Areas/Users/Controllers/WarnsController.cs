@@ -37,17 +37,17 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         [AdminCommand]
         public async Task AddWarn(AddWarnCommand command, Contexts contexts)
         {
-            var messageService = _messagesServiceFactory.Create(contexts);
-            var mentionedUser = await _usersService.GetUserByMentionAsync(contexts.Server, command.User.ToString());
-            await _warnService.AddWarnToUser(command, contexts, mentionedUser);
+            var messageService = this._messagesServiceFactory.Create(contexts);
+            var mentionedUser = await this._usersService.GetUserByMentionAsync(contexts.Server, command.User.ToString());
+            await this._warnService.AddWarnToUser(command, contexts, mentionedUser);
             await messageService.SendResponse(x => x.UserHasBeenWarned(contexts.User.Name, mentionedUser.Name, command.Reason));
         }
 
         public async Task Warns(WarnsCommand command, Contexts contexts)
         {
-            var mentionedUser = command.User == 0 ? contexts.User : await _usersService.GetUserByIdAsync(contexts.Server, command.User);
+            var mentionedUser = command.User == 0 ? contexts.User : await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
             var serverId = command.All ? 0 : contexts.Server.Id;
-            var messageService = _messagesServiceFactory.Create(contexts);
+            var messageService = this._messagesServiceFactory.Create(contexts);
 
             if (!command.All)
             {
@@ -63,21 +63,19 @@ namespace Watchman.Discord.Areas.Protection.Controllers
                 return;
             }
 
-            if (contexts.User.IsAdmin)
+            if (!contexts.User.IsAdmin)
             {
-                if (mentionedUser == null)
-                {
-                    await _directMessagesService.TrySendMessage(contexts.User.Id, x => x.UserNotFound(command.User.ToString()), contexts);
-                }
-                else
-                {
-                    var warnsStr = await _warnService.GetWarnsToString(serverId, mentionedUser.Id);
-                    await _directMessagesService.TrySendMessage(contexts.User.Id, x => x.GetUserWarns(mentionedUser.Name, warnsStr), contexts);
-                }                
-                return;
+                throw new NotAdminPermissionsException();
             }
-
-            throw new NotAdminPermissionsException();
+            if (mentionedUser == null)
+            {
+                await this._directMessagesService.TrySendMessage(contexts.User.Id, x => x.UserNotFound(command.User.ToString()), contexts);
+            }
+            else
+            {
+                var warnsStr = await this._warnService.GetWarnsToString(serverId, mentionedUser.Id);
+                await this._directMessagesService.TrySendMessage(contexts.User.Id, x => x.GetUserWarns(mentionedUser.Name, warnsStr), contexts);
+            }
         }
     }
 }
