@@ -29,8 +29,8 @@ namespace Watchman.Discord.Areas.Protection.Services
 
         public Task AddWarnToUser(AddWarnCommand command, Contexts contexts, UserContext targetUser)
         {
-            var dbCommand = new AddWarnEventCommand(contexts.User.Id, targetUser.Id, command.Reason, contexts.Server.Id);
-            return _commandBus.ExecuteAsync(dbCommand);
+            var addWarnEventCommand = new AddWarnEventCommand(contexts.User.Id, targetUser.Id, command.Reason, contexts.Server.Id);
+            return _commandBus.ExecuteAsync(addWarnEventCommand);
         }
 
         public async Task<IEnumerable<WarnEvent>> GetWarns(ulong serverId, ulong userId)
