@@ -44,20 +44,17 @@ namespace Watchman.Discord.Areas.Protection.Services
         {
             var warns = (await GetWarns(serverId, userId)).ToList();
             var builder = new StringBuilder();
-
             foreach (var warnEvent in warns)
             {
-                builder.Append("\n\nDate: ").Append(warnEvent.CreatedAt.ToString())
-                    .Append("\nGranted by: ").Append(warnEvent.GrantorId)
-                    .Append("\nReceiver: ").Append(warnEvent.ReceiverId)
-                    .Append("\nReason: ").Append(warnEvent.Reason);
-
+                builder.AppendLine().AppendLine().Append("Date: ").Append(warnEvent.CreatedAt.ToString())
+                    .AppendLine().Append("Granted by: ").Append(warnEvent.GrantorId)
+                    .AppendLine().Append("Receiver: ").Append(warnEvent.ReceiverId)
+                    .AppendLine().Append("Reason: ").Append(warnEvent.Reason);
                 if (serverId == 0)
                 {
-                    builder.Append("\nServer id: ").Append(warnEvent.ServerId.ToString());
+                    builder.AppendLine().Append("Server id: ").Append(warnEvent.ServerId.ToString());
                 }
             }
-
             var result = builder.ToString();
             return String.IsNullOrWhiteSpace(result) ? new string("User has no warns") : result;
         }
