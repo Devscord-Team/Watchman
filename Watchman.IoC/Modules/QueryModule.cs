@@ -43,7 +43,7 @@ namespace Watchman.IoC.Modules
 
             builder.RegisterType<QueryBus>()
                 .As<IQueryBus>()
-                .InstancePerLifetimeScope();
+                .SingleInstance();
         }
     }
 }

@@ -1,8 +1,13 @@
-﻿using Devscord.DiscordFramework.Commons;
+﻿using System;
+using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Integration;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Devscord.DiscordFramework.Middlewares.Factories;
+using Serilog;
 
 namespace Devscord.DiscordFramework.Services
 {

@@ -83,17 +83,31 @@ namespace Devscord.DiscordFramework
                 return;
             }
 
-            DiscordRequest request;
             Contexts contexts;
             try
             {
-                request = this.ParseRequest(socketMessage);
                 contexts = this.GetContexts(socketMessage);
             }
             catch (Exception e)
             {
                 Log.Error(e, e.StackTrace);
                 return;
+            }
+
+            DiscordRequest request;
+            try
+            {
+                request = this.ParseRequest(socketMessage);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, e.StackTrace);
+                this.OnWorkflowException.ForEach(x => x.Invoke(e, contexts));
+                request = new DiscordRequest
+                {
+                    OriginalMessage = socketMessage.Content,
+                    SentAt = socketMessage.Timestamp.UtcDateTime
+                };
             }
             try
             {
@@ -106,9 +120,10 @@ namespace Devscord.DiscordFramework
                 this.OnWorkflowException.ForEach(x => x.Invoke(e, contexts));
             }
             var elapsedRun = this._stopWatch.ElapsedTicks;
-            Log.Information("_controllersService.Run time {elapsedRun}ticks", elapsedRun);
+            var elapsedMiliseconds = this._stopWatch.ElapsedMilliseconds;
+            Log.Information("_controllersService.Run time {elapsedRun}ticks (ms: {miliseconds})", elapsedRun, elapsedMiliseconds);
 #if DEBUG
-            await socketMessage.Channel.SendMessageAsync($"```Run time: {elapsedRun}ticks```");
+            await socketMessage.Channel.SendMessageAsync($"```Run time: {elapsedRun}ticks (ms: {elapsedMiliseconds})```");
 #endif
             this._stopWatch.Stop();
             this._stopWatch.Reset();
@@ -122,7 +137,8 @@ namespace Devscord.DiscordFramework
             var elapsedParse = this._stopWatch.ElapsedTicks;
             Log.Information("Parsing time: {elapsedParse}ticks", elapsedParse);
 #if DEBUG
-            socketMessage.Channel.SendMessageAsync($"```Parsing time: {elapsedParse}ticks```").Wait();
+            var elapsedMiliseconds = this._stopWatch.ElapsedMilliseconds;
+            _ = socketMessage.Channel.SendMessageAsync($"```Parsing time: {elapsedParse}ticks (ms: {elapsedMiliseconds})```");
 #endif
             Log.Information("Request parsed {request}", request.ToJson());
             return request;
@@ -135,7 +151,8 @@ namespace Devscord.DiscordFramework
             var elapsedMiddlewares = this._stopWatch.ElapsedTicks;
             Log.Information("Middlewares time: {elapsedMiddlewares}ticks", elapsedMiddlewares);
 #if DEBUG
-            socketMessage.Channel.SendMessageAsync($"```Middlewares time: {elapsedMiddlewares}ticks```").Wait();
+            var elapsedMiliseconds = this._stopWatch.ElapsedMilliseconds;
+            _ = socketMessage.Channel.SendMessageAsync($"```Middlewares time: {elapsedMiddlewares}ticks (ms: {elapsedMiliseconds})```");
 #endif
             Log.Information("Contexts created {contexts}", contexts.ToJson());
             return contexts;

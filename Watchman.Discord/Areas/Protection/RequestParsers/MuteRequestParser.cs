@@ -26,7 +26,7 @@ namespace Watchman.Discord.Areas.Protection.Services
         public UserContext GetUser()
         {
             var mention = this._request.GetMention();
-            var user = this._usersService.GetUserByMention(this._contexts.Server, mention);
+            var user = this._usersService.GetUserByMentionAsync(this._contexts.Server, mention).Result;
 
             if (user == null)
             {
@@ -38,8 +38,12 @@ namespace Watchman.Discord.Areas.Protection.Services
         public MuteEvent GetMuteEvent(ulong userId, Contexts contexts, DiscordRequest request)
         {
             var reason = this._request.Arguments.FirstOrDefault(x => x.Name == "reason" || x.Name == "r")?.Value;
+            if (string.IsNullOrWhiteSpace(reason))
+            {
+                throw new NotEnoughArgumentsException();
+            }
             var timeRange = request.GetFutureTimeRange(defaultTime: TimeSpan.FromHours(1));
-            return new MuteEvent(userId, timeRange, reason, contexts.Server.Id);
+            return new MuteEvent(userId, timeRange, reason, contexts.Server.Id, contexts.Channel.Id);
         }
     }
 }

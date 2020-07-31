@@ -30,7 +30,7 @@ namespace Watchman.IoC.Modules
                 {
                     builder.RegisterType(controller)
                         .As(controller)
-                        .InstancePerLifetimeScope();
+                        .SingleInstance();
                 }
 
                 foreach (var reference in asm.GetReferencedAssemblies())

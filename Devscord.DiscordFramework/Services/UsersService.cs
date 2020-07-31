@@ -14,52 +14,64 @@ namespace Devscord.DiscordFramework.Services
 {
     public class UsersService
     {
-        private readonly Regex exMention = new Regex(@"\d+", RegexOptions.Compiled);
+        private readonly UserContextsFactory _userContextsFactory;
+        private readonly Regex _exMention = new Regex(@"\d+", RegexOptions.Compiled);
 
-        public Task AddRole(UserRole role, UserContext user, DiscordServerContext server)
+        public UsersService()
         {
-            var socketUser = this.GetRestUser(user, server);
+            this._userContextsFactory = new UserContextsFactory();
+        }
+
+        public async Task AddRoleAsync(UserRole role, UserContext user, DiscordServerContext server)
+        {
+            var socketUser = await this.GetRestUser(user, server);
             var socketRole = this.GetRole(role.Id, server);
-            return socketUser.AddRoleAsync(socketRole);
+            await socketUser.AddRoleAsync(socketRole);
         }
 
-        public Task RemoveRole(UserRole role, UserContext user, DiscordServerContext server)
+        public async Task RemoveRoleAsync(UserRole role, UserContext user, DiscordServerContext server)
         {
-            var socketUser = this.GetRestUser(user, server);
+            var socketUser = await this.GetRestUser(user, server);
             var socketRole = this.GetRole(role.Id, server);
-            return socketUser.RemoveRoleAsync(socketRole);
+            await socketUser.RemoveRoleAsync(socketRole);
         }
 
-        public IEnumerable<UserContext> GetUsers(DiscordServerContext server)
+        public async IAsyncEnumerable<UserContext> GetUsersAsync(DiscordServerContext server)
         {
-            var guildUsers = Server.GetGuildUsers(server.Id).Result;
-            Log.Information("Found {users} on server {server}", guildUsers.Count(), server.Name);
-            var userContextFactory = new UserContextsFactory();
-            var userContexts = guildUsers.Select(x => userContextFactory.Create(x));
-            return userContexts;
+            var guildUsers = Server.GetGuildUsers(server.Id);
+            await foreach (var user in guildUsers)
+            {
+                yield return this._userContextsFactory.Create(user);
+            }
         }
 
-        public UserContext GetUserByMention(DiscordServerContext server, string mention)
+        public async Task<UserContext> GetUserByMentionAsync(DiscordServerContext server, string mention)
         {
-            var match = exMention.Match(mention);
+            var match = this._exMention.Match(mention);
             if(!match.Success)
             {
                 Log.Warning("Mention {mention} has not user ID", mention);
                 return null;
             }
             var id = ulong.Parse(match.Value);
-            var user = this.GetUserById(server, id);
+            var user = await this.GetUserByIdAsync(server, id);
             return user;
         }
 
-        public UserContext GetUserById(DiscordServerContext server, ulong userId)
+        public Task<bool> IsUserStillOnServerAsync(DiscordServerContext server, ulong userId)
         {
-            var user = this.GetUsers(server).FirstOrDefault(x => x.Id == userId);
+            return Server.IsUserStillOnServer(userId, server.Id);
+        }
+
+        public async Task<UserContext> GetUserByIdAsync(DiscordServerContext server, ulong userId)
+        {
+            var user = await Server.GetGuildUser(userId, server.Id);
             if(user == null)
             {
                 Log.Warning("Cannot get user by id {userId}", userId);
+                return null;
             }
-            return user;
+            return this._userContextsFactory.Create(user);
         }
 
         public DateTime? GetUserJoinedDateTime(ulong userId, ulong serverId)
@@ -67,9 +79,14 @@ namespace Devscord.DiscordFramework.Services
             return Server.GetGuildUser(userId, serverId).Result?.JoinedAt?.DateTime;
         }
 
-        private RestGuildUser GetRestUser(UserContext user, DiscordServerContext server)
+        public UserContext GetBot()
         {
-            return Server.GetGuildUser(user.Id, server.Id).Result;
+            return this._userContextsFactory.Create(Server.GetBotUser());
+        }
+
+        private async Task<RestGuildUser> GetRestUser(UserContext user, DiscordServerContext server)
+        {
+            return await Server.GetGuildUser(user.Id, server.Id);
         }
 
         private SocketRole GetRole(ulong roleId, DiscordServerContext server)
