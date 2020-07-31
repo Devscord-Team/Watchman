@@ -5,8 +5,8 @@ namespace Watchman.Discord.Areas.Users.BotCommands.Warns
 {
     public class WarnsCommand : IBotCommand
     {
-        [UserMention]
         [Optional]
+        [UserMention]
         public ulong User { get; set; }
 
         [Bool]

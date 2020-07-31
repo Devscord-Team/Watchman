@@ -11,6 +11,7 @@ namespace Watchman.Discord.Areas.Users.BotCommands
     {
         [UserMention]
         public ulong User { get; set; }
+        [Text]
         public string Reason { get; set; }
     }
 }
