@@ -38,14 +38,14 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         public async Task AddWarn(AddWarnCommand command, Contexts contexts)
         {
             var messageService = _messagesServiceFactory.Create(contexts);
-            var mentionedUser = _usersService.GetUserByMention(contexts.Server, command.User.ToString());
+            var mentionedUser = await _usersService.GetUserByMentionAsync(contexts.Server, command.User.ToString());
             await _warnService.AddWarnToUser(command, contexts, mentionedUser);
             await messageService.SendResponse(x => x.UserHasBeenWarned(contexts.User.Name, mentionedUser.Name, command.Reason));
         }
 
         public async Task Warns(WarnsCommand command, Contexts contexts)
         {
-            var mentionedUser = command.User == 0 ? contexts.User : _usersService.GetUserById(contexts.Server, command.User);
+            var mentionedUser = command.User == 0 ? contexts.User : await _usersService.GetUserByIdAsync(contexts.Server, command.User);
             var serverId = command.All ? 0 : contexts.Server.Id;
             var messageService = _messagesServiceFactory.Create(contexts);
 
