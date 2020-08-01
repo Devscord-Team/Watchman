@@ -14,13 +14,13 @@ using Watchman.DomainModel.Warns.Queries;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {
-    public class WarnService
+    public class WarnsService
     {
         private readonly UsersService _usersService;
         private readonly ICommandBus _commandBus;
         private readonly IQueryBus _queryBus;
 
-        public WarnService(UsersService usersService, ICommandBus commandBus, IQueryBus queryBus)
+        public WarnsService(UsersService usersService, ICommandBus commandBus, IQueryBus queryBus)
         {
             this._usersService = usersService;
             this._commandBus = commandBus;
@@ -30,13 +30,13 @@ namespace Watchman.Discord.Areas.Protection.Services
         public Task AddWarnToUser(AddWarnCommand command, Contexts contexts, UserContext targetUser)
         {
             var addWarnEventCommand = new AddWarnEventCommand(contexts.User.Id, targetUser.Id, command.Reason, contexts.Server.Id);
-            return _commandBus.ExecuteAsync(addWarnEventCommand);
+            return this._commandBus.ExecuteAsync(addWarnEventCommand);
         }
 
         public async Task<IEnumerable<WarnEvent>> GetWarns(ulong serverId, ulong userId)
         {
             var query = new GetWarnEventsQuery(serverId, userId);
-            var response = await _queryBus.ExecuteAsync(query);
+            var response = await this._queryBus.ExecuteAsync(query);
             return response.WarnEvents;
         }
 

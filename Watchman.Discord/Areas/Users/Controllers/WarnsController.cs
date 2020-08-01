@@ -24,9 +24,9 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly UsersService _usersService;
         private readonly DirectMessagesService _directMessagesService;
-        private readonly WarnService _warnService;
+        private readonly WarnsService _warnService;
 
-        public WarnsController(MessagesServiceFactory messagesServiceFactory, UsersService usersService, DirectMessagesService directMessagesService, WarnService warnService)
+        public WarnsController(MessagesServiceFactory messagesServiceFactory, UsersService usersService, DirectMessagesService directMessagesService, WarnsService warnService)
         {
             this._messagesServiceFactory = messagesServiceFactory;
             this._usersService = usersService;
@@ -47,22 +47,34 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         {
             var mentionedUser = command.User == 0 ? contexts.User : await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
             var serverId = command.All ? 0 : contexts.Server.Id;
-            var messageService = this._messagesServiceFactory.Create(contexts);
 
-            if (!command.All)
+            if (command.All)
             {
-                if (mentionedUser == null)
-                {
-                    await messageService.SendResponse(x => x.UserNotFound(command.User.ToString()));
-                }
-                else
-                {
-                    var warnsStr = await _warnService.GetWarnsToString(serverId, mentionedUser.Id);
-                    await messageService.SendResponse(x => x.GetUserWarns(mentionedUser.Name, warnsStr));
-                }
-                return;
+                await GetAllWarns(command, contexts, mentionedUser, serverId);
             }
+            else
+            {
+                await GetWarns(command, contexts, mentionedUser, serverId);
+            }
+        }
 
+        private async Task GetWarns(WarnsCommand command, Contexts contexts, UserContext? mentionedUser, ulong serverId)
+        {
+            var messageService = this._messagesServiceFactory.Create(contexts);
+            if (mentionedUser == null)
+            {
+                await messageService.SendResponse(x => x.UserNotFound(command.User.ToString()));
+            }
+            else
+            {
+                var warnsStr = await this._warnService.GetWarnsToString(serverId, mentionedUser.Id);
+                await messageService.SendResponse(x => x.GetUserWarns(mentionedUser.Name, warnsStr));
+            }
+            return;
+        }
+
+        private async Task GetAllWarns(WarnsCommand command, Contexts contexts, UserContext? mentionedUser, ulong serverId)
+        {
             if (!contexts.User.IsAdmin)
             {
                 throw new NotAdminPermissionsException();
@@ -76,6 +88,6 @@ namespace Watchman.Discord.Areas.Protection.Controllers
                 var warnsStr = await this._warnService.GetWarnsToString(serverId, mentionedUser.Id);
                 await this._directMessagesService.TrySendMessage(contexts.User.Id, x => x.GetUserWarns(mentionedUser.Name, warnsStr), contexts);
             }
-        }
+        } 
     }
 }
