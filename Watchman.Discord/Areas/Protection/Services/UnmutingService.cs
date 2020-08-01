@@ -44,10 +44,11 @@ namespace Watchman.Discord.Areas.Protection.Services
                 }
                 var contexts = new Contexts();
                 contexts.SetContext(server);
+                var textChannels = server.GetTextChannels().ToList();
                 foreach (var muteEvent in serverMuteEvents.Where(this.ShouldBeConsideredAsShortMute))
                 {
                     var user = await this._usersService.GetUserByIdAsync(server, muteEvent.UserId);
-                    var channel = server.TextChannels.FirstOrDefault(x => x.Id == muteEvent.MutedOnChannelId);
+                    var channel = textChannels.FirstOrDefault(x => x.Id == muteEvent.MutedOnChannelId);
                     if (user == null)
                     {
                         await this._mutingHelper.MarkAsUnmuted(muteEvent);

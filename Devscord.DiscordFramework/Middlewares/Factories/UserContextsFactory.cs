@@ -29,10 +29,10 @@ namespace Devscord.DiscordFramework.Middlewares.Factories
                 return new UserContext(user.Id, user.ToString(), new List<UserRole>(), avatarUrl, user.Mention, getIsOwner: _ => false, getJoinedServerAt: _ => null);
             }
             var roles = guildUser.RoleIds.Select(x => this._usersRolesService.GetRole(x, guildUser.GuildId));
-            bool GetIsOwner(UserContext userContext) => userContext.Id == this._discordServersService.GetDiscordServerAsync(guildUser.GuildId).Result.Id;
-            DateTime? GetJoinedServerAt(UserContext userContext) => this._usersService.GetUserJoinedServerAt(userContext.Id, guildUser.GuildId);
+            bool getIsOwner(UserContext userContext) => userContext.Id == this._discordServersService.GetDiscordServerAsync(guildUser.GuildId).Result.Id;
+            DateTime? getJoinedServerAt(UserContext userContext) => this._usersService.GetUserJoinedServerAt(userContext.Id, guildUser.GuildId);
 
-            return new UserContext(user.Id, user.ToString(), roles.ToList(), avatarUrl, user.Mention, GetIsOwner, GetJoinedServerAt);
+            return new UserContext(user.Id, user.ToString(), roles.ToList(), avatarUrl, user.Mention, getIsOwner, getJoinedServerAt);
         }
     }
 }

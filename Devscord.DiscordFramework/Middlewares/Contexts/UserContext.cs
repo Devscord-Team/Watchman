@@ -14,10 +14,10 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
         public IEnumerable<UserRole> Roles { get; private set; }
         public string AvatarUrl { get; private set; }
         public string Mention { get; private set; }
-        public bool IsAdmin => this.IsOwner || this.Roles.Any(x => x.Permissions.Any(x => x.HasFlag(Permission.ManageGuild)));
-        public bool IsMuted { get; private set; }
-        public DateTime? JoinedServerAt => this._getJoinedServerAt.Invoke(this);
-        [JsonIgnore] public bool IsOwner => this._isOwner ??= this._getIsOwner.Invoke(this);
+        public bool IsAdmin() => this.IsOwner() || this.Roles.Any(x => x.Permissions.Any(x => x.HasFlag(Permission.ManageGuild)));
+        public bool IsMuted() => this.Roles.Any(x => x.Name == "muted");
+        public DateTime? JoinedServerAt() => this._getJoinedServerAt.Invoke(this);
+        public bool IsOwner() => this._isOwner ??= this._getIsOwner.Invoke(this);
 
         private bool? _isOwner;
         private readonly Func<UserContext, bool> _getIsOwner;
@@ -30,7 +30,6 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
             this.Roles = roles;
             this.AvatarUrl = avatarUrl;
             this.Mention = mention;
-            this.IsMuted = this.Roles.Any(x => x.Name == "muted");
             this._getIsOwner = getIsOwner;
             this._getJoinedServerAt = getJoinedServerAt;
         }

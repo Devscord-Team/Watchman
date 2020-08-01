@@ -93,7 +93,7 @@ namespace Devscord.DiscordFramework.Integration
             return _discordClient.RolesService.CreateNewRole(role, discordServer);
         }
 
-        //Roles
+        //GetRoles
         internal static IEnumerable<UserRole> GetRoles(ulong guildId)
         {
             return _discordClient.RolesService.GetRoles(guildId);

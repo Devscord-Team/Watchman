@@ -167,7 +167,7 @@ namespace Devscord.DiscordFramework
         private void CheckPermissions(MethodInfo method, Contexts contexts)
         {
             Log.Information("Checking permissions for user {user} for method {method}", contexts.User.ToString(), method.Name);
-            if (method.HasAttribute<AdminCommand>() && !contexts.User.IsAdmin)
+            if (method.HasAttribute<AdminCommand>() && !contexts.User.IsAdmin())
             {
                 throw new NotAdminPermissionsException();
             }

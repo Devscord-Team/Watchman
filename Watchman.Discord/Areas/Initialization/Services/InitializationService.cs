@@ -47,7 +47,7 @@ namespace Watchman.Discord.Areas.Initialization.Services
 
         private async Task ReadServerMessagesHistory(DiscordServerContext server, DateTime lastInitDate)
         {
-            foreach (var textChannel in server.TextChannels)
+            foreach (var textChannel in server.GetTextChannels())
             {
                 await this._serverScanningService.ScanChannelHistory(server, textChannel, lastInitDate);
             }

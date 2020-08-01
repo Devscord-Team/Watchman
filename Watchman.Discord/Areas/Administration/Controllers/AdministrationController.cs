@@ -117,13 +117,13 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         public async Task GetSafeUsers(SafeUsersCommand safeUsersCommand, Contexts contexts)
         {
             var safeUsersIds = this._checkUserSafetyService.GetSafeUsersIds(contexts.Server.Id);
-            var serverUsers = await contexts.Server.Users.ToDictionaryAsync(x => x.Id, x => x);
+            var serverUsers = await contexts.Server.GetUsers().ToDictionaryAsync(x => x.Id, x => x);
             var safeUsers = safeUsersIds.Select(x => serverUsers.GetValueOrDefault(x)).Where(x => x != null);
             var messagesService = this._messagesServiceFactory.Create(contexts);
             await messagesService.SendEmbedMessage(
                 "Zaufani użytkownicy",
                 $"Lista zaufanych użytkowników na serwerze {contexts.Server.Name}",
-                safeUsers.Select(x => new KeyValuePair<string, string>(x.Name, x.JoinedServerAt?.ToString(CultureInfo.CurrentCulture))));
+                safeUsers.Select(x => new KeyValuePair<string, string>(x.Name, x.JoinedServerAt()?.ToString(CultureInfo.CurrentCulture))));
         }
 
         [AdminCommand]

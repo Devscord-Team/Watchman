@@ -34,7 +34,7 @@ namespace Watchman.Discord.Areas.Administration.Services
                 await messagesService.SendResponse(x => x.RoleAlreadyIsTrusted(roleName));
                 return;
             }
-            if (contexts.Server.Roles.All(x => x.Name != roleName))
+            if (contexts.Server.GetRoles().All(x => x.Name != roleName))
             {
                 throw new RoleNotFoundException(roleName);
             }

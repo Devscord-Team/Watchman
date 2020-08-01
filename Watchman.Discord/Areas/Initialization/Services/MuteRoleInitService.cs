@@ -41,7 +41,7 @@ namespace Watchman.Discord.Areas.Initialization.Services
 
         private async Task SetChannelsPermissions(DiscordServerContext server, UserRole mutedRole, ChangedPermissions changedPermissions)
         {
-            await this._channelsService.SetPermissions(server.TextChannels, server, changedPermissions, mutedRole);
+            await this._channelsService.SetPermissions(server.GetTextChannels(), server, changedPermissions, mutedRole);
         }
 
         private ChangedPermissions CreateChangedPermissions()
