@@ -1,14 +1,10 @@
 version: '3'
-services: 
+services:
     mongodb:
         image: mongo:latest
         container_name: mongodb
-        expose:
-            - 27017
-        ports: 
+        ports:
             - "27017:27017"
-        networks:
-            - bot_network
         volumes:
         - db-data:/data/db
         - mongo-config:/data/configdb
@@ -19,14 +15,10 @@ services:
         build: .
         ports:
             - "8080:80"
-        networks:
-            - bot_network
         volumes:
-            - ./appsettings.Development.json:/app/appsettings.json
+            - ./Watchman.Web/appsettings.Development.docker.json:/app/appsettings.json
             - /etc/localtime:/etc/localtime:ro
             - ./logs:/app/logs
 volumes:
     db-data:
     mongo-config:
-networks:
-    bot_network:
