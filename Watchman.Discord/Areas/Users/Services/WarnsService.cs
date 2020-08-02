@@ -1,9 +1,11 @@
 ﻿using Devscord.DiscordFramework.Commons.Exceptions;
+using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
 using MongoDB.Driver;
+using MongoDB.Driver.Core.Servers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +14,7 @@ using System.Threading.Tasks;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Users.BotCommands;
 using Watchman.Discord.Areas.Users.BotCommands.Warns;
+using Watchman.DomainModel.Messages;
 using Watchman.DomainModel.Warns;
 using Watchman.DomainModel.Warns.Commands;
 using Watchman.DomainModel.Warns.Queries;
@@ -46,13 +49,13 @@ namespace Watchman.Discord.Areas.Protection.Services
             var messageService = this._messagesServiceFactory.Create(contexts);
             if (mentionedUser == null)
             {
-                await messageService.SendResponse(x => x.UserNotFound(command.User.ToString()));
+                await messageService.SendResponse(x => x.UserNotFound(command.User.GetUserMention()));
             }
             else
             {
                 var warnEvents = await GetWarnEvents(serverId, mentionedUser.Id);
-                var warnEventsStr = WarnEventsToString(warnEvents, serverId == 0);
-                await messageService.SendResponse(x => x.GetUserWarns(mentionedUser.Name, warnEventsStr));
+                var warnKeyValues = WarnEventsToKeyValue(warnEvents, false, mentionedUser.Id);
+                await messageService.SendEmbedMessage("Warnings", string.Empty, warnKeyValues);
             }
         }
 
@@ -64,13 +67,13 @@ namespace Watchman.Discord.Areas.Protection.Services
             }
             if (mentionedUser == null)
             {
-                await this._directMessagesService.TrySendMessage(contexts.User.Id, x => x.UserNotFound(command.User.ToString()), contexts);
+                await this._directMessagesService.TrySendMessage(contexts.User.Id, x => x.UserNotFound(command.User.GetUserMention()), contexts);
             }
             else
             {
                 var warnEvents = await GetWarnEvents(serverId, mentionedUser.Id);
-                var warnEventsStr = WarnEventsToString(warnEvents, serverId == 0);
-                await this._directMessagesService.TrySendMessage(contexts.User.Id, x => x.GetUserWarns(mentionedUser.Name, warnEventsStr), contexts);
+                var warnKeyValues = WarnEventsToKeyValue(warnEvents, true, mentionedUser.Id);
+                await _directMessagesService.TrySendEmbedMessage(contexts.User.Id, "Warnings", string.Empty, warnKeyValues);
             }
         }
 
@@ -81,22 +84,27 @@ namespace Watchman.Discord.Areas.Protection.Services
             return response.WarnEvents;
         }
 
-        private string WarnEventsToString(IEnumerable<WarnEvent> warns, bool showServer)
+        private IEnumerable<KeyValuePair<string, string>> WarnEventsToKeyValue(IEnumerable<WarnEvent> warns, bool showServer, ulong mentionedUser)
         {
-            var builder = new StringBuilder();
+            var warnEventPairs = new List<KeyValuePair<string, string>>();
             foreach (var warnEvent in warns)
             {
-                builder.AppendLine().AppendLine().Append("Date: ").Append(warnEvent.CreatedAt.ToString())
-                    .AppendLine().Append("Granted by: ").Append(warnEvent.GrantorId)
-                    .AppendLine().Append("Receiver: ").Append(warnEvent.ReceiverId)
+                var warnContentBuilder = new StringBuilder();
+                warnContentBuilder.Append("Granted by: ").Append(warnEvent.GrantorId.GetUserMention())
+                    .AppendLine().Append("Receiver: ").Append(warnEvent.ReceiverId.GetUserMention())
                     .AppendLine().Append("Reason: ").Append(warnEvent.Reason);
                 if (showServer)
                 {
-                    builder.AppendLine().Append("Server id: ").Append(warnEvent.ServerId.ToString());
+                    warnContentBuilder.AppendLine().Append("ServerId: ").Append(warnEvent.ServerId.ToString());
                 }
+                var eventKeyValuePair = new KeyValuePair<string, string>(warnEvent.CreatedAt.ToString(), warnContentBuilder.ToString());
+                warnEventPairs.Add(eventKeyValuePair);
             }
-            var result = builder.ToString();
-            return String.IsNullOrWhiteSpace(result) ? "User has no warns" : result;
+            if (warnEventPairs.Count() == 0)
+            {
+                warnEventPairs.Add(new KeyValuePair<string, string>("No content", $"User {mentionedUser.GetUserMention()} has no warns."));
+            }
+            return warnEventPairs;
         }
     }
 }
