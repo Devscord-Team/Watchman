@@ -48,46 +48,8 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             var mentionedUser = command.User == 0 ? contexts.User : await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
             var serverId = command.All ? 0 : contexts.Server.Id;
 
-            if (command.All)
-            {
-                await GetAllWarns(command, contexts, mentionedUser, serverId);
-            }
-            else
-            {
-                await GetWarns(command, contexts, mentionedUser, serverId);
-            }
+            await (command.All ? this._warnService.GetAllWarns(command, contexts, mentionedUser, serverId)
+                : this._warnService.GetWarns(command, contexts, mentionedUser, serverId));
         }
-
-        private async Task GetWarns(WarnsCommand command, Contexts contexts, UserContext? mentionedUser, ulong serverId)
-        {
-            var messageService = this._messagesServiceFactory.Create(contexts);
-            if (mentionedUser == null)
-            {
-                await messageService.SendResponse(x => x.UserNotFound(command.User.ToString()));
-            }
-            else
-            {
-                var warnsStr = await this._warnService.GetWarnsToString(serverId, mentionedUser.Id);
-                await messageService.SendResponse(x => x.GetUserWarns(mentionedUser.Name, warnsStr));
-            }
-            return;
-        }
-
-        private async Task GetAllWarns(WarnsCommand command, Contexts contexts, UserContext? mentionedUser, ulong serverId)
-        {
-            if (!contexts.User.IsAdmin)
-            {
-                throw new NotAdminPermissionsException();
-            }
-            if (mentionedUser == null)
-            {
-                await this._directMessagesService.TrySendMessage(contexts.User.Id, x => x.UserNotFound(command.User.ToString()), contexts);
-            }
-            else
-            {
-                var warnsStr = await this._warnService.GetWarnsToString(serverId, mentionedUser.Id);
-                await this._directMessagesService.TrySendMessage(contexts.User.Id, x => x.GetUserWarns(mentionedUser.Name, warnsStr), contexts);
-            }
-        } 
     }
 }

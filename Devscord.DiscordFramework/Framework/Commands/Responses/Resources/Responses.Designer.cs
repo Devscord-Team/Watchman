@@ -115,7 +115,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ostrzeżenia użytkownika {{user}}: {{warns}}.
+        ///   Looks up a localized string similar to Ostrzeżenia użytkownika {{user}}: {{warns}}..
         /// </summary>
         public static string GetUserWarns {
             get {
@@ -124,7 +124,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dla tego polecenia są dostępne tylko argumenty: {{arguments}}.
+        ///   Looks up a localized string similar to Dla tego polecenia są dostępne tylko argumenty: {{arguments}}..
         /// </summary>
         public static string InvalidArguments {
             get {

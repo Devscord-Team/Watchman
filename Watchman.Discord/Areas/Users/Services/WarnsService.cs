@@ -1,5 +1,6 @@
 ﻿using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
+using Devscord.DiscordFramework.Services.Factories;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -17,11 +18,15 @@ namespace Watchman.Discord.Areas.Protection.Services
     public class WarnsService
     {
         private readonly UsersService _usersService;
+        private readonly MessagesServiceFactory _messagesServiceFactory;
+        private readonly DirectMessagesService _directMessagesService;
         private readonly ICommandBus _commandBus;
         private readonly IQueryBus _queryBus;
 
-        public WarnsService(UsersService usersService, ICommandBus commandBus, IQueryBus queryBus)
+        public WarnsService(UsersService usersService, MessagesServiceFactory messagesServiceFactory, DirectMessagesService directMessagesService, ICommandBus commandBus, IQueryBus queryBus)
         {
+            this._messagesServiceFactory = messagesServiceFactory;
+            this._directMessagesService = directMessagesService;
             this._usersService = usersService;
             this._commandBus = commandBus;
             this._queryBus = queryBus;
@@ -40,7 +45,39 @@ namespace Watchman.Discord.Areas.Protection.Services
             return response.WarnEvents;
         }
 
-        public async Task<string> GetWarnsToString(ulong serverId, ulong userId)
+        public async Task GetWarns(WarnsCommand command, Contexts contexts, UserContext mentionedUser, ulong serverId)
+        {
+            var messageService = this._messagesServiceFactory.Create(contexts);
+            if (mentionedUser == null)
+            {
+                await messageService.SendResponse(x => x.UserNotFound(command.User.ToString()));
+            }
+            else
+            {
+                var warnsStr = await this._warnService.GetWarnsToString(serverId, mentionedUser.Id);
+                await messageService.SendResponse(x => x.GetUserWarns(mentionedUser.Name, warnsStr));
+            }
+            return;
+        }
+
+        public async Task GetAllWarns(WarnsCommand command, Contexts contexts, UserContext mentionedUser, ulong serverId)
+        {
+            if (!contexts.User.IsAdmin)
+            {
+                throw new NotAdminPermissionsException();
+            }
+            if (mentionedUser == null)
+            {
+                await this._directMessagesService.TrySendMessage(contexts.User.Id, x => x.UserNotFound(command.User.ToString()), contexts);
+            }
+            else
+            {
+                var warnsStr = await this._warnService.GetWarnsToString(serverId, mentionedUser.Id);
+                await this._directMessagesService.TrySendMessage(contexts.User.Id, x => x.GetUserWarns(mentionedUser.Name, warnsStr), contexts);
+            }
+        }
+
+        private async Task<string> GetWarnsToString(ulong serverId, ulong userId)
         {
             var warns = (await GetWarns(serverId, userId)).ToList();
             var builder = new StringBuilder();
