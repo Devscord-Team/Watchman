@@ -7,6 +7,7 @@ using Devscord.DiscordFramework.Services;
 using Serilog;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Protection.Models;
+using Watchman.DomainModel.DiscordServer.Queries;
 using Watchman.DomainModel.Messages.Queries;
 using Watchman.DomainModel.Settings.ConfigurationItems;
 using Watchman.DomainModel.Settings.Services;
@@ -65,8 +66,9 @@ namespace Watchman.Discord.Areas.Protection.Strategies
                 .ToDictionary(x => x.Key, x =>
                 {
                     var minAverageMessagesPerWeek = this._configurationService.GetConfigurationItem<MinAverageMessagesPerWeek>(x.Key).Value;
-                    var safeUserRolesNames = this._configurationService.GetConfigurationItem<TrustedUserRolesNames>(x.Key).Value;
-                    return new ServerSafeUsers(x, x.Key, minAverageMessagesPerWeek, safeUserRolesNames.ToHashSet());
+                    var query = new GetServerTrustedRolesQuery(x.Key);
+                    var trustedRolesIds = this._queryBus.Execute(query).TrustedRolesIds;
+                    return new ServerSafeUsers(x, x.Key, minAverageMessagesPerWeek, trustedRolesIds.ToHashSet());
                 });
         }
     }

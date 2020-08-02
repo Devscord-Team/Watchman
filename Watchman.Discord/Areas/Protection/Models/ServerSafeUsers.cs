@@ -15,18 +15,18 @@ namespace Watchman.Discord.Areas.Protection.Models
         public ulong ServerId { get; }
         public HashSet<ulong> SafeUsers { get; }
 
-        public ServerSafeUsers(IEnumerable<Message> serverMessages, ulong serverId, int minAverageMessagesPerWeek, HashSet<string> safeUserRolesNames)
+        public ServerSafeUsers(IEnumerable<Message> serverMessages, ulong serverId, int minAverageMessagesPerWeek, HashSet<ulong> trustedRolesIds)
         {
             this.ServerId = serverId;
             var users = ComponentContext.Resolve<DiscordServersService>().GetDiscordServerAsync(serverId).Result.GetUsers().ToDictionaryAsync(x => x.Id, x => x).Result;
             this.SafeUsers = serverMessages
                 .GroupBy(x => x.Author.Id)
-                .Where(u => IsUserSafe(u.ToList(), users.GetValueOrDefault(u.Key), serverId, minAverageMessagesPerWeek, safeUserRolesNames))
+                .Where(u => IsUserSafe(u.ToList(), users.GetValueOrDefault(u.Key), serverId, minAverageMessagesPerWeek, trustedRolesIds))
                 .Select(x => x.Key)
                 .ToHashSet();
         }
 
-        private static bool IsUserSafe(IReadOnlyCollection<Message> userMessages, UserContext user, ulong serverId, int minAverageMessagesPerWeek, HashSet<string> safeUserRolesNames)
+        private static bool IsUserSafe(IReadOnlyCollection<Message> userMessages, UserContext user, ulong serverId, int minAverageMessagesPerWeek, HashSet<ulong> trustedRolesIds)
         {
             if (user == null || userMessages.Count < minAverageMessagesPerWeek)
             {
@@ -37,7 +37,7 @@ namespace Watchman.Discord.Areas.Protection.Models
             {
                 return false;
             }
-            if (user.Roles.Any(x => safeUserRolesNames.Contains(x.Name)))
+            if (user.Roles.Any(x => trustedRolesIds.Contains(x.Id)))
             {
                 return true;
             }
