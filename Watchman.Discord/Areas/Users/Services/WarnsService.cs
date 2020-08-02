@@ -41,13 +41,6 @@ namespace Watchman.Discord.Areas.Protection.Services
             return this._commandBus.ExecuteAsync(addWarnEventCommand);
         }
 
-        public async Task<IEnumerable<WarnEvent>> GetWarns(ulong serverId, ulong userId)
-        {
-            var query = new GetWarnEventsQuery(serverId, userId);
-            var response = await this._queryBus.ExecuteAsync(query);
-            return response.WarnEvents;
-        }
-
         public async Task GetWarns(WarnsCommand command, Contexts contexts, UserContext mentionedUser, ulong serverId)
         {
             var messageService = this._messagesServiceFactory.Create(contexts);
@@ -57,8 +50,9 @@ namespace Watchman.Discord.Areas.Protection.Services
             }
             else
             {
-                var warnsStr = await GetWarnsToString(serverId, mentionedUser.Id);
-                await messageService.SendResponse(x => x.GetUserWarns(mentionedUser.Name, warnsStr));
+                var warnEvents = await GetWarnEvents(serverId, mentionedUser.Id);
+                var warnEventsStr = WarnEventsToString(warnEvents, serverId == 0);
+                await messageService.SendResponse(x => x.GetUserWarns(mentionedUser.Name, warnEventsStr));
             }
         }
 
@@ -74,14 +68,21 @@ namespace Watchman.Discord.Areas.Protection.Services
             }
             else
             {
-                var warnsStr = await GetWarnsToString(serverId, mentionedUser.Id);
-                await this._directMessagesService.TrySendMessage(contexts.User.Id, x => x.GetUserWarns(mentionedUser.Name, warnsStr), contexts);
+                var warnEvents = await GetWarnEvents(serverId, mentionedUser.Id);
+                var warnEventsStr = WarnEventsToString(warnEvents, serverId == 0);
+                await this._directMessagesService.TrySendMessage(contexts.User.Id, x => x.GetUserWarns(mentionedUser.Name, warnEventsStr), contexts);
             }
         }
 
-        private async Task<string> GetWarnsToString(ulong serverId, ulong userId)
+        public async Task<IEnumerable<WarnEvent>> GetWarnEvents(ulong serverId, ulong userId)
         {
-            var warns = (await GetWarns(serverId, userId)).ToList();
+            var query = new GetWarnEventsQuery(serverId, userId);
+            var response = await this._queryBus.ExecuteAsync(query);
+            return response.WarnEvents;
+        }
+
+        private string WarnEventsToString(IEnumerable<WarnEvent> warns, bool showServer)
+        {
             var builder = new StringBuilder();
             foreach (var warnEvent in warns)
             {
@@ -89,7 +90,7 @@ namespace Watchman.Discord.Areas.Protection.Services
                     .AppendLine().Append("Granted by: ").Append(warnEvent.GrantorId)
                     .AppendLine().Append("Receiver: ").Append(warnEvent.ReceiverId)
                     .AppendLine().Append("Reason: ").Append(warnEvent.Reason);
-                if (serverId == 0)
+                if (showServer)
                 {
                     builder.AppendLine().Append("Server id: ").Append(warnEvent.ServerId.ToString());
                 }
