@@ -142,7 +142,7 @@
     <value>Dla tego polecenia są dostępne tylko argumenty: {{arguments}}</value>
   </data>
   <data name="MutedUser" xml:space="preserve">
-    <value>Użytkownik {{user}} został zmutowany do {{timeEnd}}</value>
+    <value>Użytkownik {{user}} został zmutowany do {{timeEnd}}.</value>
   </data>
   <data name="NewUserArrived" xml:space="preserve">
     <value>Cześć {{user}}! Witamy cię na serwerze {{server}}</value>
@@ -244,7 +244,7 @@
     <value>Użytkownik {{user}} nie posiada avatara.</value>
   </data>
   <data name="UserHasBeenWarned" xml:space="preserve">
-    <value>Użytkownik {{receiver}} został ostrzeżony przez {{grantor}} z powodu: {{reason}}</value>
+    <value>Użytkownik {{receiver}} został ostrzeżony przez {{grantor}} z powodu: {{reason}}.</value>
   </data>
   <data name="UserNotFound" xml:space="preserve">
     <value>Użytkownik {{user}} nie istnieje.</value>
