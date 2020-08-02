@@ -1,4 +1,6 @@
-﻿using Devscord.DiscordFramework.Middlewares.Contexts;
+﻿using Devscord.DiscordFramework.Commons.Exceptions;
+using Devscord.DiscordFramework.Framework.Commands.Responses;
+using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
 using MongoDB.Driver;
@@ -9,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Users.BotCommands;
+using Watchman.Discord.Areas.Users.BotCommands.Warns;
 using Watchman.DomainModel.Warns;
 using Watchman.DomainModel.Warns.Commands;
 using Watchman.DomainModel.Warns.Queries;
@@ -54,10 +57,9 @@ namespace Watchman.Discord.Areas.Protection.Services
             }
             else
             {
-                var warnsStr = await this._warnService.GetWarnsToString(serverId, mentionedUser.Id);
+                var warnsStr = await GetWarnsToString(serverId, mentionedUser.Id);
                 await messageService.SendResponse(x => x.GetUserWarns(mentionedUser.Name, warnsStr));
             }
-            return;
         }
 
         public async Task GetAllWarns(WarnsCommand command, Contexts contexts, UserContext mentionedUser, ulong serverId)
@@ -72,7 +74,7 @@ namespace Watchman.Discord.Areas.Protection.Services
             }
             else
             {
-                var warnsStr = await this._warnService.GetWarnsToString(serverId, mentionedUser.Id);
+                var warnsStr = await GetWarnsToString(serverId, mentionedUser.Id);
                 await this._directMessagesService.TrySendMessage(contexts.User.Id, x => x.GetUserWarns(mentionedUser.Name, warnsStr), contexts);
             }
         }
@@ -93,7 +95,7 @@ namespace Watchman.Discord.Areas.Protection.Services
                 }
             }
             var result = builder.ToString();
-            return String.IsNullOrWhiteSpace(result) ? new string("User has no warns") : result;
+            return String.IsNullOrWhiteSpace(result) ? "User has no warns" : result;
         }
     }
 }
