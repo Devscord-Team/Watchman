@@ -47,7 +47,6 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         {
             var mentionedUser = command.User == 0 ? contexts.User : await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
             var serverId = command.All ? 0 : contexts.Server.Id;
-
             await (command.All ? this._warnService.GetAllWarns(command, contexts, mentionedUser, serverId)
                 : this._warnService.GetWarns(command, contexts, mentionedUser, serverId));
         }
