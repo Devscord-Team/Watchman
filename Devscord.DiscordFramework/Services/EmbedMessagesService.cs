@@ -30,7 +30,6 @@ namespace Devscord.DiscordFramework.Services
                     valuesString += $"{v.Key}: {v.Value}\n";
                 }
                 builder.AddField(value.Key, valuesString);
-                
             }
             return builder.Build();
         }

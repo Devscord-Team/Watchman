@@ -54,6 +54,5 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             }
             return (title, description, values);
         }
-
     }
 }
