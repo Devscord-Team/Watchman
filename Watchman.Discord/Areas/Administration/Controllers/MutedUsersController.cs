@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,27 +28,29 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         [AdminCommand]
         public async Task MutedUsers(MutedUsersCommand mutedUsersCommand, Contexts contexts)
         {
-            var mutedUsersList = await _usersService.GetUsersAsync(contexts.Server).ToListAsync();
-            var (title, description, values) = this.GetMuteEmbedMessage(mutedUsersList, contexts.Server.Id);
+            var mutedUsers = _usersService.GetUsersAsync(contexts.Server);
+            var (title, description, values) = await this.GetMuteEmbedMessage(mutedUsers, contexts.Server.Id);
             await _directMessagesService.TrySendEmbedMessage(contexts.User.Id, title, description, values);
         }
-        private (string title, string description, Dictionary<string, Dictionary<string, string>> values) GetMuteEmbedMessage(List<UserContext> mutedUsersList, ulong serverId)
+
+        private async Task<(string title, string description, Dictionary<string, Dictionary<string, string>> values)> GetMuteEmbedMessage(IAsyncEnumerable<UserContext> mutedUsers, ulong serverId)
         {
             var title = "Lista wyciszonych użytkowników";
             var description = "Wyciszeni użytkownicy, powody oraz data wygaśnięcia";
             var values = new Dictionary<string, Dictionary<string, string>>();
-            foreach (var mutedUser in mutedUsersList)
+            await foreach (var mutedUser in mutedUsers)
             {
                 var muteEvent = this._mutingHelper.GetNotUnmutedUserMuteEvent(serverId, mutedUser.Id);
-                if (muteEvent != null)
+                if (muteEvent == null)
                 {
-                    values.Add($"Użytkownik: {mutedUser.Name}", 
-                        new Dictionary<string, string>
-                        {
-                            {"Powód ", muteEvent.Reason},
-                            {"Data zakończenia ", TimeZoneInfo.ConvertTimeFromUtc(muteEvent.TimeRange.End, TimeZoneInfo.Local).ToString("dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture) }
-                        });
+                    continue;
                 }
+                values.Add($"Użytkownik: {mutedUser.Name}",
+                    new Dictionary<string, string>
+                    {
+                            {"Powód ", muteEvent.Reason},
+                            {"Data zakończenia ", muteEvent.TimeRange.End.ToLocalTimeString() }
+                    });
             }
             return (title, description, values);
         }

@@ -19,9 +19,7 @@ namespace Devscord.DiscordFramework.Services
 
         public Embed Generate(string title, string description, Dictionary<string, Dictionary<string, string>> values)
         {
-            var builder = this.GetDefault();
-            builder.Title = title;
-            builder.Description = description;
+            Dictionary<string, string> flatValues = new Dictionary<string, string>();
             foreach (var value in values)
             {
                 var valuesString = string.Empty;
@@ -29,9 +27,9 @@ namespace Devscord.DiscordFramework.Services
                 {
                     valuesString += $"{v.Key}: {v.Value}\n";
                 }
-                builder.AddField(value.Key, valuesString);
+                flatValues.Add(value.Key, valuesString);
             }
-            return builder.Build();
+            return this.Generate(title, description, flatValues);
         }
 
         private EmbedBuilder GetDefault()
