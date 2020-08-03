@@ -30,7 +30,7 @@ namespace Watchman.Discord.Areas.Responses.Services
             }
             else
             {
-                await this._embedMessageSplittingService.SendEmbedSplitMessage("Wszystkie responses:", DESCRIPTION, this.GetAllResponses(), contexts);
+                await this._embedMessageSplittingService.SendEmbedSplitMessage("Wszystkie responses:", DESCRIPTION, this.GetAllResponses(contexts.Server.Id), contexts);
             }
         }
 
@@ -54,10 +54,13 @@ namespace Watchman.Discord.Areas.Responses.Services
             return responses;
         }
 
-        private IEnumerable<KeyValuePair<string, string>> GetAllResponses()
+        private IEnumerable<KeyValuePair<string, string>> GetAllResponses(ulong serverId)
         {
-            return this._responsesDatabase.GetResponsesFromBase()
-                .Select(x => new KeyValuePair<string, string>(x.OnEvent, this.GetRawMessage(x.Message)));
+            var responses = this._responsesDatabase.GetResponsesFromBase().ToList();
+            var serverResponses = responses.Where(x => x.ServerId == serverId).ToList();
+            var notOverwrittenDefaultResponses = responses.Where(response => response.IsDefault && serverResponses.All(s => s.OnEvent != response.OnEvent));
+            serverResponses.AddRange(notOverwrittenDefaultResponses);
+            return serverResponses.Select(x => new KeyValuePair<string, string>(x.OnEvent, this.GetRawMessage(x.Message)));
         }
 
         private string GetRawMessage(string message)
