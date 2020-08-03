@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,7 +31,14 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         {
             var mutedUsers = _usersService.GetUsersAsync(contexts.Server);
             var (title, description, values) = await this.GetMuteEmbedMessage(mutedUsers, contexts.Server.Id);
-            await _directMessagesService.TrySendEmbedMessage(contexts.User.Id, title, description, values);
+            if (values.Count == 0)
+            {
+                await _directMessagesService.TrySendMessage(contexts.User.Id, "Brak wyciszonych użytkowników!");
+            }
+            else
+            {
+                await _directMessagesService.TrySendEmbedMessage(contexts.User.Id, title, description, values);
+            }
         }
 
         private async Task<(string title, string description, Dictionary<string, Dictionary<string, string>> values)> GetMuteEmbedMessage(IAsyncEnumerable<UserContext> mutedUsers, ulong serverId)
@@ -41,7 +49,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             await foreach (var mutedUser in mutedUsers)
             {
                 var muteEvent = this._mutingHelper.GetNotUnmutedUserMuteEvent(serverId, mutedUser.Id);
-                if (muteEvent == null)
+                if (muteEvent == null || DateTime.Compare(muteEvent.TimeRange.End.ToLocalTime(), DateTime.Now) < 0)
                 {
                     continue;
                 }
