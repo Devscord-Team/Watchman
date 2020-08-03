@@ -84,7 +84,7 @@ namespace Watchman.Discord.Areas.Protection.Services
             return response.WarnEvents;
         }
 
-        private IEnumerable<KeyValuePair<string, string>> WarnEventsToKeyValue(IEnumerable<WarnEvent> warns, bool showServer, ulong mentionedUser)
+        private IEnumerable<KeyValuePair<string, string>> WarnEventsToKeyValue(IEnumerable<WarnEvent> warns, bool showServerId, ulong mentionedUserId)
         {
             var warnEventPairs = new List<KeyValuePair<string, string>>();
             foreach (var warnEvent in warns)
