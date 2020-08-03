@@ -64,5 +64,21 @@ namespace Devscord.DiscordFramework.Services
                 return false;
             }
         }
+
+        public async Task<bool> TrySendEmbedMessage(ulong userId, string title, string description, Dictionary<string, Dictionary<string, string>> values)
+        {
+            var embed = this._embedMessagesService.Generate(title, description, values);
+            try
+            {
+                await Server.SendDirectEmbedMessage(userId, embed);
+                Log.Information("Bot sent embed message {messageTitle}", embed.Title);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Warning(ex.Message, ex);
+                return false;
+            }
+        }
     }
 }

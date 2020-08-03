@@ -17,6 +17,24 @@ namespace Devscord.DiscordFramework.Services
             return builder.Build();
         }
 
+        public Embed Generate(string title, string description, Dictionary<string, Dictionary<string, string>> values)
+        {
+            var builder = this.GetDefault();
+            builder.Title = title;
+            builder.Description = description;
+            foreach (var value in values)
+            {
+                var valuesString = string.Empty;
+                foreach (var v in value.Value)
+                {
+                    valuesString += $"{v.Key}: {v.Value}\n";
+                }
+                builder.AddField(value.Key, valuesString);
+                
+            }
+            return builder.Build();
+        }
+
         private EmbedBuilder GetDefault()
         {
             return new EmbedBuilder()
