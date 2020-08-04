@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Serilog;
 
 namespace Watchman.DomainModel.Settings.Services
 {
@@ -21,7 +22,7 @@ namespace Watchman.DomainModel.Settings.Services
 
         public ConfigurationItem MapIntoBaseFormat(IMappedConfiguration mappedConfiguration)
         {
-            return new ConfigurationItem(((dynamic) mappedConfiguration).Value, mappedConfiguration.ServerId, mappedConfiguration.Name);
+            return new ConfigurationItem(((dynamic)mappedConfiguration).Value, mappedConfiguration.ServerId, mappedConfiguration.Name);
         }
 
         private Dictionary<ulong, IMappedConfiguration> MakeServersDictionary(IEnumerable<ConfigurationItem> configurationItems)
@@ -31,9 +32,14 @@ namespace Watchman.DomainModel.Settings.Services
 
         private IMappedConfiguration MapConfiguration(ConfigurationItem configurationItem)
         {
-            var type = this._configurationItemsSearcher.ConfigurationTypes.First(x => x.Name == configurationItem.Name);
+            var type = this._configurationItemsSearcher.ConfigurationTypes.FirstOrDefault(x => x.Name == configurationItem.Name);
+            if (type == null)
+            {
+                Log.Error("Configuration item: {configurationName} doesn't exist anymore! Delete this items from database before continuing!", configurationItem.Name);
+                return null;
+            }
             dynamic mappedConfiguration = Activator.CreateInstance(type, configurationItem.ServerId);
-            mappedConfiguration!.Value = (dynamic) configurationItem.Value;
+            mappedConfiguration!.Value = (dynamic)configurationItem.Value;
             return mappedConfiguration;
         }
     }

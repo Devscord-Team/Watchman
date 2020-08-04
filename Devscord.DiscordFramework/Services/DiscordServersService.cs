@@ -7,9 +7,14 @@ namespace Devscord.DiscordFramework.Services
 {
     public class DiscordServersService
     {
-        public Task<IEnumerable<DiscordServerContext>> GetDiscordServers()
+        public IAsyncEnumerable<DiscordServerContext> GetDiscordServersAsync()
         {
-            return Server.GetDiscordServers();
+            return Server.GetDiscordServersAsync();
+        }
+
+        public Task<DiscordServerContext> GetDiscordServerAsync(ulong serverId)
+        {
+            return Server.GetDiscordServerAsync(serverId);
         }
     }
 }

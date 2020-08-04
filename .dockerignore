@@ -5,3 +5,7 @@
 */obj
 */logs
 */*/node_modules
+docker-compose*.yml
+Watchman.Web/appsettings*.json
+Dockerfile
+Watchman.Discord/config*.json

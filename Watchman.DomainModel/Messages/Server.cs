@@ -4,14 +4,11 @@
     {
         public ulong Id { get; private set; }
         public string Name { get; private set; }
-        public User Owner { get; private set; }
 
-        public Server(ulong id, string name, User owner)
+        public Server(ulong id, string name)
         {
             this.Id = id;
             this.Name = name;
-            this.Owner = owner;
         }
     }
-
 }
