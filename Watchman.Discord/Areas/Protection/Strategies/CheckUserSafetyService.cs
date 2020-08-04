@@ -21,13 +21,14 @@ namespace Watchman.Discord.Areas.Protection.Strategies
         private readonly IQueryBus _queryBus;
         private readonly DiscordServersService _discordServersService;
         private readonly ConfigurationService _configurationService;
+        private readonly UsersService _usersService;
 
-        public CheckUserSafetyService(IQueryBus queryBus, DiscordServersService discordServersService, ConfigurationService configurationService, IComponentContext context)
+        public CheckUserSafetyService(IQueryBus queryBus, DiscordServersService discordServersService, ConfigurationService configurationService, UsersService usersService)
         {
-            ServerSafeUsers.ComponentContext = context;
             this._queryBus = queryBus;
             this._discordServersService = discordServersService;
             this._configurationService = configurationService;
+            this._usersService = usersService;
         }
 
         public bool IsUserSafe(ulong userId, ulong serverId)
@@ -68,7 +69,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
                     var minAverageMessagesPerWeek = this._configurationService.GetConfigurationItem<MinAverageMessagesPerWeek>(x.Key).Value;
                     var query = new GetServerTrustedRolesQuery(x.Key);
                     var trustedRolesIds = this._queryBus.Execute(query).TrustedRolesIds;
-                    return new ServerSafeUsers(x, x.Key, minAverageMessagesPerWeek, trustedRolesIds.ToHashSet());
+                    return new ServerSafeUsers(x, x.Key, minAverageMessagesPerWeek, trustedRolesIds.ToHashSet(), this._usersService, this._discordServersService);
                 });
         }
     }
