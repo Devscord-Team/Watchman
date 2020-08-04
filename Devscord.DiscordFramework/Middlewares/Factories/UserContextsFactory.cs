@@ -1,6 +1,8 @@
-﻿using Devscord.DiscordFramework.Middlewares.Contexts;
+﻿using Autofac;
+using Devscord.DiscordFramework.Middlewares.Contexts;
+using Devscord.DiscordFramework.Services;
 using Discord;
-using Discord.WebSocket;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,21 +10,29 @@ namespace Devscord.DiscordFramework.Middlewares.Factories
 {
     internal class UserContextsFactory : IContextFactory<IUser, UserContext>
     {
-        private readonly UserRoleFactory _userRoleFactory;
+        private readonly UsersRolesService _usersRolesService;
+        private readonly DiscordServersService _discordServersService;
+        private readonly UsersService _usersService;
 
-        public UserContextsFactory()
+        public UserContextsFactory(IComponentContext context, UsersService usersService)
         {
-            this._userRoleFactory = new UserRoleFactory();
+            this._usersRolesService = context.Resolve<UsersRolesService>();
+            this._discordServersService = context.Resolve<DiscordServersService>();
+            this._usersService = usersService;
         }
 
         public UserContext Create(IUser user)
         {
-            var socketGuildUser = user as SocketGuildUser;
-            var roles = socketGuildUser?.Roles.Select(x => this._userRoleFactory.Create(x)).ToList() ?? new List<UserRole>();
             var avatarUrl = user.GetAvatarUrl(ImageFormat.Png, 2048);
-            var isOwner = socketGuildUser?.Guild.OwnerId == user.Id;
+            if (!(user is IGuildUser guildUser))
+            {
+                return new UserContext(user.Id, user.ToString(), new List<UserRole>(), avatarUrl, user.Mention, getIsOwner: _ => false, getJoinedServerAt: _ => null);
+            }
+            var roles = guildUser.RoleIds.Select(x => this._usersRolesService.GetRole(x, guildUser.GuildId));
+            bool getIsOwner(UserContext userContext) => userContext.Id == this._discordServersService.GetDiscordServerAsync(guildUser.GuildId).Result.Id;
+            DateTime? getJoinedServerAt(UserContext userContext) => this._usersService.GetUserJoinedServerAt(userContext.Id, guildUser.GuildId);
 
-            return new UserContext(user.Id, user.ToString(), roles, avatarUrl, user.Mention, isOwner);
+            return new UserContext(user.Id, user.ToString(), roles.ToList(), avatarUrl, user.Mention, getIsOwner, getJoinedServerAt);
         }
     }
 }

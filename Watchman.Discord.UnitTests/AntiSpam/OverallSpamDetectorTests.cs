@@ -60,6 +60,10 @@ namespace Watchman.Discord.UnitTests.AntiSpam
         [Test]
         [TestCase("not spam", "something else", "something more else", "totally different", false)]
         [TestCase("not spam", "something else", "something more else", "totally different", true)]
+        [TestCase("not spam", "something else", "something more else", "😃", true)]
+        [TestCase("not spam", "something else", "something more else", "😃", false)]
+        [TestCase("not spam", "something else", "something more else", ":smile:", true)]
+        [TestCase("not spam", "something else", "something more else", ":smile:", false)]
         public void OverallSpamDetectorStrategy_ShouldNotDetectSpam(string messageContent1, string messageContent2, string messageContent3, string messageContent4, bool isUserSafe)
         {
             // Arrange

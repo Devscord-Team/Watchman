@@ -13,7 +13,6 @@ namespace Watchman.DomainModel.Settings.Services
         private readonly ConfigurationMapperService _configurationMapperService;
         private readonly ConfigurationItemsSearcherService _configurationTypesSearcher;
         private Dictionary<Type, Dictionary<ulong, IMappedConfiguration>> _cachedConfigurationItem;
-        private DateTime _lastRefreshed;
 
         public ConfigurationService(ISessionFactory sessionFactory, ConfigurationMapperService configurationMapperService, ConfigurationItemsSearcherService configurationTypesSearcher)
         {
@@ -24,15 +23,13 @@ namespace Watchman.DomainModel.Settings.Services
 
         public T GetConfigurationItem<T>(ulong serverId) where T : IMappedConfiguration
         {
-            this.ReloadIfNeeded();
             var configurations = this._cachedConfigurationItem[typeof(T)];
             var serverConfiguration = configurations.GetValueOrDefault(serverId) ?? configurations[0];
-            return (T) serverConfiguration;
+            return (T)serverConfiguration;
         }
 
         public IEnumerable<IMappedConfiguration> GetConfigurationItems(ulong serverId)
         {
-            this.ReloadIfNeeded();
             return this._cachedConfigurationItem.Select(x => x.Value.GetValueOrDefault(serverId) ?? x.Value[DEFAULT_SERVER_ID]);
         }
 
@@ -51,6 +48,7 @@ namespace Watchman.DomainModel.Settings.Services
                 existingConfiguration.SetValue(baseFormatConfigurationItem.Value);
                 await session.AddOrUpdateAsync(existingConfiguration);
             }
+            this.Refresh();
         }
 
         public async Task InitDefaultConfigurations()
@@ -58,7 +56,7 @@ namespace Watchman.DomainModel.Settings.Services
             var configurationsTypes = this._configurationTypesSearcher.ConfigurationTypes;
             var configurations = configurationsTypes.Select(x =>
             {
-                var conf = (IMappedConfiguration) Activator.CreateInstance(x, DEFAULT_SERVER_ID);
+                var conf = (IMappedConfiguration)Activator.CreateInstance(x, DEFAULT_SERVER_ID);
                 return this._configurationMapperService.MapIntoBaseFormat(conf);
             });
             using var session = this._sessionFactory.Create();
@@ -67,23 +65,14 @@ namespace Watchman.DomainModel.Settings.Services
             {
                 await session.AddAsync(configuration);
             }
-            this.ReloadConfiguration(session);
+            this.Refresh();
         }
 
-        private void ReloadIfNeeded()
+        public void Refresh()
         {
-            if (this._lastRefreshed < DateTime.Now.AddMinutes(-10))
-            {
-                using var session = this._sessionFactory.Create();
-                this.ReloadConfiguration(session);
-            }
-        }
-
-        private void ReloadConfiguration(ISession session)
-        {
+            using var session = this._sessionFactory.Create();
             var configurationItems = session.Get<ConfigurationItem>();
             this._cachedConfigurationItem = this._configurationMapperService.GetMappedConfigurations(configurationItems);
-            this._lastRefreshed = DateTime.Now;
         }
     }
 }
