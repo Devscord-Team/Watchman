@@ -1,5 +1,4 @@
 ﻿using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
@@ -9,11 +8,7 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
     {
         public ulong Id { get; private set; }
         public string Name { get; private set; }
-        public UserContext GetOwner() => this._getOwner.Invoke();
         public ChannelContext LandingChannel { get; private set; }
-        public IEnumerable<ChannelContext> GetTextChannels() => this._getTextChannels.Invoke(this);
-        public IAsyncEnumerable<UserContext> GetUsers() => this._getServerUsers.Invoke(this); // todo: use static list and events
-        public IEnumerable<UserRole> GetRoles() => this._getServerRoles.Invoke(this);
 
         private readonly Func<DiscordServerContext, IAsyncEnumerable<UserContext>> _getServerUsers;
         private readonly Func<DiscordServerContext, IEnumerable<UserRole>> _getServerRoles;
@@ -30,5 +25,10 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
             this._getTextChannels = getTextChannels;
             this.LandingChannel = landingChannel;
         }
+
+        public IEnumerable<ChannelContext> GetTextChannels() => this._getTextChannels.Invoke(this);
+        public IAsyncEnumerable<UserContext> GetUsers() => this._getServerUsers.Invoke(this); // todo: use static list and events
+        public IEnumerable<UserRole> GetRoles() => this._getServerRoles.Invoke(this);
+        public UserContext GetOwner() => this._getOwner.Invoke();
     }
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
-using Newtonsoft.Json;
 
 namespace Devscord.DiscordFramework.Middlewares.Contexts
 {
@@ -11,13 +10,9 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
     {
         public ulong Id { get; private set; }
         public string Name { get; private set; }
-        public IEnumerable<UserRole> Roles { get; private set; }
+        public IReadOnlyCollection<UserRole> Roles { get; private set; }
         public string AvatarUrl { get; private set; }
         public string Mention { get; private set; }
-        public bool IsAdmin() => this.IsOwner() || this.Roles.Any(x => x.Permissions.Any(x => x.HasFlag(Permission.ManageGuild)));
-        public bool IsMuted() => this.Roles.Any(x => x.Name == "muted");
-        public DateTime? JoinedServerAt() => this._getJoinedServerAt.Invoke(this);
-        public bool IsOwner() => this._isOwner ??= this._getIsOwner.Invoke(this);
 
         private bool? _isOwner;
         private readonly Func<UserContext, bool> _getIsOwner;
@@ -34,9 +29,10 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
             this._getJoinedServerAt = getJoinedServerAt;
         }
 
-        public override string ToString()
-        {
-            return this.Name;
-        }
+        public bool IsAdmin() => this.IsOwner() || this.Roles.Any(x => x.Permissions.Any(x => x.HasFlag(Permission.ManageGuild)));
+        public bool IsMuted() => this.Roles.Any(x => x.Name == "muted");
+        public DateTime? JoinedServerAt() => this._getJoinedServerAt.Invoke(this);
+        public bool IsOwner() => this._isOwner ??= this._getIsOwner.Invoke(this);
+        public override string ToString() => this.Name;
     }
 }

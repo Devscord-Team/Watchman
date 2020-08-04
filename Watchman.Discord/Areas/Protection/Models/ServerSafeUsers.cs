@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Autofac;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Watchman.DomainModel.Messages;
@@ -10,29 +9,27 @@ namespace Watchman.Discord.Areas.Protection.Models
 {
     public readonly struct ServerSafeUsers
     {
-        public static IComponentContext ComponentContext { get; set; }
-
         public ulong ServerId { get; }
         public HashSet<ulong> SafeUsers { get; }
 
-        public ServerSafeUsers(IEnumerable<Message> serverMessages, ulong serverId, int minAverageMessagesPerWeek, HashSet<ulong> trustedRolesIds)
+        public ServerSafeUsers(IEnumerable<Message> serverMessages, ulong serverId, int minAverageMessagesPerWeek, HashSet<ulong> trustedRolesIds, UsersService usersService, DiscordServersService discordServersService)
         {
             this.ServerId = serverId;
-            var users = ComponentContext.Resolve<DiscordServersService>().GetDiscordServerAsync(serverId).Result.GetUsers().ToDictionaryAsync(x => x.Id, x => x).Result;
+            var users = discordServersService.GetDiscordServerAsync(serverId).Result.GetUsers().ToDictionaryAsync(x => x.Id, x => x).Result;
             this.SafeUsers = serverMessages
                 .GroupBy(x => x.Author.Id)
-                .Where(u => IsUserSafe(u.ToList(), users.GetValueOrDefault(u.Key), serverId, minAverageMessagesPerWeek, trustedRolesIds))
+                .Where(u => IsUserSafe(u.ToList(), users.GetValueOrDefault(u.Key), serverId, minAverageMessagesPerWeek, trustedRolesIds, usersService))
                 .Select(x => x.Key)
                 .ToHashSet();
         }
 
-        private static bool IsUserSafe(IReadOnlyCollection<Message> userMessages, UserContext user, ulong serverId, int minAverageMessagesPerWeek, HashSet<ulong> trustedRolesIds)
+        private static bool IsUserSafe(IReadOnlyCollection<Message> userMessages, UserContext user, ulong serverId, int minAverageMessagesPerWeek, HashSet<ulong> trustedRolesIds, UsersService usersService)
         {
             if (user == null || userMessages.Count < minAverageMessagesPerWeek)
             {
                 return false;
             }
-            var days = GetHowManyDaysUserIsOnThisServer(user.Id, serverId);
+            var days = GetHowManyDaysUserIsOnThisServer(user.Id, serverId, usersService);
             if (days < 30)
             {
                 return false;
@@ -57,9 +54,9 @@ namespace Watchman.Discord.Areas.Protection.Models
             return avg > minAverageMessagesPerWeek;
         }
 
-        private static int GetHowManyDaysUserIsOnThisServer(ulong userId, ulong serverId)
+        private static int GetHowManyDaysUserIsOnThisServer(ulong userId, ulong serverId, UsersService usersService)
         {
-            var joinedAt = ComponentContext.Resolve<UsersService>().GetUserJoinedServerAt(userId, serverId) ?? DateTime.Now;
+            var joinedAt = usersService.GetUserJoinedServerAt(userId, serverId) ?? DateTime.Now;
             return (int)(DateTime.Now.Date - joinedAt.Date).TotalDays;
         }
 
