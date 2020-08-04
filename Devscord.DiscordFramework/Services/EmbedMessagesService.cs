@@ -19,7 +19,7 @@ namespace Devscord.DiscordFramework.Services
 
         public Embed Generate(string title, string description, Dictionary<string, Dictionary<string, string>> values)
         {
-            Dictionary<string, string> flatValues = new Dictionary<string, string>();
+            var flatValues = new Dictionary<string, string>();
             foreach (var value in values)
             {
                 var valuesString = string.Empty;

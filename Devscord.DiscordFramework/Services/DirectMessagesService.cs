@@ -53,16 +53,16 @@ namespace Devscord.DiscordFramework.Services
         public async Task<bool> TrySendEmbedMessage(ulong userId, string title, string description, IEnumerable<KeyValuePair<string, string>> values)
         {
             var embed = this._embedMessagesService.Generate(title, description, values);
-            return await SendEmbedMessage(userId, embed);
+            return await TrySendEmbedMessage(userId, embed);
         }
 
         public async Task<bool> TrySendEmbedMessage(ulong userId, string title, string description, Dictionary<string, Dictionary<string, string>> values)
         {
             var embed = this._embedMessagesService.Generate(title, description, values);
-            return await SendEmbedMessage(userId, embed);
+            return await TrySendEmbedMessage(userId, embed);
         }
 
-        public async Task<bool> SendEmbedMessage(ulong userId, Embed embed)
+        private async Task<bool> TrySendEmbedMessage(ulong userId, Embed embed)
         {
             try
             {

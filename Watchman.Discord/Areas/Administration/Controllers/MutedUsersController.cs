@@ -34,11 +34,9 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             if (values.Count == 0)
             {
                 await _directMessagesService.TrySendMessage(contexts.User.Id, "Brak wyciszonych użytkowników!");
+                return;
             }
-            else
-            {
-                await _directMessagesService.TrySendEmbedMessage(contexts.User.Id, title, description, values);
-            }
+            await _directMessagesService.TrySendEmbedMessage(contexts.User.Id, title, description, values);
         }
 
         private async Task<(string title, string description, Dictionary<string, Dictionary<string, string>> values)> GetMuteEmbedMessage(IAsyncEnumerable<UserContext> mutedUsers, ulong serverId)

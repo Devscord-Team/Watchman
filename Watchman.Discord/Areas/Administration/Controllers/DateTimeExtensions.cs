@@ -5,9 +5,9 @@ namespace Watchman.Discord.Areas.Administration.Controllers
 {
     public static class DateTimeExtensions
     {
-        public static string ToLocalTimeString(this DateTime dt)
+        public static string ToLocalTimeString(this DateTime dateTime)
         {
-            return TimeZoneInfo.ConvertTimeFromUtc(dt, TimeZoneInfo.Local).ToString("dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+            return TimeZoneInfo.ConvertTimeFromUtc(dateTime, TimeZoneInfo.Local).ToString("dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture);
         }
     }
 }
