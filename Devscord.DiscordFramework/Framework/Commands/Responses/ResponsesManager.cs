@@ -240,5 +240,34 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             return responsesService.ProcessResponse("UserWasntMuted",
                 new KeyValuePair<string, string>("user", user.Name));
         }
+
+        public static string RoleAlreadyIsTrusted(this ResponsesService responsesService, string roleName)
+        {
+            return responsesService.ProcessResponse("RoleAlreadyIsTrusted",
+                new KeyValuePair<string, string>("role", roleName));
+        }
+
+        public static string RoleAlreadyIsUntrusted(this ResponsesService responsesService, string roleName)
+        {
+            return responsesService.ProcessResponse("RoleAlreadyIsUntrusted",
+                new KeyValuePair<string, string>("role", roleName));
+        }
+
+        public static string RoleSetAsTrusted(this ResponsesService responsesService, string roleName)
+        {
+            return responsesService.ProcessResponse("RoleSetAsTrusted",
+                new KeyValuePair<string, string>("role", roleName));
+        }
+        
+        public static string RoleSetAsUntrusted(this ResponsesService responsesService, string roleName)
+        {
+            return responsesService.ProcessResponse("RoleSetAsUntrusted",
+                new KeyValuePair<string, string>("role", roleName));
+        }
+
+        public static string ServerDoesntHaveAnyTrustedRole(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("ServerDoesntHaveAnyTrustedRole");
+        }
     }
 }

@@ -71,10 +71,10 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         {
             var punishment = this._spamPunishmentStrategy.GetPunishment(contexts.User.Id, spamProbability);
             await this._antiSpamService.SetPunishment(contexts, punishment);
-            await this._punishmentsCachingService.AddUserPunishment(contexts.User.Id, punishment);
 
             if (punishment.PunishmentOption != PunishmentOption.Nothing)
             {
+                await this._punishmentsCachingService.AddUserPunishment(contexts.User.Id, punishment);
                 this.UpdateLastPunishmentDate(contexts.User.Id, messageSentAt);
                 Log.Information("{PunishmentOption} for user: {user}", punishment.PunishmentOption, contexts.User.Name);
             }

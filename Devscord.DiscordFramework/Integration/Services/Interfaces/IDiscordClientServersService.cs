@@ -13,7 +13,8 @@ namespace Devscord.DiscordFramework.Integration.Services.Interfaces
         List<DateTime> ConnectedTimes { get; set; }
         List<DateTime> DisconnectedTimes { get; set; }
 
-        Task<IEnumerable<DiscordServerContext>> GetDiscordServers();
+        IAsyncEnumerable<DiscordServerContext> GetDiscordServersAsync();
+        Task<DiscordServerContext> GetDiscordServerAsync(ulong serverId);
         Task<IEnumerable<string>> GetExistingInviteLinks(ulong serverId);
         Task<RestGuild> GetGuild(ulong guildId);
     }

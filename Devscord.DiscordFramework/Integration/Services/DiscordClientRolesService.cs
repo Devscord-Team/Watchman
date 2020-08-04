@@ -10,6 +10,7 @@ using Serilog;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Discord.Rest;
 
 namespace Devscord.DiscordFramework.Integration.Services
 {
@@ -22,12 +23,14 @@ namespace Devscord.DiscordFramework.Integration.Services
         private DiscordSocketRestClient _restClient => this._client.Rest;
         private readonly DiscordSocketClient _client;
         private readonly IDiscordClientChannelsService _discordClientChannelsService;
+        private readonly UserRoleFactory _userRoleFactory;
         private List<SocketRole> _roles;
 
-        public DiscordClientRolesService(DiscordSocketClient client, IDiscordClientChannelsService discordClientChannelsService)
+        public DiscordClientRolesService(DiscordSocketClient client, IDiscordClientChannelsService discordClientChannelsService, UserRoleFactory userRoleFactory)
         {
             this._client = client;
             this._discordClientChannelsService = discordClientChannelsService;
+            this._userRoleFactory = userRoleFactory;
             this._client.Ready += async () => await Task.Run(() => this._roles = this._client.Guilds.SelectMany(x => x.Roles).ToList());
             this._client.RoleCreated += this.AddRole;
             this._client.RoleCreated += x => this.RoleCreated(x);
@@ -43,7 +46,7 @@ namespace Devscord.DiscordFramework.Integration.Services
 
             var guild = await this._restClient.GetGuildAsync(discordServer.Id);
             var restRole = await guild.CreateRoleAsync(role.Name, new GuildPermissions(permissionsValue), isMentionable: false);
-            var userRole = new UserRoleFactory().Create(restRole);
+            var userRole = this._userRoleFactory.Create(restRole);
 
             return userRole;
         }
@@ -76,6 +79,12 @@ namespace Devscord.DiscordFramework.Integration.Services
             Parallel.ForEach(channels, c => this.SetRolePermissions(c, channelPermissions, socketRole).Wait());
         }
 
+        public UserRole GetRole(ulong roleId, ulong guildId)
+        {
+            var restRole = this.GetSocketRoles(guildId).FirstOrDefault(x => x.Id == roleId);
+            return restRole == null ? null : this._userRoleFactory.Create(restRole);
+        }
+
         public IEnumerable<SocketRole> GetSocketRoles(ulong guildId)
         {
             if (this._roles == null) // todo: it should work without this if
@@ -87,8 +96,7 @@ namespace Devscord.DiscordFramework.Integration.Services
 
         public IEnumerable<UserRole> GetRoles(ulong guildId)
         {
-            var roleFactory = new UserRoleFactory();
-            return this.GetSocketRoles(guildId).Select(x => roleFactory.Create(x));
+            return this.GetSocketRoles(guildId).Select(x => this._userRoleFactory.Create(x));
         }
 
         private async Task SetRolePermissions(ChannelContext channel, OverwritePermissions permissions, SocketRole role)

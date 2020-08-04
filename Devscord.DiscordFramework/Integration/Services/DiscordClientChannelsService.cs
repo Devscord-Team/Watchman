@@ -22,11 +22,13 @@ namespace Devscord.DiscordFramework.Integration.Services
         private DiscordSocketRestClient _restClient => this._client.Rest;
         private readonly DiscordSocketClient _client;
         private readonly IDiscordClientUsersService _discordClientUsersService;
+        private readonly UserContextsFactory _userContextsFactory;
 
-        public DiscordClientChannelsService(DiscordSocketClient client, IDiscordClientUsersService discordClientUsersService)
+        public DiscordClientChannelsService(DiscordSocketClient client, IDiscordClientUsersService discordClientUsersService, UserContextsFactory userContextsFactory)
         {
             this._client = client;
             this._discordClientUsersService = discordClientUsersService;
+            this._userContextsFactory = userContextsFactory;
             this._client.ChannelCreated += x => this.ChannelCreated(x);
         }
 
@@ -100,10 +102,9 @@ namespace Devscord.DiscordFramework.Integration.Services
                 channelMessages = await textChannel.GetMessagesAsync(fromMessageId, goBefore ? Direction.Before : Direction.After, limit).FlattenAsync();
             }
 
-            var userFactory = new UserContextsFactory();
             var messages = channelMessages.Select(message =>
             {
-                var user = userFactory.Create(message.Author);
+                var user = this._userContextsFactory.Create(message.Author);
                 var contexts = new Contexts();
                 contexts.SetContext(server);
                 contexts.SetContext(channel);
