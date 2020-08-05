@@ -1,6 +1,7 @@
 ﻿using System;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
+using Serilog;
 using Watchman.Discord.Areas.Protection.Services;
 
 namespace Watchman.Discord.Areas.Protection.Strategies
@@ -18,7 +19,8 @@ namespace Watchman.Discord.Areas.Protection.Strategies
         {
             var takeFromTime = DateTime.Now.AddHours(-12);
             var warnsCount = this._punishmentsCachingService.GetUserWarnsCount(userId, takeFromTime);
-
+            Log.Information("User {userId} has {warnsCount} warns", userId, warnsCount);
+            
             var punishmentOption = spamProbability switch
             {
                 SpamProbability.None => PunishmentOption.Nothing,

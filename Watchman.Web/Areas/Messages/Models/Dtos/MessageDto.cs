@@ -20,7 +20,7 @@ namespace Watchman.Web.Areas.Messages.Models.Dtos
             this.Content = message.Content;
             this.User = new MessageUserDto(message.Author.Id, message.Author.Name);
             this.Channel = new MessageChannelDto(message.Channel.Id, message.Channel.Name);
-            this.Server = new MessageServerDto(message.Server.Id, message.Server.Name, new MessageServerOwnerDto(message.Server.Owner.Id, message.Server.Owner.Name));
+            this.Server = new MessageServerDto(message.Server.Id, message.Server.Name);
             this.SentAt = message.SentAt;
         }
     }
