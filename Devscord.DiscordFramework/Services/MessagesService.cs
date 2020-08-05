@@ -20,13 +20,13 @@ namespace Devscord.DiscordFramework.Services
         private static readonly Dictionary<ulong, IEnumerable<Response>> _serversResponses = new Dictionary<ulong, IEnumerable<Response>>();
         private readonly ResponsesService _responsesService;
         private readonly MessageSplittingService _splittingService;
-        private readonly EmbedMessagesService _embedMessagesService;
+        private readonly EmbedMessageSplittingService _embedMessageSplittingService;
 
-        public MessagesService(ResponsesService responsesService, MessageSplittingService splittingService, EmbedMessagesService embedMessagesService)
+        public MessagesService(ResponsesService responsesService, MessageSplittingService splittingService, EmbedMessageSplittingService embedMessageSplittingService)
         {
             this._responsesService = responsesService;
             this._splittingService = splittingService;
-            this._embedMessagesService = embedMessagesService;
+            this._embedMessageSplittingService = embedMessageSplittingService;
             if (_serversResponses.Count == 0)
             {
                 this.Refresh().Wait();
@@ -48,8 +48,11 @@ namespace Devscord.DiscordFramework.Services
         public Task SendEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, string>> values)
         {
             var channel = this.GetChannel();
-            var embed = this._embedMessagesService.Generate(title, description, values);
-            channel.SendMessageAsync(embed: embed);
+            foreach (var embed in this._embedMessageSplittingService.SplitEmbedMessage(title, description, values))
+            {
+                channel.SendMessageAsync(embed: embed);
+                Log.Information("Bot sent embed message {description}", embed.Description);
+            }
             return Task.CompletedTask;
         }
 
