@@ -47,15 +47,15 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             await foreach (var mutedUser in mutedUsers)
             {
                 var muteEvent = this._mutingHelper.GetNotUnmutedUserMuteEvent(serverId, mutedUser.Id);
-                if (muteEvent == null || DateTime.Compare(muteEvent.TimeRange.End.ToLocalTime(), DateTime.Now) < 0)
+                if (muteEvent == null)// || DateTime.Compare(muteEvent.TimeRange.End.ToLocalTime(), DateTime.Now) < 0)
                 {
                     continue;
                 }
                 values.Add($"Użytkownik: {mutedUser.Name}",
                     new Dictionary<string, string>
                     {
-                            {"Powód ", muteEvent.Reason},
-                            {"Data zakończenia ", muteEvent.TimeRange.End.ToLocalTimeString() }
+                            {"Powód:", muteEvent.Reason},
+                            {"Data zakończenia:", muteEvent.TimeRange.End.ToLocalTimeString() }
                     });
             }
             return (title, description, values);

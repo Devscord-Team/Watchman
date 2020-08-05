@@ -25,7 +25,7 @@ namespace Devscord.DiscordFramework.Services
                 var valuesString = string.Empty;
                 foreach (var v in value.Value)
                 {
-                    valuesString += $"{v.Key}: {v.Value}\n";
+                    valuesString += $"{v.Key} {v.Value}\n";
                 }
                 flatValues.Add(value.Key, valuesString);
             }
