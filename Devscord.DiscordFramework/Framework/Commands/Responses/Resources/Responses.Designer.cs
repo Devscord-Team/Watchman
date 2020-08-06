@@ -106,6 +106,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Nie znaleziono kanału {{channel}} .
+        /// </summary>
+        public static string ChannelNotFound {
+            get {
+                return ResourceManager.GetString("ChannelNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Argument {{argument}} jest nie może być pusty..
         /// </summary>
         public static string EmptyArgument {
@@ -124,7 +133,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dla tego polecenia są dostępne tylko argumenty: {{arguments}}..
+        ///   Looks up a localized string similar to Podane argumenty są niepoprawne.
         /// </summary>
         public static string InvalidArguments {
             get {
@@ -133,7 +142,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Użytkownik {{user}} został zmutowany do {{timeEnd}}..
+        ///   Looks up a localized string similar to Użytkownik {{user}} został wyciszony do {{timeEnd}}.
         /// </summary>
         public static string MutedUser {
             get {
@@ -174,24 +183,6 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         public static string NumberOfMessagesIsHuge {
             get {
                 return ResourceManager.GetString("NumberOfMessagesIsHuge", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Dostępne komendy: ```{{help}}```.
-        /// </summary>
-        public static string PrintHelp {
-            get {
-                return ResourceManager.GetString("PrintHelp", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Zakończono wczytywanie historii wiadomości..
-        /// </summary>
-        public static string ReadingHistoryDone {
-            get {
-                return ResourceManager.GetString("ReadingHistoryDone", resourceCulture);
             }
         }
         
@@ -237,6 +228,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         public static string ResponseNotFound {
             get {
                 return ResourceManager.GetString("ResponseNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Odpowiedź `{{onEvent}}` po zmianie odpowiedź jest identyczna jak domyślna, usunięto odpowiedź na serwerze **{{server}}**..
+        /// </summary>
+        public static string ResponseTheSameAsDefault {
+            get {
+                return ResourceManager.GetString("ResponseTheSameAsDefault", resourceCulture);
             }
         }
         
@@ -394,24 +394,6 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Spam alert! Uzytkownik {{user}} został zmutowany..
-        /// </summary>
-        public static string SpamAlertUserIsMuted {
-            get {
-                return ResourceManager.GetString("SpamAlertUserIsMuted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Spam alert! Użytkownik {{user}} został zmutowany na dłużej.
-        /// </summary>
-        public static string SpamAlertUserIsMutedForLong {
-            get {
-                return ResourceManager.GetString("SpamAlertUserIsMutedForLong", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Czas nie może być ujemny!.
         /// </summary>
         public static string TimeCannotBeNegative {
@@ -498,6 +480,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         public static string UserNotFound {
             get {
                 return ResourceManager.GetString("UserNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Użytkownik {{user}} nie jest wyciszony..
+        /// </summary>
+        public static string UserWasntMuted {
+            get {
+                return ResourceManager.GetString("UserWasntMuted", resourceCulture);
             }
         }
     }
