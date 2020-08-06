@@ -54,7 +54,7 @@ namespace Watchman.Discord.Areas.Protection.Services
             else
             {
                 var warnEvents = await GetWarnEvents(serverId, mentionedUser.Id);
-                var warnKeyValues = WarnEventsToKeyValue(warnEvents, false, mentionedUser.Id);
+                var warnKeyValues = this.WarnEventsToKeyValue(warnEvents, showServer: false, mentionedUser.Id);
                 await messageService.SendEmbedMessage("Warnings", string.Empty, warnKeyValues);
             }
         }
