@@ -1,9 +1,9 @@
 ﻿using Devscord.DiscordFramework.Middlewares.Contexts;
-using Devscord.DiscordFramework.Services;
 using Serilog;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Devscord.DiscordFramework.Commons.Extensions;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Statistics.Services;
 using Watchman.DomainModel.Settings.Commands;
@@ -16,27 +16,27 @@ namespace Watchman.Discord.Areas.Initialization.Services
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
         private readonly MuteRoleInitService _muteRoleInitService;
-        private readonly UsersRolesService _usersRolesService;
         private readonly ServerScanningService _serverScanningService;
         private readonly CyclicStatisticsGeneratorService _cyclicStatisticsGeneratorService;
 
-        public InitializationService(IQueryBus queryBus, ICommandBus commandBus, MuteRoleInitService muteRoleInitService, UsersRolesService usersRolesService, ServerScanningService serverScanningService, CyclicStatisticsGeneratorService cyclicStatisticsGeneratorService)
+        public InitializationService(IQueryBus queryBus, ICommandBus commandBus, MuteRoleInitService muteRoleInitService, ServerScanningService serverScanningService, CyclicStatisticsGeneratorService cyclicStatisticsGeneratorService)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;
             this._muteRoleInitService = muteRoleInitService;
-            this._usersRolesService = usersRolesService;
             this._serverScanningService = serverScanningService;
             this._cyclicStatisticsGeneratorService = cyclicStatisticsGeneratorService;
         }
 
         public async Task InitServer(DiscordServerContext server)
-        {
+        { 
+            Log.Information("Initializing server: {server}", server.ToJson());
             await this.MuteRoleInit(server);
             var lastInitDate = this.GetLastInitDate(server);
             await this.ReadServerMessagesHistory(server, lastInitDate);
             await this._cyclicStatisticsGeneratorService.GenerateStatsForDaysBefore(server, lastInitDate);
             await this.NotifyDomainAboutInit(server);
+            Log.Information("Done server: {server}", server.ToJson());
         }
 
         private async Task MuteRoleInit(DiscordServerContext server)
@@ -47,11 +47,10 @@ namespace Watchman.Discord.Areas.Initialization.Services
 
         private async Task ReadServerMessagesHistory(DiscordServerContext server, DateTime lastInitDate)
         {
-            foreach (var textChannel in server.TextChannels)
+            foreach (var textChannel in server.GetTextChannels())
             {
                 await this._serverScanningService.ScanChannelHistory(server, textChannel, lastInitDate);
             }
-
             Log.Information("Read messages history: {server}", server.Name);
         }
 

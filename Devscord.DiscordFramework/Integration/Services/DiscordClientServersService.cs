@@ -15,14 +15,16 @@ namespace Devscord.DiscordFramework.Integration.Services
     {
         private DiscordSocketRestClient _restClient => this._client.Rest;
         private readonly DiscordSocketClient _client;
+        private readonly DiscordServerContextFactory _discordServerContextFactory;
 
         public Func<SocketGuild, Task> BotAddedToServer { get; set; } = x => Task.CompletedTask;
         public List<DateTime> DisconnectedTimes { get; set; } = new List<DateTime>();
         public List<DateTime> ConnectedTimes { get; set; } = new List<DateTime>();
 
-        public DiscordClientServersService(DiscordSocketClient client)
+        public DiscordClientServersService(DiscordSocketClient client, DiscordServerContextFactory discordServerContextFactory)
         {
             this._client = client;
+            this._discordServerContextFactory = discordServerContextFactory;
 
             this._client.JoinedGuild += this.BotAddedToServer;
             this._client.Disconnected += this.BotDisconnected;
@@ -34,12 +36,18 @@ namespace Devscord.DiscordFramework.Integration.Services
             return await this._restClient.GetGuildAsync(guildId);
         }
 
-        public async Task<IEnumerable<DiscordServerContext>> GetDiscordServers()
+        public async IAsyncEnumerable<DiscordServerContext> GetDiscordServersAsync()
         {
-            var serverContextFactory = new DiscordServerContextFactory();
-            var guilds = await this._restClient.GetGuildsAsync();
-            var serverContexts = guilds.Select(x => serverContextFactory.Create(x));
-            return serverContexts;
+            foreach (var guild in await this._restClient.GetGuildsAsync())
+            {
+                yield return this._discordServerContextFactory.Create(guild);
+            }
+        }
+
+        public async Task<DiscordServerContext> GetDiscordServerAsync(ulong serverId)
+        {
+            var guild = await this._restClient.GetGuildAsync(serverId);
+            return this._discordServerContextFactory.Create(guild);
         }
 
         public async Task<IEnumerable<string>> GetExistingInviteLinks(ulong serverId)

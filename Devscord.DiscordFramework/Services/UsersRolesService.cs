@@ -25,5 +25,10 @@ namespace Devscord.DiscordFramework.Services
         {
             return Server.GetRoles(server.Id);
         }
+
+        public UserRole GetRole(ulong roleId, ulong serverId)
+        {
+            return Server.GetRole(roleId, serverId);
+        }
     }
 }
