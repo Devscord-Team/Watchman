@@ -23,15 +23,15 @@ namespace Watchman.Discord.Areas.Responses.Services
             var messagesService = this._messagesServiceFactory.Create(contexts);
             if (commandArgument == "default")
             {
-                await messagesService.SendEmbedMessage("Domyślne responses:", DESCRIPTION, this.GetDefaultResponses());
+                await messagesService.SendEmbedMessage("Domyślne odpowiedzi:", DESCRIPTION, this.GetDefaultResponses());
             }
             else if (commandArgument == "custom")
             {
-                await messagesService.SendEmbedMessage("Nadpisane responses:", DESCRIPTION, this.GetCustomResponses(contexts.Server.Id));
+                await messagesService.SendEmbedMessage("Nadpisane odpowiedzi:", DESCRIPTION, this.GetCustomResponses(contexts.Server.Id));
             }
             else
             {
-                await messagesService.SendEmbedMessage("Wszystkie responses:", DESCRIPTION, this.GetAllResponses(contexts.Server.Id));
+                await messagesService.SendEmbedMessage("Wszystkie odpowiedzi:", DESCRIPTION, this.GetAllResponses(contexts.Server.Id));
             }
         }
 
