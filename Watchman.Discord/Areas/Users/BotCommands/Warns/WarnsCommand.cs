@@ -8,8 +8,5 @@ namespace Watchman.Discord.Areas.Users.BotCommands.Warns
         [Optional]
         [UserMention]
         public ulong User { get; set; }
-
-        [Bool]
-        public bool All { get; set; }
     }
 }

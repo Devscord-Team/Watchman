@@ -54,26 +54,8 @@ namespace Watchman.Discord.Areas.Protection.Services
             else
             {
                 var warnEvents = await GetWarnEvents(serverId, mentionedUser.Id);
-                var warnKeyValues = WarnEventsToKeyValue(warnEvents, false, mentionedUser.Id);
-                await messageService.SendEmbedMessage("Warnings", string.Empty, warnKeyValues);
-            }
-        }
-
-        public async Task GetAllWarns(WarnsCommand command, Contexts contexts, UserContext mentionedUser, ulong serverId)
-        {
-            if (!contexts.User.IsAdmin)
-            {
-                throw new NotAdminPermissionsException();
-            }
-            if (mentionedUser == null)
-            {
-                await this._directMessagesService.TrySendMessage(contexts.User.Id, x => x.UserNotFound(command.User.GetUserMention()), contexts);
-            }
-            else
-            {
-                var warnEvents = await GetWarnEvents(serverId, mentionedUser.Id);
-                var warnKeyValues = WarnEventsToKeyValue(warnEvents, true, mentionedUser.Id);
-                await _directMessagesService.TrySendEmbedMessage(contexts.User.Id, "Warnings", string.Empty, warnKeyValues);
+                var warnKeyValues = WarnEventsToKeyValue(warnEvents, mentionedUser.Id);
+                await messageService.SendEmbedMessage("Ostrzeżenia", string.Empty, warnKeyValues);
             }
         }
 
@@ -84,25 +66,21 @@ namespace Watchman.Discord.Areas.Protection.Services
             return response.WarnEvents;
         }
 
-        private IEnumerable<KeyValuePair<string, string>> WarnEventsToKeyValue(IEnumerable<WarnEvent> warns, bool showServer, ulong mentionedUser)
+        private IEnumerable<KeyValuePair<string, string>> WarnEventsToKeyValue(IEnumerable<WarnEvent> warns, ulong mentionedUser)
         {
             var warnEventPairs = new List<KeyValuePair<string, string>>();
             foreach (var warnEvent in warns)
             {
                 var warnContentBuilder = new StringBuilder();
-                warnContentBuilder.Append("Granted by: ").Append(warnEvent.GrantorId.GetUserMention())
-                    .AppendLine().Append("Receiver: ").Append(warnEvent.ReceiverId.GetUserMention())
-                    .AppendLine().Append("Reason: ").Append(warnEvent.Reason);
-                if (showServer)
-                {
-                    warnContentBuilder.AppendLine().Append("ServerId: ").Append(warnEvent.ServerId.ToString());
-                }
+                warnContentBuilder.Append("Nadane przez: ").Append(warnEvent.GrantorId.GetUserMention())
+                    .AppendLine().Append("Odbiorca: ").Append(warnEvent.ReceiverId.GetUserMention())
+                    .AppendLine().Append("Powód: ").Append(warnEvent.Reason);
                 var eventKeyValuePair = new KeyValuePair<string, string>(warnEvent.CreatedAt.ToString(), warnContentBuilder.ToString());
                 warnEventPairs.Add(eventKeyValuePair);
             }
-            if (warnEventPairs.Count() == 0)
+            if (warnEventPairs.Count == 0)
             {
-                warnEventPairs.Add(new KeyValuePair<string, string>("No content", $"User {mentionedUser.GetUserMention()} has no warns."));
+                warnEventPairs.Add(new KeyValuePair<string, string>("Brak zawartości", $"Użytkownik {mentionedUser.GetUserMention()} nie ma żadnych ostrzeżeń."));
             }
             return warnEventPairs;
         }

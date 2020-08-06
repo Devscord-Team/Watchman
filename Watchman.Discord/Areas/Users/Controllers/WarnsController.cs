@@ -46,9 +46,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         public async Task Warns(WarnsCommand command, Contexts contexts)
         {
             var mentionedUser = command.User == 0 ? contexts.User : await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
-            var serverId = command.All ? 0 : contexts.Server.Id;
-            await (command.All ? this._warnService.GetAllWarns(command, contexts, mentionedUser, serverId)
-                : this._warnService.GetWarns(command, contexts, mentionedUser, serverId));
+            await this._warnService.GetWarns(command, contexts, mentionedUser, contexts.Server.Id);
         }
     }
 }
