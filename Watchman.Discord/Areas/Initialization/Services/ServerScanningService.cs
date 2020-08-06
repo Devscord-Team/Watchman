@@ -13,13 +13,18 @@ namespace Watchman.Discord.Areas.Initialization.Services
 {
     public class ServerScanningService
     {
+        private UserContext BotContext => this._botContext ??= this._usersService.GetBot();
+
         private readonly ICommandBus _commandBus;
         private readonly MessagesHistoryService _messagesHistoryService;
+        private readonly UsersService _usersService;
+        private UserContext _botContext;
 
-        public ServerScanningService(ICommandBus commandBus, MessagesHistoryService messagesHistoryService)
+        public ServerScanningService(ICommandBus commandBus, MessagesHistoryService messagesHistoryService, UsersService usersService)
         {
             this._commandBus = commandBus;
             this._messagesHistoryService = messagesHistoryService;
+            this._usersService = usersService;
         }
 
         public async Task ScanChannelHistory(DiscordServerContext server, ChannelContext channel, DateTime? startTime = null) // startTime ->->-> now
@@ -85,10 +90,9 @@ namespace Watchman.Discord.Areas.Initialization.Services
         private List<Message> ReadMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong lastMessageId = 0)
         {
             var messages = lastMessageId == 0
-                ? this._messagesHistoryService.ReadMessagesAsync(server, channel, limit).Result.ToList()
-                : this._messagesHistoryService.ReadMessagesAsync(server, channel, limit, lastMessageId, goBefore: true).Result.ToList();
-
-            return messages;
+                ? this._messagesHistoryService.ReadMessagesAsync(server, channel, limit).Result
+                : this._messagesHistoryService.ReadMessagesAsync(server, channel, limit, lastMessageId, goBefore: true).Result;
+            return messages.Where(x => x.Contexts.User.Id != this.BotContext.Id).ToList();
         }
 
         private bool LastMessageIsOlderThanStartTime(IEnumerable<Message> messages, DateTime startTime)

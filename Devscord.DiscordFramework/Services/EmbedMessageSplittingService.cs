@@ -18,7 +18,7 @@ namespace Devscord.DiscordFramework.Services
         internal IEnumerable<Embed> SplitEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, string>> values)
         {
             var messages = this.SplitMessage(values.ToList()).ToList();
-            yield return this._embedMessagesService.Generate(title, description, messages.First());
+            yield return this._embedMessagesService.Generate(title, description, messages.FirstOrDefault() ?? new Dictionary<string, string>());
             foreach (var message in messages.Skip(1))
             {
                 yield return this._embedMessagesService.Generate(title: null, description: null, message);

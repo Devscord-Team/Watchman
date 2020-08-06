@@ -57,12 +57,12 @@ namespace Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models
 
         private static void RemoveOldMessagesCyclic()
         {
-            var minTimeInPast = DateTime.UtcNow.AddMinutes(-15);
+            var minTimeInPast = DateTime.UtcNow.AddMinutes(-1);
             var smallMessages = _usersMessages.Values.Select(list =>
             {
                 list.RemoveAll(message => message.SentAt < minTimeInPast);
                 return list;
-            }).ToList();
+            }).Where(x => x.Count > 0).ToList();
             if (smallMessages.Count == 0)
             {
                 return;
