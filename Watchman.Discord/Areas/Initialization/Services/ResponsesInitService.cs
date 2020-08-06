@@ -22,24 +22,39 @@ namespace Watchman.Discord.Areas.Initialization.Services
 
         public async Task InitNewResponsesFromResources()
         {
+            var defaultResponses = this._responsesGetterService.GetResponsesFromResources().ToList();
             var responsesInBase = this._responsesGetterService.GetResponsesFromBase();
-            var defaultResponses = this._responsesGetterService.GetResponsesFromResources();
-            var responsesToAdd = defaultResponses
-                .Where(def => responsesInBase.All(@base => @base.OnEvent != def.OnEvent))
-                .ToList();
-
-            await this.AddNewResponses(responsesToAdd);
+            var responsesToUpdate = new List<Response>();
+            var responsesToRemove = new List<Response>();
+            
+            foreach (var baseResponse in responsesInBase)
+            {
+                var matchingDefaultResponse = defaultResponses.FirstOrDefault(defaultResponse => defaultResponse.OnEvent == baseResponse.OnEvent);
+                if (matchingDefaultResponse == null)
+                {
+                    responsesToRemove.Add(baseResponse);
+                    continue;
+                }
+                baseResponse.UpdateAvailableVariables(matchingDefaultResponse.AvailableVariables);
+                baseResponse.SetMessage(matchingDefaultResponse.Message);
+                responsesToUpdate.Add(baseResponse);
+            }
+            
+            var responsesToAdd = defaultResponses.Where(def => responsesToUpdate.All(@base => @base.OnEvent != def.OnEvent));
+            
+            var command = new RemoveResponsesCommand(responsesToRemove);
+            await this._commandBus.ExecuteAsync(command);
+            await this.AddOrUpdateResponses(responsesToAdd.Concat(responsesToUpdate).ToList());
         }
 
-        private async Task AddNewResponses(IReadOnlyCollection<Response> responsesToAdd)
+        private async Task AddOrUpdateResponses(IReadOnlyCollection<Response> responsesToUpdate)
         {
-            if (!responsesToAdd.Any())
+            if (!responsesToUpdate.Any())
             {
                 Log.Information("No new responses");
                 return;
             }
-
-            var command = new AddResponsesCommand(responsesToAdd);
+            var command = new AddOrUpdateResponsesCommand(responsesToUpdate);
             await this._commandBus.ExecuteAsync(command);
             Log.Information("Responses initialized");
         }

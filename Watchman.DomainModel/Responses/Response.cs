@@ -1,4 +1,5 @@
-﻿using Watchman.Integrations.MongoDB;
+﻿using System.Linq;
+using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Responses
 {
@@ -8,13 +9,15 @@ namespace Watchman.DomainModel.Responses
         public string OnEvent { get; private set; }
         public string Message { get; private set; }
         public ulong ServerId { get; private set; }
+        public string[] AvailableVariables { get; private set; }
         public bool IsDefault => this.ServerId == DEFAULT_SERVER_ID;
 
-        public Response(string onEvent, string message, ulong serverId)
+        public Response(string onEvent, string message, ulong serverId, string[] availableVariables)
         {
             this.OnEvent = onEvent;
             this.Message = message;
             this.ServerId = serverId;
+            this.AvailableVariables = availableVariables;
         }
 
         public void SetOnEvent(string onEvent)
@@ -34,6 +37,16 @@ namespace Watchman.DomainModel.Responses
                 return;
             }
             this.Message = message;
+            this.Update();
+        }
+
+        public void UpdateAvailableVariables(string[] newAvailableVariables)
+        {
+            if (this.AvailableVariables.SequenceEqual(newAvailableVariables))
+            {
+                return;
+            }
+            this.AvailableVariables = newAvailableVariables;
             this.Update();
         }
     }
