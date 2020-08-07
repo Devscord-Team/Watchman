@@ -21,21 +21,18 @@ namespace Watchman.Discord.Areas.Responses.Services
             this._messagesServiceFactory = messagesServiceFactory;
         }
 
-        public async Task PrintResponses(string commandArgument, Contexts contexts)
+        public Task PrintResponses(string commandArgument, Contexts contexts)
         {
             var messagesService = this._messagesServiceFactory.Create(contexts);
             if (commandArgument == "default")
             {
-                await messagesService.SendEmbedMessage("Domyślne odpowiedzi:", DESCRIPTION, this.GetDefaultResponses());
+                return messagesService.SendEmbedMessage("Domyślne odpowiedzi:", DESCRIPTION, this.GetDefaultResponses());
             }
-            else if (commandArgument == "custom")
+            if (commandArgument == "custom")
             {
-                await messagesService.SendEmbedMessage("Nadpisane odpowiedzi:", DESCRIPTION, this.GetCustomResponses(contexts.Server.Id));
+                return messagesService.SendEmbedMessage("Nadpisane odpowiedzi:", DESCRIPTION, this.GetCustomResponses(contexts.Server.Id));
             }
-            else
-            {
-                await messagesService.SendEmbedMessage("Wszystkie odpowiedzi:", DESCRIPTION, this.GetAllResponses(contexts.Server.Id));
-            }
+            return messagesService.SendEmbedMessage("Wszystkie odpowiedzi:", DESCRIPTION, this.GetAllResponses(contexts.Server.Id));
         }
 
         private IEnumerable<KeyValuePair<string, string>> GetDefaultResponses()
