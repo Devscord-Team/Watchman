@@ -1,5 +1,6 @@
 ﻿using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Commons.Exceptions;
+using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
@@ -43,10 +44,19 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             await messageService.SendResponse(x => x.UserHasBeenWarned(contexts.User.Name, mentionedUser.Name, command.Reason));
         }
 
-        public async Task Warns(WarnsCommand command, Contexts contexts)
+        public Task Warns(WarnsCommand command, Contexts contexts)
         {
-            var mentionedUser = command.User == 0 ? contexts.User : await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
-            await this._warnService.GetWarns(command, contexts, mentionedUser, contexts.Server.Id);
+            var messageService = _messagesServiceFactory.Create(contexts);
+            var mentionedUser = command.User == 0 ? 
+                    contexts.User 
+                        : 
+                    this._usersService.GetUserByIdAsync(contexts.Server, command.User).GetAwaiter().GetResult();
+            var warns = this._warnService.GetWarns(command, contexts, mentionedUser, contexts.Server.Id);
+            if (warns == null) 
+            {
+                return messageService.SendResponse(x => x.UserNotFound(command.User.GetUserMention()));
+            }
+            return messageService.SendEmbedMessage("Ostrzeżenia", string.Empty, warns);
         }
     }
 }

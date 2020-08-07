@@ -19,7 +19,7 @@ namespace Devscord.DiscordFramework.Commons.Extensions
 
         public static string GetRoleMention(this ulong roleId)
         {
-            return $"@&{roleId}>";
+            return $"<@&{roleId}>";
         }
     }
 }

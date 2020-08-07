@@ -243,19 +243,6 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("reason", reason));
         }
 
-        public static string GetUserWarns(this ResponsesService responsesService, string user, string warns)
-        {
-            return responsesService.ProcessResponse("GetUserWarns",
-                new KeyValuePair<string, string>("user", user),
-                new KeyValuePair<string, string>("warns", warns));
-        }
-
-        public static string EmptyArgument(this ResponsesService responsesService, string argName)
-        {
-            return responsesService.ProcessResponse("EmptyArgument",
-                new KeyValuePair<string, string>("argument", argName));
-        }
-
         public static string UserWasntMuted(this ResponsesService responsesService, UserContext user)
         {
             return responsesService.ProcessResponse("UserWasntMuted",

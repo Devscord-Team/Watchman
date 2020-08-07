@@ -44,19 +44,15 @@ namespace Watchman.Discord.Areas.Protection.Services
             return this._commandBus.ExecuteAsync(addWarnEventCommand);
         }
 
-        public async Task GetWarns(WarnsCommand command, Contexts contexts, UserContext mentionedUser, ulong serverId)
+        public IEnumerable<KeyValuePair<string, string>> GetWarns(WarnsCommand command, Contexts contexts, UserContext mentionedUser, ulong serverId)
         {
-            var messageService = this._messagesServiceFactory.Create(contexts);
             if (mentionedUser == null)
             {
-                await messageService.SendResponse(x => x.UserNotFound(command.User.GetUserMention()));
+                return null;
             }
-            else
-            {
-                var warnEvents = await GetWarnEvents(serverId, mentionedUser.Id);
-                var warnKeyValues = WarnEventsToKeyValue(warnEvents, mentionedUser.Id);
-                await messageService.SendEmbedMessage("Ostrzeżenia", string.Empty, warnKeyValues);
-            }
+
+            var warnEvents = GetWarnEvents(serverId, mentionedUser.Id).GetAwaiter().GetResult();
+            return WarnEventsToKeyValue(warnEvents, mentionedUser.Id);
         }
 
         public async Task<IEnumerable<WarnEvent>> GetWarnEvents(ulong serverId, ulong userId)
@@ -66,7 +62,7 @@ namespace Watchman.Discord.Areas.Protection.Services
             return response.WarnEvents;
         }
 
-        private IEnumerable<KeyValuePair<string, string>> WarnEventsToKeyValue(IEnumerable<WarnEvent> warns, ulong mentionedUser)
+        private IEnumerable<KeyValuePair<string, string>> WarnEventsToKeyValue(IEnumerable<WarnEvent> warns, ulong mentionedUserId)
         {
             var warnEventPairs = new List<KeyValuePair<string, string>>();
             foreach (var warnEvent in warns)
@@ -80,7 +76,7 @@ namespace Watchman.Discord.Areas.Protection.Services
             }
             if (warnEventPairs.Count == 0)
             {
-                warnEventPairs.Add(new KeyValuePair<string, string>("Brak zawartości", $"Użytkownik {mentionedUser.GetUserMention()} nie ma żadnych ostrzeżeń."));
+                warnEventPairs.Add(new KeyValuePair<string, string>("Brak zawartości", $"Użytkownik {mentionedUserId.GetUserMention()} nie ma żadnych ostrzeżeń."));
             }
             return warnEventPairs;
         }

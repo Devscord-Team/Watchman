@@ -115,24 +115,6 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Argument {{argument}} jest nie może być pusty..
-        /// </summary>
-        public static string EmptyArgument {
-            get {
-                return ResourceManager.GetString("EmptyArgument", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Ostrzeżenia użytkownika {{user}}: {{warns}}..
-        /// </summary>
-        public static string GetUserWarns {
-            get {
-                return ResourceManager.GetString("GetUserWarns", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Podane argumenty są niepoprawne.
         /// </summary>
         public static string InvalidArguments {
