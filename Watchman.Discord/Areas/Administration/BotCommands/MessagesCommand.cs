@@ -13,6 +13,6 @@ namespace Watchman.Discord.Areas.Administration.BotCommands
         [Time]
         public TimeSpan Time { get; set; }
         [Bool]
-        public bool HasForceArgument { get; set; }
+        public bool Force { get; set; }
     }
 }

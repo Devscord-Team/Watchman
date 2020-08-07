@@ -41,21 +41,25 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         [AdminCommand]
         public async Task ReadUserMessages(MessagesCommand command, Contexts contexts)
         {
-            var selectedUser = await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
             var messagesService = this._messagesServiceFactory.Create(contexts);
-            var timeRange = new TimeRange(DateTime.UtcNow - command.Time, DateTime.UtcNow);
+            var selectedUser = await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
+            if (selectedUser == null)
+            {
+                await messagesService.SendResponse(x => x.InvalidArguments());
+                return;
+            }
+            var timeRange = TimeRange.ToNow(DateTime.UtcNow - command.Time);
 
             var query = new GetMessagesQuery(contexts.Server.Id, selectedUser.Id)
             {
                 SentDate = timeRange
             };
             var messages = this._queryBus.Execute(query).Messages
-                .OrderBy(x => x.SentAt)
-                .ToList();
+                .OrderBy(x => x.SentAt);
 
-            if (messages.Count > 200 && !command.HasForceArgument)
+            if (messages.Count() > 200 && !command.Force)
             {
-                await messagesService.SendResponse(x => x.NumberOfMessagesIsHuge(messages.Count));
+                await messagesService.SendResponse(x => x.NumberOfMessagesIsHuge(messages.Count()));
                 return;
             }
 
@@ -72,7 +76,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             await this._directMessagesService.TrySendMessage(contexts.User.Id, header);
             await this._directMessagesService.TrySendMessage(contexts.User.Id, linesBuilder.ToString(), MessageType.BlockFormatted);
 
-            await messagesService.SendResponse(x => x.SentByDmMessagesOfAskedUser(messages.Count, selectedUser));
+            await messagesService.SendResponse(x => x.SentByDmMessagesOfAskedUser(messages.Count(), selectedUser));
         }
 
         [AdminCommand]

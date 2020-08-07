@@ -16,53 +16,30 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
 
         public object ConvertType(string value, BotCommandPropertyType type)
         {
-            try
+            return type switch
             {
-                return type switch
-                {
-                    BotCommandPropertyType.Time => this.ToTimeSpan(value),
-                    BotCommandPropertyType.Number => int.Parse(value),
-                    BotCommandPropertyType.Bool => bool.Parse(value),
-                    BotCommandPropertyType.UserMention => this.ParseToUserId(value),
-                    BotCommandPropertyType.ChannelMention => this.ParseToChannelId(value),
-                    BotCommandPropertyType.SingleWord => !value.Any(char.IsWhiteSpace) ? value : throw new InvalidArgumentsException(),
-                    _ => value
-                };
-            }
-            catch
-            {
-                throw new InvalidArgumentsException();
-            }  
+                BotCommandPropertyType.Time => this.ToTimeSpan(value),
+                BotCommandPropertyType.Number => int.Parse(value),
+                BotCommandPropertyType.Bool => bool.Parse(value),
+                BotCommandPropertyType.UserMention => ulong.Parse(_exMention.Match(value).Value),
+                BotCommandPropertyType.ChannelMention => ulong.Parse(_exMention.Match(value).Value),
+                _ => value
+            };
         }
 
         private TimeSpan ToTimeSpan(string value)
         {
-            var match = this._exTime.Match(value);
-            var unit = match.Groups["Unit"].Value.ToLowerInvariant();
-            var timeValue = uint.Parse(match.Groups["Value"].Value);
+            var matchGroups = this._exTime.Match(value).Groups;
+            var unit = matchGroups["Unit"].Value.ToLowerInvariant();
+            var timeValue = uint.Parse(matchGroups["Value"].Value);
             return unit switch
             {
                 "d" => TimeSpan.FromDays(timeValue),
                 "h" => TimeSpan.FromHours(timeValue),
                 "m" => TimeSpan.FromMinutes(timeValue),
                 "s" => TimeSpan.FromSeconds(timeValue),
-                "ms" => TimeSpan.FromMilliseconds(timeValue),
-                _ => throw new ArgumentNullException()
+                _ => TimeSpan.FromMilliseconds(timeValue),
             };
-        }
-
-        private ulong ParseToUserId(string value)
-        {
-            var id = ulong.Parse(_exMention.Match(value).Value);
-            var user = Server.GetUser(id).Result;
-            return user != null ? id : throw new InvalidArgumentsException();
-        }
-
-        private ulong ParseToChannelId(string value)
-        {
-            var id = ulong.Parse(_exMention.Match(value).Value);
-            var channel = Server.GetChannel(id).Result;
-            return channel != null ? id : throw new InvalidArgumentsException();
         }
     }
 }

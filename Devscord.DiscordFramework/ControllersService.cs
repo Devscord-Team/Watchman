@@ -122,17 +122,28 @@ namespace Devscord.DiscordFramework
                         //TODO zoptymalizować, spokojnie można to pobierać wcześniej i używać raz, zamiast wszystko obliczać przy każdym odpaleniu
                         var template = this._botCommandsService.GetCommandTemplate(commandInParameterType);
                         var customCommand = await this._commandsContainer.GetCommand(request, commandInParameterType, contexts.Server.Id);
-                        if (customCommand != null || this._botCommandsService.IsMatchedWithCommand(request, template))
+                        var isCommandCustom = customCommand != null;
+                        if (!isCommandCustom && !this._botCommandsService.IsNormalCommand(request, template))
                         {
-                            if (this.IsValid(contexts, method))
-                            {
-                                var command = customCommand == null
-                                    ? this._botCommandsService.ParseRequestToCommand(commandInParameterType, request, template)
-                                    : this._botCommandsService.ParseCustomTemplate(commandInParameterType, template, customCommand.Template, request.OriginalMessage);
-                                await InvokeMethod(command, contexts, controllerInfo, method);
-                                return;
-                            }
-                        }      
+                            continue;
+                        }
+                        if (!this.IsValid(contexts, method))
+                        { 
+                            return;
+                        }
+                        if (!isCommandCustom && !this._botCommandsService.IsMatchedWithNormalCommand(template, request.Arguments))
+                        {
+                            return;
+                        }
+                        if (isCommandCustom && !this._botCommandsService.IsMatchedWithCustomCommand(template, customCommand.Template, request.OriginalMessage))
+                        {
+                            return;
+                        }
+
+                        var command = isCommandCustom
+                            ? this._botCommandsService.ParseCustomTemplate(commandInParameterType, template, customCommand.Template, request.OriginalMessage)
+                            : this._botCommandsService.ParseRequestToCommand(commandInParameterType, request, template);
+                        await InvokeMethod(command, contexts, controllerInfo, method);
                     }
                 }
             }

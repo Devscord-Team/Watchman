@@ -10,16 +10,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
     {
         public object GetValueByName(string key, bool isList, DiscordRequest request, BotCommandTemplate template)
         {
+            var argType = template.Properties.First(x => x.Name.ToLowerInvariant() == key.ToLowerInvariant()).Type;
             var result = request.Arguments.FirstOrDefault(a => a.Name?.ToLowerInvariant() == key.ToLowerInvariant());
+            if (argType == BotCommandPropertyType.Bool)
+            {
+                return result == null ? bool.FalseString : bool.TrueString;
+            }
             if (result == null)
             {
                 return null;
-            }
-            var argType = template.Properties.FirstOrDefault(x => x.Name.ToLowerInvariant() == key.ToLowerInvariant())
-                ?.Type;
-            if (argType.HasValue && argType.Value == BotCommandPropertyType.Bool)
-            {
-                return bool.TrueString;
             }
             if (!isList)
             {
@@ -35,16 +34,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
 
         public object GetValueByNameFromCustomCommand(string key, bool isList, BotCommandTemplate template, Match match)
         {
-            if (!match.Groups.ContainsKey(key))
-            {
-                return null;
-            }
-            var lowerCaseKey = key.ToLowerInvariant();
             var value = match.Groups[key].Value.Trim();
-            var argType = template.Properties.FirstOrDefault(x => x.Name.ToLowerInvariant() == lowerCaseKey)?.Type;
-            if (argType.HasValue && argType.Value == BotCommandPropertyType.Bool)
+            var argType = template.Properties.First(x => x.Name.ToLowerInvariant() == key.ToLowerInvariant()).Type;
+            if (argType == BotCommandPropertyType.Bool)
             {
-                return !string.IsNullOrWhiteSpace(value) ? bool.TrueString : null;
+                return string.IsNullOrWhiteSpace(value) ? bool.FalseString : bool.TrueString;
+            }
+            if (argType == BotCommandPropertyType.SingleWord)
+            {
+                return value.Split().First();
             }
             if (!isList)
             {
@@ -61,7 +59,9 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             {
                 value = value.Replace($"\"{toRemove}\"", string.Empty);
             }
-            var otherResults = value.Split(' ').Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.Trim());
+            var otherResults = value.Split(' ')
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .Select(x => x.Trim());
             results.AddRange(otherResults);
             return results;
         }
