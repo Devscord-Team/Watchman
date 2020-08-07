@@ -8,6 +8,7 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Discord.Areas.Administration.BotCommands;
+using Watchman.Discord.Areas.Administration.Models;
 using Watchman.Discord.Areas.Protection.Services;
 using Watchman.DomainModel.Messages;
 
@@ -30,16 +31,16 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         public async Task MutedUsers(MutedUsersCommand mutedUsersCommand, Contexts contexts)
         {
             var mutedUsers = _usersService.GetUsersAsync(contexts.Server);
-            var (title, description, values) = await this.GetMuteEmbedMessage(mutedUsers, contexts.Server.Id);
-            if (values.Count == 0)
+            var mutedUsersMessageData = await this.GetMuteEmbedMessage(mutedUsers, contexts.Server.Id);
+            if (mutedUsersMessageData.Values.Count == 0)
             {
                 await _directMessagesService.TrySendMessage(contexts.User.Id, "Brak wyciszonych użytkowników!");
                 return;
             }
-            await _directMessagesService.TrySendEmbedMessage(contexts.User.Id, title, description, values);
+            await _directMessagesService.TrySendEmbedMessage(contexts.User.Id, mutedUsersMessageData.Title, mutedUsersMessageData.Description, mutedUsersMessageData.Values);
         }
 
-        private async Task<(string title, string description, Dictionary<string, Dictionary<string, string>> values)> GetMuteEmbedMessage(IAsyncEnumerable<UserContext> mutedUsers, ulong serverId)
+        private async Task<MutedUsersMessageData> GetMuteEmbedMessage(IAsyncEnumerable<UserContext> mutedUsers, ulong serverId)
         {
             var title = "Lista wyciszonych użytkowników";
             var description = "Wyciszeni użytkownicy, powody oraz data wygaśnięcia";
@@ -58,7 +59,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
                             {"Data zakończenia:", muteEvent.TimeRange.End.ToLocalTimeString() }
                     });
             }
-            return (title, description, values);
+            return new MutedUsersMessageData(title,description,values);
         }
     }
 }

@@ -1,5 +1,7 @@
-﻿using Discord;
+﻿using System;
+using Discord;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Devscord.DiscordFramework.Services
 {
@@ -22,11 +24,7 @@ namespace Devscord.DiscordFramework.Services
             var flatValues = new Dictionary<string, string>();
             foreach (var value in values)
             {
-                var valuesString = string.Empty;
-                foreach (var v in value.Value)
-                {
-                    valuesString += $"{v.Key} {v.Value}\n";
-                }
+                var valuesString = value.Value.Aggregate(String.Empty, (a, b) => (b.Key +" "+ b.Value));
                 flatValues.Add(value.Key, valuesString);
             }
             return this.Generate(title, description, flatValues);
