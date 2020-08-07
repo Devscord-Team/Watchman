@@ -48,8 +48,6 @@ namespace Watchman.Discord.Integration.DevscordFramework
                     new AddCustomCommandsCommand("Watchman.Discord.Areas.Protection.BotCommands.MuteCommand", @"-mute\s*(?<User>.*)\s*-t\s*(?<Time>.*)\s*-reason\s*(?<Reason>.*)", serverId),
                     new AddCustomCommandsCommand("Watchman.Discord.Areas.Protection.BotCommands.UnmuteCommand", @"-unmute\s*(?<User>.*)", serverId),
                     new AddCustomCommandsCommand("Watchman.Discord.Areas.Administration.BotCommands.MessagesCommand", @"-messages\s*(?<User>.*)\s*-t\s*(?<Time>[^\s]*)\s*(?<Force>-force|-f)?", serverId),
-
-                    new AddCustomCommandsCommand("Watchman.Discord.Areas.UselessFeatures.BotCommands.XdxdCommand", @"-xdxd\s*(?<Single>.*)", serverId),
                 });
             }
             var commandsInBase = this._queryBus.Execute(new GetCustomCommandsQuery()).CustomCommands;
