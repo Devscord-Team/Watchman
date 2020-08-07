@@ -50,7 +50,6 @@ namespace Watchman.Discord.Areas.Protection.Services
             {
                 return null;
             }
-
             var warnEvents = GetWarnEvents(serverId, mentionedUser.Id).GetAwaiter().GetResult();
             return WarnEventsToKeyValue(warnEvents, mentionedUser.Id);
         }
