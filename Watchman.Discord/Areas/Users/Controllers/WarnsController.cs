@@ -47,9 +47,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         public Task Warns(WarnsCommand command, Contexts contexts)
         {
             var messageService = _messagesServiceFactory.Create(contexts);
-            var mentionedUser = command.User == 0 ? 
-                    contexts.User 
-                        : 
+            var mentionedUser = command.User == 0 ? contexts.User : 
                     this._usersService.GetUserByIdAsync(contexts.Server, command.User).GetAwaiter().GetResult();
             var warns = this._warnService.GetWarns(command, contexts, mentionedUser, contexts.Server.Id);
             if (warns == null) 
