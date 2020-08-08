@@ -39,22 +39,24 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         public async Task AddWarn(AddWarnCommand command, Contexts contexts)
         {
             var messageService = this._messagesServiceFactory.Create(contexts);
-            var mentionedUser = await this._usersService.GetUserByMentionAsync(contexts.Server, command.User.ToString());
+            var mentionedUser = await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
             await this._warnService.AddWarnToUser(command, contexts, mentionedUser);
             await messageService.SendResponse(x => x.UserHasBeenWarned(contexts.User.Name, mentionedUser.Name, command.Reason));
         }
 
-        public Task Warns(WarnsCommand command, Contexts contexts)
+        public async Task Warns(WarnsCommand command, Contexts contexts)
         {
             var messageService = _messagesServiceFactory.Create(contexts);
-            var mentionedUser = command.User == 0 ? contexts.User : 
-                    this._usersService.GetUserByIdAsync(contexts.Server, command.User).GetAwaiter().GetResult();
+            var mentionedUser = command.User == 0 ? 
+                    contexts.User : 
+                    await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
             var warns = this._warnService.GetWarns(command, contexts, mentionedUser, contexts.Server.Id);
             if (warns == null) 
             {
-                return messageService.SendResponse(x => x.UserNotFound(command.User.GetUserMention()));
+                await messageService.SendResponse(x => x.UserNotFound(command.User.GetUserMention()));
+                return;
             }
-            return messageService.SendEmbedMessage("Ostrzeżenia", string.Empty, warns);
+            await messageService.SendEmbedMessage("Ostrzeżenia", string.Empty, warns);
         }
     }
 }

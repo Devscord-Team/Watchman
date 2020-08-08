@@ -73,7 +73,7 @@ namespace Watchman.Discord.Areas.Protection.Services
                 var eventKeyValuePair = new KeyValuePair<string, string>(warnEvent.CreatedAt.ToString(), warnContentBuilder.ToString());
                 warnEventPairs.Add(eventKeyValuePair);
             }
-            if (warnEventPairs.Count == 0)
+            if (!warnEventPairs.Any())
             {
                 warnEventPairs.Add(new KeyValuePair<string, string>("Brak zawartości", $"Użytkownik {mentionedUserId.GetUserMention()} nie ma żadnych ostrzeżeń."));
             }
