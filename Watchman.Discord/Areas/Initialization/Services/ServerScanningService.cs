@@ -35,10 +35,9 @@ namespace Watchman.Discord.Areas.Initialization.Services
             {
                 return;
             }
-
             startTime ??= DateTime.UnixEpoch;
-            var messages = this.ReadMessages(server, channel, limit: 1);
-            if (messages.Count == 0 || this.LastMessageIsOlderThanStartTime(messages, startTime.Value))
+            var messages = await this.ReadMessagesAsync(server, channel, limit: 1).ToListAsync();
+            if (!messages.Any() || this.LastMessageIsOlderThanStartTime(messages, startTime.Value))
             {
                 Log.Information("Channel: {channel} has no new messages", channel.Name);
                 return;
@@ -47,20 +46,17 @@ namespace Watchman.Discord.Areas.Initialization.Services
             var lastMessageId = 0UL;
             do
             {
-                messages = this.ReadMessages(server, channel, LIMIT, lastMessageId);
-                if (messages.Count == 0)
+                messages = await this.ReadMessagesAsync(server, channel, LIMIT, lastMessageId).ToListAsync();
+                if (!messages.Any())
                 {
                     break;
                 }
-
                 lastMessageId = messages.Last().Id;
                 await this.SaveMessages(messages, channel.Id);
-
                 if (this.LastMessageIsOlderThanStartTime(messages, startTime.Value))
                 {
                     break;
                 }
-
             } while (messages.Count == LIMIT);
 
             Log.Information("Channel: {channel} read and saved", channel.Name);
@@ -87,12 +83,18 @@ namespace Watchman.Discord.Areas.Initialization.Services
             });
         }
 
-        private List<Message> ReadMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong lastMessageId = 0)
+        private async IAsyncEnumerable<Message> ReadMessagesAsync(DiscordServerContext server, ChannelContext channel, int limit, ulong lastMessageId = 0)
         {
             var messages = lastMessageId == 0
-                ? this._messagesHistoryService.ReadMessagesAsync(server, channel, limit).Result
-                : this._messagesHistoryService.ReadMessagesAsync(server, channel, limit, lastMessageId, goBefore: true).Result;
-            return messages.Where(x => x.Contexts.User.Id != this.BotContext.Id).ToList();
+                ? this._messagesHistoryService.ReadMessagesAsync(server, channel, limit)
+                : this._messagesHistoryService.ReadMessagesAsync(server, channel, limit, lastMessageId, goBefore: true);
+            await foreach (var message in messages)
+            {
+                if (message.Contexts.User.Id != this.BotContext.Id)
+                {
+                    yield return message;
+                }
+            }
         }
 
         private bool LastMessageIsOlderThanStartTime(IEnumerable<Message> messages, DateTime startTime)
