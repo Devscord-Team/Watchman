@@ -31,7 +31,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             {
                 throw new NotEnoughArgumentsException();
             }
-            var argsAndValues = arguments.Select(arg => new KeyValuePair<string, string>(arg.Name, arg.Value));
+            var argsAndValues = arguments.Select(arg => new KeyValuePair<string, string>(arg.Name, arg.Value)).ToList();
 
             return ComparePropertiesToArgsAndValues(template.Properties, argsAndValues);
         }

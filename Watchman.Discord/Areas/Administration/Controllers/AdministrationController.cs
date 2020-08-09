@@ -55,11 +55,12 @@ namespace Watchman.Discord.Areas.Administration.Controllers
                 SentDate = timeRange
             };
             var messages = this._queryBus.Execute(query).Messages
-                .OrderBy(x => x.SentAt);
+                .OrderBy(x => x.SentAt)
+                .ToList();
 
-            if (messages.Count() > 200 && !command.Force)
+            if (messages.Count > 200 && !command.Force)
             {
-                await messagesService.SendResponse(x => x.NumberOfMessagesIsHuge(messages.Count()));
+                await messagesService.SendResponse(x => x.NumberOfMessagesIsHuge(messages.Count));
                 return;
             }
 
@@ -76,7 +77,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             await this._directMessagesService.TrySendMessage(contexts.User.Id, header);
             await this._directMessagesService.TrySendMessage(contexts.User.Id, linesBuilder.ToString(), MessageType.BlockFormatted);
 
-            await messagesService.SendResponse(x => x.SentByDmMessagesOfAskedUser(messages.Count(), selectedUser));
+            await messagesService.SendResponse(x => x.SentByDmMessagesOfAskedUser(messages.Count, selectedUser));
         }
 
         [AdminCommand]

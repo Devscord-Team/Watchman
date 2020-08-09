@@ -50,7 +50,7 @@ namespace Watchman.Discord.Integration.DevscordFramework
                     new AddCustomCommandsCommand("Watchman.Discord.Areas.Administration.BotCommands.MessagesCommand", @"-messages\s*(?<User>.*)\s*-t\s*(?<Time>[^\s]*)\s*(?<Force>-force|-f)?", serverId),
                 });
             }
-            var commandsInBase = this._queryBus.Execute(new GetCustomCommandsQuery()).CustomCommands;
+            var commandsInBase = this._queryBus.Execute(new GetCustomCommandsQuery()).CustomCommands.ToList();
             foreach (var command in customCommands)
             {
                 if (commandsInBase.Any(x => x.ServerId == command.ServerId && x.CommandFullName == command.CommandFullName))
