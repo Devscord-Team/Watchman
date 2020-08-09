@@ -45,8 +45,8 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                 }
                 if (value is List<string> valueList)
                 {
-                    var IsEmptyList = string.IsNullOrWhiteSpace(valueList?.FirstOrDefault());
-                    if (IsEmptyList)
+                    var isEmptyList = string.IsNullOrWhiteSpace(valueList?.FirstOrDefault());
+                    if (isEmptyList)
                     {
                         property.SetValue(instance, null);
                         continue;

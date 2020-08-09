@@ -12,7 +12,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
     public class BotCommandsMatchingService
     {
         private readonly Regex _exTime = new Regex(@"\d+(ms|d|h|m|s)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-        private readonly Regex _exUserMention = new Regex(@"\<@!\d+\>", RegexOptions.Compiled);
+        private readonly Regex _exUserMention = new Regex(@"\<@!?\d+\>", RegexOptions.Compiled);
         private readonly Regex _exChannelMention = new Regex(@"\<#\d+\>", RegexOptions.Compiled);
 
         public bool IsNormalCommand(DiscordRequest request, BotCommandTemplate template)
@@ -31,9 +31,11 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             {
                 throw new NotEnoughArgumentsException();
             }
-            var argsAndValues = arguments.Select(arg => new KeyValuePair<string, string>(arg.Name, arg.Value)).ToList();
+            var argsAndValues = arguments
+                .Select(arg => new KeyValuePair<string, string>(arg.Name, arg.Value))
+                .ToList();
 
-            return ComparePropertiesToArgsAndValues(template.Properties, argsAndValues);
+            return this.ComparePropertiesToArgsAndValues(template.Properties, argsAndValues);
         }
 
         public bool IsMatchedWithCustomCommand(BotCommandTemplate template, Regex customTemplate, string input)
@@ -47,9 +49,10 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             }
             var argsAndValues = matchGroups.Keys
                 .Select(arg => new KeyValuePair<string, string>(arg, matchGroups[arg].Value.Trim()))
-                .Skip(1);
+                .Skip(1)
+                .ToList();
 
-            return ComparePropertiesToArgsAndValues(template.Properties, argsAndValues);
+            return this.ComparePropertiesToArgsAndValues(template.Properties, argsAndValues);
         }
 
         private bool ComparePropertiesToArgsAndValues(IEnumerable<BotCommandProperty> properties, IEnumerable<KeyValuePair<string, string>> argsAndValues)
