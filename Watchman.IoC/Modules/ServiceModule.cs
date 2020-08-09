@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Devscord.DiscordFramework;
+using Devscord.DiscordFramework.Framework.Commands.Parsing;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using System.Collections.Generic;
 using System.Reflection;
@@ -24,6 +25,10 @@ namespace Watchman.IoC.Modules
 
             builder.RegisterType<CustomCommandsLoader>()
                 .As<ICustomCommandsLoader>()
+                .SingleInstance();
+
+            builder.RegisterType<CommandParser>()
+                .As<CommandParser>()
                 .SingleInstance();
 
             var list = new List<string>();

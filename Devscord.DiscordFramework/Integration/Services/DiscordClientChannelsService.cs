@@ -23,12 +23,14 @@ namespace Devscord.DiscordFramework.Integration.Services
         private readonly DiscordSocketClient _client;
         private readonly IDiscordClientUsersService _discordClientUsersService;
         private readonly UserContextsFactory _userContextsFactory;
+        private readonly CommandParser _commandParser;
 
-        public DiscordClientChannelsService(DiscordSocketClient client, IDiscordClientUsersService discordClientUsersService, UserContextsFactory userContextsFactory)
+        public DiscordClientChannelsService(DiscordSocketClient client, IDiscordClientUsersService discordClientUsersService, UserContextsFactory userContextsFactory, CommandParser commandParser)
         {
             this._client = client;
             this._discordClientUsersService = discordClientUsersService;
             this._userContextsFactory = userContextsFactory;
+            this._commandParser = commandParser;
             this._client.ChannelCreated += x => this.ChannelCreated(x);
         }
 
@@ -108,8 +110,7 @@ namespace Devscord.DiscordFramework.Integration.Services
                     DiscordRequest request;
                     try
                     {
-                        var commandParser = new CommandParser();
-                        request = commandParser.Parse(message.Content, message.Timestamp.UtcDateTime);
+                        request = this._commandParser.Parse(message.Content, message.Timestamp.UtcDateTime);
                     }
                     catch // should almost never go to catch block, but in rare cases Parse() can throw an exception
                     {
