@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Devscord.DiscordFramework.Commons.Exceptions;
 using Watchman.Discord.Areas.Help.Services;
 using Watchman.Discord.Areas.Initialization.Services;
 using Watchman.Discord.Areas.Protection.Services;
@@ -100,6 +101,12 @@ namespace Watchman.Discord
         {
             var exceptionMessage = this.BuildExceptionMessage(e).ToString();
             var messagesService = this._context.Resolve<MessagesServiceFactory>().Create(contexts);
+            messagesService.ChannelId = _configuration.ExceptionChannelID;
+            var isBotException = e.InnerException is BotException;
+            if (isBotException && _configuration.SendOnlyUnknownExceptionInfo)
+            {
+                return;
+            }
             messagesService.SendMessage(exceptionMessage, Devscord.DiscordFramework.Commons.MessageType.BlockFormatted);
         }
 
