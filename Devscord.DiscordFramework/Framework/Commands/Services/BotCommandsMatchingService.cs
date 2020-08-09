@@ -27,7 +27,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
         public bool IsMatchedWithNormalCommand(BotCommandTemplate template, IEnumerable<DiscordRequestArgument> arguments)
         {  
             var requiredProperties = template.Properties.Where(x => !x.IsOptional);
-            if (requiredProperties.Any(property => !arguments.Any(arg => property.Name.ToLowerInvariant() == arg.Name?.ToLowerInvariant())))
+            if (requiredProperties.Any(property => arguments.All(arg => property.Name.ToLowerInvariant() != arg.Name?.ToLowerInvariant())))
             {
                 throw new NotEnoughArgumentsException();
             }
