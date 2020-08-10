@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System.Collections.Generic;
+using System.Linq;
 using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
@@ -59,12 +60,12 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         {
             var mutedUsers = this._usersService.GetUsersAsync(contexts.Server);
             var mutedUsersMessageData = await this.GetMuteEmbedMessage(mutedUsers, contexts.Server.Id);
-            if (mutedUsersMessageData.Values.Count == 0)
+            if (!mutedUsersMessageData.Values.Any())
             {
-                await _directMessagesService.TrySendMessage(contexts.User.Id, "Brak wyciszonych użytkowników!");
+                await this._directMessagesService.TrySendMessage(contexts.User.Id, "Brak wyciszonych użytkowników!");
                 return;
             }
-            await _directMessagesService.TrySendEmbedMessage(contexts.User.Id, mutedUsersMessageData.Title, mutedUsersMessageData.Description, mutedUsersMessageData.Values);
+            await this._directMessagesService.TrySendEmbedMessage(contexts.User.Id, mutedUsersMessageData.Title, mutedUsersMessageData.Description, mutedUsersMessageData.Values);
         }
 
         private async Task<MutedUsersMessageData> GetMuteEmbedMessage(IAsyncEnumerable<UserContext> mutedUsers, ulong serverId)
