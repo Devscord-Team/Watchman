@@ -57,7 +57,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         [AdminCommand]
         public async Task MutedUsers(MutedUsersCommand mutedUsersCommand, Contexts contexts)
         {
-            var mutedUsers = _usersService.GetUsersAsync(contexts.Server);
+            var mutedUsers = this._usersService.GetUsersAsync(contexts.Server);
             var mutedUsersMessageData = await this.GetMuteEmbedMessage(mutedUsers, contexts.Server.Id);
             if (mutedUsersMessageData.Values.Count == 0)
             {
