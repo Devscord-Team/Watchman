@@ -47,9 +47,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         public async Task Warns(WarnsCommand command, Contexts contexts)
         {
             var messageService = _messagesServiceFactory.Create(contexts);
-            var mentionedUser = command.User == 0 ? 
-                    contexts.User : 
-                    await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
+            var mentionedUser = command.User == 0 ? contexts.User : await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
             if (mentionedUser == null)
             {
                 await messageService.SendResponse(x => x.UserNotFound(command.User.GetUserMention()));
