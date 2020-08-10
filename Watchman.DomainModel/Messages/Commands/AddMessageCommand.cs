@@ -12,15 +12,12 @@ namespace Watchman.DomainModel.Messages.Commands
         public string ChannelName { get; private set; }
         public ulong ServerId { get; private set; }
         public string ServerName { get; private set; }
-        public ulong ServerOwnerId { get; private set; }
-        public string ServerOwnerName { get; private set; }
         public DateTime SentAt { get; private set; }
 
         public AddMessageCommand(string content,
             ulong authorId, string authorName,
             ulong channelId, string channelName,
             ulong serverId, string serverName,
-            ulong serverOwnerId, string serverOwnerName,
             DateTime sentAt)
         {
             this.Content = content;
@@ -30,8 +27,6 @@ namespace Watchman.DomainModel.Messages.Commands
             this.ChannelName = channelName;
             this.ServerId = serverId;
             this.ServerName = serverName;
-            this.ServerOwnerId = serverOwnerId;
-            this.ServerOwnerName = serverOwnerName;
             this.SentAt = sentAt;
         }
     }

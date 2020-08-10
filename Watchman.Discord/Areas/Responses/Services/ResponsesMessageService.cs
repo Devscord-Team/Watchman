@@ -1,9 +1,11 @@
-﻿using Devscord.DiscordFramework.Middlewares.Contexts;
+using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using Watchman.DomainModel.Responses;
 using Watchman.Discord.Areas.Responses.BotCommands;
 
 namespace Watchman.Discord.Areas.Responses.Services
@@ -32,7 +34,7 @@ namespace Watchman.Discord.Areas.Responses.Services
             }
             else
             {
-                await this._embedMessageSplittingService.SendEmbedSplitMessage("Wszystkie responses:", DESCRIPTION, GetAllResponses(), contexts);
+                await this._embedMessageSplittingService.SendEmbedSplitMessage("Wszystkie responses:", DESCRIPTION, this.GetAllResponses(contexts.Server.Id), contexts);
             }
         }
 
@@ -40,14 +42,14 @@ namespace Watchman.Discord.Areas.Responses.Services
         {
             return this._responsesDatabase.GetResponsesFromBase()
                 .Where(x => x.IsDefault)
-                .Select(x => new KeyValuePair<string, string>(x.OnEvent, this.GetRawMessage(x.Message)));
+                .Select(x => new KeyValuePair<string, string>(x.OnEvent, this.GetResponseWithVariableList(x)));
         }
 
         private IEnumerable<KeyValuePair<string, string>> GetCustomResponses(ulong serverId)
         {
             var responses = this._responsesDatabase.GetResponsesFromBase()
                 .Where(x => x.ServerId == serverId)
-                .Select(x => new KeyValuePair<string, string>(x.OnEvent, this.GetRawMessage(x.Message)));
+                .Select(x => new KeyValuePair<string, string>(x.OnEvent, this.GetResponseWithVariableList(x)));
 
             if (!responses.Any())
             {
@@ -56,12 +58,30 @@ namespace Watchman.Discord.Areas.Responses.Services
             return responses;
         }
 
-        private IEnumerable<KeyValuePair<string, string>> GetAllResponses()
+        private IEnumerable<KeyValuePair<string, string>> GetAllResponses(ulong serverId)
         {
-            return this._responsesDatabase.GetResponsesFromBase()
-                .Select(x => new KeyValuePair<string, string>(x.OnEvent, this.GetRawMessage(x.Message)));
+            var responses = this._responsesDatabase.GetResponsesFromBase().ToList();
+            var serverResponses = responses.Where(x => x.ServerId == serverId).ToList();
+            var notOverwrittenDefaultResponses = responses.Where(response => response.IsDefault && serverResponses.All(s => s.OnEvent != response.OnEvent));
+            serverResponses.AddRange(notOverwrittenDefaultResponses);
+            return serverResponses.Select(x => new KeyValuePair<string, string>(x.OnEvent, this.GetResponseWithVariableList(x)));
         }
 
+        private string GetResponseWithVariableList(Response response)
+        {
+            var result = "\n__Dostępne zmienne:__";
+            if (response.AvailableVariables.Any())
+            {
+                result += response.AvailableVariables.Select(s => $" `{s}`").Aggregate((a, b) => a + b);
+            }
+            else
+            {
+                result += " brak";
+            }
+
+            return this.GetRawMessage(response.Message) + result;
+        }
+        
         private string GetRawMessage(string message)
         {
             return message.Replace("`", @"\`").Replace("*", @"\*");

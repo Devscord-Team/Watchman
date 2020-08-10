@@ -1,4 +1,5 @@
-﻿using Devscord.DiscordFramework.Integration;
+﻿using Autofac;
+using Devscord.DiscordFramework.Integration;
 using Devscord.DiscordFramework.Integration.Services;
 using Discord.WebSocket;
 using Serilog;
@@ -11,14 +12,14 @@ namespace Devscord.DiscordFramework.Framework
     {
         public static bool Initialized { get; private set; }
 
-        public static void Initialize(DiscordSocketClient client)
+        public static void Initialize(DiscordSocketClient client, IComponentContext context)
         {
             if (Initialized)
             {
                 return;
             }
             var sw = Stopwatch.StartNew();
-            var discordClient = new DiscordClient(client);
+            var discordClient = new DiscordClient(client, context);
             Server.Initialize(discordClient);
             Initialized = true;
 

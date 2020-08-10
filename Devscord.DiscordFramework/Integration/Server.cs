@@ -57,6 +57,11 @@ namespace Devscord.DiscordFramework.Integration
             return _discordClient.UsersService.IsUserStillOnServer(userId, guildId);
         }
 
+        internal static RestUser GetBotUser()
+        {
+            return _discordClient.UsersService.GetBotUser();
+        }
+
         //Channels
         internal static Task<IChannel> GetChannel(ulong channelId, RestGuild guild = null)
         {
@@ -88,7 +93,7 @@ namespace Devscord.DiscordFramework.Integration
             return _discordClient.RolesService.CreateNewRole(role, discordServer);
         }
 
-        //Roles
+        //GetRoles
         internal static IEnumerable<UserRole> GetRoles(ulong guildId)
         {
             return _discordClient.RolesService.GetRoles(guildId);
@@ -109,10 +114,20 @@ namespace Devscord.DiscordFramework.Integration
             return _discordClient.RolesService.SetRolePermissions(channels, server, permissions, role);
         }
 
-        //Server
-        internal static Task<IEnumerable<DiscordServerContext>> GetDiscordServers()
+        internal static UserRole GetRole(ulong roleId, ulong guildId)
         {
-            return _discordClient.ServersService.GetDiscordServers();
+            return _discordClient.RolesService.GetRole(roleId, guildId);
+        }
+
+        //Server
+        internal static IAsyncEnumerable<DiscordServerContext> GetDiscordServersAsync()
+        {
+            return _discordClient.ServersService.GetDiscordServersAsync();
+        }
+
+        internal static Task<DiscordServerContext> GetDiscordServerAsync(ulong serverId)
+        {
+            return _discordClient.ServersService.GetDiscordServerAsync(serverId);
         }
 
         internal static Task<IEnumerable<string>> GetExistingInviteLinks(ulong serverId)

@@ -60,12 +60,12 @@ namespace Watchman.Discord.Areas.Statistics.Services
 
         private async Task GenerateStatsForLastDay()
         {
-            var servers = await this._discordServersService.GetDiscordServers();
+            var servers = this._discordServersService.GetDiscordServersAsync();
             var yesterdayDate = DateTime.Today.AddDays(-1);
             var todayDate = DateTime.Today;
             var yesterdayRange = new TimeRange(yesterdayDate, todayDate);
 
-            foreach (var server in servers)
+            await foreach (var server in servers)
             {
                 var query = new GetMessagesQuery(server.Id) { SentDate = yesterdayRange };
                 var messages = this._queryBus.Execute(query).Messages.ToList();

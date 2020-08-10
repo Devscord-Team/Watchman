@@ -14,10 +14,14 @@ using System.Threading.Tasks;
 using Watchman.Cqrs;
 using Watchman.Common.Models;
 using Watchman.Discord.Areas.Commons;
-using Watchman.DomainModel.DiscordServer.Commands;
 using Watchman.DomainModel.Messages.Queries;
 using Watchman.Discord.Areas.Users.Services;
 using Watchman.Discord.Areas.Administration.BotCommands;
+using Watchman.Discord.Areas.Administration.Services;
+using Watchman.Discord.Areas.Protection.Strategies;
+using System.Collections.Generic;
+using System.Globalization;
+using Watchman.DomainModel.DiscordServer.Queries;
 
 namespace Watchman.Discord.Areas.Administration.Controllers
 {
@@ -28,14 +32,20 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         private readonly DirectMessagesService _directMessagesService;
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly RolesService _rolesService;
+        private readonly TrustRolesService _trustRolesService;
+        private readonly CheckUserSafetyService _checkUserSafetyService;
+        private readonly UsersRolesService _usersRolesService;
 
-        public AdministrationController(IQueryBus queryBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, RolesService rolesService)
+        public AdministrationController(IQueryBus queryBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, RolesService rolesService, TrustRolesService trustRolesService, CheckUserSafetyService checkUserSafetyService, UsersRolesService usersRolesService)
         {
             this._queryBus = queryBus;
             this._usersService = usersService;
             this._directMessagesService = directMessagesService;
             this._messagesServiceFactory = messagesServiceFactory;
             this._rolesService = rolesService;
+            this._trustRolesService = trustRolesService;
+            this._checkUserSafetyService = checkUserSafetyService;
+            this._usersRolesService = usersRolesService;
         }
 
         [AdminCommand]
@@ -85,6 +95,49 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         {
             var shouldSetToSafe = command.Safe;
             await this._rolesService.SetRolesAsSafe(contexts, command.Roles, shouldSetToSafe);
+        }
+
+        [AdminCommand]
+        public async Task SetRoleAsTrusted(TrustCommand trustCommand, Contexts contexts)
+        {
+            await this._trustRolesService.TrustThisRole(trustCommand.Role, contexts);
+        }
+        
+        [AdminCommand]
+        public async Task SetRoleAsUntrusted(UntrustCommand trustCommand, Contexts contexts)
+        {
+            await this._trustRolesService.DontTrustThisRole(trustCommand.Role, contexts);
+        }
+
+        [AdminCommand]
+        public async Task GetSafeUsers(SafeUsersCommand safeUsersCommand, Contexts contexts)
+        {
+            var safeUsersIds = this._checkUserSafetyService.GetSafeUsersIds(contexts.Server.Id);
+            var serverUsers = await contexts.Server.GetUsers().ToDictionaryAsync(x => x.Id, x => x);
+            var safeUsers = safeUsersIds.Select(x => serverUsers.GetValueOrDefault(x)).Where(x => x != null);
+            var messagesService = this._messagesServiceFactory.Create(contexts);
+            await messagesService.SendEmbedMessage(
+                "Zaufani użytkownicy",
+                $"Lista zaufanych użytkowników na serwerze {contexts.Server.Name}",
+                safeUsers.Select(x => new KeyValuePair<string, string>(x.Name, x.JoinedServerAt()?.ToString(CultureInfo.CurrentCulture))));
+        }
+
+        [AdminCommand]
+        public async Task GetTrustedRoles(TrustedRolesCommand trustedRolesCommand, Contexts contexts)
+        {
+            var query = new GetServerTrustedRolesQuery(contexts.Server.Id);
+            var trustedRoles = this._queryBus.Execute(query).TrustedRolesIds.ToList();
+            var messagesService = this._messagesServiceFactory.Create(contexts);
+            if (trustedRoles.Count == 0)
+            {
+                await messagesService.SendResponse(x => x.ServerDoesntHaveAnyTrustedRole());
+                return;
+            }
+            var trustedRolesNames = trustedRoles.Select(x => this._usersRolesService.GetRole(x, contexts.Server.Id));
+            await messagesService.SendEmbedMessage(
+                "Zaufane role",
+                $"Lista zaufanych roli na serwerze {contexts.Server.Name}",
+                trustedRolesNames.Select(x => new KeyValuePair<string, string>("Nazwa roli:", x.Name)));
         }
     }
 }

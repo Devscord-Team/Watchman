@@ -12,10 +12,8 @@
 config.json
 config-prod.json
 
-appsettings.json
-appsettings.Development.json
-appsettings.Production.json
-
+appsettings*.json
+/.editorconfig
 logs/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
@@ -337,6 +335,3 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
-/Watchman.Discord/version.txt
-/.editorconfig
-/Watchman.Web.Server/appsettings.Production.json

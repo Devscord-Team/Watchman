@@ -22,11 +22,11 @@ namespace Watchman.IoC.Modules
 
             builder.Register((c, p) => new MongoClient(this._connectionString).GetDatabase("devscord"))
                 .As<IMongoDatabase>()
-                .InstancePerLifetimeScope();
+                .SingleInstance();
 
             builder.RegisterType<SessionFactory>()
                 .As<ISessionFactory>()
-                .InstancePerLifetimeScope();
+                .SingleInstance();
         }
     }
 }

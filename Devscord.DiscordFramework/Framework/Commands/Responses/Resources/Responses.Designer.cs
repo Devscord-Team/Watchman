@@ -19,7 +19,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Responses {
@@ -176,15 +176,6 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
                 return ResourceManager.GetString("ResponseHasBeenAdded", resourceCulture);
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Odpowiedź `{{onEvent}}` po zmianie odpowiedź jest identyczna jak domyślna, usunięto odpowiedź na serwerze **{{server}}**..
-        /// </summary>
-        public static string ResponseTheSameAsDefault {
-            get {
-                return ResourceManager.GetString("ResponseTheSameAsDefault", resourceCulture);
-            }
-        }
         
         /// <summary>
         ///   Looks up a localized string similar to Odpowiedź `{{onEvent}}` została usunięta dla serwera **{{server}}**..
@@ -214,11 +205,38 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Odpowiedź `{{onEvent}}` po zmianie odpowiedź jest identyczna jak domyślna, usunięto odpowiedź na serwerze **{{server}}**..
+        /// </summary>
+        public static string ResponseTheSameAsDefault {
+            get {
+                return ResourceManager.GetString("ResponseTheSameAsDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dodano role: {{role}} użytkownikowi {{user}}.
         /// </summary>
         public static string RoleAddedToUser {
             get {
                 return ResourceManager.GetString("RoleAddedToUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rola {{role}} jest już ustawiona jako zaufana..
+        /// </summary>
+        public static string RoleAlreadyIsTrusted {
+            get {
+                return ResourceManager.GetString("RoleAlreadyIsTrusted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rola {{role}} nie jest ustawiona jako zaufana..
+        /// </summary>
+        public static string RoleAlreadyIsUntrusted {
+            get {
+                return ResourceManager.GetString("RoleAlreadyIsUntrusted", resourceCulture);
             }
         }
         
@@ -286,6 +304,24 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ustawiono rolę {{role}} jako zaufaną..
+        /// </summary>
+        public static string RoleSetAsTrusted {
+            get {
+                return ResourceManager.GetString("RoleSetAsTrusted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ustawiono rolę {{role}} jako niezaufaną..
+        /// </summary>
+        public static string RoleSetAsUntrusted {
+            get {
+                return ResourceManager.GetString("RoleSetAsUntrusted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Zmieniono ustawienia roli {{role}} pomyślnie!.
         /// </summary>
         public static string RoleSettingsChanged {
@@ -309,6 +345,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         public static string ServerDoesntHaveAnySafeRoles {
             get {
                 return ResourceManager.GetString("ServerDoesntHaveAnySafeRoles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Serwer nie ma żadnych roli ustawionych jako zaufane..
+        /// </summary>
+        public static string ServerDoesntHaveAnyTrustedRole {
+            get {
+                return ResourceManager.GetString("ServerDoesntHaveAnyTrustedRole", resourceCulture);
             }
         }
         
@@ -399,6 +444,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         public static string UserNotFound {
             get {
                 return ResourceManager.GetString("UserNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Użytkownik {{user}} nie jest wyciszony..
+        /// </summary>
+        public static string UserWasntMuted {
+            get {
+                return ResourceManager.GetString("UserWasntMuted", resourceCulture);
             }
         }
     }

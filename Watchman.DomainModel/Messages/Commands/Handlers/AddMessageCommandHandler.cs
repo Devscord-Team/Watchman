@@ -18,7 +18,7 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
             var message = Message.Create(command.Content)
                 .WithAuthor(command.AuthorId, command.AuthorName)
                 .WithChannel(command.ChannelId, command.ChannelName)
-                .WithServer(command.ServerId, command.ServerName, command.ServerOwnerId, command.ServerOwnerName)
+                .WithServer(command.ServerId, command.ServerName)
                 .WithSentAtDate(command.SentAt)
                 .Build();
 

@@ -70,5 +70,10 @@ namespace Devscord.DiscordFramework.Integration.Services
                 }
             }
         }
+
+        public RestUser GetBotUser()
+        {
+            return this._restClient.CurrentUser;
+        }
     }
 }

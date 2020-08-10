@@ -16,15 +16,15 @@ namespace Watchman.IoC.Modules
         {
             builder.Register((c, p) => new ResponsesService().SetGetResponsesFromDatabase(c.Resolve<IQueryBus>()))
                 .As<ResponsesService>()
-                .InstancePerLifetimeScope();
+                .SingleInstance();
 
             builder.RegisterType<StatisticsCalculator>()
                 .As<IStatisticsCalculator>()
-                .InstancePerLifetimeScope();
+                .SingleInstance();
 
             builder.RegisterType<CustomCommandsLoader>()
                 .As<ICustomCommandsLoader>()
-                .InstancePerLifetimeScope();
+                .SingleInstance();
 
             var list = new List<string>();
             var stack = new Stack<Assembly>();
@@ -37,7 +37,7 @@ namespace Watchman.IoC.Modules
                 builder.RegisterAssemblyTypes(asm)
                     .Where(x => x.FullName.StartsWith("Watchman") || x.FullName.StartsWith("Devscord"))
                     .PreserveExistingDefaults()
-                    .InstancePerLifetimeScope();
+                    .SingleInstance();
 
                 foreach (var reference in asm.GetReferencedAssemblies())
                 {
