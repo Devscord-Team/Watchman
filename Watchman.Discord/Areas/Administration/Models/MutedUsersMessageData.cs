@@ -12,9 +12,10 @@ namespace Watchman.Discord.Areas.Administration.Models
 
         public MutedUsersMessageData(string title, string description, Dictionary<string, Dictionary<string, string>> values)
         {
-            Title = title;
-            Description = description;
-            Values = values;
+            this.Title = title;
+            this.Description = description;
+            this.Values = values;
+
         }
     }
 }
