@@ -27,7 +27,6 @@ namespace Watchman.Discord.Areas.Protection.Services
         {
             var mention = this._request.GetMention();
             var user = this._usersService.GetUserByMentionAsync(this._contexts.Server, mention).Result;
-
             if (user == null)
             {
                 throw new UserNotFoundException(mention);

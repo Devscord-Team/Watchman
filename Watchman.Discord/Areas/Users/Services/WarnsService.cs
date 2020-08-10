@@ -44,20 +44,16 @@ namespace Watchman.Discord.Areas.Protection.Services
             return this._commandBus.ExecuteAsync(addWarnEventCommand);
         }
 
-        public IEnumerable<KeyValuePair<string, string>> GetWarns(WarnsCommand command, Contexts contexts, UserContext mentionedUser, ulong serverId)
+        public IEnumerable<KeyValuePair<string, string>> GetWarns(UserContext mentionedUser, ulong serverId)
         {
-            if (mentionedUser == null)
-            {
-                return null;
-            }
-            var warnEvents = GetWarnEvents(serverId, mentionedUser.Id).GetAwaiter().GetResult();
+            var warnEvents = GetWarnEvents(serverId, mentionedUser.Id);
             return WarnEventsToKeyValue(warnEvents, mentionedUser.Id);
         }
 
-        public async Task<IEnumerable<WarnEvent>> GetWarnEvents(ulong serverId, ulong userId)
+        public IEnumerable<WarnEvent> GetWarnEvents(ulong serverId, ulong userId)
         {
             var query = new GetWarnEventsQuery(serverId, userId);
-            var response = await this._queryBus.ExecuteAsync(query);
+            var response = this._queryBus.Execute(query);
             return response.WarnEvents;
         }
 
