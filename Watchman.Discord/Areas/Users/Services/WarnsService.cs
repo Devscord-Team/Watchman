@@ -46,7 +46,7 @@ namespace Watchman.Discord.Areas.Protection.Services
 
         public IEnumerable<KeyValuePair<string, string>> GetWarns(UserContext mentionedUser, ulong serverId)
         {
-            var warnEvents = GetWarnEvents(serverId, mentionedUser.Id);
+            var warnEvents = this.GetWarnEvents(serverId, mentionedUser.Id);
             return this.WarnEventsToKeyValue(warnEvents, mentionedUser.Id);
         }
 
