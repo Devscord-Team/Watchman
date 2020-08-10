@@ -36,7 +36,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             var userToMute = await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
             if (userToMute == null)
             {
-                await this._messagesServiceFactory.Create(contexts).SendResponse(x => x.UserDidntMentionAnyUser());
+                await this._messagesServiceFactory.Create(contexts).SendResponse(x => x.UserNotFound($"<@!{command.User}>"));
                 return;
             }
             var timeRange = TimeRange.FromNow(DateTime.UtcNow + command.Time);
