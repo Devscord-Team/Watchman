@@ -50,8 +50,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             var mentionedUser = command.User == 0 ? contexts.User : await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
             if (mentionedUser == null)
             {
-                await messageService.SendResponse(x => x.UserNotFound(command.User.GetUserMention()));
-                return;
+                throw new UserNotFoundException(command.User.GetUserMention());
             }
             var warns = this._warnService.GetWarns(mentionedUser, contexts.Server.Id);
             await messageService.SendEmbedMessage("Ostrzeżenia", string.Empty, warns);
