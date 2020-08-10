@@ -15,7 +15,6 @@ namespace Watchman.Discord.Areas.Administration.Models
             this.Title = title;
             this.Description = description;
             this.Values = values;
-
         }
     }
 }
