@@ -42,7 +42,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             var userToMute = await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
             if (userToMute == null)
             {
-                throw new UserNotFoundException($"<@!{command.User}>");
+                throw new UserNotFoundException($"<@!{command.User}>");  // todo: change to command.User.GetMention()
             }
             var timeRange = TimeRange.FromNow(DateTime.Now + command.Time); //todo: change DateTime.Now to Contexts.SentAt
             var muteEvent = new MuteEvent(userToMute.Id, timeRange, command.Reason, contexts.Server.Id, contexts.Channel.Id);
