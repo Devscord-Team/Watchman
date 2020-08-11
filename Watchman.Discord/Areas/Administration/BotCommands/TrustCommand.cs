@@ -5,7 +5,7 @@ namespace Watchman.Discord.Areas.Administration.BotCommands
 {
     public class TrustCommand : IBotCommand
     {
-        [SingleWord]
+        [Text]
         public string Role { get; set; }
     }
 }

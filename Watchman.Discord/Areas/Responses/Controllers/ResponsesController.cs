@@ -57,7 +57,7 @@ namespace Watchman.Discord.Areas.Responses.Controllers
                 return;
             }
 
-            await this._responsesService.AddResponse(onEvent, message, contexts.Server.Id);
+            await this._responsesService.AddCustomResponse(onEvent, message, contexts.Server.Id);
             await messageService.SendResponse(x => x.ResponseHasBeenAdded(contexts, onEvent));
         }
 

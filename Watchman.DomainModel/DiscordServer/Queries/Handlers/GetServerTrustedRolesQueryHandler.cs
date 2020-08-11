@@ -16,7 +16,7 @@ namespace Watchman.DomainModel.DiscordServer.Queries.Handlers
         public GetServerTrustedRolesQueryResult Handle(GetServerTrustedRolesQuery query)
         {
             using var session = this._sessionFactory.Create();
-            var rolesIds = session.Get<TrustedRole>().Where(x => x.RoleId == query.ServerId);
+            var rolesIds = session.Get<TrustedRole>().Where(x => x.ServerId == query.ServerId);
             return new GetServerTrustedRolesQueryResult(rolesIds.Select(x => x.RoleId));
         }
     }

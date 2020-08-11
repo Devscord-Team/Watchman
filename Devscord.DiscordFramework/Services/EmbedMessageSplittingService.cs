@@ -1,35 +1,41 @@
-﻿using Devscord.DiscordFramework.Middlewares.Contexts;
-using Devscord.DiscordFramework.Services.Factories;
+﻿using Discord;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework.Services
 {
     public class EmbedMessageSplittingService
     {
         private const int MAX_FIELDS = 25;
-        private readonly MessagesServiceFactory _messagesServiceFactory;
+        private readonly EmbedMessagesService _embedMessagesService;
 
-        public EmbedMessageSplittingService(MessagesServiceFactory messagesServiceFactory)
+        public EmbedMessageSplittingService(EmbedMessagesService embedMessagesService)
         {
-            this._messagesServiceFactory = messagesServiceFactory;
+            this._embedMessagesService = embedMessagesService;
         }
 
-        public async Task SendEmbedSplitMessage(string title, string description, IEnumerable<KeyValuePair<string, string>> values, Contexts contexts)
+        internal IEnumerable<Embed> SplitEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, string>> values)
         {
-            var messagesService = this._messagesServiceFactory.Create(contexts);
-            var messages = this.SplitMessage(values.ToList());
-
-            await messagesService.SendEmbedMessage(title, description, messages.First());
+            var messages = this.SplitMessage(values.ToList()).ToList();
+            yield return this._embedMessagesService.Generate(title, description, messages.FirstOrDefault() ?? new Dictionary<string, string>());
             foreach (var message in messages.Skip(1))
             {
-                await messagesService.SendEmbedMessage(title: null, description: null, message);
+                yield return this._embedMessagesService.Generate(title: null, description: null, message);
             }
         }
 
-        private IEnumerable<IEnumerable<KeyValuePair<string, string>>> SplitMessage(List<KeyValuePair<string, string>> values)
+        internal IEnumerable<Embed> SplitEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, Dictionary<string, string>>> values)
+        {
+            var messages = this.SplitMessage(values.ToList()).ToList();
+            yield return this._embedMessagesService.Generate(title, description, messages.FirstOrDefault() ?? new Dictionary<string, Dictionary<string, string>>());
+            foreach (var message in messages.Skip(1))
+            {
+                yield return this._embedMessagesService.Generate(title: null, description: null, message);
+            }
+        }
+
+        private IEnumerable<IEnumerable<T>> SplitMessage<T>(IReadOnlyCollection<T> values)
         {
             for (var i = 0; i < Math.Ceiling((double) values.Count / MAX_FIELDS); i++)
             {

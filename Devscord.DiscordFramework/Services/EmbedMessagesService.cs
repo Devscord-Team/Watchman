@@ -1,5 +1,6 @@
 ﻿using Discord;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Devscord.DiscordFramework.Services
 {
@@ -15,6 +16,17 @@ namespace Devscord.DiscordFramework.Services
                 builder.AddField(value.Key, value.Value);
             }
             return builder.Build();
+        }
+
+        public Embed Generate(string title, string description, IEnumerable<KeyValuePair<string, Dictionary<string, string>>> values)
+        {
+            var flatValues = new Dictionary<string, string>();
+            foreach (var value in values)
+            {
+                var valuesString = value.Value.Aggregate(string.Empty,(a, b) => $"{a}\n{b.Key} {b.Value}");
+                flatValues.Add(value.Key, valuesString);
+            }
+            return this.Generate(title, description, flatValues);
         }
 
         private EmbedBuilder GetDefault()
