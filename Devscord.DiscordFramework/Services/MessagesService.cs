@@ -1,5 +1,4 @@
-﻿using Devscord.DiscordFramework.Commons;
-using Devscord.DiscordFramework.Framework.Commands.Responses;
+﻿using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Integration;
 using Discord.Rest;
 using Serilog;
@@ -9,6 +8,8 @@ using System.IO;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Commons.Exceptions;
 using System.Linq;
+using Discord;
+using MessageType = Devscord.DiscordFramework.Commons.MessageType;
 
 namespace Devscord.DiscordFramework.Services
 {
@@ -47,13 +48,14 @@ namespace Devscord.DiscordFramework.Services
 
         public Task SendEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, string>> values)
         {
-            var channel = this.GetChannel();
-            foreach (var embed in this._embedMessageSplittingService.SplitEmbedMessage(title, description, values))
-            {
-                channel.SendMessageAsync(embed: embed);
-                Log.Information("Bot sent embed message {description}", embed.Description);
-            }
-            return Task.CompletedTask;
+            var embeds = this._embedMessageSplittingService.SplitEmbedMessage(title, description, values);
+            return this.SendEmbedSplitMessages(embeds);
+        }
+
+        public Task SendEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, Dictionary<string, string>>> values)
+        {
+            var embeds = this._embedMessageSplittingService.SplitEmbedMessage(title, description, values);
+            return this.SendEmbedSplitMessages(embeds);
         }
 
         public Task SendResponse(Func<ResponsesService, string> response)
@@ -125,6 +127,16 @@ namespace Devscord.DiscordFramework.Services
             }
             var channel = (IRestMessageChannel) Server.GetChannel(this.ChannelId, guild).Result;
             return channel;
+        }
+
+        private async Task SendEmbedSplitMessages(IEnumerable<Embed> embeds)
+        {
+            var channel = this.GetChannel();
+            foreach (var embed in embeds)
+            {
+                await channel.SendMessageAsync(embed: embed);
+                Log.Information("Bot sent embed message {description}", embed.Description);
+            }
         }
     }
 }

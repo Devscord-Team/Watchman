@@ -81,8 +81,8 @@ namespace Watchman.Discord.Areas.Administration.Controllers
                 return;
             }
 
-            var header = $"Messages from user {selectedUser} starting at {timeRange.Start}";
-            var lines = messages.Select(x => $"{x.SentAt:yyyy-MM-dd HH:mm:ss} {x.Author.Name}: {x.Content.Replace("```", "")}");
+            var header = $"Messages from user {selectedUser} starting at {timeRange.Start.ToLocalTimeString()}";
+            var lines = messages.Select(x => $"{x.SentAt.ToLocalTimeString()} {x.Author.Name}: {x.Content.Replace("```", "")}");
             var linesBuilder = new StringBuilder().PrintManyLines(lines.ToArray(), contentStyleBox: true);
 
             await this._directMessagesService.TrySendMessage(contexts.User.Id, header);
@@ -123,7 +123,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             foreach (var safeUserId in safeUsersIds)
             {
                 var user = await this._usersService.GetUserByIdAsync(contexts.Server, safeUserId);
-                values.Add(new KeyValuePair<string, string>(user.Mention, user.JoinedServerAt().ToString())); //todo: use .ToLocalTimeString()
+                values.Add(new KeyValuePair<string, string>($"{user.Mention} -", user.JoinedServerAt()?.ToLocalTimeString() ?? "nieznana data"));
             }
             var messagesService = this._messagesServiceFactory.Create(contexts);
             var safeUsers = new Dictionary<string, Dictionary<string, string>>()
@@ -133,7 +133,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             await messagesService.SendEmbedMessage(
                 "Zaufani użytkownicy",
                 $"Lista zaufanych użytkowników na serwerze {contexts.Server.Name}",
-                safeUsers.First().Value); //todo: send just safeUsers
+                safeUsers);
         }
 
         [AdminCommand]

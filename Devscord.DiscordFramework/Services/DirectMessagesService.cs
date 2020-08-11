@@ -52,14 +52,28 @@ namespace Devscord.DiscordFramework.Services
 
         public Task<bool> TrySendEmbedMessage(ulong userId, string title, string description, IEnumerable<KeyValuePair<string, string>> values)
         {
-            var embed = this._embedMessagesService.Generate(title, description, values);
-            return TrySendEmbedMessage(userId, embed);
+            var splitEmbedMessages = this._embedMessageSplittingService.SplitEmbedMessage(title, description, values);
+            return this.TrySendEmbedSplitMessages(userId, splitEmbedMessages);
         }
 
-        public Task<bool> TrySendEmbedMessage(ulong userId, string title, string description, Dictionary<string, Dictionary<string, string>> values)
+        public Task<bool> TrySendEmbedMessage(ulong userId, string title, string description, IEnumerable<KeyValuePair<string, Dictionary<string, string>>> values)
         {
-            var embed = this._embedMessagesService.Generate(title, description, values);
-            return TrySendEmbedMessage(userId, embed);
+            var splitEmbedMessages = this._embedMessageSplittingService.SplitEmbedMessage(title, description, values);
+            return this.TrySendEmbedSplitMessages(userId, splitEmbedMessages);
+        }
+
+        private async Task<bool> TrySendEmbedSplitMessages(ulong userId, IEnumerable<Embed> embeds)
+        {
+            foreach (var embed in embeds)
+            {
+                var wasSentSuccessfully = await this.TrySendEmbedMessage(userId, embed);
+                if (!wasSentSuccessfully)
+                {
+                    return false;
+                }
+                Log.Information("Bot sent embed message {description}", embed.Description);
+            }
+            return true;
         }
 
         private async Task<bool> TrySendEmbedMessage(ulong userId, Embed embed)

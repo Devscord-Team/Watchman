@@ -25,7 +25,17 @@ namespace Devscord.DiscordFramework.Services
             }
         }
 
-        private IEnumerable<IEnumerable<KeyValuePair<string, string>>> SplitMessage(IReadOnlyCollection<KeyValuePair<string, string>> values)
+        internal IEnumerable<Embed> SplitEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, Dictionary<string, string>>> values)
+        {
+            var messages = this.SplitMessage(values.ToList()).ToList();
+            yield return this._embedMessagesService.Generate(title, description, messages.FirstOrDefault() ?? new Dictionary<string, Dictionary<string, string>>());
+            foreach (var message in messages.Skip(1))
+            {
+                yield return this._embedMessagesService.Generate(title: null, description: null, message);
+            }
+        }
+
+        private IEnumerable<IEnumerable<T>> SplitMessage<T>(IReadOnlyCollection<T> values)
         {
             for (var i = 0; i < Math.Ceiling((double) values.Count / MAX_FIELDS); i++)
             {
