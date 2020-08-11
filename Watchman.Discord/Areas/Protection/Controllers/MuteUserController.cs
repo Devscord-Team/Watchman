@@ -27,8 +27,8 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             this._mutingService = mutingService;
             this._unmutingService = unmutingService;
             this._usersService = usersService;
-            this._mutingHelper = mutingHelper;
             this._directMessagesService = directMessagesService;
+            this._mutingHelper = mutingHelper;
         }
 
         [DiscordCommand("mute")]
