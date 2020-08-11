@@ -28,13 +28,16 @@ namespace Watchman.Discord.Areas.Responses.Services
             var messagesService = this._messagesServiceFactory.Create(contexts);
             if (command.Default)
             {
-                return messagesService.SendEmbedMessage("Domyślne odpowiedzi:", DESCRIPTION, this.GetDefaultResponses());
+                await messagesService.SendEmbedMessage("Domyślne odpowiedzi:", DESCRIPTION, this.GetDefaultResponses());
             }
             else if (command.Custom)
             {
-                return messagesService.SendEmbedMessage("Nadpisane odpowiedzi:", DESCRIPTION, this.GetCustomResponses(contexts.Server.Id));
+                await messagesService.SendEmbedMessage("Nadpisane odpowiedzi:", DESCRIPTION, this.GetCustomResponses(contexts.Server.Id));
             }
-            return messagesService.SendEmbedMessage("Wszystkie odpowiedzi:", DESCRIPTION, this.GetAllResponses(contexts.Server.Id));
+            else
+            {
+                await messagesService.SendEmbedMessage("Wszystkie odpowiedzi:", DESCRIPTION, this.GetAllResponses(contexts.Server.Id));
+            } 
         }
 
         private IEnumerable<KeyValuePair<string, string>> GetDefaultResponses()

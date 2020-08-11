@@ -19,11 +19,8 @@ using Watchman.DomainModel.Messages.Queries;
 using Watchman.Discord.Areas.Users.Services;
 using Watchman.Discord.Areas.Administration.BotCommands;
 using Watchman.Discord.Areas.Administration.Services;
-using Watchman.Discord.Areas.Commons;
 using Watchman.Discord.Areas.Protection.Strategies;
-using Watchman.Discord.Areas.Users.Services;
 using Watchman.DomainModel.DiscordServer.Queries;
-using Watchman.DomainModel.Messages.Queries;
 
 namespace Watchman.Discord.Areas.Administration.Controllers
 {

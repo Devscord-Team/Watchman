@@ -59,7 +59,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             {
                 value = value.Replace($"\"{toRemove}\"", string.Empty);
             }
-            var otherResults = value.Split(' ')
+            var otherResults = value.Split()
                 .Where(x => !string.IsNullOrWhiteSpace(x))
                 .Select(x => x.Trim());
             results.AddRange(otherResults);

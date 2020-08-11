@@ -46,16 +46,16 @@ namespace Devscord.DiscordFramework.Services
             return Task.CompletedTask;
         }
 
-        public Task SendEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, string>> values)
+        public async Task SendEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, string>> values)
         {
             var embeds = this._embedMessageSplittingService.SplitEmbedMessage(title, description, values);
-            return this.SendEmbedSplitMessages(embeds);
+            await this.SendEmbedSplitMessages(embeds);
         }
 
-        public Task SendEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, Dictionary<string, string>>> values)
+        public async Task SendEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, Dictionary<string, string>>> values)
         {
             var embeds = this._embedMessageSplittingService.SplitEmbedMessage(title, description, values);
-            return this.SendEmbedSplitMessages(embeds);
+            await this.SendEmbedSplitMessages(embeds);
         }
 
         public Task SendResponse(Func<ResponsesService, string> response)
