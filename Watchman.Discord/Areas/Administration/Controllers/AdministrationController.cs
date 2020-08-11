@@ -55,10 +55,9 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             var selectedUser = await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
             if (selectedUser == null)
             {
-                await messagesService.SendResponse(x => x.InvalidArguments());
-                return;
+                throw new UserNotFoundException($"<@!{command.User}>");
             }
-            var timeRange = TimeRange.ToNow(DateTime.UtcNow - command.Time);
+            var timeRange = TimeRange.ToNow(DateTime.Now - command.Time); //todo: change DateTime.Now to Contexts.SentAt
 
             var query = new GetMessagesQuery(contexts.Server.Id, selectedUser.Id)
             {
@@ -128,7 +127,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             var query = new GetServerTrustedRolesQuery(contexts.Server.Id);
             var trustedRoles = this._queryBus.Execute(query).TrustedRolesIds.ToList();
             var messagesService = this._messagesServiceFactory.Create(contexts);
-            if (trustedRoles.Count == 0)
+            if (!trustedRoles.Any())
             {
                 await messagesService.SendResponse(x => x.ServerDoesntHaveAnyTrustedRole());
                 return;

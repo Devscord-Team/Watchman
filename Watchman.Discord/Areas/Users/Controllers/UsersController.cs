@@ -56,7 +56,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
             var query = new GetDiscordServerSafeRolesQuery(contexts.Server.Id);
             var safeRoles = this._queryBus.Execute(query).SafeRoles.ToList();
 
-            if (safeRoles.Count == 0)
+            if (!safeRoles.Any())
             {
                 await messageService.SendResponse(x => x.ServerDoesntHaveAnySafeRoles());
                 return;

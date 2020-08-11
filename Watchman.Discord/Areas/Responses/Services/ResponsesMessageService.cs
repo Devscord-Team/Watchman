@@ -26,11 +26,11 @@ namespace Watchman.Discord.Areas.Responses.Services
         {
             if (command.Default)
             {
-                await this._embedMessageSplittingService.SendEmbedSplitMessage("Domyślne responses:", DESCRIPTION, GetDefaultResponses(), contexts);
+                await this._embedMessageSplittingService.SendEmbedSplitMessage("Domyślne responses:", DESCRIPTION, this.GetDefaultResponses(), contexts);
             }
             else if (command.Custom)
             {
-                await this._embedMessageSplittingService.SendEmbedSplitMessage("Nadpisane responses:", DESCRIPTION, GetCustomResponses(contexts.Server.Id), contexts);
+                await this._embedMessageSplittingService.SendEmbedSplitMessage("Nadpisane responses:", DESCRIPTION, this.GetCustomResponses(contexts.Server.Id), contexts);
             }
             else
             {

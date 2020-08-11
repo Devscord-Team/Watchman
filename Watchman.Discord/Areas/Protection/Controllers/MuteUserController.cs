@@ -20,14 +20,12 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         private readonly MutingService _mutingService;
         private readonly UnmutingService _unmutingService;
         private readonly UsersService _usersService;
-        private readonly MessagesServiceFactory _messagesServiceFactory;
 
-        public MuteUserController(MutingService mutingService, UnmutingService unmutingService, UsersService usersService, MessagesServiceFactory messagesServiceFactory)
+        public MuteUserController(MutingService mutingService, UnmutingService unmutingService, UsersService usersService)
         {
             this._mutingService = mutingService;
             this._unmutingService = unmutingService;
             this._usersService = usersService;
-            this._messagesServiceFactory = messagesServiceFactory;
         }
 
         [AdminCommand]
@@ -36,10 +34,9 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             var userToMute = await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
             if (userToMute == null)
             {
-                await this._messagesServiceFactory.Create(contexts).SendResponse(x => x.UserNotFound($"<@!{command.User}>"));
-                return;
+                throw new UserNotFoundException($"<@!{command.User}>");
             }
-            var timeRange = TimeRange.FromNow(DateTime.UtcNow + command.Time);
+            var timeRange = TimeRange.FromNow(DateTime.Now + command.Time); //todo: change DateTime.Now to Contexts.SentAt
             var muteEvent = new MuteEvent(userToMute.Id, timeRange, command.Reason, contexts.Server.Id, contexts.Channel.Id);
             await this._mutingService.MuteUserOrOverwrite(contexts, muteEvent, userToMute);
             this._unmutingService.UnmuteInFuture(contexts, muteEvent, userToMute);
@@ -51,8 +48,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             var userToUnmute = await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
             if (userToUnmute == null)
             {
-                await this._messagesServiceFactory.Create(contexts).SendResponse(x => x.InvalidArguments());
-                return;
+                throw new UserNotFoundException($"<@!{command.User}>");
             }
             await this._unmutingService.UnmuteNow(contexts, userToUnmute);
         }
