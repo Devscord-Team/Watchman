@@ -1,11 +1,12 @@
-﻿using Devscord.DiscordFramework.Commons;
-using Devscord.DiscordFramework.Framework.Commands.Responses;
+﻿using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Integration;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Discord;
+using MessageType = Devscord.DiscordFramework.Commons.MessageType;
 
 namespace Devscord.DiscordFramework.Services
 {
@@ -49,9 +50,20 @@ namespace Devscord.DiscordFramework.Services
             }
         }
 
-        public async Task<bool> TrySendEmbedMessage(ulong userId, string title, string description, IEnumerable<KeyValuePair<string, string>> values)
+        public Task<bool> TrySendEmbedMessage(ulong userId, string title, string description, IEnumerable<KeyValuePair<string, string>> values)
         {
             var embed = this._embedMessagesService.Generate(title, description, values);
+            return TrySendEmbedMessage(userId, embed);
+        }
+
+        public Task<bool> TrySendEmbedMessage(ulong userId, string title, string description, Dictionary<string, Dictionary<string, string>> values)
+        {
+            var embed = this._embedMessagesService.Generate(title, description, values);
+            return TrySendEmbedMessage(userId, embed);
+        }
+
+        private async Task<bool> TrySendEmbedMessage(ulong userId, Embed embed)
+        {
             try
             {
                 await Server.SendDirectEmbedMessage(userId, embed);
