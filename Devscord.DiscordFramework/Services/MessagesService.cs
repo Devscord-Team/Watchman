@@ -28,7 +28,7 @@ namespace Devscord.DiscordFramework.Services
             this._responsesService = responsesService;
             this._splittingService = splittingService;
             this._embedMessageSplittingService = embedMessageSplittingService;
-            if (_serversResponses.Count == 0)
+            if (!_serversResponses.Any())
             {
                 this.Refresh().Wait();
             }

@@ -66,8 +66,7 @@ namespace Devscord.DiscordFramework.Services
         {
             foreach (var embed in embeds)
             {
-                var wasSentSuccessfully = await this.TrySendEmbedMessage(userId, embed);
-                if (!wasSentSuccessfully)
+                if (!await this.TrySendEmbedMessage(userId, embed))
                 {
                     return false;
                 }

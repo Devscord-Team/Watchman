@@ -102,10 +102,7 @@ namespace Devscord.DiscordFramework.Integration.Services
                 foreach (var message in messagesPackage)
                 {
                     var user = this._userContextsFactory.Create(message.Author);
-                    var contexts = new Contexts();
-                    contexts.SetContext(server);
-                    contexts.SetContext(channel);
-                    contexts.SetContext(user);
+                    var contexts = new Contexts(server, channel, user);
 
                     DiscordRequest request;
                     try
