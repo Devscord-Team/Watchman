@@ -1,5 +1,4 @@
-﻿using Devscord.DiscordFramework.Commons;
-using Devscord.DiscordFramework.Framework.Commands.Responses;
+﻿using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Integration;
 using Discord.Rest;
 using Serilog;
@@ -9,6 +8,8 @@ using System.IO;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Commons.Exceptions;
 using System.Linq;
+using Discord;
+using MessageType = Devscord.DiscordFramework.Commons.MessageType;
 
 namespace Devscord.DiscordFramework.Services
 {
@@ -20,14 +21,14 @@ namespace Devscord.DiscordFramework.Services
         private static readonly Dictionary<ulong, IEnumerable<Response>> _serversResponses = new Dictionary<ulong, IEnumerable<Response>>();
         private readonly ResponsesService _responsesService;
         private readonly MessageSplittingService _splittingService;
-        private readonly EmbedMessagesService _embedMessagesService;
+        private readonly EmbedMessageSplittingService _embedMessageSplittingService;
 
-        public MessagesService(ResponsesService responsesService, MessageSplittingService splittingService, EmbedMessagesService embedMessagesService)
+        public MessagesService(ResponsesService responsesService, MessageSplittingService splittingService, EmbedMessageSplittingService embedMessageSplittingService)
         {
             this._responsesService = responsesService;
             this._splittingService = splittingService;
-            this._embedMessagesService = embedMessagesService;
-            if (_serversResponses.Count == 0)
+            this._embedMessageSplittingService = embedMessageSplittingService;
+            if (!_serversResponses.Any())
             {
                 this.Refresh().Wait();
             }
@@ -47,10 +48,14 @@ namespace Devscord.DiscordFramework.Services
 
         public Task SendEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, string>> values)
         {
-            var channel = this.GetChannel();
-            var embed = this._embedMessagesService.Generate(title, description, values);
-            channel.SendMessageAsync(embed: embed);
-            return Task.CompletedTask;
+            var embeds = this._embedMessageSplittingService.SplitEmbedMessage(title, description, values);
+            return this.SendEmbedSplitMessages(embeds);
+        }
+
+        public Task SendEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, Dictionary<string, string>>> values)
+        {
+            var embeds = this._embedMessageSplittingService.SplitEmbedMessage(title, description, values);
+            return this.SendEmbedSplitMessages(embeds);
         }
 
         public Task SendResponse(Func<ResponsesService, string> response)
@@ -122,6 +127,16 @@ namespace Devscord.DiscordFramework.Services
             }
             var channel = (IRestMessageChannel) Server.GetChannel(this.ChannelId, guild).Result;
             return channel;
+        }
+
+        private async Task SendEmbedSplitMessages(IEnumerable<Embed> embeds)
+        {
+            var channel = this.GetChannel();
+            foreach (var embed in embeds)
+            {
+                await channel.SendMessageAsync(embed: embed);
+                Log.Information("Bot sent embed message {description}", embed.Description);
+            }
         }
     }
 }

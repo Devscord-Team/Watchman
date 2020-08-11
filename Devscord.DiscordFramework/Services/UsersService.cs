@@ -7,6 +7,7 @@ using Autofac;
 using Devscord.DiscordFramework.Integration;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Middlewares.Factories;
+using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
 using Serilog;
@@ -78,6 +79,11 @@ namespace Devscord.DiscordFramework.Services
         public DateTime? GetUserJoinedServerAt(ulong userId, ulong serverId)
         {
             return Server.GetGuildUser(userId, serverId).Result?.JoinedAt?.DateTime;
+        }
+
+        internal DateTime? GetUserJoinedServerAt(IGuildUser user)
+        {
+            return user.JoinedAt?.DateTime;
         }
 
         public UserContext GetBot()

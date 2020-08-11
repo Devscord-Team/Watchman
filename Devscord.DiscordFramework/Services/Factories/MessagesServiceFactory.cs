@@ -7,13 +7,13 @@ namespace Devscord.DiscordFramework.Services.Factories
     {
         private readonly ResponsesService _responsesService;
         private readonly MessageSplittingService _splittingService;
-        private readonly EmbedMessagesService _embedMessagesService;
+        private readonly EmbedMessageSplittingService _embedMessageSplittingService;
 
-        public MessagesServiceFactory(ResponsesService responsesService, MessageSplittingService splittingService, EmbedMessagesService embedMessagesService)
+        public MessagesServiceFactory(ResponsesService responsesService, MessageSplittingService splittingService, EmbedMessageSplittingService embedMessageSplittingService)
         {
             this._responsesService = responsesService;
             this._splittingService = splittingService;
-            this._embedMessagesService = embedMessagesService;
+            this._embedMessageSplittingService = embedMessageSplittingService;
         }
 
         public MessagesService Create(Contexts contexts)
@@ -23,7 +23,7 @@ namespace Devscord.DiscordFramework.Services.Factories
 
         public MessagesService Create(ulong channelId, ulong guildId)
         {
-            return new MessagesService(this._responsesService, this._splittingService, this._embedMessagesService)
+            return new MessagesService(this._responsesService, this._splittingService, this._embedMessageSplittingService)
             {
                 GuildId = guildId,
                 ChannelId = channelId

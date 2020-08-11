@@ -6,6 +6,6 @@ services:
             - "8080:80"
         restart: "unless-stopped"
         volumes:
-            - ./Watchman.Web/appsettings.json:/app/appsettings.json
+            - ./appsettings.json:/app/appsettings.json
             - /etc/localtime:/etc/localtime:ro
             - ./logs:/app/logs
