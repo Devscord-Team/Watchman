@@ -1,5 +1,4 @@
-﻿using System;
-using Discord;
+﻿using Discord;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -19,7 +18,7 @@ namespace Devscord.DiscordFramework.Services
             return builder.Build();
         }
 
-        public Embed Generate(string title, string description, Dictionary<string, Dictionary<string, string>> values)
+        public Embed Generate(string title, string description, IEnumerable<KeyValuePair<string, Dictionary<string, string>>> values)
         {
             var flatValues = new Dictionary<string, string>();
             foreach (var value in values)

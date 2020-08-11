@@ -3,6 +3,7 @@ using Devscord.DiscordFramework;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using System.Collections.Generic;
 using System.Reflection;
+using Devscord.DiscordFramework.Framework.Commands.Parsing;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Commons;
 using Watchman.Discord.Integration.DevscordFramework;
@@ -25,6 +26,10 @@ namespace Watchman.Discord.IoC.Modules
             builder.RegisterType<CustomCommandsLoader>()
                 .As<ICustomCommandsLoader>()
                 .InstancePerLifetimeScope();
+
+            builder.RegisterType<CommandParser>()
+                .As<CommandParser>()
+                .SingleInstance();
 
             var list = new List<string>();
             var stack = new Stack<Assembly>();

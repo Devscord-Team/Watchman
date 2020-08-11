@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace Watchman.Discord.Areas.Administration.Controllers
+namespace Devscord.DiscordFramework.Commons.Extensions
 {
     public static class DateTimeExtensions
     {

@@ -9,6 +9,17 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
         public ChannelContext Channel { get; private set; }
         public UserContext User { get; private set; }
 
+        public Contexts()
+        {
+        }
+
+        public Contexts(DiscordServerContext server, ChannelContext channel, UserContext user)
+        {
+            this.Server = server;
+            this.Channel = channel;
+            this.User = user;
+        }
+
         public void SetContext<T>(T context) where T : IDiscordContext
         {
             switch (context)

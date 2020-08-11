@@ -1,4 +1,5 @@
 using Devscord.DiscordFramework.Middlewares.Contexts;
+using Devscord.DiscordFramework.Services.Factories;
 using Devscord.DiscordFramework.Services;
 using System;
 using System.Collections.Generic;
@@ -14,28 +15,25 @@ namespace Watchman.Discord.Areas.Responses.Services
     {
         private const string DESCRIPTION = "dokumentacja:\nhttps://watchman.readthedocs.io/pl/latest/135-services-in-framework/";
         private readonly ResponsesGetterService _responsesDatabase;
-        private readonly EmbedMessageSplittingService _embedMessageSplittingService;
+        private readonly MessagesServiceFactory _messagesServiceFactory;
 
-        public ResponsesMessageService(ResponsesGetterService responsesDatabase, EmbedMessageSplittingService embedMessageSplittingService)
+        public ResponsesMessageService(ResponsesGetterService responsesDatabase, MessagesServiceFactory messagesServiceFactory)
         {
             this._responsesDatabase = responsesDatabase;
-            this._embedMessageSplittingService = embedMessageSplittingService;
+            this._messagesServiceFactory = messagesServiceFactory;
         }
 
         public async Task PrintResponses(ResponsesCommand command, Contexts contexts)
         {
             if (command.Default)
             {
-                await this._embedMessageSplittingService.SendEmbedSplitMessage("Domyślne responses:", DESCRIPTION, this.GetDefaultResponses(), contexts);
+                return messagesService.SendEmbedMessage("Domyślne odpowiedzi:", DESCRIPTION, this.GetDefaultResponses());
             }
             else if (command.Custom)
             {
-                await this._embedMessageSplittingService.SendEmbedSplitMessage("Nadpisane responses:", DESCRIPTION, this.GetCustomResponses(contexts.Server.Id), contexts);
+                return messagesService.SendEmbedMessage("Nadpisane odpowiedzi:", DESCRIPTION, this.GetCustomResponses(contexts.Server.Id));
             }
-            else
-            {
-                await this._embedMessageSplittingService.SendEmbedSplitMessage("Wszystkie responses:", DESCRIPTION, this.GetAllResponses(contexts.Server.Id), contexts);
-            }
+            return messagesService.SendEmbedMessage("Wszystkie odpowiedzi:", DESCRIPTION, this.GetAllResponses(contexts.Server.Id));
         }
 
         private IEnumerable<KeyValuePair<string, string>> GetDefaultResponses()

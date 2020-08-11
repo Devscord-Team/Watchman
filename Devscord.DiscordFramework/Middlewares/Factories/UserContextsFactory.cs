@@ -30,7 +30,7 @@ namespace Devscord.DiscordFramework.Middlewares.Factories
             }
             var roles = guildUser.RoleIds.Select(x => this._usersRolesService.GetRole(x, guildUser.GuildId));
             bool getIsOwner(UserContext userContext) => userContext.Id == this._discordServersService.GetDiscordServerAsync(guildUser.GuildId).Result.Id;
-            DateTime? getJoinedServerAt(UserContext userContext) => this._usersService.GetUserJoinedServerAt(userContext.Id, guildUser.GuildId);
+            DateTime? getJoinedServerAt(UserContext userContext) => this._usersService.GetUserJoinedServerAt(guildUser);
 
             return new UserContext(user.Id, user.ToString(), roles.ToList(), avatarUrl, user.Mention, getIsOwner, getJoinedServerAt);
         }
