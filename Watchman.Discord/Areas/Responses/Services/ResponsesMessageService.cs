@@ -25,6 +25,7 @@ namespace Watchman.Discord.Areas.Responses.Services
 
         public async Task PrintResponses(ResponsesCommand command, Contexts contexts)
         {
+            var messagesService = this._messagesServiceFactory.Create(contexts);
             if (command.Default)
             {
                 return messagesService.SendEmbedMessage("Domyślne odpowiedzi:", DESCRIPTION, this.GetDefaultResponses());
