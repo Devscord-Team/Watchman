@@ -55,7 +55,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             var selectedUser = await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
             if (selectedUser == null)
             {
-                throw new UserNotFoundException($"<@!{command.User}>");
+                throw new UserNotFoundException($"<@!{command.User}>"); // todo: change to command.User.GetMention()
             }
             var timeRange = TimeRange.ToNow(DateTime.Now - command.Time); //todo: change DateTime.Now to Contexts.SentAt
 
