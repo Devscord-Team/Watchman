@@ -16,7 +16,7 @@ namespace Devscord.DiscordFramework.Integration.Services.Interfaces
         Task<IGuildChannel> GetGuildChannel(ulong channelId, RestGuild guild);
         Task SendDirectEmbedMessage(ulong userId, Embed embed);
         Task SendDirectMessage(ulong userId, string message);
-        Task<IEnumerable<Message>> GetMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong fromMessageId = 0, bool goBefore = true);
-        bool CanBotReadTheChannel(IMessageChannel textChannel);
+        IAsyncEnumerable<Message> GetMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong fromMessageId = 0, bool goBefore = true);
+        Task<bool> CanBotReadTheChannel(IMessageChannel textChannel);
     }
 }

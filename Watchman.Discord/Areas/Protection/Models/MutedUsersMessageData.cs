@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace Watchman.Discord.Areas.Administration.Models
+namespace Watchman.Discord.Areas.Protection.Models
 {
     public class MutedUsersMessageData
     {

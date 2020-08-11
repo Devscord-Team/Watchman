@@ -42,7 +42,7 @@ namespace Watchman.DomainModel.Responses
 
         public void UpdateAvailableVariables(string[] newAvailableVariables)
         {
-            if (this.AvailableVariables.SequenceEqual(newAvailableVariables))
+            if (this.AvailableVariables != null && this.AvailableVariables.SequenceEqual(newAvailableVariables))
             {
                 return;
             }

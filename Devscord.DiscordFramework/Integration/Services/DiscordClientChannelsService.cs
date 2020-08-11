@@ -23,12 +23,14 @@ namespace Devscord.DiscordFramework.Integration.Services
         private readonly DiscordSocketClient _client;
         private readonly IDiscordClientUsersService _discordClientUsersService;
         private readonly UserContextsFactory _userContextsFactory;
+        private readonly CommandParser _commandParser;
 
-        public DiscordClientChannelsService(DiscordSocketClient client, IDiscordClientUsersService discordClientUsersService, UserContextsFactory userContextsFactory)
+        public DiscordClientChannelsService(DiscordSocketClient client, IDiscordClientUsersService discordClientUsersService, UserContextsFactory userContextsFactory, CommandParser commandParser)
         {
             this._client = client;
             this._discordClientUsersService = discordClientUsersService;
             this._userContextsFactory = userContextsFactory;
+            this._commandParser = commandParser;
             this._client.ChannelCreated += x => this.ChannelCreated(x);
         }
 
@@ -84,56 +86,47 @@ namespace Devscord.DiscordFramework.Integration.Services
             return channel;
         }
 
-        public async Task<IEnumerable<Message>> GetMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong fromMessageId = 0, bool goBefore = true)
+        public async IAsyncEnumerable<Message> GetMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong fromMessageId = 0, bool goBefore = true)
         {
             var textChannel = (ITextChannel)this.GetChannel(channel.Id).Result;
-            if (!this.CanBotReadTheChannel(textChannel))
+            if (!await this.CanBotReadTheChannel(textChannel))
             {
-                return new List<Message>();
+                yield break;
             }
+            var channelMessages = fromMessageId == 0 
+                ? textChannel.GetMessagesAsync(limit) 
+                : textChannel.GetMessagesAsync(fromMessageId, goBefore ? Direction.Before : Direction.After, limit);
 
-            IEnumerable<IMessage> channelMessages;
-            if (fromMessageId == 0)
+            await foreach (var messagesPackage in channelMessages)
             {
-                channelMessages = await textChannel.GetMessagesAsync(limit).FlattenAsync();
-            }
-            else
-            {
-                channelMessages = await textChannel.GetMessagesAsync(fromMessageId, goBefore ? Direction.Before : Direction.After, limit).FlattenAsync();
-            }
-
-            var messages = channelMessages.Select(message =>
-            {
-                var user = this._userContextsFactory.Create(message.Author);
-                var contexts = new Contexts();
-                contexts.SetContext(server);
-                contexts.SetContext(channel);
-                contexts.SetContext(user);
-
-                var commandParser = new CommandParser();
-                DiscordRequest request;
-                try
+                foreach (var message in messagesPackage)
                 {
-                    request = commandParser.Parse(message.Content, message.Timestamp.UtcDateTime);
-                }
-                catch // should almost never go to catch block, but in rare cases Parse() can throw an exception
-                {
-                    request = new DiscordRequest
+                    var user = this._userContextsFactory.Create(message.Author);
+                    var contexts = new Contexts(server, channel, user);
+
+                    DiscordRequest request;
+                    try
                     {
-                        OriginalMessage = message.Content, 
-                        SentAt = message.Timestamp.UtcDateTime
-                    };
+                        request = this._commandParser.Parse(message.Content, message.Timestamp.UtcDateTime);
+                    }
+                    catch // should almost never go to catch block, but in rare cases Parse() can throw an exception
+                    {
+                        request = new DiscordRequest
+                        {
+                            OriginalMessage = message.Content, 
+                            SentAt = message.Timestamp.UtcDateTime
+                        };
+                    }
+                    yield return new Message(message.Id, request, contexts);
                 }
-                return new Message(message.Id, request, contexts);
-            });
-            return messages;
+            }
         }
 
-        public bool CanBotReadTheChannel(IMessageChannel textChannel)
+        public async Task<bool> CanBotReadTheChannel(IMessageChannel textChannel)
         {
             try
             {
-                textChannel.GetMessagesAsync(limit: 1).FlattenAsync().Wait();
+                await textChannel.GetMessagesAsync(limit: 1).FlattenAsync();
                 return true;
             }
             catch

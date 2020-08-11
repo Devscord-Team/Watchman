@@ -83,7 +83,7 @@ namespace Devscord.DiscordFramework.Integration
             return _discordClient.ChannelsService.SendDirectMessage(userId, message);
         }
 
-        internal static Task<IEnumerable<Message>> GetMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong fromMessageId = 0, bool goBefore = true)
+        internal static IAsyncEnumerable<Message> GetMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong fromMessageId = 0, bool goBefore = true)
         {
             return _discordClient.ChannelsService.GetMessages(server, channel, limit, fromMessageId, goBefore);
         }

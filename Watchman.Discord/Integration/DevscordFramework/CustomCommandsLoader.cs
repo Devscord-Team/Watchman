@@ -39,9 +39,9 @@ namespace Watchman.Discord.Integration.DevscordFramework
             {
                 customCommands.AddRange(new List<AddCustomCommandsCommand>
                 {
-                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.AddRoleCommand", @"-add\s*role\s*(?<GetRoles>[\w\W\s\""]*)", serverId),
-                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.RemoveRoleCommand", @"-remove\s*role\s*(?<GetRoles>[\w\W\s\""]*)", serverId),
-                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Administration.BotCommands.SetRoleCommand", @"-set\s*role\s*(?<GetRoles>[\w\W\s\""]*)\s*-((?<Safe>safe)|(?<Unsafe>unsafe))", serverId),
+                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.AddRoleCommand", @"-add\s*role\s+(?<Roles>.*)", serverId),
+                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.RemoveRoleCommand", @"-remove\s*role\s+(?<Roles>.*)", serverId),
+                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Administration.BotCommands.SetRoleCommand", @"-set\s*role\s+(?<Roles>.*)\s*-((?<Safe>safe)|(?<Unsafe>unsafe))", serverId),
                     new AddCustomCommandsCommand("Watchman.Discord.Areas.Messaging.BotCommands.SendCommand", @"-send\s*(?<Channel>\<.*\>)\s*""?(?<Message>.*)\""?", serverId),
                 });
             }

@@ -1,4 +1,9 @@
-﻿using Devscord.DiscordFramework.Commons;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
@@ -7,20 +12,14 @@ using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
-using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Watchman.Cqrs;
-using Watchman.Discord.Areas.Commons;
-using Watchman.DomainModel.Messages.Queries;
-using Watchman.Discord.Areas.Users.Services;
 using Watchman.Discord.Areas.Administration.BotCommands;
 using Watchman.Discord.Areas.Administration.Services;
+using Watchman.Discord.Areas.Commons;
 using Watchman.Discord.Areas.Protection.Strategies;
-using System.Collections.Generic;
-using System.Globalization;
+using Watchman.Discord.Areas.Users.Services;
 using Watchman.DomainModel.DiscordServer.Queries;
+using Watchman.DomainModel.Messages.Queries;
 
 namespace Watchman.Discord.Areas.Administration.Controllers
 {
@@ -82,8 +81,8 @@ namespace Watchman.Discord.Areas.Administration.Controllers
                 return;
             }
 
-            var header = $"Messages from user {selectedUser} starting at {timeRange.Start}";
-            var lines = messages.Select(x => $"{x.SentAt:yyyy-MM-dd HH:mm:ss} {x.Author.Name}: {x.Content.Replace("```", "")}");
+            var header = $"Messages from user {selectedUser} starting at {timeRange.Start.ToLocalTimeString()}";
+            var lines = messages.Select(x => $"{x.SentAt.ToLocalTimeString()} {x.Author.Name}: {x.Content.Replace("```", "")}");
             var linesBuilder = new StringBuilder().PrintManyLines(lines.ToArray(), contentStyleBox: true);
 
             await this._directMessagesService.TrySendMessage(contexts.User.Id, header);
@@ -109,7 +108,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         {
             await this._trustRolesService.TrustThisRole(trustCommand.Role, contexts);
         }
-        
+
         [AdminCommand]
         public async Task SetRoleAsUntrusted(UntrustCommand trustCommand, Contexts contexts)
         {
@@ -120,13 +119,21 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         public async Task GetSafeUsers(SafeUsersCommand safeUsersCommand, Contexts contexts)
         {
             var safeUsersIds = this._checkUserSafetyService.GetSafeUsersIds(contexts.Server.Id);
-            var serverUsers = await contexts.Server.GetUsers().ToDictionaryAsync(x => x.Id, x => x);
-            var safeUsers = safeUsersIds.Select(x => serverUsers.GetValueOrDefault(x)).Where(x => x != null);
+            var values = new List<KeyValuePair<string, string>>();
+            foreach (var safeUserId in safeUsersIds)
+            {
+                var user = await this._usersService.GetUserByIdAsync(contexts.Server, safeUserId);
+                values.Add(new KeyValuePair<string, string>($"{user.Mention} -", user.JoinedServerAt()?.ToLocalTimeString() ?? "nieznana data"));
+            }
             var messagesService = this._messagesServiceFactory.Create(contexts);
+            var safeUsers = new Dictionary<string, Dictionary<string, string>>()
+            {
+                {"Zaufani użytkownicy", new Dictionary<string, string>(values)}
+            };
             await messagesService.SendEmbedMessage(
                 "Zaufani użytkownicy",
                 $"Lista zaufanych użytkowników na serwerze {contexts.Server.Name}",
-                safeUsers.Select(x => new KeyValuePair<string, string>(x.Name, x.JoinedServerAt()?.ToString(CultureInfo.CurrentCulture))));
+                safeUsers);
         }
 
         [AdminCommand]
