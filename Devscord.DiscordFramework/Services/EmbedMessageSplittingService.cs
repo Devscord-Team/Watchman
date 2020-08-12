@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using Discord;
 
@@ -7,7 +8,7 @@ namespace Devscord.DiscordFramework.Services
     public class EmbedMessageSplittingService
     {
         private const int MAX_FIELDS = 25;
-        private const int MAX_FIELD_LENGTH = 1000;
+        private const int MAX_FIELD_LENGTH = 950;
         private const int MAX_EMBED_LENGTH = 5500; // set less than 6000 for safety
         private readonly EmbedMessagesService _embedMessagesService;
 
@@ -49,7 +50,7 @@ namespace Devscord.DiscordFramework.Services
                 if (valuesLengthPlusNewValue > lengthLeftForValues || valuesToReturn.Count == MAX_FIELDS)
                 {
                     yield return valuesToReturn;
-                    valuesToReturn.Clear();
+                    valuesToReturn = new List<KeyValuePair<string, string>>();
                     valuesToReturnLength = 0;
                 }
                 valuesToReturn.Add(value);
@@ -73,7 +74,7 @@ namespace Devscord.DiscordFramework.Services
                     {
                         valuesToReturn.Add(new KeyValuePair<string, Dictionary<string, string>>(subtitle, linesToReturn));
                         yield return valuesToReturn;
-                        valuesToReturn.Clear();
+                        valuesToReturn = new List<KeyValuePair<string, Dictionary<string, string>>>();
                         linesToReturn = new Dictionary<string, string>();
                         valuesToReturnLength = 0;
                     }
@@ -85,7 +86,7 @@ namespace Devscord.DiscordFramework.Services
                 if (valuesToReturn.Count == MAX_FIELDS)
                 {
                     yield return valuesToReturn;
-                    valuesToReturn.Clear();
+                    valuesToReturn = new List<KeyValuePair<string, Dictionary<string, string>>>();
                     valuesToReturnLength = 0;
                 }
             }

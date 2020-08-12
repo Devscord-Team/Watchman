@@ -26,8 +26,7 @@ namespace Devscord.DiscordFramework.Services
             var flatValues = new Dictionary<string, string>();
             foreach (var (subtitle, lines) in values)
             {
-                var firstLine = lines.Keys.FirstOrDefault() ?? string.Empty;
-                var valuesString = lines.Skip(1).Aggregate(firstLine, (a, b) => $"{a}\n{b.Key} {b.Value}");
+                var valuesString = lines.Aggregate(string.Empty, (a, b) => $"{a}\n{b.Key} {b.Value}");
                 flatValues.Add(subtitle, valuesString);
             }
             return this.Generate(title, description, flatValues);
