@@ -86,6 +86,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             await this._directMessagesService.TrySendMessage(contexts.User.Id, linesBuilder.ToString(), MessageType.BlockFormatted);
 
             await messagesService.SendResponse(x => x.SentByDmMessagesOfAskedUser(messages.Count, selectedUser));
+
         }
 
         [AdminCommand]
