@@ -88,6 +88,7 @@ namespace Watchman.Discord
                     builder
                         .AddFromIoC<ExceptionHandlerService>(x => x.LogException)
                         .AddHandler(this.PrintDebugExceptionInfo, onlyOnDebug: true)
+                        .AddHandler(this.SendExceptionInfo)
                         .AddHandler(this.PrintExceptionOnConsole);
                 })
                 .AddOnChannelCreatedHandlers(builder =>
@@ -97,17 +98,22 @@ namespace Watchman.Discord
                 });
         }
 
-        private void PrintDebugExceptionInfo(Exception e, Contexts contexts)
+        private void SendExceptionInfo(Exception e, Contexts contexts)
         {
             var exceptionMessage = this.BuildExceptionMessage(e).ToString();
             var messagesService = this._context.Resolve<MessagesServiceFactory>().Create(contexts);
-            messagesService.ChannelId = _configuration.ExceptionChannelID;
+            messagesService.ChannelId = this._configuration.ExceptionChannelID;
             var isBotException = e.InnerException is BotException;
-            if (isBotException && _configuration.SendOnlyUnknownExceptionInfo)
+            if (isBotException && this._configuration.SendOnlyUnknownExceptionInfo)
             {
                 return;
             }
             messagesService.SendMessage(exceptionMessage, Devscord.DiscordFramework.Commons.MessageType.BlockFormatted);
+        }
+
+        private void PrintDebugExceptionInfo(Exception e, Contexts contexts)
+        {
+            this.SendExceptionInfo(e, contexts);
         }
 
         private void PrintExceptionOnConsole(Exception e, Contexts contexts)
