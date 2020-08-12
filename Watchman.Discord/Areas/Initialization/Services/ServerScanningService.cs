@@ -35,6 +35,8 @@ namespace Watchman.Discord.Areas.Initialization.Services
             {
                 return;
             }
+            Log.Information("Reading channel {channel} ", channel.Name);
+
             startTime ??= DateTime.UnixEpoch;
             var messages = await this.ReadMessagesAsync(server, channel, limit: 1).ToListAsync();
             if (!messages.Any() || this.LastMessageIsOlderThanStartTime(messages, startTime.Value))
