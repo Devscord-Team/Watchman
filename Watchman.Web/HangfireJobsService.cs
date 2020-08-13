@@ -20,11 +20,11 @@ namespace Watchman.Web
             var generators = new List<(ICyclicService, RefreshFrequent, bool shouldTriggerNow)>
             {
                 (container.Resolve<MessagesService>(), RefreshFrequent.Quarterly, true),
-                (container.Resolve<UnmutingService>(), RefreshFrequent.Quarterly, true), // if RefreshFrequent changed remember to change SHORT_MUTE_TIME_IN_MINUTES in unmutingService!
-                (container.Resolve<CheckUserSafetyService>(), RefreshFrequent.Daily, true),
-                (container.Resolve<CyclicStatisticsGeneratorService>(), RefreshFrequent.Daily, false),
                 (container.Resolve<ServerMessagesCacheService>(), RefreshFrequent.Quarterly, false),
-                (container.Resolve<ResponsesCleanupService>(), RefreshFrequent.Daily, false)
+                (container.Resolve<ResponsesCleanupService>(), RefreshFrequent.Daily, false),
+                (container.Resolve<UnmutingService>(), RefreshFrequent.Quarterly, true), // if RefreshFrequent changed remember to change SHORT_MUTE_TIME_IN_MINUTES in unmutingService!
+                (container.Resolve<CyclicStatisticsGeneratorService>(), RefreshFrequent.Daily, false),
+                (container.Resolve<CheckUserSafetyService>(), RefreshFrequent.Daily, true)
             };
             var recurringJobManager = container.Resolve<IRecurringJobManager>();
             foreach (var (generator, refreshFrequent, shouldTrigger) in generators)
