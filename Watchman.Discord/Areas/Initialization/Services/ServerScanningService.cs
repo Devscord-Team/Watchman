@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Devscord.DiscordFramework.Commons.Extensions;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Messages.Commands;
 
@@ -35,7 +36,7 @@ namespace Watchman.Discord.Areas.Initialization.Services
             {
                 return;
             }
-            Log.Information("Reading channel {channel} ", channel.Name);
+            Log.Information("Reading channel {channel} ", channel.ToJson());
 
             startTime ??= DateTime.UnixEpoch;
             var messages = await this.ReadMessagesAsync(server, channel, limit: 1).ToListAsync();
