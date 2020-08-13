@@ -1,4 +1,5 @@
-﻿using Devscord.DiscordFramework.Framework.Commands.Responses;
+﻿using Devscord.DiscordFramework.Commons.Extensions;
+using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
@@ -72,7 +73,7 @@ namespace Watchman.Discord.Areas.Protection.Services
             {
                 {"Serwer:", server.Name},
                 {"Powód:", $"{muteEvent.Reason}"},
-                {"Czas wygaśnięcia:", TimeZoneInfo.ConvertTimeFromUtc(muteEvent.TimeRange.End, TimeZoneInfo.Local).ToString("dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture)}
+                {"Czas wygaśnięcia:", muteEvent.TimeRange.End.ToLocalTimeString()}
             };
             return (title, description, values);
         }
