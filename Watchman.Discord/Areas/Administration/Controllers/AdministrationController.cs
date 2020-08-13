@@ -118,7 +118,12 @@ namespace Watchman.Discord.Areas.Administration.Controllers
                 values.Add(new KeyValuePair<string, string>($"{user.Mention} -", user.JoinedServerAt()?.ToLocalTimeString() ?? "nieznana data"));
             }
             var messagesService = this._messagesServiceFactory.Create(contexts);
-            var safeUsers = new Dictionary<string, Dictionary<string, string>>()
+            if (!values.Any())
+            {
+                await messagesService.SendEmbedMessage("Zaufani użytkownicy", "Serwer nie posiada zaufanych użytkowników", new Dictionary<string, string>());
+                return;
+            }
+            var safeUsers = new Dictionary<string, Dictionary<string, string>>
             {
                 {"Zaufani użytkownicy", new Dictionary<string, string>(values)}
             };
