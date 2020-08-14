@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using System.Web;
 using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
@@ -24,7 +25,7 @@ namespace Watchman.Discord.Areas.UselessFeatures.Controllers
             {
                 throw new NotEnoughArgumentsException();
             }
-            var searchLink = LINK_TO_LMGTFY + googleCommand.Search.Replace(' ', '+');
+            var searchLink = LINK_TO_LMGTFY + HttpUtility.UrlEncode(googleCommand.Search);
             var messagesService = this._messagesServiceFactory.Create(contexts);
             return messagesService.SendResponse(x => x.TryToGoogleIt(searchLink));
         }
