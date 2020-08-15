@@ -66,7 +66,7 @@ namespace Watchman.Discord.Areas.Protection.Services
                 warnContentBuilder.Append("Nadane przez: ").Append(warnEvent.GrantorId.GetUserMention())
                     .AppendLine().Append("Odbiorca: ").Append(warnEvent.ReceiverId.GetUserMention())
                     .AppendLine().Append("Powód: ").Append(warnEvent.Reason);
-                var eventKeyValuePair = new KeyValuePair<string, string>(warnEvent.CreatedAt.ToString(), warnContentBuilder.ToString());
+                var eventKeyValuePair = new KeyValuePair<string, string>(warnEvent.CreatedAt.ToLocalTimeString(), warnContentBuilder.ToString());
                 warnEventPairs.Add(eventKeyValuePair);
             }
             if (!warnEventPairs.Any())
