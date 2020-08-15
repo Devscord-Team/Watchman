@@ -62,8 +62,8 @@ namespace Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models
             {
                 list.RemoveAll(message => message.SentAt < minTimeInPast);
                 return list;
-            }).ToList();
-            if (smallMessages.Count == 0)
+            }).Where(x => x.Any()).ToList();
+            if (!smallMessages.Any())
             {
                 return;
             }

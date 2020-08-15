@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Autofac;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam;
 using Devscord.DiscordFramework.Services;
 using Serilog;
@@ -67,9 +66,10 @@ namespace Watchman.Discord.Areas.Protection.Strategies
                 .ToDictionary(x => x.Key, x =>
                 {
                     var minAverageMessagesPerWeek = this._configurationService.GetConfigurationItem<MinAverageMessagesPerWeek>(x.Key).Value;
+                    var minAbsoluteMessagesCount = this._configurationService.GetConfigurationItem<MinAbsoluteMessagesCountToConsiderSafeUser>(x.Key).Value;
                     var query = new GetServerTrustedRolesQuery(x.Key);
                     var trustedRolesIds = this._queryBus.Execute(query).TrustedRolesIds;
-                    return new ServerSafeUsers(x, x.Key, minAverageMessagesPerWeek, trustedRolesIds.ToHashSet(), this._usersService, this._discordServersService);
+                    return new ServerSafeUsers(x, x.Key, minAverageMessagesPerWeek, minAbsoluteMessagesCount, trustedRolesIds.ToHashSet(), this._usersService, this._discordServersService);
                 });
         }
     }

@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Devscord.DiscordFramework.Framework.Commands.Parsing;
 using Devscord.DiscordFramework.Integration.Services.Interfaces;
 using Devscord.DiscordFramework.Middlewares.Factories;
 using Discord.WebSocket;
@@ -6,7 +7,7 @@ using Serilog;
 
 namespace Devscord.DiscordFramework.Integration.Services
 {
-    internal class DiscordClient : Interfaces.IDiscordClient
+    internal class DiscordClient : IDiscordClient
     {
         private bool _initialized;
         private readonly DiscordSocketClient _client;
@@ -33,8 +34,9 @@ namespace Devscord.DiscordFramework.Integration.Services
             var serverContextFactory = this._context.Resolve<DiscordServerContextFactory>();
             var userRoleFactory = this._context.Resolve<UserRoleFactory>();
             var userContextFactory = this._context.Resolve<UserContextsFactory>();
+            var commandParser = this._context.Resolve<CommandParser>();
             this.UsersService = new DiscordClientUsersService(this._client);
-            this.ChannelsService = new DiscordClientChannelsService(this._client, this.UsersService, userContextFactory);
+            this.ChannelsService = new DiscordClientChannelsService(this._client, this.UsersService, userContextFactory, commandParser);
             this.RolesService = new DiscordClientRolesService(this._client, this.ChannelsService, userRoleFactory);
             this.ServersService = new DiscordClientServersService(this._client, serverContextFactory);
 

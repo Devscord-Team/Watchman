@@ -190,13 +190,7 @@ namespace Devscord.DiscordFramework
             var discordServer = this._context.Resolve<DiscordServerContextFactory>().Create(guild);
             var landingChannel = discordServer.LandingChannel;
 
-            var contexts = new Contexts();
-            contexts.SetContext(userContext);
-            contexts.SetContext(discordServer);
-            if (landingChannel != null)
-            {
-                contexts.SetContext(landingChannel);
-            }
+            var contexts = new Contexts(discordServer, landingChannel, userContext);
             Log.Information("User joined to server {contexts}", contexts.ToJson());
             this.OnUserJoined.ForEach(x => x.Invoke(contexts));
         }

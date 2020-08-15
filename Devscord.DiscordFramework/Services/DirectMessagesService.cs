@@ -1,11 +1,12 @@
-﻿using Devscord.DiscordFramework.Commons;
-using Devscord.DiscordFramework.Framework.Commands.Responses;
+﻿using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Integration;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Discord;
+using MessageType = Devscord.DiscordFramework.Commons.MessageType;
 
 namespace Devscord.DiscordFramework.Services
 {
@@ -49,9 +50,33 @@ namespace Devscord.DiscordFramework.Services
             }
         }
 
-        public async Task<bool> TrySendEmbedMessage(ulong userId, string title, string description, IEnumerable<KeyValuePair<string, string>> values)
+        public Task<bool> TrySendEmbedMessage(ulong userId, string title, string description, IEnumerable<KeyValuePair<string, string>> values)
         {
-            var embed = this._embedMessagesService.Generate(title, description, values);
+            var splitEmbedMessages = this._embedMessageSplittingService.SplitEmbedMessage(title, description, values);
+            return this.TrySendEmbedSplitMessages(userId, splitEmbedMessages);
+        }
+
+        public Task<bool> TrySendEmbedMessage(ulong userId, string title, string description, IEnumerable<KeyValuePair<string, Dictionary<string, string>>> values)
+        {
+            var splitEmbedMessages = this._embedMessageSplittingService.SplitEmbedMessage(title, description, values);
+            return this.TrySendEmbedSplitMessages(userId, splitEmbedMessages);
+        }
+
+        private async Task<bool> TrySendEmbedSplitMessages(ulong userId, IEnumerable<Embed> embeds)
+        {
+            foreach (var embed in embeds)
+            {
+                if (!await this.TrySendEmbedMessage(userId, embed))
+                {
+                    return false;
+                }
+                Log.Information("Bot sent embed message {description}", embed.Description);
+            }
+            return true;
+        }
+
+        private async Task<bool> TrySendEmbedMessage(ulong userId, Embed embed)
+        {
             try
             {
                 await Server.SendDirectEmbedMessage(userId, embed);

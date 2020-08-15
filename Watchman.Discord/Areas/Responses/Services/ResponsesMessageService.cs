@@ -1,8 +1,11 @@
-﻿using Devscord.DiscordFramework.Middlewares.Contexts;
+using Devscord.DiscordFramework.Middlewares.Contexts;
+using Devscord.DiscordFramework.Services.Factories;
 using Devscord.DiscordFramework.Services;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using Watchman.DomainModel.Responses;
 
 namespace Watchman.Discord.Areas.Responses.Services
 {
@@ -10,42 +13,40 @@ namespace Watchman.Discord.Areas.Responses.Services
     {
         private const string DESCRIPTION = "dokumentacja:\nhttps://watchman.readthedocs.io/pl/latest/135-services-in-framework/";
         private readonly ResponsesGetterService _responsesDatabase;
-        private readonly EmbedMessageSplittingService _embedMessageSplittingService;
+        private readonly MessagesServiceFactory _messagesServiceFactory;
 
-        public ResponsesMessageService(ResponsesGetterService responsesDatabase, EmbedMessageSplittingService embedMessageSplittingService)
+        public ResponsesMessageService(ResponsesGetterService responsesDatabase, MessagesServiceFactory messagesServiceFactory)
         {
             this._responsesDatabase = responsesDatabase;
-            this._embedMessageSplittingService = embedMessageSplittingService;
+            this._messagesServiceFactory = messagesServiceFactory;
         }
 
-        public async Task PrintResponses(string commandArgument, Contexts contexts)
+        public Task PrintResponses(string commandArgument, Contexts contexts)
         {
+            var messagesService = this._messagesServiceFactory.Create(contexts);
             if (commandArgument == "default")
             {
-                await this._embedMessageSplittingService.SendEmbedSplitMessage("Domyślne responses:", DESCRIPTION, this.GetDefaultResponses(), contexts);
+                return messagesService.SendEmbedMessage("Domyślne odpowiedzi:", DESCRIPTION, this.GetDefaultResponses());
             }
-            else if (commandArgument == "custom")
+            if (commandArgument == "custom")
             {
-                await this._embedMessageSplittingService.SendEmbedSplitMessage("Nadpisane responses:", DESCRIPTION, this.GetCustomResponses(contexts.Server.Id), contexts);
+                return messagesService.SendEmbedMessage("Nadpisane odpowiedzi:", DESCRIPTION, this.GetCustomResponses(contexts.Server.Id));
             }
-            else
-            {
-                await this._embedMessageSplittingService.SendEmbedSplitMessage("Wszystkie responses:", DESCRIPTION, this.GetAllResponses(contexts.Server.Id), contexts);
-            }
+            return messagesService.SendEmbedMessage("Wszystkie odpowiedzi:", DESCRIPTION, this.GetAllResponses(contexts.Server.Id));
         }
 
         private IEnumerable<KeyValuePair<string, string>> GetDefaultResponses()
         {
             return this._responsesDatabase.GetResponsesFromBase()
                 .Where(x => x.IsDefault)
-                .Select(x => new KeyValuePair<string, string>(x.OnEvent, this.GetRawMessage(x.Message)));
+                .Select(x => new KeyValuePair<string, string>(x.OnEvent, this.GetResponseWithVariableList(x)));
         }
 
         private IEnumerable<KeyValuePair<string, string>> GetCustomResponses(ulong serverId)
         {
             var responses = this._responsesDatabase.GetResponsesFromBase()
                 .Where(x => x.ServerId == serverId)
-                .Select(x => new KeyValuePair<string, string>(x.OnEvent, this.GetRawMessage(x.Message)));
+                .Select(x => new KeyValuePair<string, string>(x.OnEvent, this.GetResponseWithVariableList(x)));
 
             if (!responses.Any())
             {
@@ -60,9 +61,24 @@ namespace Watchman.Discord.Areas.Responses.Services
             var serverResponses = responses.Where(x => x.ServerId == serverId).ToList();
             var notOverwrittenDefaultResponses = responses.Where(response => response.IsDefault && serverResponses.All(s => s.OnEvent != response.OnEvent));
             serverResponses.AddRange(notOverwrittenDefaultResponses);
-            return serverResponses.Select(x => new KeyValuePair<string, string>(x.OnEvent, this.GetRawMessage(x.Message)));
+            return serverResponses.Select(x => new KeyValuePair<string, string>(x.OnEvent, this.GetResponseWithVariableList(x)));
         }
 
+        private string GetResponseWithVariableList(Response response)
+        {
+            var result = "\n__Dostępne zmienne:__";
+            if (response.AvailableVariables.Any())
+            {
+                result += response.AvailableVariables.Select(s => $" `{s}`").Aggregate((a, b) => a + b);
+            }
+            else
+            {
+                result += " brak";
+            }
+
+            return this.GetRawMessage(response.Message) + result;
+        }
+        
         private string GetRawMessage(string message)
         {
             return message.Replace("`", @"\`").Replace("*", @"\*");

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Devscord.DiscordFramework.Commons.Extensions;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Messages.Commands;
 
@@ -13,13 +14,18 @@ namespace Watchman.Discord.Areas.Initialization.Services
 {
     public class ServerScanningService
     {
+        private UserContext BotContext => this._botContext ??= this._usersService.GetBot();
+
         private readonly ICommandBus _commandBus;
         private readonly MessagesHistoryService _messagesHistoryService;
+        private readonly UsersService _usersService;
+        private UserContext _botContext;
 
-        public ServerScanningService(ICommandBus commandBus, MessagesHistoryService messagesHistoryService)
+        public ServerScanningService(ICommandBus commandBus, MessagesHistoryService messagesHistoryService, UsersService usersService)
         {
             this._commandBus = commandBus;
             this._messagesHistoryService = messagesHistoryService;
+            this._usersService = usersService;
         }
 
         public async Task ScanChannelHistory(DiscordServerContext server, ChannelContext channel, DateTime? startTime = null) // startTime ->->-> now
@@ -30,10 +36,11 @@ namespace Watchman.Discord.Areas.Initialization.Services
             {
                 return;
             }
+            Log.Information("Reading channel {channel} ", channel.ToJson());
 
             startTime ??= DateTime.UnixEpoch;
-            var messages = this.ReadMessages(server, channel, limit: 1);
-            if (messages.Count == 0 || this.LastMessageIsOlderThanStartTime(messages, startTime.Value))
+            var messages = await this.ReadMessagesAsync(server, channel, limit: 1).ToListAsync();
+            if (!messages.Any() || this.LastMessageIsOlderThanStartTime(messages, startTime.Value))
             {
                 Log.Information("Channel: {channel} has no new messages", channel.Name);
                 return;
@@ -42,20 +49,17 @@ namespace Watchman.Discord.Areas.Initialization.Services
             var lastMessageId = 0UL;
             do
             {
-                messages = this.ReadMessages(server, channel, LIMIT, lastMessageId);
-                if (messages.Count == 0)
+                messages = await this.ReadMessagesAsync(server, channel, LIMIT, lastMessageId).ToListAsync();
+                if (!messages.Any())
                 {
                     break;
                 }
-
                 lastMessageId = messages.Last().Id;
                 await this.SaveMessages(messages, channel.Id);
-
                 if (this.LastMessageIsOlderThanStartTime(messages, startTime.Value))
                 {
                     break;
                 }
-
             } while (messages.Count == LIMIT);
 
             Log.Information("Channel: {channel} read and saved", channel.Name);
@@ -82,13 +86,18 @@ namespace Watchman.Discord.Areas.Initialization.Services
             });
         }
 
-        private List<Message> ReadMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong lastMessageId = 0)
+        private async IAsyncEnumerable<Message> ReadMessagesAsync(DiscordServerContext server, ChannelContext channel, int limit, ulong lastMessageId = 0)
         {
             var messages = lastMessageId == 0
-                ? this._messagesHistoryService.ReadMessagesAsync(server, channel, limit).Result.ToList()
-                : this._messagesHistoryService.ReadMessagesAsync(server, channel, limit, lastMessageId, goBefore: true).Result.ToList();
-
-            return messages;
+                ? this._messagesHistoryService.ReadMessagesAsync(server, channel, limit)
+                : this._messagesHistoryService.ReadMessagesAsync(server, channel, limit, lastMessageId, goBefore: true);
+            await foreach (var message in messages)
+            {
+                if (message.Contexts.User.Id != this.BotContext.Id)
+                {
+                    yield return message;
+                }
+            }
         }
 
         private bool LastMessageIsOlderThanStartTime(IEnumerable<Message> messages, DateTime startTime)

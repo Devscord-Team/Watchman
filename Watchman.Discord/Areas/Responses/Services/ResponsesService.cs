@@ -26,9 +26,11 @@ namespace Watchman.Discord.Areas.Responses.Services
             return response;
         }
 
-        public async Task AddResponse(string onEvent, string message, ulong serverId = 0)
+        public async Task AddCustomResponse(string onEvent, string message, ulong serverId)
         {
-            var addResponse = new Response(onEvent, message, serverId);
+            var query = new GetResponseQuery(onEvent);
+            var response = (await this._queryBus.ExecuteAsync(query)).Response;
+            var addResponse = new Response(onEvent, message, serverId, response.AvailableVariables);
             var command = new AddResponseCommand(addResponse);
             await this._commandBus.ExecuteAsync(command);
         }
