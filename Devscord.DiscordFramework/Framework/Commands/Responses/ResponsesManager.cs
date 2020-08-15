@@ -269,5 +269,11 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("ServerDoesntHaveAnyTrustedRole");
         }
+
+        public static string TryToGoogleIt(this ResponsesService responsesService, string link)
+        {
+            return responsesService.ProcessResponse("TryToGoogleIt",
+                new KeyValuePair<string, string>("link", link));
+        }
     }
 }
