@@ -42,8 +42,8 @@ namespace Watchman.Discord.Integration.DevscordFramework
                     new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.AddRoleCommand", @"-add\s*role\s+(?<Roles>.*)", serverId),
                     new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.RemoveRoleCommand", @"-remove\s*role\s+(?<Roles>.*)", serverId),
                     new AddCustomCommandsCommand("Watchman.Discord.Areas.Administration.BotCommands.SetRoleCommand", @"-set\s*role\s+(?<Roles>.*)\s*-((?<Safe>safe)|(?<Unsafe>unsafe))", serverId),
-                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.Warns.AddWarnCommand", @"-addwarn\s*-user\s*(?<User><\D{1,2}\d+>)\s*-(reason|r)\s+(?<Reason>.+)", serverId),
-                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.Warns.WarnsCommand", @"-warns\s*(-user\s*(?<User><\D{1,2}\d+>))?\s*", serverId),
+                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.Warns.AddWarnCommand", @"-add\s*warn\s+(?<User><\D{1,2}\d+>)\s+(?<Reason>.+)", serverId),
+                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.Warns.WarnsCommand", @"-warns\s*(?<User><\D{1,2}\d+>)?", serverId),
                     new AddCustomCommandsCommand("Watchman.Discord.Areas.Messaging.BotCommands.SendCommand", @"-send\s*(?<Channel>\<.*\>)\s*""?(?<Message>.*)\""?", serverId),
                 });
             }
