@@ -448,6 +448,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Użytkownik {{receiver}} został ostrzeżony przez {{grantor}} z powodu: {{reason}}..
+        /// </summary>
+        public static string UserHasBeenWarned {
+            get {
+                return ResourceManager.GetString("UserHasBeenWarned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Użytkownik {{user}} nie istnieje..
         /// </summary>
         public static string UserNotFound {
