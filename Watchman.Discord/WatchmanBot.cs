@@ -113,7 +113,9 @@ namespace Watchman.Discord
 
         private void PrintDebugExceptionInfo(Exception e, Contexts contexts)
         {
-            this.SendExceptionInfo(e, contexts);
+            var exceptionMessage = this.BuildExceptionMessage(e).ToString();
+            var messagesService = this._context.Resolve<MessagesServiceFactory>().Create(contexts);
+            messagesService.SendMessage(exceptionMessage, Devscord.DiscordFramework.Commons.MessageType.BlockFormatted);
         }
 
         private void PrintExceptionOnConsole(Exception e, Contexts contexts)
