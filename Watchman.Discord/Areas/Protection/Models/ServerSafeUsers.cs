@@ -12,25 +12,20 @@ namespace Watchman.Discord.Areas.Protection.Models
         public ulong ServerId { get; }
         public HashSet<ulong> SafeUsers { get; }
 
-        public ServerSafeUsers(IEnumerable<Message> serverMessages, ulong serverId, int minAverageMessagesPerWeek, HashSet<ulong> trustedRolesIds, UsersService usersService, DiscordServersService discordServersService)
+        public ServerSafeUsers(IEnumerable<Message> serverMessages, ulong serverId, int minAverageMessagesPerWeek, int minAbsoluteMessagesCount, HashSet<ulong> trustedRolesIds, UsersService usersService, DiscordServersService discordServersService)
         {
             this.ServerId = serverId;
             var users = discordServersService.GetDiscordServerAsync(serverId).Result.GetUsers().ToDictionaryAsync(x => x.Id, x => x).Result;
             this.SafeUsers = serverMessages
                 .GroupBy(x => x.Author.Id)
-                .Where(u => IsUserSafe(u.ToList(), users.GetValueOrDefault(u.Key), serverId, minAverageMessagesPerWeek, trustedRolesIds, usersService))
+                .Where(u => IsUserSafe(u.ToList(), users.GetValueOrDefault(u.Key), serverId, minAverageMessagesPerWeek, minAbsoluteMessagesCount, trustedRolesIds, usersService))
                 .Select(x => x.Key)
                 .ToHashSet();
         }
 
-        private static bool IsUserSafe(IReadOnlyCollection<Message> userMessages, UserContext user, ulong serverId, int minAverageMessagesPerWeek, HashSet<ulong> trustedRolesIds, UsersService usersService)
+        private static bool IsUserSafe(IReadOnlyCollection<Message> userMessages, UserContext user, ulong serverId, int minAverageMessagesPerWeek, int minAbsoluteMessagesCount, HashSet<ulong> trustedRolesIds, UsersService usersService)
         {
-            if (user == null || userMessages.Count < minAverageMessagesPerWeek)
-            {
-                return false;
-            }
-            var days = GetHowManyDaysUserIsOnThisServer(user.Id, serverId, usersService);
-            if (days < 30)
+            if (user == null || userMessages.Count < minAbsoluteMessagesCount)
             {
                 return false;
             }
@@ -38,7 +33,11 @@ namespace Watchman.Discord.Areas.Protection.Models
             {
                 return true;
             }
-
+            var days = GetHowManyDaysUserIsOnThisServer(user.Id, serverId, usersService);
+            if (days < 30)
+            {
+                return false;
+            }
             var weeks = userMessages.GroupBy(x => StartOfWeek(x.SentAt))
                 .Select(x => x.Count())
                 .ToList();
