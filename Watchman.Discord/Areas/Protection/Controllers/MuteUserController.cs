@@ -7,6 +7,7 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Commons.Extensions;
+using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Discord.Areas.Protection.Commands;
 using Watchman.Discord.Areas.Protection.Models;
 using Watchman.Discord.Areas.Protection.Services;
@@ -20,14 +21,16 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         private readonly MutingService _mutingService;
         private readonly UnmutingService _unmutingService;
         private readonly UsersService _usersService;
+        private readonly MessagesServiceFactory _messagesServiceFactory;
 
-        public MuteUserController(MutingService mutingService, UnmutingService unmutingService, UsersService usersService, DirectMessagesService directMessagesService, MutingHelper mutingHelper)
+        public MuteUserController(MutingService mutingService, UnmutingService unmutingService, UsersService usersService, DirectMessagesService directMessagesService, MutingHelper mutingHelper, MessagesServiceFactory messagesServiceFactory)
         {
             this._mutingService = mutingService;
             this._unmutingService = unmutingService;
             this._usersService = usersService;
             this._directMessagesService = directMessagesService;
             this._mutingHelper = mutingHelper;
+            this._messagesServiceFactory = messagesServiceFactory;
         }
 
         [DiscordCommand("mute")]
@@ -65,6 +68,9 @@ namespace Watchman.Discord.Areas.Protection.Controllers
                 return;
             }
             await this._directMessagesService.TrySendEmbedMessage(contexts.User.Id, mutedUsersMessageData.Title, mutedUsersMessageData.Description, mutedUsersMessageData.Values);
+            var text = "Wysłano wiadomość z listą wyciszonych użytkowników!";
+            var messagesService = this._messagesServiceFactory.Create(contexts);
+            await messagesService.SendMessage(text);
         }
 
         private async Task<MutedUsersMessageData> GetMuteEmbedMessage(IAsyncEnumerable<UserContext> mutedUsers, ulong serverId)
