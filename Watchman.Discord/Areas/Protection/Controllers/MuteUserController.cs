@@ -7,6 +7,7 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Commons.Extensions;
+using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Discord.Areas.Protection.Commands;
 using Watchman.Discord.Areas.Protection.Models;
@@ -68,9 +69,8 @@ namespace Watchman.Discord.Areas.Protection.Controllers
                 return;
             }
             await this._directMessagesService.TrySendEmbedMessage(contexts.User.Id, mutedUsersMessageData.Title, mutedUsersMessageData.Description, mutedUsersMessageData.Values);
-            var text = "Wysłano wiadomość z listą wyciszonych użytkowników!";
             var messagesService = this._messagesServiceFactory.Create(contexts);
-            await messagesService.SendMessage(text);
+            await messagesService.SendResponse(x => x.MutedUsersListSent());
         }
 
         private async Task<MutedUsersMessageData> GetMuteEmbedMessage(IAsyncEnumerable<UserContext> mutedUsers, ulong serverId)

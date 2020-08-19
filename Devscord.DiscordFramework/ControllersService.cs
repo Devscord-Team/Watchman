@@ -198,7 +198,7 @@ namespace Devscord.DiscordFramework
                 var runningMethod = method.Invoke(controllerInfo.Controller, new object[] { command, contexts });
                 if (runningMethod is Task task)
                 {
-                    return task;
+                        return task;
                 }
             }
             return Task.CompletedTask;

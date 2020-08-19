@@ -269,5 +269,11 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("ServerDoesntHaveAnyTrustedRole");
         }
+
+        public static string MutedUsersListSent(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("MutedUsersListSent");
+        }
+
     }
 }
