@@ -12,6 +12,7 @@ using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Discord.Areas.Protection.Commands;
 using Watchman.Discord.Areas.Protection.Models;
 using Watchman.Discord.Areas.Protection.Services;
+using Watchman.DomainModel.Users;
 
 namespace Watchman.Discord.Areas.Protection.Controllers
 {
@@ -61,8 +62,9 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         [AdminCommand]
         public async Task MutedUsers(MutedUsersCommand mutedUsersCommand, Contexts contexts)
         {
+            var notUnmutedMuteEvents = _mutingHelper.GetNotUnmutedMuteEvents(contexts.Server.Id);
             var mutedUsers = this._usersService.GetUsersAsync(contexts.Server);
-            var mutedUsersMessageData = await this.GetMuteEmbedMessage(mutedUsers, contexts.Server.Id);
+            var mutedUsersMessageData = await this.GetMuteEmbedMessage(notUnmutedMuteEvents,mutedUsers);
             if (!mutedUsersMessageData.Values.Any())
             {
                 await this._directMessagesService.TrySendMessage(contexts.User.Id, "Brak wyciszonych użytkowników!");
@@ -73,7 +75,31 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             await messagesService.SendResponse(x => x.MutedUsersListSent());
         }
 
-        private async Task<MutedUsersMessageData> GetMuteEmbedMessage(IAsyncEnumerable<UserContext> mutedUsers, ulong serverId)
+        private async Task<MutedUsersMessageData> GetMuteEmbedMessage(IEnumerable<MuteEvent> notUnmutedMuteEvents, IAsyncEnumerable<UserContext> users)
+        {
+            var title = "Lista wyciszonych użytkowników";
+            var description = "Wyciszeni użytkownicy, powody oraz data wygaśnięcia";
+            var values = new Dictionary<string, Dictionary<string, string>>();
+            await foreach (var user in users)
+            {
+                var muteEvents = notUnmutedMuteEvents.Where(x => x.UserId == user.Id);
+                if (!muteEvents.Any())
+                {
+                    continue;
+                }
+
+                var muteEvent = muteEvents.First();
+                values.Add($"Użytkownik: {user.Name}",
+                    new Dictionary<string, string>
+                    {
+                        {"Powód:", muteEvent.Reason},
+                        {"Data zakończenia:", muteEvent.TimeRange.End.ToLocalTimeString() }
+                    });
+
+            }
+            return new MutedUsersMessageData(title, description, values);
+        }
+        private async Task<MutedUsersMessageData> GetMuteEmbedMessageOld(IAsyncEnumerable<UserContext> mutedUsers, ulong serverId)
         {
             var title = "Lista wyciszonych użytkowników";
             var description = "Wyciszeni użytkownicy, powody oraz data wygaśnięcia";
