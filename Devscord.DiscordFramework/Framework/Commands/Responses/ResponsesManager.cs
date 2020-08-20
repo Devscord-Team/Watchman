@@ -274,6 +274,5 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("MutedUsersListSent");
         }
-
     }
 }
