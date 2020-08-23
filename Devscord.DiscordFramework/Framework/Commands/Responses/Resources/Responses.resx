@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -234,6 +234,9 @@
   <data name="UserWasntMuted" xml:space="preserve">
     <value>Użytkownik {{user}} nie jest wyciszony.</value>
   </data>
+  <data name="UserHasBeenWarned" xml:space="preserve">
+    <value>Użytkownik {{receiver}} został ostrzeżony przez {{grantor}} z powodu: {{reason}}.</value>
+  </data>
   <data name="RoleAlreadyIsTrusted" xml:space="preserve">
     <value>Rola {{role}} jest już ustawiona jako zaufana.</value>
   </data>
@@ -251,5 +254,8 @@
   </data>
   <data name="MutedUsersListSent" xml:space="preserve">
     <value>Wysłano listę wyciszonych użytkowników.</value>
+  </data>
+  <data name="TryToGoogleIt" xml:space="preserve">
+    <value>Spróbuj to wygooglować :wink:\nMasz tu link: {{link}}</value>
   </data>
 </root>
