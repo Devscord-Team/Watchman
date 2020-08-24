@@ -83,7 +83,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             await foreach (var user in users)
             {
                 var muteEvent = notUnmutedMuteEvents.FirstOrDefault(x => x.UserId == user.Id);
-                if (muteEvent==null)
+                if (muteEvent == null)
                 {
                     continue;
                 }
