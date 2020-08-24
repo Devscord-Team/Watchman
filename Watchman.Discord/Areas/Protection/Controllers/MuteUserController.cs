@@ -64,7 +64,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         {
             var notUnmutedMuteEvents = _mutingHelper.GetNotUnmutedMuteEvents(contexts.Server.Id);
             var mutedUsers = this._usersService.GetUsersAsync(contexts.Server);
-            var mutedUsersMessageData = await this.GetMuteEmbedMessage(notUnmutedMuteEvents,mutedUsers);
+            var mutedUsersMessageData = await this.GetMuteEmbedMessage(notUnmutedMuteEvents.ToList(), mutedUsers);
             if (!mutedUsersMessageData.Values.Any())
             {
                 await this._directMessagesService.TrySendMessage(contexts.User.Id, "Brak wyciszonych użytkowników!");
@@ -82,36 +82,12 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             var values = new Dictionary<string, Dictionary<string, string>>();
             await foreach (var user in users)
             {
-                var muteEvents = notUnmutedMuteEvents.Where(x => x.UserId == user.Id);
-                if (!muteEvents.Any())
+                var muteEvent = notUnmutedMuteEvents.FirstOrDefault(x => x.UserId == user.Id);
+                if (muteEvent==null)
                 {
                     continue;
                 }
-
-                var muteEvent = muteEvents.First();
                 values.Add($"Użytkownik: {user.Name}",
-                    new Dictionary<string, string>
-                    {
-                        {"Powód:", muteEvent.Reason},
-                        {"Data zakończenia:", muteEvent.TimeRange.End.ToLocalTimeString() }
-                    });
-
-            }
-            return new MutedUsersMessageData(title, description, values);
-        }
-        private async Task<MutedUsersMessageData> GetMuteEmbedMessageOld(IAsyncEnumerable<UserContext> mutedUsers, ulong serverId)
-        {
-            var title = "Lista wyciszonych użytkowników";
-            var description = "Wyciszeni użytkownicy, powody oraz data wygaśnięcia";
-            var values = new Dictionary<string, Dictionary<string, string>>();
-            await foreach (var mutedUser in mutedUsers)
-            {
-                var muteEvent = this._mutingHelper.GetNotUnmutedUserMuteEvent(serverId, mutedUser.Id);
-                if (muteEvent == null)
-                {
-                    continue;
-                }
-                values.Add($"Użytkownik: {mutedUser.Name}",
                     new Dictionary<string, string>
                     {
                         {"Powód:", muteEvent.Reason},
