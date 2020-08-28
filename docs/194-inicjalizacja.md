@@ -39,8 +39,8 @@ Metoda "InitServer" zajmuje się wszystkim co potrzebne aby dostać na podanym w
         Log.Information("Mute role initialized: {server}", server.Name);
     }
 ```
-tworzy na serwerze rolę "Muted" która może być nadana wybranej osobie przez bota.Aby to zrobić, należy posiadać uprawnienia administratora
-oraz użyć komendy "-mute".Osoba z tą rolą nie może wykonywać na serwerze czynności, które wymagają następujących uprawnień:
+Tworzy na serwerze rolę "Muted" która może być nadana wybranej osobie przez bota.Aby to zrobić, należy posiadać uprawnienia administratora
+oraz użyć komendy "-mute". Osoba z tą rolą nie może wykonywać na serwerze czynności, które wymagają następujących uprawnień:
 ```
 { Permission.SendMessages, Permission.SendTTSMessages, Permission.CreateInstantInvite }
 ```
