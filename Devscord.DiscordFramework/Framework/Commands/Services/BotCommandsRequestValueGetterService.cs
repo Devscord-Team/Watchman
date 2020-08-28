@@ -48,7 +48,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             }
             if (argType == BotCommandPropertyType.SingleWord)
             {
-                return value.Split().First();
+                return value.Split().First().Trim('\"'); 
             }
             if (argType == BotCommandPropertyType.Text)
             {
@@ -61,12 +61,10 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
 
             if (!value.Contains('\"'))
             {
-                return value.Split(' ')
-                    .Where(x => !string.IsNullOrEmpty(x))
+                return value.Split().Where(x => !string.IsNullOrEmpty(x))
                     .ToList();
             }
-            var splittedResults = value.Split('"')
-                .Where(x => !string.IsNullOrWhiteSpace(x));
+            var splittedResults = value.Split('"').Where(x => !string.IsNullOrWhiteSpace(x));
             var results = new List<string>();
             foreach (var toRemove in splittedResults)
             {
@@ -77,8 +75,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                 }
                 value = value.Replace($"\"{toRemove}\"", string.Empty);
             }
-            var otherResultsWithoutQuote = value.Split()
-                .Where(x => !string.IsNullOrWhiteSpace(x));
+            var otherResultsWithoutQuote = value.Split().Where(x => !string.IsNullOrWhiteSpace(x));
             results.AddRange(otherResultsWithoutQuote);
             return results;
         }

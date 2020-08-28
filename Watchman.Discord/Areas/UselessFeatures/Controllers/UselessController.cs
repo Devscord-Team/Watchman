@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 using Watchman.Discord.Areas.UselessFeatures.BotCommands;
 using Watchman.Integrations.Images;
 
-using Devscord.DiscordFramework.Commons.Exceptions;
-
 namespace Watchman.Discord.Areas.UselessFeatures.Controllers
 {
     public class UselessController : IController
@@ -34,11 +32,6 @@ namespace Watchman.Discord.Areas.UselessFeatures.Controllers
             var allImages = this._imagesService.GetImagesFromResources(x => x.StartsWith("maruda"));
             var randomImage = allImages.ElementAt(new Random().Next(allImages.Count()));
             await this._messagesServiceFactory.Create(contexts).SendFile(randomImage.Name, randomImage.Stream);
-        }
-
-        public async Task Xdxd(XdxdCommand command, Contexts contexts)
-        {
-            throw new MoreThanOneRegexHasBeenMatchedException();
         }
     }
 }

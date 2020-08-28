@@ -45,7 +45,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             var userToMute = await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
             if (userToMute == null)
             {
-                throw new UserNotFoundException($"<@!{command.User}>");  // todo: change to command.User.GetMention()
+                throw new UserNotFoundException(command.User.GetUserMention());
             }
             var timeRange = TimeRange.FromNow(DateTime.UtcNow + command.Time); //todo: change DateTime.UtcNow to Contexts.SentAt
             var muteEvent = new MuteEvent(userToMute.Id, timeRange, command.Reason, contexts.Server.Id, contexts.Channel.Id);
@@ -59,7 +59,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             var userToUnmute = await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
             if (userToUnmute == null)
             {
-                throw new UserNotFoundException($"<@!{command.User}>");
+                throw new UserNotFoundException(command.User.GetUserMention());
             }
             await this._unmutingService.UnmuteNow(contexts, userToUnmute);
         }

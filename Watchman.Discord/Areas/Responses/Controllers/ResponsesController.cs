@@ -8,7 +8,6 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Discord.Areas.Responses.Services;
 using Watchman.Discord.Areas.Responses.BotCommands;
-using Serilog;
 using DomainResponse = Watchman.DomainModel.Responses.Response;
 
 namespace Watchman.Discord.Areas.Responses.Controllers
