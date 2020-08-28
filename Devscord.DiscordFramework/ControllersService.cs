@@ -112,6 +112,11 @@ namespace Devscord.DiscordFramework
 
         private async Task RunMethodsIBotCommand(DiscordRequest request, Contexts contexts, IEnumerable<ControllerInfo> controllers)
         {
+            if (!request.IsCommandForBot)
+            {
+                return;
+            }
+
             foreach (var controllerInfo in controllers)
             {
                 using (LogContext.PushProperty("Controller", controllerInfo.Controller.GetType().Name))
@@ -122,8 +127,9 @@ namespace Devscord.DiscordFramework
                         //TODO zoptymalizować, spokojnie można to pobierać wcześniej i używać raz, zamiast wszystko obliczać przy każdym odpaleniu
                         var template = this._botCommandsService.GetCommandTemplate(commandInParameterType);
                         var customCommand = await this._commandsContainer.GetCommand(request, commandInParameterType, contexts.Server.Id);
-                        var isCommandCustom = customCommand != null;
-                        if (!isCommandCustom && !this._botCommandsService.IsNormalCommand(request, template))
+                        var isCommandMatchedWithCustom = customCommand != null;
+                        var isThereDefaultCommandWithGivenName = request.Name.ToLowerInvariant() == template.NormalizedCommandName;
+                        if (!isCommandMatchedWithCustom && !isThereDefaultCommandWithGivenName)
                         {
                             continue;
                         }
@@ -131,18 +137,20 @@ namespace Devscord.DiscordFramework
                         { 
                             return;
                         }
-                        if (!isCommandCustom && !this._botCommandsService.IsMatchedWithNormalCommand(template, request.Arguments))
+                        var isDefaultCommand = isThereDefaultCommandWithGivenName && this._botCommandsService.IsDefaultCommand(template, request.Arguments, isCommandMatchedWithCustom);
+                        IBotCommand command;
+                        if (isDefaultCommand && this._botCommandsService.AreDefaultCommandArgumentsCorrect(template, request.Arguments))   
                         {
-                            return;
+                            command = this._botCommandsService.ParseRequestToCommand(commandInParameterType, request, template);
                         }
-                        if (isCommandCustom && !this._botCommandsService.IsMatchedWithCustomCommand(template, customCommand.Template, request.OriginalMessage))
+                        else if (isCommandMatchedWithCustom && this._botCommandsService.AreCustomCommandArgumentsCorrect(template, customCommand.Template, request.OriginalMessage))
                         {
-                            return;
+                            command = this._botCommandsService.ParseCustomTemplate(commandInParameterType, template, customCommand.Template, request.OriginalMessage);
                         }
-
-                        var command = isCommandCustom
-                            ? this._botCommandsService.ParseCustomTemplate(commandInParameterType, template, customCommand.Template, request.OriginalMessage)
-                            : this._botCommandsService.ParseRequestToCommand(commandInParameterType, request, template);
+                        else
+                        {
+                            throw new InvalidArgumentsException();
+                        }
                         await InvokeMethod(command, contexts, controllerInfo, method);
                     }
                 }

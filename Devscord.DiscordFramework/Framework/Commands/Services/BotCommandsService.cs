@@ -28,19 +28,19 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             return this.botCommandsTemplateRenderingService.RenderTextTemplate(template);
         }
 
-        public bool IsNormalCommand(DiscordRequest request, BotCommandTemplate template)
+        public bool IsDefaultCommand(BotCommandTemplate template, IEnumerable<DiscordRequestArgument> arguments, bool isCommandMatchedWithCustom)
         {
-            return this.botCommandMatchingService.IsNormalCommand(request, template);
+            return this.botCommandMatchingService.IsDefaultCommand(template, arguments, isCommandMatchedWithCustom);
         }
 
-        public bool IsMatchedWithNormalCommand(BotCommandTemplate template, IEnumerable<DiscordRequestArgument> arguments)
+        public bool AreDefaultCommandArgumentsCorrect(BotCommandTemplate template, IEnumerable<DiscordRequestArgument> arguments)
         {
-            return this.botCommandMatchingService.IsMatchedWithNormalCommand(template, arguments);
+            return this.botCommandMatchingService.AreDefaultCommandArgumentsCorrect(template, arguments);
         }
 
-        public bool IsMatchedWithCustomCommand(BotCommandTemplate template, Regex customTemplate, string input)
+        public bool AreCustomCommandArgumentsCorrect(BotCommandTemplate template, Regex customTemplate, string input)
         {
-            return this.botCommandMatchingService.IsMatchedWithCustomCommand(template, customTemplate, input);
+            return this.botCommandMatchingService.AreCustomCommandArgumentsCorrect(template, customTemplate, input);
         }
 
         public BotCommandTemplate GetCommandTemplate(Type commandType)

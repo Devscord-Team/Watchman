@@ -19,7 +19,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Responses {
@@ -111,6 +111,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         public static string InvalidArguments {
             get {
                 return ResourceManager.GetString("InvalidArguments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Podana komenda została dopasowana do więcej niż tylko jednego regexu (custom command), więc nie można jej wykonać. Należy zmienić regexy do tej komendy tak, aby nigdy nie było sytuacji, że do podanej komendy pasuje kilka regexów jednocześnie..
+        /// </summary>
+        public static string MoreThanOneRegexHasBeenMatched {
+            get {
+                return ResourceManager.GetString("MoreThanOneRegexHasBeenMatched", resourceCulture);
             }
         }
         
