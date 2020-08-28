@@ -236,6 +236,14 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             return responsesService.ProcessResponse("AllRolesSettingsChanged");
         }
 
+        public static string UserHasBeenWarned(this ResponsesService responsesService, string granter, string receiver, string reason)
+        {
+            return responsesService.ProcessResponse("UserHasBeenWarned",
+                new KeyValuePair<string, string>("granter", granter),
+                new KeyValuePair<string, string>("receiver", receiver),
+                new KeyValuePair<string, string>("reason", reason));
+        }
+
         public static string UserWasntMuted(this ResponsesService responsesService, UserContext user)
         {
             return responsesService.ProcessResponse("UserWasntMuted",
@@ -274,6 +282,12 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         public static string MoreThanOneRegexHasBeenMatched(this ResponsesService responsesService)
         {
             return responsesService.ProcessResponse("MoreThanOneRegexHasBeenMatched");
+        }
+
+        public static string TryToGoogleIt(this ResponsesService responsesService, string link)
+        {
+            return responsesService.ProcessResponse("TryToGoogleIt",
+                new KeyValuePair<string, string>("link", link));
         }
     }
 }

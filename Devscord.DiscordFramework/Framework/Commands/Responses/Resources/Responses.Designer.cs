@@ -403,6 +403,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Spróbuj to wygooglować :wink:\nMasz tu link: {{link}}.
+        /// </summary>
+        public static string TryToGoogleIt {
+            get {
+                return ResourceManager.GetString("TryToGoogleIt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Użytkownik {{user}} może pisać ponownie..
         /// </summary>
         public static string UnmutedUser {
@@ -444,6 +453,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         public static string UserDoesntHaveAvatar {
             get {
                 return ResourceManager.GetString("UserDoesntHaveAvatar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Użytkownik {{receiver}} został ostrzeżony przez {{grantor}} z powodu: {{reason}}..
+        /// </summary>
+        public static string UserHasBeenWarned {
+            get {
+                return ResourceManager.GetString("UserHasBeenWarned", resourceCulture);
             }
         }
         
