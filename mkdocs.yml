@@ -7,6 +7,7 @@ nav:
   - "Dokumentacja techniczna":
       - "Serwisy w frameworku": 135-serwisy-w-frameworku.md
       - "Jak działa Workflow": 134-workflow.md
+      - "Jak działa Anty Spam": 16-jak-dziala-antyspam.md
       - "Do czego używamy klasy Server": 141-do-czego-uzywamy-klasy-server.md
       - "Jak generowany jest help": 139-jak-dziala-generowanie-helpa.md
 theme:
