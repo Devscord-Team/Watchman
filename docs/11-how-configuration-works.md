@@ -40,7 +40,7 @@ Udostępnia on takie metody jak
 public async Task SaveNewConfiguration(IMappedConfiguration changedConfiguration)
 ```
 
-Do zapisu konfiguracji - system na podstawie danych w obiekcie domyśli sie co do za obiekt i do którego serwera należy.
+Do zapisu konfiguracji - system na podstawie danych w obiekcie domyśli się co do za obiekt i do którego serwera należy.
 
 ```csharp
 public IEnumerable<IMappedConfiguration> GetConfigurationItems(ulong serverId)
