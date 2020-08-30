@@ -10,6 +10,7 @@ nav:
       - "Do czego używamy klasy Server": 141-do-czego-uzywamy-klasy-server.md
       - "Jak generowany jest help": 139-jak-dziala-generowanie-helpa.md
       - "Jak działa Anty Spam": 16-jak-dziala-antyspam.md
+      - "Jak działa konfiguracja": 11-how-configuration-works.md
 theme:
   name: "material"
   language: pl
