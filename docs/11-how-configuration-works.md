@@ -49,7 +49,7 @@ public IEnumerable<IMappedConfiguration> GetConfigurationItems(ulong serverId)
 Do pobrania wszystkich konfiguracji dla określonego serwera.
 
 ```csharp
-public IEnumerable<IMappedConfiguration> GetConfigurationItems(ulong serverId)
+public T GetConfigurationItem<T>(ulong serverId) where T : IMappedConfiguration
 ```
 
 Do pobrania konkretnej konfiguracji z określonego serwera.
