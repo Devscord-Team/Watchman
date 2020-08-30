@@ -2,11 +2,11 @@
 
 System do wykrywania spamu jest jedną z kluczowych i najbardziej priorytetowych funkcjonalności Watchmana.  
 **Dlaczego?** Odpowiedź jest bardzo prosta - Watchman docelowo ma być botem, mogącym zastąpić inne boty.  
-Oznacza to, że poza funkcjonalnościami takimi jak rozbudowane statystyki czy rozbudowane opcje konfiguracji, powinniśmy również dostarczać sprawne zabezpieczenia przed spamem - który jest zagrożeniem, którego doświadcza myślę że każdy większy serwer raz na jakiś czas.
+Oznacza to, że poza funkcjonalnościami takimi jak rozbudowane statystyki czy rozbudowane opcje konfiguracji, powinniśmy również dostarczać sprawne zabezpieczenia przed spamem - który jest zagrożeniem, którego doświadcza myślę, że każdy większy serwer raz na jakiś czas.
 
 ## System bezpiecznych i niebezpiecznych użytkowników
 
-Uznaliśmy że bardzo trudno ustalić sztywne reguły wykrywania spamu, które będą sprawiedliwe w każdym przypadku, a dodatkowo nikomu nie będą przeszkadzać.  
+Uznaliśmy, że bardzo trudno ustalić sztywne reguły wykrywania spamu, które będą sprawiedliwe w każdym przypadku, a dodatkowo nikomu nie będą przeszkadzać.  
 Dlatego powstał system klasyfikacji użytkowników, który działa na bardzo prostej zasadzie:
 
 - Jeśli jesteś nowy, traktujemy cie neutralnie
@@ -28,7 +28,7 @@ Detektory zajmują się rozpoznawaniem konkretnych specyficznych zagrożeń i zw
 Na podstawie tego jak dużo detektorów w jakim stopniu jest pewnych tego, za co są odpowiedzialne, system decyduje o ostatecznej decyzji.  
 Po otrzymaniu podsumowania wyników detektorów, ustalamy kare dla użytkownika na podstawie wspomnianego podsumowania i wspomnianego typu użytkownika (niebezpieczny/neutralny/bezpieczny).
 
-Przyjęliśmy zasadę że zawsze pierwszym krokiem jest ostrzeżenie o wykrytym potencjalnym spamie, które nie jest niebezpieczne - jednak jeśli ktoś zignoruje ostrzeżenie, zostaje wyciszony.  
+Przyjęliśmy zasadę, że zawsze pierwszym krokiem jest ostrzeżenie o wykrytym potencjalnym spamie, które nie jest niebezpieczne - jednak jeśli ktoś zignoruje ostrzeżenie, zostaje wyciszony.  
 Czas wyciszenia jest zależny od tego jak dużo razy został wyciszony w ostatnim czasie.
 
 ## Lista domyślnych detektorów
