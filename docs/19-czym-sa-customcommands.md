@@ -4,7 +4,7 @@ Aktualnie to jak wyglądają komendy definiują modele, a dokładniej to jakie m
 Przykładowo jeśli komenda zawiera `public int Test { get; set; }` - będzie wymagała argumentu `-test jakaśLiczba`.
 
 Jednak co w przypadku kiedy właściciele/moderatorzy pewnego serwera by zdecydowali, że chcą aby ich komendy nazywały się inaczej?  
-Przykładowo chcieliby zastąpić `-addrole -roles test` komendą `-add role test`, albo idąc dalej `daj dla mnie role test`.  
+Przykładowo chcieliby zastąpić `-addrole -roles test` komendą `-add role test`, albo idąc dalej `-daj dla mnie role test`.  
 Domyślnym sposobem się nie da - na szczęście przychodzą nam z pomocą komendy niestandardowe, lub tak jak my to nazywamy w systemie - CustomCommands.
 
 ## Jak działają CustomCommands
