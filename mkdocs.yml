@@ -5,10 +5,11 @@ nav:
   - "Instrukcja dla nowych osób w zespole Watchmana": 150-instrukcja-dla-nowych-osob-w-zespole-watchmana.md
   - "Jak zacząć rozwijać bota": 151-jak-zaczac-rozwijac-bota.md
   - "Dokumentacja techniczna":
-      - "Serwisy w frameworku": 135-services-in-framework.md
+      - "Serwisy w frameworku": 135-serwisy-w-frameworku.md
       - "Jak działa Workflow": 134-workflow.md
       - "Do czego używamy klasy Server": 141-do-czego-uzywamy-klasy-server.md
       - "Jak generowany jest help": 139-jak-dziala-generowanie-helpa.md
+      - "Jak działa Anty Spam": 16-jak-dziala-antyspam.md
       - "Jak działa konfiguracja": 11-how-configuration-works.md
 theme:
   name: "material"
