@@ -5,6 +5,7 @@ nav:
   - "Instrukcja dla nowych osób w zespole Watchmana": 150-instrukcja-dla-nowych-osob-w-zespole-watchmana.md
   - "Jak zacząć rozwijać bota": 151-jak-zaczac-rozwijac-bota.md
   - "Dokumentacja techniczna":
+      - "Jak rozwijać dokumentacje": 14-jak-rozwijac-dokumentacje.md
       - "Serwisy w frameworku": 135-serwisy-w-frameworku.md
       - "Jak działa Workflow": 134-workflow.md
       - "Do czego używamy klasy Server": 141-do-czego-uzywamy-klasy-server.md
