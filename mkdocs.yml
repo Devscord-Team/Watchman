@@ -1,5 +1,6 @@
 site_name: Watchman
 nav:
+<<<<<<< HEAD
     - 'Strona główna': index.md
     - 'Lista funkcjonalności': 156-lista-funkcjonalnosci.md
     - 'Instrukcja dla nowych osób w zespole Watchmana': 150-instrukcja-dla-nowych-osob-w-zespole-watchmana.md
@@ -22,7 +23,33 @@ theme:
     palette:
         primary: 'green'
         accent: 'light green'
+=======
+  - "Strona główna": index.md
+  - "Lista funkcjonalności": 156-lista-funkcjonalnosci.md
+  - "Instrukcja dla nowych osób w zespole Watchmana": 150-instrukcja-dla-nowych-osob-w-zespole-watchmana.md
+  - "Jak zacząć rozwijać bota": 151-jak-zaczac-rozwijac-bota.md
+  - "Dokumentacja techniczna":
+      - "Jak rozwijać dokumentacje": 14-jak-rozwijac-dokumentacje.md
+      - "Serwisy w frameworku": 135-serwisy-w-frameworku.md
+      - "Jak działa Workflow": 134-workflow.md
+      - "Do czego używamy klasy Server": 141-do-czego-uzywamy-klasy-server.md
+      - "Jak generowany jest help": 139-jak-dziala-generowanie-helpa.md
+      - "Jak działa Anty Spam": 16-jak-dziala-antyspam.md
+      - "Jak działa konfiguracja": 11-jak-dziala-konfiguracja.md
+theme:
+  name: "material"
+  language: pl
+  font:
+    text: Roboto
+    code: Roboto
+  features:
+    - tabs
+    - instant
+  palette:
+    primary: "green"
+    accent: "light green"
+>>>>>>> 3f8923bbcd9f08e13e9607478dc52595f08b27fe
 markdown_extensions:
-    - codehilite
+  - codehilite
 extra_css:
   - stylesheets/codehilite.css
