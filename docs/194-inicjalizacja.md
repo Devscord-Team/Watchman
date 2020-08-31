@@ -26,7 +26,7 @@ W tym przypadku nasz obiekt "WatchmanBot" jest tworzony w pliku "Watchman.Web/Se
 12     return new AutofacServiceProvider(container);
 13 }
 ```
-Za inicjalizację serwisów obsługiwanych przez HangFire odpowiada linia 11.
+Za inicjalizację serwisów obsługiwanych przez HangFire odpowiada linia 11.  
 
 ## InitializationService
 
@@ -42,7 +42,7 @@ public async Task InitServer(DiscordServerContext server)
     Log.Information("Done server: {server}", server.ToJson());
 }
 ```
-InitializationService jest używany w klasie "WatchmanBot" w funkcji "GetWorkflowBuilder()".  Metoda "InitServer" zajmuje się wszystkim co potrzebne aby dostać na podanym w argumencie serwerze gotowego do pracy bota.
+InitializationService jest używany w klasie "WatchmanBot" w funkcji "GetWorkflowBuilder()".  Metoda "InitServer" zajmuje się wszystkim co potrzebne aby dostać na podanym w argumencie serwerze gotowego do pracy bota.  
 
 
 ```csharp
@@ -52,7 +52,7 @@ private async Task MuteRoleInit(DiscordServerContext server)
     Log.Information("Mute role initialized: {server}", server.Name);
 }
 ```
-Tworzy na serwerze rolę "Muted" która może być nadana wybranej osobie przez bota za pomocą komendy "-mute".
+Tworzy na serwerze rolę "Muted" która może być nadana wybranej osobie przez bota za pomocą komendy "-mute".  
 
 ```csharp
 private async Task ReadServerMessagesHistory(DiscordServerContext server, DateTime lastInitDate)
@@ -64,8 +64,7 @@ private async Task ReadServerMessagesHistory(DiscordServerContext server, DateTi
     Log.Information("Read messages history: {server}", server.Name);
 }
 ```
-Przeszukuje wszystkie kanały na danym serwerze i nowe (niezapisane jeszcze w bazie) wiadomości zapisuje do bazy danych bota.
-
+Przeszukuje wszystkie kanały na danym serwerze i nowe (niezapisane jeszcze w bazie) wiadomości zapisuje do bazy danych bota.  
 
 ```csharp
 private DateTime GetLastInitDate(DiscordServerContext server)
@@ -82,8 +81,7 @@ private DateTime GetLastInitDate(DiscordServerContext server)
 }
 ```
 Każda inicjalizacja bota na danym serwerze zostawia o sobie informację w bazie danych, w tej metodzie szukamy
-ostatniej daty włączenia bota dla wybranego serwera.
-
+ostatniej daty włączenia bota dla wybranego serwera.  
 
 ```csharp
 private async Task NotifyDomainAboutInit(DiscordServerContext server)
