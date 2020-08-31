@@ -51,7 +51,8 @@ namespace Devscord.DiscordFramework
             this._workflow
                 .AddMiddleware<ChannelMiddleware>()
                 .AddMiddleware<ServerMiddleware>()
-                .AddMiddleware<UserMiddleware>();
+                .AddMiddleware<UserMiddleware>()
+                .AddMiddleware<MessageMiddleware>();
             Log.Debug("Default middlewares added");
             return this;
         }
