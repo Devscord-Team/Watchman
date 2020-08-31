@@ -26,9 +26,9 @@ W tym przypadku nasz obiekt "WatchmanBot" jest tworzony w pliku "Watchman.Web/Se
 12     return new AutofacServiceProvider(container);
 13 }
 ```
-Za inicjalizację serwisów obsługiwanych przez HangFire odpowiada tu linia 11.
+Za inicjalizację serwisów obsługiwanych przez HangFire odpowiada linia 11.
 
-### InitializationService
+## InitializationService
 
 ```csharp
 public async Task InitServer(DiscordServerContext server)
