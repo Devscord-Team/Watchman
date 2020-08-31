@@ -1,15 +1,13 @@
 # Inicjalizacja bota
   
-## Punkt wejściowy
-
 ### Watchman.Discord
 
-Jeśli uruchamiamy bota lokalnie, punktem wejściowym programu jest plik "Program" w projekcie "Watchman.Discord". Tutaj też
+Jeśli uruchamiamy bota lokalnie, punktem wejściowym programu jest plik "Program" w projekcie "Watchman.Discord".  Tutaj też
 uruchamiana jest czysta aplikacja samego bota, czyli tworzony i konfigurowany obiekt klasy "WatchmanBot".
 
 ### Watchman.Web
 
-Na produkcji bot jest uruchamiany w tle przez aplikację webową (projekt "Watchman.Web"). Za pomocą Hangfire jest obsługiwana część jego funkcji które mają być wykonywane okresowo.
+Na produkcji bot jest uruchamiany w tle przez aplikację webową (projekt "Watchman.Web").  Za pomocą Hangfire jest obsługiwana część jego funkcji które mają być wykonywane okresowo.
 
 W tym przypadku nasz obiekt "WatchmanBot" jest tworzony w pliku "Watchman.Web/ServiceProviders/AutofacServiceProviderFactory" w funkcji:
 ```csharp
@@ -30,7 +28,7 @@ W tym przypadku nasz obiekt "WatchmanBot" jest tworzony w pliku "Watchman.Web/Se
 ```
 Za inicjalizację serwisów obsługiwanych przez HangFire odpowiada tu linia 11.
 
-## InitializationService
+### InitializationService
 
 ```csharp
 public async Task InitServer(DiscordServerContext server)
@@ -44,8 +42,7 @@ public async Task InitServer(DiscordServerContext server)
     Log.Information("Done server: {server}", server.ToJson());
 }
 ```
-InitializationService jest używany w klasie "WatchmanBot" w funkcji "GetWorkflowBuilder()".
-Metoda "InitServer" zajmuje się wszystkim co potrzebne aby dostać na podanym w argumencie serwerze gotowego do pracy bota.
+InitializationService jest używany w klasie "WatchmanBot" w funkcji "GetWorkflowBuilder()".  Metoda "InitServer" zajmuje się wszystkim co potrzebne aby dostać na podanym w argumencie serwerze gotowego do pracy bota.
 
 
 ```csharp
@@ -55,12 +52,7 @@ private async Task MuteRoleInit(DiscordServerContext server)
     Log.Information("Mute role initialized: {server}", server.Name);
 }
 ```
-Tworzy na serwerze rolę "Muted" która może być nadana wybranej osobie przez bota.Aby to zrobić, należy posiadać uprawnienia administratora
-oraz użyć komendy "-mute". Osoba z tą rolą nie może wykonywać na serwerze czynności, które wymagają następujących uprawnień:
-```csharp
-{ Permission.SendMessages, Permission.SendTTSMessages, Permission.CreateInstantInvite }
-```
-
+Tworzy na serwerze rolę "Muted" która może być nadana wybranej osobie przez bota za pomocą komendy "-mute".
 
 ```csharp
 private async Task ReadServerMessagesHistory(DiscordServerContext server, DateTime lastInitDate)
@@ -90,7 +82,7 @@ private DateTime GetLastInitDate(DiscordServerContext server)
 }
 ```
 Każda inicjalizacja bota na danym serwerze zostawia o sobie informację w bazie danych, w tej metodzie szukamy
-ostatniej daty takiej akcji dla wybranego serwera. (o ile istnieje)
+ostatniej daty włączenia bota dla wybranego serwera.
 
 
 ```csharp
