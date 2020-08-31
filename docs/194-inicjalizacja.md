@@ -52,7 +52,7 @@ private async Task MuteRoleInit(DiscordServerContext server)
     Log.Information("Mute role initialized: {server}", server.Name);
 }
 ```
-Tworzy na serwerze rolę "Muted" która może być nadana wybranej osobie przez bota za pomocą komendy "-mute".  
+Tworzy na serwerze rolę "Muted" (wraz z ustawieniem odpowiednich uprawnień roli, np. brak możliwości wysyłania wiadomości), która może być nadana wybranej osobie przez bota za pomocą komendy "-mute" lub przez antispam.  
 
 ```csharp
 private async Task ReadServerMessagesHistory(DiscordServerContext server, DateTime lastInitDate)
