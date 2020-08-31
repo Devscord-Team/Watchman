@@ -9,6 +9,7 @@ nav:
         - 'Jak działa Workflow': 134-workflow.md
         - 'Do czego używamy klasy Server': 141-do-czego-uzywamy-klasy-server.md
         - 'Jak generowany jest help': 139-jak-dziala-generowanie-helpa.md
+        - 'Co się dzieje podczas inicjalizacji': 194-inicjalizacja.md
 theme: 
     name: 'material'
     language: pl
