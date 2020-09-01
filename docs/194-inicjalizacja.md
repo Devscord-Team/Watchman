@@ -84,6 +84,36 @@ Każda inicjalizacja bota na danym serwerze zostawia o sobie informację w bazie
 ostatniej daty włączenia bota dla wybranego serwera.  
 
 ```csharp
+public async Task GenerateStatsForDaysBefore(DiscordServerContext server, DateTime? lastInitDate)
+{
+    var dayStatisticsQuery = new GetServerDayStatisticsQuery(server.Id);
+    var allServerDaysStatistics = (await this._queryBus.ExecuteAsync(dayStatisticsQuery)).ServerDayStatistics.ToList();
+    var startDate = lastInitDate ?? DateTime.UnixEpoch;
+    var messagesQuery = new GetMessagesQuery(server.Id)
+    {
+        SentDate = new TimeRange(startDate, DateTime.Today) // it will exclude today - it should generate today's stats tomorrow
+    };
+    var messages = this._queryBus.Execute(messagesQuery).Messages;
+
+    var messagesNotCachedForStats = messages
+        .Where(message => allServerDaysStatistics.All(s => message.SentAt.Date != s.Date));
+
+    var serverStatistics = messagesNotCachedForStats
+        .GroupBy(x => x.SentAt.Date)
+        .Select(x => new ServerDayStatistic(x.ToList(), server.Id, x.Key));
+
+    var commands = serverStatistics.Select(x => new AddServerDayStatisticCommand(x));
+    foreach (var command in commands)
+    {
+        await this._commandBus.ExecuteAsync(command);
+    }
+}
+```
+ServerDayStatistic zawiera liczbę wiadomości na całym serwerze z danego dnia i statystyki kanałów - ChannelDayStatistic.  
+ChannelDayStatistic zawiera nazwę kanału i liczbę wiadomości na nim.  
+Powyższa funkcja tworzy i dodaje do bazy danych najnowsze statystyki na serwerze z poprzednich dni. (bez dzisiejszego)
+
+```csharp
 private async Task NotifyDomainAboutInit(DiscordServerContext server)
 {
     var command = new AddInitEventCommand(server.Id, endedAt: DateTime.UtcNow);
