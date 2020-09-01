@@ -12,6 +12,7 @@ nav:
       - "Jak generowany jest help": 139-jak-dziala-generowanie-helpa.md
       - "Jak działa Anty Spam": 16-jak-dziala-antyspam.md
       - "Jak działa konfiguracja": 11-jak-dziala-konfiguracja.md
+      - 'Co się dzieje podczas inicjalizacji': 194-inicjalizacja.md
 theme:
   name: "material"
   language: pl
