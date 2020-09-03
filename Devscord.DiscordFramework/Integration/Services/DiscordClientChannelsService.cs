@@ -88,8 +88,8 @@ namespace Devscord.DiscordFramework.Integration.Services
 
         public async IAsyncEnumerable<Message> GetMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong fromMessageId = 0, bool goBefore = true)
         {
-            var textChannel = (ITextChannel)this.GetChannel(channel.Id).Result;
-            if (!await this.CanBotReadTheChannel(textChannel))
+            var textChannel = (ITextChannel)await this.GetChannel(channel.Id);
+            if (!this.CanBotReadTheChannel(textChannel))
             {
                 yield break;
             }
@@ -122,17 +122,23 @@ namespace Devscord.DiscordFramework.Integration.Services
             }
         }
 
-        public async Task<bool> CanBotReadTheChannel(IMessageChannel textChannel)
+        public bool CanBotReadTheChannel(IMessageChannel textChannel)
         {
             try
             {
-                await textChannel.GetMessagesAsync(limit: 1).FlattenAsync();
+                textChannel.GetMessagesAsync(limit: 1).FlattenAsync().Wait();
                 return true;
             }
             catch
             {
                 return false;
             }
+        }
+
+        public async Task<RestTextChannel> CreateNewChannelAsync(ulong serverId, string channelName)
+        {
+            var guild = await this._restClient.GetGuildAsync(serverId);
+            return await guild.CreateTextChannelAsync(channelName);
         }
     }
 }

@@ -88,12 +88,17 @@ namespace Devscord.DiscordFramework.Integration
             return _discordClient.ChannelsService.GetMessages(server, channel, limit, fromMessageId, goBefore);
         }
 
+        internal static Task<ITextChannel> CreateNewChannel(ulong serverId, string channelName)
+        {
+            return _discordClient.ChannelsService.CreateNewChannelAsync(serverId, channelName);
+        }
+
+        //Roles
         internal static Task<UserRole> CreateNewRole(NewUserRole role, DiscordServerContext discordServer)
         {
             return _discordClient.RolesService.CreateNewRole(role, discordServer);
         }
 
-        //GetRoles
         internal static IEnumerable<UserRole> GetRoles(ulong guildId)
         {
             return _discordClient.RolesService.GetRoles(guildId);
