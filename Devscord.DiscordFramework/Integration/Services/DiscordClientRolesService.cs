@@ -55,7 +55,7 @@ namespace Devscord.DiscordFramework.Integration.Services
         {
             Log.Information("Setting role {roleName} for {channel}", role.Name, channel.Name);
 
-            var channelPermissions = new OverwritePermissions(permissions.AllowPermissions.GetRawValue(), permissions.DenyPermissions.GetRawValue());
+            var channelPermissions = new OverwritePermissions(permissions.AllowPermissions?.GetRawValue() ?? 0, permissions.DenyPermissions?.GetRawValue() ?? 0);
             var socketRole = this.GetSocketRoles(server.Id).FirstOrDefault(x => x.Id == role.Id);
             if (socketRole == null)
             {
@@ -75,8 +75,11 @@ namespace Devscord.DiscordFramework.Integration.Services
                 Log.Error("Created role {roleName} was null", role.Name);
                 return;
             }
-            var channelPermissions = new OverwritePermissions(permissions.AllowPermissions.GetRawValue(), permissions.DenyPermissions.GetRawValue());
-            Parallel.ForEach(channels, c => this.SetRolePermissions(c, channelPermissions, socketRole).Wait());
+            var channelPermissions = new OverwritePermissions(permissions.AllowPermissions?.GetRawValue() ?? 0, permissions.DenyPermissions?.GetRawValue() ?? 0);
+            foreach (var channel in channels)
+            {
+                await this.SetRolePermissions(channel, channelPermissions, socketRole);
+            }
         }
 
         public UserRole GetRole(ulong roleId, ulong guildId)

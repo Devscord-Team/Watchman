@@ -102,7 +102,8 @@ namespace Watchman.Discord
         {
             var exceptionMessage = this.BuildExceptionMessage(e).ToString();
             var messagesService = this._context.Resolve<MessagesServiceFactory>().Create(contexts);
-            messagesService.ChannelId = this._configuration.ExceptionChannelID;
+            messagesService.ChannelId = this._configuration.ExceptionChannelId;
+            messagesService.GuildId = this._configuration.ExceptionServerId;
             var isBotException = e.InnerException is BotException;
             if (isBotException && this._configuration.SendOnlyUnknownExceptionInfo)
             {

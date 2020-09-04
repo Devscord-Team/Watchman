@@ -135,7 +135,7 @@ namespace Devscord.DiscordFramework.Integration.Services
             }
         }
 
-        public async Task<RestTextChannel> CreateNewChannelAsync(ulong serverId, string channelName)
+        public async Task<ITextChannel> CreateNewChannelAsync(ulong serverId, string channelName)
         {
             var guild = await this._restClient.GetGuildAsync(serverId);
             return await guild.CreateTextChannelAsync(channelName);
