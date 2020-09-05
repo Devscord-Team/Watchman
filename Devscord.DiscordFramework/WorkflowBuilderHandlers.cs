@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework
 {
@@ -15,13 +16,13 @@ namespace Devscord.DiscordFramework
         {
             this._context = context;
         }
+
         public WorkflowBuilderHandlers<T> AddHandler(T handler, bool onlyOnDebug = false)
         {
             if (!this.ShouldIgnore(onlyOnDebug))
             {
                 this._handlers.Add(handler);
             }
-
             return this;
         }
 

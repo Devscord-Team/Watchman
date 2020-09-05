@@ -39,9 +39,10 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             var adminRoles = serverRoles.Where(x => x.Permissions.Contains(Permission.ManageGuild));
             var mutedRole = serverRoles.FirstOrDefault(x => x.Name == UsersRolesService.MUTED_ROLE_NAME);
 
-            await this._channelsService.SetPermissions(complaintsChannel, contexts.Server, everyonePermissions, everyoneRole);
+            var setAdminPerms = adminRoles.Select(role => this._channelsService.SetPermissions(complaintsChannel, contexts.Server, adminsPermissions, role));
+            Task.WaitAll(setAdminPerms.ToArray());
             await this._channelsService.SetPermissions(complaintsChannel, contexts.Server, mutedPermissions, mutedRole);
-            adminRoles.ToList().ForEach(async role => await this._channelsService.SetPermissions(complaintsChannel, contexts.Server, adminsPermissions, role));
+            await this._channelsService.SetPermissions(complaintsChannel, contexts.Server, everyonePermissions, everyoneRole);
 
             
             // add the channel's ID to a base

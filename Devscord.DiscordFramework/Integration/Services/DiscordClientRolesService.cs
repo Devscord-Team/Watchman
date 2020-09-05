@@ -68,7 +68,8 @@ namespace Devscord.DiscordFramework.Integration.Services
         public async Task SetRolePermissions(IEnumerable<ChannelContext> channels, DiscordServerContext server, ChangedPermissions permissions, UserRole role)
         {
             await Task.Delay(1000);
-
+            Log.Information("Setting role {roleName} for {server}", role.Name, server.Name);
+            
             var socketRole = this.GetSocketRoles(server.Id).FirstOrDefault(x => x.Id == role.Id);
             if (socketRole == null)
             {
@@ -78,8 +79,10 @@ namespace Devscord.DiscordFramework.Integration.Services
             var channelPermissions = new OverwritePermissions(permissions.AllowPermissions?.GetRawValue() ?? 0, permissions.DenyPermissions?.GetRawValue() ?? 0);
             foreach (var channel in channels)
             {
+                Log.Information("Setting role {roleName} for {channel}", role.Name, channel.Name);
                 await this.SetRolePermissions(channel, channelPermissions, socketRole);
             }
+            Log.Information("Successfully set role {roleName} on all channels on {server}", role.Name, server.Name);
         }
 
         public UserRole GetRole(ulong roleId, ulong guildId)

@@ -67,15 +67,29 @@ namespace Devscord.DiscordFramework
 
         internal void MapHandlers(DiscordSocketClient client)
         {
-            this.OnReady.ForEach(x => client.Ready += x);
-            this.OnMessageReceived.ForEach(x => client.MessageReceived += x);
-            Server.UserJoined += this.CallUserJoined;
-            Server.BotAddedToServer += this.CallServerAddedBot;
-            Server.ChannelCreated += this.CallChannelCreated;
-            Server.RoleRemoved += this.CallRoleRemoved;
-            Server.RoleCreated += this.CallRoleCreated;
-            Server.RoleUpdated += this.CallRoleUpdated;
+            this.OnReady.ForEach(x => client.Ready += () => this.WithExceptionHandlerAwait(x));
+            this.OnMessageReceived.ForEach(func => client.MessageReceived += message => this.WithExceptionHandlerAwait(func, message));
+            Server.UserJoined += user => this.CallUserJoined(user);
+            Server.BotAddedToServer += guild => this.CallServerAddedBot(guild);
+            Server.ChannelCreated += channel => this.CallChannelCreated(channel);
+            Server.RoleRemoved += role => this.CallRoleRemoved(role);
+            Server.RoleCreated += role => this.CallRoleCreated(role);
+            Server.RoleUpdated += (role, socketRole) => this.CallRoleUpdated(role, socketRole);
             Log.Debug("Handlers have been mapped");
+        }
+
+        private async Task WithExceptionHandlerAwait<T>(Func<T, Task> func, T arg1)
+        {
+            var task = func.Invoke(arg1);
+            try
+            {
+                await task;
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, e.StackTrace);
+                this.OnWorkflowException.ForEach(x => x.Invoke(e, context));
+            }
         }
 
         private async void MessageReceived(SocketMessage socketMessage)
@@ -122,10 +136,10 @@ namespace Devscord.DiscordFramework
                 this.OnWorkflowException.ForEach(x => x.Invoke(e, contexts));
             }
             var elapsedRun = this._stopWatch.ElapsedTicks;
-            var elapsedMiliseconds = this._stopWatch.ElapsedMilliseconds;
-            Log.Information("_controllersService.Run time {elapsedRun}ticks (ms: {miliseconds})", elapsedRun, elapsedMiliseconds);
+            var elapsedMilliseconds = this._stopWatch.ElapsedMilliseconds;
+            Log.Information("_controllersService.Run time {elapsedRun}ticks (ms: {miliseconds})", elapsedRun, elapsedMilliseconds);
 #if DEBUG
-            await socketMessage.Channel.SendMessageAsync($"```Run time: {elapsedRun}ticks (ms: {elapsedMiliseconds})```");
+            await socketMessage.Channel.SendMessageAsync($"```Run time: {elapsedRun}ticks (ms: {elapsedMilliseconds})```");
 #endif
             this._stopWatch.Stop();
             this._stopWatch.Reset();
@@ -139,8 +153,8 @@ namespace Devscord.DiscordFramework
             var elapsedParse = this._stopWatch.ElapsedTicks;
             Log.Information("Parsing time: {elapsedParse}ticks", elapsedParse);
 #if DEBUG
-            var elapsedMiliseconds = this._stopWatch.ElapsedMilliseconds;
-            _ = socketMessage.Channel.SendMessageAsync($"```Parsing time: {elapsedParse}ticks (ms: {elapsedMiliseconds})```");
+            var elapsedMilliseconds = this._stopWatch.ElapsedMilliseconds;
+            _ = socketMessage.Channel.SendMessageAsync($"```Parsing time: {elapsedParse}ticks (ms: {elapsedMilliseconds})```");
 #endif
             Log.Information("Request parsed {request}", request.ToJson());
             return request;
@@ -153,8 +167,8 @@ namespace Devscord.DiscordFramework
             var elapsedMiddlewares = this._stopWatch.ElapsedTicks;
             Log.Information("Middlewares time: {elapsedMiddlewares}ticks", elapsedMiddlewares);
 #if DEBUG
-            var elapsedMiliseconds = this._stopWatch.ElapsedMilliseconds;
-            _ = socketMessage.Channel.SendMessageAsync($"```Middlewares time: {elapsedMiddlewares}ticks (ms: {elapsedMiliseconds})```");
+            var elapsedMilliseconds = this._stopWatch.ElapsedMilliseconds;
+            _ = socketMessage.Channel.SendMessageAsync($"```Middlewares time: {elapsedMiddlewares}ticks (ms: {elapsedMilliseconds})```");
 #endif
             Log.Information("Contexts created {contexts}", contexts.ToJson());
             return contexts;
@@ -179,7 +193,6 @@ namespace Devscord.DiscordFramework
                 Log.Debug("Message {message} skipped because is from logs channel", socketMessage.Content);
                 return true;
             }
-
             return false;
         }
 

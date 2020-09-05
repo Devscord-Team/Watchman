@@ -49,15 +49,9 @@ namespace Watchman.Discord
                         .AddHandler(() => Task.Run(() => Log.Information("Bot started and logged in...")))
                         .AddFromIoC<ConfigurationService>(configurationService => configurationService.InitDefaultConfigurations)
                         .AddFromIoC<CustomCommandsLoader>(customCommandsLoader => customCommandsLoader.InitDefaultCustomCommands)
-                        .AddFromIoC<HelpDataCollectorService, HelpDBGeneratorService>((dataCollector, helpService) => () =>
-                        {
-                            Task.Run(() => helpService.FillDatabase(dataCollector.GetCommandsInfo(typeof(WatchmanBot).Assembly)));
-                            return Task.CompletedTask;
-                        })
-                        .AddFromIoC<ResponsesInitService>(responsesService => async () =>
-                        {
-                            await responsesService.InitNewResponsesFromResources();
-                        })
+                        .AddFromIoC<HelpDataCollectorService, HelpDBGeneratorService>((dataCollector, helpService) => 
+                            () => helpService.FillDatabase(dataCollector.GetCommandsInfo(typeof(WatchmanBot).Assembly)))
+                        .AddFromIoC<ResponsesInitService>(responsesService => responsesService.InitNewResponsesFromResources)
                         .AddFromIoC<InitializationService, DiscordServersService>((initService, serversService) => async () =>
                         {
                             var stopwatch = Stopwatch.StartNew();
@@ -81,15 +75,15 @@ namespace Watchman.Discord
                 .AddOnDiscordServerAddedBotHandlers(builder =>
                 {
                     builder
-                        .AddFromIoC<InitializationService>(initService => async server => await initService.InitServer(server));
+                        .AddFromIoC<InitializationService>(initService => initService.InitServer);
                 })
                 .AddOnWorkflowExceptionHandlers(builder =>
                 {
                     builder
                         .AddFromIoC<ExceptionHandlerService>(x => x.LogException)
                         .AddHandler(this.PrintDebugExceptionInfo, onlyOnDebug: true)
-                        .AddHandler(this.SendExceptionInfo)
-                        .AddHandler(this.PrintExceptionOnConsole);
+                        .AddHandler((exception, _) => this.SendExceptionInfo(exception))
+                        .AddHandler((exception, _) => this.PrintExceptionOnConsole(exception));
                 })
                 .AddOnChannelCreatedHandlers(builder =>
                 {
@@ -98,12 +92,10 @@ namespace Watchman.Discord
                 });
         }
 
-        private void SendExceptionInfo(Exception e, Contexts contexts)
+        private void SendExceptionInfo(Exception e)
         {
             var exceptionMessage = this.BuildExceptionMessage(e).ToString();
-            var messagesService = this._context.Resolve<MessagesServiceFactory>().Create(contexts);
-            messagesService.ChannelId = this._configuration.ExceptionChannelId;
-            messagesService.GuildId = this._configuration.ExceptionServerId;
+            var messagesService = this._context.Resolve<MessagesServiceFactory>().Create(this._configuration.ExceptionChannelId, this._configuration.ExceptionServerId);
             var isBotException = e.InnerException is BotException;
             if (isBotException && this._configuration.SendOnlyUnknownExceptionInfo)
             {
@@ -119,7 +111,7 @@ namespace Watchman.Discord
             messagesService.SendMessage(exceptionMessage, Devscord.DiscordFramework.Commons.MessageType.BlockFormatted);
         }
 
-        private void PrintExceptionOnConsole(Exception e, Contexts contexts)
+        private void PrintExceptionOnConsole(Exception e)
         {
             var exceptionMessage = this.BuildExceptionMessage(e).ToString();
             Console.WriteLine(exceptionMessage);
