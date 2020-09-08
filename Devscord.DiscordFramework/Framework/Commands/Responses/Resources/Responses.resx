@@ -252,6 +252,9 @@
   <data name="ServerDoesntHaveAnyTrustedRole" xml:space="preserve">
     <value>Serwer nie ma żadnych roli ustawionych jako zaufane.</value>
   </data>
+  <data name="MutedUsersListSent" xml:space="preserve">
+    <value>Wysłano listę wyciszonych użytkowników.</value>
+  </data>
   <data name="TryToGoogleIt" xml:space="preserve">
     <value>Spróbuj to wygooglować :wink:\nMasz tu link: {{link}}</value>
   </data>
