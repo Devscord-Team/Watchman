@@ -7,6 +7,7 @@ namespace Watchman.DomainModel.Settings
         public object Value { get; private set; }
         public ulong ServerId { get; private set; }
         public string Name { get; private set; }
+        
 
         public ConfigurationItem(object value, ulong serverId, string name)
         {
