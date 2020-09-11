@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Devscord.DiscordFramework.Commons.Exceptions;
 using Watchman.Discord.Areas.Help.Services;
 using Watchman.Discord.Areas.Initialization.Services;
 using Watchman.Discord.Areas.Protection.Services;
@@ -87,6 +88,7 @@ namespace Watchman.Discord
                     builder
                         .AddFromIoC<ExceptionHandlerService>(x => x.LogException)
                         .AddHandler(this.PrintDebugExceptionInfo, onlyOnDebug: true)
+                        .AddHandler(this.SendExceptionInfo)
                         .AddHandler(this.PrintExceptionOnConsole);
                 })
                 .AddOnChannelCreatedHandlers(builder =>
@@ -94,6 +96,19 @@ namespace Watchman.Discord
                     builder
                         .AddFromIoC<MuteRoleInitService>(x => (_, server) => x.InitForServer(server));
                 });
+        }
+
+        private void SendExceptionInfo(Exception e, Contexts contexts)
+        {
+            var exceptionMessage = this.BuildExceptionMessage(e).ToString();
+            var messagesService = this._context.Resolve<MessagesServiceFactory>().Create(contexts);
+            messagesService.ChannelId = this._configuration.ExceptionChannelID;
+            var isBotException = e.InnerException is BotException;
+            if (isBotException && this._configuration.SendOnlyUnknownExceptionInfo)
+            {
+                return;
+            }
+            messagesService.SendMessage(exceptionMessage, Devscord.DiscordFramework.Commons.MessageType.BlockFormatted);
         }
 
         private void PrintDebugExceptionInfo(Exception e, Contexts contexts)

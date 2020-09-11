@@ -255,6 +255,9 @@
   <data name="MoreThanOneRegexHasBeenMatched" xml:space="preserve">
     <value>Podana komenda została dopasowana do więcej niż tylko jednego regexu (custom command), więc nie można jej wykonać. Należy zmienić regexy do tej komendy tak, aby nigdy nie było sytuacji, że do podanej komendy pasuje kilka regexów jednocześnie.</value>
   </data>
+  <data name="MutedUsersListSent" xml:space="preserve">
+    <value>Wysłano listę wyciszonych użytkowników.</value>
+  </data>
   <data name="TryToGoogleIt" xml:space="preserve">
     <value>Spróbuj to wygooglować :wink:\nMasz tu link: {{link}}</value>
   </data>
