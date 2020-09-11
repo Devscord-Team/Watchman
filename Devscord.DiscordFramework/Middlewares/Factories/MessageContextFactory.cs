@@ -5,18 +5,19 @@ using System;
 
 namespace Devscord.DiscordFramework.Middlewares.Factories
 {
-    class MessageContextFactory
+    internal class MessageContextFactory
     {
         private CommandParser _commandParser;
 
-        public MessageContextFactory(IComponentContext context)
+        public MessageContextFactory(CommandParser commandParser)
         {
-            this._commandParser = context.Resolve<CommandParser>();
+            this._commandParser = commandParser;
         }
 
         public MessageContext Create(DateTime sendAt, string message)
         {
-            bool IsBotCommand() => this._commandParser.Parse(message, sendAt).IsCommandForBot;
+            bool IsBotCommand = this._commandParser.Parse(message, sendAt).IsCommandForBot;
+
             return new MessageContext(sendAt, IsBotCommand);
         }
     }

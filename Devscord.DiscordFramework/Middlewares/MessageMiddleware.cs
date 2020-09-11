@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
+using Devscord.DiscordFramework.Framework.Commands.Parsing;
 using Devscord.DiscordFramework.Middlewares.Factories;
 using Discord.WebSocket;
 
@@ -11,7 +12,7 @@ namespace Devscord.DiscordFramework.Middlewares
 
         public MessageMiddleware(IComponentContext contex)
         {
-            this._messageContextFactory = new MessageContextFactory(contex);
+            this._messageContextFactory = new MessageContextFactory(contex.Resolve<CommandParser>());
         }
 
         public IDiscordContext Process(SocketMessage data)
