@@ -1,4 +1,4 @@
-﻿using Devscord.DiscordFramework.Middlewares.Contexts;
+using Devscord.DiscordFramework.Middlewares.Contexts;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -278,6 +278,11 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             return responsesService.ProcessResponse("ServerDoesntHaveAnyTrustedRole");
         }
 
+        public static string MutedUsersListSent(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("MutedUsersListSent");
+        }
+      
         public static string TryToGoogleIt(this ResponsesService responsesService, string link)
         {
             return responsesService.ProcessResponse("TryToGoogleIt",
