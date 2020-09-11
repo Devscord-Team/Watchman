@@ -47,10 +47,10 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         public async Task Warns(WarnsCommand command, Contexts contexts)
         {
             var messageService = this._messagesServiceFactory.Create(contexts);
-            var mentionedUser = command.User == null ? contexts.User : await this._usersService.GetUserByIdAsync(contexts.Server, command.User.Value);
+            var mentionedUser = command.User == 0 ? contexts.User : await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
             if (mentionedUser == null)
             {
-                throw new UserNotFoundException(command.User.Value.GetUserMention());
+                throw new UserNotFoundException(command.User.GetUserMention());
             }
             var warns = this._warnService.GetWarns(mentionedUser, contexts.Server.Id);
             await messageService.SendEmbedMessage("Ostrzeżenia", string.Empty, warns);

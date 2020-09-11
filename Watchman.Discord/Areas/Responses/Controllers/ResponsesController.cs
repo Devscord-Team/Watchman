@@ -91,9 +91,9 @@ namespace Watchman.Discord.Areas.Responses.Controllers
         }
 
         [AdminCommand]
-        public async Task Responses(ResponsesCommand command, Contexts contexts)
+        public Task Responses(ResponsesCommand command, Contexts contexts)
         {
-            await this._responsesMessageService.PrintResponses(command, contexts);
+            return this._responsesMessageService.PrintResponses(command, contexts);
         }
     }
 }

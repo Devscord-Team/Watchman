@@ -21,6 +21,8 @@ using Watchman.Discord.Areas.Administration.BotCommands;
 using Watchman.Discord.Areas.Administration.Services;
 using Watchman.Discord.Areas.Protection.Strategies;
 using Watchman.DomainModel.DiscordServer.Queries;
+using Watchman.DomainModel.Settings.Services;
+using Watchman.DomainModel.Settings.ConfigurationItems;
 
 namespace Watchman.Discord.Areas.Administration.Controllers
 {
@@ -34,8 +36,9 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         private readonly TrustRolesService _trustRolesService;
         private readonly CheckUserSafetyService _checkUserSafetyService;
         private readonly UsersRolesService _usersRolesService;
+        private readonly IConfigurationService _configurationService;
 
-        public AdministrationController(IQueryBus queryBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, RolesService rolesService, TrustRolesService trustRolesService, CheckUserSafetyService checkUserSafetyService, UsersRolesService usersRolesService)
+        public AdministrationController(IQueryBus queryBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, RolesService rolesService, TrustRolesService trustRolesService, CheckUserSafetyService checkUserSafetyService, UsersRolesService usersRolesService, IConfigurationService configurationService)
         {
             this._queryBus = queryBus;
             this._usersService = usersService;
@@ -45,12 +48,12 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             this._trustRolesService = trustRolesService;
             this._checkUserSafetyService = checkUserSafetyService;
             this._usersRolesService = usersRolesService;
+            this._configurationService = configurationService;
         }
 
         [AdminCommand]
         public async Task ReadUserMessages(MessagesCommand command, Contexts contexts)
         {
-            var messagesService = this._messagesServiceFactory.Create(contexts);
             var selectedUser = await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
             if (selectedUser == null)
             {
@@ -66,7 +69,9 @@ namespace Watchman.Discord.Areas.Administration.Controllers
                 .OrderBy(x => x.SentAt)
                 .ToList();
 
-            if (messages.Count > 200 && !command.Force)
+            var messagesService = this._messagesServiceFactory.Create(contexts);
+            var maxNumberOfMessages = this._configurationService.GetConfigurationItem<MaxNumberOfMessagesDisplayedByMessageCommandWithoutForce>(contexts.Server.Id).Value;
+            if (messages.Count > maxNumberOfMessages && !command.Force)
             {
                 await messagesService.SendResponse(x => x.NumberOfMessagesIsHuge(messages.Count));
                 return;
@@ -91,8 +96,11 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         [AdminCommand]
         public async Task SetRoleAsSafe(SetRoleCommand command, Contexts contexts)
         {
-            var shouldSetToSafe = command.Safe;
-            await this._rolesService.SetRolesAsSafe(contexts, command.Roles, shouldSetToSafe);
+            if (!command.Safe && !command.Unsafe)
+            {
+                throw new NotEnoughArgumentsException();
+            }
+            await this._rolesService.SetRolesAsSafe(contexts, command.Roles, setAsSafe: command.Safe);
         }
 
         [AdminCommand]

@@ -9,10 +9,12 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Newtonsoft.Json;
 using Serilog;
 using Serilog.Context;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace Devscord.DiscordFramework
 {
@@ -137,20 +139,7 @@ namespace Devscord.DiscordFramework
                         { 
                             return;
                         }
-                        var isDefaultCommand = isThereDefaultCommandWithGivenName && this._botCommandsService.IsDefaultCommand(template, request.Arguments, isCommandMatchedWithCustom);
-                        IBotCommand command;
-                        if (isDefaultCommand && this._botCommandsService.AreDefaultCommandArgumentsCorrect(template, request.Arguments))   
-                        {
-                            command = this._botCommandsService.ParseRequestToCommand(commandInParameterType, request, template);
-                        }
-                        else if (isCommandMatchedWithCustom && this._botCommandsService.AreCustomCommandArgumentsCorrect(template, customCommand.Template, request.OriginalMessage))
-                        {
-                            command = this._botCommandsService.ParseCustomTemplate(commandInParameterType, template, customCommand.Template, request.OriginalMessage);
-                        }
-                        else
-                        {
-                            throw new InvalidArgumentsException();
-                        }
+                        var command = this.CreateBotCommand(isThereDefaultCommandWithGivenName, template, commandInParameterType, request, customCommand?.Template, isCommandMatchedWithCustom);
                         await InvokeMethod(command, contexts, controllerInfo, method);
                     }
                 }
@@ -161,6 +150,23 @@ namespace Devscord.DiscordFramework
         {
             this.CheckPermissions(method, contexts);
             return true;
+        }
+
+        private IBotCommand CreateBotCommand(bool isThereDefaultCommandWithGivenName, BotCommandTemplate template, Type commandInParameterType, DiscordRequest request, Regex customTemplate, bool isCommandMatchedWithCustom)
+        {
+            var isDefaultCommand = isThereDefaultCommandWithGivenName && this._botCommandsService.IsDefaultCommand(template, request.Arguments, isCommandMatchedWithCustom);
+            if (isDefaultCommand && this._botCommandsService.AreDefaultCommandArgumentsCorrect(template, request.Arguments))
+            {
+                return this._botCommandsService.ParseRequestToCommand(commandInParameterType, request, template);
+            }
+            else if (isCommandMatchedWithCustom && this._botCommandsService.AreCustomCommandArgumentsCorrect(template, customTemplate, request.OriginalMessage))
+            {
+                return this._botCommandsService.ParseCustomTemplate(commandInParameterType, template, customTemplate, request.OriginalMessage);
+            }
+            else
+            {
+                throw new InvalidArgumentsException();
+            }
         }
 
         private bool IsMatchedCommand(IEnumerable<DiscordCommand> commands, DiscordRequest request)

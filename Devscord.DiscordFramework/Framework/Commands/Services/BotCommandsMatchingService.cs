@@ -27,28 +27,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             {
                 return true;
             }
-            // if we give the command in such a way that isCommandMatchedWithCustom is true and it has been checked before that all the required arguments have been given and it turned out that they were given in this way, 
-            // the program checks whether all given arguments (even the optional ones) are known to the command, so it is known whether we are dealing with a command in the default form or in the form of custom.
-            // if the method returns false after the following operations, it means that the command is in a custom form
-            var argsWithoutListSubarguments = arguments
-                .Select(x => x.Name?.ToLowerInvariant())
-                .ToList();
-            var lists = template.Properties
-                .Where(property => property.Type == BotCommandPropertyType.List)
-                .Select(x => x.Name.ToLowerInvariant())
-                .ToList();
-            for (int i = 0; i < argsWithoutListSubarguments.Count; i++)
-            {
-                if (!lists.Contains(argsWithoutListSubarguments[i]))
-                {
-                    continue;
-                }
-                while (i + 1 < argsWithoutListSubarguments.Count && argsWithoutListSubarguments[i + 1] == null)
-                {
-                    argsWithoutListSubarguments.RemoveAt(i + 1);
-                }
-            }
-            return argsWithoutListSubarguments.All(arg => template.Properties.Any(property => arg == property.Name.ToLowerInvariant()));
+            return this.AreAllGivenArgsForCommandKnown(template.Properties, arguments);
         }
 
         public bool AreDefaultCommandArgumentsCorrect(BotCommandTemplate template, IEnumerable<DiscordRequestArgument> arguments)
@@ -77,6 +56,35 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
 
             this.CheckQuotationMarksInListsAndTexts(template.Properties, argsAndValues, isCommandMatchedWithCustom: true);
             return this.ComparePropertiesToArgsAndValues(template.Properties, argsAndValues);
+        }
+
+        private bool AreAllGivenArgsForCommandKnown(IEnumerable<BotCommandProperty> properties, IEnumerable<DiscordRequestArgument> arguments)
+        {
+            var argumentsNames = arguments
+                .Select(x => x.Name?.ToLowerInvariant())
+                .ToList();
+            var lists = properties
+                .Where(property => property.Type == BotCommandPropertyType.List)
+                .Select(x => x.Name.ToLowerInvariant())
+                .ToList();
+            var argsWithoutListSubarguments = this.GetArgsWithoutListSubarguments(argumentsNames, lists);
+            return argsWithoutListSubarguments.All(arg => properties.Any(property => arg == property.Name.ToLowerInvariant()));
+        }
+
+        private List<string> GetArgsWithoutListSubarguments(List<string> argumentsNames, List<string> listsNames)
+        {
+            for (int i = 0; i < argumentsNames.Count; i++)
+            {
+                if (!listsNames.Contains(argumentsNames[i]))
+                {
+                    continue;
+                }
+                while (i + 1 < argumentsNames.Count && argumentsNames[i + 1] == null)
+                {
+                    argumentsNames.RemoveAt(i + 1);
+                }
+            }
+            return argumentsNames;
         }
 
         private void CheckQuotationMarksInListsAndTexts(IEnumerable<BotCommandProperty> properties, IEnumerable<KeyValuePair<string, string>> argsAndValues, bool isCommandMatchedWithCustom = false)
