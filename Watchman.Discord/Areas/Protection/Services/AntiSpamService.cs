@@ -5,7 +5,7 @@ using System;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Common.Models;
-using Watchman.DomainModel.Users;
+using Watchman.DomainModel.Protection;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
 
 namespace Watchman.Discord.Areas.Protection.Services

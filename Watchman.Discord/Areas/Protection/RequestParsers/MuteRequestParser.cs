@@ -6,7 +6,7 @@ using System;
 using System.Linq;
 using Watchman.Discord.Areas.Commons;
 using Watchman.DomainModel.Messages;
-using Watchman.DomainModel.Users;
+using Watchman.DomainModel.Protection;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
 using Watchman.Cqrs;
-using Watchman.DomainModel.Users;
-using Watchman.DomainModel.Users.Commands;
-using Watchman.DomainModel.Users.Queries;
+using Watchman.DomainModel.Protection;
+using Watchman.DomainModel.Protection.Commands;
+using Watchman.DomainModel.Protection.Queries;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {

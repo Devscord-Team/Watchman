@@ -2,7 +2,7 @@
 using Watchman.Cqrs;
 using Watchman.Integrations.MongoDB;
 
-namespace Watchman.DomainModel.Users.Queries.Handlers
+namespace Watchman.DomainModel.Protection.Queries.Handlers
 {
     public class GetMuteEventsQueryHandler : IQueryHandler<GetMuteEventsQuery, GetMuteEventsQueryResult>
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Watchman.Cqrs;
 
-namespace Watchman.DomainModel.Users.Queries
+namespace Watchman.DomainModel.Protection.Queries
 {
     public class GetProtectionPunishmentsQueryResult : IQueryResult
     {

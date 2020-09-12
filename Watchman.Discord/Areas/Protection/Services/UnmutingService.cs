@@ -8,7 +8,7 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
 using Serilog;
-using Watchman.DomainModel.Users;
+using Watchman.DomainModel.Protection;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {
