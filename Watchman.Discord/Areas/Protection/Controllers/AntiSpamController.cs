@@ -10,6 +10,7 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Serilog;
 using Watchman.Discord.Areas.Protection.Services;
 using Watchman.Discord.Areas.Protection.Strategies;
+using Watchman.Discord.Areas.Users.Services;
 using Watchman.DomainModel.Settings.Services;
 
 namespace Watchman.Discord.Areas.Protection.Controllers

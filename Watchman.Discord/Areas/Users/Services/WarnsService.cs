@@ -19,9 +19,9 @@ using Watchman.DomainModel.Warns;
 using Watchman.DomainModel.Warns.Commands;
 using Watchman.DomainModel.Warns.Queries;
 
-namespace Watchman.Discord.Areas.Protection.Services
+namespace Watchman.Discord.Areas.Users.Services
 {
-    public class WarnsService
+    public class WarnsService : IWarnsService
     {
         private readonly ICommandBus _commandBus;
         private readonly IQueryBus _queryBus;

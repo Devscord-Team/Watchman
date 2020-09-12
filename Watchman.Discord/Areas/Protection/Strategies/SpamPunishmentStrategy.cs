@@ -3,15 +3,16 @@ using Devscord.DiscordFramework.Framework.Commands.AntiSpam;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
 using Serilog;
 using Watchman.Discord.Areas.Protection.Services;
+using Watchman.Discord.Areas.Users.Services;
 
 namespace Watchman.Discord.Areas.Protection.Strategies
 {
     public class SpamPunishmentStrategy : ISpamPunishmentStrategy
     {
         private readonly IPunishmentsCachingService _punishmentsCachingService;
-        private readonly WarnsService _warnsService;
+        private readonly IWarnsService _warnsService;
 
-        public SpamPunishmentStrategy(IPunishmentsCachingService punishmentsCachingService, WarnsService warnsService)
+        public SpamPunishmentStrategy(IPunishmentsCachingService punishmentsCachingService, IWarnsService warnsService)
         {
             this._punishmentsCachingService = punishmentsCachingService;
             this._warnsService = warnsService;

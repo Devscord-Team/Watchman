@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using Watchman.Discord.Areas.Protection.Services;
 using Watchman.Discord.Areas.Users.BotCommands;
 using Watchman.Discord.Areas.Users.BotCommands.Warns;
+using Watchman.Discord.Areas.Users.Services;
 using Watchman.DomainModel.Messages;
 using Watchman.DomainModel.Users;
 using Watchman.DomainModel.Warns.Commands;
@@ -25,9 +26,9 @@ namespace Watchman.Discord.Areas.Protection.Controllers
     {
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly UsersService _usersService;
-        private readonly WarnsService _warnService;
+        private readonly IWarnsService _warnService;
 
-        public WarnsController(MessagesServiceFactory messagesServiceFactory, UsersService usersService, WarnsService warnService)
+        public WarnsController(MessagesServiceFactory messagesServiceFactory, UsersService usersService, IWarnsService warnService)
         {
             this._messagesServiceFactory = messagesServiceFactory;
             this._usersService = usersService;

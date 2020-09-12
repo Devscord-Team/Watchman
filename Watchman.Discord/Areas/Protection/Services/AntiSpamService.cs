@@ -8,8 +8,8 @@ using Watchman.Common.Models;
 using Watchman.DomainModel.Users;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
 using System.Text;
-using Watchman.Discord.Areas.Users.BotCommands;
 using Devscord.DiscordFramework.Services;
+using Watchman.Discord.Areas.Users.Services;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {
