@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Watchman.Integrations.MongoDB
@@ -55,6 +56,11 @@ namespace Watchman.Integrations.MongoDB
         public async Task DeleteAsync<T>(T entity) where T : Entity
         {
             await this.GetCollection<T>().DeleteOneAsync(x => x.Id == entity.Id);
+        }
+
+        public async Task DeleteAsync<T>(Expression<Func<T, bool>> filter) where T : Entity
+        {
+            await this.GetCollection<T>().DeleteManyAsync(filter);
         }
 
         public void SaveChanges()

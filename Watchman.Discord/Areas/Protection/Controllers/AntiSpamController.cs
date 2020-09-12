@@ -27,13 +27,13 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         // it's really needed - to avoid multiple warning and muting the same user
         private static bool _isNowChecking;
 
-        public AntiSpamController(ServerMessagesCacheService serverMessagesCacheService, CheckUserSafetyService checkUserSafetyService, PunishmentsCachingService punishmentsCachingService, AntiSpamService antiSpamService, ConfigurationService configurationService)
+        public AntiSpamController(ServerMessagesCacheService serverMessagesCacheService, CheckUserSafetyService checkUserSafetyService, PunishmentsCachingService punishmentsCachingService, AntiSpamService antiSpamService, ConfigurationService configurationService, WarnsService warnsService)
         {
             this._serverMessagesCacheService = serverMessagesCacheService;
             this._punishmentsCachingService = punishmentsCachingService;
             this._antiSpamService = antiSpamService;
             this._overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessagesCacheService, checkUserSafetyService, configurationService);
-            this._spamPunishmentStrategy = new SpamPunishmentStrategy(punishmentsCachingService);
+            this._spamPunishmentStrategy = new SpamPunishmentStrategy(punishmentsCachingService, warnsService);
         }
 
         [ReadAlways]
@@ -69,7 +69,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
 
         private async Task HandlePossibleSpam(Contexts contexts, SpamProbability spamProbability, DateTime messageSentAt)
         {
-            var punishment = this._spamPunishmentStrategy.GetPunishment(contexts.User.Id, spamProbability);
+            var punishment = this._spamPunishmentStrategy.GetPunishment(contexts.User.Id, contexts.Server.Id, spamProbability);
             await this._antiSpamService.SetPunishment(contexts, punishment);
 
             if (punishment.PunishmentOption != PunishmentOption.Nothing)

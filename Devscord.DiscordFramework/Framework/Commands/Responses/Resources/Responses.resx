@@ -258,4 +258,7 @@
   <data name="TryToGoogleIt" xml:space="preserve">
     <value>Spróbuj to wygooglować :wink:\nMasz tu link: {{link}}</value>
   </data>
+  <data name="AllWarnsRemovedFromUser" xml:space="preserve">
+    <value>{{admin}} usunął wszystkie ostrzeżenia użytkownika {{user}}.</value>
+  </data>
 </root>

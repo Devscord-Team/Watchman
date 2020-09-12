@@ -9,6 +9,7 @@ namespace Watchman.DomainModel.Warns.Queries
     {
         public ulong ServerId { get; }
         public ulong UserId { get; }
+        public DateTime From { get; set; }
 
         public GetWarnEventsQuery(ulong serverId, ulong userId)
         {

@@ -7,6 +7,9 @@ using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Common.Models;
 using Watchman.DomainModel.Users;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
+using System.Text;
+using Watchman.Discord.Areas.Users.BotCommands;
+using Devscord.DiscordFramework.Services;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {
@@ -15,12 +18,16 @@ namespace Watchman.Discord.Areas.Protection.Services
         private readonly MutingService _mutingService;
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly UnmutingService _unmutingService;
+        private readonly WarnsService _warnsService;
+        private readonly UsersService _usersService;
 
-        public AntiSpamService(MutingService mutingService, MessagesServiceFactory messagesServiceFactory, UnmutingService unmutingService)
+        public AntiSpamService(MutingService mutingService, MessagesServiceFactory messagesServiceFactory, UnmutingService unmutingService, WarnsService warnsService, UsersService usersService)
         {
             this._mutingService = mutingService;
             this._messagesServiceFactory = messagesServiceFactory;
             this._unmutingService = unmutingService;
+            this._warnsService = warnsService;
+            this._usersService = usersService;
         }
 
         public async Task SetPunishment(Contexts contexts, Punishment punishment)
@@ -30,17 +37,19 @@ namespace Watchman.Discord.Areas.Protection.Services
                 return;
             }
             Log.Information("Spam recognized! User: {user} on channel: {channel} server: {server}", contexts.User.Name, contexts.Channel.Name, contexts.Server.Name);
-
             var messagesService = this._messagesServiceFactory.Create(contexts);
+            var warnReason = new StringBuilder().Append($"Ostrzeżenie za spam na kanale: #{contexts.Channel.Name}");
             switch (punishment.PunishmentOption)
             {
                 case PunishmentOption.Warn:
                     await messagesService.SendResponse(x => x.SpamAlertRecognized(contexts));
                     break;
                 case PunishmentOption.Mute:
+                    warnReason.Append($" - wyciszono na {punishment.ForTime!.Value}");
                     await this.MuteUserForSpam(contexts, punishment.ForTime!.Value);
                     break;
             }
+            await _warnsService.AddWarnToUser(_usersService.GetBot().Id, contexts.User.Id, warnReason.ToString(), contexts.Server.Id);
         }
 
         private async Task MuteUserForSpam(Contexts contexts, TimeSpan length)

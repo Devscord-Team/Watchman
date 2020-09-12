@@ -21,6 +21,7 @@ namespace Watchman.DomainModel.Warns.Queries.Handlers
             {
                 filteredEvents = filteredEvents.Where(x => x.ServerId == query.ServerId);
             }
+            filteredEvents = filteredEvents.Where(x => x.CreatedAt >= query.From);
             return new GetWarnEventsQueryResults(filteredEvents);
         }
     }

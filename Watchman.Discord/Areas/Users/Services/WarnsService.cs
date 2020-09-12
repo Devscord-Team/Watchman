@@ -23,25 +23,25 @@ namespace Watchman.Discord.Areas.Protection.Services
 {
     public class WarnsService
     {
-        private readonly UsersService _usersService;
-        private readonly MessagesServiceFactory _messagesServiceFactory;
-        private readonly DirectMessagesService _directMessagesService;
         private readonly ICommandBus _commandBus;
         private readonly IQueryBus _queryBus;
 
-        public WarnsService(UsersService usersService, MessagesServiceFactory messagesServiceFactory, DirectMessagesService directMessagesService, ICommandBus commandBus, IQueryBus queryBus)
+        public WarnsService(ICommandBus commandBus, IQueryBus queryBus)
         {
-            this._messagesServiceFactory = messagesServiceFactory;
-            this._directMessagesService = directMessagesService;
-            this._usersService = usersService;
             this._commandBus = commandBus;
             this._queryBus = queryBus;
         }
 
-        public Task AddWarnToUser(AddWarnCommand command, Contexts contexts, UserContext targetUser)
+        public Task AddWarnToUser(ulong grantorId, ulong receiverId, string reason, ulong serverId)
         {
-            var addWarnEventCommand = new AddWarnEventCommand(contexts.User.Id, targetUser.Id, command.Reason, contexts.Server.Id);
+            var addWarnEventCommand = new AddWarnEventCommand(grantorId, receiverId, reason, serverId);
             return this._commandBus.ExecuteAsync(addWarnEventCommand);
+        }
+
+        public Task RemoveUserWarns(ulong userId, ulong serverId)
+        {
+            var removeWarnsCommand = new RemoveWarnEventsCommand() { ReceiverId = userId, ServerId = serverId };
+            return this._commandBus.ExecuteAsync(removeWarnsCommand);
         }
 
         public IEnumerable<KeyValuePair<string, string>> GetWarns(UserContext mentionedUser, ulong serverId)
@@ -50,9 +50,14 @@ namespace Watchman.Discord.Areas.Protection.Services
             return this.WarnEventsToKeyValue(warnEvents, mentionedUser.Id);
         }
 
-        public IEnumerable<WarnEvent> GetWarnEvents(ulong serverId, ulong userId)
+        public int GetWarnsCount(ulong userId, ulong serverId, DateTime from)
         {
-            var query = new GetWarnEventsQuery(serverId, userId);
+            return this.GetWarnEvents(serverId, userId, from).Count();
+        }
+
+        public IEnumerable<WarnEvent> GetWarnEvents(ulong serverId, ulong userId, DateTime from =new DateTime())
+        {
+            var query = new GetWarnEventsQuery(serverId, userId) { From = from };
             var response = this._queryBus.Execute(query);
             return response.WarnEvents;
         }

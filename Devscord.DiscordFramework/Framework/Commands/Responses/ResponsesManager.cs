@@ -1,3 +1,4 @@
+using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using System;
 using System.Collections.Generic;
@@ -235,10 +236,10 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             return responsesService.ProcessResponse("AllRolesSettingsChanged");
         }
 
-        public static string UserHasBeenWarned(this ResponsesService responsesService, string granter, string receiver, string reason)
+        public static string UserHasBeenWarned(this ResponsesService responsesService, string grantor, string receiver, string reason)
         {
             return responsesService.ProcessResponse("UserHasBeenWarned",
-                new KeyValuePair<string, string>("granter", granter),
+                new KeyValuePair<string, string>("grantor", grantor),
                 new KeyValuePair<string, string>("receiver", receiver),
                 new KeyValuePair<string, string>("reason", reason));
         }
@@ -287,6 +288,13 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("TryToGoogleIt",
                 new KeyValuePair<string, string>("link", link));
+        }
+
+        public static string AllWarnsRemovedFromUser(this ResponsesService responsesService, ulong adminId, ulong userId)
+        {
+            return responsesService.ProcessResponse("AllWarnsRemovedFromUser",
+                new KeyValuePair<string, string>("admin", adminId.GetUserMention()),
+                new KeyValuePair<string, string>("user", userId.GetUserMention()));
         }
     }
 }

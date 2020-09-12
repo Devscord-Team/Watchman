@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Watchman.Integrations.MongoDB
@@ -14,6 +15,7 @@ namespace Watchman.Integrations.MongoDB
         Task AddOrUpdateAsync<T>(T entity) where T : Entity;
         Task UpdateAsync<T>(T entity) where T : Entity;
         Task DeleteAsync<T>(T entity) where T : Entity;
+        Task DeleteAsync<T>(Expression<Func<T, bool>> filter) where T : Entity;
         void SaveChanges();
     }
 }

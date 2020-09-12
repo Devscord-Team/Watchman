@@ -9,18 +9,19 @@ namespace Watchman.Discord.Areas.Protection.Strategies
     public class SpamPunishmentStrategy : ISpamPunishmentStrategy
     {
         private readonly IPunishmentsCachingService _punishmentsCachingService;
+        private readonly WarnsService _warnsService;
 
-        public SpamPunishmentStrategy(IPunishmentsCachingService punishmentsCachingService)
+        public SpamPunishmentStrategy(IPunishmentsCachingService punishmentsCachingService, WarnsService warnsService)
         {
             this._punishmentsCachingService = punishmentsCachingService;
+            this._warnsService = warnsService;
         }
 
-        public Punishment GetPunishment(ulong userId, SpamProbability spamProbability)
+        public Punishment GetPunishment(ulong userId, ulong serverId, SpamProbability spamProbability)
         {
             var takeFromTime = DateTime.Now.AddHours(-12);
-            var warnsCount = this._punishmentsCachingService.GetUserWarnsCount(userId, takeFromTime);
+            var warnsCount = _warnsService.GetWarnsCount(userId, serverId, takeFromTime);              
             Log.Information("User {userId} has {warnsCount} warns", userId, warnsCount);
-            
             var punishmentOption = spamProbability switch
             {
                 SpamProbability.None => PunishmentOption.Nothing,
