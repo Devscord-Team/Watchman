@@ -1,4 +1,9 @@
-﻿using Autofac;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Reflection;
+using System.Threading.Tasks;
+using Autofac;
 using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Framework.Commands.Parsing;
@@ -9,11 +14,6 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Middlewares.Factories;
 using Discord.WebSocket;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Reflection;
-using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework
 {
@@ -25,6 +25,7 @@ namespace Devscord.DiscordFramework
         private readonly ControllersService _controllersService;
         private readonly Stopwatch _stopWatch = new Stopwatch();
 
+        public Contexts DebugServerContexts { get; set; }
         public List<Func<Task>> OnReady { get; set; } = new List<Func<Task>>();
         public List<Func<Contexts, Task>> OnUserJoined { get; set; } = new List<Func<Contexts, Task>>();
         public List<Func<DiscordServerContext, Task>> OnDiscordServerAddedBot { get; set; } = new List<Func<DiscordServerContext, Task>>();
@@ -50,37 +51,41 @@ namespace Devscord.DiscordFramework
             return this;
         }
 
-        internal void Initialize()
-        {
-            this.OnMessageReceived.Add(message => Task.Run(() =>
-            {
-                try
-                {
-                    this.MessageReceived(message);
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(ex, ex.StackTrace);
-                }
-            }));
-        }
-
         internal void MapHandlers(DiscordSocketClient client)
         {
-            //this.OnReady.ForEach(x => client.Ready += () => this.WithExceptionHandlerAwait(x));
+            this.OnReady.ForEach(x => client.Ready += () => this.WithExceptionHandlerAwait(x));
+            this.OnMessageReceived.Add(message => this.WithExceptionHandlerAwait(this.MessageReceived, message));
             this.OnMessageReceived.ForEach(func => client.MessageReceived += message => this.WithExceptionHandlerAwait(func, message));
-            Server.UserJoined += user => this.CallUserJoined(user);
-            Server.BotAddedToServer += guild => this.CallServerAddedBot(guild);
-            Server.ChannelCreated += channel => this.CallChannelCreated(channel);
-            Server.RoleRemoved += role => this.CallRoleRemoved(role);
-            Server.RoleCreated += role => this.CallRoleCreated(role);
-            Server.RoleUpdated += (role, socketRole) => this.CallRoleUpdated(role, socketRole);
+
+            Server.UserJoined += user => this.WithExceptionHandlerAwait(this.CallUserJoined, user);
+            Server.BotAddedToServer += guild => this.WithExceptionHandlerAwait(this.CallServerAddedBot, guild);
+            Server.ChannelCreated += channel => this.WithExceptionHandlerAwait(this.CallChannelCreated, channel);
+            Server.RoleRemoved += role => this.WithExceptionHandlerAwait(this.CallRoleRemoved, role);
+            Server.RoleCreated += role => this.WithExceptionHandlerAwait(this.CallRoleCreated, role);
+            Server.RoleUpdated += (from, to) => this.WithExceptionHandlerAwait(this.CallRoleUpdated, from, to);
             Log.Debug("Handlers have been mapped");
         }
 
-        private async Task WithExceptionHandlerAwait<T>(Func<T, Task> func, T arg1)
+        private Task WithExceptionHandlerAwait(Func<Task> func)
+        {
+            var task = func.Invoke();
+            return this.TryToAwaitTask(task);
+        }
+
+        private Task WithExceptionHandlerAwait<T>(Func<T, Task> func, T arg1)
         {
             var task = func.Invoke(arg1);
+            return this.TryToAwaitTask(task);
+        }
+
+        private Task WithExceptionHandlerAwait<T, W>(Func<T, W, Task> func, T arg1, W arg2)
+        {
+            var task = func.Invoke(arg1, arg2);
+            return this.TryToAwaitTask(task);
+        }
+
+        private async Task TryToAwaitTask(Task task, Contexts sendExceptionsContexts = null)
+        {
             try
             {
                 await task;
@@ -88,56 +93,25 @@ namespace Devscord.DiscordFramework
             catch (Exception e)
             {
                 Log.Error(e, e.StackTrace);
-                //this.OnWorkflowException.ForEach(x => x.Invoke(e, context));
+                this.OnWorkflowException.ForEach(x => x.Invoke(e, sendExceptionsContexts ?? this.DebugServerContexts));
             }
         }
 
-        private async void MessageReceived(SocketMessage socketMessage)
+        private async Task MessageReceived(SocketMessage socketMessage)
         {
             if (this.ShouldIgnoreMessage(socketMessage))
             {
                 return;
             }
+            var contexts = this.GetContexts(socketMessage);
+            var request = this.ParseRequest(socketMessage);
 
-            Contexts contexts;
-            try
-            {
-                contexts = this.GetContexts(socketMessage);
-            }
-            catch (Exception e)
-            {
-                Log.Error(e, e.StackTrace);
-                return;
-            }
+            Log.Information("Starting controllers");
+            await this.TryToAwaitTask(this._controllersService.Run(socketMessage.Id, request, contexts), contexts);
 
-            DiscordRequest request;
-            try
-            {
-                request = this.ParseRequest(socketMessage);
-            }
-            catch (Exception e)
-            {
-                Log.Error(e, e.StackTrace);
-                this.OnWorkflowException.ForEach(x => x.Invoke(e, contexts));
-                request = new DiscordRequest
-                {
-                    OriginalMessage = socketMessage.Content,
-                    SentAt = socketMessage.Timestamp.UtcDateTime
-                };
-            }
-            try
-            {
-                Log.Information("Starting controllers");
-                await this._controllersService.Run(socketMessage.Id, request, contexts);
-            }
-            catch (Exception e)
-            {
-                Log.Error(e, e.StackTrace);
-                this.OnWorkflowException.ForEach(x => x.Invoke(e, contexts));
-            }
             var elapsedRun = this._stopWatch.ElapsedTicks;
             var elapsedMilliseconds = this._stopWatch.ElapsedMilliseconds;
-            Log.Information("_controllersService.Run time {elapsedRun}ticks (ms: {miliseconds})", elapsedRun, elapsedMilliseconds);
+            Log.Information("_controllersService.Run time {elapsedRun}ticks (ms: {milliseconds})", elapsedRun, elapsedMilliseconds);
 #if DEBUG
             await socketMessage.Channel.SendMessageAsync($"```Run time: {elapsedRun}ticks (ms: {elapsedMilliseconds})```");
 #endif

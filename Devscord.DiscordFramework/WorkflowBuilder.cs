@@ -4,11 +4,13 @@ using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Integration;
 using Devscord.DiscordFramework.Middlewares;
 using Devscord.DiscordFramework.Middlewares.Contexts;
+using Devscord.DiscordFramework.Services;
 using Discord;
 using Discord.WebSocket;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -24,7 +26,7 @@ namespace Devscord.DiscordFramework
         private readonly IComponentContext _context;
         private readonly Workflow _workflow;
 
-        private WorkflowBuilder(string token, IComponentContext context, Assembly botAssembly)
+        private WorkflowBuilder(string token, IComponentContext context, Assembly botAssembly, ulong debugServerId, ulong debugChannelId)
         {
             this._client = new DiscordSocketClient(new DiscordSocketConfig
             {
@@ -33,11 +35,17 @@ namespace Devscord.DiscordFramework
             this._token = token;
             this._context = context;
             this._workflow = new Workflow(botAssembly, context);
+            this._workflow.OnReady.Add(async () =>
+            {
+                var server = await context.Resolve<DiscordServersService>().GetDiscordServerAsync(debugServerId);
+                var channel = server.GetTextChannels().FirstOrDefault(x => x.Id == debugChannelId);
+                this._workflow.DebugServerContexts = new Contexts(server, channel, user: null);
+            });
         }
 
-        public static WorkflowBuilder Create(string token, IComponentContext context, Assembly botAssembly)
+        public static WorkflowBuilder Create(string token, IComponentContext context, Assembly botAssembly, ulong debugServerId, ulong debugChannelId)
         {
-            return new WorkflowBuilder(token, context, botAssembly);
+            return new WorkflowBuilder(token, context, botAssembly, debugServerId, debugChannelId);
         }
 
         public WorkflowBuilder SetMessageHandler(Func<SocketMessage, Task> action)
@@ -138,7 +146,6 @@ namespace Devscord.DiscordFramework
 
         public WorkflowBuilder Build()
         {
-            this._workflow.Initialize();
             this._workflow.MapHandlers(this._client);
 
             this._client.LoginAsync(TokenType.Bot, this._token).Wait();
