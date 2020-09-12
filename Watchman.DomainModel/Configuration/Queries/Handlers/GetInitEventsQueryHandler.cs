@@ -2,7 +2,7 @@
 using Watchman.Cqrs;
 using Watchman.Integrations.MongoDB;
 
-namespace Watchman.DomainModel.Settings.Queries.Handlers
+namespace Watchman.DomainModel.Configuration.Queries.Handlers
 {
     public class GetInitEventsQueryHandler : IQueryHandler<GetInitEventsQuery, GetInitEventsQueryResults>
     {

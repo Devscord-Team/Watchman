@@ -1,17 +1,12 @@
 ﻿using Autofac;
 using Devscord.DiscordFramework;
-using Devscord.DiscordFramework.Commons.Extensions;
-using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
-using Devscord.DiscordFramework.Services.Factories;
 using MongoDB.Driver;
 using Serilog;
 using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Devscord.DiscordFramework.Commons.Exceptions;
 using Watchman.Discord.Areas.Help.Services;
 using Watchman.Discord.Areas.Initialization.Services;
 using Watchman.Discord.Areas.Protection.Services;
@@ -19,8 +14,8 @@ using Watchman.Discord.Areas.Users.Services;
 using Watchman.Discord.Ioc;
 using Watchman.Integrations.Logging;
 using Watchman.Integrations.MongoDB;
-using Watchman.DomainModel.Settings.Services;
 using Watchman.Discord.Integration.DevscordFramework;
+using Watchman.DomainModel.Configuration.Services;
 
 namespace Watchman.Discord
 {
@@ -42,7 +37,7 @@ namespace Watchman.Discord
             MongoConfiguration.Initialize();
             ExceptionHandlerService.DiscordConfiguration = this._configuration;
 
-            return WorkflowBuilder.Create(this._configuration.Token, this._context, typeof(WatchmanBot).Assembly, this._configuration.ExceptionServerId, this._configuration.ExceptionChannelId)
+            return WorkflowBuilder.Create(this._configuration.Token, this._context, typeof(WatchmanBot).Assembly)
                 .SetDefaultMiddlewares()
                 .AddOnReadyHandlers(builder =>
                 {

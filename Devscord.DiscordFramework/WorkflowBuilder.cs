@@ -4,13 +4,11 @@ using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Integration;
 using Devscord.DiscordFramework.Middlewares;
 using Devscord.DiscordFramework.Middlewares.Contexts;
-using Devscord.DiscordFramework.Services;
 using Discord;
 using Discord.WebSocket;
 using Serilog;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -26,7 +24,7 @@ namespace Devscord.DiscordFramework
         private readonly IComponentContext _context;
         private readonly Workflow _workflow;
 
-        private WorkflowBuilder(string token, IComponentContext context, Assembly botAssembly, ulong debugServerId, ulong debugChannelId)
+        private WorkflowBuilder(string token, IComponentContext context, Assembly botAssembly)
         {
             this._client = new DiscordSocketClient(new DiscordSocketConfig
             {
@@ -37,9 +35,9 @@ namespace Devscord.DiscordFramework
             this._workflow = new Workflow(botAssembly, context);
         }
 
-        public static WorkflowBuilder Create(string token, IComponentContext context, Assembly botAssembly, ulong debugServerId, ulong debugChannelId)
+        public static WorkflowBuilder Create(string token, IComponentContext context, Assembly botAssembly)
         {
-            return new WorkflowBuilder(token, context, botAssembly, debugServerId, debugChannelId);
+            return new WorkflowBuilder(token, context, botAssembly);
         }
 
         public WorkflowBuilder SetMessageHandler(Func<SocketMessage, Task> action)

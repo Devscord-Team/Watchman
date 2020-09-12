@@ -2,7 +2,7 @@
 using Watchman.Cqrs;
 using Watchman.Integrations.MongoDB;
 
-namespace Watchman.DomainModel.Settings.Commands.Handlers
+namespace Watchman.DomainModel.Configuration.Commands.Handlers
 {
     public class AddInitEventCommandHandler : ICommandHandler<AddInitEventCommand>
     {

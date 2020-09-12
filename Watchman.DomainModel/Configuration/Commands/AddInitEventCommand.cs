@@ -1,7 +1,7 @@
 ﻿using System;
 using Watchman.Cqrs;
 
-namespace Watchman.DomainModel.Settings.Commands
+namespace Watchman.DomainModel.Configuration.Commands
 {
     public class AddInitEventCommand : ICommand
     {

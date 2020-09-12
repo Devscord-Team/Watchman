@@ -1,7 +1,7 @@
 ﻿using System;
 using Watchman.Integrations.MongoDB;
 
-namespace Watchman.DomainModel.Settings
+namespace Watchman.DomainModel.Configuration
 {
     public class InitEvent : Entity
     {

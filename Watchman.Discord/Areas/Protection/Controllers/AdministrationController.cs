@@ -25,8 +25,10 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         [AdminCommand]
         public async Task CreateChannelForComplaints(ComplaintsChannelCommand command, Contexts contexts)
         {
+            var complaintsChannelName = string.IsNullOrWhiteSpace(command.Name) ? "skargi" : command.Name;
+            // get from base channel id
             var complaintsChannel = contexts.Server.GetTextChannels().FirstOrDefault(x => x.Name == "skargi")
-                ?? await this._channelsService.CreateNewChannelAsync(contexts.Server, "skargi");
+                ?? await this._channelsService.CreateNewChannelAsync(contexts.Server, complaintsChannelName);
 
             var readingAndSending = new List<Permission> { Permission.ReadMessages, Permission.SendMessages };
 
@@ -44,7 +46,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             await this._channelsService.SetPermissions(complaintsChannel, contexts.Server, mutedPermissions, mutedRole);
             await this._channelsService.SetPermissions(complaintsChannel, contexts.Server, everyonePermissions, everyoneRole);
 
-            
+
             // add the channel's ID to a base
             // assing action to ChannelRemoved to remove complaintsChannelId from the base, when the channel is deleted
         }

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using Devscord.DiscordFramework.Commons.Extensions;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Statistics.Services;
-using Watchman.DomainModel.Settings.Commands;
-using Watchman.DomainModel.Settings.Queries;
+using Watchman.DomainModel.Configuration.Commands;
+using Watchman.DomainModel.Configuration.Queries;
 
 namespace Watchman.Discord.Areas.Initialization.Services
 {

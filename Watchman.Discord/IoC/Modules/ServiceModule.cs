@@ -8,7 +8,7 @@ using Watchman.Cqrs;
 using Watchman.Discord.Areas.Commons;
 using Watchman.Discord.Integration.DevscordFramework;
 using Watchman.DomainModel.Commons.Calculators.Statistics;
-using Watchman.DomainModel.Settings.Services;
+using Watchman.DomainModel.Configuration.Services;
 
 namespace Watchman.Discord.IoC.Modules
 {

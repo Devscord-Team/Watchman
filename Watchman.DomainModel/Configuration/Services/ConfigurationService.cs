@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Watchman.Integrations.MongoDB;
 
-namespace Watchman.DomainModel.Settings.Services
+namespace Watchman.DomainModel.Configuration.Services
 {
     public class ConfigurationService : IConfigurationService
     {

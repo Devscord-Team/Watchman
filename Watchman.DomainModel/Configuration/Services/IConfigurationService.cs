@@ -1,4 +1,4 @@
-﻿namespace Watchman.DomainModel.Settings.Services
+﻿namespace Watchman.DomainModel.Configuration.Services
 {
     public interface IConfigurationService
     {

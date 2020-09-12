@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Serilog;
 
-namespace Watchman.DomainModel.Settings.Services
+namespace Watchman.DomainModel.Configuration.Services
 {
     public class ConfigurationMapperService
     {
