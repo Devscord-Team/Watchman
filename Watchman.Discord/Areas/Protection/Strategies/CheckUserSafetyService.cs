@@ -19,10 +19,10 @@ namespace Watchman.Discord.Areas.Protection.Strategies
         private Dictionary<ulong, ServerSafeUsers> _safeUsersOnServers;
         private readonly IQueryBus _queryBus;
         private readonly DiscordServersService _discordServersService;
-        private readonly ConfigurationService _configurationService;
+        private readonly IConfigurationService _configurationService;
         private readonly UsersService _usersService;
 
-        public CheckUserSafetyService(IQueryBus queryBus, DiscordServersService discordServersService, ConfigurationService configurationService, UsersService usersService)
+        public CheckUserSafetyService(IQueryBus queryBus, DiscordServersService discordServersService, IConfigurationService configurationService, UsersService usersService)
         {
             this._queryBus = queryBus;
             this._discordServersService = discordServersService;

@@ -67,7 +67,7 @@ namespace Devscord.DiscordFramework
 
         internal void MapHandlers(DiscordSocketClient client)
         {
-            this.OnReady.ForEach(x => client.Ready += () => this.WithExceptionHandlerAwait(x));
+            //this.OnReady.ForEach(x => client.Ready += () => this.WithExceptionHandlerAwait(x));
             this.OnMessageReceived.ForEach(func => client.MessageReceived += message => this.WithExceptionHandlerAwait(func, message));
             Server.UserJoined += user => this.CallUserJoined(user);
             Server.BotAddedToServer += guild => this.CallServerAddedBot(guild);
@@ -88,7 +88,7 @@ namespace Devscord.DiscordFramework
             catch (Exception e)
             {
                 Log.Error(e, e.StackTrace);
-                this.OnWorkflowException.ForEach(x => x.Invoke(e, context));
+                //this.OnWorkflowException.ForEach(x => x.Invoke(e, context));
             }
         }
 
