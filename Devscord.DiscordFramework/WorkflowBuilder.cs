@@ -35,12 +35,6 @@ namespace Devscord.DiscordFramework
             this._token = token;
             this._context = context;
             this._workflow = new Workflow(botAssembly, context);
-            this._workflow.OnReady.Add(async () =>
-            {
-                var server = await context.Resolve<DiscordServersService>().GetDiscordServerAsync(debugServerId);
-                var channel = server.GetTextChannels().FirstOrDefault(x => x.Id == debugChannelId);
-                this._workflow.DebugServerContexts = new Contexts(server, channel, user: null);
-            });
         }
 
         public static WorkflowBuilder Create(string token, IComponentContext context, Assembly botAssembly, ulong debugServerId, ulong debugChannelId)
@@ -127,7 +121,7 @@ namespace Devscord.DiscordFramework
             return this;
         }
 
-        public WorkflowBuilder AddOnWorkflowExceptionHandlers(Action<WorkflowBuilderHandlers<Action<Exception, Contexts>>> action)
+        public WorkflowBuilder AddOnWorkflowExceptionHandlers(Action<WorkflowBuilderHandlers<Func<Exception, Contexts, Task>>> action)
         {
             this.AddHandlers(action, this._workflow.OnWorkflowException.Add);
             Log.Debug("OnWorkflowException handlers have been set");

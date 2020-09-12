@@ -25,7 +25,6 @@ namespace Devscord.DiscordFramework
         private readonly ControllersService _controllersService;
         private readonly Stopwatch _stopWatch = new Stopwatch();
 
-        public Contexts DebugServerContexts { get; set; }
         public List<Func<Task>> OnReady { get; set; } = new List<Func<Task>>();
         public List<Func<Contexts, Task>> OnUserJoined { get; set; } = new List<Func<Contexts, Task>>();
         public List<Func<DiscordServerContext, Task>> OnDiscordServerAddedBot { get; set; } = new List<Func<DiscordServerContext, Task>>();
@@ -34,7 +33,7 @@ namespace Devscord.DiscordFramework
         public List<Func<UserRole, Task>> OnRoleCreated { get; set; } = new List<Func<UserRole, Task>>();
         public List<Func<UserRole, Task>> OnRoleRemoved { get; set; } = new List<Func<UserRole, Task>>();
         public List<Func<SocketMessage, Task>> OnMessageReceived { get; set; } = new List<Func<SocketMessage, Task>>();
-        public List<Action<Exception, Contexts>> OnWorkflowException { get; set; } = new List<Action<Exception, Contexts>>();
+        public List<Func<Exception, Contexts, Task>> OnWorkflowException { get; set; } = new List<Func<Exception, Contexts, Task>>();
 
         internal Workflow(Assembly botAssembly, IComponentContext context)
         {
@@ -93,7 +92,7 @@ namespace Devscord.DiscordFramework
             catch (Exception e)
             {
                 Log.Error(e, e.StackTrace);
-                this.OnWorkflowException.ForEach(x => x.Invoke(e, sendExceptionsContexts ?? this.DebugServerContexts));
+                this.OnWorkflowException.ForEach(x => x.Invoke(e, sendExceptionsContexts));
             }
         }
 

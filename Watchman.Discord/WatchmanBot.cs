@@ -40,6 +40,7 @@ namespace Watchman.Discord
         public WorkflowBuilder GetWorkflowBuilder()
         {
             MongoConfiguration.Initialize();
+            ExceptionHandlerService.DiscordConfiguration = this._configuration;
 
             return WorkflowBuilder.Create(this._configuration.Token, this._context, typeof(WatchmanBot).Assembly, this._configuration.ExceptionServerId, this._configuration.ExceptionChannelId)
                 .SetDefaultMiddlewares()
@@ -80,46 +81,16 @@ namespace Watchman.Discord
                 .AddOnWorkflowExceptionHandlers(builder =>
                 {
                     builder
-                        .AddFromIoC<ExceptionHandlerService>(x => x.LogException)
-                        .AddHandler(this.PrintDebugExceptionInfo, onlyOnDebug: true)
-                        .AddHandler((exception, _) => this.SendExceptionInfo(exception))
-                        .AddHandler((exception, _) => this.PrintExceptionOnConsole(exception));
+                        .AddFromIoC<ExceptionHandlerService>(x => (e, _) => x.LogException(e))
+                        .AddFromIoC<ExceptionHandlerService>(x => x.SendExceptionResponse)
+                        .AddFromIoC<ExceptionHandlerService>(x => x.PrintDebugExceptionInfo)
+                        .AddFromIoC<ExceptionHandlerService>(x => (e, _) => x.SendExceptionToDebugServer(e), onlyOnDebug: true);
                 })
                 .AddOnChannelCreatedHandlers(builder =>
                 {
                     builder
                         .AddFromIoC<MuteRoleInitService>(x => (_, server) => x.InitForServer(server));
                 });
-        }
-
-        private void SendExceptionInfo(Exception e)
-        {
-            var exceptionMessage = this.BuildExceptionMessage(e).ToString();
-            var messagesService = this._context.Resolve<MessagesServiceFactory>().Create(this._configuration.ExceptionChannelId, this._configuration.ExceptionServerId);
-            var isBotException = e.InnerException is BotException;
-            if (isBotException && this._configuration.SendOnlyUnknownExceptionInfo)
-            {
-                return;
-            }
-            messagesService.SendMessage(exceptionMessage, Devscord.DiscordFramework.Commons.MessageType.BlockFormatted);
-        }
-
-        private void PrintDebugExceptionInfo(Exception e, Contexts contexts)
-        {
-            var exceptionMessage = this.BuildExceptionMessage(e).ToString();
-            var messagesService = this._context.Resolve<MessagesServiceFactory>().Create(contexts);
-            messagesService.SendMessage(exceptionMessage, Devscord.DiscordFramework.Commons.MessageType.BlockFormatted);
-        }
-
-        private void PrintExceptionOnConsole(Exception e)
-        {
-            var exceptionMessage = this.BuildExceptionMessage(e).ToString();
-            Console.WriteLine(exceptionMessage);
-        }
-
-        private StringBuilder BuildExceptionMessage(Exception e)
-        {
-            return new StringBuilder($"{e.Message}\r\n\r\n{e.InnerException}\r\n\r\n{e.StackTrace}```").FormatMessageIntoBlock();
         }
 
         private IContainer GetAutofacContainer(DiscordConfiguration configuration)

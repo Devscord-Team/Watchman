@@ -30,20 +30,13 @@ namespace Watchman.Discord.Areas.Initialization.Services
 
         public async Task InitServer(DiscordServerContext server)
         {
-            try
-            {
-                Log.Information("Initializing server: {server}", server.ToJson());
-                await this.MuteRoleInit(server);
-                var lastInitDate = this.GetLastInitDate(server);
-                await this.ReadServerMessagesHistory(server, lastInitDate);
-                await this._cyclicStatisticsGeneratorService.GenerateStatsForDaysBefore(server, lastInitDate);
-                await this.NotifyDomainAboutInit(server);
-                Log.Information("Done server: {server}", server.ToJson());
-            }
-            catch (Exception e)
-            {
-                throw ;
-            }
+            Log.Information("Initializing server: {server}", server.ToJson());
+            await this.MuteRoleInit(server);
+            var lastInitDate = this.GetLastInitDate(server);
+            await this.ReadServerMessagesHistory(server, lastInitDate);
+            await this._cyclicStatisticsGeneratorService.GenerateStatsForDaysBefore(server, lastInitDate);
+            await this.NotifyDomainAboutInit(server);
+            Log.Information("Done server: {server}", server.ToJson());
         }
 
         private async Task MuteRoleInit(DiscordServerContext server)

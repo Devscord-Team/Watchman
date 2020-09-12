@@ -1,14 +1,14 @@
-﻿using Devscord.DiscordFramework.Framework.Commands.Responses;
-using Devscord.DiscordFramework.Integration;
-using Discord.Rest;
-using Serilog;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Commons.Exceptions;
-using System.Linq;
+using Devscord.DiscordFramework.Framework.Commands.Responses;
+using Devscord.DiscordFramework.Integration;
 using Discord;
+using Discord.Rest;
+using Serilog;
 using MessageType = Devscord.DiscordFramework.Commons.MessageType;
 
 namespace Devscord.DiscordFramework.Services
@@ -95,7 +95,7 @@ namespace Devscord.DiscordFramework.Services
                 {
                     arg = arg.Append(botException.Value).ToArray();
                 }
-                return (string) responseManagerMethod.Invoke(null, arg);
+                return (string)responseManagerMethod.Invoke(null, arg);
             });
         }
 
@@ -125,7 +125,7 @@ namespace Devscord.DiscordFramework.Services
             {
                 guild = Server.GetGuild(this.GuildId).Result;
             }
-            var channel = (IRestMessageChannel) Server.GetChannel(this.ChannelId, guild).Result;
+            var channel = (IRestMessageChannel)Server.GetChannel(this.ChannelId, guild).Result;
             return channel;
         }
 
