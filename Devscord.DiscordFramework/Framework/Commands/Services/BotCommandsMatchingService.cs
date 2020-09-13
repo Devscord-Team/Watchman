@@ -5,6 +5,7 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -133,21 +134,13 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                     }
                     continue;
                 }
-                if (property.Type == BotCommandPropertyType.Number && !value.All(char.IsDigit))
+                switch (property.Type)
                 {
-                    throw new InvalidArgumentsException();
-                }
-                if (property.Type == BotCommandPropertyType.Time && !this._exTime.IsMatch(value))
-                {
-                    throw new InvalidArgumentsException();
-                }
-                if (property.Type == BotCommandPropertyType.UserMention && !this._exUserMention.IsMatch(value))
-                {
-                    throw new InvalidArgumentsException();
-                }
-                if (property.Type == BotCommandPropertyType.ChannelMention && !this._exChannelMention.IsMatch(value))
-                {
-                    throw new InvalidArgumentsException();
+                    case BotCommandPropertyType.Number when !value.All(char.IsDigit):
+                    case BotCommandPropertyType.Time when !this._exTime.IsMatch(value):
+                    case BotCommandPropertyType.UserMention when !this._exUserMention.IsMatch(value):
+                    case BotCommandPropertyType.ChannelMention when !this._exChannelMention.IsMatch(value):
+                        throw new InvalidArgumentsException();
                 }
             }
             return true;
