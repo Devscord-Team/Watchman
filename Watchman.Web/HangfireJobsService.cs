@@ -9,7 +9,7 @@ using Watchman.Discord.Areas.Protection.Services;
 using Watchman.Discord.Areas.Protection.Strategies;
 using Watchman.Discord.Areas.Responses.Services;
 using Watchman.Discord.Areas.Statistics.Services;
-using Watchman.DomainModel.Settings.Services;
+using Watchman.DomainModel.Configuration.Services;
 
 namespace Watchman.Web
 {
