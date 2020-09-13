@@ -21,7 +21,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
         public Punishment GetPunishment(ulong userId, ulong serverId, SpamProbability spamProbability)
         {
             var takeFromTime = DateTime.Now.AddHours(-12);
-            var warnsCount = _warnsService.GetWarnsCount(userId, serverId, takeFromTime);              
+            var warnsCount = this._warnsService.GetWarnsCount(userId, serverId, takeFromTime);              
             Log.Information("User {userId} has {warnsCount} warns", userId, warnsCount);
             var punishmentOption = spamProbability switch
             {
