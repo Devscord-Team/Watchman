@@ -2,11 +2,11 @@
 
 namespace Watchman.DomainModel.Settings
 {
-    public class GetConfigurationInformationQuery :IQuery<GetConfigurationInformationQueryResult>
+    public class GetConfigurationQuery :IQuery<GetConfigurationQueryResult>
     {
         public ulong ServerId { get; }
 
-        public GetConfigurationInformationQuery(ulong serverId)
+        public GetConfigurationQuery(ulong serverId)
         {
             this.ServerId = serverId;
         }

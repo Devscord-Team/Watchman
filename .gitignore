@@ -335,4 +335,3 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
-/Watchman.Web/Areas/Administration/Controllers/SafeRolesController.cs

@@ -22,10 +22,5 @@ namespace Watchman.Web.Areas.Commons.Integration
             var command = new SendMessageToChannelCommand(guildId, channelId, message);
             await this._commandBus.ExecuteAsync(command);
         }
-        //TODO: improve this method, I had no idea how to get DiscordServerContext so I left it like that - looking forward to your help
-        public async Task InitializeAllServers()
-        {
-            Program.CreateHostBuilder(new string[] { }, Program.GetConfiguration()).Build().Run();
-        }
     }
 }

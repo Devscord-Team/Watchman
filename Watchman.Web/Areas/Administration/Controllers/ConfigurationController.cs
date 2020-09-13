@@ -23,10 +23,9 @@ namespace Watchman.Web.Areas.Administration.Controllers
         [HttpGet]
         public async Task<IEnumerable<ConfigurationItemDto>> GetConfiguration(ulong serverId = 0)
         {
-            var query = new GetConfigurationInformationQuery(serverId);
+            var query = new GetConfigurationQuery(serverId);
             var responseResult = await this._queryBus.ExecuteAsync(query);
-            var result = responseResult.ConfigurationInformation.Select(x=>new ConfigurationItemDto(x));
-            return result;
+            return responseResult.ConfigurationItems.Select(x=>new ConfigurationItemDto(x));
         }
     }
 }
