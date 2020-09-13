@@ -17,15 +17,15 @@ namespace Watchman.Web.Areas.Administration.Controllers
 
         public ConfigurationController(IQueryBus queryBus)
         {
-            this._queryBus = queryBus;
+            _queryBus = queryBus;
         }
 
         [HttpGet]
         public async Task<IEnumerable<ConfigurationItemDto>> GetConfiguration(ulong serverId = 0)
         {
             var query = new GetConfigurationQuery(serverId);
-            var responseResult = await this._queryBus.ExecuteAsync(query);
-            return responseResult.ConfigurationItems.Select(x=>new ConfigurationItemDto(x));
+            var responseResult = await _queryBus.ExecuteAsync(query);
+            return responseResult.ConfigurationItems.Select(x => new ConfigurationItemDto(x));
         }
     }
 }
