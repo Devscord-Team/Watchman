@@ -3,10 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Commons.Exceptions;
-using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
-using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Protection.Commands;
 using Watchman.DomainModel.Protection.Queries;
@@ -17,15 +15,13 @@ namespace Watchman.Discord.Areas.Protection.Services
     {
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
-        private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly ChannelsService _channelsService;
         private readonly UsersRolesService _usersRolesService;
 
-        public ComplaintsChannelService(IQueryBus queryBus, ICommandBus commandBus, MessagesServiceFactory messagesServiceFactory, ChannelsService channelsService, UsersRolesService usersRolesService)
+        public ComplaintsChannelService(IQueryBus queryBus, ICommandBus commandBus, ChannelsService channelsService, UsersRolesService usersRolesService)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;
-            this._messagesServiceFactory = messagesServiceFactory;
             this._channelsService = channelsService;
             this._usersRolesService = usersRolesService;
         }
