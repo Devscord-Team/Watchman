@@ -39,6 +39,7 @@
 
   <ItemGroup>
     <Folder Include="Areas\Messaging\Services\" />
+    <Folder Include="Areas\Protection\RequestParsers\" />
   </ItemGroup>
 
   <ItemGroup>

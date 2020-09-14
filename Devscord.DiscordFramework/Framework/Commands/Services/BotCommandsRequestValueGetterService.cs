@@ -10,59 +10,73 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
     {
         public object GetValueByName(string key, bool isList, DiscordRequest request, BotCommandTemplate template)
         {
-            var result = request.Arguments.FirstOrDefault(a => a.Name.ToLowerInvariant() == key.ToLowerInvariant());
+            var argType = template.Properties.First(x => x.Name.ToLowerInvariant() == key.ToLowerInvariant()).Type;
+            var result = request.Arguments.FirstOrDefault(a => a.Name?.ToLowerInvariant() == key.ToLowerInvariant());
+            if (argType == BotCommandPropertyType.Bool)
+            {
+                return result == null ? bool.FalseString : bool.TrueString;
+            }
             if (result == null)
             {
                 return null;
             }
-            var argType = template.Properties.FirstOrDefault(x => x.Name.ToLowerInvariant() == key.ToLowerInvariant())
-                ?.Type;
-            if (argType.HasValue && argType.Value == BotCommandPropertyType.Bool)
+            if (argType == BotCommandPropertyType.Text)
             {
-                return result.Value ?? bool.TrueString;
+                return result.Value.Trim('\"');
             }
             if (!isList)
             {
                 return result.Value;
             }
-            var argumentsList = request.Arguments.ToList();
-            var indexOf = argumentsList.IndexOf(result);
-            var nextResults = argumentsList.Skip(indexOf + 1).TakeWhile(x => x.Name == null);
-            var list = new List<string> { result.Value };
-            list.AddRange(nextResults.Select(x => x.Value));
+            var indexOf = request.Arguments.ToList().IndexOf(result);
+            var list = request.Arguments
+                .Skip(indexOf)
+                .TakeWhile(x => x.Name == result.Name || x.Name == null)
+                .Select(x => x.Value)
+                .ToList();
+
             return list;
         }
 
         public object GetValueByNameFromCustomCommand(string key, bool isList, BotCommandTemplate template, Match match)
         {
-            if (!match.Groups.ContainsKey(key))
-            {
-                return null;
-            }
-            var lowerCaseKey = key.ToLowerInvariant();
             var value = match.Groups[key].Value.Trim();
-            var argType = template.Properties.FirstOrDefault(x => x.Name.ToLowerInvariant() == lowerCaseKey)?.Type;
-            if (argType.HasValue && argType.Value == BotCommandPropertyType.Bool && !string.IsNullOrWhiteSpace(value))
+            var argType = template.Properties.First(x => x.Name.ToLowerInvariant() == key.ToLowerInvariant()).Type;
+            if (argType == BotCommandPropertyType.Bool)
             {
-                return bool.TrueString;
+                return string.IsNullOrWhiteSpace(value) ? bool.FalseString : bool.TrueString;
+            }
+            if (argType == BotCommandPropertyType.SingleWord)
+            {
+                return value.Split().First().Trim('\"'); 
+            }
+            if (argType == BotCommandPropertyType.Text)
+            {
+                return value.Trim('\"');
             }
             if (!isList)
             {
                 return value;
             }
-            if (!value.Contains('\"') || value.Count(x => x == '\"') % 2 != 0)
+
+            if (!value.Contains('\"'))
             {
-                return value.Split(' ').ToList();
+                return value.Split().Where(x => !string.IsNullOrEmpty(x))
+                    .ToList();
             }
-            var results = value.Split('"')
-                .Where(x => !string.IsNullOrWhiteSpace(x) && !x.StartsWith(' ') && !x.EndsWith(' '))
-                .ToList();
-            foreach (var toRemove in results)
+            var splittedResults = value.Split('"').Where(x => !string.IsNullOrWhiteSpace(x));
+            var results = new List<string>();
+            foreach (var toRemove in splittedResults)
             {
+                if (value.Contains($"\"{toRemove}\""))
+                {
+                    // here we're adding text with quotation marks to the results, but texts without quotation marks are added later
+                    results.Add(toRemove);
+                }
                 value = value.Replace($"\"{toRemove}\"", string.Empty);
             }
-            var otherResults = value.Split(' ').Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.Trim());
-            results.AddRange(otherResults);
+            var otherResultsWithoutQuote = value.Split().Where(x => !string.IsNullOrWhiteSpace(x));
+            results.AddRange(otherResultsWithoutQuote);
             return results;
         }
     }

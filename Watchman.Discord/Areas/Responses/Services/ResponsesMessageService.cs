@@ -1,11 +1,13 @@
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
 using Devscord.DiscordFramework.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Watchman.DomainModel.Responses;
+using Watchman.Discord.Areas.Responses.BotCommands;
 
 namespace Watchman.Discord.Areas.Responses.Services
 {
@@ -21,18 +23,18 @@ namespace Watchman.Discord.Areas.Responses.Services
             this._messagesServiceFactory = messagesServiceFactory;
         }
 
-        public Task PrintResponses(string commandArgument, Contexts contexts)
+        public Task PrintResponses(ResponsesCommand command, Contexts contexts)
         {
             var messagesService = this._messagesServiceFactory.Create(contexts);
-            if (commandArgument == "default")
+            if (command.Default)
             {
                 return messagesService.SendEmbedMessage("Domyślne odpowiedzi:", DESCRIPTION, this.GetDefaultResponses());
             }
-            if (commandArgument == "custom")
+            else if (command.Custom)
             {
                 return messagesService.SendEmbedMessage("Nadpisane odpowiedzi:", DESCRIPTION, this.GetCustomResponses(contexts.Server.Id));
             }
-            return messagesService.SendEmbedMessage("Wszystkie odpowiedzi:", DESCRIPTION, this.GetAllResponses(contexts.Server.Id));
+            return messagesService.SendEmbedMessage("Wszystkie odpowiedzi:", DESCRIPTION, this.GetAllResponses(contexts.Server.Id)); 
         }
 
         private IEnumerable<KeyValuePair<string, string>> GetDefaultResponses()
