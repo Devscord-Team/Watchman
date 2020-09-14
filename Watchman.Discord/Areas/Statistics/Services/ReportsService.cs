@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Watchman.Common.Models;
+using Watchman.Discord.Areas.Statistics.BotCommands;
 using Watchman.Discord.Areas.Statistics.Models;
 using Watchman.DomainModel.Messages;
 
@@ -9,21 +10,21 @@ namespace Watchman.Discord.Areas.Statistics.Services
 {
     public class ReportsService
     {
-        public Period SelectPeriod(string period)
+        public Period SelectPeriod(StatsCommand command)
         {
-            if (period.ToLowerInvariant() == "hour")
+            if (command.Hour)
             {
                 return Period.Hour;
             }
-            else if (period.ToLowerInvariant() == "day")
+            else if (command.Day)
             {
                 return Period.Day;
             }
-            else if (period.ToLowerInvariant() == "week")
+            else if (command.Week)
             {
                 return Period.Week;
             }
-            else if (period.ToLowerInvariant() == "month")
+            else if (command.Month)
             {
                 return Period.Month;
             }

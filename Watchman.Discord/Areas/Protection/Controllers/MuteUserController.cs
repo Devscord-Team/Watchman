@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Linq;
 using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
-using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
+using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Watchman.Common.Models;
+using Watchman.Discord.Areas.Protection.BotCommands;
 using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Services.Factories;
@@ -35,27 +37,28 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             this._messagesServiceFactory = messagesServiceFactory;
         }
 
-        [DiscordCommand("mute")]
         [AdminCommand]
-        public async Task MuteUser(DiscordRequest request, Contexts contexts)
+        public async Task MuteUser(MuteCommand command, Contexts contexts)
         {
-            var requestParser = new MuteRequestParser(request, this._usersService, contexts);
-            var userToMute = requestParser.GetUser();
-            if (userToMute.Id == this._usersService.GetBot().Id)
+            var userToMute = await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
+            if (userToMute == null)
             {
-                throw new UserDidntMentionAnyUserException();
+                throw new UserNotFoundException(command.User.GetUserMention());
             }
-            var muteEvent = requestParser.GetMuteEvent(userToMute.Id, contexts, request);
+            var timeRange = TimeRange.FromNow(DateTime.UtcNow + command.Time); //todo: change DateTime.UtcNow to Contexts.SentAt
+            var muteEvent = new MuteEvent(userToMute.Id, timeRange, command.Reason, contexts.Server.Id, contexts.Channel.Id);
             await this._mutingService.MuteUserOrOverwrite(contexts, muteEvent, userToMute);
             this._unmutingService.UnmuteInFuture(contexts, muteEvent, userToMute);
         }
 
-        [DiscordCommand("unmute")]
         [AdminCommand]
-        public async Task UnmuteUserAsync(DiscordRequest request, Contexts contexts)
+        public async Task UnmuteUserAsync(UnmuteCommand command, Contexts contexts)
         {
-            var requestParser = new MuteRequestParser(request, this._usersService, contexts);
-            var userToUnmute = requestParser.GetUser();
+            var userToUnmute = await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
+            if (userToUnmute == null)
+            {
+                throw new UserNotFoundException(command.User.GetUserMention());
+            }
             await this._unmutingService.UnmuteNow(contexts, userToUnmute);
         }
 

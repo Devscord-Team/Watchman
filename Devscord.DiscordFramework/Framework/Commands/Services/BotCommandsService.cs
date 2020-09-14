@@ -1,7 +1,9 @@
 ﻿using Devscord.DiscordFramework.Framework.Commands.Builders;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework.Framework.Commands.Services
 {
@@ -26,9 +28,19 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             return this.botCommandsTemplateRenderingService.RenderTextTemplate(template);
         }
 
-        public bool IsMatchedWithCommand(DiscordRequest request, BotCommandTemplate template)
+        public bool IsDefaultCommand(BotCommandTemplate template, IEnumerable<DiscordRequestArgument> arguments, bool isCommandMatchedWithCustom)
         {
-            return this.botCommandMatchingService.IsMatchedWithCommand(request, template);
+            return this.botCommandMatchingService.IsDefaultCommand(template, arguments, isCommandMatchedWithCustom);
+        }
+
+        public bool AreDefaultCommandArgumentsCorrect(BotCommandTemplate template, IEnumerable<DiscordRequestArgument> arguments)
+        {
+            return this.botCommandMatchingService.AreDefaultCommandArgumentsCorrect(template, arguments);
+        }
+
+        public bool AreCustomCommandArgumentsCorrect(BotCommandTemplate template, Regex customTemplate, string input)
+        {
+            return this.botCommandMatchingService.AreCustomCommandArgumentsCorrect(template, customTemplate, input);
         }
 
         public BotCommandTemplate GetCommandTemplate(Type commandType)
