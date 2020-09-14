@@ -9,10 +9,12 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Newtonsoft.Json;
 using Serilog;
 using Serilog.Context;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace Devscord.DiscordFramework
 {
@@ -112,6 +114,11 @@ namespace Devscord.DiscordFramework
 
         private async Task RunMethodsIBotCommand(DiscordRequest request, Contexts contexts, IEnumerable<ControllerInfo> controllers)
         {
+            if (!request.IsCommandForBot)
+            {
+                return;
+            }
+
             foreach (var controllerInfo in controllers)
             {
                 using (LogContext.PushProperty("Controller", controllerInfo.Controller.GetType().Name))
@@ -121,28 +128,19 @@ namespace Devscord.DiscordFramework
                         var commandInParameterType = method.GetParameters().First(x => typeof(IBotCommand).IsAssignableFrom(x.ParameterType)).ParameterType;
                         //TODO zoptymalizować, spokojnie można to pobierać wcześniej i używać raz, zamiast wszystko obliczać przy każdym odpaleniu
                         var template = this._botCommandsService.GetCommandTemplate(commandInParameterType);
-                        var isToContinue = !this._botCommandsService.IsMatchedWithCommand(request, template);
-                        IBotCommand command;
-                        if (isToContinue)
-                        {
-                            var customCommand = await this._commandsContainer.GetCommand(request, commandInParameterType, contexts.Server.Id);
-                            if (customCommand == null)
-                            {
-                                continue;
-                            }
-                            //TODO optional parameters validation
-                            command = this._botCommandsService.ParseCustomTemplate(commandInParameterType, template, customCommand.Template, request.OriginalMessage);
-                        }
-                        else
-                        {
-                            command = this._botCommandsService.ParseRequestToCommand(commandInParameterType, request, template);
-                        }
-                        if (!this.IsValid(contexts, method))
+                        var customCommand = await this._commandsContainer.GetCommand(request, commandInParameterType, contexts.Server.Id);
+                        var isCommandMatchedWithCustom = customCommand != null;
+                        var isThereDefaultCommandWithGivenName = request.Name.ToLowerInvariant() == template.NormalizedCommandName;
+                        if (!isCommandMatchedWithCustom && !isThereDefaultCommandWithGivenName)
                         {
                             continue;
                         }
+                        if (!this.IsValid(contexts, method))
+                        { 
+                            return;
+                        }
+                        var command = this.CreateBotCommand(isThereDefaultCommandWithGivenName, template, commandInParameterType, request, customCommand?.Template, isCommandMatchedWithCustom);
                         await InvokeMethod(command, contexts, controllerInfo, method);
-                        return;
                     }
                 }
             }
@@ -152,6 +150,23 @@ namespace Devscord.DiscordFramework
         {
             this.CheckPermissions(method, contexts);
             return true;
+        }
+
+        private IBotCommand CreateBotCommand(bool isThereDefaultCommandWithGivenName, BotCommandTemplate template, Type commandInParameterType, DiscordRequest request, Regex customTemplate, bool isCommandMatchedWithCustom)
+        {
+            var isDefaultCommand = isThereDefaultCommandWithGivenName && this._botCommandsService.IsDefaultCommand(template, request.Arguments, isCommandMatchedWithCustom);
+            if (isDefaultCommand && this._botCommandsService.AreDefaultCommandArgumentsCorrect(template, request.Arguments))
+            {
+                return this._botCommandsService.ParseRequestToCommand(commandInParameterType, request, template);
+            }
+            else if (isCommandMatchedWithCustom && this._botCommandsService.AreCustomCommandArgumentsCorrect(template, customTemplate, request.OriginalMessage))
+            {
+                return this._botCommandsService.ParseCustomTemplate(commandInParameterType, template, customTemplate, request.OriginalMessage);
+            }
+            else
+            {
+                throw new InvalidArgumentsException();
+            }
         }
 
         private bool IsMatchedCommand(IEnumerable<DiscordCommand> commands, DiscordRequest request)
