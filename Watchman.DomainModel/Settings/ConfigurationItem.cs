@@ -10,15 +10,15 @@ namespace Watchman.DomainModel.Settings
 
         public ConfigurationItem(object value, ulong serverId, string name)
         {
-            Value = value;
-            ServerId = serverId;
-            Name = name;
+            this.Value = value;
+            this.ServerId = serverId;
+            this.Name = name;
         }
 
         public void SetValue(object value)
         {
-            Value = value;
-            Update();
+            this.Value = value;
+            this.Update();
         }
     }
 }

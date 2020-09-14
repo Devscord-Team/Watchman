@@ -9,7 +9,7 @@ namespace Watchman.DomainModel.Settings
 
         public GetConfigurationQueryResult(IEnumerable<ConfigurationItem> configurationItems)
         {
-            ConfigurationItems = configurationItems;
+            this.ConfigurationItems = configurationItems;
         }
     }
 }

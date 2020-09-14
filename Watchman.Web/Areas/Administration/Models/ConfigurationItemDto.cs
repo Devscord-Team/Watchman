@@ -15,9 +15,9 @@ namespace Watchman.Web.Areas.Administration.Models
 
         public ConfigurationItemDto(ConfigurationItem configurationItem)
         {
-            Name = configurationItem.Name;
-            Value = configurationItem.Value;
-            ServerId = configurationItem.ServerId;
+            this.Name = configurationItem.Name;
+            this.Value = configurationItem.Value;
+            this.ServerId = configurationItem.ServerId;
         }
     }
 }

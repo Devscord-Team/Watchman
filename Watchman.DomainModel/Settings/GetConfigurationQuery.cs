@@ -8,7 +8,7 @@ namespace Watchman.DomainModel.Settings
 
         public GetConfigurationQuery(ulong serverId)
         {
-            ServerId = serverId;
+            this.ServerId = serverId;
         }
     }
 }
