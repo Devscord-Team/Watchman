@@ -16,7 +16,7 @@ namespace Watchman.DomainModel.Protection.Commands.Handlers
         public Task HandleAsync(AddComplaintsChannelCommand command)
         {
             using var session = this._sessionFactory.Create();
-            var complaintsChannel = new ComplaintsChannel(command.ChannelId);
+            var complaintsChannel = new ComplaintsChannel(command.ChannelId, command.ServerId);
             return session.AddAsync(complaintsChannel);
         }
     }
