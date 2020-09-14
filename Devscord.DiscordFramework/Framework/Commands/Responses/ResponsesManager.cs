@@ -273,6 +273,16 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("role", roleName));
         }
 
+        public static string ComplaintsChannelAlreadyExists(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("ComplaintsChannelAlreadyExists");
+        }
+
+        public static string ComplaintsChannelHasBeenCreated(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("ComplaintsChannelHasBeenCreated");
+        }
+
         public static string ServerDoesntHaveAnyTrustedRole(this ResponsesService responsesService)
         {
             return responsesService.ProcessResponse("ServerDoesntHaveAnyTrustedRole");

@@ -98,6 +98,13 @@ namespace Devscord.DiscordFramework
             return this;
         }
 
+        public WorkflowBuilder AddOnChannelRemovedHandler(Action<WorkflowBuilderHandlers<Func<ChannelContext, DiscordServerContext, Task>>> action)
+        {
+            this.AddHandlers(action, this._workflow.OnChannelRemoved.Add);
+            Log.Debug("OnChannelRemoved handlers have been set");
+            return this;
+        }
+
         public WorkflowBuilder AddOnRoleUpdatedHandlers(Action<WorkflowBuilderHandlers<Func<UserRole, UserRole, Task>>> action)
         {
             this.AddHandlers(action, this._workflow.OnRoleUpdated.Add);

@@ -45,7 +45,7 @@ namespace Watchman.Discord
                         .AddHandler(() => Task.Run(() => Log.Information("Bot started and logged in...")))
                         .AddFromIoC<ConfigurationService>(configurationService => configurationService.InitDefaultConfigurations)
                         .AddFromIoC<CustomCommandsLoader>(customCommandsLoader => customCommandsLoader.InitDefaultCustomCommands)
-                        .AddFromIoC<HelpDataCollectorService, HelpDBGeneratorService>((dataCollector, helpService) => 
+                        .AddFromIoC<HelpDataCollectorService, HelpDBGeneratorService>((dataCollector, helpService) =>
                             () => helpService.FillDatabase(dataCollector.GetCommandsInfo(typeof(WatchmanBot).Assembly)))
                         .AddFromIoC<ResponsesInitService>(responsesService => responsesService.InitNewResponsesFromResources)
                         .AddFromIoC<InitializationService, DiscordServersService>((initService, serversService) => async () =>
@@ -85,6 +85,11 @@ namespace Watchman.Discord
                 {
                     builder
                         .AddFromIoC<MuteRoleInitService>(x => (_, server) => x.InitForServer(server));
+                })
+                .AddOnChannelRemovedHandler(builder =>
+                {
+                    builder
+                        .AddFromIoC<ComplaintsChannelService>(x => x.RemoveIfNeededComplaintsChannel);
                 });
         }
 

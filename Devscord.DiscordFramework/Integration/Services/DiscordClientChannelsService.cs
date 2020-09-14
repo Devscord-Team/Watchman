@@ -18,6 +18,7 @@ namespace Devscord.DiscordFramework.Integration.Services
     internal class DiscordClientChannelsService : IDiscordClientChannelsService
     {
         public Func<SocketChannel, Task> ChannelCreated { get; set; }
+        public Func<SocketChannel, Task> ChannelRemoved { get; set; }
 
         private DiscordSocketRestClient _restClient => this._client.Rest;
         private readonly DiscordSocketClient _client;
@@ -31,7 +32,8 @@ namespace Devscord.DiscordFramework.Integration.Services
             this._discordClientUsersService = discordClientUsersService;
             this._userContextsFactory = userContextsFactory;
             this._commandParser = commandParser;
-            this._client.ChannelCreated += x => this.ChannelCreated(x);
+            this._client.ChannelCreated += this.ChannelCreated;
+            this._client.ChannelDestroyed += this.ChannelRemoved;
         }
 
         public async Task SendDirectMessage(ulong userId, string message)

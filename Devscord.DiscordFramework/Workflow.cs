@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Autofac;
@@ -29,6 +30,7 @@ namespace Devscord.DiscordFramework
         public List<Func<Contexts, Task>> OnUserJoined { get; set; } = new List<Func<Contexts, Task>>();
         public List<Func<DiscordServerContext, Task>> OnDiscordServerAddedBot { get; set; } = new List<Func<DiscordServerContext, Task>>();
         public List<Func<ChannelContext, DiscordServerContext, Task>> OnChannelCreated { get; set; } = new List<Func<ChannelContext, DiscordServerContext, Task>>();
+        public List<Func<ChannelContext, DiscordServerContext, Task>> OnChannelRemoved { get; set; } = new List<Func<ChannelContext, DiscordServerContext, Task>>();
         public List<Func<UserRole, UserRole, Task>> OnRoleUpdated { get; set; } = new List<Func<UserRole, UserRole, Task>>();
         public List<Func<UserRole, Task>> OnRoleCreated { get; set; } = new List<Func<UserRole, Task>>();
         public List<Func<UserRole, Task>> OnRoleRemoved { get; set; } = new List<Func<UserRole, Task>>();
@@ -59,6 +61,7 @@ namespace Devscord.DiscordFramework
             Server.UserJoined += user => this.WithExceptionHandlerAwait(this.CallUserJoined, user);
             Server.BotAddedToServer += guild => this.WithExceptionHandlerAwait(this.CallServerAddedBot, guild);
             Server.ChannelCreated += channel => this.WithExceptionHandlerAwait(this.CallChannelCreated, channel);
+            Server.ChannelRemoved += channel => this.WithExceptionHandlerAwait(this.CallChannelRemoved, channel);
             Server.RoleRemoved += role => this.WithExceptionHandlerAwait(this.CallRoleRemoved, role);
             Server.RoleCreated += role => this.WithExceptionHandlerAwait(this.CallRoleCreated, role);
             Server.RoleUpdated += (from, to) => this.WithExceptionHandlerAwait(this.CallRoleUpdated, from, to);
@@ -198,7 +201,19 @@ namespace Devscord.DiscordFramework
             var guild = await Server.GetGuild(guildChannel.GuildId); // must get guild by id (not from guildChannel.Guild) - in opposite way it won't work
             var server = discordServerFactory.Create(guild);
 
-            this.OnChannelCreated.ForEach(x => x.Invoke(channel, server));
+            Task.WaitAll(this.OnChannelCreated.Select(x => x.Invoke(channel, server)).ToArray());
+        }
+
+        private async Task CallChannelRemoved(SocketChannel socketChannel)
+        {
+            var channel = this._context.Resolve<ChannelContextFactory>().Create(socketChannel);
+            Log.Information("Channel has been removed {channel}", channel.ToJson());
+            var guildChannel = await Server.GetGuildChannel(socketChannel.Id);
+            var discordServerFactory = this._context.Resolve<DiscordServerContextFactory>();
+            var guild = await Server.GetGuild(guildChannel.GuildId); // must get guild by id (not from guildChannel.Guild) - in opposite way it won't work
+            var server = discordServerFactory.Create(guild);
+
+            Task.WaitAll(this.OnChannelRemoved.Select(x => x.Invoke(channel, server)).ToArray());
         }
 
         private Task CallRoleUpdated(SocketRole from, SocketRole to)

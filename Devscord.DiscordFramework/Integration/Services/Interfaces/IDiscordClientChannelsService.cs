@@ -12,6 +12,7 @@ namespace Devscord.DiscordFramework.Integration.Services.Interfaces
     internal interface IDiscordClientChannelsService
     {
         Func<SocketChannel, Task> ChannelCreated { get; set; }
+        Func<SocketChannel, Task> ChannelRemoved { get; set; }
         Task<IChannel> GetChannel(ulong channelId, RestGuild guild = null);
         Task<IGuildChannel> GetGuildChannel(ulong channelId, RestGuild guild);
         Task SendDirectEmbedMessage(ulong userId, Embed embed);

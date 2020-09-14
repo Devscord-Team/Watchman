@@ -18,6 +18,7 @@ namespace Devscord.DiscordFramework.Integration
         internal static Func<SocketGuildUser, Task> UserJoined { get; set; }
         internal static Func<SocketGuild, Task> BotAddedToServer { get; set; }
         internal static Func<SocketChannel, Task> ChannelCreated { get; set; }
+        internal static Func<SocketChannel, Task> ChannelRemoved { get; set; }
         internal static Func<SocketRole, SocketRole, Task> RoleUpdated { get; set; }
         internal static Func<SocketRole, Task> RoleRemoved { get; set; }
         internal static Func<SocketRole, Task> RoleCreated { get; set; }
@@ -30,6 +31,7 @@ namespace Devscord.DiscordFramework.Integration
             _discordClient.UsersService.UserJoined += UserJoined;
             _discordClient.ServersService.BotAddedToServer += BotAddedToServer;
             _discordClient.ChannelsService.ChannelCreated += ChannelCreated;
+            _discordClient.ChannelsService.ChannelRemoved += ChannelRemoved;
             _discordClient.RolesService.RoleUpdated += RoleUpdated;
             _discordClient.RolesService.RoleCreated += RoleCreated;
             _discordClient.RolesService.RoleRemoved += RoleRemoved;
