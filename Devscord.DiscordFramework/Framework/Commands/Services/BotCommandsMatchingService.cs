@@ -1,87 +1,147 @@
-﻿using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
+﻿using Devscord.DiscordFramework.Commons.Exceptions;
+using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Framework.Commands.Properties;
+using Serilog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Devscord.DiscordFramework.Framework.Commands.Services
 {
     public class BotCommandsMatchingService
     {
+        private readonly Regex _exTime = new Regex(@"\d+(ms|d|h|m|s)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private readonly Regex _exUserMention = new Regex(@"\<@!?\d+\>", RegexOptions.Compiled);
+        private readonly Regex _exChannelMention = new Regex(@"\<#\d+\>", RegexOptions.Compiled);
 
-        private readonly Regex _exTime = new Regex(@"\d+(h|m|s)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-        private readonly Regex _exUserMention = new Regex(@"\<@[^\d]*\d+\>", RegexOptions.Compiled);
-        private readonly Regex _exChannelMention = new Regex(@"\<#[^\d]*\d+\>", RegexOptions.Compiled);
-
-        public bool IsMatchedWithCommand(DiscordRequest request, BotCommandTemplate template)
+        public bool IsDefaultCommand(BotCommandTemplate template, IEnumerable<DiscordRequestArgument> arguments, bool isCommandMatchedWithCustom)
         {
-            if (!request.IsCommandForBot)
+            var requiredProperties = template.Properties.Where(x => !x.IsOptional);
+            if (requiredProperties.Any(property => arguments.All(arg => property.Name.ToLowerInvariant() != arg.Name?.ToLowerInvariant())))
             {
                 return false;
             }
-            if (request.Name.ToLowerInvariant() != template.NormalizedCommandName)
+            if (!isCommandMatchedWithCustom)
             {
-                return false;
+                return true;
             }
-            if (!this.CompareArgumentsToProperties(request.Arguments.ToList(), template.Properties.ToList()))
-            {
-                return false;
-            }
-            return true;
+            return this.AreAllGivenArgsForCommandKnown(template.Properties, arguments);
         }
 
-        private bool CompareArgumentsToProperties(IReadOnlyCollection<DiscordRequestArgument> arguments, IReadOnlyCollection<BotCommandProperty> properties)
-        {
-            var notOptionalCount = properties.Count(x => !x.IsOptional);
-            var parametersCount = arguments.Count(x => !string.IsNullOrEmpty(x.Name));
-            if (parametersCount > properties.Count || parametersCount < notOptionalCount)
-            {
-                return false;
-            }
-            foreach (var argument in arguments)
-            {
-                var matchedByName = properties.FirstOrDefault(property => argument.Name?.ToLowerInvariant() == property.Name.ToLowerInvariant());
-                if (matchedByName == null)
-                {
-                    continue;
-                }
-                if (matchedByName.Type == BotCommandPropertyType.Bool)
-                {
-                    continue;
-                }
-                if (matchedByName.Type == BotCommandPropertyType.List && !string.IsNullOrEmpty(argument.Value))
-                {
-                    continue;
-                }
-                if (!this.IsMatchedPropertyType(argument.Value, matchedByName.Type))
-                {
-                    return false;
-                }
-            }
-            return true;
+        public bool AreDefaultCommandArgumentsCorrect(BotCommandTemplate template, IEnumerable<DiscordRequestArgument> arguments)
+        {  
+            var argsAndValues = arguments
+                .Select(arg => new KeyValuePair<string, string>(arg.Name, arg.Value))
+                .ToList();
+
+            this.CheckQuotationMarksInListsAndTexts(template.Properties, argsAndValues);
+            return this.ComparePropertiesToArgsAndValues(template.Properties, argsAndValues);
         }
 
-        private bool IsMatchedPropertyType(string value, BotCommandPropertyType type)
+        public bool AreCustomCommandArgumentsCorrect(BotCommandTemplate template, Regex customTemplate, string input)
         {
-            if (type == BotCommandPropertyType.Number && !int.TryParse(value, out _))
+            var matchGroups = customTemplate.Match(input).Groups;
+            var requiredProperties = template.Properties.Where(x => !x.IsOptional);
+            if (requiredProperties.Any(x => !matchGroups.ContainsKey(x.Name)))
             {
-                return false;
+                Log.Warning("Custom template {customTemplate} is not valid for {commandName}", customTemplate, template.CommandName);
+                throw new InvalidArgumentsException();
             }
-            if (type == BotCommandPropertyType.Time && !this._exTime.IsMatch(value))
+            var argsAndValues = matchGroups.Keys
+                .Where(arg => !arg.All(char.IsDigit))
+                .Select(arg => new KeyValuePair<string, string>(arg, matchGroups[arg].Value.Trim()))
+                .ToList();
+
+            this.CheckQuotationMarksInListsAndTexts(template.Properties, argsAndValues, isCommandMatchedWithCustom: true);
+            return this.ComparePropertiesToArgsAndValues(template.Properties, argsAndValues);
+        }
+
+        private bool AreAllGivenArgsForCommandKnown(IEnumerable<BotCommandProperty> properties, IEnumerable<DiscordRequestArgument> arguments)
+        {
+            var argumentsNames = arguments
+                .Select(x => x.Name?.ToLowerInvariant())
+                .ToList();
+            var lists = properties
+                .Where(property => property.Type == BotCommandPropertyType.List)
+                .Select(x => x.Name.ToLowerInvariant())
+                .ToList();
+            var argsWithoutListSubarguments = this.GetArgsWithoutListSubarguments(argumentsNames, lists);
+            return argsWithoutListSubarguments.All(arg => properties.Any(property => arg == property.Name.ToLowerInvariant()));
+        }
+
+        private List<string> GetArgsWithoutListSubarguments(List<string> argumentsNames, List<string> listsNames)
+        {
+            for (int i = 0; i < argumentsNames.Count; i++)
             {
-                return false;
+                if (!listsNames.Contains(argumentsNames[i]))
+                {
+                    continue;
+                }
+                while (i + 1 < argumentsNames.Count && argumentsNames[i + 1] == null)
+                {
+                    argumentsNames.RemoveAt(i + 1);
+                }
             }
-            if (type == BotCommandPropertyType.UserMention && !this._exUserMention.IsMatch(value))
+            return argumentsNames;
+        }
+
+        private void CheckQuotationMarksInListsAndTexts(IEnumerable<BotCommandProperty> properties, IEnumerable<KeyValuePair<string, string>> argsAndValues, bool isCommandMatchedWithCustom = false)
+        {
+            foreach (var property in properties)
             {
-                return false;
+                if (property.Type != BotCommandPropertyType.Text && property.Type != BotCommandPropertyType.List)
+                {
+                    continue;
+                }
+                var argumentAndValue = argsAndValues.FirstOrDefault(arg => arg.Key?.ToLowerInvariant() == property.Name.ToLowerInvariant());
+                if (string.IsNullOrWhiteSpace(argumentAndValue.Value))
+                {
+                    continue;
+                }
+                if (isCommandMatchedWithCustom && argumentAndValue.Value.Count(x => x == '\"') % 2 != 0)
+                {
+                    throw new InvalidArgumentsException();
+                }
+                if (!isCommandMatchedWithCustom)
+                {
+                    var countOfArgsBeforeCurrentOne = argsAndValues.ToList().IndexOf(argumentAndValue);
+                    var hasRedundantQuotationMarks = argsAndValues
+                        .Skip(countOfArgsBeforeCurrentOne)
+                        .TakeWhile(x => x.Key?.ToLowerInvariant() == property.Name.ToLowerInvariant() || x.Key == null)
+                        .Any(x => x.Value.Contains('\"'));
+
+                    if (hasRedundantQuotationMarks)
+                    {
+                        throw new InvalidArgumentsException();
+                    }
+                }
             }
-            if (type == BotCommandPropertyType.ChannelMention && !this._exChannelMention.IsMatch(value))
+        }
+
+        private bool ComparePropertiesToArgsAndValues(IEnumerable<BotCommandProperty> properties, IEnumerable<KeyValuePair<string, string>> argsAndValues)
+        {
+            foreach (var property in properties)
             {
-                return false;
-            }
-            if (type == BotCommandPropertyType.SingleWord && value.Contains(' '))
-            {
-                return false;
+                var value = argsAndValues.FirstOrDefault(arg => arg.Key?.ToLowerInvariant() == property.Name.ToLowerInvariant()).Value;
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    if (!property.IsOptional)
+                    {
+                        throw new NotEnoughArgumentsException();
+                    }
+                    continue;
+                }
+                switch (property.Type)
+                {
+                    case BotCommandPropertyType.Number when !value.All(char.IsDigit):
+                    case BotCommandPropertyType.Time when !this._exTime.IsMatch(value):
+                    case BotCommandPropertyType.UserMention when !this._exUserMention.IsMatch(value):
+                    case BotCommandPropertyType.ChannelMention when !this._exChannelMention.IsMatch(value):
+                        throw new InvalidArgumentsException();
+                }
             }
             return true;
         }

@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Watchman.Common.Models;
 using Watchman.Cqrs;
+using Watchman.Discord.Areas.Statistics.BotCommands;
 using Watchman.Discord.Areas.Statistics.Models;
 using Watchman.Discord.Areas.Statistics.Services;
 using Watchman.DomainModel.Messages.Commands;
@@ -24,6 +25,7 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
         private readonly MessagesServiceFactory _messagesServiceFactory;
+        private readonly Period[] implementedBySplitter = new Period[] { Period.Day }; //TODO remove when all splitters will be done
 
         public StatisticsController(IQueryBus queryBus, ICommandBus commandBus, MessagesServiceFactory messagesServiceFactory, ReportsService reportsService, ChartsService chartsService)
         {
@@ -48,12 +50,10 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
             Log.Information("Message saved");
         }
 
-        private readonly Period[] implementedBySplitter = new Period[] { Period.Day }; // only while implementing other splitters / to remove
         [AdminCommand]
-        [DiscordCommand("stats")]
-        public async Task GetStatisticsPerPeriod(DiscordRequest request, Contexts contexts)
+        public async Task GetStatisticsPerPeriod(StatsCommand statsCommand, Contexts contexts)
         {
-            var period = this._reportsService.SelectPeriod(request.Arguments.FirstOrDefault()?.Value);
+            var period = this._reportsService.SelectPeriod(statsCommand);
             if (this.implementedBySplitter.Contains(period))
             {
                 var query = new GetMessagesStatisticsQuery(period);

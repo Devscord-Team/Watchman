@@ -40,20 +40,12 @@ namespace Watchman.Discord.Areas.Users.Controllers
 
         public async Task AddRole(AddRoleCommand addRoleCommand, Contexts contexts)
         {
-            if (!addRoleCommand.Roles.Any())
-            {
-                throw new NotEnoughArgumentsException();
-            }
             var safeRoles = this._queryBus.Execute(new GetDiscordServerSafeRolesQuery(contexts.Server.Id)).SafeRoles;
             await this._rolesService.AddRoleToUser(safeRoles, contexts, addRoleCommand.Roles);
         }
 
         public async Task RemoveRole(RemoveRoleCommand removeRoleCommand, Contexts contexts)
         {
-            if (!removeRoleCommand.Roles.Any())
-            {
-                throw new NotEnoughArgumentsException();
-            }
             var safeRoles = this._queryBus.Execute(new GetDiscordServerSafeRolesQuery(contexts.Server.Id)).SafeRoles;
             await this._rolesService.DeleteRoleFromUser(safeRoles, contexts, removeRoleCommand.Roles);
         }
@@ -64,7 +56,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
             var query = new GetDiscordServerSafeRolesQuery(contexts.Server.Id);
             var safeRoles = this._queryBus.Execute(query).SafeRoles.ToList();
 
-            if (safeRoles.Count == 0)
+            if (!safeRoles.Any())
             {
                 await messageService.SendResponse(x => x.ServerDoesntHaveAnySafeRoles());
                 return;

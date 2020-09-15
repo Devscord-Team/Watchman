@@ -1,9 +1,10 @@
 ﻿using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
-using Serilog;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Devscord.DiscordFramework.Framework.Commands.Properties;
+using Devscord.DiscordFramework.Commons.Exceptions;
+using System.Collections.Generic;
 
 namespace Devscord.DiscordFramework.Framework.Commands.Services
 {
@@ -20,20 +21,13 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
 
         public IBotCommand ParseRequestToCommand(Type commandType, DiscordRequest request, BotCommandTemplate template)
         {
-            var result = this.GetFilledInstance(commandType, template, (key, isList) => this._botCommandsRequestValueGetterService.GetValueByName(key, isList, request, template));
-            return result;
+            return this.GetFilledInstance(commandType, template, (key, isList) => this._botCommandsRequestValueGetterService.GetValueByName(key, isList, request, template));
         }
 
         public IBotCommand ParseCustomTemplate(Type commandType, BotCommandTemplate template, Regex customTemplate, string input)
         {
             var match = customTemplate.Match(input);
-            if (!this.CustomTemplateIsValid(match, template))
-            {
-                Log.Warning("Custom template {customTemplate} is not valid for {commandName}", customTemplate, template.CommandName);
-                return null;
-            }
-            var result = this.GetFilledInstance(commandType, template, (key, isList) => this._botCommandsRequestValueGetterService.GetValueByNameFromCustomCommand(key, isList, template, match));
-            return result;
+            return this.GetFilledInstance(commandType, template, (key, isList) => this._botCommandsRequestValueGetterService.GetValueByNameFromCustomCommand(key, isList, template, match));
         }
 
         private IBotCommand GetFilledInstance(Type commandType, BotCommandTemplate template, Func<string, bool, object> getValueByName)
@@ -41,43 +35,31 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             var instance = Activator.CreateInstance(commandType);
             foreach (var property in commandType.GetProperties())
             {
-                var propertyType = template.Properties.FirstOrDefault(x => x.Name == property.Name)?.Type;
-                var isList = propertyType == BotCommandPropertyType.List;
+                var propertyType = template.Properties.First(x => x.Name == property.Name).Type;
+                var isList = propertyType == BotCommandPropertyType.List;         
                 var value = getValueByName.Invoke(property.Name, isList);
-                if (value == null)
+                if (string.IsNullOrWhiteSpace(value as string) && !isList)
                 {
-                    continue;
+                    // if we got to this point in the code, it means that property is optional (but which is not bool) and the user did not provide a value to this field, so we assign null to property. Property must be a type that takes null.
+                    property.SetValue(instance, null);
                 }
-                if (isList)
+                if (value is List<string> valueList)
                 {
+                    var isEmptyList = string.IsNullOrWhiteSpace(valueList?.FirstOrDefault());
+                    if (isEmptyList)
+                    {
+                        property.SetValue(instance, null);
+                        continue;
+                    }
                     property.SetValue(instance, value);
-                    continue;
                 }
-                if (value is string valueString && !string.IsNullOrWhiteSpace(valueString))
+                if (value is string valueString)
                 {
-                    var convertedType = this._botCommandPropertyConversionService.ConvertType(valueString, propertyType.Value);
+                    var convertedType = this._botCommandPropertyConversionService.ConvertType(valueString, propertyType);
                     property.SetValue(instance, convertedType);
                 }
             }
             return (IBotCommand) instance;
-        }
-
-        private bool CustomTemplateIsValid(Match match, BotCommandTemplate template)
-        {
-            if (!match.Success)
-            {
-                return false;
-            }
-            var requiredProperties = template.Properties.Where(x => !x.IsOptional).ToList();
-            if (match.Groups.Count - 1 < requiredProperties.Count)
-            {
-                return false;
-            }
-            if (requiredProperties.Any(x => !match.Groups.ContainsKey(x.Name)))
-            {
-                return false;
-            }
-            return true;
         }
     }
 }
