@@ -26,8 +26,7 @@ namespace Watchman.Common
 
         public V GetOrCreate(T key)
         {
-            V value;
-            if (!this._dictionary.TryGetValue(key, out value))
+            if (!this._dictionary.TryGetValue(key, out var value))
             {
                 this.Set(key, new V());
             }
