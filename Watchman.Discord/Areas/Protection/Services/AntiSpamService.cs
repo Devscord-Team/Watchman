@@ -49,7 +49,7 @@ namespace Watchman.Discord.Areas.Protection.Services
                     await this.MuteUserForSpam(contexts, punishment.ForTime!.Value);
                     break;
             }
-            await _warnsService.AddWarnToUser(_usersService.GetBot().Id, contexts.User.Id, warnReason.ToString(), contexts.Server.Id);
+            await this._warnsService.AddWarnToUser(_usersService.GetBot().Id, contexts.User.Id, warnReason.ToString(), contexts.Server.Id);
         }
 
         private async Task MuteUserForSpam(Contexts contexts, TimeSpan length)

@@ -17,14 +17,18 @@ namespace Watchman.DomainModel.Warns.Commands.Handlers
             this._sessionFactory = sessionFactory;
         }
 
-        public async Task HandleAsync(RemoveWarnEventsCommand command)
+        public Task HandleAsync(RemoveWarnEventsCommand command)
         {
+            if (command.GrantorId == null && command.ReceiverId == null)
+            {
+                return Task.CompletedTask;
+            }
             using var session = this._sessionFactory.Create();
-            await session.DeleteAsync<WarnEvent>(x =>
-                (command.GrantorId == null || command.GrantorId == x.GrantorId) &&
-                (command.ReceiverId == null || command.ReceiverId == x.ReceiverId) &&
-                (command.Reason == null || command.Reason == x.Reason) &&
-                (x.ServerId == command.ServerId));
+            return session.DeleteAsync<WarnEvent>(x =>
+                    (command.GrantorId == null || command.GrantorId == x.GrantorId) &&
+                    (command.ReceiverId == null || command.ReceiverId == x.ReceiverId) &&
+                    (x.ServerId == command.ServerId)
+                );
         }
     }
 }

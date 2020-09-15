@@ -100,7 +100,7 @@ namespace Watchman.Discord.UnitTests.AntiSpam
         public void SpamPunishmentStrategy_ShouldGiveMuteForTime(int userMutesCount, int expectedMinutesOfMute)
         {
             // Arrange
-            var warnsCount = 100;
+            const int warnsCount = 100;
             var context = _antiSpamTestsService.GetDefaultContexts();
             var punishmentsCachingService = new Mock<IPunishmentsCachingService>();
             punishmentsCachingService

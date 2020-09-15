@@ -11,10 +11,11 @@ namespace Watchman.DomainModel.Warns.Queries
         public ulong UserId { get; }
         public DateTime From { get; set; }
 
-        public GetWarnEventsQuery(ulong serverId, ulong userId)
+        public GetWarnEventsQuery(ulong serverId, ulong userId, DateTime from)
         {
             this.ServerId = serverId;
             this.UserId = userId;
+            this.From = from;
         }
     }
 }

@@ -40,7 +40,7 @@ namespace Watchman.Discord.Areas.Users.Services
 
         public Task RemoveUserWarns(ulong userId, ulong serverId)
         {
-            var removeWarnsCommand = new RemoveWarnEventsCommand() { ReceiverId = userId, ServerId = serverId };
+            var removeWarnsCommand = new RemoveWarnEventsCommand(null, userId, serverId);
             return this._commandBus.ExecuteAsync(removeWarnsCommand);
         }
 
@@ -57,7 +57,7 @@ namespace Watchman.Discord.Areas.Users.Services
 
         public IEnumerable<WarnEvent> GetWarnEvents(ulong serverId, ulong userId, DateTime from =new DateTime())
         {
-            var query = new GetWarnEventsQuery(serverId, userId) { From = from };
+            var query = new GetWarnEventsQuery(serverId, userId, from);
             var response = this._queryBus.Execute(query);
             return response.WarnEvents;
         }
