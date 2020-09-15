@@ -70,6 +70,10 @@ namespace Watchman.Discord
                             await serversService.GetDiscordServersAsync().ForEachAwaitAsync(initService.InitServer);
                             Log.Information(stopwatch.ElapsedMilliseconds.ToString());
                         })
+                        .AddFromIoC<PunishmentsCachingService>((punishmentService) => async () =>
+                        {
+                            await punishmentService.ClearAndLoadWarnEventsToCache();
+                        })
                         .AddHandler(() => Task.Run(() => Log.Information("Bot has done every Ready tasks.")));
                 })
                 .AddOnUserJoinedHandlers(builder =>

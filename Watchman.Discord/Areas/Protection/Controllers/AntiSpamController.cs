@@ -34,7 +34,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             this._punishmentsCachingService = punishmentsCachingService;
             this._antiSpamService = antiSpamService;
             this._overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessagesCacheService, checkUserSafetyService, configurationService);
-            this._spamPunishmentStrategy = new SpamPunishmentStrategy(punishmentsCachingService, warnsService);
+            this._spamPunishmentStrategy = new SpamPunishmentStrategy(punishmentsCachingService);
         }
 
         [ReadAlways]

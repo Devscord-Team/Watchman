@@ -1,12 +1,15 @@
-﻿using System;
+﻿using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
+using Watchman.Common;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Users;
 using Watchman.DomainModel.Users.Commands;
 using Watchman.DomainModel.Users.Queries;
+using Watchman.DomainModel.Warns;
+using Watchman.DomainModel.Warns.Queries;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {
@@ -15,6 +18,12 @@ namespace Watchman.Discord.Areas.Protection.Services
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
         private static Dictionary<ulong, List<Punishment>> _punishments;
+        private static FriendlyDictionary<ulong, FriendlyDictionary<ulong, List<WarnEvent>>> _warnsByServer;
+
+        static PunishmentsCachingService()
+        {
+            _warnsByServer = new FriendlyDictionary<ulong, FriendlyDictionary<ulong, List<WarnEvent>>>();
+        }
 
         public PunishmentsCachingService(IQueryBus queryBus, ICommandBus commandBus)
         {
@@ -28,6 +37,7 @@ namespace Watchman.Discord.Areas.Protection.Services
             return _punishments[userId];
         }
 
+        [Obsolete]
         public int GetUserWarnsCount(ulong userId, DateTime? since = null)
         {
             var wasFound = _punishments.TryGetValue(userId, out var punishments);
@@ -88,6 +98,38 @@ namespace Watchman.Discord.Areas.Protection.Services
                     return new KeyValuePair<ulong, IEnumerable<Punishment>>(userId, punishments);
                 })
                 .ToDictionary(x => x.Key, x => x.Value.ToList());
+        }
+
+        public async Task ClearAndLoadWarnEventsToCache()
+        {
+            _warnsByServer = new FriendlyDictionary<ulong, FriendlyDictionary<ulong, List<WarnEvent>>>();
+            var query = new GetWarnEventsQuery(0, 0, new DateTime());
+            var warnList = (await this._queryBus.ExecuteAsync(query)).WarnEvents;
+            foreach (var warn in warnList)
+            {
+                this.AddWarnToDictionary(warn);
+            }
+        }
+
+        private void AddWarnToDictionary(WarnEvent warnToAdd)
+        {
+            _warnsByServer[warnToAdd.ServerId][warnToAdd.ReceiverId].Add(warnToAdd);
+        }
+
+        public int GetWarnsCount(ulong serverId, ulong userId, DateTime from)
+        {
+            return _warnsByServer[serverId][userId].Count;
+        }
+
+        public void AddWarnLocal(ulong grantorId, ulong receiverId, string reason, ulong serverId)
+        {
+            var warnEvent = new WarnEvent(grantorId, receiverId, reason, serverId);
+            this.AddWarnToDictionary(warnEvent);
+        }
+
+        public void RemoveWarnsLocal(ulong serverId, ulong userId, DateTime from)
+        {
+            _warnsByServer[serverId][userId].RemoveAll(x => x.CreatedAt >= from);
         }
     }
 }

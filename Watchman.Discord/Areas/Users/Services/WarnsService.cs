@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
+using Watchman.Discord.Areas.Protection.Services;
 using Watchman.Discord.Areas.Users.BotCommands;
 using Watchman.Discord.Areas.Users.BotCommands.Warns;
 using Watchman.DomainModel.Messages;
@@ -25,22 +26,26 @@ namespace Watchman.Discord.Areas.Users.Services
     {
         private readonly ICommandBus _commandBus;
         private readonly IQueryBus _queryBus;
+        private readonly PunishmentsCachingService _punishmentsCachingService;
 
-        public WarnsService(ICommandBus commandBus, IQueryBus queryBus)
+        public WarnsService(ICommandBus commandBus, IQueryBus queryBus, PunishmentsCachingService punishmentsCachingService)
         {
             this._commandBus = commandBus;
             this._queryBus = queryBus;
+            this._punishmentsCachingService = punishmentsCachingService;
         }
 
         public Task AddWarnToUser(ulong grantorId, ulong receiverId, string reason, ulong serverId)
         {
             var addWarnEventCommand = new AddWarnEventCommand(grantorId, receiverId, reason, serverId);
+            this._punishmentsCachingService.AddWarnLocal(grantorId, receiverId, reason, serverId);
             return this._commandBus.ExecuteAsync(addWarnEventCommand);
         }
 
         public Task RemoveUserWarns(ulong userId, ulong serverId)
         {
-            var removeWarnsCommand = new RemoveWarnEventsCommand(null, userId, serverId);
+            var removeWarnsCommand = new RemoveWarnEventsCommand(null, userId, serverId, new DateTime());
+            this._punishmentsCachingService.RemoveWarnsLocal(serverId, userId, new DateTime());
             return this._commandBus.ExecuteAsync(removeWarnsCommand);
         }
 

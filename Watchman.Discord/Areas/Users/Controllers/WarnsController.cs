@@ -26,9 +26,9 @@ namespace Watchman.Discord.Areas.Protection.Controllers
     {
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly UsersService _usersService;
-        private readonly IWarnsService _warnService;
+        private readonly WarnsService _warnService;
 
-        public WarnsController(MessagesServiceFactory messagesServiceFactory, UsersService usersService, IWarnsService warnService)
+        public WarnsController(MessagesServiceFactory messagesServiceFactory, UsersService usersService, WarnsService warnService)
         {
             this._messagesServiceFactory = messagesServiceFactory;
             this._usersService = usersService;
@@ -47,7 +47,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         [AdminCommand]
         public async Task ResetWarns(ResetWarnsCommand command, Contexts contexts)
         {
-            await _warnService.RemoveUserWarns(command.User, contexts.Server.Id);
+            await this._warnService.RemoveUserWarns(command.User, contexts.Server.Id);
             var messageService = this._messagesServiceFactory.Create(contexts);
             await messageService.SendResponse(x => x.AllWarnsRemovedFromUser(contexts.User.Id, command.User));
         }

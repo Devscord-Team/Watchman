@@ -11,12 +11,14 @@ namespace Watchman.DomainModel.Warns.Commands
         public ulong? GrantorId { get; set; }
         public ulong? ReceiverId { get; set; }
         public ulong ServerId { get; set; }
+        public DateTime From { get; set; }
         
-        public RemoveWarnEventsCommand(ulong? grantorId, ulong? receiverId, ulong serverId)
+        public RemoveWarnEventsCommand(ulong? grantorId, ulong? receiverId, ulong serverId, DateTime from)
         {
             this.GrantorId = grantorId;
             this.ReceiverId = receiverId;
             this.ServerId = serverId;
+            this.From = from;
         }
     }
 }

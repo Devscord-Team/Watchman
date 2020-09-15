@@ -27,6 +27,7 @@ namespace Watchman.DomainModel.Warns.Commands.Handlers
             return session.DeleteAsync<WarnEvent>(x =>
                     (command.GrantorId == null || command.GrantorId == x.GrantorId) &&
                     (command.ReceiverId == null || command.ReceiverId == x.ReceiverId) &&
+                    (x.CreatedAt >= command.From) &&
                     (x.ServerId == command.ServerId)
                 );
         }

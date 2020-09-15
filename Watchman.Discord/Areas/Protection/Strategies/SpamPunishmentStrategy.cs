@@ -10,18 +10,16 @@ namespace Watchman.Discord.Areas.Protection.Strategies
     public class SpamPunishmentStrategy : ISpamPunishmentStrategy
     {
         private readonly IPunishmentsCachingService _punishmentsCachingService;
-        private readonly IWarnsService _warnsService;
 
-        public SpamPunishmentStrategy(IPunishmentsCachingService punishmentsCachingService, IWarnsService warnsService)
+        public SpamPunishmentStrategy(IPunishmentsCachingService punishmentsCachingService)
         {
             this._punishmentsCachingService = punishmentsCachingService;
-            this._warnsService = warnsService;
         }
 
         public Punishment GetPunishment(ulong userId, ulong serverId, SpamProbability spamProbability)
         {
             var takeFromTime = DateTime.Now.AddHours(-12);
-            var warnsCount = this._warnsService.GetWarnsCount(userId, serverId, takeFromTime);              
+            var warnsCount = this._punishmentsCachingService.GetWarnsCount(serverId, userId, takeFromTime);              
             Log.Information("User {userId} has {warnsCount} warns", userId, warnsCount);
             var punishmentOption = spamProbability switch
             {
