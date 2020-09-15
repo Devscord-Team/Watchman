@@ -8,10 +8,10 @@ namespace Watchman.DomainModel.Warns.Commands
 {
     public class RemoveWarnEventsCommand : ICommand
     {
-        public ulong? GrantorId { get; set; }
-        public ulong? ReceiverId { get; set; }
-        public ulong ServerId { get; set; }
-        public DateTime From { get; set; }
+        public ulong? GrantorId { get; }
+        public ulong? ReceiverId { get; }
+        public ulong ServerId { get; }
+        public DateTime From { get; }
         
         public RemoveWarnEventsCommand(ulong? grantorId, ulong? receiverId, ulong serverId, DateTime from)
         {
