@@ -32,8 +32,8 @@ namespace Devscord.DiscordFramework.Integration.Services
             this._discordClientUsersService = discordClientUsersService;
             this._userContextsFactory = userContextsFactory;
             this._commandParser = commandParser;
-            this._client.ChannelCreated += this.ChannelCreated;
-            this._client.ChannelDestroyed += this.ChannelRemoved;
+            this._client.ChannelCreated += x => this.ChannelCreated(x);
+            this._client.ChannelDestroyed += x => this.ChannelRemoved(x);
         }
 
         public async Task SendDirectMessage(ulong userId, string message)
