@@ -12,7 +12,7 @@ namespace Watchman.Discord.Areas.Protection.Services
         [Obsolete]
         int GetUserWarnsCount(ulong userId, DateTime? since = null);
         List<Punishment> GetUserPunishments(ulong userId);
-        int GetWarnsCount(ulong userId, ulong serverId, DateTime from);
+        int GetWarnsCount(ulong serverId, ulong userId, DateTime from);
         void AddWarnLocal(ulong grantorId, ulong receiverId, string reason, ulong serverId);
         void RemoveWarnsLocal(ulong serverId, ulong userId, DateTime from);
     }

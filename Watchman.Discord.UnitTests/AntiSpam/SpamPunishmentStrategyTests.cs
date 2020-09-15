@@ -26,13 +26,9 @@ namespace Watchman.Discord.UnitTests.AntiSpam
             var context = _antiSpamTestsService.GetDefaultContexts();
             var punishmentsCachingService = new Mock<IPunishmentsCachingService>();
             punishmentsCachingService
-                .Setup(x => x.GetUserWarnsCount(AntiSpamTestsService.DEFAULT_TEST_USER_ID, It.IsAny<DateTime>()))
+                .Setup(x => x.GetWarnsCount(context.User.Id, AntiSpamTestsService.DEFAULT_TEST_USER_ID, It.IsAny<DateTime>()))
                 .Returns(userWarnsCount);
-            var warnsService = new Mock<IWarnsService>();
-            warnsService
-                .Setup(x => x.GetWarnsCount(AntiSpamTestsService.DEFAULT_TEST_USER_ID, context.Server.Id, It.IsAny<DateTime>()))
-                .Returns(userWarnsCount);
-            var punishmentStrategy = new SpamPunishmentStrategy(punishmentsCachingService.Object, warnsService.Object);
+            var punishmentStrategy = new SpamPunishmentStrategy(punishmentsCachingService.Object);
 
             // Act
             var punishment = punishmentStrategy.GetPunishment(context.User.Id, context.Server.Id, spamProbability);
@@ -50,16 +46,12 @@ namespace Watchman.Discord.UnitTests.AntiSpam
             var context = _antiSpamTestsService.GetDefaultContexts();
             var punishmentsCachingService = new Mock<IPunishmentsCachingService>();
             punishmentsCachingService
-                .Setup(x => x.GetUserWarnsCount(AntiSpamTestsService.DEFAULT_TEST_USER_ID, It.IsAny<DateTime>()))
+                .Setup(x => x.GetWarnsCount(context.Server.Id, AntiSpamTestsService.DEFAULT_TEST_USER_ID, It.IsAny<DateTime>()))
                 .Returns(userWarnsCount);
             punishmentsCachingService
                 .Setup(x => x.GetUserMutesCount(AntiSpamTestsService.DEFAULT_TEST_USER_ID, It.IsAny<DateTime>()))
                 .Returns(userMutesCount);
-            var warnsService = new Mock<IWarnsService>();
-            warnsService
-                .Setup(x => x.GetWarnsCount(AntiSpamTestsService.DEFAULT_TEST_USER_ID, context.Server.Id, It.IsAny<DateTime>()))
-                .Returns(userWarnsCount);
-            var punishmentStrategy = new SpamPunishmentStrategy(punishmentsCachingService.Object, warnsService.Object);
+            var punishmentStrategy = new SpamPunishmentStrategy(punishmentsCachingService.Object);
 
             // Act
             var punishment = punishmentStrategy.GetPunishment(context.User.Id, context.Server.Id, spamProbability);
@@ -77,13 +69,9 @@ namespace Watchman.Discord.UnitTests.AntiSpam
             var context = _antiSpamTestsService.GetDefaultContexts();
             var punishmentsCachingService = new Mock<IPunishmentsCachingService>();
             punishmentsCachingService
-                .Setup(x => x.GetUserWarnsCount(AntiSpamTestsService.DEFAULT_TEST_USER_ID, It.IsAny<DateTime>()))
+                .Setup(x => x.GetWarnsCount(context.Server.Id, AntiSpamTestsService.DEFAULT_TEST_USER_ID, It.IsAny<DateTime>()))
                 .Returns(userWarnsCount);
-            var warnsService = new Mock<IWarnsService>();
-            warnsService
-                .Setup(x => x.GetWarnsCount(AntiSpamTestsService.DEFAULT_TEST_USER_ID, context.Server.Id, It.IsAny<DateTime>()))
-                .Returns(userWarnsCount);
-            var punishmentStrategy = new SpamPunishmentStrategy(punishmentsCachingService.Object, warnsService.Object);
+            var punishmentStrategy = new SpamPunishmentStrategy(punishmentsCachingService.Object);
 
             // Act
             var punishment = punishmentStrategy.GetPunishment(context.User.Id, context.Server.Id, spamProbability);
@@ -104,16 +92,12 @@ namespace Watchman.Discord.UnitTests.AntiSpam
             var context = _antiSpamTestsService.GetDefaultContexts();
             var punishmentsCachingService = new Mock<IPunishmentsCachingService>();
             punishmentsCachingService
-                .Setup(x => x.GetUserWarnsCount(AntiSpamTestsService.DEFAULT_TEST_USER_ID, It.IsAny<DateTime>()))
+                .Setup(x => x.GetWarnsCount(context.Server.Id, AntiSpamTestsService.DEFAULT_TEST_USER_ID, It.IsAny<DateTime>()))
                 .Returns(warnsCount); // to be sure that strategy always will give mute
             punishmentsCachingService
                 .Setup(x => x.GetUserMutesCount(AntiSpamTestsService.DEFAULT_TEST_USER_ID, It.IsAny<DateTime>()))
                 .Returns(userMutesCount);
-            var warnsService = new Mock<IWarnsService>();
-            warnsService
-                .Setup(x => x.GetWarnsCount(AntiSpamTestsService.DEFAULT_TEST_USER_ID, context.Server.Id, It.IsAny<DateTime>()))
-                .Returns(warnsCount);
-            var punishmentStrategy = new SpamPunishmentStrategy(punishmentsCachingService.Object, warnsService.Object);
+            var punishmentStrategy = new SpamPunishmentStrategy(punishmentsCachingService.Object);
 
             // Act
             var punishment = punishmentStrategy.GetPunishment(context.User.Id, context.Server.Id, SpamProbability.Sure);

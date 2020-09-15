@@ -17,9 +17,9 @@ namespace Watchman.DomainModel.Warns.Queries.Handlers
         {
             using var session = this._sessionFactory.Create();
             var filteredEvents = session.Get<WarnEvent>();
-            if (query.UserId != 0)
+            if (query.ReceiverId != 0)
             {
-                filteredEvents = filteredEvents.Where(x => x.ReceiverId == query.UserId);
+                filteredEvents = filteredEvents.Where(x => x.ReceiverId == query.ReceiverId);
             }
             if (query.ServerId != 0)
             {

@@ -42,10 +42,10 @@ namespace Watchman.Discord.Areas.Users.Services
             return this._commandBus.ExecuteAsync(addWarnEventCommand);
         }
 
-        public Task RemoveUserWarns(ulong userId, ulong serverId)
+        public Task RemoveUserWarns(ulong receiverId, ulong serverId)
         {
-            var removeWarnsCommand = new RemoveWarnEventsCommand(null, userId, serverId, new DateTime());
-            this._punishmentsCachingService.RemoveWarnsLocal(serverId, userId, new DateTime());
+            var removeWarnsCommand = new RemoveWarnEventsCommand(grantorId: null, receiverId, serverId, new DateTime());
+            this._punishmentsCachingService.RemoveWarnsLocal(serverId, receiverId, new DateTime());
             return this._commandBus.ExecuteAsync(removeWarnsCommand);
         }
 
@@ -60,9 +60,9 @@ namespace Watchman.Discord.Areas.Users.Services
             return this.GetWarnEvents(serverId, userId, from).Count();
         }
 
-        public IEnumerable<WarnEvent> GetWarnEvents(ulong serverId, ulong userId, DateTime from =new DateTime())
+        public IEnumerable<WarnEvent> GetWarnEvents(ulong serverId, ulong receiverId, DateTime from =new DateTime())
         {
-            var query = new GetWarnEventsQuery(serverId, userId, from);
+            var query = new GetWarnEventsQuery(serverId, receiverId, from);
             var response = this._queryBus.Execute(query);
             return response.WarnEvents;
         }
