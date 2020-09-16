@@ -18,7 +18,7 @@ namespace Devscord.DiscordFramework.Integration.Services.Interfaces
         Task SendDirectEmbedMessage(ulong userId, Embed embed);
         Task SendDirectMessage(ulong userId, string message);
         IAsyncEnumerable<Message> GetMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong fromMessageId = 0, bool goBefore = true);
-        bool CanBotReadTheChannel(IMessageChannel textChannel);
+        Task<bool> CanBotReadTheChannelAsync(IMessageChannel textChannel);
         Task<ITextChannel> CreateNewChannelAsync(ulong serverId, string channelName);
     }
 }

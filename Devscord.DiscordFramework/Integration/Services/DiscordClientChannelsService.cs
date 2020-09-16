@@ -91,7 +91,7 @@ namespace Devscord.DiscordFramework.Integration.Services
         public async IAsyncEnumerable<Message> GetMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong fromMessageId = 0, bool goBefore = true)
         {
             var textChannel = (ITextChannel)await this.GetChannel(channel.Id);
-            if (!this.CanBotReadTheChannel(textChannel))
+            if (!await this.CanBotReadTheChannelAsync(textChannel))
             {
                 yield break;
             }
@@ -124,11 +124,11 @@ namespace Devscord.DiscordFramework.Integration.Services
             }
         }
 
-        public bool CanBotReadTheChannel(IMessageChannel textChannel)
+        public async Task<bool> CanBotReadTheChannelAsync(IMessageChannel textChannel)
         {
             try
             {
-                textChannel.GetMessagesAsync(limit: 1).FlattenAsync().Wait();
+                await textChannel.GetMessagesAsync(limit: 1).FirstAsync();
                 return true;
             }
             catch

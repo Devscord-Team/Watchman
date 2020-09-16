@@ -82,7 +82,10 @@ namespace Watchman.Discord
 
         private StringBuilder BuildExceptionMessage(Exception e)
         {
-            return new StringBuilder($"{e.Message}\r\n\r\n{e.InnerException}\r\n\r\n{e.StackTrace}").FormatMessageIntoBlock();
+            var exceptionMessage = new StringBuilder(e.Message).FormatMessageIntoBlock();
+            var innerException = new StringBuilder(e.InnerException?.Message).FormatMessageIntoBlock();
+            var stackTrace = new StringBuilder(e.StackTrace).FormatMessageIntoBlock();
+            return exceptionMessage.Append(innerException).Append(stackTrace);
         }
     }
 }
