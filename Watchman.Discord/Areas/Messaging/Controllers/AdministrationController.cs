@@ -1,6 +1,6 @@
 ﻿namespace Watchman.Discord.Areas.Messaging.Controllers
 {
-    class AdministrationController
+    public class AdministrationController
     {
     }
 }
