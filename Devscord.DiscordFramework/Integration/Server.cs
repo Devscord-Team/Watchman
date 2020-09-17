@@ -95,6 +95,16 @@ namespace Devscord.DiscordFramework.Integration
             return _discordClient.ChannelsService.CreateNewChannelAsync(serverId, channelName);
         }
 
+        internal static Task SetRolePermissions(ChannelContext channel, DiscordServerContext server, ChangedPermissions permissions, UserRole role)
+        {
+            return _discordClient.ChannelsService.SetRolePermissions(channel, server, permissions, role);
+        }
+
+        internal static Task SetRolePermissions(IEnumerable<ChannelContext> channels, DiscordServerContext server, ChangedPermissions permissions, UserRole role)
+        {
+            return _discordClient.ChannelsService.SetRolePermissions(channels, server, permissions, role);
+        }
+
         //Roles
         internal static Task<UserRole> CreateNewRole(NewUserRole role, DiscordServerContext discordServer)
         {
@@ -109,16 +119,6 @@ namespace Devscord.DiscordFramework.Integration
         internal static IEnumerable<SocketRole> GetSocketRoles(ulong guildId)
         {
             return _discordClient.RolesService.GetSocketRoles(guildId);
-        }
-
-        internal static Task SetRolePermissions(ChannelContext channel, DiscordServerContext server, ChangedPermissions permissions, UserRole role)
-        {
-            return _discordClient.RolesService.SetRolePermissions(channel, server, permissions, role);
-        }
-
-        internal static Task SetRolePermissions(IEnumerable<ChannelContext> channels, DiscordServerContext server, ChangedPermissions permissions, UserRole role)
-        {
-            return _discordClient.RolesService.SetRolePermissions(channels, server, permissions, role);
         }
 
         internal static UserRole GetRole(ulong roleId, ulong guildId)

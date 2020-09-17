@@ -6,6 +6,7 @@ using Discord.Rest;
 using Discord.WebSocket;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Devscord.DiscordFramework.Commons;
 
 namespace Devscord.DiscordFramework.Integration.Services.Interfaces
 {
@@ -20,5 +21,7 @@ namespace Devscord.DiscordFramework.Integration.Services.Interfaces
         IAsyncEnumerable<Message> GetMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong fromMessageId = 0, bool goBefore = true);
         Task<bool> CanBotReadTheChannelAsync(IMessageChannel textChannel);
         Task<ITextChannel> CreateNewChannelAsync(ulong serverId, string channelName);
+        Task SetRolePermissions(ChannelContext channel, DiscordServerContext server, ChangedPermissions permissions, UserRole role);
+        Task SetRolePermissions(IEnumerable<ChannelContext> channels, DiscordServerContext server, ChangedPermissions permissions, UserRole role);
     }
 }

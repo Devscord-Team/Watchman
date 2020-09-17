@@ -11,6 +11,8 @@ using Serilog;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Devscord.DiscordFramework.Commons;
+using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 
 namespace Devscord.DiscordFramework.Integration.Services
@@ -141,6 +143,56 @@ namespace Devscord.DiscordFramework.Integration.Services
         {
             var guild = await this._restClient.GetGuildAsync(serverId);
             return await guild.CreateTextChannelAsync(channelName);
+        }
+
+        public async Task SetRolePermissions(IEnumerable<ChannelContext> channels, DiscordServerContext server, ChangedPermissions permissions, UserRole role)
+        {
+            Log.Information("Setting role {roleName} for {server}", role.Name, server.Name);
+            
+            var socketRole = Server.GetSocketRoles(server.Id).FirstOrDefault(x => x.Id == role.Id);
+            if (socketRole == null)
+            {
+                Log.Error("Created role {roleName} was null", role.Name);
+                return;
+            }
+            var channelPermissions = new OverwritePermissions(permissions.AllowPermissions?.GetRawValue() ?? 0, permissions.DenyPermissions?.GetRawValue() ?? 0);
+            foreach (var channel in channels)
+            {
+                Log.Information("Setting role {roleName} for {channel}", role.Name, channel.Name);
+                await this.SetRolePermissions(channel, channelPermissions, socketRole);
+            }
+            Log.Information("Successfully set role {roleName} on all channels on {server}", role.Name, server.Name);
+        }
+
+        public Task SetRolePermissions(ChannelContext channel, DiscordServerContext server, ChangedPermissions permissions, UserRole role)
+        {
+            Log.Information("Setting role {roleName} for {channel}", role.Name, channel.Name);
+
+            var channelPermissions = new OverwritePermissions(permissions.AllowPermissions?.GetRawValue() ?? 0, permissions.DenyPermissions?.GetRawValue() ?? 0);
+            var socketRole = Server.GetSocketRoles(server.Id).FirstOrDefault(x => x.Id == role.Id);
+            if (socketRole == null)
+            {
+                Log.Error("Role {roleName} was null", role.Name);
+                return Task.CompletedTask;
+            }
+            return this.SetRolePermissions(channel, channelPermissions, socketRole);
+        }
+
+        private async Task SetRolePermissions(ChannelContext channel, OverwritePermissions permissions, IRole role)
+        {
+            var channelSocket = (IGuildChannel)await this.GetChannel(channel.Id);
+            if (channelSocket == null)
+            {
+                Log.Warning("{channel} after casting to IGuildChannel is null", channel.Name);
+                return;
+            }
+            if (channelSocket.PermissionOverwrites.Any(x => x.TargetId == role.Id))
+            {
+                Log.Warning("Channel {channel} has already assigned this role {roleName}", channel.Name, role.Name);
+                return;
+            }
+            await channelSocket.AddPermissionOverwriteAsync(role, permissions);
+            Log.Information("{roleName} set for {channel}", role.Name, channel.Name);
         }
     }
 }
