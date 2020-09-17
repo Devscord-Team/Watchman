@@ -15,7 +15,7 @@ namespace Watchman.Discord.UnitTests.AntiSpam
 
         public SpamPunishmentStrategyTests()
         {
-            _antiSpamTestsService = new AntiSpamTestsService();
+            this._antiSpamTestsService = new AntiSpamTestsService();
         }
 
         [Test]

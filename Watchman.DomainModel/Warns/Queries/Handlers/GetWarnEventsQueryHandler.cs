@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using Watchman.Common.Models;
 using Watchman.Cqrs;
 using Watchman.Integrations.MongoDB;
 
@@ -25,7 +27,7 @@ namespace Watchman.DomainModel.Warns.Queries.Handlers
             {
                 filteredEvents = filteredEvents.Where(x => x.ServerId == query.ServerId);
             }
-            filteredEvents = filteredEvents.Where(x => x.CreatedAt >= query.From);
+            filteredEvents = filteredEvents.Where(x => x.CreatedAt >= query.From && x.CreatedAt <= query.To);
             return new GetWarnEventsQueryResults(filteredEvents);
         }
     }

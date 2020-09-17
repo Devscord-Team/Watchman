@@ -25,10 +25,10 @@ namespace Watchman.DomainModel.Warns.Commands.Handlers
             }
             using var session = this._sessionFactory.Create();
             return session.DeleteAsync<WarnEvent>(x =>
-                    (command.GrantorId == null || command.GrantorId == x.GrantorId) &&
-                    (command.ReceiverId == null || command.ReceiverId == x.ReceiverId) &&
-                    (x.CreatedAt >= command.From) &&
                     (x.ServerId == command.ServerId)
+                    && (command.ReceiverId == null || command.ReceiverId == x.ReceiverId)
+                    && (command.GrantorId == null || command.GrantorId == x.GrantorId)
+                    && (x.CreatedAt >= command.From)
                 );
         }
     }
