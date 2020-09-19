@@ -1,4 +1,7 @@
-﻿namespace Watchman.DomainModel.Configuration
+﻿using System;
+using System.Collections.Generic;
+
+namespace Watchman.DomainModel.Configuration
 {
     public abstract class MappedConfiguration<T> : IMappedConfiguration
     {
@@ -10,6 +13,19 @@
         {
             this.Name = this.GetType().Name;
             this.ServerId = serverId;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is MappedConfiguration<T> configuration 
+                   && EqualityComparer<T>.Default.Equals(this.Value, configuration.Value) 
+                   && this.ServerId == configuration.ServerId 
+                   && this.Name == configuration.Name;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(this.Value, this.ServerId, this.Name);
         }
     }
 }

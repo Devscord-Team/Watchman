@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Middlewares.Contexts;
@@ -13,26 +14,27 @@ namespace Watchman.Discord
 {
     public class ExceptionHandlerService
     {
-        public static DiscordConfiguration DiscordConfiguration { get; set; }
+        private readonly DiscordServersService _discordServersService;
+        private readonly MessagesServiceFactory _messagesServiceFactory;
+        private Contexts _debugServerContexts;
 
         private Contexts DebugServerContexts
         {
             get
             {
-                if (this._debugServerContexts == null)
+                if (this._debugServerContexts != null)
                 {
-                    var server = this._discordServersService.GetDiscordServerAsync(DiscordConfiguration.ExceptionServerId).GetAwaiter().GetResult();
-                    var channel = server.GetTextChannels().FirstOrDefault(x => x.Id == DiscordConfiguration.ExceptionChannelId);
-                    var contexts = new Contexts(server, channel, user: null);
-                    this._debugServerContexts = contexts;
+                    return this._debugServerContexts;
                 }
+                var server = this._discordServersService.GetDiscordServerAsync(DiscordConfiguration.ExceptionServerId).GetAwaiter().GetResult();
+                var channel = server.GetTextChannel(DiscordConfiguration.ExceptionChannelId);
+                var contexts = new Contexts(server, channel, null);
+                this._debugServerContexts = contexts;
                 return this._debugServerContexts;
             }
         }
 
-        private readonly MessagesServiceFactory _messagesServiceFactory;
-        private readonly DiscordServersService _discordServersService;
-        private Contexts _debugServerContexts;
+        public static DiscordConfiguration DiscordConfiguration { get; set; }
 
         public ExceptionHandlerService(MessagesServiceFactory messagesServiceFactory, DiscordServersService discordServersService)
         {
@@ -77,7 +79,7 @@ namespace Watchman.Discord
             }
             var exceptionMessage = this.BuildExceptionMessage(e).ToString();
             var messagesService = this._messagesServiceFactory.Create(contexts);
-            return messagesService.SendMessage(exceptionMessage, Devscord.DiscordFramework.Commons.MessageType.BlockFormatted);
+            return messagesService.SendMessage(exceptionMessage, MessageType.BlockFormatted);
         }
 
         private StringBuilder BuildExceptionMessage(Exception e)
