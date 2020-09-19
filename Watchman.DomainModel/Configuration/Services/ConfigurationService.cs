@@ -12,8 +12,8 @@ namespace Watchman.DomainModel.Configuration.Services
         private readonly ISessionFactory _sessionFactory;
         private readonly ConfigurationMapperService _configurationMapperService;
         private readonly ConfigurationItemsSearcherService _configurationTypesSearcher;
+        private readonly List<(string configurationName, ulong serverId, Func<IMappedConfiguration, Task> func)> _afterConfigurationChanged = new List<(string, ulong, Func<IMappedConfiguration, Task>)>();
         private Dictionary<Type, Dictionary<ulong, IMappedConfiguration>> _cachedConfigurationItem;
-        private List<(string configurationName, ulong serverId, Func<IMappedConfiguration, Task> func)> _afterConfigurationChanged = new List<(string, ulong, Func<IMappedConfiguration, Task>)>();
 
         public ConfigurationService(ISessionFactory sessionFactory, ConfigurationMapperService configurationMapperService, ConfigurationItemsSearcherService configurationTypesSearcher)
         {
@@ -79,6 +79,7 @@ namespace Watchman.DomainModel.Configuration.Services
         {
             using var session = this._sessionFactory.Create();
             var configurationItems = session.Get<ConfigurationItem>();
+            var changedConfiguration = configurationItems.Where(x => x.Version)
             var mappedConfigurations = this._configurationMapperService.GetMappedConfigurations(configurationItems);
             var changedConfigurations = mappedConfigurations.SelectMany(x =>
             {

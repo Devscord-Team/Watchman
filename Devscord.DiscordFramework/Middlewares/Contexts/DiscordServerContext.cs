@@ -1,6 +1,7 @@
 ﻿using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Devscord.DiscordFramework.Middlewares.Contexts
 {
@@ -27,6 +28,7 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
         }
 
         public IEnumerable<ChannelContext> GetTextChannels() => this._getTextChannels.Invoke(this);
+        public ChannelContext GetTextChannel(ulong channelId) => this.GetTextChannels().FirstOrDefault(x => x.Id == channelId);
         public IAsyncEnumerable<UserContext> GetUsers() => this._getServerUsers.Invoke(this); // todo: use static list and events
         public IEnumerable<UserRole> GetRoles() => this._getServerRoles.Invoke(this);
         public UserContext GetOwner() => this._getOwner.Invoke();
