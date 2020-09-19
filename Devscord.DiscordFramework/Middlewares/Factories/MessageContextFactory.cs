@@ -14,11 +14,11 @@ namespace Devscord.DiscordFramework.Middlewares.Factories
             this._commandParser = commandParser;
         }
 
-        public MessageContext Create(DateTime sendAt, string message)
+        public MessageContext Create(DateTime sentAt, string message)
         {
-            bool IsBotCommand = this._commandParser.Parse(message, sendAt).IsCommandForBot;
+            bool IsBotCommand = this._commandParser.Parse(message, sentAt).IsCommandForBot;
 
-            return new MessageContext(sendAt, IsBotCommand);
+            return new MessageContext(sentAt, IsBotCommand);
         }
     }
 }
