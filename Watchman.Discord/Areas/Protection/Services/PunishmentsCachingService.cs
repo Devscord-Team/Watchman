@@ -104,8 +104,8 @@ namespace Watchman.Discord.Areas.Protection.Services
         {
             _warnsByServer = new FriendlyDictionary<ulong, FriendlyDictionary<ulong, List<WarnEvent>>>();
             var query = new GetWarnEventsQuery(0, 0, new DateTime(), DateTime.Now);
-            var warnList = (await this._queryBus.ExecuteAsync(query)).WarnEvents;
-            foreach (var warn in warnList)
+            var warns = (await this._queryBus.ExecuteAsync(query)).WarnEvents;
+            foreach (var warn in warns)
             {
                 this.AddWarnToDictionary(warn);
             }
