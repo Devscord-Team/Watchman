@@ -9,10 +9,8 @@ namespace Watchman.Discord.Areas.Protection.Services
     {
         Task AddUserPunishment(ulong userId, Punishment punishment);
         int GetUserMutesCount(ulong userId, DateTime? since = null);
-        [Obsolete]
-        int GetUserWarnsCount(ulong userId, DateTime? since = null);
         List<Punishment> GetUserPunishments(ulong userId);
-        int GetWarnsCount(ulong serverId, ulong userId, DateTime from);
+        int GetWarnsCount(ulong serverId, ulong userId, DateTime Since);
         void AddWarnLocal(ulong grantorId, ulong receiverId, string reason, ulong serverId);
         void RemoveWarnsLocal(ulong serverId, ulong userId, DateTime from);
     }

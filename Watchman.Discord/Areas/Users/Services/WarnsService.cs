@@ -62,7 +62,7 @@ namespace Watchman.Discord.Areas.Users.Services
 
         public IEnumerable<WarnEvent> GetWarnEvents(ulong serverId, ulong receiverId, DateTime from =new DateTime())
         {
-            var query = new GetWarnEventsQuery(serverId, receiverId, from, DateTime.Now);
+            var query = new GetWarnEventsQuery(serverId, receiverId, from, to: DateTime.Now);
             var response = this._queryBus.Execute(query);
             return response.WarnEvents;
         }

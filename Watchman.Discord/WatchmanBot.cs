@@ -71,9 +71,8 @@ namespace Watchman.Discord
                             Log.Information(stopwatch.ElapsedMilliseconds.ToString());
                         })
                         .AddFromIoC<PunishmentsCachingService>((punishmentService) => async () =>
-                        {
-                            await punishmentService.ClearAndLoadWarnEventsToCache();
-                        })
+                            await punishmentService.ClearAndLoadWarnEventsToCache()
+                        )
                         .AddHandler(() => Task.Run(() => Log.Information("Bot has done every Ready tasks.")));
                 })
                 .AddOnUserJoinedHandlers(builder =>

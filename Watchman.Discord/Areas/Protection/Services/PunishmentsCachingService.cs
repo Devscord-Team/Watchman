@@ -37,20 +37,6 @@ namespace Watchman.Discord.Areas.Protection.Services
             return _punishments[userId];
         }
 
-        [Obsolete]
-        public int GetUserWarnsCount(ulong userId, DateTime? since = null)
-        {
-            var wasFound = _punishments.TryGetValue(userId, out var punishments);
-            if (!wasFound)
-            {
-                return 0;
-            }
-            var warns = punishments.Where(x => x.PunishmentOption == PunishmentOption.Warn);
-            return since.HasValue
-                ? warns.Count(x => x.GivenAt >= since)
-                : warns.Count();
-        }
-
         public int GetUserMutesCount(ulong userId, DateTime? since = null)
         {
             var wasFound = _punishments.TryGetValue(userId, out var punishments);
@@ -81,29 +67,10 @@ namespace Watchman.Discord.Areas.Protection.Services
             await this._commandBus.ExecuteAsync(command);
         }
 
-        private Dictionary<ulong, List<Punishment>> LoadUsersPunishmentsFromDomain()
-        {
-            var query = new GetProtectionPunishmentsQuery();
-            var protectionPunishments = this._queryBus.Execute(query).ProtectionPunishments;
-            return protectionPunishments
-                .GroupBy(x => x.UserId)
-                .Select(x =>
-                {
-                    var userId = x.Key;
-                    var punishments = x.Select(x =>
-                    {
-                        var option = (PunishmentOption) (int) x.Option;
-                        return new Punishment(option, x.GivenAt, x.Time);
-                    });
-                    return new KeyValuePair<ulong, IEnumerable<Punishment>>(userId, punishments);
-                })
-                .ToDictionary(x => x.Key, x => x.Value.ToList());
-        }
-
         public async Task ClearAndLoadWarnEventsToCache()
         {
             _warnsByServer = new FriendlyDictionary<ulong, FriendlyDictionary<ulong, List<WarnEvent>>>();
-            var query = new GetWarnEventsQuery(0, 0, new DateTime(), DateTime.Now);
+            var query = new GetWarnEventsQuery(serverId: 0, receiverId: 0, from: new DateTime(), to: DateTime.Now);
             var warns = (await this._queryBus.ExecuteAsync(query)).WarnEvents;
             foreach (var warn in warns)
             {
@@ -111,12 +78,7 @@ namespace Watchman.Discord.Areas.Protection.Services
             }
         }
 
-        private void AddWarnToDictionary(WarnEvent warnToAdd)
-        {
-            _warnsByServer[warnToAdd.ServerId][warnToAdd.ReceiverId].Add(warnToAdd);
-        }
-
-        public int GetWarnsCount(ulong serverId, ulong userId, DateTime from)
+        public int GetWarnsCount(ulong serverId, ulong userId, DateTime since)
         {
             return _warnsByServer[serverId][userId].Count;
         }
@@ -130,6 +92,30 @@ namespace Watchman.Discord.Areas.Protection.Services
         public void RemoveWarnsLocal(ulong serverId, ulong userId, DateTime from)
         {
             _warnsByServer[serverId][userId].RemoveAll(x => x.CreatedAt >= from);
+        }
+
+        private Dictionary<ulong, List<Punishment>> LoadUsersPunishmentsFromDomain()
+        {
+            var query = new GetProtectionPunishmentsQuery();
+            var protectionPunishments = this._queryBus.Execute(query).ProtectionPunishments;
+            return protectionPunishments
+                .GroupBy(x => x.UserId)
+                .Select(x =>
+                {
+                    var userId = x.Key;
+                    var punishments = x.Select(x =>
+                    {
+                        var option = (PunishmentOption)(int)x.Option;
+                        return new Punishment(option, x.GivenAt, x.Time);
+                    });
+                    return new KeyValuePair<ulong, IEnumerable<Punishment>>(userId, punishments);
+                })
+                .ToDictionary(x => x.Key, x => x.Value.ToList());
+        }
+
+        private void AddWarnToDictionary(WarnEvent warnToAdd)
+        {
+            _warnsByServer[warnToAdd.ServerId][warnToAdd.ReceiverId].Add(warnToAdd);
         }
     }
 }
