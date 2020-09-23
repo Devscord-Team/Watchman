@@ -44,8 +44,8 @@ namespace Watchman.Discord.Areas.Users.Services
 
         public Task RemoveUserWarns(ulong receiverId, ulong serverId)
         {
-            var removeWarnsCommand = new RemoveWarnEventsCommand(grantorId: null, receiverId, serverId, new DateTime());
-            this._punishmentsCachingService.RemoveWarnsLocal(serverId, receiverId, new DateTime());
+            var removeWarnsCommand = new RemoveWarnEventsCommand(grantorId: null, receiverId, serverId, from: new DateTime());
+            this._punishmentsCachingService.RemoveWarnsLocal(serverId, userId: receiverId, from: new DateTime());
             return this._commandBus.ExecuteAsync(removeWarnsCommand);
         }
 
