@@ -17,7 +17,7 @@ namespace Devscord.DiscordFramework.Middlewares
 
         public IDiscordContext Process(SocketMessage data)
         {
-            return this._messageContextFactory.Create(data.Timestamp.UtcDateTime, data.Content);
+            return this._messageContextFactory.Create(data);
         }
     }
 }

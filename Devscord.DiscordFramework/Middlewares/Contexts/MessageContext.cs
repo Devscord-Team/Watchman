@@ -1,6 +1,5 @@
 ﻿using System;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
-using Devscord.DiscordFramework.Framework.Commands.Parsing;
 
 namespace Devscord.DiscordFramework.Middlewares.Contexts
 {
