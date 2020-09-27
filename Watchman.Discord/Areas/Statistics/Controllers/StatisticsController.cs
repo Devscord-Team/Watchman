@@ -5,9 +5,7 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
 using Newtonsoft.Json;
 using Serilog;
-
 using Statsman;
-
 using System;
 using System.Linq;
 using System.Text;
