@@ -16,6 +16,8 @@ namespace Watchman.Discord.Areas.Statistics.BotCommands
         [Bool]
         public bool Week { get; set; }
         [Bool]
-        public bool Month { get; set; } 
+        public bool Month { get; set; }
+        [Bool]
+        public bool Quarter { get; set; }
     }
 }

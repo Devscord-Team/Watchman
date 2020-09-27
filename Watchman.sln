@@ -27,7 +27,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Watchman.Web", "Watchman.We
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Watchman.Discord.UnitTests", "Watchman.Discord.UnitTests\Watchman.Discord.UnitTests.csproj", "{63D475DB-0C76-4ABE-89D6-A4D70938BF1D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watchman.Integration.Tests", "Watchman.Integration.Tests\Watchman.Integration.Tests.csproj", "{16F0CD33-126A-4255-B147-476E6597E02C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Watchman.Integration.Tests", "Watchman.Integration.Tests\Watchman.Integration.Tests.csproj", "{16F0CD33-126A-4255-B147-476E6597E02C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Statsman", "Statsman\Statsman.csproj", "{0E0453CD-0F39-458A-AC91-B31915F35291}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -83,6 +85,10 @@ Global
 		{16F0CD33-126A-4255-B147-476E6597E02C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16F0CD33-126A-4255-B147-476E6597E02C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16F0CD33-126A-4255-B147-476E6597E02C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E0453CD-0F39-458A-AC91-B31915F35291}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E0453CD-0F39-458A-AC91-B31915F35291}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E0453CD-0F39-458A-AC91-B31915F35291}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E0453CD-0F39-458A-AC91-B31915F35291}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

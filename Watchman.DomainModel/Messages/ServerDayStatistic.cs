@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Watchman.DomainModel.Commons.Calculators.Statistics.Splitters;
 using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Messages
 {
-    public class ServerDayStatistic : Entity, ISplittable
+    public class ServerDayStatistic : Entity
     {
         public ulong ServerId { get; private set; }
         public IEnumerable<ChannelDayStatistic> ChannelDayStatistics { get; private set; }
@@ -25,11 +24,6 @@ namespace Watchman.DomainModel.Messages
                 ChannelId = x.Key,
                 Count = x.Count()
             });
-        }
-
-        public DateTime GetSplittable()
-        {
-            return this.Date;
         }
     }
 

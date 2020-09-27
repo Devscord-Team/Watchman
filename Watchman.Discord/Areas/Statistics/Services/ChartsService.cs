@@ -21,14 +21,14 @@ namespace Watchman.Discord.Areas.Statistics.Services
         public async Task<Stream> GetImageStatisticsPerPeriod(StatisticsReport report)
         {
             var dates = report.StatisticsPerPeriod.Select(x => x.TimeRange.Start);
-            var period = report.StatisticsPerPeriod.First().Period;
+            //var period = report.StatisticsPerPeriod.First().Period;
 
-            var labels = period switch
+            var labels = "" switch
             {
-                Period.Hour => dates.Select(x => x.ToString("yyyy-MM-dd HH")),
-                Period.Day => dates.Select(x => x.ToString("yyyy-MM-dd")),
-                Period.Week => dates.Select(x => x.ToString("yyyy-MM-dd")),
-                Period.Month => dates.Select(x => x.ToString("yyyy-MM")),
+                //Period.Hour => dates.Select(x => x.ToString("yyyy-MM-dd HH")),
+                //Period.Day => dates.Select(x => x.ToString("yyyy-MM-dd")),
+                //Period.Week => dates.Select(x => x.ToString("yyyy-MM-dd")),
+                //Period.Month => dates.Select(x => x.ToString("yyyy-MM")),
                 _ => new List<string>()
             };
 

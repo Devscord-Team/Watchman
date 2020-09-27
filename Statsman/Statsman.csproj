@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Watchman.Cqrs\Watchman.Cqrs.csproj" />
+    <ProjectReference Include="..\Watchman.DomainModel\Watchman.DomainModel.csproj" />
+  </ItemGroup>
+
+</Project>

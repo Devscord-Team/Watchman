@@ -1,9 +1,10 @@
-﻿using Watchman.Cqrs;
+﻿using System;
+using Watchman.Cqrs;
 using Watchman.DomainModel.Commons.Queries;
 
-namespace Watchman.DomainModel.Messages.Queries.Handlers
+namespace Watchman.DomainModel.Messages.Queries
 {
-    public class GetServerDayStatisticsQuery : PaginationQuery, IQuery<GetServerDayStatisticsQueryResult>
+    public class GetServerDayStatisticsQuery : PaginationMessagesQuery, IQuery<GetServerDayStatisticsQueryResult>
     {
         public ulong ServerId { get; }
 

@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
+
 using Serilog;
+
 using Watchman.Common.Models;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Messages;
 using Watchman.DomainModel.Messages.Commands;
 using Watchman.DomainModel.Messages.Queries;
-using Watchman.DomainModel.Messages.Queries.Handlers;
 
 namespace Watchman.Discord.Areas.Statistics.Services
 {
