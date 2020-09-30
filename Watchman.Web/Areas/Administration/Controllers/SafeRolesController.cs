@@ -20,14 +20,14 @@ namespace Watchman.Web.Areas.Administration.Controllers
         }
 
         [HttpPost]
-        public Task SetSafeRole(string roleName, ulong serverId = 0)
+        public Task SetSafeRole(string roleName, ulong serverId)
         {
             var command = new SetRoleAsSafeCommand(roleName, serverId);
             return this._commandBus.ExecuteAsync(command);
         }
 
         [HttpPost]
-        public Task RemoveSafeRole(string roleName, ulong serverId = 0)
+        public Task RemoveSafeRole(string roleName, ulong serverId)
         {
             var command = new SetRoleAsUnsafeCommand(roleName, serverId);
             return this._commandBus.ExecuteAsync(command);
