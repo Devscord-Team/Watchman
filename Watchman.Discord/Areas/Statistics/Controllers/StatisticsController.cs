@@ -11,6 +11,7 @@ using Statsman.Models;
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,7 +27,7 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
 {
     public class StatisticsController : IController
     {
-        private readonly ChartsService _chartsService;
+        
         private readonly StatisticsGenerator statisticsGenerator;
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
@@ -37,7 +38,6 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
             this._queryBus = queryBus;
             this._commandBus = commandBus;
             this._messagesServiceFactory = messagesServiceFactory;
-            this._chartsService = chartsService;
             this.statisticsGenerator = statisticsGenerator;
         }
 
@@ -58,46 +58,32 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         [AdminCommand]
         public async Task GetStatisticsPerPeriod(StatsCommand command, Contexts contexts)
         {
-            IEnumerable<TimeStatisticItem> timeStatisticItems = new List<TimeStatisticItem>();
-            if (command.Hour) // TODO get limits from configuration
+            Stream result = null;ters
+            if (command.Hour)
             {
-                await this.statisticsGenerator.PerHour(contexts.Server.Id, TimeSpan.FromDays(7)); 
+                result = await this.statisticsGenerator.PerHour(contexts.Server.Id, TimeSpan.FromDays(7)); // TODO get time limits from configuration
             }
             else if (command.Day)
             {
-                timeStatisticItems = await this.statisticsGenerator.PerDay(contexts.Server.Id, TimeSpan.FromDays(30));
+                result = await this.statisticsGenerator.PerDay(contexts.Server.Id, TimeSpan.FromDays(30));
             }
             else if (command.Week)
             {
-                await this.statisticsGenerator.PerWeek(contexts.Server.Id, TimeSpan.FromDays(90));
+                result = await this.statisticsGenerator.PerWeek(contexts.Server.Id, TimeSpan.FromDays(90));
             }
             else if (command.Month)
             {
-                await this.statisticsGenerator.PerMonth(contexts.Server.Id, TimeSpan.FromDays(365));
+                result = await this.statisticsGenerator.PerMonth(contexts.Server.Id, TimeSpan.FromDays(365));
             }
             else if (command.Quarter)
             {
-                await this.statisticsGenerator.PerQuarter(contexts.Server.Id, TimeSpan.FromDays(1825)); //5 years
+                result = await this.statisticsGenerator.PerQuarter(contexts.Server.Id, TimeSpan.FromDays(1825)); //5 years
             }
-            if (!timeStatisticItems.Any())
+            if (result == null)
                 return;
-
-            var report = new StatisticsReport
-            {
-                AllMessages = timeStatisticItems.Select(x => x.Value).Sum(),
-                TimeRange = TimeRange.Create(timeStatisticItems.First().Time.Start, timeStatisticItems.Last().Time.End),
-                StatisticsPerPeriod = timeStatisticItems.Select(x => new StatisticsReportPeriod { TimeRange = x.Time, MessagesQuantity = x.Value })
-            };
-            var stream = await this._chartsService.GetImageStatisticsPerPeriod(report);
             var messagesService = this._messagesServiceFactory.Create(contexts);
-            await messagesService.SendFile("Statistics.png", stream);
-        }
-
-        private static void PrintDebugStats(StatisticsReport report)
-        {
-            var dataToMessage = JsonConvert.SerializeObject(report.StatisticsPerPeriod.Where(x => x.MessagesQuantity > 0), Formatting.Indented);
-            var builder = new StringBuilder(dataToMessage).FormatMessageIntoBlock("json");
-            Log.Information(builder.ToString());
+            await messagesService.SendFile("Statistics.png", result);
         }
     }
+    
 }

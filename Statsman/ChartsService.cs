@@ -1,13 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using Statsman.Models;
+
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Watchman.Common.Models;
-using Watchman.Discord.Areas.Statistics.Models;
+
 using Watchman.Integrations.Quickchart;
 using Watchman.Integrations.Quickchart.Models;
 
-namespace Watchman.Discord.Areas.Statistics.Services
+namespace Statsman
 {
     public class ChartsService
     {
@@ -18,19 +20,16 @@ namespace Watchman.Discord.Areas.Statistics.Services
             this._quickchartService = new QuickchartService();
         }
 
-        public async Task<Stream> GetImageStatisticsPerPeriod(StatisticsReport report)
+        public async Task<Stream> GetImageStatisticsPerPeriod(IEnumerable<TimeStatisticItem> statistics)
         {
-            var dates = report.StatisticsPerPeriod.Select(x => x.TimeRange.Start);
-            //var period = report.StatisticsPerPeriod.First().Period;
-
-            var labels = report.TimeRange.DaysBetween switch
+            var dates = statistics.Select(x => x.Time.Start);
+            var labels = statistics.Count() switch
             {
                 int x when x <= 1 => dates.Select(x => x.ToString("yyyy-MM-dd HH")),
                 int x when x <= 30 => dates.Select(x => x.ToString("yyyy-MM-dd")),
                 int x when x > 30 => dates.Select(x => x.ToString("yyyy-MM")),
                 _ => new List<string>()
             };
-
             var chart = new Chart
             {
                 Type = "line",
@@ -38,10 +37,9 @@ namespace Watchman.Discord.Areas.Statistics.Services
                 Data = new Dataset
                 {
                     Label = "Messages",
-                    Data = report.StatisticsPerPeriod.Select(x => x.MessagesQuantity).Reverse()
+                    Data = statistics.Select(x => x.Value).Reverse()
                 }
             };
-
             var image = await this._quickchartService.GetImage(chart);
             return image;
         }
