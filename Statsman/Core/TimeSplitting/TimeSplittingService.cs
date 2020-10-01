@@ -14,21 +14,8 @@ namespace Statsman.Core.TimeSplitting
     {
         public IEnumerable<TimeStatisticItem> GetStatisticsPerDay(IEnumerable<ServerDayStatistic> serverDayStatistics, IEnumerable<Message> latestMessages, TimeRange expectedTimeRange)
         {
-            var latestPreGeneratedDate = serverDayStatistics.OrderBy(x => x.UpdatedAt).First();
-            latestMessages = latestMessages.Where(x => 
-            {
-                if (x.SentAt.Date > latestPreGeneratedDate.Date) //in newer day
-                {
-                    return true;
-                }
-                if (x.SentAt > latestPreGeneratedDate.CreatedAt) //in same day, but later
-                {
-                    return true;
-                }
-                return false;
-            }).ToList();
+            latestMessages = this.FilterMessages(latestMessages, serverDayStatistics);
             var oldestLastMessagesDate = latestMessages.OrderBy(x => x.SentAt).First().SentAt;
-
             var result = new List<TimeStatisticItem>();
             expectedTimeRange.ForeachDay((i, day) => 
             {
@@ -42,6 +29,23 @@ namespace Statsman.Core.TimeSplitting
                 result.Add(item);
             });
             return result;
+        }
+
+        private IEnumerable<Message> FilterMessages(IEnumerable<Message> latestMessages, IEnumerable<ServerDayStatistic> serverDayStatistics)
+        {
+            var latestPreGeneratedDate = serverDayStatistics.OrderBy(x => x.UpdatedAt).First();
+            return latestMessages.Where(x =>
+            {
+                if (x.SentAt.Date > latestPreGeneratedDate.Date) //in newer day
+                {
+                    return true;
+                }
+                if (x.SentAt > latestPreGeneratedDate.CreatedAt) //in same day, but later
+                {
+                    return true;
+                }
+                return false;
+            }).ToList();
         }
     }
 }
