@@ -27,17 +27,17 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
     public class StatisticsController : IController
     {
         
-        private readonly StatisticsGenerator statisticsGenerator;
+        private readonly PeriodStatisticsGenerator periodStatisticsGenerator;
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
         private readonly MessagesServiceFactory _messagesServiceFactory;
 
-        public StatisticsController(IQueryBus queryBus, ICommandBus commandBus, MessagesServiceFactory messagesServiceFactory, ChartsService chartsService, StatisticsGenerator statisticsGenerator)
+        public StatisticsController(IQueryBus queryBus, ICommandBus commandBus, MessagesServiceFactory messagesServiceFactory, ChartsService chartsService, PeriodStatisticsGenerator periodStatisticsGenerator)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;
             this._messagesServiceFactory = messagesServiceFactory;
-            this.statisticsGenerator = statisticsGenerator;
+            this.periodStatisticsGenerator = periodStatisticsGenerator;
         }
 
         [ReadAlways]
@@ -55,7 +55,7 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         }
 
         [AdminCommand]
-        public async Task GetStatisticsPerPeriod(StatsCommand command, Contexts contexts)
+        public async Task GetPeriodStatistics(StatsCommand command, Contexts contexts)
         {
             var (chart, message) = await this.GetStatistics(command, contexts);
             if (chart == null || string.IsNullOrWhiteSpace(message))
@@ -71,27 +71,34 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         {
             if (command.Minute)
             {
-                return this.statisticsGenerator.PerMinute(contexts.Server.Id, TimeSpan.FromMinutes(60)); // TODO get time limits from configuration
+                // TODO get time limits from configuration
+                var request = new StatisticsRequest(contexts.Server.Id, TimeSpan.FromMinutes(60), command.User, command.Channel);
+                return this.periodStatisticsGenerator.PerMinute(request); 
             }
             else if (command.Hour)
             {
-                return this.statisticsGenerator.PerHour(contexts.Server.Id, TimeSpan.FromDays(7)); 
+                var request = new StatisticsRequest(contexts.Server.Id, TimeSpan.FromDays(7), command.User, command.Channel);
+                return this.periodStatisticsGenerator.PerHour(request); 
             }
             else if (command.Day)
             {
-                return this.statisticsGenerator.PerDay(contexts.Server.Id, TimeSpan.FromDays(30));
+                var request = new StatisticsRequest(contexts.Server.Id, TimeSpan.FromDays(30), command.User, command.Channel);
+                return this.periodStatisticsGenerator.PerDay(request);
             }
             else if (command.Week)
             {
-                return this.statisticsGenerator.PerWeek(contexts.Server.Id, TimeSpan.FromDays(90));
+                var request = new StatisticsRequest(contexts.Server.Id, TimeSpan.FromDays(90), command.User, command.Channel);
+                return this.periodStatisticsGenerator.PerWeek(request);
             }
             else if (command.Month)
             {
-                return this.statisticsGenerator.PerMonth(contexts.Server.Id, TimeSpan.FromDays(365));
+                var request = new StatisticsRequest(contexts.Server.Id, TimeSpan.FromDays(365), command.User, command.Channel);
+                return this.periodStatisticsGenerator.PerMonth(request);
             }
             else if (command.Quarter)
             {
-                return this.statisticsGenerator.PerQuarter(contexts.Server.Id, TimeSpan.FromDays(1825)); //5 years
+                var request = new StatisticsRequest(contexts.Server.Id, TimeSpan.FromDays(1825), command.User, command.Channel);
+                return this.periodStatisticsGenerator.PerQuarter(request); //5 years
             }
             return null;
         }

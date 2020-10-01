@@ -25,6 +25,16 @@ namespace Watchman.DomainModel.Messages
                 Count = x.Count()
             });
         }
+
+        public void SetCount(int count)
+        {
+            if(this.Count == count)
+            {
+                return;
+            }
+            this.Count = count;
+            this.Update();
+        }
     }
 
     public class ChannelDayStatistic

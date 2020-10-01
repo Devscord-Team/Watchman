@@ -21,5 +21,13 @@ namespace Watchman.Discord.Areas.Statistics.BotCommands
         public bool Month { get; set; }
         [Bool]
         public bool Quarter { get; set; }
+
+        [Optional]
+        [UserMention]
+        public ulong User { get; set; }
+
+        [Optional]
+        [ChannelMention]
+        public ulong Channel { get; set; }
     }
 }

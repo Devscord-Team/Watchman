@@ -14,68 +14,68 @@ using Watchman.Integrations.Quickchart;
 
 namespace Statsman
 {
-    public class StatisticsGenerator
+    public class PeriodStatisticsGenerator
     {
         private readonly IQueryBus queryBus;
         private readonly TimeSplittingService timeSplittingService = new TimeSplittingService(); //TODO IoC
         private readonly ChartsService _chartsService = new ChartsService();
 
-        public StatisticsGenerator(IQueryBus queryBus)
+        public PeriodStatisticsGenerator(IQueryBus queryBus)
         {
             this.queryBus = queryBus;
         }
 
-        public async Task<(Stream Chart, string Message)> PerMinute(ulong serverId, TimeSpan timeBehind)
+        public async Task<(Stream Chart, string Message)> PerMinute(StatisticsRequest request)
         {
-            var timeRange = TimeRange.Create(DateTime.UtcNow.AddMinutes(-timeBehind.TotalMinutes), DateTime.UtcNow);
-            var statistics = await this.GetStatisticsGroupedPerDetailedPeriod(serverId, timeRange, Period.Minute);
+            var timeRange = TimeRange.Create(DateTime.UtcNow.AddMinutes(-request.TimeBehind.TotalMinutes), DateTime.UtcNow);
+            var statistics = await this.GetStatisticsGroupedPerDetailedPeriod(request.ServerId, timeRange, Period.Minute);
             return (Chart: await this._chartsService.GetImageStatisticsPerPeriod(statistics, "Messages per minute"),
                 Message: $"All Messages Statistics\r\nItem per minute\r\n{timeRange}"); //TODO get label and message from configuration
         }
 
-        public async Task<(Stream Chart, string Message)> PerHour(ulong serverId, TimeSpan timeBehind)
+        public async Task<(Stream Chart, string Message)> PerHour(StatisticsRequest request)
         {
-            var timeRange = TimeRange.Create(DateTime.UtcNow.AddHours(-timeBehind.TotalHours), DateTime.UtcNow);
-            var statistics = await this.GetStatisticsGroupedPerDetailedPeriod(serverId, timeRange, Period.Hour);
+            var timeRange = TimeRange.Create(DateTime.UtcNow.AddHours(-request.TimeBehind.TotalHours), DateTime.UtcNow);
+            var statistics = await this.GetStatisticsGroupedPerDetailedPeriod(request.ServerId, timeRange, Period.Hour);
             return (Chart: await this._chartsService.GetImageStatisticsPerPeriod(statistics, "Messages per hour"), 
                 Message: $"All Messages Statistics\r\nItem per hour\r\n{timeRange}");
         }
 
-        public async Task<(Stream Chart, string Message)> PerDay(ulong serverId, TimeSpan timeBehind)
+        public async Task<(Stream Chart, string Message)> PerDay(StatisticsRequest request)
         {
-            var timeRange = TimeRange.Create(DateTime.Today.AddDays(-timeBehind.TotalDays), DateTime.Today);
-            var statistics = await this.GetStatisticsGroupedPerDaysPeriod(serverId, timeRange, Period.Day);
+            var timeRange = TimeRange.Create(DateTime.Today.AddDays(-request.TimeBehind.TotalDays), DateTime.Today);
+            var statistics = await this.GetStatisticsGroupedPerDaysPeriod(request.ServerId, timeRange, Period.Day);
             return (Chart: await this._chartsService.GetImageStatisticsPerPeriod(statistics, "Messages per day"), 
                 Message: $"All Messages Statistics\r\nItem per day\r\n{timeRange}");
         }
 
-        public async Task<(Stream Chart, string Message)> PerWeek(ulong serverId, TimeSpan timeBehind)
+        public async Task<(Stream Chart, string Message)> PerWeek(StatisticsRequest request)
         {
-            var timeRange = TimeRange.Create(DateTime.Today.AddDays(-timeBehind.TotalDays), DateTime.Today);
-            var statistics = await this.GetStatisticsGroupedPerDaysPeriod(serverId, timeRange, Period.Week);
+            var timeRange = TimeRange.Create(DateTime.Today.AddDays(-request.TimeBehind.TotalDays), DateTime.Today);
+            var statistics = await this.GetStatisticsGroupedPerDaysPeriod(request.ServerId, timeRange, Period.Week);
             return (Chart: await this._chartsService.GetImageStatisticsPerPeriod(statistics, "Messages per week"), 
                 Message: $"All Messages Statistics\r\nItem per week\r\n{timeRange}");
         }
 
-        public async Task<(Stream Chart, string Message)> PerMonth(ulong serverId, TimeSpan timeBehind)
+        public async Task<(Stream Chart, string Message)> PerMonth(StatisticsRequest request)
         {
-            var timeRange = TimeRange.Create(DateTime.Today.AddDays(-timeBehind.TotalDays), DateTime.Today);
-            var statistics = await this.GetStatisticsGroupedPerDaysPeriod(serverId, timeRange, Period.Month);
+            var timeRange = TimeRange.Create(DateTime.Today.AddDays(-request.TimeBehind.TotalDays), DateTime.Today);
+            var statistics = await this.GetStatisticsGroupedPerDaysPeriod(request, timeRange, Period.Month);
             return (Chart: await this._chartsService.GetImageStatisticsPerPeriod(statistics, "Messages per month"), 
                 Message: $"All Messages Statistics\r\nItem per month\r\n{timeRange}");
         }
 
-        public async Task<(Stream Chart, string Message)> PerQuarter(ulong serverId, TimeSpan timeBehind)
+        public async Task<(Stream Chart, string Message)> PerQuarter(StatisticsRequest request)
         {
-            var timeRange = TimeRange.Create(DateTime.Today.AddDays(-timeBehind.TotalDays), DateTime.Today);
-            var statistics = await this.GetStatisticsGroupedPerDaysPeriod(serverId, timeRange, Period.Quarter);
+            var timeRange = TimeRange.Create(DateTime.Today.AddDays(-request.TimeBehind.TotalDays), DateTime.Today);
+            var statistics = await this.GetStatisticsGroupedPerDaysPeriod(request, timeRange, Period.Quarter);
             return (Chart: await this._chartsService.GetImageStatisticsPerPeriod(statistics, "Messages per quarter"), 
                 Message: $"All Messages Statistics\r\nItem per quarter\r\n{timeRange}");
         }
 
-        private async Task<IEnumerable<TimeStatisticItem>> GetStatisticsGroupedPerDetailedPeriod(ulong serverId, TimeRange timeRange, Period period)
+        private async Task<IEnumerable<TimeStatisticItem>> GetStatisticsGroupedPerDetailedPeriod(StatisticsRequest statisticsRequest, TimeRange timeRange, Period period)
         {
-            var messages = await this.GetMessages(serverId, timeRange);
+            var messages = await this.GetMessages(statisticsRequest, timeRange);
             return period switch
             {
                 Period.Minute => this.timeSplittingService.GetStatisticsPerMinute(messages, timeRange),
@@ -84,10 +84,10 @@ namespace Statsman
             };
         }
 
-        private async Task<IEnumerable<TimeStatisticItem>> GetStatisticsGroupedPerDaysPeriod(ulong serverId, TimeRange timeRange, Period period)
+        private async Task<IEnumerable<TimeStatisticItem>> GetStatisticsGroupedPerDaysPeriod(StatisticsRequest statisticsRequest, TimeRange timeRange, Period period)
         {
-            var preCalculatedDays = await this.GetServerDayStatistics(serverId, timeRange);
-            var messages = await this.GetMessages(serverId, TimeSpan.FromHours(24));
+            var preCalculatedDays = await this.GetServerDayStatistics(statisticsRequest, timeRange);
+            var messages = await this.GetMessages(statisticsRequest, TimeSpan.FromHours(24));
             return period switch
             {
                 Period.Day => this.timeSplittingService.GetStatisticsPerDay(preCalculatedDays, messages, timeRange),
@@ -98,23 +98,23 @@ namespace Statsman
             };
         }
 
-        private async Task<IEnumerable<Message>> GetMessages(ulong serverId, TimeSpan timeBehind)
+        private async Task<IEnumerable<Message>> GetMessages(StatisticsRequest statisticsRequest, TimeSpan timeBehind)
         {
-            return await this.GetMessages(serverId, TimeRange.Create(DateTime.UtcNow.AddHours(-timeBehind.TotalHours), DateTime.UtcNow));
+            return await this.GetMessages(statisticsRequest, TimeRange.Create(DateTime.UtcNow.AddHours(-timeBehind.TotalHours), DateTime.UtcNow));
         }
 
-        private async Task<IEnumerable<Message>> GetMessages(ulong serverId, TimeRange timeRange)
+        private async Task<IEnumerable<Message>> GetMessages(StatisticsRequest statisticsRequest, TimeRange timeRange)
         {
-            var query = new GetMessagesQuery(serverId)
+            var query = new GetMessagesQuery(statisticsRequest.ServerId, statisticsRequest.ChannelId, statisticsRequest.UserId)
             {
                 SentDate = timeRange
             };
             return (await this.queryBus.ExecuteAsync(query)).Messages.ToList();
         }
 
-        private async Task<IEnumerable<ServerDayStatistic>> GetServerDayStatistics(ulong serverId, TimeRange timeRange)
+        private async Task<IEnumerable<ServerDayStatistic>> GetServerDayStatistics(StatisticsRequest statisticsRequest, TimeRange timeRange)
         {
-            var query = new GetServerDayStatisticsQuery(serverId)
+            var query = new GetServerDayStatisticsQuery(statisticsRequest.ServerId)
             {
                 SentDate = timeRange
             };
