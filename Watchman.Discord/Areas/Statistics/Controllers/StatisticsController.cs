@@ -58,7 +58,7 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         [AdminCommand]
         public async Task GetStatisticsPerPeriod(StatsCommand command, Contexts contexts)
         {
-            Stream result = null;ters
+            Stream result = null;
             if (command.Hour)
             {
                 result = await this.statisticsGenerator.PerHour(contexts.Server.Id, TimeSpan.FromDays(7)); // TODO get time limits from configuration
