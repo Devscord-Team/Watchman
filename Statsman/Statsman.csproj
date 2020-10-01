@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Watchman.Cqrs\Watchman.Cqrs.csproj" />
     <ProjectReference Include="..\Watchman.DomainModel\Watchman.DomainModel.csproj" />
   </ItemGroup>

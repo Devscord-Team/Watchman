@@ -53,7 +53,7 @@ namespace Watchman.Common.Models
 
         private void Foreach(int loop, Func<double, DateTime> add, Action<int, DateTime> action)
         {
-            for (var i = 0; i < loop; i++)
+            for (var i = 0; i <= loop; i++)
             {
                 action.Invoke(i, add.Invoke(i));
             }

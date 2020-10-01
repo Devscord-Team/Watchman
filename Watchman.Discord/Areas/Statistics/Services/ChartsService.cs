@@ -23,12 +23,11 @@ namespace Watchman.Discord.Areas.Statistics.Services
             var dates = report.StatisticsPerPeriod.Select(x => x.TimeRange.Start);
             //var period = report.StatisticsPerPeriod.First().Period;
 
-            var labels = "" switch
+            var labels = report.TimeRange.DaysBetween switch
             {
-                //Period.Hour => dates.Select(x => x.ToString("yyyy-MM-dd HH")),
-                //Period.Day => dates.Select(x => x.ToString("yyyy-MM-dd")),
-                //Period.Week => dates.Select(x => x.ToString("yyyy-MM-dd")),
-                //Period.Month => dates.Select(x => x.ToString("yyyy-MM")),
+                int x when x <= 1 => dates.Select(x => x.ToString("yyyy-MM-dd HH")),
+                int x when x <= 30 => dates.Select(x => x.ToString("yyyy-MM-dd")),
+                int x when x > 30 => dates.Select(x => x.ToString("yyyy-MM")),
                 _ => new List<string>()
             };
 

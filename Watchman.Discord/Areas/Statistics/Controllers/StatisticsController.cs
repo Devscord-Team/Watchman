@@ -1,12 +1,16 @@
 ﻿using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
+using Devscord.DiscordFramework.Framework.Commands.PropertyAttributes;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
 using Newtonsoft.Json;
 using Serilog;
 using Statsman;
+using Statsman.Models;
+
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -54,13 +58,14 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         [AdminCommand]
         public async Task GetStatisticsPerPeriod(StatsCommand command, Contexts contexts)
         {
+            IEnumerable<TimeStatisticItem> timeStatisticItems = new List<TimeStatisticItem>();
             if (command.Hour) // TODO get limits from configuration
             {
                 await this.statisticsGenerator.PerHour(contexts.Server.Id, TimeSpan.FromDays(7)); 
             }
             else if (command.Day)
             {
-                await this.statisticsGenerator.PerDay(contexts.Server.Id, TimeSpan.FromDays(30));
+                timeStatisticItems = await this.statisticsGenerator.PerDay(contexts.Server.Id, TimeSpan.FromDays(30));
             }
             else if (command.Week)
             {
@@ -74,23 +79,18 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
             {
                 await this.statisticsGenerator.PerQuarter(contexts.Server.Id, TimeSpan.FromDays(1825)); //5 years
             }
+            if (!timeStatisticItems.Any())
+                return;
 
-
-//            var period = this._reportsService.SelectPeriod(statsCommand);
-//            var query = new GetMessagesStatisticsQuery(period);
-//            var result = await this._queryBus.ExecuteAsync(query);
-//            var periodStats = result.PeriodStatistics.Where(x => x.Count > 0);
-
-//            var getMessages = new GetMessagesQuery(contexts.Server.Id);
-//            var messages = this._queryBus.Execute(getMessages).Messages.ToList();
-//            var report = this._reportsService.CreateReport(messages, period);
-//            Log.Information("Generated statistics for time range {start} {end}", report.TimeRange.Start, report.TimeRange.End);
-//#if DEBUG
-//            PrintDebugStats(report);
-//#endif
-//            var stream = await this._chartsService.GetImageStatisticsPerPeriod(report);
-//            var messagesService = this._messagesServiceFactory.Create(contexts);
-//            await messagesService.SendFile("Statistics.png", stream);
+            var report = new StatisticsReport
+            {
+                AllMessages = timeStatisticItems.Select(x => x.Value).Sum(),
+                TimeRange = TimeRange.Create(timeStatisticItems.First().Time.Start, timeStatisticItems.Last().Time.End),
+                StatisticsPerPeriod = timeStatisticItems.Select(x => new StatisticsReportPeriod { TimeRange = x.Time, MessagesQuantity = x.Value })
+            };
+            var stream = await this._chartsService.GetImageStatisticsPerPeriod(report);
+            var messagesService = this._messagesServiceFactory.Create(contexts);
+            await messagesService.SendFile("Statistics.png", stream);
         }
 
         private static void PrintDebugStats(StatisticsReport report)
