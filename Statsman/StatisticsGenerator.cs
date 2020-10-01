@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,32 +26,32 @@ namespace Statsman
         public async Task PerDay(ulong serverId, TimeSpan timeBehind)
         {
             var query = this.GetQuery(serverId, timeBehind);
-            var preCalculatedDays = await this.queryBus.ExecuteAsync(query);
+            var preCalculatedDays = (await this.queryBus.ExecuteAsync(query)).ServerDayStatistics;
         }
 
         public async Task PerWeek(ulong serverId, TimeSpan timeBehind)
         {
             var query = this.GetQuery(serverId, timeBehind);
-            var preCalculatedDays = await this.queryBus.ExecuteAsync(query);
+            var preCalculatedDays = (await this.queryBus.ExecuteAsync(query)).ServerDayStatistics;
         }
 
         public async Task PerMonth(ulong serverId, TimeSpan timeBehind)
         {
             var query = this.GetQuery(serverId, timeBehind);
-            var preCalculatedDays = await this.queryBus.ExecuteAsync(query);
+            var preCalculatedDays = (await this.queryBus.ExecuteAsync(query)).ServerDayStatistics;
         }
 
         public async Task PerQuarter(ulong serverId, TimeSpan timeBehind)
         {
             var query = this.GetQuery(serverId, timeBehind);
-            var preCalculatedDays = await this.queryBus.ExecuteAsync(query);
+            var preCalculatedDays = (await this.queryBus.ExecuteAsync(query)).ServerDayStatistics;
         }
 
         private GetServerDayStatisticsQuery GetQuery(ulong serverId, TimeSpan timeBehind)
         {
             var query = new GetServerDayStatisticsQuery(serverId)
             {
-                SentDate = TimeRange.Create(DateTime.Today.AddDays(timeBehind.TotalDays), DateTime.Today)
+                SentDate = TimeRange.Create(DateTime.Today.AddDays(-timeBehind.TotalDays), DateTime.Today)
             };
             return query;
         }

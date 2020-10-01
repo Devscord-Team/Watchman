@@ -6,7 +6,7 @@ using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Messages.Queries.Handlers
 {
-    public class GetServerDayStatisticsQueryHandler : PaginationQueryHandler, IQueryHandler<GetServerDayStatisticsQuery, GetServerDayStatisticsQueryResult>
+    public class GetServerDayStatisticsQueryHandler : PaginationMessagesQueryHandler, IQueryHandler<GetServerDayStatisticsQuery, GetServerDayStatisticsQueryResult>
     {
         private readonly ISessionFactory _sessionFactory;
 
