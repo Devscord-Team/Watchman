@@ -58,31 +58,43 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         [AdminCommand]
         public async Task GetStatisticsPerPeriod(StatsCommand command, Contexts contexts)
         {
-            Stream result = null;
-            if (command.Hour)
+            var (chart, message) = await this.GetStatistics(command, contexts);
+            if (chart == null || string.IsNullOrWhiteSpace(message))
             {
-                result = await this.statisticsGenerator.PerHour(contexts.Server.Id, TimeSpan.FromDays(7)); // TODO get time limits from configuration
+                return;
+            }
+            var messagesService = this._messagesServiceFactory.Create(contexts);
+            _ = await Task.Run(() => messagesService.SendFile("Statistics.png", chart))
+                .ContinueWith(x => messagesService.SendMessage(message));
+        }
+
+        private Task<(Stream Chart, string Message)> GetStatistics(StatsCommand command, Contexts contexts)
+        {
+            if (command.Minute)
+            {
+                return this.statisticsGenerator.PerMinute(contexts.Server.Id, TimeSpan.FromMinutes(60)); // TODO get time limits from configuration
+            }
+            else if (command.Hour)
+            {
+                return this.statisticsGenerator.PerHour(contexts.Server.Id, TimeSpan.FromDays(7)); 
             }
             else if (command.Day)
             {
-                result = await this.statisticsGenerator.PerDay(contexts.Server.Id, TimeSpan.FromDays(30));
+                return this.statisticsGenerator.PerDay(contexts.Server.Id, TimeSpan.FromDays(30));
             }
             else if (command.Week)
             {
-                result = await this.statisticsGenerator.PerWeek(contexts.Server.Id, TimeSpan.FromDays(90));
+                return this.statisticsGenerator.PerWeek(contexts.Server.Id, TimeSpan.FromDays(90));
             }
             else if (command.Month)
             {
-                result = await this.statisticsGenerator.PerMonth(contexts.Server.Id, TimeSpan.FromDays(365));
+                return this.statisticsGenerator.PerMonth(contexts.Server.Id, TimeSpan.FromDays(365));
             }
             else if (command.Quarter)
             {
-                result = await this.statisticsGenerator.PerQuarter(contexts.Server.Id, TimeSpan.FromDays(1825)); //5 years
+                return this.statisticsGenerator.PerQuarter(contexts.Server.Id, TimeSpan.FromDays(1825)); //5 years
             }
-            if (result == null)
-                return;
-            var messagesService = this._messagesServiceFactory.Create(contexts);
-            await messagesService.SendFile("Statistics.png", result);
+            return null;
         }
     }
     

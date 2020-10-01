@@ -10,6 +10,8 @@ namespace Watchman.Discord.Areas.Statistics.BotCommands
     public class StatsCommand : IBotCommand
     {
         [Bool]
+        public bool Minute { get; set; }
+        [Bool]
         public bool Hour { get; set; }
         [Bool]
         public bool Day { get; set; }

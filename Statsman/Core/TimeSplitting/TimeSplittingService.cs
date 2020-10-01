@@ -64,6 +64,18 @@ namespace Statsman.Core.TimeSplitting
             return result;
         }
 
+        public IEnumerable<TimeStatisticItem> GetStatisticsPerMinute(IEnumerable<Message> latestMessages, TimeRange expectedTimeRange)
+        {
+            var result = new List<TimeStatisticItem>();
+            expectedTimeRange.ForeachMinute((i, minute) =>
+            {
+                var sum = latestMessages.Where(x => x.SentAt.Date == minute.Date && x.SentAt.Hour == minute.Hour && x.SentAt.Minute == minute.Minute).Count();
+                var item = new TimeStatisticItem(TimeRange.Create(minute, minute.AddMinutes(1).AddSeconds(-1)), sum);
+                result.Add(item);
+            });
+            return result;
+        }
+
         private IEnumerable<TimeStatisticItem> SumItems(IEnumerable<TimeStatisticItem> statisticsPerDay, int daysPerItem, TimeRange expectedTimeRange)
         {
             var result = new List<TimeStatisticItem>();

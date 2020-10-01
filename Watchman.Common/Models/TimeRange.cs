@@ -38,11 +38,12 @@ namespace Watchman.Common.Models
 
         public override string ToString()
         {
-            if(this.DaysBetween <= 7)
+            var timezone = TimeZoneInfo.Local;
+            if (this.DaysBetween <= 7)
             {
-                return $"{this.Start:dd-MM-yyyy HH:mm} - {this.End:dd-MM-yyyy HH:mm}";
+                return $"{this.Start.ToLocalTime():dd/MM/yyyy HH:mm} - {this.End.ToLocalTime():dd/MM/yyyy HH:mm} (UTC+{timezone.BaseUtcOffset.TotalHours}:00)";
             }
-            return $"{this.Start:dd-MM-yyyy} - {this.End:dd-MM-yyyy}";
+            return $"{this.Start.ToLocalTime():dd/MM/yyyy} - {this.End.ToLocalTime():dd/MM/yyyy} (UTC+{timezone.BaseUtcOffset.TotalHours}:00)";
         }
 
         public void ForeachMinute(Action<int, DateTime> action)
