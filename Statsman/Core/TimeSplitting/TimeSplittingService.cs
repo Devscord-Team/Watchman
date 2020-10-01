@@ -1,10 +1,8 @@
 ﻿using Statsman.Models;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
 using Watchman.Common.Models;
 using Watchman.DomainModel.Messages;
 

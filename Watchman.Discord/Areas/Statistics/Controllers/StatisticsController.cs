@@ -8,7 +8,6 @@ using Newtonsoft.Json;
 using Serilog;
 using Statsman;
 using Statsman.Models;
-
 using System;
 using System.Collections.Generic;
 using System.IO;
