@@ -20,7 +20,7 @@ namespace Statsman
             this._quickchartService = new QuickchartService();
         }
 
-        public async Task<Stream> GetImageStatisticsPerPeriod(IEnumerable<TimeStatisticItem> statistics)
+        public async Task<Stream> GetImageStatisticsPerPeriod(IEnumerable<TimeStatisticItem> statistics, string label)
         {
             var dates = statistics.Select(x => x.Time.Start);
             var labels = statistics.Count() switch
@@ -33,11 +33,11 @@ namespace Statsman
             var chart = new Chart
             {
                 Type = "line",
-                Labels = labels.Select(x => x.ToString()).Reverse(),
+                Labels = labels,
                 Data = new Dataset
                 {
-                    Label = "Messages",
-                    Data = statistics.Select(x => x.Value).Reverse()
+                    Label = label,
+                    Data = statistics.Select(x => x.Value)
                 }
             };
             var image = await this._quickchartService.GetImage(chart);

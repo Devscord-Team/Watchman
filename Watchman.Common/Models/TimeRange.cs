@@ -36,6 +36,15 @@ namespace Watchman.Common.Models
             return new TimeRange(DateTime.UtcNow, end);
         }
 
+        public override string ToString()
+        {
+            if(this.DaysBetween <= 7)
+            {
+                return $"{this.Start:dd-MM-yyyy HH:mm} - {this.End:dd-MM-yyyy HH:mm}";
+            }
+            return $"{this.Start:dd-MM-yyyy} - {this.End:dd-MM-yyyy}";
+        }
+
         public void ForeachMinute(Action<int, DateTime> action)
         {
             this.Foreach(this.MinutesBetween, this.Start.AddMinutes, action);
