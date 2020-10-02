@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,13 +13,16 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Cqrs;
+using Watchman.Common.Models;
+using Watchman.Discord.Areas.Commons;
+using Watchman.DomainModel.Messages.Queries;
+using Watchman.Discord.Areas.Users.Services;
 using Watchman.Discord.Areas.Administration.BotCommands;
 using Watchman.Discord.Areas.Administration.Services;
-using Watchman.Discord.Areas.Commons;
 using Watchman.Discord.Areas.Protection.Strategies;
-using Watchman.Discord.Areas.Users.Services;
 using Watchman.DomainModel.DiscordServer.Queries;
-using Watchman.DomainModel.Messages.Queries;
+using Watchman.DomainModel.Settings.Services;
+using Watchman.DomainModel.Settings.ConfigurationItems;
 
 namespace Watchman.Discord.Areas.Administration.Controllers
 {
@@ -33,8 +36,9 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         private readonly TrustRolesService _trustRolesService;
         private readonly CheckUserSafetyService _checkUserSafetyService;
         private readonly UsersRolesService _usersRolesService;
+        private readonly IConfigurationService _configurationService;
 
-        public AdministrationController(IQueryBus queryBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, RolesService rolesService, TrustRolesService trustRolesService, CheckUserSafetyService checkUserSafetyService, UsersRolesService usersRolesService)
+        public AdministrationController(IQueryBus queryBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, RolesService rolesService, TrustRolesService trustRolesService, CheckUserSafetyService checkUserSafetyService, UsersRolesService usersRolesService, IConfigurationService configurationService)
         {
             this._queryBus = queryBus;
             this._usersService = usersService;
@@ -44,20 +48,19 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             this._trustRolesService = trustRolesService;
             this._checkUserSafetyService = checkUserSafetyService;
             this._usersRolesService = usersRolesService;
+            this._configurationService = configurationService;
         }
 
         [AdminCommand]
-        [DiscordCommand("messages")]
-        public async Task ReadUserMessages(DiscordRequest request, Contexts contexts)
+        public async Task ReadUserMessages(MessagesCommand command, Contexts contexts)
         {
-            var mention = request.GetMention();
-            var selectedUser = await this._usersService.GetUserByMentionAsync(contexts.Server, mention);
+            var selectedUser = await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
             if (selectedUser == null)
             {
-                throw new UserNotFoundException(mention);
+                throw new UserNotFoundException(command.User.GetUserMention());
             }
+            var timeRange = TimeRange.ToNow(DateTime.Now - command.Time); //todo: change DateTime.Now to Contexts.SentAt
 
-            var timeRange = request.GetPastTimeRange(defaultTime: TimeSpan.FromHours(1));
             var query = new GetMessagesQuery(contexts.Server.Id, selectedUser.Id)
             {
                 SentDate = timeRange
@@ -67,9 +70,8 @@ namespace Watchman.Discord.Areas.Administration.Controllers
                 .ToList();
 
             var messagesService = this._messagesServiceFactory.Create(contexts);
-            var hasForceArgument = request.HasArgument("force") || request.HasArgument("f");
-
-            if (messages.Count > 200 && !hasForceArgument)
+            var maxNumberOfMessages = this._configurationService.GetConfigurationItem<MaxNumberOfMessagesDisplayedByMessageCommandWithoutForce>(contexts.Server.Id).Value;
+            if (messages.Count > maxNumberOfMessages && !command.Force)
             {
                 await messagesService.SendResponse(x => x.NumberOfMessagesIsHuge(messages.Count));
                 return;
@@ -92,15 +94,13 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         }
 
         [AdminCommand]
-        public async Task SetRoleAsSafe(SetRoleCommand setRoleCommand, Contexts contexts)
+        public async Task SetRoleAsSafe(SetRoleCommand command, Contexts contexts)
         {
-            var roles = setRoleCommand.Roles;
-            if (roles.Count == 0 || !(setRoleCommand.Safe || setRoleCommand.Unsafe))
+            if (!command.Safe && !command.Unsafe)
             {
                 throw new NotEnoughArgumentsException();
             }
-            var shouldSetToSafe = setRoleCommand.Safe;
-            await this._rolesService.SetRolesAsSafe(contexts, roles, shouldSetToSafe);
+            await this._rolesService.SetRolesAsSafe(contexts, command.Roles, setAsSafe: command.Safe);
         }
 
         [AdminCommand]
@@ -147,7 +147,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             var query = new GetServerTrustedRolesQuery(contexts.Server.Id);
             var trustedRoles = this._queryBus.Execute(query).TrustedRolesIds.ToList();
             var messagesService = this._messagesServiceFactory.Create(contexts);
-            if (trustedRoles.Count == 0)
+            if (!trustedRoles.Any())
             {
                 await messagesService.SendResponse(x => x.ServerDoesntHaveAnyTrustedRole());
                 return;

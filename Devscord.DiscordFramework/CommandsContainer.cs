@@ -1,4 +1,5 @@
-﻿using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
+﻿using Devscord.DiscordFramework.Commons.Exceptions;
+using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,8 +26,15 @@ namespace Devscord.DiscordFramework
                 return null;
             }
             var serverCommands = this._customCommandsGroupedByBotCommand[serverId];
-            var command = serverCommands.FirstOrDefault(x => x.ExpectedBotCommandName == botCommand.FullName && x.Template.IsMatch(request.OriginalMessage));
-            return command;
+            try
+            {
+                var command = serverCommands.SingleOrDefault(x => x.ExpectedBotCommandName == botCommand.FullName && x.Template.IsMatch(request.OriginalMessage));
+                return command;
+            }
+            catch (InvalidOperationException)
+            {
+                throw new MoreThanOneRegexHasBeenMatchedException();
+            }   
         }
 
         private async Task TryRefresh()
