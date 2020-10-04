@@ -18,22 +18,21 @@ namespace Watchman.DomainModel.Settings
         {
             using var session = this._sessionFactory.Create();
             var allConfigurationItems = session.Get<ConfigurationItem>();
-            var configurationItems = allConfigurationItems.Where(x => x.ServerId == query.ServerId);
+            var serverConfigurationItems = allConfigurationItems.Where(x => x.ServerId == query.ServerId);
             var defaultConfigurationItems = allConfigurationItems.Where(x => x.ServerId == 0);
-            if (!configurationItems.Any())
+            if (!serverConfigurationItems.Any())
             {
                 return new GetConfigurationQueryResult(defaultConfigurationItems);
             }
             foreach (var configurationItem in defaultConfigurationItems)
             {
-                if (configurationItems.FirstOrDefault(x => x.Name == configurationItem.Name) != null)
+                if (serverConfigurationItems.Any(x => x.Name == configurationItem.Name))
                 {
                     continue;
                 }
-                configurationItems.Append(configurationItem);
+                serverConfigurationItems.Append(configurationItem);
             }
-                
-            return new GetConfigurationQueryResult(configurationItems);
+            return new GetConfigurationQueryResult(serverConfigurationItems);
         }
     }
 }
