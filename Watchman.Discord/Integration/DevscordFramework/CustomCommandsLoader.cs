@@ -1,4 +1,4 @@
-﻿using Devscord.DiscordFramework;
+using Devscord.DiscordFramework;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -39,13 +39,19 @@ namespace Watchman.Discord.Integration.DevscordFramework
             {
                 customCommands.AddRange(new List<AddCustomCommandsCommand>
                 {
-                    new AddCustomCommandsCommand("Watchman.Discord.Areas.UselessFeatures.BotCommands.GoogleCommand", @"-google\s*(?<Search>.*)", serverId),
-                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.AddRoleCommand", @"-add\s*role\s+(?<Roles>.*)", serverId),
-                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.RemoveRoleCommand", @"-remove\s*role\s+(?<Roles>.*)", serverId),
-                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Administration.BotCommands.SetRoleCommand", @"-set\s*role\s+(?<Roles>.*)\s*-((?<Safe>safe)|(?<Unsafe>unsafe))", serverId),
-                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.Warns.AddWarnCommand", @"-add\s*warn\s+(?<User><\D{1,2}\d+>)\s+(?<Reason>.+)", serverId),
+                    new AddCustomCommandsCommand("Watchman.Discord.Areas.UselessFeatures.BotCommands.GoogleCommand", @"-google\s*(?<Search>.+)", serverId),
+                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.AddRoleCommand", @"-add\s*role\s*(?<Roles>.*)", serverId),
+                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.RemoveRoleCommand", @"-remove\s*role\s*(?<Roles>.*)", serverId),
+                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Administration.BotCommands.SetRoleCommand", @"-set\s*role\s*(?<Roles>.*)\s*-((?<Safe>safe)|(?<Unsafe>unsafe))", serverId),
+                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Responses.BotCommands.AddResponseCommand", @"-add\s+response\s+-onevent\s*(?<OnEvent>.*)\s*-message\s*(?<Message>.*)", serverId),
+                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Responses.BotCommands.UpdateResponseCommand", @"-update\s+response\s*-onevent\s*(?<OnEvent>.*)\s*-message\s*(?<Message>.*)", serverId),
+                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Responses.BotCommands.RemoveResponseCommand", @"-remove\s+response\s*-onevent\s*(?<OnEvent>.*)", serverId),
+                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Protection.BotCommands.MuteCommand", @"-mute\s*(?<User>\<@!?\d+\>)\s*-t\s*(?<Time>\d+(ms|d|h|m|s))\s*-reason\s*(?<Reason>.*)", serverId),
+                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Protection.BotCommands.UnmuteCommand", @"-unmute\s*(?<User>\<@!?\d+\>)", serverId),
+                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Administration.BotCommands.MessagesCommand", @"-messages\s*(?<User>\<@!?\d+\>)\s*-t\s*(?<Time>\d+(ms|d|h|m|s))\s*(?<Force>-force|-f)?", serverId),
+                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.Warns.AddWarnCommand", @"-add\s*warn\s*(?<User><\D{1,2}\d+>)\s*(?<Reason>.*)", serverId),
                     new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.Warns.WarnsCommand", @"-warns\s*(?<User><\D{1,2}\d+>)?", serverId),
-                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Messaging.BotCommands.SendCommand", @"-send\s*(?<Channel>\<.*\>)\s*""?(?<Message>.*)\""?", serverId),
+                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Messaging.BotCommands.SendCommand", @"-send\s*(?<Channel>\<#\d+\>)\s*(?<Message>.*)", serverId),
                 });
             }
             var commandsInBase = this._queryBus.Execute(new GetCustomCommandsQuery()).CustomCommands.ToList();

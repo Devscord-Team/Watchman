@@ -115,7 +115,16 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Użytkownik {{user}} został wyciszony do {{timeEnd}}.
+        ///   Looks up a localized string similar to Podana komenda została dopasowana do więcej niż tylko jednego regexu (custom command), więc nie można jej wykonać. Należy zmienić regexy do tej komendy tak, aby nigdy nie było sytuacji, że do podanej komendy pasuje kilka regexów jednocześnie..
+        /// </summary>
+        public static string MoreThanOneRegexHasBeenMatched {
+            get {
+                return ResourceManager.GetString("MoreThanOneRegexHasBeenMatched", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Użytkownik {{user}} został wyciszony do {{timeEnd}}.
         /// </summary>
         public static string MutedUser {
             get {

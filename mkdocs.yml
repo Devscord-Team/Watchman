@@ -6,10 +6,14 @@ nav:
   - "Jak zacząć rozwijać bota": 151-jak-zaczac-rozwijac-bota.md
   - "Dokumentacja techniczna":
       - "Serwisy w frameworku": 135-services-in-framework.md
+      - "Jak rozwijać dokumentacje": 14-jak-rozwijac-dokumentacje.md
       - "Jak działa Workflow": 134-workflow.md
       - "Do czego używamy klasy Server": 141-do-czego-uzywamy-klasy-server.md
       - "Jak generowany jest help": 139-jak-dziala-generowanie-helpa.md
       - "Czym są CustomCommands": "19-czym-sa-customcommands.md"
+      - "Jak działa Anty Spam": 16-jak-dziala-antyspam.md
+      - "Jak działa konfiguracja": 11-jak-dziala-konfiguracja.md
+      - 'Co się dzieje podczas inicjalizacji': 194-inicjalizacja.md
 theme:
   name: "material"
   language: pl

@@ -1,3 +1,4 @@
+using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using System;
 using System.Collections.Generic;
@@ -80,7 +81,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("MutedUser",
                 new KeyValuePair<string, string>("user", user.Name),
-                new KeyValuePair<string, string>("timeEnd", TimeZoneInfo.ConvertTimeFromUtc(timeEnd, TimeZoneInfo.Local).ToString("dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture)));
+                new KeyValuePair<string, string>("timeEnd", TimeZoneInfo.ConvertTimeFromUtc(timeEnd, TimeZoneInfo.Local).ToString("dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture))); // this works when timeEnd.Kind is equal to DateTimeKind.Utc
         }
 
         public static string UnmutedUser(this ResponsesService responsesService, UserContext user)
@@ -276,6 +277,11 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         public static string ServerDoesntHaveAnyTrustedRole(this ResponsesService responsesService)
         {
             return responsesService.ProcessResponse("ServerDoesntHaveAnyTrustedRole");
+        }
+
+        public static string MoreThanOneRegexHasBeenMatched(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("MoreThanOneRegexHasBeenMatched");
         }
 
         public static string MutedUsersListSent(this ResponsesService responsesService)

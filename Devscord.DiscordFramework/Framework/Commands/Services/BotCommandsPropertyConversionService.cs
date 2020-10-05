@@ -1,7 +1,11 @@
-﻿using Devscord.DiscordFramework.Framework.Commands.Properties;
+﻿using Devscord.DiscordFramework.Commons.Exceptions;
+using Devscord.DiscordFramework.Framework.Commands.Properties;
+using Devscord.DiscordFramework.Integration;
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework.Framework.Commands.Services
 {
@@ -25,17 +29,16 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
 
         private TimeSpan ToTimeSpan(string value)
         {
-            var match = this._exTime.Match(value);
-            var unit = match.Groups["Unit"].Value.ToLowerInvariant();
-            var timeValue = uint.Parse(match.Groups["Value"].Value);
+            var matchGroups = this._exTime.Match(value).Groups;
+            var unit = matchGroups["Unit"].Value.ToLowerInvariant();
+            var timeValue = uint.Parse(matchGroups["Value"].Value);
             return unit switch
             {
                 "d" => TimeSpan.FromDays(timeValue),
                 "h" => TimeSpan.FromHours(timeValue),
                 "m" => TimeSpan.FromMinutes(timeValue),
                 "s" => TimeSpan.FromSeconds(timeValue),
-                "ms" => TimeSpan.FromMilliseconds(timeValue),
-                _ => throw new ArgumentNullException()
+                _ => TimeSpan.FromMilliseconds(timeValue),
             };
         }
     }

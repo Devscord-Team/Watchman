@@ -19,6 +19,7 @@ namespace Watchman.DomainModel.Settings.Services
             this._sessionFactory = sessionFactory;
             this._configurationMapperService = configurationMapperService;
             this._configurationTypesSearcher = configurationTypesSearcher;
+            this.Refresh(); // TODO: delete when "F/180 channel for complaints" is merged with the master
         }
 
         public T GetConfigurationItem<T>(ulong serverId) where T : IMappedConfiguration

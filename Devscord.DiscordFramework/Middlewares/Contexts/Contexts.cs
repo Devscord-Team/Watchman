@@ -8,6 +8,7 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
         public DiscordServerContext Server { get; private set; }
         public ChannelContext Channel { get; private set; }
         public UserContext User { get; private set; }
+        public MessageContext Message { get; private set; }
 
         public Contexts()
         {
@@ -18,6 +19,14 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
             this.Server = server;
             this.Channel = channel;
             this.User = user;
+        }
+
+        public Contexts(DiscordServerContext server, ChannelContext channel, UserContext user, MessageContext message)
+        {
+            this.Server = server;
+            this.Channel = channel;
+            this.User = user;
+            this.Message = message;
         }
 
         public void SetContext<T>(T context) where T : IDiscordContext
@@ -34,6 +43,10 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
 
                 case UserContext userContext:
                     this.User = userContext;
+                    break;
+
+                case MessageContext messageContext:
+                    this.Message = messageContext;
                     break;
 
                 default:
