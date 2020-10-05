@@ -1,5 +1,9 @@
 ﻿using System.Threading.Tasks;
+using Autofac;
+using Devscord.DiscordFramework.Middlewares.Contexts;
+using Microsoft.Extensions.Hosting;
 using Watchman.Cqrs;
+using Watchman.Discord.Areas.Initialization.Services;
 using Watchman.Discord.Integration.Channels.Commands;
 
 namespace Watchman.Web.Areas.Commons.Integration
