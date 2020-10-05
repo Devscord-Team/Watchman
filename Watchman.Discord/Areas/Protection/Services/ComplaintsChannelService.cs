@@ -57,7 +57,6 @@ namespace Watchman.Discord.Areas.Protection.Services
             var complaintsChannel = await this._channelsService.CreateNewChannelAsync(contexts.Server, channelName);
             await this.SetChannelPermissions(complaintsChannel, contexts);
             await this.NotifyDomainAboutComplaintsChannel(complaintsChannel, contexts.Server);
-            this.AddFuncToConfigurationService(contexts.Server);
             return complaintsChannel;
         }
 
@@ -76,7 +75,7 @@ namespace Watchman.Discord.Areas.Protection.Services
             var serverRoles = this._usersRolesService.GetRoles(contexts.Server).ToList();
             var everyoneRole = serverRoles.First(x => x.Name == "@everyone");
             var mutedRole = serverRoles.FirstOrDefault(x => x.Name == UsersRolesService.MUTED_ROLE_NAME);
-            var rolesIdsWithAccess = this._configurationService.GetConfigurationItem<RolesWithAccessToComplaintsChannel>(contexts.Server.Id);
+            var rolesIdsWithAccess = this._configurationService.GetConfigurationItem<RolesWithAccessToComplaintsChannel>(contexts.Server.Id); //todo: dodać default do RefreshPermissions
             var rolesWithAccess = rolesIdsWithAccess.Value.Select(roleId => serverRoles.FirstOrDefault(serverRole => roleId == serverRole.Id));
 
             await this._channelsService.SetPermissions(channel, contexts.Server, mutedPermissions, mutedRole);
@@ -94,27 +93,6 @@ namespace Watchman.Discord.Areas.Protection.Services
         {
             var addComplaintsChannelCommand = new AddComplaintsChannelCommand(channel.Id, server.Id);
             return this._commandBus.ExecuteAsync(addComplaintsChannelCommand);
-        }
-
-        private void AddFuncToConfigurationService(DiscordServerContext server)
-        {
-            this._configurationService.AddOnConfigurationChanged(nameof(RolesWithAccessToComplaintsChannel), server.Id, this.RefreshPermissions);
-        }
-
-        private async Task RefreshPermissions(IMappedConfiguration configuration)
-        {
-            if (!this.IsComplaintsChannelAlreadyExisting(configuration.ServerId)
-                || !(configuration is RolesWithAccessToComplaintsChannel accessConfiguration)) // todo: add "is not: when c# 9
-            {
-                return;
-            }
-            var server = await this._discordServersService.GetDiscordServerAsync(configuration.ServerId);
-            var query = new GetComplaintsChannelQuery(configuration.ServerId);
-            var channelId = this._queryBus.Execute(query).ComplaintsChannel.ChannelId;
-            var complaintsChannel = server.GetTextChannel(channelId);
-            var serverRoles = this._usersRolesService.GetRoles(server);
-            var rolesWithAccess = serverRoles.Where(x => accessConfiguration.Value.Contains(x.Id));
-            this.SetAccessPermissions(complaintsChannel, server, rolesWithAccess);
         }
     }
 }

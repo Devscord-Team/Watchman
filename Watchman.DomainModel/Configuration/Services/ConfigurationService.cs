@@ -26,7 +26,7 @@ namespace Watchman.DomainModel.Configuration.Services
         public T GetConfigurationItem<T>(ulong serverId) where T : IMappedConfiguration
         {
             var configurations = this._cachedConfigurationItem[typeof(T)];
-            var serverConfiguration = configurations.GetValueOrDefault(serverId) ?? configurations[0];
+            var serverConfiguration = configurations.GetValueOrDefault(serverId) ?? configurations[DEFAULT_SERVER_ID];
             return (T)serverConfiguration;
         }
 
