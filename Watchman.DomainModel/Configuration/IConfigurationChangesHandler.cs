@@ -2,7 +2,11 @@
 
 namespace Watchman.DomainModel.Configuration
 {
-    public interface IConfigurationChangesHandler<in T> where T : IMappedConfiguration
+    public interface IConfigurationChangesHandler
+    {
+    }
+
+    public interface IConfigurationChangesHandler<in T> : IConfigurationChangesHandler where T : IMappedConfiguration
     {
         Task Handle(ulong serverId, T newConfiguration);
     }

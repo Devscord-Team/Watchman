@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
+using Autofac.Core.Registration;
 using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Configuration.Services
@@ -9,14 +11,17 @@ namespace Watchman.DomainModel.Configuration.Services
     public class ConfigurationService : IConfigurationService
     {
         private const ulong DEFAULT_SERVER_ID = 0;
+        private readonly IComponentContext _componentContext;
         private readonly ISessionFactory _sessionFactory;
         private readonly ConfigurationMapperService _configurationMapperService;
         private readonly ConfigurationItemsSearcherService _configurationTypesSearcher;
+        private static Dictionary<Guid, int> _configurationVersions;
         private readonly List<(string configurationName, ulong serverId, Func<IMappedConfiguration, Task> func)> _afterConfigurationChanged = new List<(string, ulong, Func<IMappedConfiguration, Task>)>();
-        private Dictionary<Type, Dictionary<ulong, IMappedConfiguration>> _cachedConfigurationItem;
+        private static Dictionary<Type, Dictionary<ulong, IMappedConfiguration>> _cachedConfigurationItem;
 
-        public ConfigurationService(ISessionFactory sessionFactory, ConfigurationMapperService configurationMapperService, ConfigurationItemsSearcherService configurationTypesSearcher)
+        public ConfigurationService(IComponentContext componentContext, ISessionFactory sessionFactory, ConfigurationMapperService configurationMapperService, ConfigurationItemsSearcherService configurationTypesSearcher)
         {
+            this._componentContext = componentContext;
             this._sessionFactory = sessionFactory;
             this._configurationMapperService = configurationMapperService;
             this._configurationTypesSearcher = configurationTypesSearcher;
@@ -25,7 +30,7 @@ namespace Watchman.DomainModel.Configuration.Services
 
         public T GetConfigurationItem<T>(ulong serverId) where T : IMappedConfiguration
         {
-            var configurations = this._cachedConfigurationItem[typeof(T)];
+            var configurations = _cachedConfigurationItem[typeof(T)];
             var serverConfiguration = configurations.GetValueOrDefault(serverId) ?? configurations[DEFAULT_SERVER_ID];
             return (T)serverConfiguration;
         }
@@ -37,7 +42,7 @@ namespace Watchman.DomainModel.Configuration.Services
 
         public IEnumerable<IMappedConfiguration> GetConfigurationItems(ulong serverId)
         {
-            return this._cachedConfigurationItem.Select(x => x.Value.GetValueOrDefault(serverId) ?? x.Value[DEFAULT_SERVER_ID]);
+            return _cachedConfigurationItem.Select(x => x.Value.GetValueOrDefault(serverId) ?? x.Value[DEFAULT_SERVER_ID]);
         }
 
         public async Task SaveNewConfiguration(IMappedConfiguration changedConfiguration)
@@ -78,28 +83,54 @@ namespace Watchman.DomainModel.Configuration.Services
         public void Refresh()
         {
             using var session = this._sessionFactory.Create();
-            var configurationItems = session.Get<ConfigurationItem>();
-            var changedConfiguration = configurationItems.Where(x => x.Version)
+            var configurationItems = session.Get<ConfigurationItem>().ToList();
             var mappedConfigurations = this._configurationMapperService.GetMappedConfigurations(configurationItems);
-            var changedConfigurations = mappedConfigurations.SelectMany(x =>
+            if (_configurationVersions != null)
             {
-                var (configurationType, serversConfigurations) = x;
-                return serversConfigurations.Where(configuration =>
+                var tasks = new List<Task>();
+                var changedConfigurationItems = configurationItems.Where(x => _configurationVersions.GetValueOrDefault(x.Id) != x.Version);
+                foreach (var changedConfiguration in changedConfigurationItems)
                 {
-                    var (serverId, mappedConfiguration) = configuration;
-                    var existingConfiguration = this._cachedConfigurationItem[configurationType].GetValueOrDefault(serverId);
-                    return !mappedConfiguration.Equals(existingConfiguration);
-                });
-            });
-            var afterConfigurationChangedTasks = new List<Task>();
-            foreach (var (serverId, configuration) in changedConfigurations)
-            {
-                var funcsToCall = this._afterConfigurationChanged.Where(x => x.serverId == serverId && x.configurationName == configuration.Name);
-                var tasks = funcsToCall.Select(x => x.func!.Invoke(configuration));
-                afterConfigurationChangedTasks.AddRange(tasks);
+                    var sameTypeMappedConfigurations = mappedConfigurations.FirstOrDefault(x => x.Key.Name == changedConfiguration.Name).Value;
+                    var mappedConfiguration = sameTypeMappedConfigurations[changedConfiguration.ServerId];
+                    var configurationChangesHandler = this.GetConfigurationChangesHandler<IMappedConfiguration>(mappedConfiguration);
+                    if (configurationChangesHandler == null)
+                    {
+                        throw new NotImplementedException($"configurationChangesHandler for {changedConfiguration.Name} is not implemented");
+                    }
+                    var task = configurationChangesHandler.Handle(changedConfiguration.ServerId, mappedConfiguration);
+                    tasks.Add(task);
+                }
+                Task.WaitAll(tasks.ToArray());
             }
-            this._cachedConfigurationItem = mappedConfigurations;
-            Task.WaitAll(afterConfigurationChangedTasks.ToArray());
+            _configurationVersions = configurationItems.ToDictionary(x => x.Id, x => x.Version);
+            //var changedConfigurations = mappedConfigurations.SelectMany(x =>
+            //{
+            //    var (configurationType, serversConfigurations) = x;
+            //    return serversConfigurations.Where(configuration =>
+            //    {
+            //        var (serverId, mappedConfiguration) = configuration;
+            //        var existingConfiguration = this._cachedConfigurationItem[configurationType].GetValueOrDefault(serverId);
+            //        return !mappedConfiguration.Equals(existingConfiguration);
+            //    });
+            //});
+            //var afterConfigurationChangedTasks = new List<Task>();
+            //foreach (var (serverId, configuration) in changedConfigurations)
+            //{
+            //    var funcsToCall = this._afterConfigurationChanged.Where(x => x.serverId == serverId && x.configurationName == configuration.Name);
+            //    var tasks = funcsToCall.Select(x => x.func!.Invoke(configuration));
+            //    afterConfigurationChangedTasks.AddRange(tasks);
+            //}
+            _cachedConfigurationItem = mappedConfigurations;
+            //Task.WaitAll(afterConfigurationChangedTasks.ToArray());
+        }
+
+        private IConfigurationChangesHandler<T> GetConfigurationChangesHandler<T>(T newMappedConfiguration) where T : IMappedConfiguration
+        {
+            var configurationChangesHandlers = this._componentContext.ComponentRegistry.Registrations
+                    .Where(x => typeof(IConfigurationChangesHandler).IsAssignableFrom(x.Activator.LimitType));
+            var handlerForThisType = configurationChangesHandlers.FirstOrDefault(x => x.Activator.LimitType.Name.StartsWith(newMappedConfiguration.Name));
+            return handlerForThisType?.Activator.LimitType as IConfigurationChangesHandler<T>;
         }
     }
 }

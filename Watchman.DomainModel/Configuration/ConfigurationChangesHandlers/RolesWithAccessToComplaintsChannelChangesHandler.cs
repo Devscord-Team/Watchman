@@ -31,7 +31,7 @@ namespace Watchman.DomainModel.Configuration.ConfigurationChangesHandlers
 
         public Task Handle(ulong serverId, RolesWithAccessToComplaintsChannel newConfiguration)
         {
-            var query = new GetComplaintsChannelQuery(newConfiguration.ServerId);
+            var query = new GetComplaintsChannelQuery(serverId);
             var complaintsChannelId = this._queryBus.Execute(query).ComplaintsChannel.ChannelId;
             if (complaintsChannelId == 0)
             {
