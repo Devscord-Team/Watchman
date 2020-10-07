@@ -11,7 +11,7 @@ using Watchman.DomainModel.Protection.Queries;
 
 namespace Watchman.DomainModel.Configuration.ConfigurationChangesHandlers
 {
-    public class RolesWithAccessToComplaintsChannelChangesHandler : IConfigurationChangesHandler<RolesWithAccessToComplaintsChannel>
+    public class RolesWithAccessToComplaintsChannelChangesHandler : IConfigurationChangesHandler<IMappedConfiguration>
     {
         private static List<Permission> ReadingAndSending => new List<Permission> {Permission.ReadMessages, Permission.SendMessages};
         private static ChangedPermissions AccessPermissions => new ChangedPermissions(allowPermissions: ReadingAndSending, denyPermissions: null);
@@ -29,7 +29,7 @@ namespace Watchman.DomainModel.Configuration.ConfigurationChangesHandlers
             this._queryBus = queryBus;
         }
 
-        public Task Handle(ulong serverId, RolesWithAccessToComplaintsChannel newConfiguration)
+        public Task Handle(ulong serverId, IMappedConfiguration newConfiguration)
         {
             var query = new GetComplaintsChannelQuery(serverId);
             var complaintsChannelId = this._queryBus.Execute(query).ComplaintsChannel.ChannelId;
@@ -40,12 +40,13 @@ namespace Watchman.DomainModel.Configuration.ConfigurationChangesHandlers
             return this.RefreshPermissions(newConfiguration, complaintsChannelId);
         }
 
-        private async Task RefreshPermissions(RolesWithAccessToComplaintsChannel newConfiguration, ulong complaintsChannelId)
+        private async Task RefreshPermissions(IMappedConfiguration newConfiguration, ulong complaintsChannelId)
         {
             var server = await this._discordServersService.GetDiscordServerAsync(newConfiguration.ServerId);
             var complaintsChannel = server.GetTextChannel(complaintsChannelId);
             var serverRoles = this._usersRolesService.GetRoles(server);
-            var rolesWithAccess = serverRoles.Where(x => newConfiguration.Value.Contains(x.Id));
+            var conf = (dynamic)newConfiguration;
+            var rolesWithAccess = serverRoles.Where(x => conf.Value.Contains(x.Id));
             this.SetAccessPermissions(complaintsChannel, server, rolesWithAccess);
         }
 

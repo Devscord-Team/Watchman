@@ -63,8 +63,8 @@ namespace Watchman.Discord.Areas.Protection.Services
         private bool IsComplaintsChannelAlreadyExisting(ulong serverId)
         {
             var query = new GetComplaintsChannelQuery(serverId);
-            var complaintsChannelId = this._queryBus.Execute(query).ComplaintsChannel.ChannelId;
-            return complaintsChannelId != 0;
+            var complaintsChannelId = this._queryBus.Execute(query).ComplaintsChannel?.ChannelId;
+            return complaintsChannelId.HasValue && complaintsChannelId.Value != 0;
         }
 
         private async Task SetChannelPermissions(ChannelContext channel, Contexts contexts)
@@ -75,8 +75,19 @@ namespace Watchman.Discord.Areas.Protection.Services
             var serverRoles = this._usersRolesService.GetRoles(contexts.Server).ToList();
             var everyoneRole = serverRoles.First(x => x.Name == "@everyone");
             var mutedRole = serverRoles.FirstOrDefault(x => x.Name == UsersRolesService.MUTED_ROLE_NAME);
-            var rolesIdsWithAccess = this._configurationService.GetConfigurationItem<RolesWithAccessToComplaintsChannel>(contexts.Server.Id); //todo: dodać default do RefreshPermissions
-            var rolesWithAccess = rolesIdsWithAccess.Value.Select(roleId => serverRoles.FirstOrDefault(serverRole => roleId == serverRole.Id));
+            var rolesIdsWithAccess = this._configurationService.GetConfigurationItem<RolesWithAccessToComplaintsChannel>(contexts.Server.Id);
+            List<UserRole> rolesWithAccess;
+            if (rolesIdsWithAccess.Value == null)
+            {
+                rolesWithAccess = null;
+                // muted
+                // ManageGuild
+                contexts.Server.GetRoles().Where(x => x.Permissions.Contains(Permission.ManageGuild));
+            }
+            else
+            {
+                rolesWithAccess = rolesIdsWithAccess.Value.Select(roleId => serverRoles.FirstOrDefault(serverRole => roleId == serverRole.Id)).ToList();
+            }
 
             await this._channelsService.SetPermissions(channel, contexts.Server, mutedPermissions, mutedRole);
             await this._channelsService.SetPermissions(channel, contexts.Server, everyonePermissions, everyoneRole);

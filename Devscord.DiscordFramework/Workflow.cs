@@ -204,16 +204,16 @@ namespace Devscord.DiscordFramework
             Task.WaitAll(this.OnChannelCreated.Select(x => x.Invoke(channel, server)).ToArray());
         }
 
-        private async Task CallChannelRemoved(SocketChannel socketChannel)
+        private Task CallChannelRemoved(SocketChannel socketChannel)
         {
             var channel = this._context.Resolve<ChannelContextFactory>().Create(socketChannel);
             Log.Information("Channel has been removed {channel}", channel.ToJson());
-            var guildChannel = await Server.GetGuildChannel(socketChannel.Id);
             var discordServerFactory = this._context.Resolve<DiscordServerContextFactory>();
-            var guild = await Server.GetGuild(guildChannel.GuildId); // must get guild by id (not from guildChannel.Guild) - in opposite way it won't work
+            var guild = ((Discord.IGuildChannel)socketChannel).Guild;
             var server = discordServerFactory.Create(guild);
 
             Task.WaitAll(this.OnChannelRemoved.Select(x => x.Invoke(channel, server)).ToArray());
+            return Task.CompletedTask;
         }
 
         private Task CallRoleUpdated(SocketRole from, SocketRole to)

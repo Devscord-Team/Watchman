@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
-using Autofac.Core.Registration;
+using Watchman.DomainModel.Configuration.ConfigurationChangesHandlers;
+using Watchman.DomainModel.Configuration.ConfigurationItems;
 using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Configuration.Services
@@ -93,7 +94,7 @@ namespace Watchman.DomainModel.Configuration.Services
                 {
                     var sameTypeMappedConfigurations = mappedConfigurations.FirstOrDefault(x => x.Key.Name == changedConfiguration.Name).Value;
                     var mappedConfiguration = sameTypeMappedConfigurations[changedConfiguration.ServerId];
-                    var configurationChangesHandler = this.GetConfigurationChangesHandler<IMappedConfiguration>(mappedConfiguration);
+                    var configurationChangesHandler = this.GetConfigurationChangesHandler(mappedConfiguration);
                     if (configurationChangesHandler == null)
                     {
                         throw new NotImplementedException($"configurationChangesHandler for {changedConfiguration.Name} is not implemented");
@@ -125,12 +126,16 @@ namespace Watchman.DomainModel.Configuration.Services
             //Task.WaitAll(afterConfigurationChangedTasks.ToArray());
         }
 
-        private IConfigurationChangesHandler<T> GetConfigurationChangesHandler<T>(T newMappedConfiguration) where T : IMappedConfiguration
+        private IConfigurationChangesHandler<IMappedConfiguration> GetConfigurationChangesHandler(IMappedConfiguration newMappedConfiguration)
         {
             var configurationChangesHandlers = this._componentContext.ComponentRegistry.Registrations
                     .Where(x => typeof(IConfigurationChangesHandler).IsAssignableFrom(x.Activator.LimitType));
             var handlerForThisType = configurationChangesHandlers.FirstOrDefault(x => x.Activator.LimitType.Name.StartsWith(newMappedConfiguration.Name));
-            return handlerForThisType?.Activator.LimitType as IConfigurationChangesHandler<T>;
+            if (handlerForThisType == null)
+            {
+                return null;
+            }
+            return this._componentContext.Resolve(handlerForThisType.Activator.LimitType) as IConfigurationChangesHandler<IMappedConfiguration>;
         }
     }
 }
