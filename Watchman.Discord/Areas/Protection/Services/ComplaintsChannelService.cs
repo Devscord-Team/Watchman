@@ -40,7 +40,7 @@ namespace Watchman.Discord.Areas.Protection.Services
         {
             var query = new GetComplaintsChannelQuery(server.Id);
             var complaintsChannel = this._queryBus.Execute(query).ComplaintsChannel;
-            if (channel.Id != complaintsChannel.ChannelId)
+            if (channel.Id != complaintsChannel?.ChannelId)
             {
                 return Task.CompletedTask;
             }
@@ -55,6 +55,7 @@ namespace Watchman.Discord.Areas.Protection.Services
                 throw new ComplaintsChannelAlreadyExistsException();
             }
             var complaintsChannel = await this._channelsService.CreateNewChannelAsync(contexts.Server, channelName);
+            complaintsChannel = contexts.Server.GetTextChannel(complaintsChannel.Id);
             await this.SetChannelPermissions(complaintsChannel, contexts);
             await this.NotifyDomainAboutComplaintsChannel(complaintsChannel, contexts.Server);
             return complaintsChannel;
@@ -75,23 +76,18 @@ namespace Watchman.Discord.Areas.Protection.Services
             var serverRoles = this._usersRolesService.GetRoles(contexts.Server).ToList();
             var everyoneRole = serverRoles.First(x => x.Name == "@everyone");
             var mutedRole = serverRoles.FirstOrDefault(x => x.Name == UsersRolesService.MUTED_ROLE_NAME);
-            var rolesIdsWithAccess = this._configurationService.GetConfigurationItem<RolesWithAccessToComplaintsChannel>(contexts.Server.Id);
-            List<UserRole> rolesWithAccess;
-            if (rolesIdsWithAccess.Value == null)
-            {
-                rolesWithAccess = null;
-                // muted
-                // ManageGuild
-                contexts.Server.GetRoles().Where(x => x.Permissions.Contains(Permission.ManageGuild));
-            }
-            else
-            {
-                rolesWithAccess = rolesIdsWithAccess.Value.Select(roleId => serverRoles.FirstOrDefault(serverRole => roleId == serverRole.Id)).ToList();
-            }
 
+            var rolesIdsWithAccess = this._configurationService.GetConfigurationItem<RolesWithAccessToComplaintsChannel>(contexts.Server.Id);
+            var rolesWithAccess = rolesIdsWithAccess.Value == null 
+                ? contexts.Server.GetRoles().Where(x => x.Permissions.Contains(Permission.ManageGuild)).ToList() 
+                : rolesIdsWithAccess.Value.Select(roleId => serverRoles.FirstOrDefault(serverRole => roleId == serverRole.Id)).ToList();
+            rolesWithAccess.Add(mutedRole);
+
+            await Task.Delay(1500);
+            await this._channelsService.RemovePermissions(channel, contexts.Server, mutedRole);
             await this._channelsService.SetPermissions(channel, contexts.Server, mutedPermissions, mutedRole);
-            await this._channelsService.SetPermissions(channel, contexts.Server, everyonePermissions, everyoneRole);
             this.SetAccessPermissions(channel, contexts.Server, rolesWithAccess);
+            await this._channelsService.SetPermissions(channel, contexts.Server, everyonePermissions, everyoneRole);
         }
 
         private void SetAccessPermissions(ChannelContext complaintsChannel, DiscordServerContext server, IEnumerable<UserRole> rolesWithAccess)

@@ -31,5 +31,10 @@ namespace Devscord.DiscordFramework.Services
         {
             return Server.SetRolePermissions(channels, server, permissions, userRole);
         }
+
+        public Task RemovePermissions(ChannelContext channel, DiscordServerContext server, UserRole userRole)
+        {
+            return Server.RemoveRolePermissions(channel, server, userRole);
+        }
     }
 }

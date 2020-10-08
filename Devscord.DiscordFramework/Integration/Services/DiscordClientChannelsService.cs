@@ -159,7 +159,7 @@ namespace Devscord.DiscordFramework.Integration.Services
             foreach (var channel in channels)
             {
                 Log.Information("Setting role {roleName} for {channel}", role.Name, channel.Name);
-                await this.SetRolePermissions(channel, channelPermissions, socketRole);
+                await this.SetRolePermissions(channel, server, channelPermissions, socketRole);
             }
             Log.Information("Successfully set role {roleName} on all channels on {server}", role.Name, server.Name);
         }
@@ -169,18 +169,34 @@ namespace Devscord.DiscordFramework.Integration.Services
             Log.Information("Setting role {roleName} for {channel}", role.Name, channel.Name);
 
             var channelPermissions = new OverwritePermissions(permissions.AllowPermissions?.GetRawValue() ?? 0, permissions.DenyPermissions?.GetRawValue() ?? 0);
+            var socketRole = this.GetSocketRole(server, role);
+            return this.SetRolePermissions(channel, server, channelPermissions, socketRole);
+        }
+
+        public async Task RemoveRolePermissions(ChannelContext channel, DiscordServerContext server, UserRole role)
+        {
+            Log.Information("Removing role {roleName} for {channel}", role.Name, channel.Name);
+
+            var socketRole = this.GetSocketRole(server, role);
+            var guild = await this._restClient.GetGuildAsync(server.Id);
+            var channelSocket = (IGuildChannel)await this.GetChannel(channel.Id, guild);
+            await channelSocket.RemovePermissionOverwriteAsync(socketRole);
+        }
+
+        private SocketRole GetSocketRole(DiscordServerContext server, UserRole role)
+        {
             var socketRole = Server.GetSocketRoles(server.Id).FirstOrDefault(x => x.Id == role.Id);
             if (socketRole == null)
             {
                 Log.Error("Role {roleName} was null", role.Name);
-                return Task.CompletedTask;
             }
-            return this.SetRolePermissions(channel, channelPermissions, socketRole);
+            return socketRole;
         }
 
-        private async Task SetRolePermissions(ChannelContext channel, OverwritePermissions permissions, IRole role)
+        private async Task SetRolePermissions(ChannelContext channel, DiscordServerContext server, OverwritePermissions permissions, IRole role)
         {
-            var channelSocket = (IGuildChannel)await this.GetChannel(channel.Id);
+            var guild = await this._restClient.GetGuildAsync(server.Id);
+            var channelSocket = (IGuildChannel)await this.GetChannel(channel.Id, guild);
             if (channelSocket == null)
             {
                 Log.Warning("{channel} after casting to IGuildChannel is null", channel.Name);

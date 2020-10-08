@@ -23,5 +23,6 @@ namespace Devscord.DiscordFramework.Integration.Services.Interfaces
         Task<ITextChannel> CreateNewChannelAsync(ulong serverId, string channelName);
         Task SetRolePermissions(ChannelContext channel, DiscordServerContext server, ChangedPermissions permissions, UserRole role);
         Task SetRolePermissions(IEnumerable<ChannelContext> channels, DiscordServerContext server, ChangedPermissions permissions, UserRole role);
+        Task RemoveRolePermissions(ChannelContext channel, DiscordServerContext server, UserRole role);
     }
 }

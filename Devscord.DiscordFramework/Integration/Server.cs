@@ -105,6 +105,11 @@ namespace Devscord.DiscordFramework.Integration
             return _discordClient.ChannelsService.SetRolePermissions(channels, server, permissions, role);
         }
 
+        internal static Task RemoveRolePermissions(ChannelContext channel, DiscordServerContext server, UserRole role)
+        {
+            return _discordClient.ChannelsService.RemoveRolePermissions(channel, server, role);
+        }
+
         //Roles
         internal static Task<UserRole> CreateNewRole(NewUserRole role, DiscordServerContext discordServer)
         {
