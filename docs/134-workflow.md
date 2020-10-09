@@ -100,7 +100,7 @@ Middlewares służą do zbierania informacji na temat tego jakie dane zawiera  w
 #### Ustawianie handlerów  
 Do ustawiania handlerów służy wiele metod, jednak wszystkie z nich działają według tego samego schematu.  
 Jako handlery rozumiemy metody/funkcje, które mają się wykonać kiedy zajdzie określone zdarzenie.  
-Przykładowo kiedy nowy użytkownik dołączy do serwera, kiedy w aplikacji wystąpi wyjątek, albo kiedy w aplikacji wystąpi wyjątek.  
+Przykładowo kiedy nowy użytkownik dołączy do serwera, albo kiedy w aplikacji wystąpi wyjątek.  
 
 To w której sytuacji się wykonają, jesteśmy w stanie rozpoznać na podstawie nazwy metody.  
 Lista dostępnych handlerów:  
