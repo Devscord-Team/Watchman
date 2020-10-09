@@ -15,7 +15,8 @@ namespace Watchman.Discord.Areas.Protection.Models
         public ServerSafeUsers(IEnumerable<Message> serverMessages, ulong serverId, int minAverageMessagesPerWeek, int minAbsoluteMessagesCount, HashSet<ulong> trustedRolesIds, UsersService usersService, DiscordServersService discordServersService)
         {
             this.ServerId = serverId;
-            var users = discordServersService.GetDiscordServerAsync(serverId).Result.GetUsers().ToDictionaryAsync(x => x.Id, x => x).Result;
+            var server = discordServersService.GetDiscordServerAsync(serverId).GetAwaiter().GetResult();
+            var users = server.GetUsers().ToDictionaryAsync(x => x.Id, x => x).GetAwaiter().GetResult();
             this.SafeUsers = serverMessages
                 .GroupBy(x => x.Author.Id)
                 .Where(u => IsUserSafe(u.ToList(), users.GetValueOrDefault(u.Key), serverId, minAverageMessagesPerWeek, minAbsoluteMessagesCount, trustedRolesIds, usersService))
