@@ -26,12 +26,20 @@ namespace Statsman.Core.Generators
         public async Task PreGenerateStatisticsPerDay(ulong serverId)
         {
             var messages = this.GetMessages(serverId);
+            var preGeneratedStatistics = this.GetPreGeneratedStatistics(serverId, Period.Day);
+
+            var oldestMessageDatetime = preGeneratedStatistics.OrderBy(x => x.TimeRange.End).FirstOrDefault()?.TimeRange?.End 
+                ?? messages.OrderBy(x => x.SentAt).FirstOrDefault()?.SentAt 
+                ?? default;
+            if(oldestMessageDatetime == default) //empty database
+            {
+                return;
+            }
 
             var users = messages.Select(x => x.Author.Id).Distinct().ToList();
             var channels = messages.Select(x => x.Channel.Id).Distinct().ToList();
 
-            var oldestMessageDatetime = messages.OrderBy(x => x.SentAt).First().SentAt;
-            var todayTimeRange = TimeRange.Create(DateTime.Today, DateTime.Today.AddSeconds(-1));
+            var todayTimeRange = TimeRange.Create(DateTime.Today, DateTime.Today.AddSeconds(-1)).Move(TimeSpan.FromDays(-1));//don't calculate today
             var iterableTimeRange = todayTimeRange.MoveWhile(x => !x.Contains(oldestMessageDatetime), TimeSpan.FromDays(1));
             foreach (var timeRange in iterableTimeRange)
             {
@@ -74,8 +82,9 @@ namespace Statsman.Core.Generators
 
         private IEnumerable<PreGeneratedStatistic> GetPreGeneratedStatistics(ulong serverId, string period)
         {
-            var query = new GetPreGeneratedStatisticQuery(serverId);
-
+            var query = new GetPreGeneratedStatisticQuery(serverId, period: period);
+            var preGeneratedStatistics = this.queryBus.Execute(query).PreGeneratedStatistic.ToList();
+            return preGeneratedStatistics;
         }
 
         private async Task SaveStatistic(ulong serverId, ulong userId, ulong channelId, int count, TimeRange timeRange, string period)
