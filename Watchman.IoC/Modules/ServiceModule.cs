@@ -7,7 +7,6 @@ using System.Reflection;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Commons;
 using Watchman.Discord.Integration.DevscordFramework;
-using Watchman.DomainModel.Commons.Calculators.Statistics;
 using Watchman.DomainModel.Settings.Services;
 
 namespace Watchman.IoC.Modules
@@ -18,10 +17,6 @@ namespace Watchman.IoC.Modules
         {
             builder.Register((c, p) => new ResponsesService().SetGetResponsesFromDatabase(c.Resolve<IQueryBus>()))
                 .As<ResponsesService>()
-                .SingleInstance();
-
-            builder.RegisterType<StatisticsCalculator>()
-                .As<IStatisticsCalculator>()
                 .SingleInstance();
 
             builder.RegisterType<CustomCommandsLoader>()
@@ -45,7 +40,7 @@ namespace Watchman.IoC.Modules
                 var asm = stack.Pop();
 
                 builder.RegisterAssemblyTypes(asm)
-                    .Where(x => x.FullName.StartsWith("Watchman") || x.FullName.StartsWith("Devscord"))
+                    .Where(x => x.FullName.StartsWith("Watchman") || x.FullName.StartsWith("Devscord") || x.FullName.StartsWith("Statsman"))
                     .PreserveExistingDefaults()
                     .SingleInstance();
 

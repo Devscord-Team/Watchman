@@ -114,10 +114,7 @@ namespace Statsman
 
         private async Task<IEnumerable<PreGeneratedStatistic>> GetPreGeneratedStatistics(StatisticsRequest statisticsRequest, TimeRange timeRange)
         {
-            var query = new GetPreGeneratedStatisticQuery(statisticsRequest.ServerId)
-            {
-                SentDate = timeRange
-            };
+            var query = new GetPreGeneratedStatisticQuery(statisticsRequest.ServerId, timeRange: timeRange);
             return (await this.queryBus.ExecuteAsync(query)).PreGeneratedStatistic.ToList();
         }
 

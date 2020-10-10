@@ -53,8 +53,6 @@ namespace Watchman.Web
             recurringJobManager.AddOrUpdate(nameof(PreStatisticsGenerator),
                 () => GenerateStatistics(discordServersService, statisticsGenerator, Period.Quarter),
                 this.GetCronExpression(RefreshFrequent.Monthly));
-
-
         }
 
         private void GenerateStatistics(DiscordServersService discordServersService, PreStatisticsGenerator statisticsGenerator, string period)

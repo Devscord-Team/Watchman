@@ -19,6 +19,10 @@ namespace Watchman.DomainModel.Messages.Queries.Handlers
         {
             using var session = this._sessionFactory.Create();
             var preGeneratedStatistics = session.Get<PreGeneratedStatistic>().AsEnumerable().Where(x => x.ServerId == query.ServerId && x.Period == query.Period);
+            if(query.TimeRange != null)
+            {
+                preGeneratedStatistics = preGeneratedStatistics.Where(x => query.TimeRange.Contains(x.TimeRange.Start) && query.TimeRange.Contains(x.TimeRange.End));
+            }
             if(query.UserId != 0)
             {
                 preGeneratedStatistics = preGeneratedStatistics.Where(x => x.UserId == query.UserId);

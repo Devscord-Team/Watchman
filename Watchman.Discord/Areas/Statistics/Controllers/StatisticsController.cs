@@ -17,8 +17,6 @@ using System.Threading.Tasks;
 using Watchman.Common.Models;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Statistics.BotCommands;
-using Watchman.Discord.Areas.Statistics.Models;
-using Watchman.Discord.Areas.Statistics.Services;
 using Watchman.DomainModel.Messages.Commands;
 using Watchman.DomainModel.Messages.Queries;
 
