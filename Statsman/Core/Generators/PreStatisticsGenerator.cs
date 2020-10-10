@@ -27,7 +27,6 @@ namespace Statsman.Core.Generators
         {
             var messages = this.GetMessages(serverId);
             var preGeneratedStatistics = this.GetPreGeneratedStatistics(serverId, Period.Day);
-
             var oldestMessageDatetime = preGeneratedStatistics.OrderBy(x => x.TimeRange.End).FirstOrDefault()?.TimeRange?.End 
                 ?? messages.OrderBy(x => x.SentAt).FirstOrDefault()?.SentAt 
                 ?? default;
