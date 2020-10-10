@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+
 using Autofac;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
 using Devscord.DiscordFramework.Services;
@@ -9,6 +13,7 @@ using Statsman.Core.Generators;
 using Watchman.Discord.Areas.Protection.Services;
 using Watchman.Discord.Areas.Protection.Strategies;
 using Watchman.Discord.Areas.Responses.Services;
+using Watchman.DomainModel.Messages;
 using Watchman.DomainModel.Settings.Services;
 
 namespace Watchman.Web
@@ -37,8 +42,32 @@ namespace Watchman.Web
             var configurationService = container.Resolve<ConfigurationService>();
             recurringJobManager.AddOrUpdate(nameof(ConfigurationService), () => configurationService.Refresh(), this.GetCronExpression(RefreshFrequent.Minutely));
 
+            var discordServersService = container.Resolve<DiscordServersService>();
             var statisticsGenerator = container.Resolve<PreStatisticsGenerator>();
-            recurringJobManager.AddOrUpdate(nameof(PreStatisticsGenerator), () => statisticsGenerator.PreGenerateStatisticsPerDay(0), this.GetCronExpression(RefreshFrequent.Minutely));
+            recurringJobManager.AddOrUpdate(nameof(PreStatisticsGenerator), 
+                () => GenerateStatistics(discordServersService, statisticsGenerator, Period.Day), 
+                this.GetCronExpression(RefreshFrequent.Daily));
+            recurringJobManager.AddOrUpdate(nameof(PreStatisticsGenerator),
+                () => GenerateStatistics(discordServersService, statisticsGenerator, Period.Month),
+                this.GetCronExpression(RefreshFrequent.Weekly));
+            recurringJobManager.AddOrUpdate(nameof(PreStatisticsGenerator),
+                () => GenerateStatistics(discordServersService, statisticsGenerator, Period.Quarter),
+                this.GetCronExpression(RefreshFrequent.Monthly));
+
+
+        }
+
+        private void GenerateStatistics(DiscordServersService discordServersService, PreStatisticsGenerator statisticsGenerator, string period)
+        {
+            var serverIds = discordServersService.GetDiscordServersAsync().Select(x => x.Id).ToListAsync().Result;
+            var tasks = period switch
+            {
+                Period.Day => serverIds.Select(x => statisticsGenerator.PreGenerateStatisticsPerDay(x)).ToArray(),
+                Period.Month => serverIds.Select(x => statisticsGenerator.PreGenerateStatisticsPerDay(x)).ToArray(),
+                Period.Quarter => serverIds.Select(x => statisticsGenerator.PreGenerateStatisticsPerDay(x)).ToArray(),
+                _ => throw new NotImplementedException()
+            };
+            Task.WaitAll(tasks);
         }
 
         private string GetCronExpression(RefreshFrequent refreshFrequent)

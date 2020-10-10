@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using Watchman.Common.Models;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Messages;
