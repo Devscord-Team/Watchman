@@ -28,7 +28,7 @@ namespace Statsman
         public async Task<(Stream Chart, string Message)> PerMinute(StatisticsRequest request)
         {
             var timeRange = TimeRange.Create(DateTime.UtcNow.AddMinutes(-request.TimeBehind.TotalMinutes), DateTime.UtcNow);
-            var statistics = await this.GetStatisticsGroupedPerDetailedPeriod(request.ServerId, timeRange, Period.Minute);
+            var statistics = await this.GetStatisticsGroupedPerDetailedPeriod(request, timeRange, Period.Minute);
             return (Chart: await this._chartsService.GetImageStatisticsPerPeriod(statistics, "Messages per minute"),
                 Message: $"All Messages Statistics\r\nItem per minute\r\n{timeRange}"); //TODO get label and message from configuration
         }
@@ -36,7 +36,7 @@ namespace Statsman
         public async Task<(Stream Chart, string Message)> PerHour(StatisticsRequest request)
         {
             var timeRange = TimeRange.Create(DateTime.UtcNow.AddHours(-request.TimeBehind.TotalHours), DateTime.UtcNow);
-            var statistics = await this.GetStatisticsGroupedPerDetailedPeriod(request.ServerId, timeRange, Period.Hour);
+            var statistics = await this.GetStatisticsGroupedPerDetailedPeriod(request, timeRange, Period.Hour);
             return (Chart: await this._chartsService.GetImageStatisticsPerPeriod(statistics, "Messages per hour"), 
                 Message: $"All Messages Statistics\r\nItem per hour\r\n{timeRange}");
         }
@@ -44,7 +44,7 @@ namespace Statsman
         public async Task<(Stream Chart, string Message)> PerDay(StatisticsRequest request)
         {
             var timeRange = TimeRange.Create(DateTime.Today.AddDays(-request.TimeBehind.TotalDays), DateTime.Today);
-            var statistics = await this.GetStatisticsGroupedPerDaysPeriod(request.ServerId, timeRange, Period.Day);
+            var statistics = await this.GetStatisticsGroupedPerDaysPeriod(request, timeRange, Period.Day);
             return (Chart: await this._chartsService.GetImageStatisticsPerPeriod(statistics, "Messages per day"), 
                 Message: $"All Messages Statistics\r\nItem per day\r\n{timeRange}");
         }
@@ -52,7 +52,7 @@ namespace Statsman
         public async Task<(Stream Chart, string Message)> PerWeek(StatisticsRequest request)
         {
             var timeRange = TimeRange.Create(DateTime.Today.AddDays(-request.TimeBehind.TotalDays), DateTime.Today);
-            var statistics = await this.GetStatisticsGroupedPerDaysPeriod(request.ServerId, timeRange, Period.Week);
+            var statistics = await this.GetStatisticsGroupedPerDaysPeriod(request, timeRange, Period.Week);
             return (Chart: await this._chartsService.GetImageStatisticsPerPeriod(statistics, "Messages per week"), 
                 Message: $"All Messages Statistics\r\nItem per week\r\n{timeRange}");
         }
@@ -86,14 +86,14 @@ namespace Statsman
 
         private async Task<IEnumerable<TimeStatisticItem>> GetStatisticsGroupedPerDaysPeriod(StatisticsRequest statisticsRequest, TimeRange timeRange, Period period)
         {
-            var preCalculatedDays = await this.GetServerDayStatistics(statisticsRequest, timeRange);
+            var preGeneratedStatistics = await this.GetPreGeneratedStatistics(statisticsRequest, timeRange);
             var messages = await this.GetMessages(statisticsRequest, TimeSpan.FromHours(24));
             return period switch
             {
-                Period.Day => this.timeSplittingService.GetStatisticsPerDay(preCalculatedDays, messages, timeRange),
-                Period.Week => this.timeSplittingService.GetStatisticsPerWeek(preCalculatedDays, messages, timeRange),
-                Period.Month => this.timeSplittingService.GetStatisticsPerMonth(preCalculatedDays, messages, timeRange),
-                Period.Quarter => this.timeSplittingService.GetStatisticsPerQuarter(preCalculatedDays, messages, timeRange),
+                Period.Day => this.timeSplittingService.GetStatisticsPerDay(preGeneratedStatistics, messages, timeRange),
+                Period.Week => this.timeSplittingService.GetStatisticsPerWeek(preGeneratedStatistics, messages, timeRange),
+                Period.Month => this.timeSplittingService.GetStatisticsPerMonth(preGeneratedStatistics, messages, timeRange),
+                Period.Quarter => this.timeSplittingService.GetStatisticsPerQuarter(preGeneratedStatistics, messages, timeRange),
                 _ => throw new NotImplementedException()
             };
         }
@@ -112,13 +112,13 @@ namespace Statsman
             return (await this.queryBus.ExecuteAsync(query)).Messages.ToList();
         }
 
-        private async Task<IEnumerable<ServerDayStatistic>> GetServerDayStatistics(StatisticsRequest statisticsRequest, TimeRange timeRange)
+        private async Task<IEnumerable<PreGeneratedStatistic>> GetPreGeneratedStatistics(StatisticsRequest statisticsRequest, TimeRange timeRange)
         {
             var query = new GetPreGeneratedStatisticQuery(statisticsRequest.ServerId)
             {
                 SentDate = timeRange
             };
-            return (await this.queryBus.ExecuteAsync(query)).ServerDayStatistics.ToList();
+            return (await this.queryBus.ExecuteAsync(query)).PreGeneratedStatistic.ToList();
         }
 
         private enum Period

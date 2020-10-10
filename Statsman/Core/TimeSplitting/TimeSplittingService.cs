@@ -10,30 +10,30 @@ namespace Statsman.Core.TimeSplitting
 {
     public class TimeSplittingService
     {
-        public IEnumerable<TimeStatisticItem> GetStatisticsPerQuarter(IEnumerable<ServerDayStatistic> serverDayStatistics, IEnumerable<Message> latestMessages, TimeRange expectedTimeRange)
+        public IEnumerable<TimeStatisticItem> GetStatisticsPerQuarter(IEnumerable<PreGeneratedStatistic> preGeneratedStatistics, IEnumerable<Message> latestMessages, TimeRange expectedTimeRange)
         {
-            var statisticsPerDay = this.GetStatisticsPerDay(serverDayStatistics, latestMessages, expectedTimeRange).ToList();
+            var statisticsPerDay = this.GetStatisticsPerDay(preGeneratedStatistics, latestMessages, expectedTimeRange).ToList();
             var result = this.SumItems(statisticsPerDay, 90, expectedTimeRange);
             return result;
         }
 
-        public IEnumerable<TimeStatisticItem> GetStatisticsPerMonth(IEnumerable<ServerDayStatistic> serverDayStatistics, IEnumerable<Message> latestMessages, TimeRange expectedTimeRange)
+        public IEnumerable<TimeStatisticItem> GetStatisticsPerMonth(IEnumerable<PreGeneratedStatistic> preGeneratedStatistics, IEnumerable<Message> latestMessages, TimeRange expectedTimeRange)
         {
-            var statisticsPerDay = this.GetStatisticsPerDay(serverDayStatistics, latestMessages, expectedTimeRange).ToList();
+            var statisticsPerDay = this.GetStatisticsPerDay(preGeneratedStatistics, latestMessages, expectedTimeRange).ToList();
             var result = this.SumItems(statisticsPerDay, 30, expectedTimeRange);
             return result;
         }
 
-        public IEnumerable<TimeStatisticItem> GetStatisticsPerWeek(IEnumerable<ServerDayStatistic> serverDayStatistics, IEnumerable<Message> latestMessages, TimeRange expectedTimeRange)
+        public IEnumerable<TimeStatisticItem> GetStatisticsPerWeek(IEnumerable<PreGeneratedStatistic> preGeneratedStatistics, IEnumerable<Message> latestMessages, TimeRange expectedTimeRange)
         {
-            var statisticsPerDay = this.GetStatisticsPerDay(serverDayStatistics, latestMessages, expectedTimeRange).ToList();
+            var statisticsPerDay = this.GetStatisticsPerDay(preGeneratedStatistics, latestMessages, expectedTimeRange).ToList();
             var result = this.SumItems(statisticsPerDay, 7, expectedTimeRange);
             return result;
         }
 
-        public IEnumerable<TimeStatisticItem> GetStatisticsPerDay(IEnumerable<ServerDayStatistic> serverDayStatistics, IEnumerable<Message> latestMessages, TimeRange expectedTimeRange)
+        public IEnumerable<TimeStatisticItem> GetStatisticsPerDay(IEnumerable<PreGeneratedStatistic> preGeneratedStatistics, IEnumerable<Message> latestMessages, TimeRange expectedTimeRange)
         {
-            latestMessages = this.FilterMessages(latestMessages, serverDayStatistics);
+            latestMessages = this.FilterMessages(latestMessages, preGeneratedStatistics);
             var oldestLastMessagesDate = latestMessages.OrderBy(x => x.SentAt).First().SentAt;
             var result = new List<TimeStatisticItem>();
             expectedTimeRange.ForeachDay((i, day) => 
@@ -43,7 +43,7 @@ namespace Statsman.Core.TimeSplitting
                 {
                     sum += latestMessages.Where(x => x.SentAt.Date == day).Count();
                 }
-                sum += serverDayStatistics.Where(x => x.Date.Date == day).OrderBy(x => x.CreatedAt).FirstOrDefault()?.Count ?? 0;
+                sum += preGeneratedStatistics.Where(x => x.Date.Date == day).OrderBy(x => x.CreatedAt).FirstOrDefault()?.Count ?? 0;
                 var item = new TimeStatisticItem(TimeRange.Create(day, day.AddDays(1).AddSeconds(-1)), sum);
                 result.Add(item);
             });
@@ -87,12 +87,12 @@ namespace Statsman.Core.TimeSplitting
             return result;
         }
 
-        private IEnumerable<Message> FilterMessages(IEnumerable<Message> latestMessages, IEnumerable<ServerDayStatistic> serverDayStatistics)
+        private IEnumerable<Message> FilterMessages(IEnumerable<Message> latestMessages, IEnumerable<PreGeneratedStatistic> preGeneratedStatistics)
         {
-            var latestPreGeneratedDate = serverDayStatistics.OrderBy(x => x.UpdatedAt).First();
+            var latestPreGeneratedDate = preGeneratedStatistics.OrderBy(x => x.UpdatedAt).First();
             return latestMessages.Where(x =>
             {
-                if (x.SentAt.Date > latestPreGeneratedDate.Date) //in newer day
+                if (x.SentAt.Date > latestPreGeneratedDate.TimeRange.End) //in newer day
                 {
                     return true;
                 }
