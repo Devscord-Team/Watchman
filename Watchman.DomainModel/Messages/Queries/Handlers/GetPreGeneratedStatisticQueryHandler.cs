@@ -6,7 +6,7 @@ using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Messages.Queries.Handlers
 {
-    public class GetPreGeneratedStatisticQueryHandler : PaginationMessagesQueryHandler, IQueryHandler<GetPreGeneratedStatisticQuery, GetPreGeneratedStatisticsQueryResult>
+    public class GetPreGeneratedStatisticQueryHandler : IQueryHandler<GetPreGeneratedStatisticQuery, GetPreGeneratedStatisticsQueryResult>
     {
         private readonly ISessionFactory _sessionFactory;
 
@@ -18,28 +18,16 @@ namespace Watchman.DomainModel.Messages.Queries.Handlers
         public GetPreGeneratedStatisticsQueryResult Handle(GetPreGeneratedStatisticQuery query)
         {
             using var session = this._sessionFactory.Create();
-            var statistics = session.Get<PreGeneratedStatistic>().AsEnumerable();
-            statistics = this.Paginate(query, statistics);
-            if (query.ChannelId != 0)
+            var preGeneratedStatistics = session.Get<PreGeneratedStatistic>().AsEnumerable().Where(x => x.ServerId == query.ServerId && x.Period == query.Period);
+            if(query.UserId != 0)
             {
-                foreach (var statisticItem in statistics)
-                {
-                    var channelStats = statisticItem.ChannelDayStatistics.FirstOrDefault(x => x.ChannelId == query.ChannelId);
-                    if(channelStats == null)
-                    {
-                        statisticItem.SetCount(0);
-                    }
-                    else
-                    {
-                        statisticItem.SetCount(channelStats.Count);
-                    }
-                }
+                preGeneratedStatistics = preGeneratedStatistics.Where(x => x.UserId == query.UserId);
             }
-            if (query.UserId != 0)
+            if(query.ChannelId != 0)
             {
-                messages = this.TakeOnlyForUser(query.UserId.Value, messages);
+                preGeneratedStatistics = preGeneratedStatistics.Where(x => x.ChannelId == query.ChannelId);
             }
-            return new GetPreGeneratedStatisticsQueryResult(statistics);
+            return new GetPreGeneratedStatisticsQueryResult(preGeneratedStatistics);
         }
     }
 }

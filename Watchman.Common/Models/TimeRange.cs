@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Watchman.Common.Models
 {
@@ -51,6 +52,16 @@ namespace Watchman.Common.Models
             this.Start.Add(time);
             this.End.Add(time);
             return this;
+        }
+
+        public IEnumerable<TimeRange> MoveWhile(Func<TimeRange, bool> shouldContinue, TimeSpan time)
+        {
+            var timeRange = this;
+            while(shouldContinue.Invoke(timeRange))
+            {
+                yield return this;
+                timeRange = this.Move(time);
+            }
         }
 
         public override string ToString()

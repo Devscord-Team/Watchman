@@ -17,12 +17,32 @@ namespace Watchman.DomainModel.Messages
         public TimeRange TimeRange { get; private set; }
         public string Period { get; private set; }
 
-        public PreGeneratedStatistic(ulong serverId, int count, TimeRange timeRange, Func<Period, string> getPeriod)
+        public PreGeneratedStatistic(ulong serverId, int count, TimeRange timeRange, string period)
         {
             this.ServerId = serverId;
             this.Count = count;
             this.TimeRange = timeRange;
-            this.Period = getPeriod.Invoke(new Period());
+            this.Period = period;
+        }
+
+        public void SetUser(ulong userId)
+        {
+            if (this.UserId == userId)
+            {
+                return;
+            }
+            this.UserId = userId;
+            this.Update();
+        }
+
+        public void SetChannel(ulong channelId)
+        {
+            if(this.ChannelId == channelId)
+            {
+                return;
+            }
+            this.ChannelId = channelId;
+            this.Update();
         }
     }
 
