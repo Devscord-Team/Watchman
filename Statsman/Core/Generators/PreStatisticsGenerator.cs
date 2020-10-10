@@ -38,7 +38,7 @@ namespace Statsman.Core.Generators
             var users = messages.Select(x => x.Author.Id).Distinct().ToList();
             var channels = messages.Select(x => x.Channel.Id).Distinct().ToList();
 
-            var todayTimeRange = TimeRange.Create(DateTime.Today, DateTime.Today.AddSeconds(-1)).Move(TimeSpan.FromDays(-1));//don't calculate today
+            var todayTimeRange = TimeRange.Create(DateTime.Today, DateTime.Today.AddSeconds(-1)).Move(TimeSpan.FromDays(-1)); //don't calculate today
             var iterableTimeRange = todayTimeRange.MoveWhile(x => !x.Contains(oldestMessageDatetime), TimeSpan.FromDays(1));
             foreach (var timeRange in iterableTimeRange)
             {
