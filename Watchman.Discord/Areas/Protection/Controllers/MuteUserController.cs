@@ -67,7 +67,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         {
             var notUnmutedMuteEvents = _mutingHelper.GetNotUnmutedMuteEvents(contexts.Server.Id);
             var mutedUsers = this._usersService.GetUsersAsync(contexts.Server);
-            var mutedUsersMessageData = await this.GetMuteEmbedMessage(notUnmutedMuteEvents.ToList(), mutedUsers);
+            var mutedUsersMessageData = this.GetMuteEmbedMessage(notUnmutedMuteEvents.ToList(), mutedUsers);
             if (!mutedUsersMessageData.Values.Any())
             {
                 await this._directMessagesService.TrySendMessage(contexts.User.Id, "Brak wyciszonych użytkowników!");
@@ -78,12 +78,12 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             await messagesService.SendResponse(x => x.MutedUsersListSent());
         }
 
-        private async Task<MutedUsersMessageData> GetMuteEmbedMessage(IEnumerable<MuteEvent> notUnmutedMuteEvents, IAsyncEnumerable<UserContext> users)
+        private MutedUsersMessageData GetMuteEmbedMessage(IEnumerable<MuteEvent> notUnmutedMuteEvents, IEnumerable<UserContext> users)
         {
             var title = "Lista wyciszonych użytkowników";
             var description = "Wyciszeni użytkownicy, powody oraz data wygaśnięcia";
             var values = new Dictionary<string, Dictionary<string, string>>();
-            await foreach (var user in users)
+            foreach (var user in users)
             {
                 var muteEvent = notUnmutedMuteEvents.FirstOrDefault(x => x.UserId == user.Id);
                 if (muteEvent == null)

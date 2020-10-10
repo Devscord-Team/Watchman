@@ -54,9 +54,8 @@ namespace Devscord.DiscordFramework.Integration.Services
         {
             if (guild != null)
             {
-                return await guild.GetChannelAsync(channelId);
+                return this._client.GetGuild(guild.Id).GetChannel(channelId);
             }
-
             IChannel channel;
             try
             {
@@ -128,15 +127,8 @@ namespace Devscord.DiscordFramework.Integration.Services
 
         public async Task<bool> CanBotReadTheChannelAsync(IMessageChannel textChannel)
         {
-            try
-            {
-                await textChannel.GetMessagesAsync(limit: 1).FirstAsync();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            var message = await textChannel.GetMessagesAsync(limit: 1).FirstAsync();
+            return message.Count != 0;
         }
 
         public async Task<ITextChannel> CreateNewChannelAsync(ulong serverId, string channelName)
@@ -209,6 +201,6 @@ namespace Devscord.DiscordFramework.Integration.Services
             }
             await channelSocket.AddPermissionOverwriteAsync(role, permissions);
             Log.Information("{roleName} set for {channel}", role.Name, channel.Name);
-        }
+          }
     }
 }

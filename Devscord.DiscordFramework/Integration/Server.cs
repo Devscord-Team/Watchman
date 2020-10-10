@@ -44,7 +44,7 @@ namespace Devscord.DiscordFramework.Integration
             return _discordClient.UsersService.GetGuildUser(userId, guildId);
         }
 
-        internal static IAsyncEnumerable<RestGuildUser> GetGuildUsers(ulong guildId)
+        internal static IEnumerable<IGuildUser> GetGuildUsers(ulong guildId)
         {
             return _discordClient.UsersService.GetGuildUsers(guildId);
         }

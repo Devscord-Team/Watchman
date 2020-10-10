@@ -118,14 +118,14 @@ namespace Devscord.DiscordFramework.Services
             return responses;
         }
 
-        private IRestMessageChannel GetChannel()
+        private IMessageChannel GetChannel()
         {
             RestGuild guild = null;
             if (this.GuildId != default)
             {
                 guild = Server.GetGuild(this.GuildId).Result;
             }
-            var channel = (IRestMessageChannel)Server.GetChannel(this.ChannelId, guild).Result;
+            var channel = (IMessageChannel)Server.GetChannel(this.ChannelId, guild).Result;
             return channel;
         }
 

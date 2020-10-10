@@ -38,10 +38,10 @@ namespace Devscord.DiscordFramework.Services
             await socketUser.RemoveRoleAsync(socketRole);
         }
 
-        public async IAsyncEnumerable<UserContext> GetUsersAsync(DiscordServerContext server)
+        public IEnumerable<UserContext> GetUsersAsync(DiscordServerContext server)
         {
             var guildUsers = Server.GetGuildUsers(server.Id);
-            await foreach (var user in guildUsers)
+            foreach (var user in guildUsers)
             {
                 yield return this._userContextsFactory.Create(user);
             }
