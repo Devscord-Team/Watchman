@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Areas\Statistics\Services\ChartsService.cs~RF1d33175.TMP" />
     <None Remove="IoC\Modules\ServiceModule.cs~RF3633ec.TMP" />
   </ItemGroup>
 

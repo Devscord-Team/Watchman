@@ -5,10 +5,10 @@ using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Models;
 using Hangfire;
+using Statsman.Core.Generators;
 using Watchman.Discord.Areas.Protection.Services;
 using Watchman.Discord.Areas.Protection.Strategies;
 using Watchman.Discord.Areas.Responses.Services;
-using Watchman.Discord.Areas.Statistics.Services;
 using Watchman.DomainModel.Settings.Services;
 
 namespace Watchman.Web
@@ -22,9 +22,7 @@ namespace Watchman.Web
                 (container.Resolve<MessagesService>(), RefreshFrequent.Quarterly, true),
                 (container.Resolve<ServerMessagesCacheService>(), RefreshFrequent.Quarterly, false),
                 (container.Resolve<ResponsesCleanupService>(), RefreshFrequent.Daily, false),
-                (container.Resolve<UnmutingService>(), RefreshFrequent.Quarterly, true), // if RefreshFrequent changed remember to change SHORT_MUTE_TIME_IN_MINUTES in unmutingService!
-                (container.Resolve<CyclicStatisticsGeneratorService>(), RefreshFrequent.Daily, false),
-                (container.Resolve<CheckUserSafetyService>(), RefreshFrequent.Daily, true)
+                (container.Resolve<UnmutingService>(), RefreshFrequent.Quarterly, true) // if RefreshFrequent changed remember to change SHORT_MUTE_TIME_IN_MINUTES in unmutingService!
             };
             var recurringJobManager = container.Resolve<IRecurringJobManager>();
             foreach (var (generator, refreshFrequent, shouldTrigger) in generators)
@@ -36,8 +34,11 @@ namespace Watchman.Web
                     recurringJobManager.Trigger(generator.GetType().Name);
                 }
             }
-            var service = container.Resolve<ConfigurationService>();
-            recurringJobManager.AddOrUpdate(nameof(ConfigurationService), () => service.Refresh(), this.GetCronExpression(RefreshFrequent.Minutely));
+            var configurationService = container.Resolve<ConfigurationService>();
+            recurringJobManager.AddOrUpdate(nameof(ConfigurationService), () => configurationService.Refresh(), this.GetCronExpression(RefreshFrequent.Minutely));
+
+            var statisticsGenerator = container.Resolve<PreStatisticsGenerator>();
+            recurringJobManager.AddOrUpdate(nameof(PreStatisticsGenerator), () => statisticsGenerator.PreGenerateStatisticsPerDay(0), this.GetCronExpression(RefreshFrequent.Minutely));
         }
 
         private string GetCronExpression(RefreshFrequent refreshFrequent)
