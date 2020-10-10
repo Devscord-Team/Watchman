@@ -55,7 +55,7 @@ namespace Watchman.Web
                 this.GetCronExpression(RefreshFrequent.Monthly));
         }
 
-        private void GenerateStatistics(DiscordServersService discordServersService, PreStatisticsGenerator statisticsGenerator, string period)
+        public void GenerateStatistics(DiscordServersService discordServersService, PreStatisticsGenerator statisticsGenerator, string period)
         {
             var serverIds = discordServersService.GetDiscordServersAsync().Select(x => x.Id).ToListAsync().Result;
             var tasks = period switch

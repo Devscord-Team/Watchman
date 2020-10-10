@@ -34,16 +34,16 @@ namespace Watchman.Web
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
             });
             services.Configure<ForwardedHeadersOptions>(options => options.KnownProxies.Add(IPAddress.Parse("10.0.0.100")));
-            services.AddAuthentication()
-                .AddDiscord(x =>
-                {
-                    //TODO - not working, but now it is not a problem
-                    x.ClientId = this.Configuration["Discord:AppId"];
-                    x.ClientSecret = this.Configuration["Discord:AppSecret"];
-                    x.Validate();
-                    x.Scope.Add("email");
-                    x.Validate();
-                });
+            //services.AddAuthentication()
+            //    .AddDiscord(x =>
+            //    {
+            //        //TODO - not working, but now it is not a problem
+            //        x.ClientId = this.Configuration["Discord:AppId"];
+            //        x.ClientSecret = this.Configuration["Discord:AppSecret"];
+            //        x.Validate();
+            //        x.Scope.Add("email");
+            //        x.Validate();
+            //    });
 
             services.AddControllersWithViews();
             services.AddSpaStaticFiles(configuration =>
