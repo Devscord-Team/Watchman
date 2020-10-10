@@ -50,22 +50,20 @@ namespace Devscord.DiscordFramework.Integration.Services
             await user.SendMessageAsync(embed: embed);
         }
 
-        public async Task<IChannel> GetChannel(ulong channelId, RestGuild guild = null)
+        public async Task<IChannel> GetChannel(ulong channelId, IGuild guild = null)
         {
-            if (guild != null)
+            IChannel channel = this._client.GetChannel(channelId);
+            if (channel != null)
             {
-                return this._client.GetGuild(guild.Id).GetChannel(channelId);
+                return channel;
             }
-            IChannel channel;
-            try
+            channel = this._client.GetGuild(guild.Id).GetChannel(channelId);
+            if (channel != null)
             {
-                channel = this._client.GetChannel(channelId);
+                return channel;
             }
-            catch
-            {
-                channel = await this._restClient.GetChannelAsync(channelId);
-                Log.Warning("RestClient couldn't get channel: {channelId}", channelId);
-            }
+            channel = await this._restClient.GetChannelAsync(channelId);
+            Log.Warning("RestClient couldn't get channel: {channelId}", channelId);
             return channel;
         }
 
@@ -170,7 +168,7 @@ namespace Devscord.DiscordFramework.Integration.Services
             Log.Information("Removing role {roleName} for {channel}", role.Name, channel.Name);
 
             var socketRole = this.GetSocketRole(server, role);
-            var guild = await this._restClient.GetGuildAsync(server.Id);
+            var guild = this._client.GetGuild(server.Id);
             var channelSocket = (IGuildChannel)await this.GetChannel(channel.Id, guild);
             await channelSocket.RemovePermissionOverwriteAsync(socketRole);
         }
