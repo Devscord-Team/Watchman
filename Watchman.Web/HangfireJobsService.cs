@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-
 using Autofac;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Models;
 using Hangfire;
 using Statsman.Core.Generators;
+using Watchman.Cqrs;
 using Watchman.Discord.Areas.Protection.Services;
 using Watchman.Discord.Areas.Protection.Strategies;
 using Watchman.Discord.Areas.Responses.Services;
@@ -43,20 +43,22 @@ namespace Watchman.Web
             recurringJobManager.AddOrUpdate(nameof(ConfigurationService), () => configurationService.Refresh(), this.GetCronExpression(RefreshFrequent.Minutely));
 
             var discordServersService = container.Resolve<DiscordServersService>();
-            var statisticsGenerator = container.Resolve<PreStatisticsGenerator>();
-            recurringJobManager.AddOrUpdate(nameof(PreStatisticsGenerator), 
-                () => GenerateStatistics(discordServersService, statisticsGenerator, Period.Day), 
+            var queryBus = container.Resolve<IQueryBus>();
+            var commandBus = container.Resolve<ICommandBus>();
+            recurringJobManager.AddOrUpdate("Pre generate statistics per day", 
+                () => GenerateStatistics(discordServersService, queryBus, commandBus, Period.Day), 
                 this.GetCronExpression(RefreshFrequent.Daily));
-            recurringJobManager.AddOrUpdate(nameof(PreStatisticsGenerator),
-                () => GenerateStatistics(discordServersService, statisticsGenerator, Period.Month),
+            recurringJobManager.AddOrUpdate("Pre generate statistics per month",
+                () => GenerateStatistics(discordServersService, queryBus, commandBus, Period.Month),
                 this.GetCronExpression(RefreshFrequent.Weekly));
-            recurringJobManager.AddOrUpdate(nameof(PreStatisticsGenerator),
-                () => GenerateStatistics(discordServersService, statisticsGenerator, Period.Quarter),
+            recurringJobManager.AddOrUpdate("Pre generate statistics per quarter",
+                () => GenerateStatistics(discordServersService, queryBus, commandBus, Period.Quarter),
                 this.GetCronExpression(RefreshFrequent.Monthly));
         }
 
-        public void GenerateStatistics(DiscordServersService discordServersService, PreStatisticsGenerator statisticsGenerator, string period)
+        public void GenerateStatistics(DiscordServersService discordServersService, IQueryBus queryBus, ICommandBus commandBus, string period)
         {
+            var statisticsGenerator = new PreStatisticsGenerator(queryBus, commandBus);
             var serverIds = discordServersService.GetDiscordServersAsync().Select(x => x.Id).ToListAsync().Result;
             var tasks = period switch
             {

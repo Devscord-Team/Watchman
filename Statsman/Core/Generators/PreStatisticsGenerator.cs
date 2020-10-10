@@ -13,13 +13,13 @@ namespace Statsman.Core.Generators
 {
     public class PreStatisticsGenerator
     {
-        private readonly IQueryBus queryBus;
-        private readonly ICommandBus commandBus;
+        public IQueryBus QueryBus { get; private set; }
+        public ICommandBus CommandBus { get; private set; }
 
         public PreStatisticsGenerator(IQueryBus queryBus, ICommandBus commandBus)
         {
-            this.queryBus = queryBus;
-            this.commandBus = commandBus;
+            this.QueryBus = queryBus;
+            this.CommandBus = commandBus;
         }
 
         public async Task PreGenerateStatisticsPerDay(ulong serverId)
@@ -74,14 +74,14 @@ namespace Statsman.Core.Generators
         private IEnumerable<Message> GetMessages(ulong serverId)
         {
             var query = new GetMessagesQuery(serverId);
-            var messages = this.queryBus.Execute(query).Messages.ToList();
+            var messages = this.QueryBus.Execute(query).Messages.ToList();
             return messages;
         }
 
         private IEnumerable<PreGeneratedStatistic> GetPreGeneratedStatistics(ulong serverId, string period)
         {
             var query = new GetPreGeneratedStatisticQuery(serverId, period: period);
-            var preGeneratedStatistics = this.queryBus.Execute(query).PreGeneratedStatistic.ToList();
+            var preGeneratedStatistics = this.QueryBus.Execute(query).PreGeneratedStatistic.ToList();
             return preGeneratedStatistics;
         }
 
@@ -91,7 +91,7 @@ namespace Statsman.Core.Generators
             preGeneratedStatistic.SetUser(userId);
             preGeneratedStatistic.SetChannel(channelId);
             var preGeneratedStatisticCommand = new AddPreGeneratedStatisticCommand(preGeneratedStatistic);
-            await this.commandBus.ExecuteAsync(preGeneratedStatisticCommand);
+            await this.CommandBus.ExecuteAsync(preGeneratedStatisticCommand);
         }
     }
 }
