@@ -14,13 +14,13 @@ using Watchman.Integrations.Quickchart;
 
 namespace Statsman
 {
-    public class PeriodStatisticsGenerator
+    public class PeriodStatisticsService
     {
         private readonly IQueryBus queryBus;
         private readonly TimeSplittingService timeSplittingService = new TimeSplittingService(); //TODO IoC
         private readonly ChartsService _chartsService = new ChartsService();
 
-        public PeriodStatisticsGenerator(IQueryBus queryBus)
+        public PeriodStatisticsService(IQueryBus queryBus)
         {
             this.queryBus = queryBus;
         }

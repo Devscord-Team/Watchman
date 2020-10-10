@@ -27,17 +27,17 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
     public class StatisticsController : IController
     {
         
-        private readonly PeriodStatisticsGenerator periodStatisticsGenerator;
+        private readonly PeriodStatisticsService _periodStatisticsService;
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
         private readonly MessagesServiceFactory _messagesServiceFactory;
 
-        public StatisticsController(IQueryBus queryBus, ICommandBus commandBus, MessagesServiceFactory messagesServiceFactory, ChartsService chartsService, PeriodStatisticsGenerator periodStatisticsGenerator)
+        public StatisticsController(IQueryBus queryBus, ICommandBus commandBus, MessagesServiceFactory messagesServiceFactory, ChartsService chartsService, PeriodStatisticsService periodStatisticsService)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;
             this._messagesServiceFactory = messagesServiceFactory;
-            this.periodStatisticsGenerator = periodStatisticsGenerator;
+            this._periodStatisticsService = periodStatisticsService;
         }
 
         [ReadAlways]
@@ -73,32 +73,32 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
             {
                 // TODO get time limits from configuration
                 var request = new StatisticsRequest(contexts.Server.Id, TimeSpan.FromMinutes(60), command.User, command.Channel);
-                return this.periodStatisticsGenerator.PerMinute(request); 
+                return this._periodStatisticsService.PerMinute(request); 
             }
             else if (command.Hour)
             {
                 var request = new StatisticsRequest(contexts.Server.Id, TimeSpan.FromDays(7), command.User, command.Channel);
-                return this.periodStatisticsGenerator.PerHour(request); 
+                return this._periodStatisticsService.PerHour(request); 
             }
             else if (command.Day)
             {
                 var request = new StatisticsRequest(contexts.Server.Id, TimeSpan.FromDays(30), command.User, command.Channel);
-                return this.periodStatisticsGenerator.PerDay(request);
+                return this._periodStatisticsService.PerDay(request);
             }
             else if (command.Week)
             {
                 var request = new StatisticsRequest(contexts.Server.Id, TimeSpan.FromDays(90), command.User, command.Channel);
-                return this.periodStatisticsGenerator.PerWeek(request);
+                return this._periodStatisticsService.PerWeek(request);
             }
             else if (command.Month)
             {
                 var request = new StatisticsRequest(contexts.Server.Id, TimeSpan.FromDays(365), command.User, command.Channel);
-                return this.periodStatisticsGenerator.PerMonth(request);
+                return this._periodStatisticsService.PerMonth(request);
             }
             else if (command.Quarter)
             {
                 var request = new StatisticsRequest(contexts.Server.Id, TimeSpan.FromDays(1825), command.User, command.Channel);
-                return this.periodStatisticsGenerator.PerQuarter(request); //5 years
+                return this._periodStatisticsService.PerQuarter(request); //5 years
             }
             return null;
         }

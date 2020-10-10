@@ -43,7 +43,7 @@ namespace Statsman.Core.TimeSplitting
                 {
                     sum += latestMessages.Where(x => x.SentAt.Date == day).Count();
                 }
-                sum += preGeneratedStatistics.Where(x => x.Date.Date == day).OrderBy(x => x.CreatedAt).FirstOrDefault()?.Count ?? 0;
+                sum += preGeneratedStatistics.Where(x => x.Period == Period.Day && x.TimeRange.Start == day).OrderBy(x => x.CreatedAt).FirstOrDefault()?.Count ?? 0;
                 var item = new TimeStatisticItem(TimeRange.Create(day, day.AddDays(1).AddSeconds(-1)), sum);
                 result.Add(item);
             });

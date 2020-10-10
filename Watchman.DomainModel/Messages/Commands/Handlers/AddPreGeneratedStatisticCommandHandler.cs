@@ -4,19 +4,19 @@ using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Messages.Commands.Handlers
 {
-    public class AddServerDayStatisticCommandHandler : ICommandHandler<AddServerDayStatisticCommand>
+    public class AddPreGeneratedStatisticCommandHandler : ICommandHandler<AddPreGeneratedStatisticCommand>
     {
         private readonly ISessionFactory _sessionFactory;
 
-        public AddServerDayStatisticCommandHandler(ISessionFactory sessionFactory)
+        public AddPreGeneratedStatisticCommandHandler(ISessionFactory sessionFactory)
         {
             this._sessionFactory = sessionFactory;
         }
 
-        public async Task HandleAsync(AddServerDayStatisticCommand command)
+        public async Task HandleAsync(AddPreGeneratedStatisticCommand command)
         {
             using var session = this._sessionFactory.Create();
-            await session.AddAsync(command.ServerDayStatistic);
+            await session.AddAsync(command.PreGeneratedStatistic);
         }
     }
 }

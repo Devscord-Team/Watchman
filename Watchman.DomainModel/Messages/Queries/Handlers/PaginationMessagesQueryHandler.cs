@@ -16,16 +16,5 @@ namespace Watchman.DomainModel.Messages.Queries.Handlers
             }
             return collection;
         }
-
-        public IEnumerable<ServerDayStatistic> Paginate(PaginationMessagesQuery paginationQuery, IEnumerable<ServerDayStatistic> collection)
-        {
-            collection = base.Paginate(paginationQuery, collection);
-            if (paginationQuery.SentDate != null)
-            {
-                var timeRange = paginationQuery.SentDate;
-                collection = collection.Where(x => x.Date >= timeRange.Start && x.Date <= timeRange.End);
-            }
-            return collection;
-        }
     }
 }
