@@ -6,19 +6,19 @@ using Watchman.Integrations.MongoDB;
 
 namespace Watchman.DomainModel.Messages.Queries.Handlers
 {
-    public class GetServerDayStatisticsQueryHandler : PaginationMessagesQueryHandler, IQueryHandler<GetServerDayStatisticsQuery, GetServerDayStatisticsQueryResult>
+    public class GetPreGeneratedStatisticQueryHandler : PaginationMessagesQueryHandler, IQueryHandler<GetPreGeneratedStatisticQuery, GetPreGeneratedStatisticsQueryResult>
     {
         private readonly ISessionFactory _sessionFactory;
 
-        public GetServerDayStatisticsQueryHandler(ISessionFactory sessionFactory)
+        public GetPreGeneratedStatisticQueryHandler(ISessionFactory sessionFactory)
         {
             this._sessionFactory = sessionFactory;
         }
 
-        public GetServerDayStatisticsQueryResult Handle(GetServerDayStatisticsQuery query)
+        public GetPreGeneratedStatisticsQueryResult Handle(GetPreGeneratedStatisticQuery query)
         {
             using var session = this._sessionFactory.Create();
-            var statistics = session.Get<ServerDayStatistic>().AsEnumerable();
+            var statistics = session.Get<PreGeneratedStatistic>().AsEnumerable();
             statistics = this.Paginate(query, statistics);
             if (query.ChannelId != 0)
             {
@@ -39,7 +39,7 @@ namespace Watchman.DomainModel.Messages.Queries.Handlers
             {
                 messages = this.TakeOnlyForUser(query.UserId.Value, messages);
             }
-            return new GetServerDayStatisticsQueryResult(statistics);
+            return new GetPreGeneratedStatisticsQueryResult(statistics);
         }
     }
 }

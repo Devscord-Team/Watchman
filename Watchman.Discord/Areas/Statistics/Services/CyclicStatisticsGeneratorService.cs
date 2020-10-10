@@ -30,7 +30,7 @@ namespace Watchman.Discord.Areas.Statistics.Services
 
         public async Task GenerateStatsForDaysBefore(DiscordServerContext server, DateTime? lastInitDate)
         {
-            var dayStatisticsQuery = new GetServerDayStatisticsQuery(server.Id);
+            var dayStatisticsQuery = new GetPreGeneratedStatisticQuery(server.Id);
             var allServerDaysStatistics = (await this._queryBus.ExecuteAsync(dayStatisticsQuery)).ServerDayStatistics.ToList();
             var startDate = lastInitDate ?? DateTime.UnixEpoch;
             var messagesQuery = new GetMessagesQuery(server.Id)

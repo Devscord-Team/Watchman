@@ -36,6 +36,23 @@ namespace Watchman.Common.Models
             return new TimeRange(DateTime.UtcNow, end);
         }
 
+        public bool Contains(DateTime dateTime)
+        {
+            return dateTime >= this.Start && dateTime <= this.End;
+        }
+
+        public TimeRange Clone()
+        {
+            return new TimeRange(this.Start, this.End);
+        }
+
+        public TimeRange Move(TimeSpan time)
+        {
+            this.Start.Add(time);
+            this.End.Add(time);
+            return this;
+        }
+
         public override string ToString()
         {
             var timezone = TimeZoneInfo.Local;
@@ -46,19 +63,22 @@ namespace Watchman.Common.Models
             return $"{this.Start.ToLocalTime():dd/MM/yyyy} - {this.End.ToLocalTime():dd/MM/yyyy} (UTC+{timezone.BaseUtcOffset.TotalHours}:00)";
         }
 
-        public void ForeachMinute(Action<int, DateTime> action)
+        public TimeRange ForeachMinute(Action<int, DateTime> action)
         {
             this.Foreach(this.MinutesBetween, this.Start.AddMinutes, action);
+            return this;
         }
 
-        public void ForeachHour(Action<int, DateTime> action)
+        public TimeRange ForeachHour(Action<int, DateTime> action)
         {
             this.Foreach(this.HoursBetween, this.Start.AddHours, action);
+            return this;
         }
 
-        public void ForeachDay(Action<int, DateTime> action)
+        public TimeRange ForeachDay(Action<int, DateTime> action)
         {
             this.Foreach(this.DaysBetween, this.Start.AddDays, action);
+            return this;
         }
 
         private void Foreach(int loop, Func<double, DateTime> add, Action<int, DateTime> action)

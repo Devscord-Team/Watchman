@@ -114,7 +114,7 @@ namespace Statsman
 
         private async Task<IEnumerable<ServerDayStatistic>> GetServerDayStatistics(StatisticsRequest statisticsRequest, TimeRange timeRange)
         {
-            var query = new GetServerDayStatisticsQuery(statisticsRequest.ServerId)
+            var query = new GetPreGeneratedStatisticQuery(statisticsRequest.ServerId)
             {
                 SentDate = timeRange
             };
