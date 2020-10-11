@@ -15,6 +15,19 @@ namespace Watchman.DomainModel.Configuration
             this.ServerId = serverId;
         }
 
+        public static bool operator ==(MappedConfiguration<T> x, MappedConfiguration<T> y) => Equals(x, y);
+        public static bool operator !=(MappedConfiguration<T> x, MappedConfiguration<T> y) => !(x == y);
+
+        public static new bool Equals(object obj1, object obj2)
+        {
+            return obj1 switch
+            {
+                null when obj2 == null => true,
+                MappedConfiguration<T> mappedConfiguration1 => mappedConfiguration1.Equals(obj2),
+                _ => false
+            };
+        }
+
         public override bool Equals(object obj)
         {
             return obj is MappedConfiguration<T> configuration 
