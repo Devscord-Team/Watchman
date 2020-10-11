@@ -8,6 +8,7 @@ namespace Watchman.Integrations.MongoDB
         public DateTime CreatedAt { get; protected set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; protected set; } = DateTime.UtcNow;
         public int Version { get; protected set; }
+        public bool IsDeleted { get; set; }
 
         protected void Update()
         {

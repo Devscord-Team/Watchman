@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Watchman.Common.Models;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Protection.Services;
 using Watchman.Discord.Areas.Users.BotCommands;
@@ -62,7 +63,7 @@ namespace Watchman.Discord.Areas.Users.Services
 
         public IEnumerable<WarnEvent> GetWarnEvents(ulong serverId, ulong receiverId, DateTime from =new DateTime())
         {
-            var query = new GetWarnEventsQuery(serverId, receiverId, from, to: DateTime.Now);
+            var query = new GetWarnEventsQuery(serverId, receiverId, new TimeRange(from, DateTime.Now));
             var response = this._queryBus.Execute(query);
             return response.WarnEvents;
         }
@@ -70,6 +71,7 @@ namespace Watchman.Discord.Areas.Users.Services
         private IEnumerable<KeyValuePair<string, string>> WarnEventsToKeyValue(IEnumerable<WarnEvent> warns, ulong mentionedUserId)
         {
             var warnEventPairs = new List<KeyValuePair<string, string>>();
+            var warnss = warns.ToList();
             foreach (var warnEvent in warns)
             {
                 var warnContentBuilder = new StringBuilder();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Watchman.Common.Models;
 using Watchman.Cqrs;
 
 namespace Watchman.DomainModel.Warns.Queries
@@ -9,15 +10,13 @@ namespace Watchman.DomainModel.Warns.Queries
     {
         public ulong ServerId { get; }
         public ulong ReceiverId { get; }
-        public DateTime From { get; set; }
-        public DateTime To { get; set; }
+        public TimeRange TimeRange { get; }
 
-        public GetWarnEventsQuery(ulong serverId, ulong receiverId, DateTime from, DateTime to)
+        public GetWarnEventsQuery(ulong serverId, ulong receiverId, TimeRange timeRange)
         {
             this.ServerId = serverId;
             this.ReceiverId = receiverId;
-            this.From = from;
-            this.To = to;
+            this.TimeRange = timeRange;
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Watchman.Integrations.MongoDB
 
         public IQueryable<T> Get<T>() where T : Entity
         {
-            return this.GetCollection<T>().AsQueryable();
+            return this.GetCollection<T>().AsQueryable().Where(x => !x.IsDeleted);
         }
 
         public async Task AddAsync<T>(T entity) where T : Entity
@@ -55,12 +55,12 @@ namespace Watchman.Integrations.MongoDB
 
         public async Task DeleteAsync<T>(T entity) where T : Entity
         {
-            await this.GetCollection<T>().DeleteOneAsync(x => x.Id == entity.Id);
+            await this.GetCollection<T>().UpdateOneAsync(x => x.Id == entity.Id, Builders<T>.Update.Set(p => p.IsDeleted, true));
         }
 
         public async Task DeleteAsync<T>(Expression<Func<T, bool>> filter) where T : Entity
         {
-            await this.GetCollection<T>().DeleteManyAsync(filter);
+            await this.GetCollection<T>().UpdateManyAsync(filter, Builders<T>.Update.Set(p => p.IsDeleted, true));
         }
 
         public void SaveChanges()

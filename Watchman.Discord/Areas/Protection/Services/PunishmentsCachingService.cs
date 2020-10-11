@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Watchman.Common;
+using Watchman.Common.Models;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Users;
 using Watchman.DomainModel.Users.Commands;
@@ -70,7 +71,7 @@ namespace Watchman.Discord.Areas.Protection.Services
         public async Task ClearAndLoadWarnEventsToCache()
         {
             _warnsByServer = new FriendlyDictionary<ulong, FriendlyDictionary<ulong, List<WarnEvent>>>();
-            var query = new GetWarnEventsQuery(serverId: 0, receiverId: 0, from: new DateTime(), to: DateTime.Now);
+            var query = new GetWarnEventsQuery(serverId: 0, receiverId: 0, new TimeRange(new DateTime(), DateTime.Now));
             var warns = (await this._queryBus.ExecuteAsync(query)).WarnEvents;
             foreach (var warn in warns)
             {

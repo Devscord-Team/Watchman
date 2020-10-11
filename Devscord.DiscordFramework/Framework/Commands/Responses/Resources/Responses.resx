@@ -264,4 +264,10 @@
   <data name="AllWarnsRemovedFromUser" xml:space="preserve">
     <value>{{admin}} usunął wszystkie ostrzeżenia użytkownika {{user}}.</value>
   </data>
+  <data name="AntiSpamMute" xml:space="preserve">
+    <value> - wyciszono na {{muteTime}}</value>
+  </data>
+  <data name="AntiSpamWarning" xml:space="preserve">
+    <value>Ostrzeżenie za spam na kanale: {{channelName}}</value>
+  </data>
 </root>

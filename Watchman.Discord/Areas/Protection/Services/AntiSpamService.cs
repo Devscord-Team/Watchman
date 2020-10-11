@@ -20,14 +20,16 @@ namespace Watchman.Discord.Areas.Protection.Services
         private readonly UnmutingService _unmutingService;
         private readonly WarnsService _warnsService;
         private readonly UsersService _usersService;
+        private readonly ResponsesService _responsesService;
 
-        public AntiSpamService(MutingService mutingService, MessagesServiceFactory messagesServiceFactory, UnmutingService unmutingService, WarnsService warnsService, UsersService usersService)
+        public AntiSpamService(MutingService mutingService, MessagesServiceFactory messagesServiceFactory, UnmutingService unmutingService, WarnsService warnsService, UsersService usersService, ResponsesService responsesService)
         {
             this._mutingService = mutingService;
             this._messagesServiceFactory = messagesServiceFactory;
             this._unmutingService = unmutingService;
             this._warnsService = warnsService;
             this._usersService = usersService;
+            this._responsesService = responsesService;
         }
 
         public async Task SetPunishment(Contexts contexts, Punishment punishment)
@@ -38,14 +40,14 @@ namespace Watchman.Discord.Areas.Protection.Services
             }
             Log.Information("Spam recognized! User: {user} on channel: {channel} server: {server}", contexts.User.Name, contexts.Channel.Name, contexts.Server.Name);
             var messagesService = this._messagesServiceFactory.Create(contexts);
-            var warnReason = new StringBuilder().Append($"Ostrzeżenie za spam na kanale: #{contexts.Channel.Name}");
+            var warnReason = _responsesService.AntiSpamWarning(contexts.Channel.Name);
             switch (punishment.PunishmentOption)
             {
                 case PunishmentOption.Warn:
                     await messagesService.SendResponse(x => x.SpamAlertRecognized(contexts));
                     break;
                 case PunishmentOption.Mute:
-                    warnReason.Append($" - wyciszono na {punishment.ForTime!.Value}");
+                    warnReason = _responsesService.AntiSpamMute(contexts.Channel.Name, punishment.ForTime!.Value);
                     await this.MuteUserForSpam(contexts, punishment.ForTime!.Value);
                     break;
             }

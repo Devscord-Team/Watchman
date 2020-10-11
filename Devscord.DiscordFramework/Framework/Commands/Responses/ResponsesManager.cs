@@ -301,5 +301,17 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("admin", adminId.GetUserMention()),
                 new KeyValuePair<string, string>("user", userId.GetUserMention()));
         }
+
+        public static string AntiSpamWarning(this ResponsesService responsesService, string channelName)
+        {
+            return responsesService.ProcessResponse("AntiSpamWarning",
+                new KeyValuePair<string, string>("channelName", channelName));
+        }
+
+        public static string AntiSpamMute(this ResponsesService responsesService, string channelName, TimeSpan muteTime)
+        {
+            return responsesService.AntiSpamWarning(channelName) + responsesService.ProcessResponse("AntiSpamMute",
+                new KeyValuePair<string, string>("muteTime", muteTime.ToString()));
+        }
     }
 }

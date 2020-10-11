@@ -19,6 +19,7 @@ namespace Watchman.DomainModel.Warns.Queries.Handlers
         {
             using var session = this._sessionFactory.Create();
             var filteredEvents = session.Get<WarnEvent>();
+            filteredEvents = filteredEvents.Where(x => x.CreatedAt >= query.TimeRange.Start && x.CreatedAt <= query.TimeRange.End);
             if (query.ReceiverId != 0)
             {
                 filteredEvents = filteredEvents.Where(x => x.ReceiverId == query.ReceiverId);
@@ -27,7 +28,6 @@ namespace Watchman.DomainModel.Warns.Queries.Handlers
             {
                 filteredEvents = filteredEvents.Where(x => x.ServerId == query.ServerId);
             }
-            filteredEvents = filteredEvents.Where(x => x.CreatedAt >= query.From && x.CreatedAt <= query.To);
             return new GetWarnEventsQueryResults(filteredEvents);
         }
     }
