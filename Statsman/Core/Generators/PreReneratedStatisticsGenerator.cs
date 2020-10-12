@@ -40,7 +40,7 @@ namespace Statsman.Core.Generators
         public async Task ProcessStatisticsPerPeriod(ulong serverId, string period)
         {
             var messages = this.GetMessages(serverId);
-            var preGeneratedStatistics = this.GetPreGeneratedStatistics(serverId, Period.Day);
+            var preGeneratedStatistics = this.GetPreGeneratedStatistics(serverId, period);
             var oldestMessageDatetime = preGeneratedStatistics.OrderBy(x => x.TimeRange.End).FirstOrDefault()?.TimeRange?.End
                 ?? messages.OrderBy(x => x.SentAt).FirstOrDefault()?.SentAt
                 ?? default;
@@ -51,10 +51,10 @@ namespace Statsman.Core.Generators
             var users = messages.Select(x => x.Author.Id).Distinct().ToList();
             var channels = messages.Select(x => x.Channel.Id).Distinct().ToList();
 
-            var iterableTimeRange = this.GetTimeRangeMovePerPeriod(Period.Day, oldestMessageDatetime);
+            var iterableTimeRange = this.GetTimeRangeMovePerPeriod(period, oldestMessageDatetime);
             foreach (var timeRange in iterableTimeRange)
             {
-                await this.ProcessTimeRangeMessages(serverId, messages, timeRange, Period.Day, users, channels);
+                await this.ProcessTimeRangeMessages(serverId, messages, timeRange, period, users, channels);
             }
         }
 
