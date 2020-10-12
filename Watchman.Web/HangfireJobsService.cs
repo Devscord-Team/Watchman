@@ -42,10 +42,10 @@ namespace Watchman.Web
             foreach (var (generator, refreshFrequent, shouldTrigger) in generators)
             {
                 var cronExpression = this.GetCronExpression(refreshFrequent);
-                recurringJobManager.AddOrUpdate(generator.GetType().Name, () => generator.Refresh(), cronExpression);
+                recurringJobManager.AddOrUpdate(this.FixJobName(generator.GetType().Name), () => generator.Refresh(), cronExpression);
                 if (shouldTrigger)
                 {
-                    recurringJobManager.Trigger(generator.GetType().Name);
+                    recurringJobManager.Trigger(this.FixJobName(generator.GetType().Name));
                 }
             }
             var configurationService = container.Resolve<ConfigurationService>();
@@ -57,7 +57,22 @@ namespace Watchman.Web
             Assembly.GetAssembly(typeof(HangfireJobsService)).GetTypes()
                 .Where(x => x.IsAssignableTo<IhangfireJob>() && !x.IsInterface)
                 .Select(x => (x.Name, Job: (IhangfireJob) container.Resolve(x))).ToList()
-                .ForEach(x => recurringJobManager.AddOrUpdate(x.Name, () => x.Job.Do(), this.GetCronExpression(x.Job.Frequency)));
+                .ForEach(x => recurringJobManager.AddOrUpdate(this.FixJobName(x.Name), () => x.Job.Do(), this.GetCronExpression(x.Job.Frequency)));
+        }
+
+        private string FixJobName(string name)
+        {
+            var result = new List<char>();
+            for (var i = 0; i < name.Length; i++)
+            {
+                var letter = name[i];
+                if(i > 0 && letter == char.ToUpper(letter))
+                {
+                    result.Add(' ');
+                }
+                result.Add(letter);
+            }
+            return new string(result.ToArray());
         }
 
         private string GetCronExpression(RefreshFrequent refreshFrequent)

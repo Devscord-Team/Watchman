@@ -50,9 +50,7 @@ namespace Statsman.Core.Generators
             }
             var users = messages.Select(x => x.Author.Id).Distinct().ToList();
             var channels = messages.Select(x => x.Channel.Id).Distinct().ToList();
-
-            var iterableTimeRange = this.GetTimeRangeMovePerPeriod(period, oldestMessageDatetime);
-            foreach (var timeRange in iterableTimeRange)
+            foreach (var timeRange in this.GetTimeRangeMovePerPeriod(period, oldestMessageDatetime))
             {
                 await this.ProcessTimeRangeMessages(serverId, messages, timeRange, period, users, channels);
             }
