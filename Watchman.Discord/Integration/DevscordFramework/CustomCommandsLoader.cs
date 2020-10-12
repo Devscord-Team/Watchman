@@ -46,7 +46,7 @@ namespace Watchman.Discord.Integration.DevscordFramework
                     new AddCustomCommandsCommand("Watchman.Discord.Areas.Responses.BotCommands.AddResponseCommand", @"-add\s+response\s+-onevent\s*(?<OnEvent>.*)\s*-message\s*(?<Message>.*)", serverId),
                     new AddCustomCommandsCommand("Watchman.Discord.Areas.Responses.BotCommands.UpdateResponseCommand", @"-update\s+response\s*-onevent\s*(?<OnEvent>.*)\s*-message\s*(?<Message>.*)", serverId),
                     new AddCustomCommandsCommand("Watchman.Discord.Areas.Responses.BotCommands.RemoveResponseCommand", @"-remove\s+response\s*-onevent\s*(?<OnEvent>.*)", serverId),
-                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Protection.BotCommands.MuteCommand", @"-mute\s*(?<User>\<@!?\d+\>)\s*-t\s*(?<Time>\d+(ms|d|h|m|s))\s*-reason\s*(?<Reason>.*)", serverId),
+                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Protection.BotCommands.MuteCommand", @"-mute\s*(?<User>\<@!?\d+\>)\s*-t\s*(?<Time>\d+(ms|d|h|m|s))\s*-r\s*(?<Reason>.*)", serverId),
                     new AddCustomCommandsCommand("Watchman.Discord.Areas.Protection.BotCommands.UnmuteCommand", @"-unmute\s*(?<User>\<@!?\d+\>)", serverId),
                     new AddCustomCommandsCommand("Watchman.Discord.Areas.Administration.BotCommands.MessagesCommand", @"-messages\s*(?<User>\<@!?\d+\>)\s*-t\s*(?<Time>\d+(ms|d|h|m|s))\s*(?<Force>-force|-f)?", serverId),
                     new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.Warns.AddWarnCommand", @"-add\s*warn\s*(?<User><\D{1,2}\d+>)\s*(?<Reason>.*)", serverId),

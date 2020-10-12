@@ -57,9 +57,9 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             {
                 throw new UserNotFoundException(command.User.GetUserMention());
             }
-            var timeRange = TimeRange.ToNow(DateTime.Now - command.Time); //todo: change DateTime.Now to Contexts.SentAt
+            var timeRange = TimeRange.ToNow(DateTime.UtcNow - command.Time); //todo: change DateTime.Now to Contexts.SentAt
 
-            var query = new GetMessagesQuery(contexts.Server.Id, selectedUser.Id)
+            var query = new GetMessagesQuery(contexts.Server.Id, userId: selectedUser.Id)
             {
                 SentDate = timeRange
             };
