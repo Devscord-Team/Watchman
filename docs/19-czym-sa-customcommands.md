@@ -11,7 +11,7 @@ Domyślnym sposobem się nie da - na szczęście przychodzą nam z pomocą komen
 
 Idea jest bardzo prosta - pomysłodawca wyglądu komendy pisze regexa, który ma grupy.  
 Grupy nazywają się tak jak propertiesy w modelu.  
-A wartości które do nich wpadają, są prawidłowego typu.
+A wartości które do nich wpadają, powinny być prawidłowego typu (co później jest walidowane).
 
 Później następuje proces walidacji - czy na pewno wszystkie wymagane wartości są prawidłowo ustawione oraz czy na pewno wszystkie wartości są prawidłowego typu.  
 A po nim proces konwersji na model, który trafia już do kontrolera.
