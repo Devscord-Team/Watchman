@@ -71,7 +71,6 @@ namespace Watchman.Discord.Areas.Users.Services
         private IEnumerable<KeyValuePair<string, string>> WarnEventsToKeyValue(IEnumerable<WarnEvent> warns, ulong mentionedUserId)
         {
             var warnEventPairs = new List<KeyValuePair<string, string>>();
-            var warnss = warns.ToList();
             foreach (var warnEvent in warns)
             {
                 var warnContentBuilder = new StringBuilder();

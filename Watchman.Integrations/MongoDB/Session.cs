@@ -55,12 +55,12 @@ namespace Watchman.Integrations.MongoDB
 
         public async Task DeleteAsync<T>(T entity) where T : Entity
         {
-            await this.GetCollection<T>().UpdateOneAsync(x => x.Id == entity.Id, Builders<T>.Update.Set(p => p.IsDeleted, true));
+            await this.GetCollection<T>().UpdateOneAsync(x => x.Id == entity.Id, Builders<T>.Update.Set("IsDeleted", true));
         }
 
         public async Task DeleteAsync<T>(Expression<Func<T, bool>> filter) where T : Entity
         {
-            await this.GetCollection<T>().UpdateManyAsync(filter, Builders<T>.Update.Set(p => p.IsDeleted, true));
+            await this.GetCollection<T>().UpdateManyAsync(filter, Builders<T>.Update.Set("IsDeleted", true));
         }
 
         public void SaveChanges()

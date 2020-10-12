@@ -40,14 +40,14 @@ namespace Watchman.Discord.Areas.Protection.Services
             }
             Log.Information("Spam recognized! User: {user} on channel: {channel} server: {server}", contexts.User.Name, contexts.Channel.Name, contexts.Server.Name);
             var messagesService = this._messagesServiceFactory.Create(contexts);
-            var warnReason = _responsesService.AntiSpamWarning(contexts.Channel.Name);
+            var warnReason = new StringBuilder().Append($"Ostrzeżenie za spam na kanale: #{contexts.Channel.Name}");
             switch (punishment.PunishmentOption)
             {
                 case PunishmentOption.Warn:
                     await messagesService.SendResponse(x => x.SpamAlertRecognized(contexts));
                     break;
                 case PunishmentOption.Mute:
-                    warnReason = _responsesService.AntiSpamMute(contexts.Channel.Name, punishment.ForTime!.Value);
+                    warnReason.Append($" - wyciszono na {punishment.ForTime!.Value}");
                     await this.MuteUserForSpam(contexts, punishment.ForTime!.Value);
                     break;
             }
