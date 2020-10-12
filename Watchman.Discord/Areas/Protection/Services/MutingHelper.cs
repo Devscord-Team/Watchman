@@ -5,9 +5,9 @@ using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Watchman.Cqrs;
-using Watchman.DomainModel.Protection;
-using Watchman.DomainModel.Protection.Commands;
-using Watchman.DomainModel.Protection.Queries;
+using Watchman.DomainModel.Protection.Mutes;
+using Watchman.DomainModel.Protection.Mutes.Commands;
+using Watchman.DomainModel.Protection.Mutes.Queries;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {

@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Watchman.Cqrs;
-using Watchman.DomainModel.Configuration.ConfigurationItems;
-using Watchman.DomainModel.Protection.Queries;
+using Watchman.DomainModel.Protection.Complaints.Queries;
 
 namespace Watchman.DomainModel.Configuration.ConfigurationChangesHandlers
 {

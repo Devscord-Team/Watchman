@@ -4,13 +4,11 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
 using Serilog;
-using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
-using Watchman.DomainModel.Protection;
-using Watchman.DomainModel.Protection.Commands;
+using Watchman.DomainModel.Protection.Mutes;
+using Watchman.DomainModel.Protection.Mutes.Commands;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {

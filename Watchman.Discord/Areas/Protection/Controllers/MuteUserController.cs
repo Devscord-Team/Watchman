@@ -14,7 +14,7 @@ using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Discord.Areas.Protection.Commands;
 using Watchman.Discord.Areas.Protection.Models;
 using Watchman.Discord.Areas.Protection.Services;
-using Watchman.DomainModel.Protection;
+using Watchman.DomainModel.Protection.Mutes;
 
 namespace Watchman.Discord.Areas.Protection.Controllers
 {

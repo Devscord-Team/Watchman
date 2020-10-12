@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Devscord.DiscordFramework.Framework.Commands.PropertyAttributes;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
 using Serilog;
-using Watchman.DomainModel.Protection;
+using Watchman.DomainModel.Protection.Mutes;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {
