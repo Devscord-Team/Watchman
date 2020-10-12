@@ -119,7 +119,7 @@ namespace Statsman.Core.Generators
 
         private async Task SaveStatistic(ulong serverId, ulong userId, ulong channelId, int count, TimeRange timeRange, string period)
         {
-            var preGeneratedStatistic = new PreGeneratedStatistic(serverId, count, timeRange, Period.Day);
+            var preGeneratedStatistic = new PreGeneratedStatistic(serverId, count, timeRange, period);
             preGeneratedStatistic.SetUser(userId);
             preGeneratedStatistic.SetChannel(channelId);
             var preGeneratedStatisticCommand = new AddPreGeneratedStatisticCommand(preGeneratedStatistic);
