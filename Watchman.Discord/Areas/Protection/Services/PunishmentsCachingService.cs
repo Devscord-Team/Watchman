@@ -71,7 +71,7 @@ namespace Watchman.Discord.Areas.Protection.Services
         public async Task ClearAndLoadWarnEventsToCache()
         {
             _warnsByServer = new FriendlyDictionary<ulong, FriendlyDictionary<ulong, List<WarnEvent>>>();
-            var query = new GetWarnEventsQuery(serverId: 0, receiverId: 0, new TimeRange(new DateTime(), DateTime.Now));
+            var query = new GetWarnEventsQuery(serverId: 0, receiverId: 0, TimeRange.ToNow(new DateTime()));
             var warns = (await this._queryBus.ExecuteAsync(query)).WarnEvents;
             foreach (var warn in warns)
             {
