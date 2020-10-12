@@ -11,12 +11,12 @@ using Watchman.DomainModel.Messages.Queries;
 
 namespace Statsman.Core.Generators
 {
-    public class PreStatisticsGenerator
+    public class PreReneratedStatisticsGenerator
     {
         public IQueryBus QueryBus { get; private set; }
         public ICommandBus CommandBus { get; private set; }
 
-        public PreStatisticsGenerator(IQueryBus queryBus, ICommandBus commandBus)
+        public PreReneratedStatisticsGenerator(IQueryBus queryBus, ICommandBus commandBus)
         {
             this.QueryBus = queryBus;
             this.CommandBus = commandBus;
@@ -61,12 +61,12 @@ namespace Statsman.Core.Generators
             }
         }
 
-        public void PreGenerateStatisticsPerMonth(ulong serverId)
+        public async Task PreGenerateStatisticsPerMonth(ulong serverId)
         {
             var messages = this.GetMessages(serverId);
         }
 
-        public void PreGenerateStatisticsPerQuarter(ulong serverId)
+        public async Task PreGenerateStatisticsPerQuarter(ulong serverId)
         {
             var messages = this.GetMessages(serverId);
         }

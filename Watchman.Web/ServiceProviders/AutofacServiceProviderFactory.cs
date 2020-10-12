@@ -4,8 +4,12 @@ using Hangfire;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Linq;
+using System.Reflection;
+
 using Watchman.Discord;
 using Watchman.IoC;
+using Watchman.Web.Jobs;
 
 namespace Watchman.Web.ServiceProviders
 {
@@ -22,6 +26,7 @@ namespace Watchman.Web.ServiceProviders
         {
             var containerModule = new ContainerModule(this._configuration.GetConnectionString("Mongo"));
             var builder = containerModule.GetBuilder();
+            this.RegisterCustomServices(builder);
             builder.Populate(services);
             return builder;
         }
@@ -39,6 +44,16 @@ namespace Watchman.Web.ServiceProviders
             workflowBuilder.Build();
             container.Resolve<HangfireJobsService>().SetDefaultJobs(container);
             return new AutofacServiceProvider(container);
+        }
+
+        private void RegisterCustomServices(ContainerBuilder builder)
+        {
+            var jobs = Assembly.GetAssembly(typeof(AutofacServiceProviderFactory)).GetTypes()
+                .Where(x => x.IsAssignableTo<IhangfireJob>() && !x.IsInterface).ToList();
+            foreach (var job in jobs)
+            {
+                builder.RegisterType(job).AsSelf().PreserveExistingDefaults().SingleInstance();
+            }
         }
     }
 }

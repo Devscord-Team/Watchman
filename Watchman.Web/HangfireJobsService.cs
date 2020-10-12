@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading.Tasks;
 using Autofac;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
@@ -15,12 +16,21 @@ using Watchman.Discord.Areas.Protection.Strategies;
 using Watchman.Discord.Areas.Responses.Services;
 using Watchman.DomainModel.Messages;
 using Watchman.DomainModel.Settings.Services;
+using Watchman.Web.Jobs;
 
 namespace Watchman.Web
 {
     public class HangfireJobsService
     {
         public void SetDefaultJobs(IContainer container)
+        {
+            var recurringJobManager = container.Resolve<IRecurringJobManager>();
+
+            this.AddServices(container, recurringJobManager);
+            this.AddJobs(container, recurringJobManager);
+        }
+
+        public void AddServices(IContainer container, IRecurringJobManager recurringJobManager)
         {
             var generators = new List<(ICyclicService, RefreshFrequent, bool shouldTriggerNow)>
             {
@@ -29,7 +39,6 @@ namespace Watchman.Web
                 (container.Resolve<ResponsesCleanupService>(), RefreshFrequent.Daily, false),
                 (container.Resolve<UnmutingService>(), RefreshFrequent.Quarterly, true) // if RefreshFrequent changed remember to change SHORT_MUTE_TIME_IN_MINUTES in unmutingService!
             };
-            var recurringJobManager = container.Resolve<IRecurringJobManager>();
             foreach (var (generator, refreshFrequent, shouldTrigger) in generators)
             {
                 var cronExpression = this.GetCronExpression(refreshFrequent);
@@ -41,33 +50,14 @@ namespace Watchman.Web
             }
             var configurationService = container.Resolve<ConfigurationService>();
             recurringJobManager.AddOrUpdate(nameof(ConfigurationService), () => configurationService.Refresh(), this.GetCronExpression(RefreshFrequent.Minutely));
-
-            var discordServersService = container.Resolve<DiscordServersService>();
-            var queryBus = container.Resolve<IQueryBus>();
-            var commandBus = container.Resolve<ICommandBus>();
-            recurringJobManager.AddOrUpdate("Pre generate statistics per day", 
-                () => GenerateStatistics(discordServersService, queryBus, commandBus, Period.Day), 
-                this.GetCronExpression(RefreshFrequent.Daily));
-            recurringJobManager.AddOrUpdate("Pre generate statistics per month",
-                () => GenerateStatistics(discordServersService, queryBus, commandBus, Period.Month),
-                this.GetCronExpression(RefreshFrequent.Weekly));
-            recurringJobManager.AddOrUpdate("Pre generate statistics per quarter",
-                () => GenerateStatistics(discordServersService, queryBus, commandBus, Period.Quarter),
-                this.GetCronExpression(RefreshFrequent.Monthly));
         }
 
-        public void GenerateStatistics(DiscordServersService discordServersService, IQueryBus queryBus, ICommandBus commandBus, string period)
+        public void AddJobs(IContainer container, IRecurringJobManager recurringJobManager)
         {
-            var statisticsGenerator = new PreStatisticsGenerator(queryBus, commandBus);
-            var serverIds = discordServersService.GetDiscordServersAsync().Select(x => x.Id).ToListAsync().Result;
-            var tasks = period switch
-            {
-                Period.Day => serverIds.Select(x => statisticsGenerator.PreGenerateStatisticsPerDay(x)).ToArray(),
-                Period.Month => serverIds.Select(x => statisticsGenerator.PreGenerateStatisticsPerDay(x)).ToArray(),
-                Period.Quarter => serverIds.Select(x => statisticsGenerator.PreGenerateStatisticsPerDay(x)).ToArray(),
-                _ => throw new NotImplementedException()
-            };
-            Task.WaitAll(tasks);
+            Assembly.GetAssembly(typeof(HangfireJobsService)).GetTypes()
+                .Where(x => x.IsAssignableTo<IhangfireJob>() && !x.IsInterface)
+                .Select(x => (x.Name, Job: (IhangfireJob) container.Resolve(x))).ToList()
+                .ForEach(x => recurringJobManager.AddOrUpdate(x.Name, () => x.Job.Do(), this.GetCronExpression(x.Job.Frequency)));
         }
 
         private string GetCronExpression(RefreshFrequent refreshFrequent)
