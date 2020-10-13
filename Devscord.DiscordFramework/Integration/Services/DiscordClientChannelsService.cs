@@ -50,21 +50,40 @@ namespace Devscord.DiscordFramework.Integration.Services
             await user.SendMessageAsync(embed: embed);
         }
 
-        public async Task<IChannel> GetChannel(ulong channelId, IGuild guild = null)
+        public async Task<IChannel> GetChannel(ulong channelId, IGuild guild)
+        {
+            IChannel channel = await guild.GetChannelAsync(channelId);
+            if (channel != null)
+            {
+                return channel;
+            }
+            Log.Warning("GetChannel couldn't get channel by channelId from IGuild");
+            channel = this._client.GetGuild(guild.Id).GetChannel(channelId);
+            if (channel != null)
+            {
+                return channel;
+            }
+            Log.Warning("GetChannel couldn't get channel by channelId and serverId from Client");
+            channel = await this._restClient.GetChannelAsync(channelId);
+            return channel;
+        }
+
+        public IChannel GetChannel(ulong channelId, ulong serverId)
         {
             IChannel channel = this._client.GetChannel(channelId);
             if (channel != null)
             {
                 return channel;
             }
-            channel = this._client.GetGuild(guild.Id).GetChannel(channelId);
+            Log.Warning("GetChannel couldn't get channel by channelId from Client");
+            var guild = this._client.GetGuild(serverId);
+            channel = guild.GetChannel(channelId);
             if (channel != null)
             {
                 return channel;
             }
-            channel = await this._restClient.GetChannelAsync(channelId);
-            Log.Warning("RestClient couldn't get channel: {channelId}", channelId);
-            return channel;
+            Log.Warning("GetChannel couldn't get channel by channelId and serverId from Client");
+            return this._restClient.GetChannelAsync(channelId).GetAwaiter().GetResult(); // it should never go here - maybe it should be possible to remove this code
         }
 
         public async Task<IGuildChannel> GetGuildChannel(ulong channelId, RestGuild guild = null)
@@ -73,7 +92,6 @@ namespace Devscord.DiscordFramework.Integration.Services
             {
                 return await guild.GetChannelAsync(channelId);
             }
-
             IGuildChannel channel;
             try
             {
@@ -82,14 +100,14 @@ namespace Devscord.DiscordFramework.Integration.Services
             catch
             {
                 channel = (IGuildChannel)await this._restClient.GetChannelAsync(channelId);
-                Log.Warning("RestClient couldn't get channel: {channelId}", channelId);
+                Log.Warning("Client couldn't get channel: {channelId}", channelId);
             }
             return channel;
         }
 
         public async IAsyncEnumerable<Message> GetMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong fromMessageId = 0, bool goBefore = true)
         {
-            var textChannel = (ITextChannel)await this.GetChannel(channel.Id);
+            var textChannel = (ITextChannel)this.GetChannel(channel.Id, server.Id);
             if (!await this.CanBotReadTheChannelAsync(textChannel))
             {
                 yield break;
@@ -183,22 +201,21 @@ namespace Devscord.DiscordFramework.Integration.Services
             return socketRole;
         }
 
-        private async Task SetRolePermissions(ChannelContext channel, DiscordServerContext server, OverwritePermissions permissions, IRole role)
+        private Task SetRolePermissions(ChannelContext channel, DiscordServerContext server, OverwritePermissions permissions, IRole role)
         {
-            var guild = await this._restClient.GetGuildAsync(server.Id);
-            var channelSocket = (IGuildChannel)await this.GetChannel(channel.Id, guild);
-            if (channelSocket == null)
+            var guildChannel = (IGuildChannel)this.GetChannel(channel.Id, server.Id);
+            if (guildChannel == null)
             {
                 Log.Warning("{channel} after casting to IGuildChannel is null", channel.Name);
-                return;
+                return Task.CompletedTask;
             }
-            if (channelSocket.PermissionOverwrites.Any(x => x.TargetId == role.Id))
+            if (guildChannel.PermissionOverwrites.Any(x => x.TargetId == role.Id))
             {
                 Log.Warning("Channel {channel} has already assigned this role {roleName}", channel.Name, role.Name);
-                return;
+                return Task.CompletedTask;
             }
-            await channelSocket.AddPermissionOverwriteAsync(role, permissions);
-            Log.Information("{roleName} set for {channel}", role.Name, channel.Name);
-          }
+            return guildChannel.AddPermissionOverwriteAsync(role, permissions)
+                .ContinueWith(_ => Log.Information("{roleName} set for {channel}", role.Name, channel.Name));
+        }
     }
 }
