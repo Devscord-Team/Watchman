@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using Watchman.Common.Models;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Messages;
@@ -68,7 +69,7 @@ namespace Statsman.Core.Generators
             {
                 await this.ProcessChannels(serverId, channel, messagesInTimeRange, timeRange, users, period);
             }
-            await ProcessUsers(serverId, users, messagesInTimeRange, timeRange, period);
+            await this.ProcessUsers(serverId, users, messagesInTimeRange, timeRange, period);
         }
 
         private async Task ProcessChannels(ulong serverId, ulong channelId, IEnumerable<Message> messagesInTimeRange, TimeRange timeRange, List<ulong> users, string period)
@@ -82,7 +83,7 @@ namespace Statsman.Core.Generators
             foreach (var user in users)
             {
                 var messagesPerUserAndChannelInTimeRange = messagesPerChannelInTimeRange.Where(x => x.Author.Id == user).ToList();
-                if(messagesPerUserAndChannelInTimeRange.Count == 0)
+                if (messagesPerUserAndChannelInTimeRange.Count == 0)
                 {
                     continue;
                 }
@@ -126,18 +127,52 @@ namespace Statsman.Core.Generators
             await this.CommandBus.ExecuteAsync(preGeneratedStatisticCommand);
         }
 
-        private IEnumerable<TimeRange> GetTimeRangeMovePerPeriod(string period, DateTime oldestMessageDatetime)
+        private IEnumerable<TimeRange> GetTimeRangeMovePerPeriod(string period, DateTime oldestMessageDatetime) //TODO test
         {
-            var days = period switch
+            var moveForward = period switch
             {
-                Period.Day => 1,
-                Period.Month => 30,
-                Period.Quarter => 90,
+                Period.Day => new Func<DateTime, int>(x => 1),
+                Period.Month => new Func<DateTime, int>(x => DateTime.DaysInMonth(x.Year, x.Month)),
+                Period.Quarter => new Func<DateTime, int>(x => new DateTime[] { x, x.AddMonths(1), x.AddMonths(2) }.Select(d => DateTime.DaysInMonth(d.Year, d.Month)).Sum()),
                 _ => throw new NotImplementedException()
             };
-            var todayTimeRange = TimeRange.Create(DateTime.Today, DateTime.Today.AddDays(days).AddSeconds(-1)).Move(TimeSpan.FromDays(-days)); //don't calculate today
-            var iterableTimeRange = todayTimeRange.MoveWhile(x => !x.Contains(oldestMessageDatetime), TimeSpan.FromDays(days));
+            var moveBackward = period switch
+            {
+                Period.Day => moveForward,
+                Period.Month => new Func<DateTime, int>(x => DateTime.DaysInMonth(x.AddMonths(-1).Year, x.AddMonths(-1).Month)),
+                Period.Quarter => new Func<DateTime, int>(x => new DateTime[] { x.AddMonths(-1), x.AddMonths(-2), x.AddMonths(-3) }.Select(d => DateTime.DaysInMonth(d.Year, d.Month)).Sum()),
+                _ => throw new NotImplementedException()
+            };
+            var startOfCurrentPeriod = period switch
+            {
+                Period.Day => DateTime.Today,
+                Period.Month => new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1),
+                Period.Quarter => this.GetQuarterStart(DateTime.Today),
+                _ => throw new NotImplementedException()
+            };
+            var periodTimeRange = TimeRange.Create(startOfCurrentPeriod, startOfCurrentPeriod.AddDays(moveForward.Invoke(startOfCurrentPeriod)).AddMilliseconds(-1));
+            var iterableTimeRange = periodTimeRange.MoveWhile(x => !x.Contains(oldestMessageDatetime), x => TimeSpan.FromDays(moveBackward.Invoke(x.Start)));
             return iterableTimeRange;
+        }
+
+        private DateTime GetQuarterStart(DateTime date) //TODO test
+        {
+            if (date.Month <= 3)
+            {
+                return new DateTime(date.Year, 1, 1);
+            }
+            else if (date.Month <= 6)
+            {
+                return new DateTime(date.Year, 4, 1);
+            }
+            else if (date.Month <= 9)
+            {
+                return new DateTime(date.Year, 7, 1);
+            }
+            else
+            {
+                return new DateTime(date.Year, 10, 1);
+            }
         }
     }
 }

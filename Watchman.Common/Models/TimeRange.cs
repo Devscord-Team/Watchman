@@ -54,6 +54,11 @@ namespace Watchman.Common.Models
             return this;
         }
 
+        public IEnumerable<TimeRange> MoveWhile(Func<TimeRange, bool> shouldContinue, Func<TimeRange,TimeSpan> getTime)
+        {
+            return this.MoveWhile(shouldContinue, getTime.Invoke(this));
+        }
+
         public IEnumerable<TimeRange> MoveWhile(Func<TimeRange, bool> shouldContinue, TimeSpan time)
         {
             var timeRange = this;
