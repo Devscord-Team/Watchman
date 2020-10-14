@@ -84,11 +84,13 @@ namespace Watchman.Common.Models
 
         public static bool operator ==(TimeRange a, TimeRange b)
         {
-            if(a == b)
+            var aHashCode = a?.GetHashCode() ?? 0;
+            var bHashCode = b?.GetHashCode() ?? 0;
+            if (aHashCode == bHashCode)
             {
                 return true;
             }
-            if(a == null || b == null)
+            if(aHashCode == 0 || bHashCode == 0)
             {
                 return false;
             }
@@ -97,13 +99,15 @@ namespace Watchman.Common.Models
 
         public static bool operator !=(TimeRange a, TimeRange b)
         {
-            if (a == b)
-            {
-                return false;
-            }
-            if (a == null || b == null)
+            var aHashCode = a?.GetHashCode() ?? 0;
+            var bHashCode = b?.GetHashCode() ?? 0;
+            if(aHashCode == 0 && bHashCode == 0)
             {
                 return true;
+            }
+            if((aHashCode != 0 && bHashCode == 0) || (aHashCode == 0 && bHashCode != 0))
+            {
+                return false;
             }
             return a.Start != b.Start || a.End != b.End;
         }
