@@ -93,6 +93,7 @@ namespace Watchman.Discord.Areas.Protection.Services
         public void RemoveWarnsLocal(ulong serverId, ulong userId, DateTime from)
         {
             _warnsByServer[serverId][userId].RemoveAll(x => x.CreatedAt >= from);
+            _warnsByServer.CleanEmptyContainers();
         }
 
         private Dictionary<ulong, List<Punishment>> LoadUsersPunishmentsFromDomain()

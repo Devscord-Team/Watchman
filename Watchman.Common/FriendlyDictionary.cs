@@ -1,41 +1,31 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Text;
 
 namespace Watchman.Common
 {
-    public class FriendlyDictionary<T, V>
+    public class FriendlyDictionary<T, V> : Dictionary<T, V>, IFriendlyDictionary
         where V : class, new()
     {
-        private readonly IDictionary<T, V> _dictionary;
-
-        public FriendlyDictionary()
+        public FriendlyDictionary() : base()
         {
-            this._dictionary = new Dictionary<T, V>();
-        }
-
-        public FriendlyDictionary(IDictionary<T, V> dictionary)
-        {
-            this._dictionary = dictionary;
-        }
-
-        public bool ContainsKey(T key)
-        {
-            return this._dictionary.ContainsKey(key);
         }
 
         public V GetOrCreate(T key)
         {
-            if (!this._dictionary.TryGetValue(key, out var value))
+            if (!this.TryGetValue(key, out var value))
             {
                 this.Set(key, new V());
             }
-            return this._dictionary[key];
+            return base[key];
         }
 
         public bool TrySet(T key, V value)
         {
-            if (this._dictionary.ContainsKey(key))
+            if (this.ContainsKey(key))
             {
                 return false;
             }
@@ -45,15 +35,10 @@ namespace Watchman.Common
 
         public void Set(T key, V value)
         {
-            this._dictionary[key] = value;
+            base[key] = value;
         }
 
-        public int Count()
-        {
-            return this._dictionary.Count;
-        }
-
-        public V this[T key]
+        public new V this[T key]
         {
             get
             {
@@ -61,8 +46,38 @@ namespace Watchman.Common
             }
             set
             {
-                this.Set(key, value);
+                base[key] = value;
             }
         }
+
+        public int CleanEmptyContainers()
+        {
+            var values = this.Values;
+            int deletedCount = 0;
+            foreach (var value in values)
+            {
+                if (IsCollection(value.GetType())) 
+                {
+                    if (value.GetType().GetInterface(typeof(IFriendlyDictionary).Name) != null)
+                    {
+                        deletedCount += ((IFriendlyDictionary)value).CleanEmptyContainers();
+                    }
+                    var keyValuePair = this.FirstOrDefault(x => x.Value == value && ((ICollection)value).Count == 0);
+                    this.Remove(keyValuePair.Key);
+                }
+            }            
+            return deletedCount;
+        }
+
+        private bool IsCollection(Type type)
+        {
+            var inf = type.GetInterfaces();
+            return type.GetInterfaces().Any(x => x.Name == typeof(ICollection).Name);
+        }
+    }
+
+    public interface IFriendlyDictionary
+    {
+        int CleanEmptyContainers();
     }
 }

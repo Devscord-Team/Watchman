@@ -10,6 +10,7 @@ using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
 using System.Text;
 using Devscord.DiscordFramework.Services;
 using Watchman.Discord.Areas.Users.Services;
+using System.Collections.Generic;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {
