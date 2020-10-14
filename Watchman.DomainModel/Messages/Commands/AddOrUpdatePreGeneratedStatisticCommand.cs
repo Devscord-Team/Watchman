@@ -2,11 +2,11 @@
 
 namespace Watchman.DomainModel.Messages.Commands
 {
-    public class AddPreGeneratedStatisticCommand : ICommand
+    public class AddOrUpdatePreGeneratedStatisticCommand : ICommand
     {
         public PreGeneratedStatistic PreGeneratedStatistic { get; }
 
-        public AddPreGeneratedStatisticCommand(PreGeneratedStatistic preGeneratedStatistic)
+        public AddOrUpdatePreGeneratedStatisticCommand(PreGeneratedStatistic preGeneratedStatistic)
         {
             this.PreGeneratedStatistic = preGeneratedStatistic;
         }

@@ -44,6 +44,16 @@ namespace Watchman.DomainModel.Messages
             this.ChannelId = channelId;
             this.Update();
         }
+
+        public void SetCount(int count)
+        {
+            if(this.Count == count)
+            {
+                return;
+            }
+            this.Count = count;
+            this.Update();
+        }
     }
 
     public class Period

@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Microsoft.VisualBasic.CompilerServices;
+
+using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Watchman.Common.Models
 {
@@ -49,8 +52,8 @@ namespace Watchman.Common.Models
 
         public TimeRange Move(TimeSpan time)
         {
-            this.Start.Add(time);
-            this.End.Add(time);
+            this.Start = this.Start.Add(time);
+            this.End = this.End.Add(time);
             return this;
         }
 
@@ -77,6 +80,16 @@ namespace Watchman.Common.Models
                 return $"{this.Start.ToLocalTime():dd/MM/yyyy HH:mm} - {this.End.ToLocalTime():dd/MM/yyyy HH:mm} (UTC+{timezone.BaseUtcOffset.TotalHours}:00)";
             }
             return $"{this.Start.ToLocalTime():dd/MM/yyyy} - {this.End.ToLocalTime():dd/MM/yyyy} (UTC+{timezone.BaseUtcOffset.TotalHours}:00)";
+        }
+
+        public static bool operator ==(TimeRange a, TimeRange b)
+        {
+            return a.Start == b.Start && a.End == b.End;
+        }
+
+        public static bool operator !=(TimeRange a, TimeRange b)
+        {
+            return a.Start != b.Start || a.End != b.End;
         }
 
         public TimeRange ForeachMinute(Action<int, DateTime> action)

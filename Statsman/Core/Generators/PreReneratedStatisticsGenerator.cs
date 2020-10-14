@@ -23,41 +23,39 @@ namespace Statsman.Core.Generators
             this.CommandBus = commandBus;
         }
 
-        public async Task PreGenerateStatisticsPerDay(ulong serverId)
+        public async Task PreGenerateStatisticsPerDay(ulong serverId) //todo test
         {
             await this.ProcessStatisticsPerPeriod(serverId, Period.Day);
         }
 
-        public async Task PreGenerateStatisticsPerMonth(ulong serverId)
+        public async Task PreGenerateStatisticsPerMonth(ulong serverId) //todo test
         {
             await this.ProcessStatisticsPerPeriod(serverId, Period.Month);
         }
 
-        public async Task PreGenerateStatisticsPerQuarter(ulong serverId)
+        public async Task PreGenerateStatisticsPerQuarter(ulong serverId) //todo test
         {
             await this.ProcessStatisticsPerPeriod(serverId, Period.Quarter);
         }
 
-        public async Task ProcessStatisticsPerPeriod(ulong serverId, string period)
+        public Task ProcessStatisticsPerPeriod(ulong serverId, string period) //todo test
         {
             var messages = this.GetMessages(serverId);
-            var preGeneratedStatistics = this.GetPreGeneratedStatistics(serverId, period);
-            var oldestMessageDatetime = preGeneratedStatistics.OrderBy(x => x.TimeRange.End).FirstOrDefault()?.TimeRange?.End
-                ?? messages.OrderBy(x => x.SentAt).FirstOrDefault()?.SentAt
-                ?? default;
+            var oldestMessageDatetime = messages.OrderBy(x => x.SentAt).FirstOrDefault()?.SentAt ?? default;
             if (oldestMessageDatetime == default) //empty database
             {
-                return;
+                return Task.CompletedTask;
             }
             var users = messages.Select(x => x.Author.Id).Distinct().ToList();
             var channels = messages.Select(x => x.Channel.Id).Distinct().ToList();
-            foreach (var timeRange in this.GetTimeRangeMovePerPeriod(period, oldestMessageDatetime))
-            {
-                await this.ProcessTimeRangeMessages(serverId, messages, timeRange, period, users, channels);
-            }
+            var tasks = this.GetTimeRangeMovePerPeriod(period, oldestMessageDatetime)
+                .Select(timeRange => this.ProcessTimeRangeMessages(serverId, messages, timeRange, period, users, channels))
+                .ToArray();
+            Task.WaitAll(tasks);
+            return Task.CompletedTask;
         }
 
-        private async Task ProcessTimeRangeMessages(ulong serverId, IEnumerable<Message> messages, TimeRange timeRange, string period, List<ulong> users, List<ulong> channels)
+        private async Task ProcessTimeRangeMessages(ulong serverId, IEnumerable<Message> messages, TimeRange timeRange, string period, List<ulong> users, List<ulong> channels) //todo test
         {
             var messagesInTimeRange = messages.Where(x => timeRange.Contains(x.SentAt)).ToList();
             if (messagesInTimeRange.Count == 0)
@@ -72,7 +70,7 @@ namespace Statsman.Core.Generators
             await this.ProcessUsers(serverId, users, messagesInTimeRange, timeRange, period);
         }
 
-        private async Task ProcessChannels(ulong serverId, ulong channelId, IEnumerable<Message> messagesInTimeRange, TimeRange timeRange, List<ulong> users, string period)
+        private async Task ProcessChannels(ulong serverId, ulong channelId, IEnumerable<Message> messagesInTimeRange, TimeRange timeRange, List<ulong> users, string period) //todo test
         {
             var messagesPerChannelInTimeRange = messagesInTimeRange.Where(x => x.Channel.Id == channelId).ToList();
             if (messagesPerChannelInTimeRange.Count == 0)
@@ -91,7 +89,7 @@ namespace Statsman.Core.Generators
             }
         }
 
-        private async Task ProcessUsers(ulong serverId, List<ulong> users, IEnumerable<Message> messagesInTimeRange, TimeRange timeRange, string period)
+        private async Task ProcessUsers(ulong serverId, List<ulong> users, IEnumerable<Message> messagesInTimeRange, TimeRange timeRange, string period) //todo test
         {
             foreach (var user in users)
             {
@@ -111,24 +109,24 @@ namespace Statsman.Core.Generators
             return messages;
         }
 
-        private IEnumerable<PreGeneratedStatistic> GetPreGeneratedStatistics(ulong serverId, string period)
-        {
-            var query = new GetPreGeneratedStatisticQuery(serverId, period: period);
-            var preGeneratedStatistics = this.QueryBus.Execute(query).PreGeneratedStatistic.ToList();
-            return preGeneratedStatistics;
-        }
-
-        private async Task SaveStatistic(ulong serverId, ulong userId, ulong channelId, int count, TimeRange timeRange, string period)
+        private async Task SaveStatistic(ulong serverId, ulong userId, ulong channelId, int count, TimeRange timeRange, string period) //todo test
         {
             var preGeneratedStatistic = new PreGeneratedStatistic(serverId, count, timeRange, period);
             preGeneratedStatistic.SetUser(userId);
             preGeneratedStatistic.SetChannel(channelId);
-            var preGeneratedStatisticCommand = new AddPreGeneratedStatisticCommand(preGeneratedStatistic);
+            var preGeneratedStatisticCommand = new AddOrUpdatePreGeneratedStatisticCommand(preGeneratedStatistic);
             await this.CommandBus.ExecuteAsync(preGeneratedStatisticCommand);
         }
 
         private IEnumerable<TimeRange> GetTimeRangeMovePerPeriod(string period, DateTime oldestMessageDatetime) //TODO test
         {
+            var startOfCurrentPeriod = period switch
+            {
+                Period.Day => DateTime.Today,
+                Period.Month => new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1),
+                Period.Quarter => this.GetQuarterStart(DateTime.Today),
+                _ => throw new NotImplementedException()
+            };
             var moveForward = period switch
             {
                 Period.Day => new Func<DateTime, int>(x => 1),
@@ -143,15 +141,17 @@ namespace Statsman.Core.Generators
                 Period.Quarter => new Func<DateTime, int>(x => new DateTime[] { x.AddMonths(-1), x.AddMonths(-2), x.AddMonths(-3) }.Select(d => DateTime.DaysInMonth(d.Year, d.Month)).Sum()),
                 _ => throw new NotImplementedException()
             };
-            var startOfCurrentPeriod = period switch
+            var minusDaysAtEnd = period switch
             {
-                Period.Day => DateTime.Today,
-                Period.Month => new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1),
-                Period.Quarter => this.GetQuarterStart(DateTime.Today),
+                Period.Day => 0,
+                Period.Month => 1,
+                Period.Quarter => 1,
                 _ => throw new NotImplementedException()
             };
-            var periodTimeRange = TimeRange.Create(startOfCurrentPeriod, startOfCurrentPeriod.AddDays(moveForward.Invoke(startOfCurrentPeriod)).AddMilliseconds(-1));
-            var iterableTimeRange = periodTimeRange.MoveWhile(x => !x.Contains(oldestMessageDatetime), x => TimeSpan.FromDays(moveBackward.Invoke(x.Start)));
+            
+            var periodTimeRange = TimeRange.Create(startOfCurrentPeriod, startOfCurrentPeriod.AddDays(moveForward.Invoke(startOfCurrentPeriod) - minusDaysAtEnd).AddMilliseconds(-1))
+                .Move(TimeSpan.FromDays(-moveBackward.Invoke(startOfCurrentPeriod)));
+            var iterableTimeRange = periodTimeRange.MoveWhile(x => !x.Contains(oldestMessageDatetime), x => TimeSpan.FromDays(-moveBackward.Invoke(x.Start)));
             return iterableTimeRange;
         }
 
