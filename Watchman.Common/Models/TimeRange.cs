@@ -119,5 +119,10 @@ namespace Watchman.Common.Models
         {
             return obj is TimeRange range && this.Start == range.Start && this.End == range.End;
         }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(this.Start, this.End);
+        }
     }
 }
