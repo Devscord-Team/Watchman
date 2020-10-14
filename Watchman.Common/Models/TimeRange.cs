@@ -45,16 +45,17 @@ namespace Watchman.Common.Models
             return dateTime >= this.Start && dateTime <= this.End;
         }
 
+        public TimeRange Move(TimeSpan time)
+        {
+            var clone = this.Clone();
+            clone.Start = this.Start.Add(time);
+            clone.End = this.End.Add(time);
+            return clone;
+        }
+
         public TimeRange Clone()
         {
             return new TimeRange(this.Start, this.End);
-        }
-
-        public TimeRange Move(TimeSpan time)
-        {
-            this.Start = this.Start.Add(time);
-            this.End = this.End.Add(time);
-            return this;
         }
 
         public IEnumerable<TimeRange> MoveWhile(Func<TimeRange, bool> shouldContinue, Func<TimeRange,TimeSpan> getTime)
@@ -82,35 +83,11 @@ namespace Watchman.Common.Models
             return $"{this.Start.ToLocalTime():dd/MM/yyyy} - {this.End.ToLocalTime():dd/MM/yyyy} (UTC+{timezone.BaseUtcOffset.TotalHours}:00)";
         }
 
-        public static bool operator ==(TimeRange a, TimeRange b)
-        {
-            var aHashCode = a?.GetHashCode() ?? 0;
-            var bHashCode = b?.GetHashCode() ?? 0;
-            if (aHashCode == bHashCode)
-            {
-                return true;
-            }
-            if(aHashCode == 0 || bHashCode == 0)
-            {
-                return false;
-            }
-            return a.Start == b.Start && a.End == b.End;
-        }
+        public static bool operator ==(TimeRange a, TimeRange b) 
+            => a is TimeRange && a.Equals(b);
 
-        public static bool operator !=(TimeRange a, TimeRange b)
-        {
-            var aHashCode = a?.GetHashCode() ?? 0;
-            var bHashCode = b?.GetHashCode() ?? 0;
-            if(aHashCode == 0 && bHashCode == 0)
-            {
-                return true;
-            }
-            if((aHashCode != 0 && bHashCode == 0) || (aHashCode == 0 && bHashCode != 0))
-            {
-                return false;
-            }
-            return a.Start != b.Start || a.End != b.End;
-        }
+        public static bool operator !=(TimeRange a, TimeRange b) 
+            => !(a == b);
 
         public TimeRange ForeachMinute(Action<int, DateTime> action)
         {
@@ -136,6 +113,11 @@ namespace Watchman.Common.Models
             {
                 action.Invoke(i, add.Invoke(i));
             }
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is TimeRange range && this.Start == range.Start && this.End == range.End;
         }
     }
 }
