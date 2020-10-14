@@ -84,11 +84,27 @@ namespace Watchman.Common.Models
 
         public static bool operator ==(TimeRange a, TimeRange b)
         {
+            if(a == b)
+            {
+                return true;
+            }
+            if(a == null || b == null)
+            {
+                return false;
+            }
             return a.Start == b.Start && a.End == b.End;
         }
 
         public static bool operator !=(TimeRange a, TimeRange b)
         {
+            if (a == b)
+            {
+                return false;
+            }
+            if (a == null || b == null)
+            {
+                return true;
+            }
             return a.Start != b.Start || a.End != b.End;
         }
 
