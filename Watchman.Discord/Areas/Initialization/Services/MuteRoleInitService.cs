@@ -3,16 +3,20 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Watchman.Cqrs;
+using Watchman.DomainModel.Protection.Complaints.Queries;
 
 namespace Watchman.Discord.Areas.Initialization.Services
 {
     public class MuteRoleInitService
     {
+        private readonly IQueryBus _queryBus;
         private readonly UsersRolesService _usersRolesService;
         private readonly ChannelsService _channelsService;
 
-        public MuteRoleInitService(UsersRolesService usersRolesService, ChannelsService channelsService)
+        public MuteRoleInitService(IQueryBus queryBus, UsersRolesService usersRolesService, ChannelsService channelsService)
         {
+            this._queryBus = queryBus;
             this._usersRolesService = usersRolesService;
             this._channelsService = channelsService;
         }
@@ -28,6 +32,23 @@ namespace Watchman.Discord.Areas.Initialization.Services
                 await Task.Delay(1000); // wait for complete creating a muted role
             }
             await this.SetChannelsPermissions(server, mutedRole, changedPermissions);
+        }
+
+        public Task InitForChannelAsync(ChannelContext channel, DiscordServerContext server)
+        {
+            var query = new GetComplaintsChannelQuery(server.Id);
+            var complaintsChannelId = this._queryBus.Execute(query)?.ComplaintsChannel?.ChannelId;
+            if (complaintsChannelId == channel.Id)
+            {
+                return Task.CompletedTask;
+            }
+            var changedPermissions = this.CreateChangedPermissions();
+            var mutedRole = this._usersRolesService.GetRoleByName(UsersRolesService.MUTED_ROLE_NAME, server);
+            if (mutedRole == null)
+            {
+                return Task.CompletedTask;
+            }
+            return this._channelsService.SetPermissions(channel, server, changedPermissions, mutedRole);
         }
 
         private ChangedPermissions CreateChangedPermissions()

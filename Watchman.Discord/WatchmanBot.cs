@@ -84,7 +84,7 @@ namespace Watchman.Discord
                 .AddOnChannelCreatedHandlers(builder =>
                 {
                     builder
-                        .AddFromIoC<MuteRoleInitService>(x => (_, server) => x.InitForServerAsync(server));
+                        .AddFromIoC<MuteRoleInitService>(x => x.InitForChannelAsync);
                 })
                 .AddOnChannelRemovedHandler(builder =>
                 {

@@ -54,7 +54,6 @@ namespace Watchman.Discord.Areas.Protection.Services
                 throw new ComplaintsChannelAlreadyExistsException();
             }
             var complaintsChannel = await this._channelsService.CreateNewChannelAsync(contexts.Server, channelName);
-            complaintsChannel = contexts.Server.GetTextChannel(complaintsChannel.Id);
             await this.SetChannelPermissions(complaintsChannel, contexts);
             await this.NotifyDomainAboutComplaintsChannel(complaintsChannel, contexts.Server);
             return complaintsChannel;
