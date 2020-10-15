@@ -133,6 +133,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Podana komenda została dopasowana do więcej niż tylko jednego regexu (custom command), więc nie można jej wykonać. Należy zmienić regexy do tej komendy tak, aby nigdy nie było sytuacji, że do podanej komendy pasuje kilka regexów jednocześnie..
+        /// </summary>
+        public static string MoreThanOneRegexHasBeenMatched {
+            get {
+                return ResourceManager.GetString("MoreThanOneRegexHasBeenMatched", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Użytkownik {{user}} został wyciszony do {{timeEnd}}.
         /// </summary>
         public static string MutedUser {
@@ -390,6 +399,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         public static string SpamAlertRecognized {
             get {
                 return ResourceManager.GetString("SpamAlertRecognized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Na tym serwerze nie ma żadnych wyciszonych użytkowników..
+        /// </summary>
+        public static string ThereAreNoMutedUsers {
+            get {
+                return ResourceManager.GetString("ThereAreNoMutedUsers", resourceCulture);
             }
         }
         

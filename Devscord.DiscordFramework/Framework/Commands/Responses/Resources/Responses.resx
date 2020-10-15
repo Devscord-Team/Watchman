@@ -267,4 +267,7 @@
   <data name="ComplaintsChannelHasBeenCreated" xml:space="preserve">
     <value>Kanał na skargi został utworzony pomyślnie.</value>
   </data>
+  <data name="ThereAreNoMutedUsers" xml:space="preserve">
+    <value>Na tym serwerze nie ma żadnych wyciszonych użytkowników.</value>
+  </data>
 </root>

@@ -80,7 +80,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         public static string MutedUser(this ResponsesService responsesService, UserContext user, DateTime timeEnd)
         {
             return responsesService.ProcessResponse("MutedUser",
-                new KeyValuePair<string, string>("user", user.Name),
+                new KeyValuePair<string, string>("user", user.Name), //todo: change to GetMention when message will be send as Embed
                 new KeyValuePair<string, string>("timeEnd", TimeZoneInfo.ConvertTimeFromUtc(timeEnd, TimeZoneInfo.Local).ToString("dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture))); // this works when timeEnd.Kind is equal to DateTimeKind.Utc
         }
 
@@ -303,6 +303,11 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("TryToGoogleIt",
                 new KeyValuePair<string, string>("link", link));
+        }
+
+        public static string ThereAreNoMutedUsers(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("ThereAreNoMutedUsers");
         }
     }
 }

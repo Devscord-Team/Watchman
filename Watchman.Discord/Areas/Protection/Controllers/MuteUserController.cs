@@ -65,16 +65,16 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         [AdminCommand]
         public async Task MutedUsers(MutedUsersCommand mutedUsersCommand, Contexts contexts)
         {
-            var notUnmutedMuteEvents = _mutingHelper.GetNotUnmutedMuteEvents(contexts.Server.Id);
+            var notUnmutedMuteEvents = this._mutingHelper.GetNotUnmutedMuteEvents(contexts.Server.Id);
             var mutedUsers = this._usersService.GetUsersAsync(contexts.Server);
+            var messagesService = this._messagesServiceFactory.Create(contexts);
             var mutedUsersMessageData = this.GetMuteEmbedMessage(notUnmutedMuteEvents.ToList(), mutedUsers);
             if (!mutedUsersMessageData.Values.Any())
             {
-                await this._directMessagesService.TrySendMessage(contexts.User.Id, "Brak wyciszonych użytkowników!");
+                await messagesService.SendResponse(x => x.ThereAreNoMutedUsers());
                 return;
             }
             await this._directMessagesService.TrySendEmbedMessage(contexts.User.Id, mutedUsersMessageData.Title, mutedUsersMessageData.Description, mutedUsersMessageData.Values);
-            var messagesService = this._messagesServiceFactory.Create(contexts);
             await messagesService.SendResponse(x => x.MutedUsersListSent());
         }
 
@@ -83,6 +83,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             var title = "Lista wyciszonych użytkowników";
             var description = "Wyciszeni użytkownicy, powody oraz data wygaśnięcia";
             var values = new Dictionary<string, Dictionary<string, string>>();
+            var i = 1;
             foreach (var user in users)
             {
                 var muteEvent = notUnmutedMuteEvents.FirstOrDefault(x => x.UserId == user.Id);
@@ -90,9 +91,10 @@ namespace Watchman.Discord.Areas.Protection.Controllers
                 {
                     continue;
                 }
-                values.Add($"Użytkownik: {user.Name}",
+                values.Add($"{i++}.",
                     new Dictionary<string, string>
                     {
+                        {"Użytkownik:", user.Id.GetUserMention()},
                         {"Powód:", muteEvent.Reason},
                         {"Data zakończenia:", muteEvent.TimeRange.End.ToLocalTimeString() }
                     });
