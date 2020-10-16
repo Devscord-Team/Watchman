@@ -8,19 +8,19 @@ using Watchman.Discord.Areas.UselessFeatures.BotCommands;
 
 namespace Watchman.Discord.Areas.UselessFeatures.Controllers
 {
-    public class GoogleLmgtfyController : IController
+    public class GoogleController : IController
     {
         private readonly MessagesServiceFactory _messagesServiceFactory;
-        private const string LINK_TO_LMGTFY = "https://pl.lmgtfy.com/?q=";
+        private const string LINK_TO_GOOGLE_THAT = "http://letmegooglethat.com/?q=";
 
-        public GoogleLmgtfyController(MessagesServiceFactory messagesServiceFactory)
+        public GoogleController(MessagesServiceFactory messagesServiceFactory)
         {
             this._messagesServiceFactory = messagesServiceFactory;
         }
 
-        public Task PrintGoogleLmgtfy(GoogleCommand googleCommand, Contexts contexts)
+        public Task PrintGoogle(GoogleCommand googleCommand, Contexts contexts)
         {
-            var searchLink = LINK_TO_LMGTFY + HttpUtility.UrlEncode(googleCommand.Search);
+            var searchLink = LINK_TO_GOOGLE_THAT + HttpUtility.UrlEncode(googleCommand.Search);
             var messagesService = this._messagesServiceFactory.Create(contexts);
             return messagesService.SendResponse(x => x.TryToGoogleIt(searchLink));
         }
