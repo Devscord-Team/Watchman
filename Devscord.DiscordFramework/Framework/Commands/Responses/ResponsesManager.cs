@@ -236,10 +236,10 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             return responsesService.ProcessResponse("AllRolesSettingsChanged");
         }
 
-        public static string UserHasBeenWarned(this ResponsesService responsesService, string granter, string receiver, string reason)
+        public static string UserHasBeenWarned(this ResponsesService responsesService, string grantor, string receiver, string reason)
         {
             return responsesService.ProcessResponse("UserHasBeenWarned",
-                new KeyValuePair<string, string>("granter", granter),
+                new KeyValuePair<string, string>("grantor", grantor),
                 new KeyValuePair<string, string>("receiver", receiver),
                 new KeyValuePair<string, string>("reason", reason));
         }
