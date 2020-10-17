@@ -34,7 +34,7 @@ namespace Watchman.Discord.IoC.Modules
                 var mapper = BsonMapper.Global.UseCamelCase();
                 mapper.Entity<Entity>().Id(x => x.Id);
                 return new LiteDatabase(this.configuration.LiteDbConnectionString, mapper);
-            }).As<ILiteDatabase>().InstancePerDependency();
+            }).As<ILiteDatabase>().SingleInstance();
 
             builder.RegisterType<SessionFactory>()
                 .As<ISessionFactory>()

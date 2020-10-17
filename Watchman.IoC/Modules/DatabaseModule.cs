@@ -36,7 +36,7 @@ namespace Watchman.IoC.Modules
                 var mapper = BsonMapper.Global.UseCamelCase();
                 mapper.Entity<Entity>().Id(x => x.Id);
                 return new LiteDatabase(this._liteConnectionString, mapper); 
-            }).As<ILiteDatabase>().InstancePerDependency();
+            }).As<ILiteDatabase>().SingleInstance();
                 
             builder.RegisterType<SessionFactory>()
                 .As<ISessionFactory>()

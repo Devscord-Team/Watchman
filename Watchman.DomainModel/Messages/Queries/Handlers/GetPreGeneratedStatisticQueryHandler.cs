@@ -17,23 +17,21 @@ namespace Watchman.DomainModel.Messages.Queries.Handlers
 
         public GetPreGeneratedStatisticsQueryResult Handle(GetPreGeneratedStatisticQuery query)
         {
-            using (var session = this._sessionFactory.CreateLite())
+            using var session = this._sessionFactory.CreateLite();
+            var preGeneratedStatistics = session.Get<PreGeneratedStatistic>().Where(x => x.ServerId == query.ServerId && x.Period == query.Period);
+            if (query.TimeRange != null)
             {
-                var preGeneratedStatistics = session.Get<PreGeneratedStatistic>().Where(x => x.ServerId == query.ServerId && x.Period == query.Period);
-                if (query.TimeRange != null)
-                {
-                    preGeneratedStatistics = preGeneratedStatistics.Where(x => query.TimeRange.Contains(x.TimeRange.Start) && query.TimeRange.Contains(x.TimeRange.End));
-                }
-                if (query.UserId != 0)
-                {
-                    preGeneratedStatistics = preGeneratedStatistics.Where(x => x.UserId == query.UserId);
-                }
-                if (query.ChannelId != 0)
-                {
-                    preGeneratedStatistics = preGeneratedStatistics.Where(x => x.ChannelId == query.ChannelId);
-                }
-                return new GetPreGeneratedStatisticsQueryResult(preGeneratedStatistics.ToList());
+                preGeneratedStatistics = preGeneratedStatistics.Where(x => query.TimeRange.Contains(x.TimeRange.Start) && query.TimeRange.Contains(x.TimeRange.End));
             }
+            if (query.UserId != 0)
+            {
+                preGeneratedStatistics = preGeneratedStatistics.Where(x => x.UserId == query.UserId);
+            }
+            if (query.ChannelId != 0)
+            {
+                preGeneratedStatistics = preGeneratedStatistics.Where(x => x.ChannelId == query.ChannelId);
+            }
+            return new GetPreGeneratedStatisticsQueryResult(preGeneratedStatistics.ToList());
         }
     }
 }
