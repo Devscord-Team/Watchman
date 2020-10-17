@@ -72,7 +72,7 @@ namespace Watchman.Integrations.Database.LiteDB
 
         public void Dispose()
         {
-            this._database.Dispose();
+            //this._database.Dispose();
         }
 
         private ILiteCollection<T> GetCollection<T>() where T : Entity

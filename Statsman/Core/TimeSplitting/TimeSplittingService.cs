@@ -34,7 +34,7 @@ namespace Statsman.Core.TimeSplitting
         public IEnumerable<TimeStatisticItem> GetStatisticsPerDay(IEnumerable<PreGeneratedStatistic> preGeneratedStatistics, IEnumerable<Message> latestMessages, TimeRange expectedTimeRange)
         {
             latestMessages = this.FilterMessages(latestMessages, preGeneratedStatistics);
-            var oldestLastMessagesDate = latestMessages.OrderBy(x => x.SentAt).First().SentAt;
+            var oldestLastMessagesDate = latestMessages.OrderBy(x => x.SentAt).FirstOrDefault()?.SentAt ?? DateTime.Today;
             var result = new List<TimeStatisticItem>();
             expectedTimeRange.ForeachDay((i, day) => 
             {

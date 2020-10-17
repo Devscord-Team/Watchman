@@ -43,7 +43,7 @@ namespace Statsman
 
         public async Task<(Stream Chart, string Message)> PerDay(StatisticsRequest request)
         {
-            var timeRange = TimeRange.Create(DateTime.Today.AddDays(-request.TimeBehind.TotalDays), DateTime.Today);
+            var timeRange = TimeRange.Create(DateTime.Today.AddDays(-request.TimeBehind.TotalDays), DateTime.UtcNow);
             var statistics = await this.GetStatisticsGroupedPerDaysPeriod(request, timeRange, Period.Day);
             return (Chart: await this._chartsService.GetImageStatisticsPerPeriod(statistics, "Messages per day"),
                 Message: this.GetMessage(request.UserId, request.ChannelId, Period.Day, timeRange));
@@ -51,7 +51,7 @@ namespace Statsman
 
         public async Task<(Stream Chart, string Message)> PerWeek(StatisticsRequest request)
         {
-            var timeRange = TimeRange.Create(DateTime.Today.AddDays(-request.TimeBehind.TotalDays), DateTime.Today);
+            var timeRange = TimeRange.Create(DateTime.Today.AddDays(-request.TimeBehind.TotalDays), DateTime.UtcNow);
             var statistics = await this.GetStatisticsGroupedPerDaysPeriod(request, timeRange, Period.Week);
             return (Chart: await this._chartsService.GetImageStatisticsPerPeriod(statistics, "Messages per week"),
                 Message: this.GetMessage(request.UserId, request.ChannelId, Period.Week, timeRange));
@@ -59,7 +59,7 @@ namespace Statsman
 
         public async Task<(Stream Chart, string Message)> PerMonth(StatisticsRequest request)
         {
-            var timeRange = TimeRange.Create(DateTime.Today.AddDays(-request.TimeBehind.TotalDays), DateTime.Today);
+            var timeRange = TimeRange.Create(DateTime.Today.AddDays(-request.TimeBehind.TotalDays), DateTime.UtcNow);
             var statistics = await this.GetStatisticsGroupedPerDaysPeriod(request, timeRange, Period.Month);
             return (Chart: await this._chartsService.GetImageStatisticsPerPeriod(statistics, "Messages per month"),
                 Message: this.GetMessage(request.UserId, request.ChannelId, Period.Month, timeRange));
@@ -67,7 +67,7 @@ namespace Statsman
 
         public async Task<(Stream Chart, string Message)> PerQuarter(StatisticsRequest request)
         {
-            var timeRange = TimeRange.Create(DateTime.Today.AddDays(-request.TimeBehind.TotalDays), DateTime.Today);
+            var timeRange = TimeRange.Create(DateTime.Today.AddDays(-request.TimeBehind.TotalDays), DateTime.UtcNow);
             var statistics = await this.GetStatisticsGroupedPerDaysPeriod(request, timeRange, Period.Quarter);
             return (Chart: await this._chartsService.GetImageStatisticsPerPeriod(statistics, "Messages per quarter"), 
                 Message: this.GetMessage(request.UserId, request.ChannelId, Period.Quarter, timeRange));
@@ -120,7 +120,8 @@ namespace Statsman
 
         private string GetMessage(ulong userId, ulong channelId, Period period, TimeRange timeRange)
         {
-            var stringBuilder = new StringBuilder($"{Enum.GetName(typeof(Period), period)} statistics for:");
+            var stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine($"{Enum.GetName(typeof(Period), period)} statistics for:");
             stringBuilder.AppendLine(userId == 0 ? "All users" : $"User <@{userId}>");
             stringBuilder.AppendLine(channelId == 0 ? "All channels" : $"Channel <@{channelId}>");
             stringBuilder.AppendLine($"In time range: {timeRange}");

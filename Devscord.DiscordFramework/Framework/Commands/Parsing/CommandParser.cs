@@ -110,9 +110,11 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
             arg.Name = trimmedMessage[..lastArgNameIndex];
 
             trimmedMessage = trimmedMessage.CutStart(arg.Name).TrimStart();
-            arg.Value = this.GetValue(trimmedMessage, out var nextIndexAfterValue);
-
-            trimmedMessage = trimmedMessage[nextIndexAfterValue..].TrimStart();
+            if(!trimmedMessage.StartsWith(prefix))
+            {
+                arg.Value = this.GetValue(trimmedMessage, out var nextIndexAfterValue);
+                trimmedMessage = trimmedMessage[nextIndexAfterValue..].TrimStart();
+            }
             return arg;
         }
 
