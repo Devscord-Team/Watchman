@@ -1,6 +1,7 @@
 ﻿using System.Linq;
+
 using Watchman.Cqrs;
-using Watchman.Integrations.MongoDB;
+using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.Messages.Queries.Handlers
 {
@@ -15,7 +16,7 @@ namespace Watchman.DomainModel.Messages.Queries.Handlers
 
         public GetMessagesQueryResult Handle(GetMessagesQuery query)
         {
-            using var session = this._sessionFactory.Create();
+            using var session = this._sessionFactory.CreateMongo();
             var messages = session.Get<Message>();
             if (query.ServerId != 0)
             {

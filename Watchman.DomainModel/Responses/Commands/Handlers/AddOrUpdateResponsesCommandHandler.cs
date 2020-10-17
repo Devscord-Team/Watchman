@@ -1,7 +1,8 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+
 using Watchman.Cqrs;
-using Watchman.Integrations.MongoDB;
+using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.Responses.Commands.Handlers
 {
@@ -16,7 +17,7 @@ namespace Watchman.DomainModel.Responses.Commands.Handlers
 
         public async Task HandleAsync(AddOrUpdateResponsesCommand command)
         {
-            using var session = this._sessionFactory.Create();
+            using var session = this._sessionFactory.CreateMongo();
             foreach (var response in command.ResponsesToAddOrUpdate)
             {
                 await session.AddOrUpdateAsync(response);

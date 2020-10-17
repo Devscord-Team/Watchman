@@ -1,8 +1,9 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Conventions;
+
 using System.Collections.Generic;
 
-namespace Watchman.Integrations.MongoDB
+namespace Watchman.Integrations.Database.MongoDB
 {
     public static class MongoConfiguration
     {

@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
+
 using Watchman.Cqrs;
-using Watchman.Integrations.MongoDB;
+using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.CustomCommands.Commands.Handlers
 {
@@ -15,7 +16,7 @@ namespace Watchman.DomainModel.CustomCommands.Commands.Handlers
 
         public async Task HandleAsync(AddCustomCommandsCommand command)
         {
-            using var session = this.sessionFactory.Create();
+            using var session = this.sessionFactory.CreateMongo();
             var customCommand = new CustomCommand(command.CommandFullName, command.CustomTemplateRegex, command.ServerId);
             await session.AddAsync(customCommand);
         }

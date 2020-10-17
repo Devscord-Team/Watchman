@@ -30,39 +30,39 @@ namespace Statsman
             var timeRange = TimeRange.Create(DateTime.UtcNow.AddMinutes(-request.TimeBehind.TotalMinutes), DateTime.UtcNow);
             var statistics = await this.GetStatisticsGroupedPerDetailedPeriod(request, timeRange, Period.Minute);
             return (Chart: await this._chartsService.GetImageStatisticsPerPeriod(statistics, "Messages per minute"),
-                Message: $"All Messages Statistics\r\nItem per minute\r\n{timeRange}"); //TODO get label and message from configuration
+                Message: this.GetMessage(request.UserId, request.ChannelId, Period.Minute, timeRange)); //TODO get label and message from configuration
         }
 
         public async Task<(Stream Chart, string Message)> PerHour(StatisticsRequest request)
         {
             var timeRange = TimeRange.Create(DateTime.UtcNow.AddHours(-request.TimeBehind.TotalHours), DateTime.UtcNow);
             var statistics = await this.GetStatisticsGroupedPerDetailedPeriod(request, timeRange, Period.Hour);
-            return (Chart: await this._chartsService.GetImageStatisticsPerPeriod(statistics, "Messages per hour"), 
-                Message: $"All Messages Statistics\r\nItem per hour\r\n{timeRange}");
+            return (Chart: await this._chartsService.GetImageStatisticsPerPeriod(statistics, "Messages per hour"),
+                Message: this.GetMessage(request.UserId, request.ChannelId, Period.Hour, timeRange));
         }
 
         public async Task<(Stream Chart, string Message)> PerDay(StatisticsRequest request)
         {
             var timeRange = TimeRange.Create(DateTime.Today.AddDays(-request.TimeBehind.TotalDays), DateTime.Today);
             var statistics = await this.GetStatisticsGroupedPerDaysPeriod(request, timeRange, Period.Day);
-            return (Chart: await this._chartsService.GetImageStatisticsPerPeriod(statistics, "Messages per day"), 
-                Message: $"All Messages Statistics\r\nItem per day\r\n{timeRange}");
+            return (Chart: await this._chartsService.GetImageStatisticsPerPeriod(statistics, "Messages per day"),
+                Message: this.GetMessage(request.UserId, request.ChannelId, Period.Day, timeRange));
         }
 
         public async Task<(Stream Chart, string Message)> PerWeek(StatisticsRequest request)
         {
             var timeRange = TimeRange.Create(DateTime.Today.AddDays(-request.TimeBehind.TotalDays), DateTime.Today);
             var statistics = await this.GetStatisticsGroupedPerDaysPeriod(request, timeRange, Period.Week);
-            return (Chart: await this._chartsService.GetImageStatisticsPerPeriod(statistics, "Messages per week"), 
-                Message: $"All Messages Statistics\r\nItem per week\r\n{timeRange}");
+            return (Chart: await this._chartsService.GetImageStatisticsPerPeriod(statistics, "Messages per week"),
+                Message: this.GetMessage(request.UserId, request.ChannelId, Period.Week, timeRange));
         }
 
         public async Task<(Stream Chart, string Message)> PerMonth(StatisticsRequest request)
         {
             var timeRange = TimeRange.Create(DateTime.Today.AddDays(-request.TimeBehind.TotalDays), DateTime.Today);
             var statistics = await this.GetStatisticsGroupedPerDaysPeriod(request, timeRange, Period.Month);
-            return (Chart: await this._chartsService.GetImageStatisticsPerPeriod(statistics, "Messages per month"), 
-                Message: $"All Messages Statistics\r\nItem per month\r\n{timeRange}");
+            return (Chart: await this._chartsService.GetImageStatisticsPerPeriod(statistics, "Messages per month"),
+                Message: this.GetMessage(request.UserId, request.ChannelId, Period.Month, timeRange));
         }
 
         public async Task<(Stream Chart, string Message)> PerQuarter(StatisticsRequest request)
@@ -70,7 +70,7 @@ namespace Statsman
             var timeRange = TimeRange.Create(DateTime.Today.AddDays(-request.TimeBehind.TotalDays), DateTime.Today);
             var statistics = await this.GetStatisticsGroupedPerDaysPeriod(request, timeRange, Period.Quarter);
             return (Chart: await this._chartsService.GetImageStatisticsPerPeriod(statistics, "Messages per quarter"), 
-                Message: $"All Messages Statistics\r\nItem per quarter\r\n{timeRange}");
+                Message: this.GetMessage(request.UserId, request.ChannelId, Period.Quarter, timeRange));
         }
 
         private async Task<IEnumerable<TimeStatisticItem>> GetStatisticsGroupedPerDetailedPeriod(StatisticsRequest statisticsRequest, TimeRange timeRange, Period period)
@@ -87,7 +87,7 @@ namespace Statsman
         private async Task<IEnumerable<TimeStatisticItem>> GetStatisticsGroupedPerDaysPeriod(StatisticsRequest statisticsRequest, TimeRange timeRange, Period period)
         {
             var preGeneratedStatistics = await this.GetPreGeneratedStatistics(statisticsRequest, timeRange);
-            var messages = await this.GetMessages(statisticsRequest, TimeSpan.FromHours(24));
+            var messages = await this.GetMessages(statisticsRequest, TimeSpan.FromHours(48));
             return period switch
             {
                 Period.Day => this.timeSplittingService.GetStatisticsPerDay(preGeneratedStatistics, messages, timeRange),
@@ -114,8 +114,17 @@ namespace Statsman
 
         private async Task<IEnumerable<PreGeneratedStatistic>> GetPreGeneratedStatistics(StatisticsRequest statisticsRequest, TimeRange timeRange)
         {
-            var query = new GetPreGeneratedStatisticQuery(statisticsRequest.ServerId, timeRange: timeRange);
-            return (await this.queryBus.ExecuteAsync(query)).PreGeneratedStatistic.ToList();
+            var query = new GetPreGeneratedStatisticQuery(statisticsRequest.ServerId, statisticsRequest.ChannelId, statisticsRequest.UserId, timeRange: timeRange);
+            return (await this.queryBus.ExecuteAsync(query)).PreGeneratedStatistics.ToList();
+        }
+
+        private string GetMessage(ulong userId, ulong channelId, Period period, TimeRange timeRange)
+        {
+            var stringBuilder = new StringBuilder($"{Enum.GetName(typeof(Period), period)} statistics for:");
+            stringBuilder.AppendLine(userId == 0 ? "All users" : $"User <@{userId}>");
+            stringBuilder.AppendLine(channelId == 0 ? "All channels" : $"Channel <@{channelId}>");
+            stringBuilder.AppendLine($"In time range: {timeRange}");
+            return stringBuilder.ToString();
         }
 
         private enum Period

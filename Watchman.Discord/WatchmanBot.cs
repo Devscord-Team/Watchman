@@ -18,9 +18,9 @@ using Watchman.Discord.Areas.Protection.Services;
 using Watchman.Discord.Areas.Users.Services;
 using Watchman.Discord.Ioc;
 using Watchman.Integrations.Logging;
-using Watchman.Integrations.MongoDB;
 using Watchman.DomainModel.Settings.Services;
 using Watchman.Discord.Integration.DevscordFramework;
+using Watchman.Integrations.Database.MongoDB;
 
 namespace Watchman.Discord
 {

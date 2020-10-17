@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
+
 using Watchman.Cqrs;
-using Watchman.Integrations.MongoDB;
+using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.Users.Commands.Handlers
 {
@@ -15,7 +16,7 @@ namespace Watchman.DomainModel.Users.Commands.Handlers
 
         public async Task HandleAsync(MarkMuteEventAsUnmutedCommand command)
         {
-            using var session = this._sessionFactory.Create();
+            using var session = this._sessionFactory.CreateMongo();
             var muteEvent = session.Get<MuteEvent>(command.MuteEventGuid);
             muteEvent.Unmute();
             await session.UpdateAsync(muteEvent);

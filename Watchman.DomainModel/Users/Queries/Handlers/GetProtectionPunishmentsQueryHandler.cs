@@ -1,5 +1,5 @@
 ﻿using Watchman.Cqrs;
-using Watchman.Integrations.MongoDB;
+using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.Users.Queries.Handlers
 {
@@ -14,7 +14,7 @@ namespace Watchman.DomainModel.Users.Queries.Handlers
 
         public GetProtectionPunishmentsQueryResult Handle(GetProtectionPunishmentsQuery query)
         {
-            using var session = this._sessionFactory.Create();
+            using var session = this._sessionFactory.CreateMongo();
             return new GetProtectionPunishmentsQueryResult(session.Get<ProtectionPunishment>());
         }
     }

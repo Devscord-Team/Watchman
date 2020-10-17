@@ -83,10 +83,22 @@ namespace Watchman.Common.Models
             return $"{this.Start.ToLocalTime():dd/MM/yyyy} - {this.End.ToLocalTime():dd/MM/yyyy} (UTC+{timezone.BaseUtcOffset.TotalHours}:00)";
         }
 
-        public static bool operator ==(TimeRange a, TimeRange b) 
-            => a is TimeRange && a.Equals(b);
+        public static bool operator ==(TimeRange a, TimeRange b)
+        {
+            var aHash = a?.GetHashCode() ?? 0;
+            var bHash = b?.GetHashCode() ?? 0;
+            if(aHash == bHash)
+            {
+                return true;
+            }
+            if(aHash == 0 || bHash == 0)
+            {
+                return false;
+            }
+            return a.Equals(b);
+        }
 
-        public static bool operator !=(TimeRange a, TimeRange b) 
+        public static bool operator !=(TimeRange a, TimeRange b)
             => !(a == b);
 
         public TimeRange ForeachMinute(Action<int, DateTime> action)

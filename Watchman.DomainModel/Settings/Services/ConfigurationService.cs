@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Watchman.Integrations.MongoDB;
+
+using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.Settings.Services
 {
@@ -36,7 +37,7 @@ namespace Watchman.DomainModel.Settings.Services
 
         public async Task SaveNewConfiguration(IMappedConfiguration changedConfiguration)
         {
-            using var session = this._sessionFactory.Create();
+            using var session = this._sessionFactory.CreateMongo();
             var existingConfiguration = session.Get<ConfigurationItem>()
                 .FirstOrDefault(x => x.ServerId == changedConfiguration.ServerId && x.Name == changedConfiguration.Name);
             var baseFormatConfigurationItem = this._configurationMapperService.MapIntoBaseFormat(changedConfiguration);
@@ -60,7 +61,7 @@ namespace Watchman.DomainModel.Settings.Services
                 var conf = (IMappedConfiguration)Activator.CreateInstance(x, DEFAULT_SERVER_ID);
                 return this._configurationMapperService.MapIntoBaseFormat(conf);
             });
-            using var session = this._sessionFactory.Create();
+            using var session = this._sessionFactory.CreateMongo();
             var existingConfigurations = session.Get<ConfigurationItem>().Where(x => x.ServerId == 0).ToList();
             foreach (var configuration in configurations.Where(x => existingConfigurations.All(y => x.Name != y.Name)))
             {
@@ -71,7 +72,7 @@ namespace Watchman.DomainModel.Settings.Services
 
         public void Refresh()
         {
-            using var session = this._sessionFactory.Create();
+            using var session = this._sessionFactory.CreateMongo();
             var configurationItems = session.Get<ConfigurationItem>();
             this._cachedConfigurationItem = this._configurationMapperService.GetMappedConfigurations(configurationItems);
         }

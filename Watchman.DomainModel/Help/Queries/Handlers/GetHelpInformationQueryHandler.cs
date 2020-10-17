@@ -1,6 +1,7 @@
 ﻿using System.Linq;
+
 using Watchman.Cqrs;
-using Watchman.Integrations.MongoDB;
+using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.Help.Queries.Handlers
 {
@@ -15,7 +16,7 @@ namespace Watchman.DomainModel.Help.Queries.Handlers
 
         public GetHelpInformationQueryResult Handle(GetHelpInformationQuery query)
         {
-            var session = this._sessionFactory.Create();
+            var session = this._sessionFactory.CreateMongo();
             var allHelpInfos = session.Get<HelpInformation>().ToList();
             var defaultHelpInfos = allHelpInfos.Where(x => x.IsDefault);
             var customHelpInfos = allHelpInfos.Where(x => x.ServerId == query.ServerId).ToList();

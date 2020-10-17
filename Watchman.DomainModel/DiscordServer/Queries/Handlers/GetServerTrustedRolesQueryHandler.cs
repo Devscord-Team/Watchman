@@ -1,6 +1,7 @@
 ﻿using System.Linq;
+
 using Watchman.Cqrs;
-using Watchman.Integrations.MongoDB;
+using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.DiscordServer.Queries.Handlers
 {
@@ -15,7 +16,7 @@ namespace Watchman.DomainModel.DiscordServer.Queries.Handlers
 
         public GetServerTrustedRolesQueryResult Handle(GetServerTrustedRolesQuery query)
         {
-            using var session = this._sessionFactory.Create();
+            using var session = this._sessionFactory.CreateMongo();
             var rolesIds = session.Get<TrustedRole>().Where(x => x.ServerId == query.ServerId);
             return new GetServerTrustedRolesQueryResult(rolesIds.Select(x => x.RoleId));
         }

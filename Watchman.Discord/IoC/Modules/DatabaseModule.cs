@@ -1,7 +1,10 @@
 ﻿using Autofac;
+
 using MongoDB.Driver;
+
 using System.Reflection;
-using Watchman.Integrations.MongoDB;
+
+using Watchman.Integrations.Database;
 
 namespace Watchman.Discord.IoC.Modules
 {

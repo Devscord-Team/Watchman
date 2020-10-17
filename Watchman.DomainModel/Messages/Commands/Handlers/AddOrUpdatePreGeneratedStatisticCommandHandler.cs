@@ -1,7 +1,8 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+
 using Watchman.Cqrs;
-using Watchman.Integrations.MongoDB;
+using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.Messages.Commands.Handlers
 {
@@ -16,7 +17,7 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
 
         public async Task HandleAsync(AddOrUpdatePreGeneratedStatisticCommand command)
         {
-            using var session = this._sessionFactory.Create();
+            using var session = this._sessionFactory.CreateMongo();
             var currentTimeRange = session.Get<PreGeneratedStatistic>()
                 .FirstOrDefault(x =>
                 x.ServerId == command.PreGeneratedStatistic.ServerId

@@ -1,4 +1,4 @@
-﻿using Watchman.Integrations.MongoDB;
+﻿using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.Settings
 {

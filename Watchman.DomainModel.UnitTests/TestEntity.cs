@@ -1,6 +1,7 @@
 ﻿using System;
+
 using Watchman.DomainModel.Commons.Calculators.Statistics.Splitters;
-using Watchman.Integrations.MongoDB;
+using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.UnitTests
 {

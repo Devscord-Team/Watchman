@@ -3,14 +3,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Watchman.Integrations.Database;
 
-namespace Watchman.Integrations.MongoDB
+namespace Watchman.Integrations.Database.MongoDB
 {
-    public class Session : ISession
+    public class MongoSession : ISession
     {
         private readonly IMongoDatabase _database;
 
-        public Session(IMongoDatabase database)
+        public MongoSession(IMongoDatabase database)
         {
             this._database = database;
         }

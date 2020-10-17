@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Watchman.Common.Models;
-using Watchman.Integrations.MongoDB;
+using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.Messages
 {

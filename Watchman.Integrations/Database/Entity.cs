@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Watchman.Integrations.MongoDB
+namespace Watchman.Integrations.Database
 {
     public abstract class Entity
     {

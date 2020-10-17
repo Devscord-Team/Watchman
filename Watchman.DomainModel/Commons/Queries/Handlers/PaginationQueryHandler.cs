@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Watchman.Integrations.MongoDB;
+
+using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.Commons.Queries.Handlers
 {
@@ -20,12 +21,12 @@ namespace Watchman.DomainModel.Commons.Queries.Handlers
             if (paginationQuery.CreatedDate != null)
             {
                 var timeRange = paginationQuery.CreatedDate;
-                collection = collection.Where(x => x.CreatedAt >= timeRange.Start && x.CreatedAt <= timeRange.End);
+                collection = collection.Where(x => timeRange.Contains(x.CreatedAt));
             }
             if (paginationQuery.UpdatedDate != null)
             {
                 var timeRange = paginationQuery.UpdatedDate;
-                collection = collection.Where(x => x.UpdatedAt >= timeRange.Start && x.UpdatedAt <= timeRange.End);
+                collection = collection.Where(x => timeRange.Contains(x.UpdatedAt));
             }
             if (paginationQuery.Skip.HasValue)
             {

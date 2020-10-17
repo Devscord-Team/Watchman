@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
+
 using Watchman.Cqrs;
-using Watchman.Integrations.MongoDB;
+using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.ScheduleTasks.Commands.Handlers
 {
@@ -15,7 +16,7 @@ namespace Watchman.DomainModel.ScheduleTasks.Commands.Handlers
 
         public async Task HandleAsync(SetAsExecutedScheduleTaskCommand command)
         {
-            using var session = this._sessionFactory.Create();
+            using var session = this._sessionFactory.CreateMongo();
             var scheduleTask = session.Get<ScheduleTask>(command.ScheduleTaskId);
             scheduleTask.SetAsExecuted();
             await session.UpdateAsync(scheduleTask);

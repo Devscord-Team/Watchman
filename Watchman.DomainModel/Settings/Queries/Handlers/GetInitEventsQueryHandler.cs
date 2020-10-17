@@ -1,6 +1,7 @@
 ﻿using System.Linq;
+
 using Watchman.Cqrs;
-using Watchman.Integrations.MongoDB;
+using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.Settings.Queries.Handlers
 {
@@ -15,7 +16,7 @@ namespace Watchman.DomainModel.Settings.Queries.Handlers
 
         public GetInitEventsQueryResults Handle(GetInitEventsQuery query)
         {
-            using var session = this._sessionFactory.Create();
+            using var session = this._sessionFactory.CreateMongo();
             var initEvents = session.Get<InitEvent>()
                 .Where(x => x.ServerId == query.ServerId);
 

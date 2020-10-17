@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
+
 using Watchman.Cqrs;
-using Watchman.Integrations.MongoDB;
+using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.Responses.Commands.Handlers
 {
@@ -15,7 +16,7 @@ namespace Watchman.DomainModel.Responses.Commands.Handlers
 
         public async Task HandleAsync(RemoveResponsesCommand command)
         {
-            using var session = this._sessionFactory.Create();
+            using var session = this._sessionFactory.CreateMongo();
             foreach (var response in command.ResponsesToRemove)
             {
                 await session.DeleteAsync(response);

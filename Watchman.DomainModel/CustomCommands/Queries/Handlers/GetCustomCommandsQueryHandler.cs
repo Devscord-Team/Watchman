@@ -1,5 +1,5 @@
 ﻿using Watchman.Cqrs;
-using Watchman.Integrations.MongoDB;
+using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.CustomCommands.Queries.Handlers
 {
@@ -14,7 +14,7 @@ namespace Watchman.DomainModel.CustomCommands.Queries.Handlers
 
         public GetCustomCommandsQueryResult Handle(GetCustomCommandsQuery query)
         {
-            using var session = this.sessionFactory.Create();
+            using var session = this.sessionFactory.CreateMongo();
             var customCommands = session.Get<CustomCommand>();
             return new GetCustomCommandsQueryResult(customCommands);
         }

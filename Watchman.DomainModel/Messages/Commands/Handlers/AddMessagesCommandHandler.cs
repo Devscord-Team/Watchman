@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Watchman.Cqrs;
 using Watchman.DomainModel.Messages.Services;
-using Watchman.Integrations.MongoDB;
+using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.Messages.Commands.Handlers
 {
@@ -24,7 +25,7 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
         public async Task HandleAsync(AddMessagesCommand command)
         {
             var newMessages = this.GetOnlyNewMessages(command.Messages, command.ChannelId);
-            using var session = this._sessionFactory.Create();
+            using var session = this._sessionFactory.CreateMongo();
             foreach (var message in newMessages)
             {
                 await session.AddAsync(message);
@@ -43,7 +44,7 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
             {
                 return this._cashedExistingMessagesHashes;
             }
-            using var session = this._sessionFactory.Create();
+            using var session = this._sessionFactory.CreateMongo();
             var channelMessagesHashes = session.Get<Message>()
                 .Where(x => x.Channel.Id == channelId)
                 .Select(x => x.Md5Hash)

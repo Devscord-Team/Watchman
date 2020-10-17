@@ -5,11 +5,11 @@ namespace Watchman.DomainModel.Messages.Queries
 {
     public class GetPreGeneratedStatisticsQueryResult : IQueryResult
     {
-        public IEnumerable<PreGeneratedStatistic> PreGeneratedStatistic { get; }
+        public IEnumerable<PreGeneratedStatistic> PreGeneratedStatistics { get; }
 
-        public GetPreGeneratedStatisticsQueryResult(IEnumerable<PreGeneratedStatistic> preGeneratedStatistic)
+        public GetPreGeneratedStatisticsQueryResult(IEnumerable<PreGeneratedStatistic> preGeneratedStatistics)
         {
-            this.PreGeneratedStatistic = preGeneratedStatistic;
+            this.PreGeneratedStatistics = preGeneratedStatistics;
         }
     }
 }
