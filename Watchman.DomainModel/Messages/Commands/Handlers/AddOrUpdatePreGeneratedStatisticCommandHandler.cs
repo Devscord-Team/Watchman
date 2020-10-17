@@ -21,8 +21,8 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
             var currentTimeRange = session.Get<PreGeneratedStatistic>()
                 .FirstOrDefault(x =>
                 x.ServerId == command.PreGeneratedStatistic.ServerId
-                && x.UserId == command.PreGeneratedStatistic.ServerId
-                && x.ChannelId == command.PreGeneratedStatistic.ServerId
+                && x.UserId == command.PreGeneratedStatistic.UserId
+                && x.ChannelId == command.PreGeneratedStatistic.ChannelId
                 && x.Period == command.PreGeneratedStatistic.Period
                 && x.TimeRange == command.PreGeneratedStatistic.TimeRange);
             if(currentTimeRange == null)
