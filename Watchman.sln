@@ -29,7 +29,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Watchman.Discord.UnitTests"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Watchman.Integration.Tests", "Watchman.Integration.Tests\Watchman.Integration.Tests.csproj", "{16F0CD33-126A-4255-B147-476E6597E02C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Statsman", "Statsman\Statsman.csproj", "{0E0453CD-0F39-458A-AC91-B31915F35291}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Statsman", "Statsman\Statsman.csproj", "{0E0453CD-0F39-458A-AC91-B31915F35291}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
