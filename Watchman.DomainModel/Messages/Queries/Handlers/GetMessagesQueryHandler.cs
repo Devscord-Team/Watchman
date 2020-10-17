@@ -1,5 +1,5 @@
-﻿using System.Linq;
-
+﻿using System.Collections.Generic;
+using System.Linq;
 using Watchman.Cqrs;
 using Watchman.Integrations.Database;
 
@@ -38,17 +38,17 @@ namespace Watchman.DomainModel.Messages.Queries.Handlers
             return new GetMessagesQueryResult(paginated);
         }
 
-        private IQueryable<Message> TakeOnlyFromOneServer(ulong serverId, IQueryable<Message> messages)
+        private IEnumerable<Message> TakeOnlyFromOneServer(ulong serverId, IEnumerable<Message> messages)
         {
             return messages.Where(x => x.Server.Id == serverId);
         }
 
-        private IQueryable<Message> TakeOnlyFromChannel(ulong channelId, IQueryable<Message> messages)
+        private IEnumerable<Message> TakeOnlyFromChannel(ulong channelId, IEnumerable<Message> messages)
         {
             return messages.Where(x => x.Channel.Id == channelId);
         }
 
-        private IQueryable<Message> TakeOnlyForUser(ulong? userId, IQueryable<Message> messages)
+        private IEnumerable<Message> TakeOnlyForUser(ulong? userId, IEnumerable<Message> messages)
         {
             return messages.Where(x => x.Author.Id == userId.Value);
         }

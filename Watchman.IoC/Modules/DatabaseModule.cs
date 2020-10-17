@@ -31,9 +31,12 @@ namespace Watchman.IoC.Modules
                 .As<IMongoDatabase>()
                 .SingleInstance();
 
-            builder.Register((c, p) => new LiteDatabase(this._liteConnectionString))
-                .As<ILiteDatabase>()
-                .SingleInstance();
+            builder.Register((c, p) => 
+            {
+                var mapper = BsonMapper.Global.UseCamelCase();
+                mapper.Entity<Entity>().Id(x => x.Id);
+                return new LiteDatabase(this._liteConnectionString, mapper); 
+            }).As<ILiteDatabase>().SingleInstance();
                 
             builder.RegisterType<SessionFactory>()
                 .As<ISessionFactory>()

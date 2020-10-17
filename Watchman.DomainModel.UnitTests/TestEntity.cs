@@ -1,11 +1,9 @@
 ﻿using System;
-
-using Watchman.DomainModel.Commons.Calculators.Statistics.Splitters;
 using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.UnitTests
 {
-    public class TestEntity : Entity, ISplittable
+    public class TestEntity : Entity
     {
         public void SetUpdatedAt(DateTime dateTime)
         {

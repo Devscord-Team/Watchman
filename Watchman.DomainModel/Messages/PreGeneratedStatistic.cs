@@ -17,6 +17,10 @@ namespace Watchman.DomainModel.Messages
         public TimeRange TimeRange { get; private set; }
         public string Period { get; private set; }
 
+        public PreGeneratedStatistic()
+        {
+        }
+
         public PreGeneratedStatistic(ulong serverId, int count, TimeRange timeRange, string period)
         {
             this.ServerId = serverId;

@@ -8,7 +8,7 @@ namespace Watchman.Integrations.Database
     public interface ISession : IDisposable
     {
         T Get<T>(Guid id) where T : Entity;
-        IQueryable<T> Get<T>() where T : Entity;
+        IEnumerable<T> Get<T>() where T : Entity;
         Task AddAsync<T>(T entity) where T : Entity;
         Task AddAsync<T>(IEnumerable<T> entities) where T : Entity;
         Task AddOrUpdateAsync<T>(T entity) where T : Entity;

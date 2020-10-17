@@ -21,9 +21,9 @@ namespace Watchman.Integrations.Database.LiteDB
             return this.GetCollection<T>().FindById(id);
         }
 
-        public IQueryable<T> Get<T>() where T : Entity
+        public IEnumerable<T> Get<T>() where T : Entity
         {
-            return this.GetCollection<T>().Query().ToEnumerable().AsQueryable();
+            return this.GetCollection<T>().Query().ToEnumerable();
         }
 
         public Task AddAsync<T>(T entity) where T : Entity
@@ -74,7 +74,7 @@ namespace Watchman.Integrations.Database.LiteDB
 
         private ILiteCollection<T> GetCollection<T>() where T : Entity
         {
-            return this._database.GetCollection<T>($"{typeof(T).Name}s");
+            return this._database.GetCollection<T>($"{typeof(T).Name}s", BsonAutoId.Guid);
         }
     }
 }

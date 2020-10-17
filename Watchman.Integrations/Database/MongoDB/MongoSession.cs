@@ -21,7 +21,7 @@ namespace Watchman.Integrations.Database.MongoDB
             return this.Get<T>().FirstOrDefault(x => x.Id == id);
         }
 
-        public IQueryable<T> Get<T>() where T : Entity
+        public IEnumerable<T> Get<T>() where T : Entity
         {
             return this.GetCollection<T>().AsQueryable();
         }

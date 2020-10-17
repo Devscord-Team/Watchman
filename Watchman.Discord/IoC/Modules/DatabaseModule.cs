@@ -29,9 +29,12 @@ namespace Watchman.Discord.IoC.Modules
                 .As<IMongoDatabase>()
                 .InstancePerLifetimeScope();
 
-            builder.Register((c, p) => new LiteDatabase(this.configuration.LiteDbConnectionString))
-                .As<ILiteDatabase>()
-                .SingleInstance();
+            builder.Register((c, p) =>
+            {
+                var mapper = BsonMapper.Global.UseCamelCase();
+                mapper.Entity<Entity>().Id(x => x.Id);
+                return new LiteDatabase(this.configuration.LiteDbConnectionString, mapper);
+            }).As<ILiteDatabase>().SingleInstance();
 
             builder.RegisterType<SessionFactory>()
                 .As<ISessionFactory>()
