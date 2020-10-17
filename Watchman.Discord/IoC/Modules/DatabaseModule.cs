@@ -1,5 +1,7 @@
 ﻿using Autofac;
 
+using LiteDB;
+
 using MongoDB.Driver;
 
 using System.Reflection;
@@ -26,6 +28,10 @@ namespace Watchman.Discord.IoC.Modules
             builder.Register((c, p) => new MongoClient(this.configuration.MongoDbConnectionString).GetDatabase("devscord"))
                 .As<IMongoDatabase>()
                 .InstancePerLifetimeScope();
+
+            builder.Register((c, p) => new LiteDatabase(this.configuration.LiteDbConnectionString))
+                .As<ILiteDatabase>()
+                .SingleInstance();
 
             builder.RegisterType<SessionFactory>()
                 .As<ISessionFactory>()

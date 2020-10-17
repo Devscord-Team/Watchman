@@ -35,7 +35,6 @@ namespace Watchman.IoC.Modules
                 .As<ILiteDatabase>()
                 .SingleInstance();
                 
-
             builder.RegisterType<SessionFactory>()
                 .As<ISessionFactory>()
                 .SingleInstance();

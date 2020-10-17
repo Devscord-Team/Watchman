@@ -9,56 +9,74 @@ namespace Watchman.Integrations.Database.LiteDB
 {
     public class LiteSession : ISession
     {
-        private readonly ILiteDatabase liteDatabase;
+        private readonly ILiteDatabase _database;
 
         public LiteSession(ILiteDatabase liteDatabase)
         {
-            this.liteDatabase = liteDatabase;
-        }
-
-        public Task AddAsync<T>(T entity) where T : Entity
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task AddAsync<T>(IEnumerable<T> entities) where T : Entity
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task AddOrUpdateAsync<T>(T entity) where T : Entity
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task DeleteAsync<T>(T entity) where T : Entity
-        {
-            throw new NotImplementedException();
+            this._database = liteDatabase;
         }
 
         public T Get<T>(Guid id) where T : Entity
         {
-            throw new NotImplementedException();
+            return this.GetCollection<T>().FindById(id);
         }
 
         public IQueryable<T> Get<T>() where T : Entity
         {
-            throw new NotImplementedException();
+            return this.GetCollection<T>().Query().ToEnumerable().AsQueryable();
         }
 
-        public void SaveChanges()
+        public Task AddAsync<T>(T entity) where T : Entity
         {
-            throw new NotImplementedException();
+            this.GetCollection<T>().Insert(entity.Id, entity);
+            return Task.CompletedTask;
+        }
+
+        public Task AddAsync<T>(IEnumerable<T> entities) where T : Entity
+        {
+            this.GetCollection<T>().InsertBulk(entities);
+            return Task.CompletedTask;
+        }
+
+        public async Task AddOrUpdateAsync<T>(T entity) where T : Entity
+        {
+            if (this.Get<T>(entity.Id) == null)
+            {
+                await this.AddAsync(entity);
+            }
+            else
+            {
+                await this.UpdateAsync(entity);
+            }
         }
 
         public Task UpdateAsync<T>(T entity) where T : Entity
         {
-            throw new NotImplementedException();
+            this.GetCollection<T>().Update(entity.Id, entity);
+            return Task.CompletedTask;
+        }
+
+        public Task DeleteAsync<T>(T entity) where T : Entity
+        {
+            this.GetCollection<T>().Delete(entity.Id);
+            return Task.CompletedTask;
+        }
+
+        public void SaveChanges()
+        {
+            //use on database change
         }
 
         public void Dispose()
         {
-            this.liteDatabase.Dispose();
+            this._database.Dispose();
         }
+
+        private ILiteCollection<T> GetCollection<T>() where T : Entity
+        {
+            return this._database.GetCollection<T>($"{typeof(T).Name}s");
+        }
+
+        
     }
 }

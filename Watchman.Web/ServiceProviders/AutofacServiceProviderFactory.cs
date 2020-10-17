@@ -24,7 +24,7 @@ namespace Watchman.Web.ServiceProviders
 
         public ContainerBuilder CreateBuilder(IServiceCollection services)
         {
-            var containerModule = new ContainerModule(this._configuration.GetConnectionString("Mongo"));
+            var containerModule = new ContainerModule(this._configuration.GetConnectionString("Mongo"), this._configuration.GetConnectionString("Lite"));
             var builder = containerModule.GetBuilder();
             this.RegisterCustomServices(builder);
             builder.Populate(services);

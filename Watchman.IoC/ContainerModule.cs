@@ -5,17 +5,19 @@ namespace Watchman.IoC
 {
     public class ContainerModule
     {
-        private readonly string _connectionString;
+        private readonly string _mongoConnectionString;
+        private readonly string _liteConnectionString;
 
-        public ContainerModule(string connectionString)
+        public ContainerModule(string mongoConnectionString, string liteConnectionString)
         {
-            this._connectionString = connectionString;
+            this._mongoConnectionString = mongoConnectionString;
+            this._liteConnectionString = liteConnectionString;
         }
 
         public ContainerBuilder GetBuilder()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterModule(new DatabaseModule(this._connectionString));
+            builder.RegisterModule(new DatabaseModule(this._mongoConnectionString, this._liteConnectionString));
             builder.RegisterModule<CommandModule>();
             builder.RegisterModule<QueryModule>();
             builder.RegisterModule<ServiceModule>();
