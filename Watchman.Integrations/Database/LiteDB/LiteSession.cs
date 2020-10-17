@@ -76,7 +76,5 @@ namespace Watchman.Integrations.Database.LiteDB
         {
             return this._database.GetCollection<T>($"{typeof(T).Name}s");
         }
-
-        
     }
 }

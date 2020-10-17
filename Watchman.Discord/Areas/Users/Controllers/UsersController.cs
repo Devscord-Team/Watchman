@@ -11,6 +11,7 @@ using Watchman.DomainModel.DiscordServer.Queries;
 using Watchman.Discord.Areas.Users.Services;
 using Devscord.DiscordFramework.Commons.Exceptions;
 using Watchman.Discord.Areas.Users.BotCommands;
+using Devscord.DiscordFramework.Services;
 
 namespace Watchman.Discord.Areas.Users.Controllers
 {
@@ -19,23 +20,30 @@ namespace Watchman.Discord.Areas.Users.Controllers
         private readonly IQueryBus _queryBus;
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly RolesService _rolesService;
+        private readonly UsersService _usersService;
 
-        public UsersController(IQueryBus queryBus, MessagesServiceFactory messagesServiceFactory, RolesService rolesService)
+        public UsersController(IQueryBus queryBus, MessagesServiceFactory messagesServiceFactory, RolesService rolesService, UsersService usersService)
         {
             this._queryBus = queryBus;
             this._messagesServiceFactory = messagesServiceFactory;
             this._rolesService = rolesService;
+            this._usersService = usersService;
         }
 
         public async Task GetAvatar(AvatarCommand avatarCommand, Contexts contexts)
         {
             var messageService = this._messagesServiceFactory.Create(contexts);
-            if (string.IsNullOrEmpty(contexts.User.AvatarUrl))
+            var user = contexts.User;
+            if (avatarCommand.User != 0)
             {
-                await messageService.SendResponse(x => x.UserDoesntHaveAvatar(contexts.User));
+                user = await this._usersService.GetUserByIdAsync(contexts.Server, avatarCommand.User);
+            }
+            if (string.IsNullOrEmpty(user.AvatarUrl))
+            {
+                await messageService.SendResponse(x => x.UserDoesntHaveAvatar(user));
                 return;
             }
-            await messageService.SendMessage(contexts.User.AvatarUrl);
+            await messageService.SendMessage(user.AvatarUrl);
         }
 
         public async Task AddRole(AddRoleCommand addRoleCommand, Contexts contexts)
