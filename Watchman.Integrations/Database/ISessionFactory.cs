@@ -3,5 +3,6 @@
     public interface ISessionFactory
     {
         ISession CreateMongo();
+        ISession CreateLite();
     }
 }

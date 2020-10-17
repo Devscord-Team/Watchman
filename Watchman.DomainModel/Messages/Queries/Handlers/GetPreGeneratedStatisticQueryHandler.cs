@@ -17,7 +17,7 @@ namespace Watchman.DomainModel.Messages.Queries.Handlers
 
         public GetPreGeneratedStatisticsQueryResult Handle(GetPreGeneratedStatisticQuery query)
         {
-            using var session = this._sessionFactory.CreateMongo();
+            using var session = this._sessionFactory.CreateLite();
             var preGeneratedStatistics = session.Get<PreGeneratedStatistic>().AsEnumerable().Where(x => x.ServerId == query.ServerId && x.Period == query.Period);
             if(query.TimeRange != null)
             {

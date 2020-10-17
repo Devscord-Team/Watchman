@@ -17,7 +17,7 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
 
         public async Task HandleAsync(AddOrUpdatePreGeneratedStatisticCommand command)
         {
-            using var session = this._sessionFactory.CreateMongo();
+            using var session = this._sessionFactory.CreateLite();
             var currentTimeRange = session.Get<PreGeneratedStatistic>()
                 .FirstOrDefault(x =>
                 x.ServerId == command.PreGeneratedStatistic.ServerId
