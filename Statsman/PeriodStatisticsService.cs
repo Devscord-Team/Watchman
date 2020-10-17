@@ -114,7 +114,7 @@ namespace Statsman
 
         private async Task<IEnumerable<PreGeneratedStatistic>> GetPreGeneratedStatistics(StatisticsRequest statisticsRequest, TimeRange timeRange)
         {
-            var query = new GetPreGeneratedStatisticQuery(statisticsRequest.ServerId, statisticsRequest.ChannelId, statisticsRequest.UserId, timeRange: timeRange);
+            var query = new GetPreGeneratedStatisticQuery(statisticsRequest.ServerId, statisticsRequest.ChannelId, statisticsRequest.UserId, timeRange: timeRange); //only for day //TODO - get also for quarter and month
             return (await this.queryBus.ExecuteAsync(query)).PreGeneratedStatistics.ToList();
         }
 
