@@ -136,7 +136,7 @@ namespace Statsman.Core.Generators
             };
             var moveBackward = period switch
             {
-                Period.Day => moveForward,
+                Period.Day => new Func<DateTime, int>(x => 1),
                 Period.Month => new Func<DateTime, int>(x => DateTime.DaysInMonth(x.AddMonths(-1).Year, x.AddMonths(-1).Month)),
                 Period.Quarter => new Func<DateTime, int>(x => new DateTime[] { x.AddMonths(-1), x.AddMonths(-2), x.AddMonths(-3) }.Select(d => DateTime.DaysInMonth(d.Year, d.Month)).Sum()),
                 _ => throw new NotImplementedException()
@@ -148,9 +148,9 @@ namespace Statsman.Core.Generators
                 Period.Quarter => 1,
                 _ => throw new NotImplementedException()
             };
-            
-            var periodTimeRange = TimeRange.Create(startOfCurrentPeriod, startOfCurrentPeriod.AddDays(moveForward.Invoke(startOfCurrentPeriod) - minusDaysAtEnd).AddMilliseconds(-1))
-                .Move(TimeSpan.FromDays(-moveBackward.Invoke(startOfCurrentPeriod)));
+
+            var periodTimeRange = TimeRange.Create(startOfCurrentPeriod, startOfCurrentPeriod.AddDays(moveForward.Invoke(startOfCurrentPeriod) - minusDaysAtEnd).AddMilliseconds(-1));
+            periodTimeRange = periodTimeRange.Move(TimeSpan.FromDays(-moveBackward.Invoke(startOfCurrentPeriod)));
             var iterableTimeRange = periodTimeRange.MoveWhile(x => !x.Contains(oldestMessageDatetime), x => TimeSpan.FromDays(-moveBackward.Invoke(x.Start)));
             return iterableTimeRange;
         }

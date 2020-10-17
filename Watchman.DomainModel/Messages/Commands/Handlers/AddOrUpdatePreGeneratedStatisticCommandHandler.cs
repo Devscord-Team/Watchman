@@ -18,20 +18,24 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
         public async Task HandleAsync(AddOrUpdatePreGeneratedStatisticCommand command)
         {
             using var session = this._sessionFactory.CreateLite();
-            var statistics = session.Get<PreGeneratedStatistic>();
-            var currentTimeRange = statistics
-            .FirstOrDefault(x =>
-            x.ServerId == command.PreGeneratedStatistic.ServerId
-            && x.UserId == command.PreGeneratedStatistic.UserId
-            && x.ChannelId == command.PreGeneratedStatistic.ChannelId
-            && x.Period == command.PreGeneratedStatistic.Period
-            && x.TimeRange == command.PreGeneratedStatistic.TimeRange);
+            var currentTimeRange = session.Get<PreGeneratedStatistic>()
+                .FirstOrDefault(x =>
+                x.ServerId == command.PreGeneratedStatistic.ServerId
+                && x.UserId == command.PreGeneratedStatistic.UserId
+                && x.ChannelId == command.PreGeneratedStatistic.ChannelId
+                && x.Period == command.PreGeneratedStatistic.Period
+                && x.TimeRange == command.PreGeneratedStatistic.TimeRange);
             if (currentTimeRange == null)
             {
                 await session.AddAsync(command.PreGeneratedStatistic);
                 return;
             }
+            var version = currentTimeRange.Version;
             currentTimeRange.SetCount(command.PreGeneratedStatistic.Count);
+            if(version == currentTimeRange.Version)
+            {
+                return;
+            }
             await session.UpdateAsync(currentTimeRange);
         }
     }
