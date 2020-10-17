@@ -1,11 +1,7 @@
 ﻿using Autofac;
-
 using LiteDB;
-
 using MongoDB.Driver;
-
 using System.Reflection;
-
 using Watchman.Integrations.Database;
 
 namespace Watchman.Discord.IoC.Modules

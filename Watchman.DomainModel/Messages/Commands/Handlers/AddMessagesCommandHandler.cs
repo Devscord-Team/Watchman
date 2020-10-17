@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
 using Watchman.Cqrs;
 using Watchman.DomainModel.Messages.Services;
 using Watchman.Integrations.Database;

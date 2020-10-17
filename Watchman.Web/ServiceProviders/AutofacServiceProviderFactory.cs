@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
 using System.Reflection;
-
 using Watchman.Discord;
 using Watchman.IoC;
 using Watchman.Web.Jobs;

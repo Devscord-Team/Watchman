@@ -1,11 +1,9 @@
 ﻿using Statsman.Models;
-
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-
 using Watchman.Integrations.Quickchart;
 using Watchman.Integrations.Quickchart.Models;
 

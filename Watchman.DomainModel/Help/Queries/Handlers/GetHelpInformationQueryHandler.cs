@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-
 using Watchman.Cqrs;
 using Watchman.Integrations.Database;
 

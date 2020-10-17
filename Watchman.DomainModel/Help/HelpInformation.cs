@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-
 using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.Help

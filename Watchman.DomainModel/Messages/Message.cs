@@ -1,5 +1,4 @@
 ﻿using System;
-
 using Watchman.DomainModel.Messages.Services;
 using Watchman.Integrations.Database;
 

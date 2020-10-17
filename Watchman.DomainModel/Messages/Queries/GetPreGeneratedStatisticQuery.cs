@@ -1,5 +1,4 @@
 ﻿using System;
-
 using Watchman.Common.Models;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Commons.Queries;

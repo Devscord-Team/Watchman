@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-
 using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.Responses

@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-
 using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.DiscordServer.Commands.Handlers

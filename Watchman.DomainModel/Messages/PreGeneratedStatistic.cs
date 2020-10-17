@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
 using Watchman.Common.Models;
 using Watchman.Integrations.Database;
 

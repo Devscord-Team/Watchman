@@ -1,5 +1,4 @@
 ﻿using System.Text.RegularExpressions;
-
 using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.CustomCommands

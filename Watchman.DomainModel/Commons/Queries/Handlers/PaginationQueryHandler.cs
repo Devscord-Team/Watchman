@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-
 using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.Commons.Queries.Handlers
