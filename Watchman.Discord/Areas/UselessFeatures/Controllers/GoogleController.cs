@@ -11,7 +11,7 @@ namespace Watchman.Discord.Areas.UselessFeatures.Controllers
     public class GoogleController : IController
     {
         private readonly MessagesServiceFactory _messagesServiceFactory;
-        private const string LINK_TO_GOOGLE_THAT = "http://letmegooglethat.com/?q=";
+        private const string GOOGLE_BASE_URL = "http://letmegooglethat.com/?q=";
 
         public GoogleController(MessagesServiceFactory messagesServiceFactory)
         {
@@ -20,7 +20,7 @@ namespace Watchman.Discord.Areas.UselessFeatures.Controllers
 
         public Task PrintGoogle(GoogleCommand googleCommand, Contexts contexts)
         {
-            var searchLink = LINK_TO_GOOGLE_THAT + HttpUtility.UrlEncode(googleCommand.Search);
+            var searchLink = GOOGLE_BASE_URL + HttpUtility.UrlEncode(googleCommand.Search);
             var messagesService = this._messagesServiceFactory.Create(contexts);
             return messagesService.SendResponse(x => x.TryToGoogleIt(searchLink));
         }

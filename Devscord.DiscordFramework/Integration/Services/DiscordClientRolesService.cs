@@ -29,7 +29,7 @@ namespace Devscord.DiscordFramework.Integration.Services
         {
             this._client = client;
             this._userRoleFactory = userRoleFactory;
-            this._client.Ready += async () => await Task.Run(() => this._roles = this._client.Guilds.SelectMany(x => x.Roles).ToList());
+            this._client.Ready += () => Task.Run(() => this._roles = this._client.Guilds.SelectMany(x => x.Roles).ToList());
             this._client.RoleCreated += this.AddRole;
             this._client.RoleCreated += x => this.RoleCreated(x);
             this._client.RoleDeleted += this.RemoveRole;
@@ -57,9 +57,13 @@ namespace Devscord.DiscordFramework.Integration.Services
 
         public IEnumerable<SocketRole> GetSocketRoles(ulong guildId)
         {
-            if (this._roles == null) // todo: it should work without this if
+            if (this._roles == null)
             {
                 this._roles = this._client.Guilds.SelectMany(x => x.Roles).ToList();
+            }
+            if (this._roles.All(x => x.Guild.Id != guildId))
+            {
+                this._roles.AddRange(this._client.GetGuild(guildId).Roles);
             }
             return this._roles.Where(x => x.Guild.Id == guildId);
         }

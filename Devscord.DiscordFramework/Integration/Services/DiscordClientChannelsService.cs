@@ -113,38 +113,41 @@ namespace Devscord.DiscordFramework.Integration.Services
                 yield break;
             }
             var channelMessages = fromMessageId == 0 
-                ? textChannel.GetMessagesAsync(limit) 
+                ? textChannel.GetMessagesAsync(limit)
                 : textChannel.GetMessagesAsync(fromMessageId, goBefore ? Direction.Before : Direction.After, limit);
 
-            await foreach (var messagesPackage in channelMessages)
+            await foreach (var message in channelMessages.Flatten())
             {
-                foreach (var message in messagesPackage)
-                {
-                    var user = this._userContextsFactory.Create(message.Author);
-                    var contexts = new Contexts(server, channel, user);
+                var user = this._userContextsFactory.Create(message.Author);
+                var contexts = new Contexts(server, channel, user);
 
-                    DiscordRequest request;
-                    try
-                    {
-                        request = this._commandParser.Parse(message.Content, message.Timestamp.UtcDateTime);
-                    }
-                    catch // should almost never go to catch block, but in rare cases Parse() can throw an exception
-                    {
-                        request = new DiscordRequest
-                        {
-                            OriginalMessage = message.Content, 
-                            SentAt = message.Timestamp.UtcDateTime
-                        };
-                    }
-                    yield return new Message(message.Id, request, contexts);
+                DiscordRequest request;
+                try
+                {
+                    request = this._commandParser.Parse(message.Content, message.Timestamp.UtcDateTime);
                 }
+                catch // should almost never go to catch block, but in rare cases Parse() can throw an exception
+                {
+                    request = new DiscordRequest
+                    {
+                        OriginalMessage = message.Content, 
+                        SentAt = message.Timestamp.UtcDateTime
+                    };
+                }
+                yield return new Message(message.Id, request, contexts);
             }
         }
 
         public async Task<bool> CanBotReadTheChannelAsync(IMessageChannel textChannel)
         {
-            var message = await textChannel.GetMessagesAsync(limit: 1).FirstAsync();
-            return message.Count != 0;
+            try
+            {
+                return await textChannel.GetMessagesAsync(limit: 1).Flatten().AnyAsync();
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public async Task<ITextChannel> CreateNewChannelAsync(ulong serverId, string channelName)
