@@ -120,11 +120,12 @@ namespace Statsman
 
         private string GetMessage(ulong userId, ulong channelId, Period period, TimeRange timeRange)
         {
-            var stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine($"{Enum.GetName(typeof(Period), period)} statistics for:");
-            stringBuilder.AppendLine(userId == 0 ? "All users" : $"User <@{userId}>");
-            stringBuilder.AppendLine(channelId == 0 ? "All channels" : $"Channel <#{channelId}>");
-            stringBuilder.AppendLine($"In time range: {timeRange}");
+            var stringBuilder = new StringBuilder()
+                .AppendLine($"Statistics for:")
+                .AppendLine($"Period: {Enum.GetName(typeof(Period), period)}")
+                .AppendLine(userId == 0 ? "All users" : $"User <@{userId}>")
+                .AppendLine(channelId == 0 ? "All channels" : $"Channel <#{channelId}>")
+                .AppendLine($"In time range: {timeRange}");
             return stringBuilder.ToString();
         }
 

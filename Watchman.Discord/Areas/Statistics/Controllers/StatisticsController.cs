@@ -56,7 +56,6 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
             Log.Information("Message saved");
         }
 
-        [AdminCommand]
         public async Task Stats(StatsCommand command, Contexts contexts)
         {
             var (chart, message) = await this.GetStatistics(command, contexts);
