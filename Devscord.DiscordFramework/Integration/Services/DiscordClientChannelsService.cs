@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
+using System.IO;
 
 namespace Devscord.DiscordFramework.Integration.Services
 {
@@ -44,6 +45,12 @@ namespace Devscord.DiscordFramework.Integration.Services
         {
             var user = await this._discordClientUsersService.GetUser(userId);
             await user.SendMessageAsync(embed: embed);
+        }
+
+        public async Task SendDirectFile(ulong userId, string fileName, Stream stream)
+        {
+            var user = await this._discordClientUsersService.GetUser(userId);
+            await user.SendFileAsync(stream, fileName);
         }
 
         public async Task<IChannel> GetChannel(ulong channelId, RestGuild guild = null)

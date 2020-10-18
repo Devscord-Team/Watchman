@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Serilog;
+using System.IO;
 
 namespace Devscord.DiscordFramework.Integration
 {
@@ -81,6 +82,11 @@ namespace Devscord.DiscordFramework.Integration
         internal static Task SendDirectMessage(ulong userId, string message)
         {
             return _discordClient.ChannelsService.SendDirectMessage(userId, message);
+        }
+
+        internal static Task SendDirectFile(ulong userId, string fileName, Stream stream)
+        {
+            return _discordClient.ChannelsService.SendDirectFile(userId, fileName, stream);
         }
 
         internal static IAsyncEnumerable<Message> GetMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong fromMessageId = 0, bool goBefore = true)

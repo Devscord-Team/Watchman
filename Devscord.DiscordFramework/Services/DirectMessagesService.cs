@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Discord;
 using MessageType = Devscord.DiscordFramework.Commons.MessageType;
+using System.IO;
 
 namespace Devscord.DiscordFramework.Services
 {
@@ -71,6 +72,22 @@ namespace Devscord.DiscordFramework.Services
                     return false;
                 }
                 Log.Information("Bot sent embed message {description}", embed.Description);
+            }
+            return true;
+        }
+
+        public async Task<bool> TrySendFile(ulong userId, string fileName, Stream stream)
+        {
+            try
+            {
+                await Server.SendDirectFile(userId, fileName, stream);
+                await stream.DisposeAsync();
+                Log.Information("Bot sent file {fileName} to user {userId}", fileName, userId);
+            }
+            catch
+            {
+                Log.Warning("Cannot send file {fileName} to user {userId}", fileName, userId);
+                return false;
             }
             return true;
         }

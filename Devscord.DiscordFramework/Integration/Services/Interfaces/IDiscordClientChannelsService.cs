@@ -6,6 +6,7 @@ using Discord.Rest;
 using Discord.WebSocket;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace Devscord.DiscordFramework.Integration.Services.Interfaces
 {
@@ -18,5 +19,6 @@ namespace Devscord.DiscordFramework.Integration.Services.Interfaces
         Task SendDirectMessage(ulong userId, string message);
         IAsyncEnumerable<Message> GetMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong fromMessageId = 0, bool goBefore = true);
         Task<bool> CanBotReadTheChannel(IMessageChannel textChannel);
+        Task SendDirectFile(ulong userId, string fileName, Stream stream);
     }
 }

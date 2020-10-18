@@ -29,5 +29,8 @@ namespace Watchman.Discord.Areas.Statistics.BotCommands
         [Optional]
         [ChannelMention]
         public ulong Channel { get; set; }
+
+        [Bool]
+        public bool Direct { get; set; }
     }
 }

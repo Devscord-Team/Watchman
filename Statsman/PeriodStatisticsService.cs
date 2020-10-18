@@ -25,7 +25,7 @@ namespace Statsman
             this.queryBus = queryBus;
         }
 
-        public async Task<(Stream Chart, string Message)> PerMinute(StatisticsRequest request)
+        public async Task<(Stream Chart, ResultMessage Message)> PerMinute(StatisticsRequest request)
         {
             var timeRange = TimeRange.Create(DateTime.UtcNow.AddMinutes(-request.TimeBehind.TotalMinutes), DateTime.UtcNow);
             var statistics = await this.GetStatisticsGroupedPerDetailedPeriod(request, timeRange, Period.Minute);
@@ -33,7 +33,7 @@ namespace Statsman
                 Message: this.GetMessage(request.UserId, request.ChannelId, Period.Minute, timeRange)); //TODO get label and message from configuration
         }
 
-        public async Task<(Stream Chart, string Message)> PerHour(StatisticsRequest request)
+        public async Task<(Stream Chart, ResultMessage Message)> PerHour(StatisticsRequest request)
         {
             var timeRange = TimeRange.Create(DateTime.UtcNow.AddHours(-request.TimeBehind.TotalHours), DateTime.UtcNow);
             var statistics = await this.GetStatisticsGroupedPerDetailedPeriod(request, timeRange, Period.Hour);
@@ -41,7 +41,7 @@ namespace Statsman
                 Message: this.GetMessage(request.UserId, request.ChannelId, Period.Hour, timeRange));
         }
 
-        public async Task<(Stream Chart, string Message)> PerDay(StatisticsRequest request)
+        public async Task<(Stream Chart, ResultMessage Message)> PerDay(StatisticsRequest request)
         {
             var timeRange = TimeRange.Create(DateTime.Today.AddDays(-request.TimeBehind.TotalDays), DateTime.UtcNow);
             var statistics = await this.GetStatisticsGroupedPerDaysPeriod(request, timeRange, Period.Day);
@@ -49,7 +49,7 @@ namespace Statsman
                 Message: this.GetMessage(request.UserId, request.ChannelId, Period.Day, timeRange));
         }
 
-        public async Task<(Stream Chart, string Message)> PerWeek(StatisticsRequest request)
+        public async Task<(Stream Chart, ResultMessage Message)> PerWeek(StatisticsRequest request)
         {
             var timeRange = TimeRange.Create(DateTime.Today.AddDays(-request.TimeBehind.TotalDays), DateTime.UtcNow);
             var statistics = await this.GetStatisticsGroupedPerDaysPeriod(request, timeRange, Period.Week);
@@ -57,7 +57,7 @@ namespace Statsman
                 Message: this.GetMessage(request.UserId, request.ChannelId, Period.Week, timeRange));
         }
 
-        public async Task<(Stream Chart, string Message)> PerMonth(StatisticsRequest request)
+        public async Task<(Stream Chart, ResultMessage Message)> PerMonth(StatisticsRequest request)
         {
             var timeRange = TimeRange.Create(DateTime.Today.AddDays(-request.TimeBehind.TotalDays), DateTime.UtcNow);
             var statistics = await this.GetStatisticsGroupedPerDaysPeriod(request, timeRange, Period.Month);
@@ -65,7 +65,7 @@ namespace Statsman
                 Message: this.GetMessage(request.UserId, request.ChannelId, Period.Month, timeRange));
         }
 
-        public async Task<(Stream Chart, string Message)> PerQuarter(StatisticsRequest request)
+        public async Task<(Stream Chart, ResultMessage Message)> PerQuarter(StatisticsRequest request)
         {
             var timeRange = TimeRange.Create(DateTime.Today.AddDays(-request.TimeBehind.TotalDays), DateTime.UtcNow);
             var statistics = await this.GetStatisticsGroupedPerDaysPeriod(request, timeRange, Period.Quarter);
@@ -118,15 +118,13 @@ namespace Statsman
             return (await this.queryBus.ExecuteAsync(query)).PreGeneratedStatistics.ToList();
         }
 
-        private string GetMessage(ulong userId, ulong channelId, Period period, TimeRange timeRange)
+        private ResultMessage GetMessage(ulong userId, ulong channelId, Period period, TimeRange timeRange)
         {
-            var stringBuilder = new StringBuilder()
-                .AppendLine($"Statistics for:")
-                .AppendLine($"Period: {Enum.GetName(typeof(Period), period)}")
-                .AppendLine(userId == 0 ? "All users" : $"User <@{userId}>")
-                .AppendLine(channelId == 0 ? "All channels" : $"Channel <#{channelId}>")
-                .AppendLine($"In time range: {timeRange}");
-            return stringBuilder.ToString();
+            return new ResultMessage($"Statistics",
+                $"{Enum.GetName(typeof(Period), period)}",
+                userId == 0 ? "All users" : $"User <@{userId}>",
+                channelId == 0 ? "All channels" : $"Channel <#{channelId}>",
+                $"{timeRange}");
         }
 
         private enum Period

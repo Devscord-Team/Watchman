@@ -3,6 +3,7 @@ using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Framework.Commands.PropertyAttributes;
 using Devscord.DiscordFramework.Middlewares.Contexts;
+using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
 using Newtonsoft.Json;
 using Serilog;
@@ -32,14 +33,17 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
         private readonly MessagesServiceFactory _messagesServiceFactory;
+        private readonly DirectMessagesService _directMessagesService;
 
-        public StatisticsController(IQueryBus queryBus, ICommandBus commandBus, MessagesServiceFactory messagesServiceFactory, ChartsService chartsService, PeriodStatisticsService periodStatisticsService, ConfigurationService configurationService)
+        public StatisticsController(IQueryBus queryBus, ICommandBus commandBus, MessagesServiceFactory messagesServiceFactory, 
+            PeriodStatisticsService periodStatisticsService, ConfigurationService configurationService, DirectMessagesService directMessagesService)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;
             this._messagesServiceFactory = messagesServiceFactory;
             this._periodStatisticsService = periodStatisticsService;
             this._configurationService = configurationService;
+            this._directMessagesService = directMessagesService;
         }
 
         [ReadAlways]
@@ -59,16 +63,24 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         public async Task Stats(StatsCommand command, Contexts contexts)
         {
             var (chart, message) = await this.GetStatistics(command, contexts);
-            if (chart == null || string.IsNullOrWhiteSpace(message))
+            if (chart == null || message == null)
             {
                 return;
             }
-            var messagesService = this._messagesServiceFactory.Create(contexts);
-            _ = await Task.Run(() => messagesService.SendFile("Statistics.png", chart))
-                .ContinueWith(x => messagesService.SendMessage(message));
+            if(command.Direct)
+            {
+                _ = await Task.Run(() => _directMessagesService.TrySendFile(contexts.User.Id, "Statistics.png", chart))
+                    .ContinueWith(x => _directMessagesService.TrySendEmbedMessage(contexts.User.Id, message.Title, string.Empty, message.GetArguments()));
+            }
+            else
+            {
+                var messagesService = this._messagesServiceFactory.Create(contexts);
+                _ = await Task.Run(() => messagesService.SendFile("Statistics.png", chart))
+                    .ContinueWith(x => messagesService.SendEmbedMessage(message.Title, string.Empty, message.GetArguments()));
+            }
         }
 
-        private async Task<(Stream Chart, string Message)> GetStatistics(StatsCommand command, Contexts contexts)
+        private async Task<(Stream Chart, ResultMessage Message)> GetStatistics(StatsCommand command, Contexts contexts)
         {
             var task = command switch
             {
@@ -83,42 +95,42 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
             return await task;
         }
 
-        private Task<(Stream Chart, string Message)> GetStatisticsPerMinute(StatsCommand command, Contexts contexts)
+        private Task<(Stream Chart, ResultMessage Message)> GetStatisticsPerMinute(StatsCommand command, Contexts contexts)
         {
             var time = this._configurationService.GetConfigurationItem<TimeBehindStatisticsPerMinute>(contexts.Server.Id);
             var request = new StatisticsRequest(contexts.Server.Id, time.Value, command.User, command.Channel);
             return this._periodStatisticsService.PerMinute(request);
         }
 
-        private Task<(Stream Chart, string Message)> GetStatisticsPerHour(StatsCommand command, Contexts contexts)
+        private Task<(Stream Chart, ResultMessage Message)> GetStatisticsPerHour(StatsCommand command, Contexts contexts)
         {
             var time = this._configurationService.GetConfigurationItem<TimeBehindStatisticsPerHour>(contexts.Server.Id);
             var request = new StatisticsRequest(contexts.Server.Id, time.Value, command.User, command.Channel);
             return this._periodStatisticsService.PerHour(request);
         }
 
-        private Task<(Stream Chart, string Message)> GetStatisticsPerDay(StatsCommand command, Contexts contexts)
+        private Task<(Stream Chart, ResultMessage Message)> GetStatisticsPerDay(StatsCommand command, Contexts contexts)
         {
             var time = this._configurationService.GetConfigurationItem<TimeBehindStatisticsPerDay>(contexts.Server.Id);
             var request = new StatisticsRequest(contexts.Server.Id, time.Value, command.User, command.Channel);
             return this._periodStatisticsService.PerDay(request);
         }
 
-        private Task<(Stream Chart, string Message)> GetStatisticsPerWeek(StatsCommand command, Contexts contexts)
+        private Task<(Stream Chart, ResultMessage Message)> GetStatisticsPerWeek(StatsCommand command, Contexts contexts)
         {
             var time = this._configurationService.GetConfigurationItem<TimeBehindStatisticsPerWeek>(contexts.Server.Id);
             var request = new StatisticsRequest(contexts.Server.Id, time.Value, command.User, command.Channel);
             return this._periodStatisticsService.PerWeek(request);
         }
 
-        private Task<(Stream Chart, string Message)> GetStatisticsPerMonth(StatsCommand command, Contexts contexts)
+        private Task<(Stream Chart, ResultMessage Message)> GetStatisticsPerMonth(StatsCommand command, Contexts contexts)
         {
             var time = this._configurationService.GetConfigurationItem<TimeBehindStatisticsPerMonth>(contexts.Server.Id);
             var request = new StatisticsRequest(contexts.Server.Id, time.Value, command.User, command.Channel);
             return this._periodStatisticsService.PerMonth(request);
         }
 
-        private Task<(Stream Chart, string Message)> GetStatisticsPerQuarter(StatsCommand command, Contexts contexts)
+        private Task<(Stream Chart, ResultMessage Message)> GetStatisticsPerQuarter(StatsCommand command, Contexts contexts)
         {
             var time = this._configurationService.GetConfigurationItem<TimeBehindStatisticsPerQuarter>(contexts.Server.Id);
             var request = new StatisticsRequest(contexts.Server.Id, time.Value, command.User, command.Channel);
