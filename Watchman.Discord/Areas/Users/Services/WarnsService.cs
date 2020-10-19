@@ -44,7 +44,7 @@ namespace Watchman.Discord.Areas.Users.Services
             var tm = this._punishmentsCachingService.GetWarnTimeout(serverId, receiverId);
             if (tm > 0)
             {
-                var recentWarn = _punishmentsCachingService.GetRecentUserWarn(serverId, receiverId);
+                var recentWarn = this._punishmentsCachingService.GetRecentUserWarn(serverId, receiverId);
                 var messagesService = this._messagesServiceFactory.Create(contexts);
                 var reasonMessage = new StringBuilder().Append("\"").Append(recentWarn.CreatedAt.ToString()).Append(" ").Append(recentWarn.Reason).Append("\"").ToString();
                 return new Func<ResponsesService, string>(x => x.UserHasWarnTimeout(receiverId.GetUserMention(), tm, reasonMessage, recentWarn.GrantorId.GetUserMention()));
