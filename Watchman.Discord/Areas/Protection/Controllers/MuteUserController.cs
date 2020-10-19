@@ -91,7 +91,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
                 {
                     continue;
                 }
-                values.Add($"{i++}.",
+                values.Add(i++.ToString(),
                     new Dictionary<string, string>
                     {
                         {"Użytkownik:", user.Id.GetUserMention()},

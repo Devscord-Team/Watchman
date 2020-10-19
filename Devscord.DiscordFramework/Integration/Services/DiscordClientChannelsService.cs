@@ -159,7 +159,6 @@ namespace Devscord.DiscordFramework.Integration.Services
         public async Task SetRolePermissions(IEnumerable<ChannelContext> channels, DiscordServerContext server, ChangedPermissions permissions, UserRole role)
         {
             Log.Information("Setting role {roleName} for {server}", role.Name, server.Name);
-            
             var socketRole = Server.GetSocketRoles(server.Id).FirstOrDefault(x => x.Id == role.Id);
             if (socketRole == null)
             {
@@ -178,7 +177,6 @@ namespace Devscord.DiscordFramework.Integration.Services
         public Task SetRolePermissions(ChannelContext channel, DiscordServerContext server, ChangedPermissions permissions, UserRole role)
         {
             Log.Information("Setting role {roleName} for {channel}", role.Name, channel.Name);
-
             var channelPermissions = new OverwritePermissions(permissions.AllowPermissions?.GetRawValue() ?? 0, permissions.DenyPermissions?.GetRawValue() ?? 0);
             var socketRole = this.GetSocketRole(server, role);
             return this.SetRolePermissions(channel, server, channelPermissions, socketRole);
@@ -187,7 +185,6 @@ namespace Devscord.DiscordFramework.Integration.Services
         public async Task RemoveRolePermissions(ChannelContext channel, DiscordServerContext server, UserRole role)
         {
             Log.Information("Removing role {roleName} for {channel}", role.Name, channel.Name);
-
             var socketRole = this.GetSocketRole(server, role);
             var guild = this._client.GetGuild(server.Id);
             var channelSocket = (IGuildChannel)await this.GetChannel(channel.Id, guild);

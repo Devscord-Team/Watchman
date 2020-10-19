@@ -84,7 +84,7 @@ namespace Watchman.DomainModel.Configuration.Services
                 var changedConfigurationItems = configurationItems.Where(x => _configurationVersions.GetValueOrDefault(x.Id) != x.Version);
                 foreach (var changedConfiguration in changedConfigurationItems)
                 {
-                    var sameTypeMappedConfigurations = mappedConfigurations.FirstOrDefault(x => x.Key.Name == changedConfiguration.Name).Value;
+                    var sameTypeMappedConfigurations = mappedConfigurations.First(x => x.Key.Name == changedConfiguration.Name).Value;
                     var mappedConfiguration = sameTypeMappedConfigurations[changedConfiguration.ServerId];
                     var configurationChangesHandler = this.GetConfigurationChangesHandler(mappedConfiguration);
                     if (configurationChangesHandler == null)
