@@ -41,7 +41,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         public async Task MuteUser(MuteCommand command, Contexts contexts)
         {
             var userToMute = await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
-            if (userToMute == null)
+            if (userToMute == null || userToMute.Id == this._usersService.GetBot().Id)
             {
                 throw new UserNotFoundException(command.User.GetUserMention());
             }
