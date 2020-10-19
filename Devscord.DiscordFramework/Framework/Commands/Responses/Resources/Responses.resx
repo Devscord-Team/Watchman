@@ -270,4 +270,7 @@
   <data name="AntiSpamWarning" xml:space="preserve">
     <value>Ostrzeżenie za spam na kanale: {{channelName}}</value>
   </data>
+  <data name="UserHasWarnTimeout" xml:space="preserve">
+    <value>Użytkownik {{user}} został niedawno ostrzeżony, poczekaj jeszcze {{timeout}} sekund. Powód poprzedniego ostrzeżenia: {{reason}} Nadane przez: {{grantor}}</value>
+  </data>
 </root>

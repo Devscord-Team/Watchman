@@ -313,5 +313,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             return responsesService.AntiSpamWarning(channelName) + responsesService.ProcessResponse("AntiSpamMute",
                 new KeyValuePair<string, string>("muteTime", muteTime.ToString()));
         }
+
+        public static string UserHasWarnTimeout(this ResponsesService responsesService, string targetUserMention, int timeoutSeconds, 
+            string previousReason, string previousGrantorMention) 
+        {
+            return responsesService.ProcessResponse("UserHasWarnTimeout",
+                new KeyValuePair<string, string>("user", targetUserMention),
+                new KeyValuePair<string, string>("timeout", timeoutSeconds.ToString()),
+                new KeyValuePair<string, string>("reason", previousReason),
+                new KeyValuePair<string, string>("grantor", previousGrantorMention));
+        }
     }
 }

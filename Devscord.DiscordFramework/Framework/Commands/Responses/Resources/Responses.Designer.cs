@@ -502,6 +502,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Użytkownik {{user}} został niedawno ostrzeżony, poczekaj jeszcze {{timeout}} sekund. Powód poprzedniego ostrzeżenia: {{reason}} Nadane przez: {{grantor}}.
+        /// </summary>
+        public static string UserHasWarnTimeout {
+            get {
+                return ResourceManager.GetString("UserHasWarnTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Użytkownik {{user}} nie istnieje..
         /// </summary>
         public static string UserNotFound {

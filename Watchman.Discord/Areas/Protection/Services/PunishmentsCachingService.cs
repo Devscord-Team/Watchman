@@ -20,6 +20,7 @@ namespace Watchman.Discord.Areas.Protection.Services
         private readonly ICommandBus _commandBus;
         private static Dictionary<ulong, List<Punishment>> _punishments;
         private static FriendlyDictionary<ulong, FriendlyDictionary<ulong, List<WarnEvent>>> _warnsByServer;
+        private const int WARN_TIMEOUT = 30;
 
         static PunishmentsCachingService()
         {
@@ -94,6 +95,21 @@ namespace Watchman.Discord.Areas.Protection.Services
         {
             _warnsByServer[serverId][userId].RemoveAll(x => x.CreatedAt >= from);
             _warnsByServer.CleanEmptyContainers();
+        }
+
+        public WarnEvent GetRecentUserWarn(ulong serverId, ulong userId)
+        {
+            return _warnsByServer[serverId][userId].LastOrDefault();
+        }
+
+        public int GetWarnTimeout(ulong serverId, ulong userId)
+        {
+            var lastWarnDate = this.GetRecentUserWarn(serverId, userId)?.UpdatedAt ?? DateTime.MinValue;
+            var one = DateTime.UtcNow;
+            var two = lastWarnDate;
+            var timeRange = (int)(one - two).TotalSeconds;
+            var timeout =  WARN_TIMEOUT - timeRange;
+            return timeout;
         }
 
         private Dictionary<ulong, List<Punishment>> LoadUsersPunishmentsFromDomain()

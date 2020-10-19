@@ -9,6 +9,7 @@ using MongoDB.Driver.Core.Servers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Watchman.Common.Models;
@@ -28,19 +29,30 @@ namespace Watchman.Discord.Areas.Users.Services
         private readonly ICommandBus _commandBus;
         private readonly IQueryBus _queryBus;
         private readonly PunishmentsCachingService _punishmentsCachingService;
+        private readonly MessagesServiceFactory _messagesServiceFactory;
 
-        public WarnsService(ICommandBus commandBus, IQueryBus queryBus, PunishmentsCachingService punishmentsCachingService)
+        public WarnsService(ICommandBus commandBus, IQueryBus queryBus, PunishmentsCachingService punishmentsCachingService, MessagesServiceFactory messagesServiceFactory)
         {
             this._commandBus = commandBus;
             this._queryBus = queryBus;
             this._punishmentsCachingService = punishmentsCachingService;
+            this._messagesServiceFactory = messagesServiceFactory;
         }
 
-        public Task AddWarnToUser(ulong grantorId, ulong receiverId, string reason, ulong serverId)
+        public async Task<Func<ResponsesService, string>> AddWarnToUser(Contexts contexts, ulong grantorId, ulong receiverId, string reason, ulong serverId)
         {
+            var tm = this._punishmentsCachingService.GetWarnTimeout(serverId, receiverId);
+            if (tm > 0)
+            {
+                var recentWarn = _punishmentsCachingService.GetRecentUserWarn(serverId, receiverId);
+                var messagesService = this._messagesServiceFactory.Create(contexts);
+                var reasonMessage = new StringBuilder().Append("\"").Append(recentWarn.CreatedAt.ToString()).Append(" ").Append(recentWarn.Reason).Append("\"").ToString();
+                return new Func<ResponsesService, string>(x => x.UserHasWarnTimeout(receiverId.GetUserMention(), tm, reasonMessage, recentWarn.GrantorId.GetUserMention()));
+            }
             var addWarnEventCommand = new AddWarnEventCommand(grantorId, receiverId, reason, serverId);
             this._punishmentsCachingService.AddWarnLocal(grantorId, receiverId, reason, serverId);
-            return this._commandBus.ExecuteAsync(addWarnEventCommand);
+            await this._commandBus.ExecuteAsync(addWarnEventCommand);
+            return new Func<ResponsesService, string>(x => x.UserHasBeenWarned(grantorId.GetUserMention(), receiverId.GetUserMention(), reason));
         }
 
         public Task RemoveUserWarns(ulong receiverId, ulong serverId)
