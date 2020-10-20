@@ -56,17 +56,12 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             {
                 throw new UserNotFoundException(command.User.GetUserMention());
             }
-<<<<<<< HEAD
-
             if(!contexts.User.IsAdmin() && selectedUser.Id != command.User) //allow check own messages for everybody
             {
                 throw new NotAdminPermissionsException();
             }
 
-            var timeRange = TimeRange.ToNow(DateTime.Now - command.Time); //todo: change DateTime.Now to Contexts.SentAt
-=======
             var timeRange = TimeRange.ToNow(DateTime.UtcNow - command.Time); //todo: change DateTime.Now to Contexts.SentAt
->>>>>>> master
 
             var query = new GetMessagesQuery(contexts.Server.Id, userId: selectedUser.Id)
             {

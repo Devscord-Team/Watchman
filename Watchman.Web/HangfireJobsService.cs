@@ -9,19 +9,12 @@ using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Models;
 using Hangfire;
-using Statsman.Core.Generators;
-using Watchman.Cqrs;
 using Watchman.Discord.Areas.Protection.Services;
 using Watchman.Discord.Areas.Protection.Strategies;
 using Watchman.Discord.Areas.Responses.Services;
-<<<<<<< HEAD
-using Watchman.DomainModel.Messages;
-using Watchman.DomainModel.Settings.Services;
+using Watchman.DomainModel.Configuration;
 using Watchman.Web.Jobs;
-=======
-using Watchman.Discord.Areas.Statistics.Services;
 using Watchman.DomainModel.Configuration.Services;
->>>>>>> master
 
 namespace Watchman.Web
 {
@@ -30,19 +23,12 @@ namespace Watchman.Web
         public void SetDefaultJobs(IContainer container)
         {
             var recurringJobManager = container.Resolve<IRecurringJobManager>();
-<<<<<<< HEAD
-
             this.AddServices(container, recurringJobManager);
             this.AddJobs(container, recurringJobManager);
         }
 
         public void AddServices(IContainer container, IRecurringJobManager recurringJobManager)
         {
-=======
-            var service = container.Resolve<ConfigurationService>();
-            recurringJobManager.AddOrUpdate(nameof(ConfigurationService), () => service.Refresh(), this.GetCronExpression(RefreshFrequent.Minutely));
-
->>>>>>> master
             var generators = new List<(ICyclicService, RefreshFrequent, bool shouldTriggerNow)>
             {
                 (container.Resolve<MessagesService>(), RefreshFrequent.Quarterly, true),
@@ -83,10 +69,7 @@ namespace Watchman.Web
                 }
                 result.Add(letter);
             }
-<<<<<<< HEAD
             return new string(result.ToArray());
-=======
->>>>>>> master
         }
 
         private string GetCronExpression(RefreshFrequent refreshFrequent)
