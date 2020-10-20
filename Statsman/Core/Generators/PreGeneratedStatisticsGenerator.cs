@@ -42,7 +42,7 @@ namespace Statsman.Core.Generators
         public Task ProcessStatisticsPerPeriod(ulong serverId, string period) //todo test
         {
             var messages = this.GetMessages(serverId);
-            var oldestMessageDatetime = messages.OrderBy(x => x.SentAt).FirstOrDefault()?.SentAt ?? default;
+            var oldestMessageDatetime = messages.Any() ? messages.Min(x => x.SentAt) : default;
             if (oldestMessageDatetime == default) //empty database
             {
                 return Task.CompletedTask;
