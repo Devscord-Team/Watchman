@@ -17,10 +17,9 @@ namespace Statsman.Core.Generators.Services
             var moveBackward = this.GetMoveBackward(period);
             var daysAtEnd = this.GetDaysAtEnd(period);
 
-            var periodTimeRange = TimeRange.Create(startOfCurrentPeriod, startOfCurrentPeriod.AddDays(moveForward.Invoke(startOfCurrentPeriod) - daysAtEnd).AddMilliseconds(-1));
-            periodTimeRange = periodTimeRange.Move(TimeSpan.FromDays(-moveBackward.Invoke(startOfCurrentPeriod)));
-            var iterableTimeRange = periodTimeRange.MoveWhile(x => !x.Contains(oldestMessageDatetime), x => TimeSpan.FromDays(-moveBackward.Invoke(x.Start)));
-            return iterableTimeRange;
+            return TimeRange.Create(startOfCurrentPeriod, startOfCurrentPeriod.AddDays(moveForward.Invoke(startOfCurrentPeriod) - daysAtEnd).AddMilliseconds(-1))
+                .Move(TimeSpan.FromDays(-moveBackward.Invoke(startOfCurrentPeriod)))
+                .MoveWhile(x => !x.Contains(oldestMessageDatetime), x => TimeSpan.FromDays(-moveBackward.Invoke(x.Start)));
         }
 
         public DateTime GetStartOfCurrentPeriod(string period)
