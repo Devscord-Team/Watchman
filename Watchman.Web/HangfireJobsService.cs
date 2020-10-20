@@ -27,7 +27,7 @@ namespace Watchman.Web
             this.AddJobs(container, recurringJobManager);
         }
 
-        public void AddServices(IContainer container, IRecurringJobManager recurringJobManager)
+        public void AddServices(IContainer container, IRecurringJobManager recurringJobManager) //TODO maybe rewrite CyclicServices to Jobs would be good idea
         {
             var generators = new List<(ICyclicService, RefreshFrequent, bool shouldTriggerNow)>
             {
