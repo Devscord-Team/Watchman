@@ -16,6 +16,7 @@ using Watchman.Integrations.Logging;
 using Watchman.Discord.Integration.DevscordFramework;
 using Watchman.Integrations.Database.MongoDB;
 using Watchman.DomainModel.Configuration;
+using Watchman.DomainModel.Configuration.Services;
 
 namespace Watchman.Discord
 {

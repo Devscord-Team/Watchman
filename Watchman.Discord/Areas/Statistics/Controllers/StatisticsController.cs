@@ -19,6 +19,7 @@ using Watchman.Cqrs;
 using Watchman.Discord.Areas.Statistics.BotCommands;
 using Watchman.DomainModel.Configuration;
 using Watchman.DomainModel.Configuration.ConfigurationItems;
+using Watchman.DomainModel.Configuration.Services;
 using Watchman.DomainModel.Messages.Commands;
 using Watchman.DomainModel.Messages.Queries;
 
