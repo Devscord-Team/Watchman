@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Watchman.Web.Jobs
 {
-    public interface IhangfireJob
+    public interface IHangfireJob
     {
         public Task Do();
         public RefreshFrequent Frequency { get; }

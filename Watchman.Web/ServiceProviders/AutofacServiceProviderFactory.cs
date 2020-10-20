@@ -49,7 +49,7 @@ namespace Watchman.Web.ServiceProviders
         private void RegisterCustomServices(ContainerBuilder builder)
         {
             var jobs = Assembly.GetAssembly(typeof(AutofacServiceProviderFactory)).GetTypes()
-                .Where(x => x.IsAssignableTo<IhangfireJob>() && !x.IsInterface).ToList();
+                .Where(x => x.IsAssignableTo<IHangfireJob>() && !x.IsInterface).ToList();
             foreach (var job in jobs)
             {
                 builder.RegisterType(job).AsSelf().PreserveExistingDefaults().SingleInstance();

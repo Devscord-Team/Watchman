@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Watchman.Web.Jobs.Statsman
 {
-    public class CalculateMessagesPerMonth : IhangfireJob
+    public class CalculateMessagesPerMonth : IHangfireJob
     {
         private readonly DiscordServersService discordServersService;
         private readonly PreGeneratedStatisticsGenerator preGeneratedStatisticsGenerator;

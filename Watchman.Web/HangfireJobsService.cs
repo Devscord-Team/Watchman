@@ -52,8 +52,8 @@ namespace Watchman.Web
         public void AddJobs(IContainer container, IRecurringJobManager recurringJobManager)
         {
             Assembly.GetAssembly(typeof(HangfireJobsService)).GetTypes()
-                .Where(x => x.IsAssignableTo<IhangfireJob>() && !x.IsInterface)
-                .Select(x => (x.Name, Job: (IhangfireJob) container.Resolve(x))).ToList()
+                .Where(x => x.IsAssignableTo<IHangfireJob>() && !x.IsInterface)
+                .Select(x => (x.Name, Job: (IHangfireJob) container.Resolve(x))).ToList()
                 .ForEach(x => recurringJobManager.AddOrUpdate(this.FixJobName(x.Name), () => x.Job.Do(), this.GetCronExpression(x.Job.Frequency)));
         }
 
