@@ -76,27 +76,30 @@ namespace Statsman.Core.TimeSplitting.Services
 
         private IEnumerable<TimeStatisticItem> SumItems(IEnumerable<TimeStatisticItem> statisticsPerDay, int daysPerItem, TimeRange expectedTimeRange)
         {
-            var result = new List<TimeStatisticItem>();
             for (var i = 0; i <= expectedTimeRange.DaysBetween / daysPerItem; i++)
             {
                 var itemsToSum = statisticsPerDay.Skip(i * daysPerItem).Take(daysPerItem);
                 var sum = itemsToSum.Sum(x => x.Value);
                 var item = new TimeStatisticItem(TimeRange.Create(itemsToSum.First().Time.Start, itemsToSum.Last().Time.End), sum);
-                result.Add(item);
+                yield return item;
             }
-            return result;
         }
 
         private IEnumerable<Message> FilterMessages(IEnumerable<Message> latestMessages, IEnumerable<PreGeneratedStatistic> preGeneratedStatistics)
         {
-            var latestPreGeneratedDate = preGeneratedStatistics.OrderBy(x => x.UpdatedAt).First();
+            var perDay = preGeneratedStatistics.Where(x => x.Period == Period.Day).ToList();
+            if (!perDay.Any())
+            {
+                return latestMessages;
+            }
+            var latestTimeRange = perDay.OrderBy(x => x.TimeRange).First();
             return latestMessages.Where(x =>
             {
-                if (x.SentAt.Date > latestPreGeneratedDate.TimeRange.End) //in newer day
+                if (x.SentAt.Date > latestTimeRange.TimeRange.End) //in newer day
                 {
                     return true;
                 }
-                if (x.SentAt > latestPreGeneratedDate.CreatedAt) //in same day, but later
+                if (x.SentAt > latestTimeRange.UpdatedAt) //in same day, but later
                 {
                     return true;
                 }
