@@ -1,5 +1,8 @@
+using System.Collections.Generic;
 using System.Net;
 using Hangfire;
+using Hangfire.Annotations;
+using Hangfire.Dashboard;
 using Hangfire.MemoryStorage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -80,7 +83,7 @@ namespace Watchman.Web
             app.UseStaticFiles();
 
             app.UseRouting();
-            app.UseHangfireDashboard();
+            app.UseHangfireDashboard("hangfire", new DashboardOptions { Authorization = new List<IDashboardAuthorizationFilter> { new HangfireDashboardFilter() } });
             app.UseHangfireServer();
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
@@ -94,6 +97,18 @@ namespace Watchman.Web
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
             });
+        }
+
+        public class HangfireDashboardFilter : IDashboardAuthorizationFilter
+        {
+            public bool Authorize([NotNull] DashboardContext context) //TODO check auth on production
+            {
+#if DEBUG
+                return true;
+#else
+                return false;
+#endif
+            }
         }
     }
 }
