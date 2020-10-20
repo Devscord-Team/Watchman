@@ -47,12 +47,7 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
                     statisticsToAdd.Add(statistic);
                     continue;
                 }
-                var version = similarStatistic.Version;
                 similarStatistic.SetCount(statistic.Count);
-                if (version == similarStatistic.Version)
-                {
-                    continue;
-                }
                 statisticsToUpdate.Add(similarStatistic);
             }
             return (toAdd: statisticsToAdd, toUpdate: statisticsToUpdate);

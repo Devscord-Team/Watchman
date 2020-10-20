@@ -29,12 +29,7 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
                 await session.AddAsync(command.PreGeneratedStatistic);
                 return;
             }
-            var version = currentTimeRange.Version;
             currentTimeRange.SetCount(command.PreGeneratedStatistic.Count);
-            if(version == currentTimeRange.Version)
-            {
-                return;
-            }
             await session.UpdateAsync(currentTimeRange);
         }
     }

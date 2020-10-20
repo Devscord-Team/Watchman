@@ -53,7 +53,10 @@ namespace Watchman.Integrations.Database.LiteDB
 
         public Task UpdateAsync<T>(T entity) where T : Entity
         {
-            this.GetCollection<T>().Update(entity.Id, entity);
+            if (entity.IsChanged())
+            {
+                this.GetCollection<T>().Update(entity.Id, entity);
+            }
             return Task.CompletedTask;
         }
 
