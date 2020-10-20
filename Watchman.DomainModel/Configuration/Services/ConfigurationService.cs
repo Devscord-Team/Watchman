@@ -38,7 +38,7 @@ namespace Watchman.DomainModel.Configuration.Services
             return _cachedConfigurationItem.Select(x => x.Value.GetValueOrDefault(serverId) ?? x.Value[DEFAULT_SERVER_ID]);
         }
 
-        public async Task SaveNewConfiguration(IMappedConfiguration changedConfiguration)
+        public async Task SaveNewConfiguration(IMappedConfiguration changedConfiguration) // todo: not saving new configuration not tested
         {
             using var session = this._sessionFactory.Create();
             var existingConfiguration = session.Get<ConfigurationItem>()
@@ -83,7 +83,7 @@ namespace Watchman.DomainModel.Configuration.Services
                 var tasks = new List<Task>();
                 var changedConfigurationItems = configurationItems.Where(x => _configurationVersions.GetValueOrDefault(x.Id) != x.Version);
                 foreach (var changedConfiguration in changedConfigurationItems)
-                {
+                { // todo: this foreach wasn't tested
                     var sameTypeMappedConfigurations = mappedConfigurations.First(x => x.Key.Name == changedConfiguration.Name).Value;
                     var mappedConfiguration = sameTypeMappedConfigurations[changedConfiguration.ServerId];
                     var configurationChangesHandler = this.GetConfigurationChangesHandler(mappedConfiguration);
