@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
 using Watchman.Common.Models;
 using Watchman.Integrations.Database;
 
@@ -57,12 +58,5 @@ namespace Watchman.DomainModel.Messages
             this.Count = count;
             this.Update();
         }
-    }
-
-    public class Period
-    {
-        public const string Day = "Day";
-        public const string Month = "Month";
-        public const string Quarter = "Quarter";
     }
 }
