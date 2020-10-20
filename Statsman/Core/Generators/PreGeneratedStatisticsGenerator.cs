@@ -65,7 +65,7 @@ namespace Statsman.Core.Generators
         {
             return Task.Run(() => 
             {
-                var messagesToSave = _statisticsProcessingService.ProcessTimeRangeMessages(serverId, messages, timeRange, period, users, channels);
+                var messagesToSave = _statisticsProcessingService.ProcessEverythingInTimeRange(serverId, messages, timeRange, users, channels, period);
                 foreach (var item in messagesToSave)
                 {
                     this._statisticsStorageService.SaveStatisticCommand(item);
