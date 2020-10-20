@@ -15,17 +15,15 @@ namespace Statsman.Core.Generators
 {
     public class PreGeneratedStatisticsGenerator
     {
-        private List<PreGeneratedStatistic> _preGeneratedStatistics = new List<PreGeneratedStatistic>();
-
         private readonly IQueryBus queryBus;
-        private readonly ICommandBus commandBus;
         private readonly StatisticsTimeService _statisticsTimeService;
+        private readonly StatisticsStorageService _statisticsStorageService;
 
-        public PreGeneratedStatisticsGenerator(IQueryBus queryBus, ICommandBus commandBus, StatisticsTimeService statisticsTimeService)
+        public PreGeneratedStatisticsGenerator(IQueryBus queryBus, StatisticsTimeService statisticsTimeService, StatisticsStorageService statisticsStorageService)
         {
             this.queryBus = queryBus;
-            this.commandBus = commandBus;
             this._statisticsTimeService = statisticsTimeService;
+            this._statisticsStorageService = statisticsStorageService;
         }
 
         public Task PreGenerateStatisticsPerDay(ulong serverId) //todo test
@@ -57,7 +55,7 @@ namespace Statsman.Core.Generators
                 .Select(timeRange => this.ProcessTimeRangeMessages(serverId, messages, timeRange, period, users, channels))
                 .ToArray();
             Task.WaitAll(tasks);
-            return this.SaveChanges();
+            return this._statisticsStorageService.SaveChanges();
         }
 
         private Task ProcessTimeRangeMessages(ulong serverId, IEnumerable<Message> messages, TimeRange timeRange, string period, List<ulong> users, List<ulong> channels) //todo test
@@ -67,7 +65,7 @@ namespace Statsman.Core.Generators
             {
                 return Task.CompletedTask;
             }
-            this.SaveStatisticCommand(serverId: serverId, userId: 0, channelId: 0, messagesInTimeRange.Count, timeRange, period);
+            this._statisticsStorageService.SaveStatisticCommand(serverId: serverId, userId: 0, channelId: 0, messagesInTimeRange.Count, timeRange, period);
             foreach (var channel in channels)
             {
                 this.ProcessChannels(serverId, channel, messagesInTimeRange, timeRange, users, period);
@@ -83,7 +81,7 @@ namespace Statsman.Core.Generators
             {
                 return;
             }
-            this.SaveStatisticCommand(serverId: serverId, userId: 0, channelId: channelId, messagesPerChannelInTimeRange.Count, timeRange, period);
+            this._statisticsStorageService.SaveStatisticCommand(serverId: serverId, userId: 0, channelId: channelId, messagesPerChannelInTimeRange.Count, timeRange, period);
             foreach (var user in users)
             {
                 var messagesPerUserAndChannelInTimeRange = messagesPerChannelInTimeRange.Where(x => x.Author.Id == user).ToList();
@@ -91,7 +89,7 @@ namespace Statsman.Core.Generators
                 {
                     continue;
                 }
-                this.SaveStatisticCommand(serverId: serverId, userId: user, channelId: channelId, messagesPerUserAndChannelInTimeRange.Count, timeRange, period);
+                this._statisticsStorageService.SaveStatisticCommand(serverId: serverId, userId: user, channelId: channelId, messagesPerUserAndChannelInTimeRange.Count, timeRange, period);
             }
         }
 
@@ -104,7 +102,7 @@ namespace Statsman.Core.Generators
                 {
                     continue;
                 }
-                this.SaveStatisticCommand(serverId: serverId, userId: user, channelId: 0, messagesPerUserInTimeRange.Count(), timeRange, period);
+                this._statisticsStorageService.SaveStatisticCommand(serverId: serverId, userId: user, channelId: 0, messagesPerUserInTimeRange.Count(), timeRange, period);
             }
         }
 
@@ -113,21 +111,6 @@ namespace Statsman.Core.Generators
             var query = new GetMessagesQuery(serverId);
             var messages = this.queryBus.Execute(query).Messages.ToList();
             return messages;
-        }
-
-        private void SaveStatisticCommand(ulong serverId, ulong userId, ulong channelId, int count, TimeRange timeRange, string period) //todo test
-        {
-            var preGeneratedStatistic = new PreGeneratedStatistic(serverId, count, timeRange, period);
-            preGeneratedStatistic.SetUser(userId);
-            preGeneratedStatistic.SetChannel(channelId);
-            this._preGeneratedStatistics.Add(preGeneratedStatistic);
-        }
-
-        private async Task SaveChanges()
-        {
-            var command = new AddOrUpdatePreGeneratedStatisticsCommand(this._preGeneratedStatistics);
-            await this.commandBus.ExecuteAsync(command);
-            this._preGeneratedStatistics = new List<PreGeneratedStatistic>();
         }
     }
 }
