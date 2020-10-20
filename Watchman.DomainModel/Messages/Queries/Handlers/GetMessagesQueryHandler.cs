@@ -44,11 +44,7 @@ namespace Watchman.DomainModel.Messages.Queries.Handlers
             return messages.Where(x => x.Channel.Id == channelId);
         }
 
-<<<<<<< HEAD
         private IEnumerable<Message> TakeOnlyForUser(ulong? userId, IEnumerable<Message> messages)
-=======
-        private IQueryable<Message> TakeOnlyForUser(ulong userId, IQueryable<Message> messages)
->>>>>>> master
         {
             return messages.Where(x => x.Author.Id == userId);
         }

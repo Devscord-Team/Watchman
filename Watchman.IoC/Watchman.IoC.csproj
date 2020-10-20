@@ -5,15 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-<<<<<<< HEAD
-    <None Remove="Modules\DatabaseModule.cs~RF1c6ad37.TMP" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Autofac" Version="5.2.0" />
-=======
     <PackageReference Include="Autofac" Version="6.0.0" />
->>>>>>> master
   </ItemGroup>
 
   <ItemGroup>

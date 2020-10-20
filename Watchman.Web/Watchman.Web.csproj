@@ -12,18 +12,11 @@
     <PackageReference Include="HangFire" Version="1.7.16" />
     <PackageReference Include="Hangfire.Core" Version="1.7.16" />
     <PackageReference Include="Hangfire.MemoryStorage" Version="1.7.0" />
-<<<<<<< HEAD
-    <PackageReference Include="Hangfire.Mongo" Version="0.7.11" />
-    <PackageReference Include="Autofac" Version="5.2.0" />
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="6.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.6" />
-=======
     <PackageReference Include="Hangfire.Mongo" Version="0.7.12" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.9" />
     <PackageReference Include="Autofac" Version="6.0.0" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.9" />
->>>>>>> master
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.9" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />

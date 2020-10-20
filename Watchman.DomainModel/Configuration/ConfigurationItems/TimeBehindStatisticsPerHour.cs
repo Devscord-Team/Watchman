@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Watchman.DomainModel.Settings.ConfigurationItems
+namespace Watchman.DomainModel.Configuration.ConfigurationItems
 {
     public class TimeBehindStatisticsPerHour : MappedConfiguration<TimeSpan>
     {

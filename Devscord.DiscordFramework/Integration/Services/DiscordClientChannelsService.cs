@@ -51,17 +51,13 @@ namespace Devscord.DiscordFramework.Integration.Services
             await user.SendMessageAsync(embed: embed);
         }
 
-<<<<<<< HEAD
         public async Task SendDirectFile(ulong userId, string fileName, Stream stream)
         {
             var user = await this._discordClientUsersService.GetUser(userId);
             await user.SendFileAsync(stream, fileName);
         }
 
-        public async Task<IChannel> GetChannel(ulong channelId, RestGuild guild = null)
-=======
         public async Task<IChannel> GetChannel(ulong channelId, IGuild guild)
->>>>>>> master
         {
             IChannel channel = await guild.GetChannelAsync(channelId);
             if (channel != null)

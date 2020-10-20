@@ -6,11 +6,8 @@ using Discord.Rest;
 using Discord.WebSocket;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-<<<<<<< HEAD
 using System.IO;
-=======
 using Devscord.DiscordFramework.Commons;
->>>>>>> master
 
 namespace Devscord.DiscordFramework.Integration.Services.Interfaces
 {
@@ -24,15 +21,11 @@ namespace Devscord.DiscordFramework.Integration.Services.Interfaces
         Task SendDirectEmbedMessage(ulong userId, Embed embed);
         Task SendDirectMessage(ulong userId, string message);
         IAsyncEnumerable<Message> GetMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong fromMessageId = 0, bool goBefore = true);
-<<<<<<< HEAD
-        Task<bool> CanBotReadTheChannel(IMessageChannel textChannel);
         Task SendDirectFile(ulong userId, string fileName, Stream stream);
-=======
         Task<bool> CanBotReadTheChannelAsync(IMessageChannel textChannel);
         Task<ITextChannel> CreateNewChannelAsync(ulong serverId, string channelName);
         Task SetRolePermissions(ChannelContext channel, DiscordServerContext server, ChangedPermissions permissions, UserRole role);
         Task SetRolePermissions(IEnumerable<ChannelContext> channels, DiscordServerContext server, ChangedPermissions permissions, UserRole role);
         Task RemoveRolePermissions(ChannelContext channel, DiscordServerContext server, UserRole role);
->>>>>>> master
     }
 }

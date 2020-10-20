@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Watchman.DomainModel.Configuration;
+using Watchman.DomainModel.Configuration.Services;
 using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.Settings.Services

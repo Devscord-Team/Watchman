@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Watchman.DomainModel.Settings.ConfigurationItems
+namespace Watchman.DomainModel.Configuration.ConfigurationItems
 {
     public class TimeBehindStatisticsPerDay : MappedConfiguration<TimeSpan>
     {

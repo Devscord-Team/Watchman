@@ -5,22 +5,27 @@ using Devscord.DiscordFramework.Framework.Commands.PropertyAttributes;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
+
 using Newtonsoft.Json;
+
 using Serilog;
+
 using Statsman;
 using Statsman.Models;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using Watchman.Common.Models;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Statistics.BotCommands;
+using Watchman.DomainModel.Configuration.ConfigurationItems;
 using Watchman.DomainModel.Messages.Commands;
 using Watchman.DomainModel.Messages.Queries;
-using Watchman.DomainModel.Settings.ConfigurationItems;
 using Watchman.DomainModel.Settings.Services;
 
 namespace Watchman.Discord.Areas.Statistics.Controllers
