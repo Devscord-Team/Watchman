@@ -11,9 +11,9 @@ namespace Watchman.Web.Jobs.Statsman
     public class CalculateMessagesPerQuarter : IhangfireJob
     {
         private readonly DiscordServersService discordServersService;
-        private readonly PreReneratedStatisticsGenerator preReneratedStatisticsGenerator;
+        private readonly PreGeneratedStatisticsGenerator preReneratedStatisticsGenerator;
 
-        public CalculateMessagesPerQuarter(DiscordServersService discordServersService, PreReneratedStatisticsGenerator preReneratedStatisticsGenerator)
+        public CalculateMessagesPerQuarter(DiscordServersService discordServersService, PreGeneratedStatisticsGenerator preReneratedStatisticsGenerator)
         {
             this.discordServersService = discordServersService;
             this.preReneratedStatisticsGenerator = preReneratedStatisticsGenerator;

@@ -11,14 +11,14 @@ using Watchman.DomainModel.Messages.Queries;
 
 namespace Statsman.Core.Generators
 {
-    public class PreReneratedStatisticsGenerator
+    public class PreGeneratedStatisticsGenerator
     {
         private List<PreGeneratedStatistic> preGeneratedStatistics = new List<PreGeneratedStatistic>();
 
         private readonly IQueryBus queryBus;
         private readonly ICommandBus commandBus;
 
-        public PreReneratedStatisticsGenerator(IQueryBus queryBus, ICommandBus commandBus)
+        public PreGeneratedStatisticsGenerator(IQueryBus queryBus, ICommandBus commandBus)
         {
             this.queryBus = queryBus;
             this.commandBus = commandBus;
