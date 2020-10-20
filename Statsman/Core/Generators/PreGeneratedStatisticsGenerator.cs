@@ -163,7 +163,7 @@ namespace Statsman.Core.Generators
             return iterableTimeRange;
         }
 
-        private DateTime GetQuarterStart(DateTime date) //TODO test
+        private DateTime GetQuarterStart(DateTime date)
         {
             return date.Month switch
             {
