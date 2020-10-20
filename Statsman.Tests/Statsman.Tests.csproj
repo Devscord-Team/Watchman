@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <Folder Include="Backups\" />
-    <Folder Include="Generators\Services\" />
     <Folder Include="TimeSplitting\" />
   </ItemGroup>
 

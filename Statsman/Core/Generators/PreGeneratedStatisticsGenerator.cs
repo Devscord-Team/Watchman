@@ -1,4 +1,5 @@
-﻿using Statsman.Core.Generators.Services;
+﻿using Statsman.Core.Generators.Models;
+using Statsman.Core.Generators.Services;
 
 using System;
 using System.Collections.Generic;
@@ -18,12 +19,14 @@ namespace Statsman.Core.Generators
         private readonly IQueryBus queryBus;
         private readonly StatisticsTimeService _statisticsTimeService;
         private readonly StatisticsStorageService _statisticsStorageService;
+        private readonly StatisticsProcessingService _statisticsProcessingService;
 
-        public PreGeneratedStatisticsGenerator(IQueryBus queryBus, StatisticsTimeService statisticsTimeService, StatisticsStorageService statisticsStorageService)
+        public PreGeneratedStatisticsGenerator(IQueryBus queryBus, StatisticsTimeService statisticsTimeService, StatisticsStorageService statisticsStorageService, StatisticsProcessingService statisticsProcessingService)
         {
             this.queryBus = queryBus;
             this._statisticsTimeService = statisticsTimeService;
             this._statisticsStorageService = statisticsStorageService;
+            this._statisticsProcessingService = statisticsProcessingService;
         }
 
         public Task PreGenerateStatisticsPerDay(ulong serverId) //todo test
@@ -60,50 +63,14 @@ namespace Statsman.Core.Generators
 
         private Task ProcessTimeRangeMessages(ulong serverId, IReadOnlyList<Message> messages, TimeRange timeRange, string period, List<ulong> users, List<ulong> channels)
         {
-            var messagesInTimeRange = messages.Where(x => timeRange.Contains(x.SentAt)).ToList();
-            if (messagesInTimeRange.Count == 0)
+            return Task.Run(() => 
             {
-                return Task.CompletedTask;
-            }
-            this._statisticsStorageService.SaveStatisticCommand(serverId: serverId, userId: 0, channelId: 0, messagesInTimeRange.Count, timeRange, period);
-            foreach (var channel in channels)
-            {
-                this.ProcessChannels(serverId, channel, messagesInTimeRange, timeRange, users, period);
-            }
-            this.ProcessUsers(serverId, users, messagesInTimeRange, timeRange, period);
-            return Task.CompletedTask;
-        }
-
-        private void ProcessChannels(ulong serverId, ulong channelId, IReadOnlyList<Message> messagesInTimeRange, TimeRange timeRange, List<ulong> users, string period)
-        {
-            var messagesPerChannelInTimeRange = messagesInTimeRange.Where(x => x.Channel.Id == channelId).ToList();
-            if (messagesPerChannelInTimeRange.Count == 0)
-            {
-                return;
-            }
-            this._statisticsStorageService.SaveStatisticCommand(serverId: serverId, userId: 0, channelId: channelId, messagesPerChannelInTimeRange.Count, timeRange, period);
-            foreach (var user in users)
-            {
-                var messagesPerUserAndChannelInTimeRange = messagesPerChannelInTimeRange.Where(x => x.Author.Id == user).ToList();
-                if (messagesPerUserAndChannelInTimeRange.Count == 0)
+                var messagesToSave = _statisticsProcessingService.ProcessTimeRangeMessages(serverId, messages, timeRange, period, users, channels);
+                foreach (var item in messagesToSave)
                 {
-                    continue;
+                    this._statisticsStorageService.SaveStatisticCommand(item);
                 }
-                this._statisticsStorageService.SaveStatisticCommand(serverId: serverId, userId: user, channelId: channelId, messagesPerUserAndChannelInTimeRange.Count, timeRange, period);
-            }
-        }
-
-        private void ProcessUsers(ulong serverId, List<ulong> users, IReadOnlyList<Message> messagesInTimeRange, TimeRange timeRange, string period)
-        {
-            foreach (var user in users)
-            {
-                var messagesPerUserInTimeRange = messagesInTimeRange.Where(x => x.Author.Id == user).ToList();
-                if (messagesPerUserInTimeRange.Count == 0)
-                {
-                    continue;
-                }
-                this._statisticsStorageService.SaveStatisticCommand(serverId: serverId, userId: user, channelId: 0, messagesPerUserInTimeRange.Count(), timeRange, period);
-            }
+            });
         }
 
         private IReadOnlyList<Message> GetMessages(ulong serverId)

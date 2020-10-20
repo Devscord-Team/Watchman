@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Statsman.Core.Generators.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-
 using Watchman.Common.Models;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Messages;
@@ -20,11 +20,15 @@ namespace Statsman.Core.Generators.Services
             this._commandBus = commandBus;
         }
 
-        public void SaveStatisticCommand(ulong serverId, ulong userId, ulong channelId, int count, TimeRange timeRange, string period)
+        public void SaveStatisticCommand(SaveStatisticItem saveStatisticItem)
         {
-            var preGeneratedStatistic = new PreGeneratedStatistic(serverId, count, timeRange, period);
-            preGeneratedStatistic.SetUser(userId);
-            preGeneratedStatistic.SetChannel(channelId);
+            if(saveStatisticItem == null)
+            {
+                return;
+            }
+            var preGeneratedStatistic = new PreGeneratedStatistic(saveStatisticItem.ServerId, saveStatisticItem.Count, saveStatisticItem.TimeRange, saveStatisticItem.Period);
+            preGeneratedStatistic.SetUser(saveStatisticItem.UserId);
+            preGeneratedStatistic.SetChannel(saveStatisticItem.ChannelId);
             this._preGeneratedStatistics.Add(preGeneratedStatistic);
         }
 
