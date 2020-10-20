@@ -33,7 +33,6 @@ namespace Watchman.Web.ServiceProviders
         public IServiceProvider CreateServiceProvider(ContainerBuilder containerBuilder)
         {
             var container = containerBuilder.Build();
-
             var workflowBuilder = new WatchmanBot(new DiscordConfiguration
             {
                 MongoDbConnectionString = this._configuration.GetConnectionString("Mongo"),
