@@ -20,7 +20,7 @@ namespace Statsman.Core.Generators.Services
             this._commandBus = commandBus;
         }
 
-        public void SaveStatisticCommand(ulong serverId, ulong userId, ulong channelId, int count, TimeRange timeRange, string period) //todo test
+        public void SaveStatisticCommand(ulong serverId, ulong userId, ulong channelId, int count, TimeRange timeRange, string period)
         {
             var preGeneratedStatistic = new PreGeneratedStatistic(serverId, count, timeRange, period);
             preGeneratedStatistic.SetUser(userId);
