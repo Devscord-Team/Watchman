@@ -7,7 +7,7 @@ namespace Watchman.DomainModel.Users.Commands.Handlers
     public class AddMuteEventCommandHandler : ICommandHandler<AddMuteEventCommand>
     {
         private readonly ISessionFactory _sessionFactory;
-
+         
         public AddMuteEventCommandHandler(ISessionFactory sessionFactory)
         {
             this._sessionFactory = sessionFactory;
