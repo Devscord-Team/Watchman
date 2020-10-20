@@ -21,9 +21,12 @@ namespace Watchman.Discord.IoC.Modules
                 .GetTypeInfo()
                 .Assembly;
 
-            builder.Register((c, p) => new MongoClient(this.configuration.MongoDbConnectionString).GetDatabase("devscord"))
+            builder.Register((c, p) => new MongoClient(this._mongoConnectionString).GetDatabase("devscord"))
                 .As<IMongoDatabase>()
-                .InstancePerLifetimeScope();
+                .SingleInstance();
+            builder.Register((c, p) => new LiteDatabase(this._liteConnectionString))
+                .As<ILiteDatabase>()
+                .SingleInstance();
 
             builder.Register((c, p) =>
             {

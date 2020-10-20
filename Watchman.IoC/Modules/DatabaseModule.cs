@@ -26,8 +26,8 @@ namespace Watchman.IoC.Modules
             builder.Register((c, p) => new MongoClient(this._mongoConnectionString).GetDatabase("devscord"))
                 .As<IMongoDatabase>()
                 .SingleInstance();
-            builder.Register((c, p) => new MongoClient(this._liteConnectionString).GetDatabase("devscord"))
-                .As<IMongoDatabase>()
+            builder.Register((c, p) => new LiteDatabase(this._liteConnectionString))
+                .As<ILiteDatabase>()
                 .SingleInstance();
 
             builder.Register((c, p) => 
