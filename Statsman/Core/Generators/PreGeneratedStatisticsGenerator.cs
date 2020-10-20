@@ -13,7 +13,7 @@ namespace Statsman.Core.Generators
 {
     public class PreGeneratedStatisticsGenerator
     {
-        private List<PreGeneratedStatistic> preGeneratedStatistics = new List<PreGeneratedStatistic>();
+        private List<PreGeneratedStatistic> _preGeneratedStatistics = new List<PreGeneratedStatistic>();
 
         private readonly IQueryBus queryBus;
         private readonly ICommandBus commandBus;
@@ -116,14 +116,14 @@ namespace Statsman.Core.Generators
             var preGeneratedStatistic = new PreGeneratedStatistic(serverId, count, timeRange, period);
             preGeneratedStatistic.SetUser(userId);
             preGeneratedStatistic.SetChannel(channelId);
-            this.preGeneratedStatistics.Add(preGeneratedStatistic);
+            this._preGeneratedStatistics.Add(preGeneratedStatistic);
         }
 
         private async Task SaveChanges()
         {
-            var command = new AddOrUpdatePreGeneratedStatisticsCommand(this.preGeneratedStatistics);
+            var command = new AddOrUpdatePreGeneratedStatisticsCommand(this._preGeneratedStatistics);
             await this.commandBus.ExecuteAsync(command);
-            this.preGeneratedStatistics = new List<PreGeneratedStatistic>();
+            this._preGeneratedStatistics = new List<PreGeneratedStatistic>();
         }
 
         private IEnumerable<TimeRange> GetTimeRangeMovePerPeriod(string period, DateTime oldestMessageDatetime) //TODO test
