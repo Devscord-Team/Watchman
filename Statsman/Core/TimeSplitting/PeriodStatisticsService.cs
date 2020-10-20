@@ -30,52 +30,42 @@ namespace Statsman.Core.TimeSplitting
             this._statisticsGroupingService = statisticsGroupingService;
         }
 
-        public async Task<(Stream Chart, ResultMessage Message)> PerMinute(StatisticsRequest request)
+        public Task<(Stream Chart, ResultMessage Message)> PerMinute(StatisticsRequest request)
         {
-            var timeRange = TimeRange.ToNow(DateTime.UtcNow.AddMinutes(-request.TimeBehind.TotalMinutes));
-            var statistics = await this._statisticsGroupingService.GetStatisticsGroupedPerDetailedPeriod(request, timeRange, DetailedPeriod.Minute);
-            return (Chart: await this._chartsService.GetImageStatisticsPerPeriod(statistics, "Messages per minute"),
-                Message: this.GetMessage(request.UserId, request.ChannelId, DetailedPeriod.Minute, timeRange)); //TODO get label and message from configuration
+            return this.GetResult(request, DetailedPeriod.Minute, DateTime.UtcNow);
         }
 
-        public async Task<(Stream Chart, ResultMessage Message)> PerHour(StatisticsRequest request)
+        public Task<(Stream Chart, ResultMessage Message)> PerHour(StatisticsRequest request)
         {
-            var timeRange = TimeRange.ToNow(DateTime.UtcNow.AddHours(-request.TimeBehind.TotalHours));
-            var statistics = await this._statisticsGroupingService.GetStatisticsGroupedPerDetailedPeriod(request, timeRange, DetailedPeriod.Hour);
-            return (Chart: await this._chartsService.GetImageStatisticsPerPeriod(statistics, "Messages per hour"),
-                Message: this.GetMessage(request.UserId, request.ChannelId, DetailedPeriod.Hour, timeRange));
+            return this.GetResult(request, DetailedPeriod.Minute, DateTime.UtcNow);
         }
 
-        public async Task<(Stream Chart, ResultMessage Message)> PerDay(StatisticsRequest request)
+        public Task<(Stream Chart, ResultMessage Message)> PerDay(StatisticsRequest request)
         {
-            var timeRange = TimeRange.ToNow(DateTime.Today.AddDays(-request.TimeBehind.TotalDays));
-            var statistics = await this._statisticsGroupingService.GetStatisticsGroupedPerDaysPeriod(request, timeRange, DetailedPeriod.Day);
-            return (Chart: await this._chartsService.GetImageStatisticsPerPeriod(statistics, "Messages per day"),
-                Message: this.GetMessage(request.UserId, request.ChannelId, DetailedPeriod.Day, timeRange));
+            return this.GetResult(request, DetailedPeriod.Day, DateTime.Today);
         }
 
-        public async Task<(Stream Chart, ResultMessage Message)> PerWeek(StatisticsRequest request)
+        public Task<(Stream Chart, ResultMessage Message)> PerWeek(StatisticsRequest request)
         {
-            var timeRange = TimeRange.ToNow(DateTime.Today.AddDays(-request.TimeBehind.TotalDays));
-            var statistics = await this._statisticsGroupingService.GetStatisticsGroupedPerDaysPeriod(request, timeRange, DetailedPeriod.Week);
-            return (Chart: await this._chartsService.GetImageStatisticsPerPeriod(statistics, "Messages per week"),
-                Message: this.GetMessage(request.UserId, request.ChannelId, DetailedPeriod.Week, timeRange));
+            return this.GetResult(request, DetailedPeriod.Week, DateTime.Today);
         }
 
-        public async Task<(Stream Chart, ResultMessage Message)> PerMonth(StatisticsRequest request)
+        public Task<(Stream Chart, ResultMessage Message)> PerMonth(StatisticsRequest request)
         {
-            var timeRange = TimeRange.ToNow(DateTime.Today.AddDays(-request.TimeBehind.TotalDays));
-            var statistics = await this._statisticsGroupingService.GetStatisticsGroupedPerDaysPeriod(request, timeRange, DetailedPeriod.Month);
-            return (Chart: await this._chartsService.GetImageStatisticsPerPeriod(statistics, "Messages per month"),
-                Message: this.GetMessage(request.UserId, request.ChannelId, DetailedPeriod.Month, timeRange));
+            return this.GetResult(request, DetailedPeriod.Month, DateTime.Today);
         }
 
-        public async Task<(Stream Chart, ResultMessage Message)> PerQuarter(StatisticsRequest request)
+        public Task<(Stream Chart, ResultMessage Message)> PerQuarter(StatisticsRequest request)
         {
-            var timeRange = TimeRange.ToNow(DateTime.Today.AddDays(-request.TimeBehind.TotalDays));
-            var statistics = await this._statisticsGroupingService.GetStatisticsGroupedPerDaysPeriod(request, timeRange, DetailedPeriod.Quarter);
-            return (Chart: await this._chartsService.GetImageStatisticsPerPeriod(statistics, "Messages per quarter"),
-                Message: this.GetMessage(request.UserId, request.ChannelId, DetailedPeriod.Quarter, timeRange));
+            return this.GetResult(request, DetailedPeriod.Quarter, DateTime.Today);
+        }
+
+        private async Task<(Stream Chart, ResultMessage Message)> GetResult(StatisticsRequest request, DetailedPeriod period, DateTime startTimeRangeTimeOfDay)
+        {
+            var timeRange = TimeRange.ToNow(startTimeRangeTimeOfDay.Add(request.TimeBehind));
+            var statistics = await this._statisticsGroupingService.GetStatisticsGroupedPerDetailedPeriod(request, timeRange, period);
+            return (Chart: await this._chartsService.GetImageStatisticsPerPeriod(statistics, $"Messages per {Enum.GetName(typeof(DetailedPeriod), period).ToLower()}"),
+                Message: this.GetMessage(request.UserId, request.ChannelId, period, timeRange));
         }
 
         private ResultMessage GetMessage(ulong userId, ulong channelId, DetailedPeriod period, TimeRange timeRange)

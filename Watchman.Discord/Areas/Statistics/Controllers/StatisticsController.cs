@@ -5,19 +5,15 @@ using Devscord.DiscordFramework.Framework.Commands.PropertyAttributes;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
-
 using Serilog;
-
 using Statsman.Core.TimeSplitting;
 using Statsman.Models;
-
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using Watchman.Common.Models;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Statistics.BotCommands;
@@ -50,7 +46,7 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         }
 
         [ReadAlways]
-        public async Task SaveMessageAsync(DiscordRequest request, Contexts contexts)
+        public Task SaveMessageAsync(DiscordRequest request, Contexts contexts)
         {
             Log.Information("Started saving the message");
             var command = new AddMessageCommand(request.OriginalMessage,
@@ -59,8 +55,7 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
                 contexts.Server.Id, contexts.Server.Name,
                 request.SentAt);
             Log.Information("Command created");
-            await this._commandBus.ExecuteAsync(command);
-            Log.Information("Message saved");
+            return this._commandBus.ExecuteAsync(command).ContinueWith(x => Log.Information("Message saved"));
         }
 
         public async Task Stats(StatsCommand command, Contexts contexts)
@@ -70,20 +65,20 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
             {
                 return;
             }
-            if(command.Direct)
+            if (command.Direct)
             {
-                _ = await Task.Run(() => _directMessagesService.TrySendFile(contexts.User.Id, "Statistics.png", chart))
+                await Task.Run(() => _directMessagesService.TrySendFile(contexts.User.Id, "Statistics.png", chart))
                     .ContinueWith(x => _directMessagesService.TrySendEmbedMessage(contexts.User.Id, message.Title, string.Empty, message.GetArguments()));
             }
             else
             {
                 var messagesService = this._messagesServiceFactory.Create(contexts);
-                _ = await Task.Run(() => messagesService.SendFile("Statistics.png", chart))
+                await Task.Run(() => messagesService.SendFile("Statistics.png", chart))
                     .ContinueWith(x => messagesService.SendEmbedMessage(message.Title, string.Empty, message.GetArguments()));
             }
         }
 
-        private async Task<(Stream Chart, ResultMessage Message)> GetStatistics(StatsCommand command, Contexts contexts)
+        private Task<(Stream Chart, ResultMessage Message)> GetStatistics(StatsCommand command, Contexts contexts)
         {
             var task = command switch
             {
@@ -95,7 +90,7 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
                 _ when command.Quarter => this.GetStatisticsPerQuarter(command, contexts),
                 _ => this.GetStatisticsPerHour(command, contexts)
             };
-            return await task;
+            return task;
         }
 
         private Task<(Stream Chart, ResultMessage Message)> GetStatisticsPerMinute(StatsCommand command, Contexts contexts)
