@@ -83,7 +83,7 @@ namespace Watchman.Web
             app.UseStaticFiles();
 
             app.UseRouting();
-            app.UseHangfireDashboard("hangfire", new DashboardOptions { Authorization = new List<IDashboardAuthorizationFilter> { new HangfireDashboardFilter() } });
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions { Authorization = new List<IDashboardAuthorizationFilter> { new HangfireDashboardFilter() } });
             app.UseHangfireServer();
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
