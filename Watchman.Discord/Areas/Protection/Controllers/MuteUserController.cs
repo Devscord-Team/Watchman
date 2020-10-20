@@ -66,7 +66,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         public async Task MutedUsers(MutedUsersCommand mutedUsersCommand, Contexts contexts)
         {
             var notUnmutedMuteEvents = this._mutingHelper.GetNotUnmutedMuteEvents(contexts.Server.Id);
-            var mutedUsers = this._usersService.GetUsersAsync(contexts.Server);
+            var mutedUsers = this._usersService.GetUsers(contexts.Server).ToList();
             var messagesService = this._messagesServiceFactory.Create(contexts);
             var mutedUsersMessageData = this.GetMuteEmbedMessage(notUnmutedMuteEvents.ToList(), mutedUsers);
             if (!mutedUsersMessageData.Values.Any())
@@ -78,23 +78,22 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             await messagesService.SendResponse(x => x.MutedUsersListSent());
         }
 
-        private MutedUsersMessageData GetMuteEmbedMessage(IEnumerable<MuteEvent> notUnmutedMuteEvents, IEnumerable<UserContext> users)
+        private MutedUsersMessageData GetMuteEmbedMessage(IEnumerable<MuteEvent> notUnmutedMuteEvents, IReadOnlyList<UserContext> users)
         {
             var title = "Lista wyciszonych użytkowników";
             var description = "Wyciszeni użytkownicy, powody oraz data wygaśnięcia";
             var values = new Dictionary<string, Dictionary<string, string>>();
-            var i = 1;
-            foreach (var user in users)
+            for (var i = 0; i < users.Count; i++)
             {
-                var muteEvent = notUnmutedMuteEvents.FirstOrDefault(x => x.UserId == user.Id);
+                var muteEvent = notUnmutedMuteEvents.FirstOrDefault(x => x.UserId == users[i].Id);
                 if (muteEvent == null)
                 {
                     continue;
                 }
-                values.Add(i++.ToString(),
+                values.Add(i.ToString(),
                     new Dictionary<string, string>
                     {
-                        {"Użytkownik:", user.Id.GetUserMention()},
+                        {"Użytkownik:", users[i].Id.GetUserMention()},
                         {"Powód:", muteEvent.Reason},
                         {"Data zakończenia:", muteEvent.TimeRange.End.ToLocalTimeString() }
                     });

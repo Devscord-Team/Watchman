@@ -80,10 +80,9 @@ namespace Watchman.DomainModel.Configuration.Services
             var mappedConfigurations = this._configurationMapperService.GetMappedConfigurations(configurationItems);
             if (_configurationVersions != null)
             {
-                var tasks = new List<Task>();
                 var changedConfigurationItems = configurationItems.Where(x => _configurationVersions.GetValueOrDefault(x.Id) != x.Version);
-                foreach (var changedConfiguration in changedConfigurationItems)
-                { // todo: this foreach wasn't tested
+                var tasks = changedConfigurationItems.Select(changedConfiguration => // todo: this select wasn't tested
+                { 
                     var sameTypeMappedConfigurations = mappedConfigurations.First(x => x.Key.Name == changedConfiguration.Name).Value;
                     var mappedConfiguration = sameTypeMappedConfigurations[changedConfiguration.ServerId];
                     var configurationChangesHandler = this.GetConfigurationChangesHandler(mappedConfiguration);
@@ -91,9 +90,8 @@ namespace Watchman.DomainModel.Configuration.Services
                     {
                         throw new NotImplementedException($"configurationChangesHandler for {changedConfiguration.Name} is not implemented");
                     }
-                    var task = configurationChangesHandler.Handle(changedConfiguration.ServerId, mappedConfiguration);
-                    tasks.Add(task);
-                }
+                    return configurationChangesHandler.Handle(changedConfiguration.ServerId, mappedConfiguration);
+                });
                 Task.WaitAll(tasks.ToArray());
             }
             _configurationVersions = configurationItems.ToDictionary(x => x.Id, x => x.Version);

@@ -38,7 +38,7 @@ namespace Devscord.DiscordFramework.Services
             await socketUser.RemoveRoleAsync(socketRole);
         }
 
-        public IEnumerable<UserContext> GetUsersAsync(DiscordServerContext server)
+        public IEnumerable<UserContext> GetUsers(DiscordServerContext server)
         {
             var guildUsers = Server.GetGuildUsers(server.Id);
             foreach (var user in guildUsers)

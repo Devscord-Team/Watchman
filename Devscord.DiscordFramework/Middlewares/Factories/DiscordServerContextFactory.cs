@@ -27,7 +27,7 @@ namespace Devscord.DiscordFramework.Middlewares.Factories
             var systemChannel = this._channelContextFactory.Create(guild.GetSystemChannelAsync().Result);
 
             UserContext getOwner() => this._userContextsFactory.Create(guild.GetOwnerAsync().Result);
-            IEnumerable<UserContext> getServerUsers(DiscordServerContext server) => this._usersService.GetUsersAsync(server);
+            IEnumerable<UserContext> getServerUsers(DiscordServerContext server) => this._usersService.GetUsers(server);
             IEnumerable<UserRole> getServerRoles(DiscordServerContext server) => this._usersRolesService.GetRoles(server);
             IEnumerable<ChannelContext> getTextChannels(DiscordServerContext server) => guild.GetTextChannelsAsync().Result.Select(x => this._channelContextFactory.Create(x));
 
