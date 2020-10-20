@@ -1,6 +1,5 @@
 ﻿using Statsman.Core.Generators.Models;
 using Statsman.Core.Generators.Services;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
