@@ -24,19 +24,19 @@ namespace Statsman.Core.Generators
             this.commandBus = commandBus;
         }
 
-        public async Task PreGenerateStatisticsPerDay(ulong serverId) //todo test
+        public Task PreGenerateStatisticsPerDay(ulong serverId) //todo test
         {
-            await this.ProcessStatisticsPerPeriod(serverId, Period.Day);
+            return this.ProcessStatisticsPerPeriod(serverId, Period.Day);
         }
 
-        public async Task PreGenerateStatisticsPerMonth(ulong serverId) //todo test
+        public Task PreGenerateStatisticsPerMonth(ulong serverId) //todo test
         {
-            await this.ProcessStatisticsPerPeriod(serverId, Period.Month);
+            return this.ProcessStatisticsPerPeriod(serverId, Period.Month);
         }
 
-        public async Task PreGenerateStatisticsPerQuarter(ulong serverId) //todo test
+        public Task PreGenerateStatisticsPerQuarter(ulong serverId) //todo test
         {
-            await this.ProcessStatisticsPerPeriod(serverId, Period.Quarter);
+            return this.ProcessStatisticsPerPeriod(serverId, Period.Quarter);
         }
 
         public Task ProcessStatisticsPerPeriod(ulong serverId, string period) //todo test

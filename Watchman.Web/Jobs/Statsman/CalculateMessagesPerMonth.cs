@@ -11,12 +11,12 @@ namespace Watchman.Web.Jobs.Statsman
     public class CalculateMessagesPerMonth : IhangfireJob
     {
         private readonly DiscordServersService discordServersService;
-        private readonly PreGeneratedStatisticsGenerator preReneratedStatisticsGenerator;
+        private readonly PreGeneratedStatisticsGenerator preGeneratedStatisticsGenerator;
 
-        public CalculateMessagesPerMonth(DiscordServersService discordServersService, PreGeneratedStatisticsGenerator preReneratedStatisticsGenerator)
+        public CalculateMessagesPerMonth(DiscordServersService discordServersService, PreGeneratedStatisticsGenerator preGeneratedStatisticsGenerator)
         {
             this.discordServersService = discordServersService;
-            this.preReneratedStatisticsGenerator = preReneratedStatisticsGenerator;
+            this.preGeneratedStatisticsGenerator = preGeneratedStatisticsGenerator;
         }
 
         public RefreshFrequent Frequency => RefreshFrequent.Weekly;
@@ -25,7 +25,7 @@ namespace Watchman.Web.Jobs.Statsman
         {
             await foreach (var server in this.discordServersService.GetDiscordServersAsync())
             {
-                await this.preReneratedStatisticsGenerator.PreGenerateStatisticsPerMonth(server.Id);
+                await this.preGeneratedStatisticsGenerator.PreGenerateStatisticsPerMonth(server.Id);
             }
         }
     }
