@@ -2,8 +2,8 @@
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
-using Watchman.DomainModel.Settings.ConfigurationItems;
-using Watchman.DomainModel.Settings.Services;
+using Watchman.DomainModel.Configuration.ConfigurationItems;
+using Watchman.DomainModel.Configuration.Services;
 
 namespace Watchman.Discord.Areas.Protection.Strategies
 {

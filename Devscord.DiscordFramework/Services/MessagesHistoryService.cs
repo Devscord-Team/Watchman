@@ -7,20 +7,14 @@ namespace Devscord.DiscordFramework.Services
 {
     public class MessagesHistoryService
     {
-        public async IAsyncEnumerable<Message> ReadMessagesAsync(DiscordServerContext server, ChannelContext channelContext, int limit)
+        public IAsyncEnumerable<Message> ReadMessagesAsync(DiscordServerContext server, ChannelContext channelContext, int limit)
         {
-            await foreach (var message in Server.GetMessages(server, channelContext, limit))
-            {
-                yield return message;
-            }
+            return Server.GetMessages(server, channelContext, limit);
         }
 
-        public async IAsyncEnumerable<Message> ReadMessagesAsync(DiscordServerContext server, ChannelContext channelContext, int limit, ulong fromMessageId, bool goBefore)
+        public IAsyncEnumerable<Message> ReadMessagesAsync(DiscordServerContext server, ChannelContext channelContext, int limit, ulong fromMessageId, bool goBefore)
         {
-            await foreach (var message in Server.GetMessages(server, channelContext, limit, fromMessageId, goBefore))
-            {
-                yield return message;
-            }
+            return Server.GetMessages(server, channelContext, limit, fromMessageId, goBefore);
         }
     }
 }

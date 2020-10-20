@@ -99,6 +99,13 @@ namespace Devscord.DiscordFramework
             return this;
         }
 
+        public WorkflowBuilder AddOnChannelRemovedHandler(Action<WorkflowBuilderHandlers<Func<ChannelContext, DiscordServerContext, Task>>> action)
+        {
+            this.AddHandlers(action, this._workflow.OnChannelRemoved.Add);
+            Log.Debug("OnChannelRemoved handlers have been set");
+            return this;
+        }
+
         public WorkflowBuilder AddOnRoleUpdatedHandlers(Action<WorkflowBuilderHandlers<Func<UserRole, UserRole, Task>>> action)
         {
             this.AddHandlers(action, this._workflow.OnRoleUpdated.Add);
@@ -120,7 +127,7 @@ namespace Devscord.DiscordFramework
             return this;
         }
 
-        public WorkflowBuilder AddOnWorkflowExceptionHandlers(Action<WorkflowBuilderHandlers<Action<Exception, Contexts>>> action)
+        public WorkflowBuilder AddOnWorkflowExceptionHandlers(Action<WorkflowBuilderHandlers<Func<Exception, Contexts, Task>>> action)
         {
             this.AddHandlers(action, this._workflow.OnWorkflowException.Add);
             Log.Debug("OnWorkflowException handlers have been set");
@@ -139,7 +146,6 @@ namespace Devscord.DiscordFramework
 
         public WorkflowBuilder Build()
         {
-            this._workflow.Initialize();
             this._workflow.MapHandlers(this._client);
 
             this._client.LoginAsync(TokenType.Bot, this._token).Wait();

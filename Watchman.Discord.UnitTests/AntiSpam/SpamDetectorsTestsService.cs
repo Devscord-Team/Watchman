@@ -4,8 +4,8 @@ using Devscord.DiscordFramework.Framework.Commands.AntiSpam;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
 using Devscord.DiscordFramework.Services.Models;
 using Moq;
+using Watchman.DomainModel.Configuration.Services;
 using Watchman.DomainModel.Messages.Queries;
-using Watchman.DomainModel.Settings.Services;
 
 namespace Watchman.Discord.UnitTests.AntiSpam
 {

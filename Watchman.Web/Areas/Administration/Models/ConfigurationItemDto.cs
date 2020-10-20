@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
-using Watchman.DomainModel.Settings;
+﻿using Watchman.DomainModel.Configuration;
 
 namespace Watchman.Web.Areas.Administration.Models
 {

@@ -261,4 +261,13 @@
   <data name="TryToGoogleIt" xml:space="preserve">
     <value>Spróbuj to wygooglować :wink:\nMasz tu link: {{link}}</value>
   </data>
+  <data name="ComplaintsChannelAlreadyExists" xml:space="preserve">
+    <value>Kanał na skargi już istnieje na tym serwerze.</value>
+  </data>
+  <data name="ComplaintsChannelHasBeenCreated" xml:space="preserve">
+    <value>Kanał na skargi został utworzony pomyślnie.</value>
+  </data>
+  <data name="ThereAreNoMutedUsers" xml:space="preserve">
+    <value>Na tym serwerze nie ma żadnych wyciszonych użytkowników.</value>
+  </data>
 </root>
