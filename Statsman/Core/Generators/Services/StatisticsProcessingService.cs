@@ -24,56 +24,36 @@ namespace Statsman.Core.Generators.Services
 
         public IEnumerable<SaveStatisticItem> ProcessGeneral(ulong serverId, IReadOnlyList<Message> messagesInTimeRange, TimeRange timeRange, string period)
         {
-            if (messagesInTimeRange.Count == 0)
-            {
-                yield return null;
-            }
-            yield return new SaveStatisticItem(serverId: serverId, userId: 0, channelId: 0, messagesInTimeRange.Count, timeRange, period);
+            yield return this.GetStatisticItem(serverId: serverId, userId: 0, channelId: 0, timeRange, period, messagesInTimeRange, x => true);
         }
 
         public IEnumerable<SaveStatisticItem> ProcessChannels(ulong serverId, IReadOnlyList<Message> messagesInTimeRange, TimeRange timeRange, List<ulong> users, List<ulong> channels, string period)
         {
-            foreach (var channel in channels)
+            return channels.SelectMany(channel =>
             {
                 var messagesPerChannelInTimeRange = messagesInTimeRange.Where(x => x.Channel.Id == channel).ToList();
-                if (messagesPerChannelInTimeRange.Count == 0)
+                return new[]
                 {
-                    yield return null;
-                }
-                yield return new SaveStatisticItem(serverId: serverId, userId: 0, channelId: channel, messagesPerChannelInTimeRange.Count, timeRange, period);
-
-                var usersForChannelItemsToSave = this.ProcessUsersOnChannel(serverId, channel, messagesPerChannelInTimeRange, timeRange, users, period);
-                foreach (var item in usersForChannelItemsToSave)
-                {
-                    yield return item;
-                }
-            }
+                    new List<SaveStatisticItem> { this.GetStatisticItem(serverId: serverId, userId: 0, channelId: channel, timeRange, period, messagesPerChannelInTimeRange, x => true) },
+                    this.ProcessUsersOnChannel(serverId, channel, messagesPerChannelInTimeRange, timeRange, users, period)
+                }.SelectMany(x => x);
+            });
         }
 
         public IEnumerable<SaveStatisticItem> ProcessUsersOnChannel(ulong serverId, ulong channelId, IReadOnlyList<Message> messagesInChannelInTimeRange, TimeRange timeRange, List<ulong> users, string period)
         {
-            foreach (var user in users)
-            {
-                var messagesPerUserAndChannelInTimeRange = messagesInChannelInTimeRange.Where(x => x.Author.Id == user).ToList();
-                if (messagesPerUserAndChannelInTimeRange.Count == 0)
-                {
-                    continue;
-                }
-                yield return new SaveStatisticItem(serverId: serverId, userId: user, channelId: channelId, messagesPerUserAndChannelInTimeRange.Count, timeRange, period);
-            }
+            return users.Select(user => this.GetStatisticItem(serverId: serverId, userId: user, channelId: channelId, timeRange, period, messagesInChannelInTimeRange, x => x.Author.Id == user));
         }
 
         public IEnumerable<SaveStatisticItem> ProcessUsers(ulong serverId, IReadOnlyList<Message> messagesInTimeRange, TimeRange timeRange, List<ulong> users, string period)
         {
-            foreach (var user in users)
-            {
-                var messagesPerUserInTimeRange = messagesInTimeRange.Where(x => x.Author.Id == user).ToList();
-                if (messagesPerUserInTimeRange.Count == 0)
-                {
-                    continue;
-                }
-                yield return new SaveStatisticItem(serverId: serverId, userId: user, channelId: 0, messagesPerUserInTimeRange.Count(), timeRange, period);
-            }
+            return users.Select(user => this.GetStatisticItem(serverId: serverId, userId: user, channelId: 0, timeRange, period, messagesInTimeRange, x => x.Author.Id == user));
+        }
+
+        public SaveStatisticItem GetStatisticItem(ulong serverId, ulong userId, ulong channelId, TimeRange timeRange, string period, IReadOnlyList<Message> messages, Func<Message, bool> filter)
+        {
+            var filteredMessages = messages.Where(filter).ToList();
+            return filteredMessages.Count == 0 ? null : new SaveStatisticItem(serverId, userId, channelId, filteredMessages.Count, timeRange, period);
         }
     }
 }
