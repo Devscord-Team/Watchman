@@ -37,7 +37,7 @@ namespace Devscord.DiscordFramework.Integration.Services
             var commandParser = this._context.Resolve<CommandParser>();
             this.UsersService = new DiscordClientUsersService(this._client);
             this.ChannelsService = new DiscordClientChannelsService(this._client, this.UsersService, userContextFactory, commandParser);
-            this.RolesService = new DiscordClientRolesService(this._client, this.ChannelsService, userRoleFactory);
+            this.RolesService = new DiscordClientRolesService(this._client, userRoleFactory);
             this.ServersService = new DiscordClientServersService(this._client, serverContextFactory);
 
             this._initialized = true;

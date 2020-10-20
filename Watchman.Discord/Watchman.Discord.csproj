@@ -6,8 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Areas\Messaging\Services\**" />
     <Compile Remove="Areas\Users\Models\**" />
+    <EmbeddedResource Remove="Areas\Messaging\Services\**" />
     <EmbeddedResource Remove="Areas\Users\Models\**" />
+    <None Remove="Areas\Messaging\Services\**" />
     <None Remove="Areas\Users\Models\**" />
   </ItemGroup>
 
@@ -16,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Serilog" Version="2.9.0" />
+    <PackageReference Include="Serilog" Version="2.10.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,11 +38,6 @@
     <ProjectReference Include="..\Watchman.Cqrs\Watchman.Cqrs.csproj" />
     <ProjectReference Include="..\Watchman.DomainModel\Watchman.DomainModel.csproj" />
     <ProjectReference Include="..\Watchman.Integrations\Watchman.Integrations.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Areas\Messaging\Services\" />
-    <Folder Include="Areas\Protection\RequestParsers\" />
   </ItemGroup>
 
   <ItemGroup>

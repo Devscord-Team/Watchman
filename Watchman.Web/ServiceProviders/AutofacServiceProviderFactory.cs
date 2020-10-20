@@ -37,7 +37,9 @@ namespace Watchman.Web.ServiceProviders
             var workflowBuilder = new WatchmanBot(new DiscordConfiguration
             {
                 MongoDbConnectionString = this._configuration.GetConnectionString("Mongo"),
-                Token = this._configuration["Discord:Token"]
+                Token = this._configuration["Discord:Token"],
+                ExceptionChannelId = ulong.Parse(this._configuration["Logging:ExceptionChannelId"]),
+                ExceptionServerId = ulong.Parse(this._configuration["Logging:ExceptionServerId"])
             }, container.Resolve<IComponentContext>()).GetWorkflowBuilder();
 
             workflowBuilder.Build();

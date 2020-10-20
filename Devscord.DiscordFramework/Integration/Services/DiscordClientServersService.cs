@@ -36,18 +36,15 @@ namespace Devscord.DiscordFramework.Integration.Services
             return await this._restClient.GetGuildAsync(guildId);
         }
 
-        public async IAsyncEnumerable<DiscordServerContext> GetDiscordServersAsync()
+        public IAsyncEnumerable<DiscordServerContext> GetDiscordServersAsync()
         {
-            foreach (var guild in await this._restClient.GetGuildsAsync())
-            {
-                yield return this._discordServerContextFactory.Create(guild);
-            }
+            return this._client.Guilds.ToAsyncEnumerable().Select(guild => this._discordServerContextFactory.Create(guild));
         }
 
-        public async Task<DiscordServerContext> GetDiscordServerAsync(ulong serverId)
+        public Task<DiscordServerContext> GetDiscordServerAsync(ulong serverId)
         {
-            var guild = await this._restClient.GetGuildAsync(serverId);
-            return this._discordServerContextFactory.Create(guild);
+            var guild = this._client.GetGuild(serverId);
+            return Task.FromResult(this._discordServerContextFactory.Create(guild));
         }
 
         public async Task<IEnumerable<string>> GetExistingInviteLinks(ulong serverId)

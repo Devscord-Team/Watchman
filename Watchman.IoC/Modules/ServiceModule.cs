@@ -3,11 +3,17 @@ using Devscord.DiscordFramework;
 using Devscord.DiscordFramework.Framework.Commands.Parsing;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Commons;
 using Watchman.Discord.Integration.DevscordFramework;
+<<<<<<< HEAD
 using Watchman.DomainModel.Settings.Services;
+=======
+using Watchman.DomainModel.Commons.Calculators.Statistics;
+using Watchman.DomainModel.Configuration.Services;
+>>>>>>> master
 
 namespace Watchman.IoC.Modules
 {
@@ -29,7 +35,7 @@ namespace Watchman.IoC.Modules
 
             builder.RegisterType<ConfigurationService>()
                 .As<IConfigurationService>()
-                .InstancePerLifetimeScope();
+                .SingleInstance();
 
             var list = new List<string>();
             var stack = new Stack<Assembly>();
@@ -40,7 +46,12 @@ namespace Watchman.IoC.Modules
                 var asm = stack.Pop();
 
                 builder.RegisterAssemblyTypes(asm)
+<<<<<<< HEAD
                     .Where(x => x.FullName.StartsWith("Watchman") || x.FullName.StartsWith("Devscord") || x.FullName.StartsWith("Statsman"))
+=======
+                    .Where(x => x.FullName.StartsWith("Watchman") || x.FullName.StartsWith("Devscord"))
+                    .Where(x => x.GetConstructors().Any()) // todo: AutoFac v6.0 needs this line to work / maybe possible to remove in future when they'll fix it
+>>>>>>> master
                     .PreserveExistingDefaults()
                     .SingleInstance();
 

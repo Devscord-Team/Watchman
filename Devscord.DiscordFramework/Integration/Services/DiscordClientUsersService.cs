@@ -5,6 +5,7 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Discord;
 
 namespace Devscord.DiscordFramework.Integration.Services
 {
@@ -55,19 +56,13 @@ namespace Devscord.DiscordFramework.Integration.Services
             return user;
         }
 
-        public async IAsyncEnumerable<RestGuildUser> GetGuildUsers(ulong guildId)
+        public IEnumerable<IGuildUser> GetGuildUsers(ulong guildId)
         {
-            var guild = await this._restClient.GetGuildAsync(guildId);
-            var users = guild.GetUsersAsync();
-            // Discord.NET always returns all users as first and the only one element of IAsyncEnumerable
-            // maybe they will make it better by returning users one by one using advantages of IAsyncEnumerable
-            // at the moment - users.Count is always 1
-            await foreach (var groupOfUsers in users)
+            var guild = this._client.GetGuild(guildId);
+            var users = guild.Users;
+            foreach (var user in users)
             {
-                foreach (var user in groupOfUsers)
-                {
-                    yield return user;
-                }
+                yield return user;
             }
         }
 

@@ -22,16 +22,16 @@ namespace Devscord.DiscordFramework.Middlewares.Factories
             this._channelContextFactory = context.Resolve<ChannelContextFactory>();
         }
 
-        public DiscordServerContext Create(IGuild restGuild)
+        public DiscordServerContext Create(IGuild guild)
         {
-            var systemChannel = this._channelContextFactory.Create(restGuild.GetSystemChannelAsync().Result);
+            var systemChannel = this._channelContextFactory.Create(guild.GetSystemChannelAsync().Result);
 
-            UserContext getOwner() => this._userContextsFactory.Create(restGuild.GetOwnerAsync().Result);
-            IAsyncEnumerable<UserContext> getServerUsers(DiscordServerContext server) => this._usersService.GetUsersAsync(server);
+            UserContext getOwner() => this._userContextsFactory.Create(guild.GetOwnerAsync().Result);
+            IEnumerable<UserContext> getServerUsers(DiscordServerContext server) => this._usersService.GetUsers(server);
             IEnumerable<UserRole> getServerRoles(DiscordServerContext server) => this._usersRolesService.GetRoles(server);
-            IEnumerable<ChannelContext> getTextChannels(DiscordServerContext server) => restGuild.GetTextChannelsAsync().Result.Select(x => this._channelContextFactory.Create(x));
+            IEnumerable<ChannelContext> getTextChannels(DiscordServerContext server) => guild.GetTextChannelsAsync().Result.Select(x => this._channelContextFactory.Create(x));
 
-            return new DiscordServerContext(restGuild.Id, restGuild.Name, getOwner, systemChannel, getTextChannels, getServerUsers, getServerRoles);
+            return new DiscordServerContext(guild.Id, guild.Name, getOwner, systemChannel, getTextChannels, getServerUsers, getServerRoles);
         }
     }
 }
