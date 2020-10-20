@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Watchman.Cqrs;
-using Watchman.Integrations.MongoDB;
+using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.Protection.Complaints.Commands.Handlers
 {
@@ -15,7 +15,7 @@ namespace Watchman.DomainModel.Protection.Complaints.Commands.Handlers
 
         public Task HandleAsync(RemoveComplaintsChannelCommand command)
         {
-            using var session = this._sessionFactory.Create();
+            using var session = this._sessionFactory.CreateMongo();
             return session.DeleteAsync(command.ComplaintsChannel); //todo: use new way of deleting by filter
         }
     }

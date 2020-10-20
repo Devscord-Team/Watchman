@@ -1,12 +1,8 @@
 ﻿using Autofac;
 using LiteDB;
 using MongoDB.Driver;
-<<<<<<< HEAD
 using System.Reflection;
 using Watchman.Integrations.Database;
-=======
-using Watchman.Integrations.MongoDB;
->>>>>>> master
 
 namespace Watchman.IoC.Modules
 {
@@ -23,15 +19,14 @@ namespace Watchman.IoC.Modules
 
         protected override void Load(ContainerBuilder builder)
         {
-<<<<<<< HEAD
             var assembly = typeof(DatabaseModule)
                 .GetTypeInfo()
                 .Assembly;
 
             builder.Register((c, p) => new MongoClient(this._mongoConnectionString).GetDatabase("devscord"))
-=======
-            builder.Register((c, p) => new MongoClient(this._connectionString).GetDatabase("devscord"))
->>>>>>> master
+                .As<IMongoDatabase>()
+                .SingleInstance();
+            builder.Register((c, p) => new MongoClient(this._liteConnectionString).GetDatabase("devscord"))
                 .As<IMongoDatabase>()
                 .SingleInstance();
 
