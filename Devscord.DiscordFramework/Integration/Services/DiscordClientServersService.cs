@@ -41,10 +41,10 @@ namespace Devscord.DiscordFramework.Integration.Services
             return this._client.Guilds.ToAsyncEnumerable().Select(guild => this._discordServerContextFactory.Create(guild));
         }
 
-        public async Task<DiscordServerContext> GetDiscordServerAsync(ulong serverId)
+        public Task<DiscordServerContext> GetDiscordServerAsync(ulong serverId)
         {
             var guild = this._client.GetGuild(serverId);
-            return this._discordServerContextFactory.Create(guild);
+            return Task.FromResult(this._discordServerContextFactory.Create(guild));
         }
 
         public async Task<IEnumerable<string>> GetExistingInviteLinks(ulong serverId)
