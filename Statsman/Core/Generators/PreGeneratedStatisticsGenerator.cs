@@ -41,7 +41,7 @@ namespace Statsman.Core.Generators
             return this.ProcessStatisticsPerPeriod(serverId, Period.Quarter);
         }
 
-        public Task ProcessStatisticsPerPeriod(ulong serverId, string period) //todo test
+        public Task ProcessStatisticsPerPeriod(ulong serverId, string period) 
         {
             var messages = this.GetMessages(serverId);
             var oldestMessageDatetime = messages.Any() ? messages.Min(x => x.SentAt) : default;
@@ -58,7 +58,7 @@ namespace Statsman.Core.Generators
             return this._statisticsStorageService.SaveChanges();
         }
 
-        private Task ProcessTimeRangeMessages(ulong serverId, IEnumerable<Message> messages, TimeRange timeRange, string period, List<ulong> users, List<ulong> channels) //todo test
+        private Task ProcessTimeRangeMessages(ulong serverId, IReadOnlyList<Message> messages, TimeRange timeRange, string period, List<ulong> users, List<ulong> channels)
         {
             var messagesInTimeRange = messages.Where(x => timeRange.Contains(x.SentAt)).ToList();
             if (messagesInTimeRange.Count == 0)
@@ -74,7 +74,7 @@ namespace Statsman.Core.Generators
             return Task.CompletedTask;
         }
 
-        private void ProcessChannels(ulong serverId, ulong channelId, IEnumerable<Message> messagesInTimeRange, TimeRange timeRange, List<ulong> users, string period) //todo test
+        private void ProcessChannels(ulong serverId, ulong channelId, IReadOnlyList<Message> messagesInTimeRange, TimeRange timeRange, List<ulong> users, string period)
         {
             var messagesPerChannelInTimeRange = messagesInTimeRange.Where(x => x.Channel.Id == channelId).ToList();
             if (messagesPerChannelInTimeRange.Count == 0)
@@ -93,7 +93,7 @@ namespace Statsman.Core.Generators
             }
         }
 
-        private void ProcessUsers(ulong serverId, List<ulong> users, IEnumerable<Message> messagesInTimeRange, TimeRange timeRange, string period) //todo test
+        private void ProcessUsers(ulong serverId, List<ulong> users, IReadOnlyList<Message> messagesInTimeRange, TimeRange timeRange, string period)
         {
             foreach (var user in users)
             {
@@ -106,7 +106,7 @@ namespace Statsman.Core.Generators
             }
         }
 
-        private IEnumerable<Message> GetMessages(ulong serverId)
+        private IReadOnlyList<Message> GetMessages(ulong serverId)
         {
             var query = new GetMessagesQuery(serverId);
             var messages = this.queryBus.Execute(query).Messages.ToList();
