@@ -5,15 +5,19 @@ using Devscord.DiscordFramework.Framework.Commands.PropertyAttributes;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
+
 using Serilog;
-using Statsman;
+
+using Statsman.Core.TimeSplitting;
 using Statsman.Models;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using Watchman.Common.Models;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Statistics.BotCommands;

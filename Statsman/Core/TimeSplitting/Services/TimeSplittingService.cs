@@ -6,7 +6,7 @@ using System.Text;
 using Watchman.Common.Models;
 using Watchman.DomainModel.Messages;
 
-namespace Statsman.Core.TimeSplitting
+namespace Statsman.Core.TimeSplitting.Services
 {
     public class TimeSplittingService
     {
@@ -36,10 +36,10 @@ namespace Statsman.Core.TimeSplitting
             latestMessages = this.FilterMessages(latestMessages, preGeneratedStatistics);
             var oldestLastMessagesDate = latestMessages.OrderBy(x => x.SentAt).FirstOrDefault()?.SentAt ?? DateTime.Today;
             var result = new List<TimeStatisticItem>();
-            expectedTimeRange.ForeachDay((i, day) => 
+            expectedTimeRange.ForeachDay((i, day) =>
             {
                 var sum = 0;
-                if(day >= oldestLastMessagesDate.Date)
+                if (day >= oldestLastMessagesDate.Date)
                 {
                     sum += latestMessages.Where(x => x.SentAt.Date == day).Count();
                 }
@@ -53,7 +53,7 @@ namespace Statsman.Core.TimeSplitting
         public IEnumerable<TimeStatisticItem> GetStatisticsPerHour(IEnumerable<Message> latestMessages, TimeRange expectedTimeRange)
         {
             var result = new List<TimeStatisticItem>();
-            expectedTimeRange.ForeachHour((i, hour) => 
+            expectedTimeRange.ForeachHour((i, hour) =>
             {
                 var sum = latestMessages.Where(x => x.SentAt.Date == hour.Date && x.SentAt.Hour == hour.Hour).Count();
                 var item = new TimeStatisticItem(TimeRange.Create(hour, hour.AddHours(1).AddSeconds(-1)), sum);
