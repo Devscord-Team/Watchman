@@ -53,8 +53,7 @@ namespace Statsman.Core.Generators
                 .Select(timeRange => this.ProcessTimeRangeMessages(serverId, messages, timeRange, period, users, channels))
                 .ToArray();
             Task.WaitAll(tasks);
-            this.SaveChanges();
-            return Task.CompletedTask;
+            return this.SaveChanges();
         }
 
         private Task ProcessTimeRangeMessages(ulong serverId, IEnumerable<Message> messages, TimeRange timeRange, string period, List<ulong> users, List<ulong> channels) //todo test
@@ -166,22 +165,13 @@ namespace Statsman.Core.Generators
 
         private DateTime GetQuarterStart(DateTime date) //TODO test
         {
-            if (date.Month <= 3)
+            return date.Month switch
             {
-                return new DateTime(date.Year, 1, 1);
-            }
-            else if (date.Month <= 6)
-            {
-                return new DateTime(date.Year, 4, 1);
-            }
-            else if (date.Month <= 9)
-            {
-                return new DateTime(date.Year, 7, 1);
-            }
-            else
-            {
-                return new DateTime(date.Year, 10, 1);
-            }
+                int month when month <= 3 => new DateTime(date.Year, 1, 1),
+                int month when month <= 6 => new DateTime(date.Year, 4, 1),
+                int month when month <= 9 => new DateTime(date.Year, 7, 1),
+                _ => new DateTime(date.Year, 10, 1)
+            };
         }
     }
 }
