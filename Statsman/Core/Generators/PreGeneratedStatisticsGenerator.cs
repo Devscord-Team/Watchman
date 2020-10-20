@@ -28,21 +28,6 @@ namespace Statsman.Core.Generators
             this._statisticsProcessingService = statisticsProcessingService;
         }
 
-        public Task PreGenerateStatisticsPerDay(ulong serverId) //todo test
-        {
-            return this.ProcessStatisticsPerPeriod(serverId, Period.Day);
-        }
-
-        public Task PreGenerateStatisticsPerMonth(ulong serverId) //todo test
-        {
-            return this.ProcessStatisticsPerPeriod(serverId, Period.Month);
-        }
-
-        public Task PreGenerateStatisticsPerQuarter(ulong serverId) //todo test
-        {
-            return this.ProcessStatisticsPerPeriod(serverId, Period.Quarter);
-        }
-
         public Task ProcessStatisticsPerPeriod(ulong serverId, string period) 
         {
             var messages = this.GetMessages(serverId);
@@ -53,10 +38,8 @@ namespace Statsman.Core.Generators
             }
             var users = messages.Select(x => x.Author.Id).Distinct().ToList();
             var channels = messages.Select(x => x.Channel.Id).Distinct().ToList();
-            var tasks = _statisticsTimeService.GetTimeRangeMovePerPeriod(period, oldestMessageDatetime)
-                .Select(timeRange => this.ProcessTimeRangeMessages(serverId, messages, timeRange, period, users, channels))
-                .ToArray();
-            Task.WaitAll(tasks);
+            var tasks = _statisticsTimeService.GetTimeRangeMovePerPeriod(period, oldestMessageDatetime).Select(timeRange => this.ProcessTimeRangeMessages(serverId, messages, timeRange, period, users, channels));
+            Task.WaitAll(tasks.ToArray());
             return this._statisticsStorageService.SaveChanges();
         }
 

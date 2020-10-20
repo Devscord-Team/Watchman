@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Watchman.DomainModel.Messages;
+
 namespace Watchman.Web.Jobs.Statsman
 {
     public class CalculateMessagesPerMonth : IHangfireJob
@@ -20,14 +22,13 @@ namespace Watchman.Web.Jobs.Statsman
         }
 
         public RefreshFrequent Frequency => RefreshFrequent.Weekly;
-
         public bool RunOnStart => false;
 
         public async Task Do()
         {
             await foreach (var server in this._discordServersService.GetDiscordServersAsync())
             {
-                await this._preGeneratedStatisticsGenerator.PreGenerateStatisticsPerMonth(server.Id);
+                await this._preGeneratedStatisticsGenerator.ProcessStatisticsPerPeriod(server.Id, Period.Month);
             }
         }
     }
