@@ -10,5 +10,6 @@ namespace Watchman.Web.Jobs
     {
         public Task Do();
         public RefreshFrequent Frequency { get; }
+        public bool RunOnStart { get; }
     }
 }

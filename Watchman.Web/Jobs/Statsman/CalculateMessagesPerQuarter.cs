@@ -21,6 +21,8 @@ namespace Watchman.Web.Jobs.Statsman
 
         public RefreshFrequent Frequency => RefreshFrequent.Monthly;
 
+        public bool RunOnStart => false;
+
         public async Task Do()
         {
             await foreach (var server in this._discordServersService.GetDiscordServersAsync())

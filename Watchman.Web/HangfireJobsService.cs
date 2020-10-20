@@ -54,7 +54,14 @@ namespace Watchman.Web
             Assembly.GetAssembly(typeof(HangfireJobsService)).GetTypes()
                 .Where(x => x.IsAssignableTo<IHangfireJob>() && !x.IsInterface)
                 .Select(x => (x.Name, Job: (IHangfireJob) container.Resolve(x))).ToList()
-                .ForEach(x => recurringJobManager.AddOrUpdate(this.FixJobName(x.Name), () => x.Job.Do(), this.GetCronExpression(x.Job.Frequency)));
+                .ForEach(x =>
+                {
+                    recurringJobManager.AddOrUpdate(this.FixJobName(x.Name), () => x.Job.Do(), this.GetCronExpression(x.Job.Frequency));
+                    if(x.Job.RunOnStart)
+                    {
+                        recurringJobManager.Trigger(x.Name);
+                    }
+                });
         }
 
         private string FixJobName(string name)
