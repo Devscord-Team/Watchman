@@ -31,9 +31,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Watchman.Integration.Tests"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Statsman", "Statsman\Statsman.csproj", "{0E0453CD-0F39-458A-AC91-B31915F35291}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Statsman.Tests", "Statsman.Tests\Statsman.Tests.csproj", "{141BBBA2-15B8-40E4-AA19-B459357298B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Statsman.Tests", "Statsman.Tests\Statsman.Tests.csproj", "{141BBBA2-15B8-40E4-AA19-B459357298B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectStructureTests", "ProjectStructureTests\ProjectStructureTests.csproj", "{F3A0EEDA-2175-4522-A394-B7E79E94E547}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectStructureTests", "ProjectStructureTests\ProjectStructureTests.csproj", "{F3A0EEDA-2175-4522-A394-B7E79E94E547}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
