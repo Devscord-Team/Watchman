@@ -91,43 +91,43 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
 
         private Task<(Stream Chart, ResultMessage Message)> GetStatisticsPerMinute(StatsCommand command, Contexts contexts)
         {
-            var time = this._configurationService.GetConfigurationItem<TimeBehindStatisticsPerMinute>(contexts.Server.Id);
-            var request = new StatisticsRequest(contexts.Server.Id, time.Value, command.User, command.Channel);
+            var time = this._configurationService.GetConfigurationItem<TimeBehindStatisticsPerMinute>(contexts.Server.Id).Value;
+            var request = new StatisticsRequest(contexts.Server.Id, time, command.User, command.Channel);
             return this._periodStatisticsService.PerMinute(request);
         }
 
         private Task<(Stream Chart, ResultMessage Message)> GetStatisticsPerHour(StatsCommand command, Contexts contexts)
         {
-            var time = this._configurationService.GetConfigurationItem<TimeBehindStatisticsPerHour>(contexts.Server.Id);
-            var request = new StatisticsRequest(contexts.Server.Id, time.Value, command.User, command.Channel);
+            var time = this._configurationService.GetConfigurationItem<TimeBehindStatisticsPerHour>(contexts.Server.Id).Value;
+            var request = new StatisticsRequest(contexts.Server.Id, time, command.User, command.Channel);
             return this._periodStatisticsService.PerHour(request);
         }
 
         private Task<(Stream Chart, ResultMessage Message)> GetStatisticsPerDay(StatsCommand command, Contexts contexts)
         {
-            var time = this._configurationService.GetConfigurationItem<TimeBehindStatisticsPerDay>(contexts.Server.Id);
-            var request = new StatisticsRequest(contexts.Server.Id, time.Value, command.User, command.Channel);
+            var time = this._configurationService.GetConfigurationItem<TimeBehindStatisticsPerDay>(contexts.Server.Id).Value;
+            var request = new StatisticsRequest(contexts.Server.Id, time, command.User, command.Channel);
             return this._periodStatisticsService.PerDay(request);
         }
 
         private Task<(Stream Chart, ResultMessage Message)> GetStatisticsPerWeek(StatsCommand command, Contexts contexts)
         {
-            var time = this._configurationService.GetConfigurationItem<TimeBehindStatisticsPerWeek>(contexts.Server.Id);
-            var request = new StatisticsRequest(contexts.Server.Id, time.Value, command.User, command.Channel);
+            var time = this._configurationService.GetConfigurationItem<TimeBehindStatisticsPerWeek>(contexts.Server.Id).Value;
+            var request = new StatisticsRequest(contexts.Server.Id, time, command.User, command.Channel);
             return this._periodStatisticsService.PerWeek(request);
         }
 
         private Task<(Stream Chart, ResultMessage Message)> GetStatisticsPerMonth(StatsCommand command, Contexts contexts)
         {
-            var time = this._configurationService.GetConfigurationItem<TimeBehindStatisticsPerMonth>(contexts.Server.Id);
-            var request = new StatisticsRequest(contexts.Server.Id, time.Value, command.User, command.Channel);
+            var time = this._configurationService.GetConfigurationItem<TimeBehindStatisticsPerMonth>(contexts.Server.Id).Value;
+            var request = new StatisticsRequest(contexts.Server.Id, time, command.User, command.Channel);
             return this._periodStatisticsService.PerMonth(request);
         }
 
         private Task<(Stream Chart, ResultMessage Message)> GetStatisticsPerQuarter(StatsCommand command, Contexts contexts)
         {
-            var time = this._configurationService.GetConfigurationItem<TimeBehindStatisticsPerQuarter>(contexts.Server.Id);
-            var request = new StatisticsRequest(contexts.Server.Id, time.Value, command.User, command.Channel);
+            var time = this._configurationService.GetConfigurationItem<TimeBehindStatisticsPerQuarter>(contexts.Server.Id).Value;
+            var request = new StatisticsRequest(contexts.Server.Id, time, command.User, command.Channel);
             return this._periodStatisticsService.PerQuarter(request);
         }
     }

@@ -26,25 +26,25 @@ namespace Watchman.Integrations.Database.MongoDB
             return this.GetCollection<T>().AsQueryable();
         }
 
-        public async Task AddAsync<T>(T entity) where T : Entity
+        public Task AddAsync<T>(T entity) where T : Entity
         {
-            await this.GetCollection<T>().InsertOneAsync(entity);
+            return this.GetCollection<T>().InsertOneAsync(entity);
         }
 
-        public async Task AddAsync<T>(IEnumerable<T> entities) where T : Entity
+        public Task AddAsync<T>(IEnumerable<T> entities) where T : Entity
         {
-            await this.GetCollection<T>().InsertManyAsync(entities);
+            return this.GetCollection<T>().InsertManyAsync(entities);
         }
 
-        public async Task AddOrUpdateAsync<T>(T entity) where T : Entity
+        public Task AddOrUpdateAsync<T>(T entity) where T : Entity
         {
             if (this.Get<T>(entity.Id) == null)
             {
-                await this.AddAsync(entity);
+                return this.AddAsync(entity);
             }
             else
             {
-                await this.UpdateAsync(entity);
+                return this.UpdateAsync(entity);
             }
         }
 

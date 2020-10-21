@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Discord;
-using MessageType = Devscord.DiscordFramework.Commons.MessageType;
 using System.IO;
 
 namespace Devscord.DiscordFramework.Services
@@ -33,7 +32,7 @@ namespace Devscord.DiscordFramework.Services
             return this.TrySendMessage(userId, message);
         }
 
-        public async Task<bool> TrySendMessage(ulong userId, string message, MessageType messageType = MessageType.NormalText)
+        public async Task<bool> TrySendMessage(ulong userId, string message, Commons.MessageType messageType = Commons.MessageType.NormalText)
         {
             try
             {

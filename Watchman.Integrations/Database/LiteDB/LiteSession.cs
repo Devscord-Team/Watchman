@@ -39,15 +39,15 @@ namespace Watchman.Integrations.Database.LiteDB
             return Task.CompletedTask;
         }
 
-        public async Task AddOrUpdateAsync<T>(T entity) where T : Entity
+        public Task AddOrUpdateAsync<T>(T entity) where T : Entity
         {
             if (this.Get<T>(entity.Id) == null)
             {
-                await this.AddAsync(entity);
+                return this.AddAsync(entity);
             }
             else
             {
-                await this.UpdateAsync(entity);
+                return this.UpdateAsync(entity);
             }
         }
 
