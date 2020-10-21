@@ -37,7 +37,7 @@ namespace Watchman.Discord.Areas.Protection.Services
             await foreach (var server in this._discordServersService.GetDiscordServersAsync())
             {
                 var serverMuteEvents = this._mutingHelper.GetNotUnmutedMuteEvents(server.Id).ToList();
-                if (serverMuteEvents.Count == 0)
+                if (!serverMuteEvents.Any())
                 {
                     continue;
                 }
