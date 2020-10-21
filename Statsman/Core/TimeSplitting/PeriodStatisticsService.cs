@@ -1,14 +1,12 @@
 ﻿using Statsman.Core.TimeSplitting.Models;
 using Statsman.Core.TimeSplitting.Services;
 using Statsman.Models;
-
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using Watchman.Common.Models;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Messages;

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
 using Watchman.Common.Models;
 
 namespace Statsman.Core.Generators.Models
