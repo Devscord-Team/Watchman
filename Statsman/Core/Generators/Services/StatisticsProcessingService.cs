@@ -53,7 +53,7 @@ namespace Statsman.Core.Generators.Services
         public SaveStatisticItem GetStatisticItem(ulong serverId, ulong userId, ulong channelId, TimeRange timeRange, string period, IReadOnlyList<Message> messages, Func<Message, bool> filter)
         {
             var filteredMessagesCount = messages.Where(filter).Count();
-            return filteredMessagesCount == 0 ? null : new SaveStatisticItem(serverId, userId, channelId, filteredMessagesCount, timeRange, period);
+            return new SaveStatisticItem(serverId, userId, channelId, filteredMessagesCount, timeRange, period);
         }
     }
 }

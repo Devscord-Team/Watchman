@@ -30,7 +30,7 @@ namespace Watchman.DomainModel.Messages.Queries.Handlers
             {
                 preGeneratedStatistics = preGeneratedStatistics.Where(x => x.ChannelId == query.ChannelId);
             }
-            return new GetPreGeneratedStatisticsQueryResult(preGeneratedStatistics.ToList());
+            return new GetPreGeneratedStatisticsQueryResult(preGeneratedStatistics);
         }
     }
 }

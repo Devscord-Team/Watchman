@@ -38,7 +38,7 @@ namespace Statsman.Core.Generators
             }
             var users = messages.Select(x => x.Author.Id).Distinct().ToList();
             var channels = messages.Select(x => x.Channel.Id).Distinct().ToList();
-            var tasks = _statisticsTimeService.GetTimeRangeMovePerPeriod(period, oldestMessageDatetime).Select(timeRange => this.ProcessTimeRangeMessages(serverId, messages, timeRange, period, users, channels));
+            var tasks = this._statisticsTimeService.GetTimeRangeMovePerPeriod(period, oldestMessageDatetime).Select(timeRange => this.ProcessTimeRangeMessages(serverId, messages, timeRange, period, users, channels));
             Task.WaitAll(tasks.ToArray());
             return this._statisticsStorageService.SaveChanges();
         }
