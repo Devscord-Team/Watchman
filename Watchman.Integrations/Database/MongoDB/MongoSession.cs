@@ -50,7 +50,7 @@ namespace Watchman.Integrations.Database.MongoDB
 
         public async Task UpdateAsync<T>(T entity) where T : Entity
         {
-            if(entity.IsChanged())
+            if (entity.IsChanged())
             {
                 await this.GetCollection<T>().ReplaceOneAsync(x => x.Id == entity.Id, entity);
             }

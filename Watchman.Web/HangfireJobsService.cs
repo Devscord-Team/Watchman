@@ -57,7 +57,7 @@ namespace Watchman.Web
                 .ForEach(x =>
                 {
                     recurringJobManager.AddOrUpdate(this.FixJobName(x.Name), () => x.Job.Do(), this.GetCronExpression(x.Job.Frequency));
-                    if(x.Job.RunOnStart)
+                    if (x.Job.RunOnStart)
                     {
                         recurringJobManager.Trigger(x.Name);
                     }
@@ -70,7 +70,7 @@ namespace Watchman.Web
             for (var i = 0; i < name.Length; i++)
             {
                 var letter = name[i];
-                if(i > 0 && letter == char.ToUpper(letter))
+                if (i > 0 && letter == char.ToUpper(letter))
                 {
                     result.Add(' ');
                 }

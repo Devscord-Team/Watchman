@@ -86,11 +86,11 @@ namespace Watchman.Common.Models
         {
             var aHash = a?.GetHashCode() ?? 0;
             var bHash = b?.GetHashCode() ?? 0;
-            if(aHash == bHash)
+            if (aHash == bHash)
             {
                 return true;
             }
-            if(aHash == 0 || bHash == 0)
+            if (aHash == 0 || bHash == 0)
             {
                 return false;
             }

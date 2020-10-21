@@ -22,7 +22,7 @@ namespace Statsman.Core.Generators.Services
 
         public void SaveStatisticCommand(SaveStatisticItem saveStatisticItem)
         {
-            if(saveStatisticItem == null)
+            if (saveStatisticItem == null)
             {
                 return;
             }

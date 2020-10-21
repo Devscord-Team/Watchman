@@ -41,7 +41,7 @@ namespace Watchman.DomainModel.Messages
 
         public void SetChannel(ulong channelId)
         {
-            if(this.ChannelId == channelId)
+            if (this.ChannelId == channelId)
             {
                 return;
             }
@@ -51,7 +51,7 @@ namespace Watchman.DomainModel.Messages
 
         public void SetCount(int count)
         {
-            if(this.Count == count)
+            if (this.Count == count)
             {
                 return;
             }

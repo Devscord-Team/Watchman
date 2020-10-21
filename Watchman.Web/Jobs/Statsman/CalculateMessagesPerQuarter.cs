@@ -14,14 +14,14 @@ namespace Watchman.Web.Jobs.Statsman
         private readonly DiscordServersService _discordServersService;
         private readonly PreGeneratedStatisticsGenerator _preGeneratedStatisticsGenerator;
 
+        public RefreshFrequent Frequency => RefreshFrequent.Monthly;
+        public bool RunOnStart => false;
+
         public CalculateMessagesPerQuarter(DiscordServersService discordServersService, PreGeneratedStatisticsGenerator preGeneratedStatisticsGenerator)
         {
             this._discordServersService = discordServersService;
             this._preGeneratedStatisticsGenerator = preGeneratedStatisticsGenerator;
         }
-
-        public RefreshFrequent Frequency => RefreshFrequent.Monthly;
-        public bool RunOnStart => false;
 
         public async Task Do()
         {

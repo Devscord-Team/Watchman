@@ -56,7 +56,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             {
                 throw new UserNotFoundException(command.User.GetUserMention());
             }
-            if(!contexts.User.IsAdmin() && selectedUser.Id != command.User) //allow check own messages for everybody
+            if (!contexts.User.IsAdmin() && selectedUser.Id != command.User) //allow check own messages for everybody
             {
                 throw new NotAdminPermissionsException();
             }

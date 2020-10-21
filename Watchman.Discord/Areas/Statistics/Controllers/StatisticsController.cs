@@ -61,10 +61,6 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
         public async Task Stats(StatsCommand command, Contexts contexts)
         {
             var (chart, message) = await this.GetStatistics(command, contexts);
-            if (chart == null || message == null)
-            {
-                return;
-            }
             if (command.Direct)
             {
                 await Task.Run(() => _directMessagesService.TrySendFile(contexts.User.Id, "Statistics.png", chart))
