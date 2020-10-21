@@ -14,7 +14,7 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
             this._sessionFactory = sessionFactory;
         }
 
-        public async Task HandleAsync(AddOrUpdatePreGeneratedStatisticCommand command)
+        public Task HandleAsync(AddOrUpdatePreGeneratedStatisticCommand command)
         {
             using var session = this._sessionFactory.CreateLite();
             var currentTimeRange = session.Get<PreGeneratedStatistic>()
@@ -26,11 +26,10 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
                 && x.TimeRange == command.PreGeneratedStatistic.TimeRange);
             if (currentTimeRange == null)
             {
-                await session.AddAsync(command.PreGeneratedStatistic);
-                return;
+                return session.AddAsync(command.PreGeneratedStatistic);
             }
             currentTimeRange.SetCount(command.PreGeneratedStatistic.Count);
-            await session.UpdateAsync(currentTimeRange);
+            return session.UpdateAsync(currentTimeRange);
         }
     }
 }

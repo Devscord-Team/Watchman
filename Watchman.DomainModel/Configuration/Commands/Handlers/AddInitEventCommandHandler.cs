@@ -13,11 +13,11 @@ namespace Watchman.DomainModel.Configuration.Commands.Handlers
             this._sessionFactory = sessionFactory;
         }
 
-        public async Task HandleAsync(AddInitEventCommand command)
+        public Task HandleAsync(AddInitEventCommand command)
         {
             using var session = this._sessionFactory.CreateMongo();
             var initEvent = new InitEvent(command.ServerId, command.EndedAt);
-            await session.AddAsync(initEvent);
+            return session.AddAsync(initEvent);
         }
     }
 }
