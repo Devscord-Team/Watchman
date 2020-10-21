@@ -7,7 +7,7 @@ using Moq;
 using NUnit.Framework;
 using Watchman.Discord.Areas.Protection.Strategies;
 using Watchman.DomainModel.Messages.Queries;
-using Watchman.DomainModel.Settings.Services;
+using Watchman.DomainModel.Configuration.Services;
 
 namespace Watchman.Discord.UnitTests.AntiSpam
 {

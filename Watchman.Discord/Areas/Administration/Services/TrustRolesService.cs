@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
@@ -11,7 +9,6 @@ using Watchman.Cqrs;
 using Watchman.Discord.Areas.Protection.Strategies;
 using Watchman.DomainModel.DiscordServer.Commands;
 using Watchman.DomainModel.DiscordServer.Queries;
-using Watchman.DomainModel.Settings.ConfigurationItems;
 
 namespace Watchman.Discord.Areas.Administration.Services
 {

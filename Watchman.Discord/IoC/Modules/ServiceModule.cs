@@ -8,7 +8,7 @@ using Watchman.Cqrs;
 using Watchman.Discord.Areas.Commons;
 using Watchman.Discord.Integration.DevscordFramework;
 using Watchman.DomainModel.Commons.Calculators.Statistics;
-using Watchman.DomainModel.Settings.Services;
+using Watchman.DomainModel.Configuration.Services;
 
 namespace Watchman.Discord.IoC.Modules
 {
@@ -34,7 +34,7 @@ namespace Watchman.Discord.IoC.Modules
 
             builder.RegisterType<ConfigurationService>()
                 .As<IConfigurationService>()
-                .InstancePerLifetimeScope();
+                .SingleInstance();
 
             var list = new List<string>();
             var stack = new Stack<Assembly>();

@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Moq;
 using Watchman.DomainModel.Messages.Queries;
-using Watchman.DomainModel.Settings.ConfigurationItems;
-using Watchman.DomainModel.Settings.Services;
+using Watchman.DomainModel.Configuration.ConfigurationItems;
+using Watchman.DomainModel.Configuration.Services;
 
 namespace Watchman.Discord.UnitTests.AntiSpam
 {

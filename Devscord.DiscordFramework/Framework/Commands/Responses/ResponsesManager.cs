@@ -80,7 +80,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         public static string MutedUser(this ResponsesService responsesService, UserContext user, DateTime timeEnd)
         {
             return responsesService.ProcessResponse("MutedUser",
-                new KeyValuePair<string, string>("user", user.Name),
+                new KeyValuePair<string, string>("user", user.Name), //todo: change to GetMention when message will be send as Embed
                 new KeyValuePair<string, string>("timeEnd", TimeZoneInfo.ConvertTimeFromUtc(timeEnd, TimeZoneInfo.Local).ToString("dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture))); // this works when timeEnd.Kind is equal to DateTimeKind.Utc
         }
 
@@ -236,10 +236,10 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             return responsesService.ProcessResponse("AllRolesSettingsChanged");
         }
 
-        public static string UserHasBeenWarned(this ResponsesService responsesService, string granter, string receiver, string reason)
+        public static string UserHasBeenWarned(this ResponsesService responsesService, string grantor, string receiver, string reason)
         {
             return responsesService.ProcessResponse("UserHasBeenWarned",
-                new KeyValuePair<string, string>("granter", granter),
+                new KeyValuePair<string, string>("grantor", grantor),
                 new KeyValuePair<string, string>("receiver", receiver),
                 new KeyValuePair<string, string>("reason", reason));
         }
@@ -274,6 +274,16 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("role", roleName));
         }
 
+        public static string ComplaintsChannelAlreadyExists(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("ComplaintsChannelAlreadyExists");
+        }
+
+        public static string ComplaintsChannelHasBeenCreated(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("ComplaintsChannelHasBeenCreated");
+        }
+
         public static string ServerDoesntHaveAnyTrustedRole(this ResponsesService responsesService)
         {
             return responsesService.ProcessResponse("ServerDoesntHaveAnyTrustedRole");
@@ -293,6 +303,11 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("TryToGoogleIt",
                 new KeyValuePair<string, string>("link", link));
+        }
+
+        public static string ThereAreNoMutedUsers(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("ThereAreNoMutedUsers");
         }
     }
 }
