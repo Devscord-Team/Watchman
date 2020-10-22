@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using Devscord.DiscordFramework.Commons.Extensions;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Statistics.Services;
-using Watchman.DomainModel.Settings.Commands;
-using Watchman.DomainModel.Settings.Queries;
+using Watchman.DomainModel.Configuration.Commands;
+using Watchman.DomainModel.Configuration.Queries;
 
 namespace Watchman.Discord.Areas.Initialization.Services
 {
@@ -29,7 +29,7 @@ namespace Watchman.Discord.Areas.Initialization.Services
         }
 
         public async Task InitServer(DiscordServerContext server)
-        { 
+        {
             Log.Information("Initializing server: {server}", server.ToJson());
             await this.MuteRoleInit(server);
             var lastInitDate = this.GetLastInitDate(server);
@@ -41,7 +41,7 @@ namespace Watchman.Discord.Areas.Initialization.Services
 
         private async Task MuteRoleInit(DiscordServerContext server)
         {
-            await this._muteRoleInitService.InitForServer(server);
+            await this._muteRoleInitService.InitForServerAsync(server);
             Log.Information("Mute role initialized: {server}", server.Name);
         }
 

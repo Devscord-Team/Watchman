@@ -19,6 +19,7 @@ using Watchman.Discord.Areas.Users.Services;
 using Watchman.DomainModel.Messages;
 using Watchman.DomainModel.Users;
 using Watchman.DomainModel.Warns.Commands;
+using Watchman.DomainModel.Protection;
 
 namespace Watchman.Discord.Areas.Protection.Controllers
 {

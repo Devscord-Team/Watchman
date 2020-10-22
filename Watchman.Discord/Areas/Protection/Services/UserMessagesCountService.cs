@@ -36,7 +36,7 @@ namespace Watchman.Discord.Areas.Protection.Services
 
         private void ReloadCache()
         {
-            var getAllMessagesQuery = new GetMessagesQuery(0);
+            var getAllMessagesQuery = new GetMessagesQuery(GetMessagesQuery.GET_ALL_SERVERS);
             var messages = this._queryBus.Execute(getAllMessagesQuery).Messages;
             var groupedServerMessages = this.GroupMessagesByServers(messages);
             this.UpdateServerMessagesCounts(groupedServerMessages);

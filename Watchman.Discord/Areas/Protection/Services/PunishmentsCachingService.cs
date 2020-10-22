@@ -1,4 +1,4 @@
-﻿using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
+using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +11,9 @@ using Watchman.DomainModel.Users.Commands;
 using Watchman.DomainModel.Users.Queries;
 using Watchman.DomainModel.Warns;
 using Watchman.DomainModel.Warns.Queries;
+using Watchman.DomainModel.Protection.Antispam;
+using Watchman.DomainModel.Protection.Antispam.Commands;
+using Watchman.DomainModel.Protection.Antispam.Queries;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {

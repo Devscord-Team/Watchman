@@ -9,7 +9,7 @@ using Watchman.Discord.Areas.Protection.Services;
 using Watchman.Discord.Areas.Protection.Strategies;
 using Watchman.Discord.Areas.Responses.Services;
 using Watchman.Discord.Areas.Statistics.Services;
-using Watchman.DomainModel.Settings.Services;
+using Watchman.DomainModel.Configuration.Services;
 
 namespace Watchman.Web
 {
@@ -17,6 +17,10 @@ namespace Watchman.Web
     {
         public void SetDefaultJobs(IContainer container)
         {
+            var recurringJobManager = container.Resolve<IRecurringJobManager>();
+            var service = container.Resolve<ConfigurationService>();
+            recurringJobManager.AddOrUpdate(nameof(ConfigurationService), () => service.Refresh(), this.GetCronExpression(RefreshFrequent.Minutely));
+
             var generators = new List<(ICyclicService, RefreshFrequent, bool shouldTriggerNow)>
             {
                 (container.Resolve<MessagesService>(), RefreshFrequent.Quarterly, true),
@@ -26,7 +30,6 @@ namespace Watchman.Web
                 (container.Resolve<CyclicStatisticsGeneratorService>(), RefreshFrequent.Daily, false),
                 (container.Resolve<CheckUserSafetyService>(), RefreshFrequent.Daily, true)
             };
-            var recurringJobManager = container.Resolve<IRecurringJobManager>();
             foreach (var (generator, refreshFrequent, shouldTrigger) in generators)
             {
                 var cronExpression = this.GetCronExpression(refreshFrequent);
@@ -36,8 +39,6 @@ namespace Watchman.Web
                     recurringJobManager.Trigger(generator.GetType().Name);
                 }
             }
-            var service = container.Resolve<ConfigurationService>();
-            recurringJobManager.AddOrUpdate(nameof(ConfigurationService), () => service.Refresh(), this.GetCronExpression(RefreshFrequent.Minutely));
         }
 
         private string GetCronExpression(RefreshFrequent refreshFrequent)
