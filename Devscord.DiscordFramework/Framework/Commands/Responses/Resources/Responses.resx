@@ -272,6 +272,7 @@
   </data>
   <data name="UserHasWarnTimeout" xml:space="preserve">
     <value>Użytkownik {{user}} został niedawno ostrzeżony, poczekaj jeszcze {{timeout}} sekund. Powód poprzedniego ostrzeżenia: {{reason}} Nadane przez: {{grantor}}</value>
+  </data>
   <data name="ComplaintsChannelAlreadyExists" xml:space="preserve">
     <value>Kanał na skargi już istnieje na tym serwerze.</value>
   </data>
