@@ -1,7 +1,9 @@
-﻿using Watchman.DomainModel.Help;
+﻿using TypeGen.Core.TypeAnnotations;
+using Watchman.DomainModel.Help;
 
 namespace Watchman.Web.Areas.Helps.Models.Dtos
 {
+    [ExportTsClass(OutputDir = "ClientApp/src/models")]
     public class ArgumentInfoDto
     {
         public string Name { get; set; }

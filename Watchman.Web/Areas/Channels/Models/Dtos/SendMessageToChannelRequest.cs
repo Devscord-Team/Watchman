@@ -1,5 +1,8 @@
-﻿namespace Watchman.Web.Areas.Channels.Models.Dtos
+﻿using TypeGen.Core.TypeAnnotations;
+
+namespace Watchman.Web.Areas.Channels.Models.Dtos
 {
+    [ExportTsClass(OutputDir = "ClientApp/src/models")]
     public class SendMessageToChannelRequest
     {
         public string GuildId { private get; set; }

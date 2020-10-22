@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using TypeGen.Core.TypeAnnotations;
 using Watchman.DomainModel.Help;
 
 namespace Watchman.Web.Areas.Helps.Models.Dtos
 {
+    [ExportTsClass(OutputDir = "ClientApp/src/models")]
     public class HelpInformationDto
     {
         public string Name { get; set; }

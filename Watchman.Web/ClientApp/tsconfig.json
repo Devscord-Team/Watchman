@@ -16,7 +16,8 @@
       "es2015",
       "dom"
     ],
-    "skipLibCheck": false
+    "skipLibCheck": false,
+    "strictPropertyInitialization": false
   },
   "include": [
     "src"

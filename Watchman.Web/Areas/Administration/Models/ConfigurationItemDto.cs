@@ -1,7 +1,9 @@
-﻿using Watchman.DomainModel.Configuration;
+﻿using TypeGen.Core.TypeAnnotations;
+using Watchman.DomainModel.Configuration;
 
 namespace Watchman.Web.Areas.Administration.Models
 {
+    [ExportTsClass(OutputDir = "ClientApp/src/models")]
     public class ConfigurationItemDto
     {
         public ulong ServerId { get; set; }

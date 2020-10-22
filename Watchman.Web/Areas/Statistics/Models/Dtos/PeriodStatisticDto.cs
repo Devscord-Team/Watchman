@@ -1,8 +1,10 @@
-﻿using Watchman.DomainModel.Messages.Services;
+﻿using TypeGen.Core.TypeAnnotations;
+using Watchman.DomainModel.Messages.Services;
 using Watchman.Web.Areas.Commons.Models.Dtos;
 
 namespace Watchman.Web.Areas.Statistics.Models.Dtos
 {
+    [ExportTsClass(OutputDir = "ClientApp/src/models")]
     public class PeriodStatisticDto
     {
         public TimeRangeDto TimeRange { get; set; }

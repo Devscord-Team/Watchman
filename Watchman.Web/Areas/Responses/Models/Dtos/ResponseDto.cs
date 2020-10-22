@@ -1,8 +1,10 @@
 ﻿using System;
+using TypeGen.Core.TypeAnnotations;
 using Watchman.DomainModel.Responses;
 
 namespace Watchman.Web.Areas.Responses.Models.Dtos
 {
+    [ExportTsClass(OutputDir = "ClientApp/src/models")]
     public class ResponseDto
     {
         public Guid Id { get; set; }

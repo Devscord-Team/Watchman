@@ -1,8 +1,10 @@
 ﻿using System;
+using TypeGen.Core.TypeAnnotations;
 using Watchman.DomainModel.Messages;
 
 namespace Watchman.Web.Areas.Messages.Models.Dtos
 {
+    [ExportTsClass(OutputDir = "ClientApp/src/models")]
     public class MessageDto
     {
         public string Content { get; set; }

@@ -1,8 +1,10 @@
 ﻿using System;
+using TypeGen.Core.TypeAnnotations;
 using Watchman.Common.Models;
 
 namespace Watchman.Web.Areas.Commons.Models.Dtos
 {
+    [ExportTsClass(OutputDir = "ClientApp/src/models")]
     public class TimeRangeDto
     {
         public DateTime Start { get; set; }

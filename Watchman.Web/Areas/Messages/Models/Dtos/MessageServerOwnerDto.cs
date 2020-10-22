@@ -1,5 +1,8 @@
-﻿namespace Watchman.Web.Areas.Messages.Models.Dtos
+﻿using TypeGen.Core.TypeAnnotations;
+
+namespace Watchman.Web.Areas.Messages.Models.Dtos
 {
+    [ExportTsClass(OutputDir = "ClientApp/src/models")]
     public class MessageServerOwnerDto
     {
         public ulong Id { get; private set; }
