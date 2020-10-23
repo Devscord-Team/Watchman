@@ -16,6 +16,7 @@ using Watchman.Integrations.Logging;
 using Watchman.Integrations.MongoDB;
 using Watchman.Discord.Integration.DevscordFramework;
 using Watchman.DomainModel.Configuration.Services;
+using Watchman.Discord.Areas.Administration.Services;
 
 namespace Watchman.Discord
 {
@@ -90,6 +91,11 @@ namespace Watchman.Discord
                 {
                     builder
                         .AddFromIoC<ComplaintsChannelService>(x => x.RemoveIfNeededComplaintsChannel);
+                })
+                .AddOnRoleRemovedHandlers(builder =>
+                {
+                    builder
+                        .AddFromIoC<TrustRolesService>(x => x.StopTrustingRole);
                 });
         }
 
