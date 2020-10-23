@@ -51,8 +51,10 @@ namespace Watchman.Web
             //    });
 
             services.AddControllersWithViews();
+
             var jwtTokenConfig = Configuration.GetSection("jwtTokenConfig").Get<JwtTokenConfig>();
             services.AddSingleton(jwtTokenConfig);
+
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -73,6 +75,9 @@ namespace Watchman.Web
                     ClockSkew = TimeSpan.FromMinutes(1)
                 };
             });
+
+            services.AddHostedService<JwtRefreshTokenCache>();
+
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/build";
