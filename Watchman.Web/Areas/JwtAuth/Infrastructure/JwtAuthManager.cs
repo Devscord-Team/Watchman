@@ -123,4 +123,4 @@ namespace Watchman.Web.Areas.JwtAuth.Infrastructure
         }
     }
 }
-}
+
