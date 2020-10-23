@@ -10,7 +10,7 @@ using System.Text;
 
 namespace Watchman.Web.Areas.JwtAuth.Infrastructure
 {
-    public class JwtAuthManager
+    public class JwtAuthManager : IJwtAuthManager
     {
         public IImmutableDictionary<string, RefreshToken> UsersRefreshTokensReadOnlyDictionary => _usersRefreshTokens.ToImmutableDictionary();
         private readonly ConcurrentDictionary<string, RefreshToken> _usersRefreshTokens;  // can store in a database or a distributed cache
