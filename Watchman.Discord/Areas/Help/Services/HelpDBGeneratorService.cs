@@ -25,7 +25,7 @@ namespace Watchman.Discord.Areas.Help.Services
             this._helpInformationFactory = helpInformationFactory;
         }
 
-        public Task FillDatabase(IEnumerable<CommandInfo> commandInfosFromAssembly)
+        public Task FillDatabase(IEnumerable<BotCommandInformation> commandInfosFromAssembly)
         {
             var commandInfosFromAssemblyList = commandInfosFromAssembly.ToList();
             var query = new GetHelpInformationQuery(HelpInformation.EMPTY_SERVER_ID);
@@ -43,13 +43,13 @@ namespace Watchman.Discord.Areas.Help.Services
             return this._commandBus.ExecuteAsync(command);
         }
 
-        private IEnumerable<CommandInfo> FindNewCommands(IEnumerable<CommandInfo> commandInfosFromAssembly, IEnumerable<HelpInformation> helpInfos)
+        private IEnumerable<BotCommandInformation> FindNewCommands(IEnumerable<BotCommandInformation> commandInfosFromAssembly, IEnumerable<HelpInformation> helpInfos)
         {
             var defaultHelpInfosInDb = helpInfos.Where(x => x.IsDefault); // for optimize checking only defaults
             return commandInfosFromAssembly.Where(x => defaultHelpInfosInDb.All(h => h.MethodFullName != x.MethodFullName));
         }
 
-        private void CheckIfExistsUselessHelp(IEnumerable<CommandInfo> commandInfosFromAssembly, IEnumerable<HelpInformation> helpInfos)
+        private void CheckIfExistsUselessHelp(IEnumerable<BotCommandInformation> commandInfosFromAssembly, IEnumerable<HelpInformation> helpInfos)
         {
             var oldUselessHelps = helpInfos.Where(h => commandInfosFromAssembly.All(c => c.MethodFullName != h.MethodFullName));
             foreach (var oldHelp in oldUselessHelps)

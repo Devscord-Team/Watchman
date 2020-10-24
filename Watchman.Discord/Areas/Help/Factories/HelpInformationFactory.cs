@@ -14,13 +14,13 @@ namespace Watchman.Discord.Areas.Help.Factories
             this._argumentInfoFactory = argumentInfoFactory;
         }
 
-        public HelpInformation Create(CommandInfo commandInfo)
+        public HelpInformation Create(BotCommandInformation commandInformation)
         {
             return new HelpInformation
             {
-                MethodFullName = commandInfo.MethodFullName,
-                Names = commandInfo.Names,
-                ArgumentInfos = commandInfo.CommandArgumentInfos.Select(x => this._argumentInfoFactory.Create(x)),
+                MethodFullName = commandInformation.MethodFullName,
+                Names = commandInformation.Names,
+                ArgumentInfos = commandInformation.BotCommandArgumentInformations.Select(x => this._argumentInfoFactory.Create(x)),
                 ServerId = 0,
                 Descriptions = new List<Description>
                 {

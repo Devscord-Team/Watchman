@@ -47,7 +47,7 @@ namespace Watchman.Discord
                         .AddFromIoC<ConfigurationService>(configurationService => configurationService.InitDefaultConfigurations)
                         .AddFromIoC<CustomCommandsLoader>(customCommandsLoader => customCommandsLoader.InitDefaultCustomCommands)
                         .AddFromIoC<HelpDataCollectorService, HelpDBGeneratorService>((dataCollector, helpService) =>
-                            () => helpService.FillDatabase(dataCollector.GetCommandsInfo(typeof(WatchmanBot).Assembly)))
+                            () => helpService.FillDatabase(dataCollector.GetBotCommandsInfo(typeof(WatchmanBot).Assembly)))
                         .AddFromIoC<ResponsesInitService>(responsesService => responsesService.InitNewResponsesFromResources)
                         .AddFromIoC<InitializationService, DiscordServersService>((initService, serversService) => async () =>
                         {

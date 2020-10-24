@@ -1,5 +1,5 @@
 ﻿using Devscord.DiscordFramework.Commons.Extensions;
-using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+using Devscord.DiscordFramework.Framework.Commands;
 using Devscord.DiscordFramework.Services.Factories;
 using Devscord.DiscordFramework.Services.Models;
 using System.Collections.Generic;
@@ -10,17 +10,17 @@ namespace Devscord.DiscordFramework.Services
 {
     public class HelpDataCollectorService
     {
-        private readonly CommandsInfoFactory _commandsInfoFactory;
+        private readonly BotCommandInformationFactory _botCommandInformationFactory;
 
-        public HelpDataCollectorService(CommandsInfoFactory commandsInfoFactory)
+        public HelpDataCollectorService(BotCommandInformationFactory botCommandInformationFactory)
         {
-            this._commandsInfoFactory = commandsInfoFactory;
+            this._botCommandInformationFactory = botCommandInformationFactory;
         }
 
-        public IEnumerable<CommandInfo> GetCommandsInfo(Assembly botAssembly)
+        public IEnumerable<BotCommandInformation> GetBotCommandsInfo(Assembly botAssembly)
         {
-            var controllers = botAssembly.GetTypesByInterface<IController>();
-            return controllers.SelectMany(x => this._commandsInfoFactory.Create(x));
+            var botCommands = botAssembly.GetTypesByInterface<IBotCommand>();
+            return botCommands.Select(x => this._botCommandInformationFactory.Create(x));
         }
     }
 }
