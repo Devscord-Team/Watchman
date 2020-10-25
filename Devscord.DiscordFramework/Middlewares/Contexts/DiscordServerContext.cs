@@ -1,6 +1,7 @@
 ﻿using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Devscord.DiscordFramework.Middlewares.Contexts
 {
@@ -10,12 +11,12 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
         public string Name { get; private set; }
         public ChannelContext LandingChannel { get; private set; }
 
-        private readonly Func<DiscordServerContext, IAsyncEnumerable<UserContext>> _getServerUsers;
+        private readonly Func<DiscordServerContext, IEnumerable<UserContext>> _getServerUsers;
         private readonly Func<DiscordServerContext, IEnumerable<UserRole>> _getServerRoles;
         private readonly Func<DiscordServerContext, IEnumerable<ChannelContext>> _getTextChannels;
         private readonly Func<UserContext> _getOwner;
 
-        public DiscordServerContext(ulong id, string name, Func<UserContext> owner, ChannelContext landingChannel, Func<DiscordServerContext, IEnumerable<ChannelContext>> getTextChannels, Func<DiscordServerContext, IAsyncEnumerable<UserContext>> getServerUsers, Func<DiscordServerContext, IEnumerable<UserRole>> getServerRoles)
+        public DiscordServerContext(ulong id, string name, Func<UserContext> owner, ChannelContext landingChannel, Func<DiscordServerContext, IEnumerable<ChannelContext>> getTextChannels, Func<DiscordServerContext, IEnumerable<UserContext>> getServerUsers, Func<DiscordServerContext, IEnumerable<UserRole>> getServerRoles)
         {
             this._getServerUsers = getServerUsers;
             this._getServerRoles = getServerRoles;
@@ -27,7 +28,8 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
         }
 
         public IEnumerable<ChannelContext> GetTextChannels() => this._getTextChannels.Invoke(this);
-        public IAsyncEnumerable<UserContext> GetUsers() => this._getServerUsers.Invoke(this); // todo: use static list and events
+        public ChannelContext GetTextChannel(ulong channelId) => this.GetTextChannels().FirstOrDefault(x => x.Id == channelId);
+        public IEnumerable<UserContext> GetUsers() => this._getServerUsers.Invoke(this); // todo: use static list and events
         public IEnumerable<UserRole> GetRoles() => this._getServerRoles.Invoke(this);
         public UserContext GetOwner() => this._getOwner.Invoke();
     }

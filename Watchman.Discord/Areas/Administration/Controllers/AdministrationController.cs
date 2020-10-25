@@ -7,22 +7,20 @@ using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
-using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Cqrs;
 using Watchman.Common.Models;
-using Watchman.Discord.Areas.Commons;
 using Watchman.DomainModel.Messages.Queries;
 using Watchman.Discord.Areas.Users.Services;
 using Watchman.Discord.Areas.Administration.BotCommands;
 using Watchman.Discord.Areas.Administration.Services;
 using Watchman.Discord.Areas.Protection.Strategies;
 using Watchman.DomainModel.DiscordServer.Queries;
-using Watchman.DomainModel.Settings.Services;
-using Watchman.DomainModel.Settings.ConfigurationItems;
+using Watchman.DomainModel.Configuration.Services;
+using Watchman.DomainModel.Configuration.ConfigurationItems;
 
 namespace Watchman.Discord.Areas.Administration.Controllers
 {
@@ -59,9 +57,9 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             {
                 throw new UserNotFoundException(command.User.GetUserMention());
             }
-            var timeRange = TimeRange.ToNow(DateTime.Now - command.Time); //todo: change DateTime.Now to Contexts.SentAt
+            var timeRange = TimeRange.ToNow(DateTime.UtcNow - command.Time); //todo: change DateTime.Now to Contexts.SentAt
 
-            var query = new GetMessagesQuery(contexts.Server.Id, selectedUser.Id)
+            var query = new GetMessagesQuery(contexts.Server.Id, userId: selectedUser.Id)
             {
                 SentDate = timeRange
             };

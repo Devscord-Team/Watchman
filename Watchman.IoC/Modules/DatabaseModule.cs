@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using MongoDB.Driver;
-using System.Reflection;
 using Watchman.Integrations.MongoDB;
 
 namespace Watchman.IoC.Modules
@@ -16,10 +15,6 @@ namespace Watchman.IoC.Modules
 
         protected override void Load(ContainerBuilder builder)
         {
-            var assembly = typeof(DatabaseModule)
-                .GetTypeInfo()
-                .Assembly;
-
             builder.Register((c, p) => new MongoClient(this._connectionString).GetDatabase("devscord"))
                 .As<IMongoDatabase>()
                 .SingleInstance();

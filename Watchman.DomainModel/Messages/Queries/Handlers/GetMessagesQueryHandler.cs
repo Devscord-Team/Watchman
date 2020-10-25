@@ -25,15 +25,11 @@ namespace Watchman.DomainModel.Messages.Queries.Handlers
             {
                 messages = this.TakeOnlyFromChannel(query.ChannelId, messages);
             }
-            if (query.UserId.HasValue && query.UserId != 0)
+            if (query.UserId != 0)
             {
-                messages = this.TakeOnlyForUser(query.UserId.Value, messages);
+                messages = this.TakeOnlyForUser(query.UserId, messages);
             }
             var paginated = this.Paginate(query, messages);
-            if (query.UserId.HasValue)
-            {
-                paginated = paginated.Where(x => x.Author.Id == query.UserId.Value);
-            }
             return new GetMessagesQueryResult(paginated);
         }
 
@@ -47,9 +43,9 @@ namespace Watchman.DomainModel.Messages.Queries.Handlers
             return messages.Where(x => x.Channel.Id == channelId);
         }
 
-        private IQueryable<Message> TakeOnlyForUser(ulong? userId, IQueryable<Message> messages)
+        private IQueryable<Message> TakeOnlyForUser(ulong userId, IQueryable<Message> messages)
         {
-            return messages.Where(x => x.Author.Id == userId.Value);
+            return messages.Where(x => x.Author.Id == userId);
         }
     }
 }

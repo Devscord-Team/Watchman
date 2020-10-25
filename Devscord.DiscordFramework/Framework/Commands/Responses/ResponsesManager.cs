@@ -80,7 +80,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         public static string MutedUser(this ResponsesService responsesService, UserContext user, DateTime timeEnd)
         {
             return responsesService.ProcessResponse("MutedUser",
-                new KeyValuePair<string, string>("user", user.Name),
+                new KeyValuePair<string, string>("user", user.Name), //todo: change to GetMention when message will be send as Embed
                 new KeyValuePair<string, string>("timeEnd", TimeZoneInfo.ConvertTimeFromUtc(timeEnd, TimeZoneInfo.Local).ToString("dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture))); // this works when timeEnd.Kind is equal to DateTimeKind.Utc
         }
 
@@ -274,6 +274,16 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("role", roleName));
         }
 
+        public static string ComplaintsChannelAlreadyExists(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("ComplaintsChannelAlreadyExists");
+        }
+
+        public static string ComplaintsChannelHasBeenCreated(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("ComplaintsChannelHasBeenCreated");
+        }
+
         public static string ServerDoesntHaveAnyTrustedRole(this ResponsesService responsesService)
         {
             return responsesService.ProcessResponse("ServerDoesntHaveAnyTrustedRole");
@@ -314,14 +324,18 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("muteTime", muteTime.ToString()));
         }
 
-        public static string UserHasWarnTimeout(this ResponsesService responsesService, string targetUserMention, int timeoutSeconds, 
-            string previousReason, string previousGrantorMention) 
+        public static string UserHasWarnTimeout(this ResponsesService responsesService, string targetUserMention, int timeoutSeconds, string previousReason, string previousGrantorMention) 
         {
             return responsesService.ProcessResponse("UserHasWarnTimeout",
                 new KeyValuePair<string, string>("user", targetUserMention),
                 new KeyValuePair<string, string>("timeout", timeoutSeconds.ToString()),
                 new KeyValuePair<string, string>("reason", previousReason),
                 new KeyValuePair<string, string>("grantor", previousGrantorMention));
+        }
+
+        public static string ThereAreNoMutedUsers(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("ThereAreNoMutedUsers");
         }
     }
 }

@@ -6,7 +6,7 @@ namespace Watchman.Cqrs
     {
     }
 
-    public interface ICommandHandler<T> : ICommandHandler where T : ICommand
+    public interface ICommandHandler<in T> : ICommandHandler where T : ICommand
     {
         Task HandleAsync(T command);
     }

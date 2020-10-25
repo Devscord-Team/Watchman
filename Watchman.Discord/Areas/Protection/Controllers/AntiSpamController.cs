@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -12,6 +12,7 @@ using Watchman.Discord.Areas.Protection.Services;
 using Watchman.Discord.Areas.Protection.Strategies;
 using Watchman.Discord.Areas.Users.Services;
 using Watchman.DomainModel.Settings.Services;
+using Watchman.DomainModel.Configuration.Services;
 
 namespace Watchman.Discord.Areas.Protection.Controllers
 {
@@ -28,7 +29,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         // it's really needed - to avoid multiple warning and muting the same user
         private static bool _isNowChecking;
 
-        public AntiSpamController(ServerMessagesCacheService serverMessagesCacheService, CheckUserSafetyService checkUserSafetyService, PunishmentsCachingService punishmentsCachingService, AntiSpamService antiSpamService, ConfigurationService configurationService, WarnsService warnsService)
+        public AntiSpamController(ServerMessagesCacheService serverMessagesCacheService, CheckUserSafetyService checkUserSafetyService, PunishmentsCachingService punishmentsCachingService, AntiSpamService antiSpamService, IConfigurationService configurationService)
         {
             this._serverMessagesCacheService = serverMessagesCacheService;
             this._punishmentsCachingService = punishmentsCachingService;
