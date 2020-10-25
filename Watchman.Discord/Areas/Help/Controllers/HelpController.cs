@@ -33,12 +33,9 @@ namespace Watchman.Discord.Areas.Help.Controllers
                 var helpMessage = this._helpMessageGenerator.GenerateJsonHelp(helpInformations);
                 return messagesService.SendMessage(helpMessage, MessageType.Json);
             }
-            else
-            {
-                return messagesService.SendEmbedMessage("Dostępne komendy:",
-                    "Poniżej znajdziesz listę dostępnych komend wraz z ich opisami\nJeśli chcesz poznać dokładniejszy opis - zapraszamy do opisu w naszej dokumentacji\nhttps://watchman.readthedocs.io/pl/latest/156-lista-funkcjonalnosci/",
-                    this._helpMessageGenerator.MapToEmbedInput(helpInformations)); //todo add to responses - now we cannot handle this format
-            }
+            return messagesService.SendEmbedMessage("Dostępne komendy:",
+                "Poniżej znajdziesz listę dostępnych komend wraz z ich opisami\nJeśli chcesz poznać dokładniejszy opis - zapraszamy do opisu w naszej dokumentacji\nhttps://watchman.readthedocs.io/pl/latest/156-lista-funkcjonalnosci/",
+                this._helpMessageGenerator.MapToEmbedInput(helpInformations)); //todo add to responses - now we cannot handle this format
         }
     }
 }
