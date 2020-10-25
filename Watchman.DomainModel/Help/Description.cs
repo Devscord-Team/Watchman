@@ -1,8 +1,8 @@
 ﻿namespace Watchman.DomainModel.Help
 {
-    public class Description
+    public struct Description
     {
-        public string Name { get; set; }
-        public string Details { get; set; }
+        public string Language { get; set; }
+        public string Text { get; set; }
     }
 }

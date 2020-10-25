@@ -2,7 +2,7 @@
 
 namespace Devscord.DiscordFramework.Services.Models
 {
-    public class BotArgumentInformation
+    public readonly struct BotArgumentInformation
     {
         public string Name { get; }
         public Type ExpectedType { get; }

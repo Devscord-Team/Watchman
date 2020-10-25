@@ -8,11 +8,11 @@ namespace Watchman.Web.Areas.Helps.Models.Dtos
         public string Description { get; set; }
         public string ExampleValues { get; set; }
 
-        public ArgumentInfoDto(ArgumentInfo argumentInfo)
+        public ArgumentInfoDto(ArgumentInformation argumentInformation)
         {
-            this.Name = argumentInfo.Name;
-            this.Description = argumentInfo.Description;
-            this.ExampleValues = argumentInfo.ExampleValues;
+            this.Name = argumentInformation.Name;
+            //this.Description = argumentInformation.Description;
+            //this.ExampleValues = argumentInformation.ExampleValue;
         }
     }
 }

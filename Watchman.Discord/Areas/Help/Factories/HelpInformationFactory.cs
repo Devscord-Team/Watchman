@@ -18,16 +18,15 @@ namespace Watchman.Discord.Areas.Help.Factories
         {
             return new HelpInformation
             {
-                MethodFullName = commandInformation.MethodFullName,
-                Names = commandInformation.Names,
-                ArgumentInfos = commandInformation.BotCommandArgumentInformations.Select(x => this._argumentInfoFactory.Create(x)),
-                ServerId = 0,
+                CommandName = commandInformation.Name,
+                ArgumentInformations = commandInformation.BotCommandArgumentInformations.Select(x => this._argumentInfoFactory.Create(x)),
+                ServerId = HelpInformation.EMPTY_SERVER_ID,
                 Descriptions = new List<Description>
                 {
                     new Description
                     {
-                        Name = "EN",
-                        Details = "Empty"
+                        Language = "EN",
+                        Text = "Empty"
                     }
                 }
             };

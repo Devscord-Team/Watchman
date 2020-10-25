@@ -1,17 +1,26 @@
-﻿using Devscord.DiscordFramework.Services.Models;
+﻿using System.Collections.Generic;
+using Devscord.DiscordFramework.Services.Models;
 using Watchman.DomainModel.Help;
 
 namespace Watchman.Discord.Areas.Help.Factories
 {
     public class ArgumentInfoFactory
     {
-        public ArgumentInfo Create(BotArgumentInformation argument)
+        public ArgumentInformation Create(BotArgumentInformation argument)
         {
-            return new ArgumentInfo
+            return new ArgumentInformation
             {
                 Name = argument.Name,
-                Description = "Empty",
-                ExampleValues = "Empty"
+                IsOptional = argument.IsOptional,
+                ExpectedTypeName = argument.ExpectedType.Name,
+                Descriptions = new List<Description>
+                {
+                    new Description
+                    {
+                        Language = "EN",
+                        Text = "Empty"
+                    }
+                }
             };
         }
     }

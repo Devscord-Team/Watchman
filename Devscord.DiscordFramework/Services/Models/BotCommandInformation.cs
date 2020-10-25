@@ -2,7 +2,7 @@
 
 namespace Devscord.DiscordFramework.Services.Models
 {
-    public class BotCommandInformation
+    public readonly struct BotCommandInformation
     {
         public string Name { get; }
         public IEnumerable<BotArgumentInformation> BotCommandArgumentInformations { get; }

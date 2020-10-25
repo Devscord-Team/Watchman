@@ -18,28 +18,26 @@ namespace Watchman.Discord.Areas.Help.Services
         {
             foreach (var helpInfo in helpInformations)
             {
-                var name = "-" + helpInfo.Names.Aggregate((a, b) => $"{a} / {b}");
+                var name = "-" + helpInfo.CommandName;
 
-                var descriptions = helpInfo.Descriptions
-                    .Where(x => x.Details.Trim().ToLowerInvariant() != "empty")
-                    .Select(x => $"{x.Name} => {x.Details}")
-                    .ToList();
+                var description = helpInfo.Descriptions
+                    .FirstOrDefault(x => x.Language == helpInfo.DefaultLanguage).Text ?? "Empty";
 
-                var arguments = helpInfo.ArgumentInfos
-                    .Where(x => x.Description.Trim().ToLowerInvariant() != "empty")
-                    .Select(x => $"{x.Name} => {x.Description}")
-                    .ToList();
+                //var arguments = helpInfo.ArgumentInformations
+                //    .Where(x => x.Description.Trim().ToLowerInvariant() != "empty")
+                //    .Select(x => $"{x.Name} => {x.Description}")
+                //    .ToList();
 
-                var content = string.Empty;
-                if (descriptions.Any())
-                {
-                    var commandDescription = descriptions.Aggregate((a, b) => a + "\n" + b);
-                    content = commandDescription + "\n\n";
-                }
-                if (arguments.Any())
-                {
-                    content += arguments.Aggregate((a, b) => a + "\n" + b);
-                }
+                var content = $"{name} => {description}";
+                //if (descriptions.Any())
+                //{
+                //    var commandDescription = descriptions.Aggregate((a, b) => a + "\n" + b);
+                //    content = commandDescription + "\n\n";
+                //}
+                //if (arguments.Any())
+                //{
+                //    content += arguments.Aggregate((a, b) => a + "\n" + b);
+                //}
 
                 if (string.IsNullOrWhiteSpace(content))
                 {
