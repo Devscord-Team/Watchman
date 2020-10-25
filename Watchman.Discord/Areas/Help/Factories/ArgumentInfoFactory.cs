@@ -15,11 +15,7 @@ namespace Watchman.Discord.Areas.Help.Factories
                 ExpectedTypeName = argument.ExpectedType.Name,
                 Descriptions = new List<Description>
                 {
-                    new Description
-                    {
-                        Language = "EN",
-                        Text = "Empty"
-                    }
+                    new Description()
                 }
             };
         }

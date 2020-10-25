@@ -12,6 +12,7 @@ namespace Watchman.DomainModel.Help
         public IEnumerable<Description> Descriptions { get; set; }
         public ulong ServerId { get; set; }
         public string DefaultLanguage { get; set; } = "EN";
+        public string ExampleUsage { get; set; }
         public bool IsDefault => this.ServerId == EMPTY_SERVER_ID;
     }
 }

@@ -23,11 +23,7 @@ namespace Watchman.Discord.Areas.Help.Factories
                 ServerId = HelpInformation.EMPTY_SERVER_ID,
                 Descriptions = new List<Description>
                 {
-                    new Description
-                    {
-                        Language = "EN",
-                        Text = "Empty"
-                    }
+                    new Description()
                 }
             };
         }
