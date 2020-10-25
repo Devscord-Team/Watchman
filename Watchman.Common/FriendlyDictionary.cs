@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
+using Watchman.Common.Interfaces;
 
 namespace Watchman.Common
 {
@@ -74,10 +75,5 @@ namespace Watchman.Common
             var inf = type.GetInterfaces();
             return type.GetInterfaces().Any(x => x.Name == typeof(ICollection).Name);
         }
-    }
-
-    public interface IFriendlyDictionary
-    {
-        int CleanEmptyContainers();
     }
 }
