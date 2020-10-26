@@ -8,6 +8,7 @@ namespace Watchman.DomainModel.Help
         public const ulong EMPTY_SERVER_ID = 0;
 
         public string CommandName { get; set; }
+        public string AreaName { get; set; }
         public IEnumerable<ArgumentInformation> ArgumentInformations { get; set; }
         public IEnumerable<Description> Descriptions { get; set; }
         public ulong ServerId { get; set; }

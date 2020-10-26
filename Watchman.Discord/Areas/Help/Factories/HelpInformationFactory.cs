@@ -19,6 +19,7 @@ namespace Watchman.Discord.Areas.Help.Factories
             return new HelpInformation
             {
                 CommandName = commandInformation.Name,
+                AreaName = commandInformation.AreaName,
                 ArgumentInformations = commandInformation.BotCommandArgumentInformations.Select(x => this._argumentInfoFactory.Create(x)),
                 ServerId = HelpInformation.EMPTY_SERVER_ID,
                 Descriptions = new List<Description>
