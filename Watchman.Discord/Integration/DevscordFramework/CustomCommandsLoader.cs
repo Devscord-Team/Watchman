@@ -53,6 +53,7 @@ namespace Watchman.Discord.Integration.DevscordFramework
                     new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.Warns.AddWarnCommand", @"-add\s*warn\s*(?<User><\D{1,2}\d+>)\s*(?<Reason>.*)", serverId),
                     new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.Warns.WarnsCommand", @"-warns\s*(?<User><\D{1,2}\d+>)?", serverId),
                     new AddCustomCommandsCommand("Watchman.Discord.Areas.Messaging.BotCommands.SendCommand", @"-send\s*(?<Channel>\<#\d+\>)\s*(?<Message>.*)", serverId),
+                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Help.BotCommands.HelpCommand", @"-help\s(?<Command>\w+)", serverId)
                 });
             }
             var commandsInBase = this._queryBus.Execute(new GetCustomCommandsQuery()).CustomCommands.ToList();

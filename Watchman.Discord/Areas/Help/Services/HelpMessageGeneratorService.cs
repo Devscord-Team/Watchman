@@ -25,7 +25,7 @@ namespace Watchman.Discord.Areas.Help.Services
             return serialized;
         }
 
-        public IEnumerable<KeyValuePair<string, string>> MapHelpToEmbed(IEnumerable<HelpInformation> helpInformations)
+        public IEnumerable<KeyValuePair<string, string>> MapHelpForAllCommandsToEmbed(IEnumerable<HelpInformation> helpInformations)
         {
             var areas = helpInformations.GroupBy(x => x.AreaName);
             foreach (var area in areas)
@@ -46,7 +46,7 @@ namespace Watchman.Discord.Areas.Help.Services
             }
         }
 
-        public IEnumerable<KeyValuePair<string, string>> MapCommandHelpToEmbed(HelpInformation helpInformation)
+        public IEnumerable<KeyValuePair<string, string>> MapHelpForOneCommandToEmbed(HelpInformation helpInformation)
         {
             var helpBuilder = new StringBuilder();
             var description = helpInformation.Descriptions.
@@ -55,11 +55,12 @@ namespace Watchman.Discord.Areas.Help.Services
 
             foreach (var argument in helpInformation.ArgumentInformations)
             {
-                helpBuilder.AppendLine();
                 helpBuilder.AppendLine($"**{argument.Name}**");
-                helpBuilder.AppendLine($"typ: {argument.ExpectedTypeName}");
+                helpBuilder.AppendLine($"```typ: {argument.ExpectedTypeName}");
                 var exampleValue = argument.ExampleValue ?? this._helpExampleUsageGenerator.GetExampleValue(argument);
-                helpBuilder.AppendLine($"przykład: {exampleValue}");
+                helpBuilder.AppendLine(!string.IsNullOrWhiteSpace(exampleValue) 
+                    ? $"przykład: {exampleValue}```" 
+                    : "```");
             }
             yield return new KeyValuePair<string, string>("Parametry", helpBuilder.ToString());
             var exampleCommandUsage = helpInformation.ExampleUsage ?? this._helpExampleUsageGenerator.GetExampleUsage(helpInformation);

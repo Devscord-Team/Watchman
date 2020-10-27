@@ -44,7 +44,7 @@ namespace Watchman.Discord.Areas.Help.Controllers
             }
             return messagesService.SendEmbedMessage("Dostępne komendy:",
                 "Poniżej znajdziesz listę dostępnych komend wraz z ich opisami\nJeśli chcesz poznać dokładniejszy opis - zapraszamy do opisu w naszej dokumentacji\nhttps://watchman.readthedocs.io/pl/latest/156-lista-funkcjonalnosci/",
-                this._helpMessageGenerator.MapHelpToEmbed(helpInformations)); //todo add to responses - now we cannot handle this format
+                this._helpMessageGenerator.MapHelpForAllCommandsToEmbed(helpInformations)); //todo add to responses - now we cannot handle this format
         }
 
         private Task PrintHelpForOneCommand(HelpCommand command, Contexts contexts, IEnumerable<HelpInformation> helpInformations)
@@ -55,7 +55,7 @@ namespace Watchman.Discord.Areas.Help.Controllers
                 return Task.CompletedTask;
             }
             var messagesService = this._messagesServiceFactory.Create(contexts);
-            var helpMessage = this._helpMessageGenerator.MapCommandHelpToEmbed(helpInformation);
+            var helpMessage = this._helpMessageGenerator.MapHelpForOneCommandToEmbed(helpInformation);
             return messagesService.SendEmbedMessage($"Jak używać komendy {command.Command}", "", helpMessage);
         }
     }
