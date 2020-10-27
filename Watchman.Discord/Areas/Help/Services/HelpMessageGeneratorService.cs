@@ -25,23 +25,45 @@ namespace Watchman.Discord.Areas.Help.Services
             return serialized;
         }
 
-        public IEnumerable<KeyValuePair<string, string>> MapToEmbedInput(IEnumerable<HelpInformation> helpInformations)
+        public IEnumerable<KeyValuePair<string, string>> MapHelpToEmbed(IEnumerable<HelpInformation> helpInformations)
         {
             var areas = helpInformations.GroupBy(x => x.AreaName);
             foreach (var area in areas)
             {
+                var helpBuilder = new StringBuilder();
                 foreach (var helpInfo in area)
                 {
                     var name = "-" + helpInfo.CommandName.ToLowerInvariant().Replace("command", "");
-
                     var description = helpInfo.Descriptions
                         .FirstOrDefault(x => x.Language == helpInfo.DefaultLanguage)?.Text ?? "Brak domyślnego opisu";
 
-                    var descriptionBuilder = new StringBuilder();
-                    descriptionBuilder.AppendLine(description);
-                    yield return new KeyValuePair<string, string>(name, descriptionBuilder.ToString());
+                    helpBuilder.AppendLine($"**{name}**");
+                    helpBuilder.AppendLine(description);
+                    helpBuilder.AppendLine();
                 }
+                helpBuilder.AppendLine("----------");
+                yield return new KeyValuePair<string, string>(area.Key, helpBuilder.ToString());
             }
+        }
+
+        public IEnumerable<KeyValuePair<string, string>> MapCommandHelpToEmbed(HelpInformation helpInformation)
+        {
+            var helpBuilder = new StringBuilder();
+            var description = helpInformation.Descriptions.
+                FirstOrDefault(x => x.Language == helpInformation.DefaultLanguage)?.Text ?? "Brak domyślnego opisu";
+            yield return new KeyValuePair<string, string>("Opis", description);
+
+            foreach (var argument in helpInformation.ArgumentInformations)
+            {
+                helpBuilder.AppendLine();
+                helpBuilder.AppendLine($"**{argument.Name}**");
+                helpBuilder.AppendLine($"typ: {argument.ExpectedTypeName}");
+                var exampleValue = argument.ExampleValue ?? this._helpExampleUsageGenerator.GetExampleValue(argument);
+                helpBuilder.AppendLine($"przykład: {exampleValue}");
+            }
+            yield return new KeyValuePair<string, string>("Parametry", helpBuilder.ToString());
+            var exampleCommandUsage = helpInformation.ExampleUsage ?? this._helpExampleUsageGenerator.GetExampleUsage(helpInformation);
+            yield return new KeyValuePair<string, string>("Przykład", exampleCommandUsage);
         }
 
         private string RemoveFirstAndLastBracket(string fullMessage) // '[' & ']'

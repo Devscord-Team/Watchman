@@ -14,12 +14,12 @@ namespace Watchman.Discord.Areas.Help.Services
             foreach (var argument in helpInformation.ArgumentInformations)
             {
                 exampleBuilder.Append(" -");
-                exampleBuilder.Append(this.GetExampleValue(argument));
+                exampleBuilder.Append(this.GetExampleArgument(argument));
             }
             return exampleBuilder.ToString();
         }
 
-        private string GetExampleValue(ArgumentInformation argument)
+        public string GetExampleValue(ArgumentInformation argument)
         {
             var exampleValue = argument.ExpectedTypeName switch
             {
@@ -33,9 +33,15 @@ namespace Watchman.Discord.Areas.Help.Services
                 nameof(UserMention) => $"<@{12345}>",
                 _ => "NotImplementedType"
             };
+            return exampleValue;
+        }
+
+        private string GetExampleArgument(ArgumentInformation argumentInformation)
+        {
+            var exampleValue = this.GetExampleValue(argumentInformation);
             return string.IsNullOrWhiteSpace(exampleValue)
-                ? argument.Name.ToLowerInvariant()
-                : $"{argument.Name.ToLowerInvariant()} {exampleValue}";
+                ? argumentInformation.Name.ToLowerInvariant()
+                : $"{argumentInformation.Name.ToLowerInvariant()} {exampleValue}";
         }
     }
 }
