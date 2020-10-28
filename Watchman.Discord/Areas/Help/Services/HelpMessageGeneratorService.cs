@@ -58,7 +58,7 @@ namespace Watchman.Discord.Areas.Help.Services
                     ? $"przykład: {exampleValue}```" 
                     : "```");
             }
-            yield return new KeyValuePair<string, string>("Parametry", helpBuilder.ToString());
+            yield return new KeyValuePair<string, string>("__Parametry__", helpBuilder.ToString());
             var exampleCommandUsage = helpInformation.ExampleUsage ?? this._helpExampleUsageGenerator.GetExampleUsage(helpInformation);
             yield return new KeyValuePair<string, string>("Przykład", exampleCommandUsage);
         }

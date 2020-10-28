@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Linq;
+using System.Text;
 using Devscord.DiscordFramework.Framework.Commands.PropertyAttributes;
 using Watchman.DomainModel.Help;
 
@@ -11,7 +12,12 @@ namespace Watchman.Discord.Areas.Help.Services
             var exampleBuilder = new StringBuilder();
             exampleBuilder.Append('-');
             exampleBuilder.Append(helpInformation.CommandName.ToLowerInvariant().Replace("command", ""));
-            foreach (var argument in helpInformation.ArgumentInformations)
+            var arguments = helpInformation.ArgumentInformations.Where(x => !x.IsOptional).ToList();
+            if (helpInformation.ArgumentInformations.Any(x => x.IsOptional))
+            {
+                arguments.Add(helpInformation.ArgumentInformations.First(x => x.IsOptional));
+            }
+            foreach (var argument in arguments)
             {
                 exampleBuilder.Append(" -");
                 exampleBuilder.Append(this.GetExampleArgument(argument));
