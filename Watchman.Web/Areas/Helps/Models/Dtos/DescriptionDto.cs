@@ -4,13 +4,13 @@ namespace Watchman.Web.Areas.Helps.Models.Dtos
 {
     public class DescriptionDto
     {
-        public string Name { get; set; }
-        public string Value { get; set; } = "Example description"; //TODO change to value from database
+        public string Language { get; set; }
+        public string Text { get; set; }
 
         public DescriptionDto(Description description)
         {
-            this.Name = description.Language;
-            this.Value = description.Text;
+            this.Language = description.Language;
+            this.Text = description.Text;
         }
     }
 }
