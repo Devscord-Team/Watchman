@@ -49,10 +49,6 @@ namespace Watchman.Discord.Areas.Help.Services
         public IEnumerable<KeyValuePair<string, string>> MapHelpForOneCommandToEmbed(HelpInformation helpInformation)
         {
             var helpBuilder = new StringBuilder();
-            var description = helpInformation.Descriptions.
-                FirstOrDefault(x => x.Language == helpInformation.DefaultLanguage)?.Text ?? "Brak domyślnego opisu";
-            yield return new KeyValuePair<string, string>("Opis", description);
-
             foreach (var argument in helpInformation.ArgumentInformations)
             {
                 helpBuilder.AppendLine($"**{argument.Name}**");

@@ -56,7 +56,9 @@ namespace Watchman.Discord.Areas.Help.Controllers
             }
             var messagesService = this._messagesServiceFactory.Create(contexts);
             var helpMessage = this._helpMessageGenerator.MapHelpForOneCommandToEmbed(helpInformation);
-            return messagesService.SendEmbedMessage($"Jak używać komendy {command.Command}", "", helpMessage);
+            var description = helpInformation.Descriptions
+                .FirstOrDefault(x => x.Language == helpInformation.DefaultLanguage)?.Text ?? "Brak domyślnego opisu";
+            return messagesService.SendEmbedMessage($"Jak używać komendy {command.Command}", description, helpMessage);
         }
     }
 }
