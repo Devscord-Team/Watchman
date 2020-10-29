@@ -44,7 +44,7 @@ namespace Watchman.Common.Models
             return dateTime >= this.Start && dateTime <= this.End;
         }
 
-        public IEnumerable<TimeRange> MoveWhile(Func<TimeRange, bool> shouldContinue, Func<TimeRange,TimeSpan> getTime)
+        public IEnumerable<TimeRange> MoveWhile(Func<TimeRange, bool> shouldContinue, Func<TimeRange, TimeSpan> getTime)
         {
             return this.MoveWhile(shouldContinue, getTime.Invoke(this));
         }
