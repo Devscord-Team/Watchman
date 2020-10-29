@@ -25,7 +25,7 @@ namespace Devscord.DiscordFramework
             {
                 return null;
             }
-            var serverCommands = _customCommandsGroupedByBotCommand[serverId];
+            var serverCommands = this._customCommandsGroupedByBotCommand[serverId];
             try
             {
                 var command = serverCommands.SingleOrDefault(x => x.ExpectedBotCommandName == botCommand.FullName && x.Template.IsMatch(request.OriginalMessage));
