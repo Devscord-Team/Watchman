@@ -270,4 +270,7 @@
   <data name="ThereAreNoMutedUsers" xml:space="preserve">
     <value>Na tym serwerze nie ma żadnych wyciszonych użytkowników.</value>
   </data>
+  <data name="NoDefaultDescription" xml:space="preserve">
+    <value>Brak domyślnego opisu</value>
+  </data>
 </root>

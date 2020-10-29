@@ -10,23 +10,21 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
     public class ResponsesService
     {
         public IEnumerable<Response> Responses { get; set; }
-        private readonly ResponsesParser _parser;
 
-        public Func<ulong, IEnumerable<Response>> GetResponsesFunc { get; set; } = x => throw new NotImplementedException();
+        private readonly ResponsesCachingService _responsesCachingService;
+        private readonly ResponsesParser _responsesParser;
 
-        public ResponsesService()
+        public ResponsesService(ResponsesCachingService responsesCachingService, ResponsesParser responsesParser)
         {
-            this._parser = new ResponsesParser();
+            this._responsesCachingService = responsesCachingService;
+            this._responsesParser = responsesParser;
         }
 
-        public void RefreshResponses(ulong serverId)
+        public string GetResponse(ulong serverId, Func<ResponsesService, string> getResponse)
         {
-            this.Responses = this.GetResponsesFunc(serverId);
-        }
-
-        public Response GetResponse(string name)
-        {
-            return this.Responses.SingleOrDefault(x => x.OnEvent == name);
+            this.Responses = this._responsesCachingService.GetResponses(serverId);
+            var response = getResponse.Invoke(this);
+            return response;
         }
 
         public string ProcessResponse(string response, params KeyValuePair<string, string>[] values)
@@ -39,23 +37,28 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             return this.ProcessResponse(this.GetResponse(response), contexts, values);
         }
 
-        public string ProcessResponse(Response response, params KeyValuePair<string, string>[] values)
+        private Response GetResponse(string name)
+        {
+            return this.Responses.SingleOrDefault(x => x.OnEvent == name);
+        }
+
+        private string ProcessResponse(Response response, params KeyValuePair<string, string>[] values)
         {
             if (values.Length != response.GetFields().Count())
             {
-                throw new ArgumentException("Cannot process response {response}. Values must be equal to required.", response.ToJson());
+                throw new ArgumentException(@"Cannot process response {response}. Values must be equal to required.", response.ToJson());
             }
             Log.Debug("Start parsing response {response} with values {values}", response.ToJson(), values.ToJson());
-            return this._parser.Parse(response, values);
+            return this._responsesParser.Parse(response, values);
         }
 
-        public string ProcessResponse(Response response, Contexts contexts, params KeyValuePair<string, string>[] values)
+        private string ProcessResponse(Response response, Contexts contexts, params KeyValuePair<string, string>[] values)
         {
             var fields = contexts.ConvertToResponseFields(response.GetFields()).ToList();
             Log.Debug("Found fields {fields} in response {response}", fields.ToJson(), response.ToJson());
             fields.AddRange(values);
             Log.Debug("Start parsing response {response} with values {values}", response.ToJson(), values.ToJson());
-            return this._parser.Parse(response, fields);
+            return this._responsesParser.Parse(response, fields);
         }
     }
 }

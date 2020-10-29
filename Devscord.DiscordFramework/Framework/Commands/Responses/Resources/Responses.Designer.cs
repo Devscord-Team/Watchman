@@ -169,6 +169,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Brak domyślnego opisu.
+        /// </summary>
+        public static string NoDefaultDescription {
+            get {
+                return ResourceManager.GetString("NoDefaultDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Nie masz wystarczających uprawnień do wywołania tej komendy..
         /// </summary>
         public static string NotAdminPermissions {

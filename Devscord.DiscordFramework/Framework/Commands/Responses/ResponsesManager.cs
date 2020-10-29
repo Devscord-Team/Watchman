@@ -309,5 +309,10 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("ThereAreNoMutedUsers");
         }
+
+        public static string NoDefaultDescription(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("NoDefaultDescription");
+        }
     }
 }

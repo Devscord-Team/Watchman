@@ -7,7 +7,7 @@ namespace Watchman.Discord.Areas.Commons
 {
     public static class ResponsesExtensions
     {
-        public static ResponsesService SetGetResponsesFromDatabase(this ResponsesService service, IQueryBus queryBus)
+        public static ResponsesCachingService SetGetResponsesFromDatabase(this ResponsesCachingService service, IQueryBus queryBus)
         {
             service.GetResponsesFunc = serverId =>
             {
