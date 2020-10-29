@@ -60,7 +60,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             {
                 throw new NotAdminPermissionsException();
             }
-            var timeRange = TimeRange.ToNow(contexts.Message.SentAt - command.Time); //todo: change DateTime.Now to Contexts.SentAt
+            var timeRange = TimeRange.ToNow(contexts.Message.SentAt - command.Time);
             var query = new GetMessagesQuery(contexts.Server.Id, userId: selectedUser.Id)
             {
                 SentDate = timeRange
