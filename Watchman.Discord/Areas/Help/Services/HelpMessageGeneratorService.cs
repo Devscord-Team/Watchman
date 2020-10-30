@@ -1,4 +1,5 @@
 ﻿using Devscord.DiscordFramework.Framework.Commands.Responses;
+using Devscord.DiscordFramework.Middlewares.Contexts;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,9 +26,10 @@ namespace Watchman.Discord.Areas.Help.Services
             return serialized;
         }
 
-        public IEnumerable<KeyValuePair<string, string>> MapHelpForAllCommandsToEmbed(IEnumerable<HelpInformation> helpInformations)
+        public IEnumerable<KeyValuePair<string, string>> MapHelpForAllCommandsToEmbed(IEnumerable<HelpInformation> helpInformations, DiscordServerContext server)
         {
             var areas = helpInformations.GroupBy(x => x.AreaName);
+            var noDefaultDescriptionResponse = this._responsesService.GetResponse(server.Id, x => x.NoDefaultDescription());
             foreach (var area in areas)
             {
                 var helpBuilder = new StringBuilder();
@@ -35,7 +37,7 @@ namespace Watchman.Discord.Areas.Help.Services
                 {
                     var name = "-" + helpInfo.CommandName.ToLowerInvariant().Replace("command", "");
                     var description = helpInfo.Descriptions
-                        .FirstOrDefault(x => x.Language == helpInfo.DefaultLanguage)?.Text ?? "Brak domyślnego opisu";
+                        .FirstOrDefault(x => x.Language == helpInfo.DefaultLanguage)?.Text ?? noDefaultDescriptionResponse;
 
                     helpBuilder.AppendLine($"**{name}**");
                     helpBuilder.AppendLine(description);

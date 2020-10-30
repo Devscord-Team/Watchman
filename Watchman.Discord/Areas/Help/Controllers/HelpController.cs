@@ -10,6 +10,8 @@ using Watchman.DomainModel.Help.Queries;
 using Watchman.DomainModel.Help;
 using System.Collections.Generic;
 using System.Linq;
+using Devscord.DiscordFramework.Framework.Commands.Responses;
+using System;
 
 namespace Watchman.Discord.Areas.Help.Controllers
 {
@@ -18,12 +20,14 @@ namespace Watchman.Discord.Areas.Help.Controllers
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly HelpMessageGeneratorService _helpMessageGenerator;
         private readonly IQueryBus _queryBus;
+        private readonly ResponsesService _responsesService;
 
-        public HelpController(MessagesServiceFactory messagesServiceFactory, HelpMessageGeneratorService messageGeneratorService, IQueryBus queryBus)
+        public HelpController(MessagesServiceFactory messagesServiceFactory, HelpMessageGeneratorService messageGeneratorService, IQueryBus queryBus, ResponsesService responsesService)
         {
             this._messagesServiceFactory = messagesServiceFactory;
             this._helpMessageGenerator = messageGeneratorService;
             this._queryBus = queryBus;
+            this._responsesService = responsesService;
         }
 
         public Task PrintHelp(HelpCommand command, Contexts contexts)
@@ -42,23 +46,27 @@ namespace Watchman.Discord.Areas.Help.Controllers
                 var helpMessage = this._helpMessageGenerator.GenerateJsonHelp(helpInformations);
                 return messagesService.SendMessage(helpMessage, MessageType.Json);
             }
-            return messagesService.SendEmbedMessage("Dostępne komendy:",
-                "Poniżej znajdziesz listę dostępnych komend wraz z ich opisami\nJeśli chcesz poznać dokładniejszy opis - zapraszamy do opisu w naszej dokumentacji\nhttps://watchman.readthedocs.io/pl/latest/156-lista-funkcjonalnosci/",
-                this._helpMessageGenerator.MapHelpForAllCommandsToEmbed(helpInformations)); //todo add to responses - now we cannot handle this format
+            var availableCommandsResponse = this._responsesService.GetResponse(contexts.Server.Id, x => x.AvailableCommands());
+            var hereYouCanFindAvailableCommandsWithDescriptions = this._responsesService.GetResponse(contexts.Server.Id, x => x.HereYouCanFindAvailableCommandsWithDescriptions());
+            return messagesService.SendEmbedMessage(title: availableCommandsResponse, description: hereYouCanFindAvailableCommandsWithDescriptions,
+                this._helpMessageGenerator.MapHelpForAllCommandsToEmbed(helpInformations, contexts.Server));
         }
 
         private Task PrintHelpForOneCommand(HelpCommand command, Contexts contexts, IEnumerable<HelpInformation> helpInformations)
         {
-            var helpInformation = helpInformations.FirstOrDefault(x => x.CommandName.ToLowerInvariant().Replace("command", "") == command.Command.TrimStart('-'));
+            string normalizeCommandName(string x) => x.ToLowerInvariant().TrimStart('-').Replace("command", "");
+            var helpInformation = helpInformations.FirstOrDefault(x => normalizeCommandName(x.CommandName) == normalizeCommandName(command.Command));
             if (helpInformation == null)
             {
                 return Task.CompletedTask;
             }
             var messagesService = this._messagesServiceFactory.Create(contexts);
             var helpMessage = this._helpMessageGenerator.MapHelpForOneCommandToEmbed(helpInformation);
+            var noDefaultDescriptionResponse = this._responsesService.GetResponse(contexts.Server.Id, x => x.NoDefaultDescription());
             var description = helpInformation.Descriptions
-                .FirstOrDefault(x => x.Language == helpInformation.DefaultLanguage)?.Text ?? "Brak domyślnego opisu";
-            return messagesService.SendEmbedMessage($"Jak używać komendy {command.Command}", description, helpMessage);
+                .FirstOrDefault(x => x.Language == helpInformation.DefaultLanguage)?.Text ?? noDefaultDescriptionResponse;
+            var howToUseCommand = this._responsesService.GetResponse(contexts.Server.Id, x => x.HowToUseCommand());
+            return messagesService.SendEmbedMessage($"{howToUseCommand} {helpInformation.CommandName}", description, helpMessage);
         }
     }
 }

@@ -97,6 +97,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dostępne komendy:.
+        /// </summary>
+        public static string AvailableCommands {
+            get {
+                return ResourceManager.GetString("AvailableCommands", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dostępne role: {{roles}}.
         /// </summary>
         public static string AvailableSafeRoles {
@@ -120,6 +129,24 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         public static string ComplaintsChannelHasBeenCreated {
             get {
                 return ResourceManager.GetString("ComplaintsChannelHasBeenCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Poniżej znajdziesz listę dostępnych komend wraz z ich opisami\nJeśli chcesz poznać dokładniejszy opis - zapraszamy do opisu w naszej dokumentacji\nhttps://watchman.readthedocs.io/pl/latest/156-lista-funkcjonalnosci/.
+        /// </summary>
+        public static string HereYouCanFindAvailableCommandsWithDescriptions {
+            get {
+                return ResourceManager.GetString("HereYouCanFindAvailableCommandsWithDescriptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Jak używać komendy.
+        /// </summary>
+        public static string HowToUseCommand {
+            get {
+                return ResourceManager.GetString("HowToUseCommand", resourceCulture);
             }
         }
         

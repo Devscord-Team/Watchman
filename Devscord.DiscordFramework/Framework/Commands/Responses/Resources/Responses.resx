@@ -273,4 +273,13 @@
   <data name="NoDefaultDescription" xml:space="preserve">
     <value>Brak domyślnego opisu</value>
   </data>
+  <data name="AvailableCommands" xml:space="preserve">
+    <value>Dostępne komendy:</value>
+  </data>
+  <data name="HereYouCanFindAvailableCommandsWithDescriptions" xml:space="preserve">
+    <value>Poniżej znajdziesz listę dostępnych komend wraz z ich opisami\nJeśli chcesz poznać dokładniejszy opis - zapraszamy do opisu w naszej dokumentacji\nhttps://watchman.readthedocs.io/pl/latest/156-lista-funkcjonalnosci/</value>
+  </data>
+  <data name="HowToUseCommand" xml:space="preserve">
+    <value>Jak używać komendy</value>
+  </data>
 </root>
