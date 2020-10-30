@@ -12,7 +12,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             output.Append($"{{{{prefix}}}}[[{template.CommandName}]]");
             foreach (var commandProperty in template.Properties)
             {
-                output.Append($" {{{{prefix}}}}[[{commandProperty.Name}]] (({Enum.GetName(typeof(BotCommandPropertyType), commandProperty.Type)}))");
+                output.Append($" {{{{prefix}}}}[[{commandProperty.Name}]] (({Enum.GetName(typeof(BotCommandPropertyType), commandProperty.GeneralType)}))");
                 if (commandProperty.IsOptional)
                 {
                     output.Append("<<optional>>");

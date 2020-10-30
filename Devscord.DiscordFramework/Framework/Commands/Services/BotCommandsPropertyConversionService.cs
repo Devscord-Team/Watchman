@@ -14,12 +14,12 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
         private readonly Regex _exTime = new Regex(@"(?<Value>\d+)(?<Unit>(ms|d|h|m|s))", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         private readonly Regex _exMention = new Regex(@"\d+", RegexOptions.Compiled);
 
-        public object ConvertType(string value, BotCommandPropertyType type)
+        public object ConvertType(string value, BotCommandProperty botCommandProperty)
         {
-            return type switch
+            return botCommandProperty.GeneralType switch
             {
                 BotCommandPropertyType.Time => this.ToTimeSpan(value),
-                BotCommandPropertyType.Number => int.Parse(value),
+                BotCommandPropertyType.Number => Convert.ChangeType(value, Nullable.GetUnderlyingType(botCommandProperty.ActualType) ?? botCommandProperty.ActualType),
                 BotCommandPropertyType.Bool => bool.Parse(value),
                 BotCommandPropertyType.UserMention => ulong.Parse(_exMention.Match(value).Value),
                 BotCommandPropertyType.ChannelMention => ulong.Parse(_exMention.Match(value).Value),

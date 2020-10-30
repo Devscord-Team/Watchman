@@ -24,11 +24,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Builders
         private BotCommandProperty GetBotCommandProperty(PropertyInfo commandProperty)
         {
             var name = commandProperty.Name;
-            var attributes = commandProperty.GetCustomAttributes(typeof(CommandPropertyAttribute), inherit: true).Select(x => x as CommandPropertyAttribute).ToList();
+            var attributes = commandProperty
+                .GetCustomAttributes(typeof(CommandPropertyAttribute), inherit: true)
+                .Select(x => x as CommandPropertyAttribute)
+                .ToList();
             var attribute = attributes.FirstOrDefault(x => x.GetType() != typeof(Optional)) ?? new SingleWord();
-            var type = (BotCommandPropertyType) Enum.Parse(typeof(BotCommandPropertyType), attribute.GetType().Name);
+            var generalType = (BotCommandPropertyType) Enum.Parse(typeof(BotCommandPropertyType), attribute.GetType().Name);
             var isOptional = attributes.Any(x => x is Optional);
-            return new BotCommandProperty(name, type, isOptional);
+            var actualType = commandProperty.PropertyType;
+            return new BotCommandProperty(name, generalType, isOptional, actualType);
         }
     }
 }

@@ -35,13 +35,14 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             var instance = Activator.CreateInstance(commandType);
             foreach (var property in commandType.GetProperties())
             {
-                var propertyType = template.Properties.First(x => x.Name == property.Name).Type;
-                var isList = propertyType == BotCommandPropertyType.List;         
+                var botCommandProperty = template.Properties.First(x => x.Name == property.Name);
+                var isList = botCommandProperty.GeneralType == BotCommandPropertyType.List;         
                 var value = getValueByName.Invoke(property.Name, isList);
                 if (string.IsNullOrWhiteSpace(value as string) && !isList)
                 {
                     // if we got to this point in the code, it means that property is optional (but which is not bool) and the user did not provide a value to this field, so we assign null to property. Property must be a type that takes null.
                     property.SetValue(instance, null);
+                    continue;
                 }
                 if (value is List<string> valueList)
                 {
@@ -55,7 +56,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                 }
                 if (value is string valueString)
                 {
-                    var convertedType = this._botCommandPropertyConversionService.ConvertType(valueString, propertyType);
+                    var convertedType = this._botCommandPropertyConversionService.ConvertType(valueString, botCommandProperty);
                     property.SetValue(instance, convertedType);
                 }
             }

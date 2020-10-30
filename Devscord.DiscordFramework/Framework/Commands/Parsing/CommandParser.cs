@@ -65,7 +65,8 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
             while (trimmedMess.Length > 0)
             {
                 var prefix = this.GetPrefix(trimmedMess);
-                var isStartingWithValue = prefix == null;
+                var isNegativeNumber = prefix == "-" && trimmedMess.Length > 1 && char.IsDigit(trimmedMess[trimmedMess.IndexOf('-') + 1]);
+                var isStartingWithValue = prefix == null || isNegativeNumber;
 
                 if (isStartingWithValue)
                 {

@@ -56,7 +56,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                 .ToList();
 
             this.CheckQuotationMarksInListsAndTexts(template.Properties, argsAndValues, isCommandMatchedWithCustom: true);
-            return this.ComparePropertiesToArgsAndValues(template.Properties, argsAndValues);
+            return this.ComparePropertiesToArgsAndValues(template.Properties, argsAndValues, isCommandMatchedWithCustom: true);
         }
 
         private bool AreAllGivenArgsForCommandKnown(IEnumerable<BotCommandProperty> properties, IEnumerable<DiscordRequestArgument> arguments)
@@ -65,7 +65,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                 .Select(x => x.Name?.ToLowerInvariant())
                 .ToList();
             var lists = properties
-                .Where(property => property.Type == BotCommandPropertyType.List)
+                .Where(property => property.GeneralType == BotCommandPropertyType.List)
                 .Select(x => x.Name.ToLowerInvariant())
                 .ToList();
             var argsWithoutListSubarguments = this.GetArgsWithoutListSubarguments(argumentsNames, lists);
@@ -92,7 +92,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
         {
             foreach (var property in properties)
             {
-                if (property.Type != BotCommandPropertyType.Text && property.Type != BotCommandPropertyType.List)
+                if (property.GeneralType != BotCommandPropertyType.Text && property.GeneralType != BotCommandPropertyType.List)
                 {
                     continue;
                 }
@@ -121,7 +121,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             }
         }
 
-        private bool ComparePropertiesToArgsAndValues(IEnumerable<BotCommandProperty> properties, IEnumerable<KeyValuePair<string, string>> argsAndValues)
+        private bool ComparePropertiesToArgsAndValues(IEnumerable<BotCommandProperty> properties, IEnumerable<KeyValuePair<string, string>> argsAndValues, bool isCommandMatchedWithCustom = false)
         {
             foreach (var property in properties)
             {
@@ -132,11 +132,16 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                     {
                         throw new NotEnoughArgumentsException();
                     }
+                    var HasArgBeenGiven = argsAndValues.FirstOrDefault(arg => arg.Key?.ToLowerInvariant() == property.Name.ToLowerInvariant()).Key != null;
+                    if (!isCommandMatchedWithCustom && property.GeneralType != BotCommandPropertyType.Bool && HasArgBeenGiven)
+                    {
+                        throw new InvalidArgumentsException();
+                    }
                     continue;
                 }
-                switch (property.Type)
+                switch (property.GeneralType)
                 {
-                    case BotCommandPropertyType.Number when !value.All(char.IsDigit):
+                    case BotCommandPropertyType.Number when CheckIfItIsNotRightNumber(value, property.ActualType):
                     case BotCommandPropertyType.Time when !this._exTime.IsMatch(value):
                     case BotCommandPropertyType.UserMention when !this._exUserMention.IsMatch(value):
                     case BotCommandPropertyType.ChannelMention when !this._exChannelMention.IsMatch(value):
@@ -144,6 +149,19 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                 }
             }
             return true;
+        }
+
+        private bool CheckIfItIsNotRightNumber(string value, Type type)
+        {
+            try
+            {
+                Convert.ChangeType(value, Nullable.GetUnderlyingType(type) ?? type);
+                return false;
+            }
+            catch
+            {
+                return true;
+            }
         }
     }
 }

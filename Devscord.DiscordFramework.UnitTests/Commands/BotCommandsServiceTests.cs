@@ -22,10 +22,10 @@ namespace Devscord.DiscordFramework.UnitTests.Commands
             //Assert
             Assert.That(template.CommandName, Is.EqualTo("TestCommand"));
             Assert.That(template.Properties.Count(), Is.EqualTo(5));
-            Assert.That(template.Properties.Count(x => x.Type == BotCommandPropertyType.Text), Is.EqualTo(1));
-            Assert.That(template.Properties.Count(x => x.Type == BotCommandPropertyType.SingleWord), Is.EqualTo(2));
-            Assert.That(template.Properties.Count(x => x.Type == BotCommandPropertyType.UserMention), Is.EqualTo(1));
-            Assert.That(template.Properties.Count(x => x.Type == BotCommandPropertyType.Time), Is.EqualTo(0));
+            Assert.That(template.Properties.Count(x => x.GeneralType == BotCommandPropertyType.Text), Is.EqualTo(1));
+            Assert.That(template.Properties.Count(x => x.GeneralType == BotCommandPropertyType.SingleWord), Is.EqualTo(2));
+            Assert.That(template.Properties.Count(x => x.GeneralType == BotCommandPropertyType.UserMention), Is.EqualTo(1));
+            Assert.That(template.Properties.Count(x => x.GeneralType == BotCommandPropertyType.Time), Is.EqualTo(0));
         }
 
         [Test]

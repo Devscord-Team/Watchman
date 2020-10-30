@@ -10,7 +10,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
     {
         public object GetValueByName(string key, bool isList, DiscordRequest request, BotCommandTemplate template)
         {
-            var argType = template.Properties.First(x => x.Name.ToLowerInvariant() == key.ToLowerInvariant()).Type;
+            var argType = template.Properties.First(x => x.Name.ToLowerInvariant() == key.ToLowerInvariant()).GeneralType;
             var result = request.Arguments.FirstOrDefault(a => a.Name?.ToLowerInvariant() == key.ToLowerInvariant());
             if (argType == BotCommandPropertyType.Bool)
             {
@@ -41,7 +41,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
         public object GetValueByNameFromCustomCommand(string key, bool isList, BotCommandTemplate template, Match match)
         {
             var value = match.Groups[key].Value.Trim();
-            var argType = template.Properties.First(x => x.Name.ToLowerInvariant() == key.ToLowerInvariant()).Type;
+            var argType = template.Properties.First(x => x.Name.ToLowerInvariant() == key.ToLowerInvariant()).GeneralType;
             if (argType == BotCommandPropertyType.Bool)
             {
                 return string.IsNullOrWhiteSpace(value) ? bool.FalseString : bool.TrueString;
