@@ -329,5 +329,20 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("HowToUseCommand");
         }
+
+        public static string Example(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("Example");
+        }
+
+        public static string Type(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("Type");
+        }
+
+        public static string Parameters(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("Parameters");
+        }
     }
 }

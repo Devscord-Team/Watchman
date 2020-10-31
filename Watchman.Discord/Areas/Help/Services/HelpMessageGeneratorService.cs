@@ -43,26 +43,29 @@ namespace Watchman.Discord.Areas.Help.Services
                     helpBuilder.AppendLine(description);
                     helpBuilder.AppendLine();
                 }
-                helpBuilder.AppendLine("----------");
+                helpBuilder.AppendLine("||-------------||");
                 yield return new KeyValuePair<string, string>(area.Key, helpBuilder.ToString());
             }
         }
 
-        public IEnumerable<KeyValuePair<string, string>> MapHelpForOneCommandToEmbed(HelpInformation helpInformation)
+        public IEnumerable<KeyValuePair<string, string>> MapHelpForOneCommandToEmbed(HelpInformation helpInformation, DiscordServerContext server)
         {
             var helpBuilder = new StringBuilder();
+            var typeResponse = this._responsesService.GetResponse(server.Id, x => x.Type());
+            var exampleResponse = this._responsesService.GetResponse(server.Id, x => x.Example());
             foreach (var argument in helpInformation.ArgumentInformations)
             {
                 helpBuilder.AppendLine($"**{argument.Name}**");
-                helpBuilder.AppendLine($"```typ: {argument.ExpectedTypeName}");
+                helpBuilder.AppendLine($"```{typeResponse.ToLowerInvariant()}: {argument.ExpectedTypeName}");
                 var exampleValue = argument.ExampleValue ?? this._helpExampleUsageGenerator.GetExampleValue(argument);
                 helpBuilder.AppendLine(!string.IsNullOrWhiteSpace(exampleValue) 
-                    ? $"przykład: {exampleValue}```" 
+                    ? $"{exampleResponse.ToLowerInvariant()}: {exampleValue}```" 
                     : "```");
             }
-            yield return new KeyValuePair<string, string>("__Parametry__", helpBuilder.ToString());
+            var parametersResponse = this._responsesService.GetResponse(server.Id, x => x.Parameters());
+            yield return new KeyValuePair<string, string>($"__{parametersResponse}__", helpBuilder.ToString());
             var exampleCommandUsage = helpInformation.ExampleUsage ?? this._helpExampleUsageGenerator.GetExampleUsage(helpInformation);
-            yield return new KeyValuePair<string, string>("Przykład", exampleCommandUsage);
+            yield return new KeyValuePair<string, string>($"__{exampleResponse}__", exampleCommandUsage);
         }
 
         private string RemoveFirstAndLastBracket(string fullMessage) // '[' & ']'

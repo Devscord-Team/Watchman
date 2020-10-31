@@ -282,4 +282,13 @@
   <data name="HowToUseCommand" xml:space="preserve">
     <value>Jak używać komendy</value>
   </data>
+  <data name="Example" xml:space="preserve">
+    <value>Przykład</value>
+  </data>
+  <data name="Parameters" xml:space="preserve">
+    <value>Parametry</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Typ</value>
+  </data>
 </root>

@@ -61,7 +61,7 @@ namespace Watchman.Discord.Areas.Help.Controllers
                 return Task.CompletedTask;
             }
             var messagesService = this._messagesServiceFactory.Create(contexts);
-            var helpMessage = this._helpMessageGenerator.MapHelpForOneCommandToEmbed(helpInformation);
+            var helpMessage = this._helpMessageGenerator.MapHelpForOneCommandToEmbed(helpInformation, contexts.Server);
             var noDefaultDescriptionResponse = this._responsesService.GetResponse(contexts.Server.Id, x => x.NoDefaultDescription());
             var description = helpInformation.Descriptions
                 .FirstOrDefault(x => x.Language == helpInformation.DefaultLanguage)?.Text ?? noDefaultDescriptionResponse;

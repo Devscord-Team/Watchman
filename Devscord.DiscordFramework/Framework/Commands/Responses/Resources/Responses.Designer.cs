@@ -133,6 +133,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Przykład.
+        /// </summary>
+        public static string Example {
+            get {
+                return ResourceManager.GetString("Example", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Poniżej znajdziesz listę dostępnych komend wraz z ich opisami\nJeśli chcesz poznać dokładniejszy opis - zapraszamy do opisu w naszej dokumentacji\nhttps://watchman.readthedocs.io/pl/latest/156-lista-funkcjonalnosci/.
         /// </summary>
         public static string HereYouCanFindAvailableCommandsWithDescriptions {
@@ -228,6 +237,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         public static string NumberOfMessagesIsHuge {
             get {
                 return ResourceManager.GetString("NumberOfMessagesIsHuge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parametry.
+        /// </summary>
+        public static string Parameters {
+            get {
+                return ResourceManager.GetString("Parameters", resourceCulture);
             }
         }
         
@@ -480,6 +498,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         public static string TryToGoogleIt {
             get {
                 return ResourceManager.GetString("TryToGoogleIt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Typ.
+        /// </summary>
+        public static string Type {
+            get {
+                return ResourceManager.GetString("Type", resourceCulture);
             }
         }
         
