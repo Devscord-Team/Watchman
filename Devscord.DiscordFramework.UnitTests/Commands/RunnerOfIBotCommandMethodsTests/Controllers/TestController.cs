@@ -20,6 +20,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         public SomeDefaultCommand DefaultCommandArgs { get; private set; }
         public SomeCustomCommand CustomCommandArgs { get; private set; }
 
+        [AdminCommand]
         public void TestOptionalArgs(OptionalArgsCommand command, Contexts contexts)
         {
             if (command.TestNullableInt != null)

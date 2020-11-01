@@ -34,10 +34,10 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
             return new RunnerOfIBotCommandMethods(botCommandsService, commandsContainer, validatorOfCommand);
         }
 
-        public Contexts GetContexts()
+        public Contexts GetContexts(bool isOwnerOrAdmin = true)
         {
             var server = new DiscordServerContext(id: 0, null, null, null, null, null, null);
-            var user = new UserContext(0, "a name of a user", null, null, null, getIsOwner: user => true, null);
+            var user = new UserContext(0, "a name of a user", roles: isOwnerOrAdmin ? null : new List<UserRole>(), null, null, getIsOwner: user => isOwnerOrAdmin, null);
             return new Contexts(server, null, user);
         }
 
