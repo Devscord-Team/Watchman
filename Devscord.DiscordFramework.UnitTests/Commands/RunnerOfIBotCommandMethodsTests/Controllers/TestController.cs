@@ -17,6 +17,8 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         public ulong ValueOfTestChannelMention { get; private set; }
         public object GeneralValue { get; private set; }
         public OptionalArgsCommand OptionalArgs { get; private set; }
+        public SomeDefaultCommand DefaultCommandArgs { get; private set; }
+        public SomeCustomCommand CustomCommandArgs { get; private set; }
 
         public void TestOptionalArgs(OptionalArgsCommand command, Contexts contexts)
         {
@@ -79,6 +81,16 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         public void TestChannelMention(ChannelMentionCommand command, Contexts contexts)
         {
             this.ValueOfTestChannelMention = command.TestChannelMention;
+        }
+
+        public void SomeDefaultCommand(SomeDefaultCommand command, Contexts contexts)
+        {
+            this.DefaultCommandArgs = command;
+        }
+
+        public void SomeCustomCommand(SomeCustomCommand command, Contexts contexts)
+        {
+            this.CustomCommandArgs = command;
         }
     }
 }
