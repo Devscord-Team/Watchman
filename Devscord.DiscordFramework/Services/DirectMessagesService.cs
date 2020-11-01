@@ -16,22 +16,18 @@ namespace Devscord.DiscordFramework.Services
         private readonly MessageSplittingService _messageSplittingService;
         private readonly EmbedMessagesService _embedMessagesService;
         private readonly EmbedMessageSplittingService _embedMessageSplittingService;
-        private readonly ResponsesCachingService _responsesCachingService;
 
-        public DirectMessagesService(ResponsesService responsesService, MessageSplittingService messageSplittingService, EmbedMessagesService embedMessagesService, EmbedMessageSplittingService embedMessageSplittingService, ResponsesCachingService responsesCachingService)
+        public DirectMessagesService(ResponsesService responsesService, MessageSplittingService messageSplittingService, EmbedMessagesService embedMessagesService, EmbedMessageSplittingService embedMessageSplittingService)
         {
             this._responsesService = responsesService;
             this._messageSplittingService = messageSplittingService;
             this._embedMessagesService = embedMessagesService;
             this._embedMessageSplittingService = embedMessageSplittingService;
-            this._responsesCachingService = responsesCachingService;
         }
 
         public Task<bool> TrySendMessage(ulong userId, Func<ResponsesService, string> response, Contexts contexts)
         {
-            this._responsesService.Responses = this._responsesCachingService.GetResponses(contexts.Server.Id);
-            var message = response.Invoke(this._responsesService);
-            //var message = this._responsesService.GetResponse(contexts.Server.Id, response);
+            var message = this._responsesService.GetResponse(contexts.Server.Id, response);
             return this.TrySendMessage(userId, message);
         }
 
