@@ -19,28 +19,28 @@ namespace Watchman.Web.Areas.JwtAuth.Infrastructure
 
         public JwtAuthManager(JwtTokenConfig jwtTokenConfig)
         {
-            _jwtTokenConfig = jwtTokenConfig;
-            _usersRefreshTokens = new ConcurrentDictionary<string, RefreshToken>();
-            _secret = Encoding.ASCII.GetBytes(jwtTokenConfig.Secret);
+            this._jwtTokenConfig = jwtTokenConfig;
+            this._usersRefreshTokens = new ConcurrentDictionary<string, RefreshToken>();
+            this._secret = Encoding.ASCII.GetBytes(jwtTokenConfig.Secret);
         }
 
         // optional: clean up expired refresh tokens
         public void RemoveExpiredRefreshTokens(DateTime now)
         {
-            var expiredTokens = _usersRefreshTokens.Where(x => x.Value.ExpireAt < now).ToList();
+            var expiredTokens = this._usersRefreshTokens.Where(x => x.Value.ExpireAt < now).ToList();
             foreach (var expiredToken in expiredTokens)
             {
-                _usersRefreshTokens.TryRemove(expiredToken.Key, out _);
+                this._usersRefreshTokens.TryRemove(expiredToken.Key, out _);
             }
         }
 
         // can be more specific to ip, user agent, device name, etc.
         public void RemoveRefreshTokenByUserName(string userName)
         {
-            var refreshTokens = _usersRefreshTokens.Where(x => x.Value.UserName == userName).ToList();
+            var refreshTokens = this._usersRefreshTokens.Where(x => x.Value.UserName == userName).ToList();
             foreach (var refreshToken in refreshTokens)
             {
-                _usersRefreshTokens.TryRemove(refreshToken.Key, out _);
+                this._usersRefreshTokens.TryRemove(refreshToken.Key, out _);
             }
         }
 
@@ -48,20 +48,20 @@ namespace Watchman.Web.Areas.JwtAuth.Infrastructure
         {
             var shouldAddAudienceClaim = string.IsNullOrWhiteSpace(claims?.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Aud)?.Value);
             var jwtToken = new JwtSecurityToken(
-                _jwtTokenConfig.Issuer,
-                shouldAddAudienceClaim ? _jwtTokenConfig.Audience : string.Empty,
+                this._jwtTokenConfig.Issuer,
+                shouldAddAudienceClaim ? this._jwtTokenConfig.Audience : string.Empty,
                 claims,
-                expires: now.AddMinutes(_jwtTokenConfig.AccessTokenExpiration),
-                signingCredentials: new SigningCredentials(new SymmetricSecurityKey(_secret), SecurityAlgorithms.HmacSha256Signature));
+                expires: now.AddMinutes(this._jwtTokenConfig.AccessTokenExpiration),
+                signingCredentials: new SigningCredentials(new SymmetricSecurityKey(this._secret), SecurityAlgorithms.HmacSha256Signature));
             var accessToken = new JwtSecurityTokenHandler().WriteToken(jwtToken);
 
             var refreshToken = new RefreshToken
             {
                 UserName = username,
                 TokenString = GenerateRefreshTokenString(),
-                ExpireAt = now.AddMinutes(_jwtTokenConfig.RefreshTokenExpiration)
+                ExpireAt = now.AddMinutes(this._jwtTokenConfig.RefreshTokenExpiration)
             };
-            _usersRefreshTokens.AddOrUpdate(refreshToken.TokenString, refreshToken, (s, t) => refreshToken);
+            this._usersRefreshTokens.AddOrUpdate(refreshToken.TokenString, refreshToken, (s, t) => refreshToken);
 
             return new JwtAuthResult
             {
@@ -79,7 +79,7 @@ namespace Watchman.Web.Areas.JwtAuth.Infrastructure
             }
 
             var userName = principal.Identity.Name;
-            if (!_usersRefreshTokens.TryGetValue(refreshToken, out var existingRefreshToken))
+            if (!this._usersRefreshTokens.TryGetValue(refreshToken, out var existingRefreshToken))
             {
                 throw new SecurityTokenException("Invalid token");
             }
@@ -102,10 +102,10 @@ namespace Watchman.Web.Areas.JwtAuth.Infrastructure
                     new TokenValidationParameters
                     {
                         ValidateIssuer = true,
-                        ValidIssuer = _jwtTokenConfig.Issuer,
+                        ValidIssuer = this._jwtTokenConfig.Issuer,
                         ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(_secret),
-                        ValidAudience = _jwtTokenConfig.Audience,
+                        IssuerSigningKey = new SymmetricSecurityKey(this._secret),
+                        ValidAudience = this._jwtTokenConfig.Audience,
                         ValidateAudience = true,
                         ValidateLifetime = true,
                         ClockSkew = TimeSpan.FromMinutes(1)
@@ -114,7 +114,7 @@ namespace Watchman.Web.Areas.JwtAuth.Infrastructure
             return (principal, validatedToken as JwtSecurityToken);
         }
 
-        private static string GenerateRefreshTokenString()
+        private string GenerateRefreshTokenString()
         {
             var randomNumber = new byte[32];
             using var randomNumberGenerator = RandomNumberGenerator.Create();
