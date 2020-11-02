@@ -142,6 +142,51 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;#12345678&gt;.
+        /// </summary>
+        public static string ExampleChannelMention {
+            get {
+                return ResourceManager.GetString("ExampleChannelMention", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to jeden dwa trzy.
+        /// </summary>
+        public static string ExampleList {
+            get {
+                return ResourceManager.GetString("ExampleList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to JednoSłowo.
+        /// </summary>
+        public static string ExampleSingleWord {
+            get {
+                return ResourceManager.GetString("ExampleSingleWord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;kilka słów&quot;.
+        /// </summary>
+        public static string ExampleText {
+            get {
+                return ResourceManager.GetString("ExampleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;@12345678&gt;.
+        /// </summary>
+        public static string ExampleUserMention {
+            get {
+                return ResourceManager.GetString("ExampleUserMention", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Poniżej znajdziesz listę dostępnych komend wraz z ich opisami\nJeśli chcesz poznać dokładniejszy opis - zapraszamy do opisu w naszej dokumentacji\nhttps://watchman.readthedocs.io/pl/latest/156-lista-funkcjonalnosci/.
         /// </summary>
         public static string HereYouCanFindAvailableCommandsWithDescriptions {

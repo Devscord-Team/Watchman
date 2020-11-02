@@ -2,7 +2,6 @@ using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 
 namespace Devscord.DiscordFramework.Framework.Commands.Responses
 {
@@ -343,6 +342,31 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         public static string Parameters(this ResponsesService responsesService)
         {
             return responsesService.ProcessResponse("Parameters");
+        }
+
+        public static string ExampleChannelMention(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("ExampleChannelMention");
+        }
+
+        public static string ExampleUserMention(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("ExampleUserMention");
+        }
+
+        public static string ExampleList(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("ExampleList");
+        }
+
+        public static string ExampleSingleWord(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("ExampleSingleWord");
+        }
+
+        public static string ExampleText(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("ExampleText");
         }
     }
 }

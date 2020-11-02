@@ -291,4 +291,19 @@
   <data name="Type" xml:space="preserve">
     <value>Typ</value>
   </data>
+  <data name="ExampleChannelMention" xml:space="preserve">
+    <value>&lt;#12345678&gt;</value>
+  </data>
+  <data name="ExampleList" xml:space="preserve">
+    <value>jeden dwa trzy</value>
+  </data>
+  <data name="ExampleSingleWord" xml:space="preserve">
+    <value>JednoSłowo</value>
+  </data>
+  <data name="ExampleText" xml:space="preserve">
+    <value>"kilka słów"</value>
+  </data>
+  <data name="ExampleUserMention" xml:space="preserve">
+    <value>&lt;@12345678&gt;</value>
+  </data>
 </root>

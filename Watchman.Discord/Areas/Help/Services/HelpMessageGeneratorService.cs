@@ -57,14 +57,14 @@ namespace Watchman.Discord.Areas.Help.Services
             {
                 helpBuilder.AppendLine($"**{argument.Name}**");
                 helpBuilder.AppendLine($"```{typeResponse.ToLowerInvariant()}: {argument.ExpectedTypeName}");
-                var exampleValue = argument.ExampleValue ?? this._helpExampleUsageGenerator.GetExampleValue(argument);
+                var exampleValue = argument.ExampleValue ?? this._helpExampleUsageGenerator.GetExampleValue(argument, server);
                 helpBuilder.AppendLine(!string.IsNullOrWhiteSpace(exampleValue) 
                     ? $"{exampleResponse.ToLowerInvariant()}: {exampleValue}```" 
                     : "```");
             }
             var parametersResponse = this._responsesService.GetResponse(server.Id, x => x.Parameters());
             yield return new KeyValuePair<string, string>($"__{parametersResponse}__", helpBuilder.ToString());
-            var exampleCommandUsage = helpInformation.ExampleUsage ?? this._helpExampleUsageGenerator.GetExampleUsage(helpInformation);
+            var exampleCommandUsage = helpInformation.ExampleUsage ?? this._helpExampleUsageGenerator.GetExampleUsage(helpInformation, server);
             yield return new KeyValuePair<string, string>($"__{exampleResponse}__", exampleCommandUsage);
         }
 
