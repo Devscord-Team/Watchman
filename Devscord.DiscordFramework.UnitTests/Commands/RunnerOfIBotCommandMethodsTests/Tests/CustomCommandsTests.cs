@@ -179,7 +179,6 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
                 (typeof(DoubleCommand), @"-custom\s*double\s*(?<TestDouble>.*)"),
                 (typeof(DecimalCommand), @"-custom\s*decimal\s*(?<TestDecimal>.*)")
             });
-
             var runner = this._getterOfThings.GetRunner(customCommands);
             var contexts = this._getterOfThings.GetContexts();
             var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._testNumbersController);

@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using Devscord.DiscordFramework.Framework.Commands;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethodsTests
 {
@@ -37,7 +36,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         public Contexts GetContexts(bool isOwnerOrAdmin = true)
         {
             var server = new DiscordServerContext(id: 0, null, null, null, null, null, null);
-            var user = new UserContext(0, "a name of a user", roles: isOwnerOrAdmin ? null : new List<UserRole>(), null, null, getIsOwner: user => isOwnerOrAdmin, null);
+            var user = new UserContext(id: 0, "a name of a user", roles: isOwnerOrAdmin ? null : new List<UserRole>(), null, null, getIsOwner: user => isOwnerOrAdmin, null);
             return new Contexts(server, null, user);
         }
 

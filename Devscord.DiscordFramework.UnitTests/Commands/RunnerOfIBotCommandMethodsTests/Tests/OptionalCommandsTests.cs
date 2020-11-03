@@ -15,19 +15,12 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         private readonly GetterOfThingsAboutBotCommand _getterOfThings;
         private readonly TestController _controller;
         private readonly CommandParser _commandParser;
-        private static readonly object[] _messagesAndExpectedTimesOrLists = new object[]
+        private static readonly object[] _messagesAndExpectedTimesOrLists = new[]
         {
             new object[] { "-OptionalArgs -testtime 5d", TimeSpan.FromDays(5) },
             new object[] { "-custom_optional time 17m", TimeSpan.FromMinutes(17) },
             new object[] { "-OptionalArgs -testlist sth", new List<string> { "sth" } },
             new object[] { "-custom_optional list abc qwerty", new List<string> { "abc", "qwerty" } }
-        };
-        private static readonly object[] _messagesWithIncorrectTimeOrLists = new object[]
-        {
-            new object[] { "-OptionalArgs -testtime 3" },
-            new object[] { "-custom_optional time 14x" },
-            new object[] { "-OptionalArgs -testlist sth\"" },
-            new object[] { "-custom_optional list \"sth\" else\"" }
         };
 
         public OptionalCommandsTests()
@@ -101,7 +94,10 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         [TestCase("-custom_optional user abc")]
         [TestCase("-OptionalArgs -testchannelmention <333>")]
         [TestCase("-custom_optional channel <#abc>")]
-        [TestCaseSource(nameof(_messagesWithIncorrectTimeOrLists))]
+        [TestCase("-OptionalArgs -testtime 3")]
+        [TestCase("-custom_optional time 14x")]
+        [TestCase("-OptionalArgs -testlist sth\"")]
+        [TestCase("-custom_optional list \"sth\" else\"")]
         public void ShouldThrowException_WhenOptionalArgIsGivenWithIncorrectValue(string message)
         {
             // Arrange:
