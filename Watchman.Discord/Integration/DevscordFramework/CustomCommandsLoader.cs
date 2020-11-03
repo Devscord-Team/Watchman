@@ -59,7 +59,9 @@ namespace Watchman.Discord.Integration.DevscordFramework
             var commandsInBase = this._queryBus.Execute(new GetCustomCommandsQuery()).CustomCommands.ToList();
             foreach (var command in customCommands)
             {
-                if (commandsInBase.Any(x => x.ServerId == command.ServerId && x.CommandFullName == command.CommandFullName))
+                if (commandsInBase.Any(x => x.ServerId == command.ServerId 
+                                            && x.CommandFullName == command.CommandFullName 
+                                            && x.CustomTemplateRegex == command.CustomTemplateRegex))
                 {
                     continue;
                 }
