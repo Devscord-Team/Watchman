@@ -417,5 +417,24 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
             // Assert:
             Assert.ThrowsAsync<InvalidArgumentsException>(RunMethodsFunc);
         }
+
+        [Test]
+        [TestCase("-usermention -testusermention <@123>", 123UL)]
+        [TestCase("-UserMention -TestUserMention <@333>", 333UL)]
+        [TestCase("-USERMENTION -TESTUSERMENTION <@555>", 555UL)]
+        public async Task ShouldProcessCommandCorrectlyRegardlessOfCase(string message, ulong expectedValue)
+        {
+            // Arrange:
+            var runner = this._getterOfThings.GetRunner();
+            var contexts = this._getterOfThings.GetContexts();
+            var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._testController);
+            var request = this._commandParser.Parse(message, DateTime.Now);
+
+            // Act:
+            await runner.RunMethodsIBotCommand(request, contexts, controllerInfos);
+
+            // Assert:
+            Assert.That(this._testController.ValueOfTestUserMention, Is.EqualTo(expectedValue));
+        }
     }
 }

@@ -130,7 +130,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                 {
                     if (!property.IsOptional)
                     {
-                        throw new NotEnoughArgumentsException();
+                        throw new InvalidArgumentsException();
                     }
                     var HasArgBeenGiven = argsAndValues.FirstOrDefault(arg => arg.Key?.ToLowerInvariant() == property.Name.ToLowerInvariant()).Key != null;
                     if (!isCommandMatchedWithCustom && property.GeneralType != BotCommandPropertyType.Bool && HasArgBeenGiven)
