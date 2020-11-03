@@ -32,7 +32,7 @@ namespace Devscord.DiscordFramework.Services.Factories
 
         private string GetAreaName(string commandNamespace)
         {
-            var regex = new Regex(@"Watchman\.Discord\.Areas\.(?<AreaName>\w+)\.", RegexOptions.Compiled);
+            var regex = new Regex(@"^Watchman\.Discord\.Areas\.(?<AreaName>\w+)", RegexOptions.Compiled | RegexOptions.Multiline);
             var areaName = regex.Match(commandNamespace).Groups["AreaName"].Value;
             return areaName;
         }

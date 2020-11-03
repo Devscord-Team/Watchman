@@ -28,24 +28,15 @@ namespace Watchman.Discord.Areas.Help.Services
 
         public IEnumerable<KeyValuePair<string, string>> MapHelpForAllCommandsToEmbed(IEnumerable<HelpInformation> helpInformations, DiscordServerContext server)
         {
-            var areas = helpInformations.GroupBy(x => x.AreaName);
-            var noDefaultDescriptionResponse = this._responsesService.GetResponse(server.Id, x => x.NoDefaultDescription());
-            foreach (var area in areas)
+            var areas = helpInformations.GroupBy(x => x.AreaName).ToList();
+            foreach (var area in areas.SkipLast(1))
             {
-                var helpBuilder = new StringBuilder();
-                foreach (var helpInfo in area)
-                {
-                    var name = "-" + helpInfo.CommandName.ToLowerInvariant().Replace("command", "");
-                    var description = helpInfo.Descriptions
-                        .FirstOrDefault(x => x.Language == helpInfo.DefaultLanguage)?.Text ?? noDefaultDescriptionResponse;
-
-                    helpBuilder.AppendLine($"**{name}**");
-                    helpBuilder.AppendLine(description);
-                    helpBuilder.AppendLine();
-                }
+                var helpBuilder = this.GetBasicDescriptionForArea(area, server.Id);
                 helpBuilder.AppendLine("||-------------||");
                 yield return new KeyValuePair<string, string>(area.Key, helpBuilder.ToString());
             }
+            var builder = this.GetBasicDescriptionForArea(areas.Last(), server.Id);
+            yield return new KeyValuePair<string, string>(areas.Last().Key, builder.ToString());
         }
 
         public IEnumerable<KeyValuePair<string, string>> MapHelpForOneCommandToEmbed(HelpInformation helpInformation, DiscordServerContext server)
@@ -71,6 +62,29 @@ namespace Watchman.Discord.Areas.Help.Services
         private string RemoveFirstAndLastBracket(string fullMessage) // '[' & ']'
         {
             return fullMessage[3..^3];
+        }
+
+        private StringBuilder GetBasicDescriptionForArea(IEnumerable<HelpInformation> area, ulong serverId)
+        {
+            var helpBuilder = new StringBuilder();
+            foreach (var helpInfo in area)
+            {
+                helpBuilder = this.GetBasicDescriptionForCommand(helpBuilder, helpInfo, serverId);
+            }
+            return helpBuilder;
+        }
+
+        private StringBuilder GetBasicDescriptionForCommand(StringBuilder helpBuilder, HelpInformation helpInformation, ulong serverId)
+        {
+            var noDefaultDescriptionResponse = this._responsesService.GetResponse(serverId, x => x.NoDefaultDescription());
+            var name = "-" + helpInformation.CommandName.ToLowerInvariant().Replace("command", "");
+            var description = helpInformation.Descriptions
+                .FirstOrDefault(x => x.Language == helpInformation.DefaultLanguage)?.Text ?? noDefaultDescriptionResponse;
+
+            helpBuilder.AppendLine($"**{name}**");
+            helpBuilder.AppendLine(description);
+            helpBuilder.AppendLine();
+            return helpBuilder;
         }
     }
 }
