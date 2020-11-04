@@ -10,6 +10,8 @@ namespace Devscord.DiscordFramework.Services.Factories
 {
     public class BotCommandInformationFactory
     {
+        private readonly Regex _areaNameRegex = new Regex(@"^Watchman\.Discord\.Areas\.(?<AreaName>\w+)", RegexOptions.Compiled | RegexOptions.Multiline);
+
         public BotCommandInformation Create(Type botCommand)
         {
             var properties = botCommand
@@ -32,9 +34,7 @@ namespace Devscord.DiscordFramework.Services.Factories
 
         private string GetAreaName(string commandNamespace)
         {
-            var regex = new Regex(@"^Watchman\.Discord\.Areas\.(?<AreaName>\w+)", RegexOptions.Compiled | RegexOptions.Multiline);
-            var areaName = regex.Match(commandNamespace).Groups["AreaName"].Value;
-            return areaName;
+            return this._areaNameRegex.Match(commandNamespace).Groups["AreaName"].Value;
         }
     }
 }
