@@ -1,16 +1,16 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Devscord.DiscordFramework.Commons.Exceptions;
+using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Common.Models;
 using Watchman.Discord.Areas.Protection.BotCommands;
-using Devscord.DiscordFramework.Commons.Extensions;
-using Devscord.DiscordFramework.Framework.Commands.Responses;
-using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Discord.Areas.Protection.Commands;
 using Watchman.Discord.Areas.Protection.Models;
 using Watchman.Discord.Areas.Protection.Services;
@@ -88,9 +88,9 @@ namespace Watchman.Discord.Areas.Protection.Controllers
                 values.Add($"{i + 1}.",
                     new Dictionary<string, string>
                     {
-                        {"Użytkownik:", muteEvent.UserId.GetUserMention()},
-                        {"Powód:", muteEvent.Reason},
-                        {"Data zakończenia:", muteEvent.TimeRange.End.ToLocalTimeString() }
+                        { "Użytkownik:", muteEvent.UserId.GetUserMention() },
+                        { "Powód:", muteEvent.Reason },
+                        { "Data zakończenia:", muteEvent.TimeRange.End.ToLocalTimeString() }
                     });
             }
             return new MutedUsersMessageData(title, description, values);

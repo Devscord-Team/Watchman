@@ -11,16 +11,16 @@ using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
-using Watchman.Cqrs;
 using Watchman.Common.Models;
-using Watchman.DomainModel.Messages.Queries;
-using Watchman.Discord.Areas.Users.Services;
+using Watchman.Cqrs;
 using Watchman.Discord.Areas.Administration.BotCommands;
 using Watchman.Discord.Areas.Administration.Services;
 using Watchman.Discord.Areas.Protection.Strategies;
-using Watchman.DomainModel.DiscordServer.Queries;
-using Watchman.DomainModel.Configuration.Services;
+using Watchman.Discord.Areas.Users.Services;
 using Watchman.DomainModel.Configuration.ConfigurationItems;
+using Watchman.DomainModel.Configuration.Services;
+using Watchman.DomainModel.DiscordServer.Queries;
+using Watchman.DomainModel.Messages.Queries;
 
 namespace Watchman.Discord.Areas.Administration.Controllers
 {
@@ -121,7 +121,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
                 .SelectAwait(async x => await this._usersService.GetUserByIdAsync(contexts.Server, x))
                 .OrderBy(x => x.JoinedServerAt());
 
-            var values = await users.Select(user => new KeyValuePair<string, string>($"{user.Mention} -", user.JoinedServerAt()?.ToLocalTimeString() ?? ""))
+            var values = await users.Select(user => new KeyValuePair<string, string>($"{user.Mention} -", user.JoinedServerAt()?.ToLocalTimeString() ?? string.Empty))
                 .ToListAsync();
 
             var messagesService = this._messagesServiceFactory.Create(contexts);
@@ -132,7 +132,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             }
             var safeUsersDict = new Dictionary<string, Dictionary<string, string>>
             {
-                {"Zaufani użytkownicy", new Dictionary<string, string>(values)}
+                { "Zaufani użytkownicy", new Dictionary<string, string>(values) }
             };
             await messagesService.SendEmbedMessage(
                 "Zaufani użytkownicy",
