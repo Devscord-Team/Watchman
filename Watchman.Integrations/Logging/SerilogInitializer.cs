@@ -20,9 +20,9 @@ namespace Watchman.Integrations.Logging
                 .Enrich.WithThreadId()
                 .Enrich.WithMachineName()
                 .Enrich.WithEnvironmentUserName()
-                .WriteTo.File(new JsonFormatter(closingDelimiter: ","), "logs/all/log-{Date}.json", shared: true, flushToDiskInterval: TimeSpan.FromSeconds(15), restrictedToMinimumLevel: LogEventLevel.Verbose)
-                .WriteTo.File(new JsonFormatter(closingDelimiter: ","), "logs/warningplus/log-{Date}.json", shared: true, flushToDiskInterval: TimeSpan.FromSeconds(15), restrictedToMinimumLevel: LogEventLevel.Warning)
-                .WriteTo.File(new JsonFormatter(closingDelimiter: ","), "logs/errorplus/log-{Date}.json", shared: true, flushToDiskInterval: TimeSpan.FromSeconds(15), restrictedToMinimumLevel: LogEventLevel.Error)
+                .WriteTo.File(new JsonFormatter(closingDelimiter: ","), "logs/all/log-{Date}.json", rollingInterval: RollingInterval.Day, shared: true, flushToDiskInterval: TimeSpan.FromSeconds(15), restrictedToMinimumLevel: LogEventLevel.Verbose)
+                .WriteTo.File(new JsonFormatter(closingDelimiter: ","), "logs/warningplus/log-{Date}.json", rollingInterval: RollingInterval.Day, shared: true, flushToDiskInterval: TimeSpan.FromSeconds(15), restrictedToMinimumLevel: LogEventLevel.Warning)
+                .WriteTo.File(new JsonFormatter(closingDelimiter: ","), "logs/errorplus/log-{Date}.json", rollingInterval: RollingInterval.Day, shared: true, flushToDiskInterval: TimeSpan.FromSeconds(15), restrictedToMinimumLevel: LogEventLevel.Error)
                 .WriteTo.Console(
                     restrictedToMinimumLevel: LogEventLevel.Verbose,
                     outputTemplate: "[{Timestamp:dd-MM-yyyy} - {Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")

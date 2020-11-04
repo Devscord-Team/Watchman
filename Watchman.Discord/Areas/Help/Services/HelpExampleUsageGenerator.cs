@@ -37,17 +37,16 @@ namespace Watchman.Discord.Areas.Help.Services
 
         public string GetExampleValue(ArgumentInformation argument, DiscordServerContext server)
         {
-            string getResponse(Func<ResponsesService, string> x) => this._responsesService.GetResponse(server.Id, x);
             var exampleValue = argument.ExpectedTypeName switch
             {
                 nameof(Bool) => "",
-                nameof(ChannelMention) => getResponse(x => x.ExampleChannelMention()),
-                nameof(List) => getResponse(x => x.ExampleList()),
+                nameof(ChannelMention) => this._responsesService.GetResponse(server.Id, x => x.ExampleChannelMention()),
+                nameof(List) => this._responsesService.GetResponse(server.Id, x => x.ExampleList()),
                 nameof(Number) => "20191027",
-                nameof(SingleWord) => getResponse(x => x.ExampleSingleWord()),
-                nameof(Text) => getResponse(x => x.ExampleText()),
+                nameof(SingleWord) => this._responsesService.GetResponse(server.Id, x => x.ExampleSingleWord()),
+                nameof(Text) => this._responsesService.GetResponse(server.Id, x => x.ExampleText()),
                 nameof(Time) => "30m",
-                nameof(UserMention) => getResponse(x => x.ExampleUserMention()),
+                nameof(UserMention) => this._responsesService.GetResponse(server.Id, x => x.ExampleUserMention()),
                 _ => "NotImplementedType"
             };
             return exampleValue;
