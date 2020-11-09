@@ -8,7 +8,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Watchman.Web.Areas.JwtAuth.Infrastructure
+namespace Watchman.Web.Areas.Infrastructure.JwtAuth
 {
     public class JwtAuthManager : IJwtAuthManager
     {

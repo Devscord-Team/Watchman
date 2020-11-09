@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Watchman.Web.Areas.JwtAuth.Infrastructure
+namespace Watchman.Web.Areas.Infrastructure.JwtAuth
 {
     public class JwtRefreshTokenCache : IHostedService, IDisposable
     {

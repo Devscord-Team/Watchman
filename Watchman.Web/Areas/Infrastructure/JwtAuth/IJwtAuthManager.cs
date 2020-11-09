@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace Watchman.Web.Areas.JwtAuth.Infrastructure
+namespace Watchman.Web.Areas.Infrastructure.JwtAuth
 {
     public interface IJwtAuthManager
     {

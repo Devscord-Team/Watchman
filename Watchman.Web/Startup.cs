@@ -19,7 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Watchman.Web.Areas.JwtAuth.Infrastructure;
+using Watchman.Web.Areas.Infrastructure.JwtAuth;
 
 namespace Watchman.Web
 {
