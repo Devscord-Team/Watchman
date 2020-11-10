@@ -94,8 +94,12 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         [AdminCommand]
         public Task SetRoleAsSafe(SetRoleCommand command, Contexts contexts)
         {
-            if (!command.Safe && !command.Unsafe)
+            if (command.Safe == command.Unsafe)
             {
+                if (command.Safe)
+                {
+                    throw new InvalidArgumentsException();
+                }
                 throw new NotEnoughArgumentsException();
             }
             return this._rolesService.SetRolesAsSafe(contexts, command.Roles, setAsSafe: command.Safe);

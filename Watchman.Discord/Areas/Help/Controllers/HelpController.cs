@@ -47,26 +47,33 @@ namespace Watchman.Discord.Areas.Help.Controllers
                 return messagesService.SendMessage(helpMessage, MessageType.Json);
             }
             var availableCommandsResponse = this._responsesService.GetResponse(contexts.Server.Id, x => x.AvailableCommands());
-            var hereYouCanFindAvailableCommandsWithDescriptions = this._responsesService.GetResponse(contexts.Server.Id, x => x.HereYouCanFindAvailableCommandsWithDescriptions());
-            return messagesService.SendEmbedMessage(title: availableCommandsResponse, description: hereYouCanFindAvailableCommandsWithDescriptions,
+            var commandsDescriptionsResponses = this._responsesService.GetResponse(contexts.Server.Id, x => x.HereYouCanFindAvailableCommandsWithDescriptions());
+            return messagesService.SendEmbedMessage(title: availableCommandsResponse, description: commandsDescriptionsResponses,
                 this._helpMessageGenerator.MapHelpForAllCommandsToEmbed(helpInformations, contexts.Server));
         }
 
         private Task PrintHelpForOneCommand(HelpCommand command, Contexts contexts, IEnumerable<HelpInformation> helpInformations)
         {
-            string normalizeCommandName(string x) => x.ToLowerInvariant().TrimStart('-').Replace("command", "");
-            var helpInformation = helpInformations.FirstOrDefault(x => normalizeCommandName(x.CommandName) == normalizeCommandName(command.Command));
+            var helpInformation = helpInformations.FirstOrDefault(x => NormalizeCommandName(x.CommandName) == NormalizeCommandName(command.Command));
             if (helpInformation == null)
             {
                 return Task.CompletedTask;
             }
             var messagesService = this._messagesServiceFactory.Create(contexts);
             var helpMessage = this._helpMessageGenerator.MapHelpForOneCommandToEmbed(helpInformation, contexts.Server);
-            var noDefaultDescriptionResponse = this._responsesService.GetResponse(contexts.Server.Id, x => x.NoDefaultDescription());
             var description = helpInformation.Descriptions
-                .FirstOrDefault(x => x.Language == helpInformation.DefaultLanguage)?.Text ?? noDefaultDescriptionResponse;
+                .FirstOrDefault(x => x.Language == helpInformation.DefaultLanguage)?.Text;
+            if (string.IsNullOrEmpty(description))
+            {
+                description = this._responsesService.GetResponse(contexts.Server.Id, x => x.NoDefaultDescription());
+            }
             var howToUseCommand = this._responsesService.GetResponse(contexts.Server.Id, x => x.HowToUseCommand());
-            return messagesService.SendEmbedMessage($"{howToUseCommand} {helpInformation.CommandName}", description, helpMessage);
+            return messagesService.SendEmbedMessage($"{howToUseCommand} {helpInformation.CommandName.Replace("Command", string.Empty)}", description, helpMessage);
+        }
+
+        private string NormalizeCommandName(string x)
+        {
+            return x.ToLowerInvariant().TrimStart('-').Replace("command", string.Empty);
         }
     }
 }
