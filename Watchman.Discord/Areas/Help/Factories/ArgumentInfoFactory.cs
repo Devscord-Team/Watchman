@@ -8,16 +8,11 @@ namespace Watchman.Discord.Areas.Help.Factories
     {
         public ArgumentInformation Create(BotArgumentInformation argument)
         {
-            return new ArgumentInformation
+            var defaultDescription = new List<Description>
             {
-                Name = argument.Name,
-                IsOptional = argument.IsOptional,
-                ExpectedTypeName = argument.ExpectedType.Name,
-                Descriptions = new List<Description>
-                {
-                    new Description()
-                }
+                new Description()
             };
+            return new ArgumentInformation(argument.Name, argument.ExpectedType.Name, defaultDescription, argument.IsOptional);
         }
     }
 }

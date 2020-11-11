@@ -21,7 +21,7 @@ namespace Watchman.Discord.Areas.Help.Services
         {
             var exampleBuilder = new StringBuilder();
             exampleBuilder.Append('-');
-            exampleBuilder.Append(helpInformation.CommandName.ToLowerInvariant().Replace("command", ""));
+            exampleBuilder.Append(helpInformation.CommandName.ToLowerInvariant().Replace("command", string.Empty));
             var arguments = helpInformation.ArgumentInformations.Where(x => !x.IsOptional).ToList();
             if (helpInformation.ArgumentInformations.Any(x => x.IsOptional))
             {
