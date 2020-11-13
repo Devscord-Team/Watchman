@@ -2,14 +2,14 @@
 
 namespace Watchman.DomainModel.DiscordServer
 {
-    public class Role : Entity
+    public class SafeRole : Entity
     {
-        public string Name { get; private set; }
+        public ulong RoleId { get; private set; }
         public ulong ServerId { get; private set; }
 
-        public Role(string name, ulong serverId)
+        public SafeRole(ulong roleId, ulong serverId)
         {
-            this.Name = name;
+            this.RoleId = roleId;
             this.ServerId = serverId;
         }
     }

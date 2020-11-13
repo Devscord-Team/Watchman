@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using Watchman.Cqrs;
 using Watchman.DomainModel.DiscordServer.Queries;
 using Watchman.Discord.Areas.Users.Services;
-using Devscord.DiscordFramework.Commons.Exceptions;
 using Watchman.Discord.Areas.Users.BotCommands;
 
 namespace Watchman.Discord.Areas.Users.Controllers
@@ -62,8 +61,8 @@ namespace Watchman.Discord.Areas.Users.Controllers
                 return;
             }
 
-            var output = new StringBuilder();
-            output.PrintManyLines(safeRoles.Select(x => x.Name).ToArray(), contentStyleBox: false, spacesBetweenLines: false);
+            var output = new StringBuilder(); // todo: change to embed
+            output.PrintManyLines(safeRoles.Select(x => x.RoleId.ToString()).ToArray(), contentStyleBox: false, spacesBetweenLines: false);
             await messageService.SendResponse(x => x.AvailableSafeRoles(output.ToString()));
         }
     }

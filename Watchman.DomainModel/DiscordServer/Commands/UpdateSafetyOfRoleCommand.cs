@@ -4,12 +4,12 @@ namespace Watchman.DomainModel.DiscordServer.Commands
 {
     public abstract class UpdateSafetyOfRoleCommand : ICommand
     {
-        public string RoleName { get; }
+        public ulong RoleId { get; }
         public ulong ServerId { get; }
 
-        protected UpdateSafetyOfRoleCommand(string roleName, ulong serverId)
+        protected UpdateSafetyOfRoleCommand(ulong roleName, ulong serverId)
         {
-            this.RoleName = roleName;
+            this.RoleId = roleName;
             this.ServerId = serverId;
         }
     }
