@@ -77,7 +77,7 @@ namespace Watchman.Discord.Areas.Help.Services
         private StringBuilder GetBasicDescriptionForCommand(StringBuilder helpBuilder, HelpInformation helpInformation, ulong serverId)
         {
             var noDefaultDescriptionResponse = this._responsesService.GetResponse(serverId, x => x.NoDefaultDescription());
-            var name = "-" + helpInformation.CommandName.ToLowerInvariant().Replace("command", "");
+            var name = "-" + helpInformation.CommandName.ToLowerInvariant().Replace("command", string.Empty);
             var description = helpInformation.Descriptions
                 .FirstOrDefault(x => x.Language == helpInformation.DefaultLanguage)?.Text ?? noDefaultDescriptionResponse;
 
