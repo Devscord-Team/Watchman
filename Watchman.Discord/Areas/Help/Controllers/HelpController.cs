@@ -54,7 +54,7 @@ namespace Watchman.Discord.Areas.Help.Controllers
 
         private Task PrintHelpForOneCommand(HelpCommand command, Contexts contexts, IEnumerable<HelpInformation> helpInformations)
         {
-            var helpInformation = helpInformations.FirstOrDefault(x => NormalizeCommandName(x.CommandName) == NormalizeCommandName(command.Command));
+            var helpInformation = helpInformations.FirstOrDefault(x => this.NormalizeCommandName(x.CommandName) == this.NormalizeCommandName(command.Command));
             if (helpInformation == null)
             {
                 return Task.CompletedTask;
