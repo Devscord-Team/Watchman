@@ -33,11 +33,9 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             if (_serversResponses.ContainsKey(serverId))
             {
                 _serversResponses[serverId] = responses;
+                return;
             }
-            else
-            {
-                _serversResponses.Add(serverId, responses);
-            }
+            _serversResponses.Add(serverId, responses);
         }
 
         private void InitResponsesCache()
