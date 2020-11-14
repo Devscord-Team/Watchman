@@ -130,7 +130,7 @@
     <value>Podane argumenty są zduplikowane.</value>
   </data>
   <data name="AvailableSafeRoles" xml:space="preserve">
-    <value>Dostępne role: {{roles}}</value>
+    <value>Dostępne role</value>
   </data>
   <data name="InvalidArguments" xml:space="preserve">
     <value>Podane argumenty są niepoprawne</value>
@@ -305,5 +305,8 @@
   </data>
   <data name="ExampleUserMention" xml:space="preserve">
     <value>&lt;@12345678&gt;</value>
+  </data>
+  <data name="AvailableSafeRolesDescription" xml:space="preserve">
+    <value>Poniżej wypisane są role, które możesz sobie przypisać.</value>
   </data>
 </root>

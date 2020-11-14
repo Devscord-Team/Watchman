@@ -106,11 +106,20 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dostępne role: {{roles}}.
+        ///   Looks up a localized string similar to Dostępne role.
         /// </summary>
         public static string AvailableSafeRoles {
             get {
                 return ResourceManager.GetString("AvailableSafeRoles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Poniżej wypisane są role, które możesz sobie przypisać..
+        /// </summary>
+        public static string AvailableSafeRolesDescription {
+            get {
+                return ResourceManager.GetString("AvailableSafeRolesDescription", resourceCulture);
             }
         }
         

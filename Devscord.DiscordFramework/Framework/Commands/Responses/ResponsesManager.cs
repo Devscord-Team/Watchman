@@ -136,10 +136,14 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             return responsesService.ProcessResponse("ServerDoesntHaveAnySafeRoles");
         }
 
-        public static string AvailableSafeRoles(this ResponsesService responsesService, string roles)
+        public static string AvailableSafeRoles(this ResponsesService responsesService)
         {
-            return responsesService.ProcessResponse("AvailableSafeRoles",
-                new KeyValuePair<string, string>("roles", roles));
+            return responsesService.ProcessResponse("AvailableSafeRoles");
+        }
+
+        public static string AvailableSafeRolesDescription(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("AvailableSafeRolesDescription");
         }
 
         public static string NotEnoughArguments(this ResponsesService responsesService)

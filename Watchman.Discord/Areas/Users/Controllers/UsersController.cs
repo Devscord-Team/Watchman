@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
@@ -18,52 +19,54 @@ namespace Watchman.Discord.Areas.Users.Controllers
         private readonly IQueryBus _queryBus;
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly RolesService _rolesService;
+        private readonly ResponsesService _responsesService;
 
-        public UsersController(IQueryBus queryBus, MessagesServiceFactory messagesServiceFactory, RolesService rolesService)
+        public UsersController(IQueryBus queryBus, MessagesServiceFactory messagesServiceFactory, RolesService rolesService, ResponsesService responsesService)
         {
             this._queryBus = queryBus;
             this._messagesServiceFactory = messagesServiceFactory;
             this._rolesService = rolesService;
+            this._responsesService = responsesService;
         }
 
-        public async Task GetAvatar(AvatarCommand avatarCommand, Contexts contexts)
+        public Task GetAvatar(AvatarCommand avatarCommand, Contexts contexts)
         {
             var messageService = this._messagesServiceFactory.Create(contexts);
             if (string.IsNullOrEmpty(contexts.User.AvatarUrl))
             {
-                await messageService.SendResponse(x => x.UserDoesntHaveAvatar(contexts.User));
-                return;
+                return messageService.SendResponse(x => x.UserDoesntHaveAvatar(contexts.User));
             }
-            await messageService.SendMessage(contexts.User.AvatarUrl);
+            return messageService.SendMessage(contexts.User.AvatarUrl);
         }
 
-        public async Task AddRole(AddRoleCommand addRoleCommand, Contexts contexts)
+        public Task AddRole(AddRoleCommand addRoleCommand, Contexts contexts)
         {
             var safeRoles = this._queryBus.Execute(new GetDiscordServerSafeRolesQuery(contexts.Server.Id)).SafeRoles;
-            await this._rolesService.AddRoleToUser(safeRoles, contexts, addRoleCommand.Roles);
+            return this._rolesService.AddRoleToUser(safeRoles, contexts, addRoleCommand.Roles);
         }
 
-        public async Task RemoveRole(RemoveRoleCommand removeRoleCommand, Contexts contexts)
+        public Task RemoveRole(RemoveRoleCommand removeRoleCommand, Contexts contexts)
         {
             var safeRoles = this._queryBus.Execute(new GetDiscordServerSafeRolesQuery(contexts.Server.Id)).SafeRoles;
-            await this._rolesService.DeleteRoleFromUser(safeRoles, contexts, removeRoleCommand.Roles);
+            return this._rolesService.DeleteRoleFromUser(safeRoles, contexts, removeRoleCommand.Roles);
         }
 
-        public async Task PrintRoles(RolesCommand rolesCommand, Contexts contexts)
+        public Task PrintRoles(RolesCommand rolesCommand, Contexts contexts)
         {
             var messageService = this._messagesServiceFactory.Create(contexts);
             var query = new GetDiscordServerSafeRolesQuery(contexts.Server.Id);
             var safeRoles = this._queryBus.Execute(query).SafeRoles.ToList();
-
             if (!safeRoles.Any())
             {
-                await messageService.SendResponse(x => x.ServerDoesntHaveAnySafeRoles());
-                return;
+                return messageService.SendResponse(x => x.ServerDoesntHaveAnySafeRoles());
             }
-
-            var output = new StringBuilder(); // todo: change to embed
-            output.PrintManyLines(safeRoles.Select(x => x.RoleId.ToString()).ToArray(), contentStyleBox: false, spacesBetweenLines: false);
-            await messageService.SendResponse(x => x.AvailableSafeRoles(output.ToString()));
+            var title = this._responsesService.GetResponse(contexts.Server.Id, x => x.AvailableSafeRoles());
+            var description = this._responsesService.GetResponse(contexts.Server.Id, x => x.AvailableSafeRolesDescription());
+            var serverRoles = contexts.Server.GetRoles();
+            var rolesNames = safeRoles
+                .Select(x => serverRoles.FirstOrDefault(serverRole => serverRole.Id == x.RoleId)?.Name)
+                .Where(x => x != default);
+            return messageService.SendEmbedMessage(title, description, rolesNames.Select(x => new KeyValuePair<string, string>(x, "Rola")));
         }
     }
 }
