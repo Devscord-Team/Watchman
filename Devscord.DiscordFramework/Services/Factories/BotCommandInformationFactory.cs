@@ -21,7 +21,9 @@ namespace Devscord.DiscordFramework.Services.Factories
             var arguments = new List<BotArgumentInformation>();
             foreach (var property in properties)
             {
-                var attributes = property.GetCustomAttributes(typeof(CommandPropertyAttribute), inherit: true).Select(x => x as CommandPropertyAttribute).ToList();
+                var attributes = property.GetCustomAttributes(typeof(CommandPropertyAttribute), inherit: true)
+                    .Select(x => x as CommandPropertyAttribute)
+                    .ToList();
                 var expectedType = attributes.First(x => x.GetType() != typeof(Optional)).GetType();
                 var isOptional = attributes.Any(x => x is Optional);
 

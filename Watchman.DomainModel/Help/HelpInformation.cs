@@ -18,11 +18,11 @@ namespace Watchman.DomainModel.Help
 
         public HelpInformation(string commandName, string areaName, IEnumerable<ArgumentInformation> argumentInformations, IEnumerable<Description> descriptions, ulong serverId)
         {
-            CommandName = commandName;
-            AreaName = areaName;
-            ArgumentInformations = argumentInformations;
-            Descriptions = descriptions;
-            ServerId = serverId;
+            this.CommandName = commandName;
+            this.AreaName = areaName;
+            this.ArgumentInformations = argumentInformations;
+            this.Descriptions = descriptions;
+            this.ServerId = serverId;
         }
 
         public HelpInformation SetCommandName(string commandName)

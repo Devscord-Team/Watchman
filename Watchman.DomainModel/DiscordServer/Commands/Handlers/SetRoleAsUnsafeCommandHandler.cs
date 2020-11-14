@@ -16,11 +16,7 @@ namespace Watchman.DomainModel.DiscordServer.Commands.Handlers
             var role = session.Get<SafeRole>()
                 .FirstOrDefault(x => x.ServerId == command.ServerId && x.RoleId == command.RoleId);
 
-            if (role == null)
-            {
-                return Task.CompletedTask;
-            }
-            return session.DeleteAsync(role);
+            return role == null ? Task.CompletedTask : session.DeleteAsync(role);
         }
     }
 }

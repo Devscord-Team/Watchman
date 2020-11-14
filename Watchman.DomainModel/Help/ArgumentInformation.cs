@@ -12,19 +12,19 @@ namespace Watchman.DomainModel.Help
 
         public ArgumentInformation(string name, string expectedTypeName, IEnumerable<Description> descriptions, bool isOptional)
         {
-            Name = name;
-            ExpectedTypeName = expectedTypeName;
-            Descriptions = descriptions;
-            IsOptional = isOptional;
+            this.Name = name;
+            this.ExpectedTypeName = expectedTypeName;
+            this.Descriptions = descriptions;
+            this.IsOptional = isOptional;
         }
 
         public ArgumentInformation(string name, string expectedTypeName, IEnumerable<Description> descriptions, string exampleValue, bool isOptional)
         {
-            Name = name;
-            ExpectedTypeName = expectedTypeName;
-            Descriptions = descriptions;
-            ExampleValue = exampleValue;
-            IsOptional = isOptional;
+            this.Name = name;
+            this.ExpectedTypeName = expectedTypeName;
+            this.Descriptions = descriptions;
+            this.ExampleValue = exampleValue;
+            this.IsOptional = isOptional;
         }
 
         public ArgumentInformation SetName(string name)
