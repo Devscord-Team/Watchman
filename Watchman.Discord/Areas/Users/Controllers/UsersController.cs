@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
@@ -7,6 +6,8 @@ using Devscord.DiscordFramework.Services.Factories;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Devscord.DiscordFramework.Commons.Exceptions;
+using Devscord.DiscordFramework.Services;
 using Watchman.Cqrs;
 using Watchman.DomainModel.DiscordServer.Queries;
 using Watchman.Discord.Areas.Users.Services;
@@ -41,32 +42,56 @@ namespace Watchman.Discord.Areas.Users.Controllers
 
         public Task AddRole(AddRoleCommand addRoleCommand, Contexts contexts)
         {
+            if (addRoleCommand.Roles.Count > 5)
+            {
+                throw new InvalidArgumentsException();
+            }
             var safeRoles = this._queryBus.Execute(new GetDiscordServerSafeRolesQuery(contexts.Server.Id)).SafeRoles;
             return this._rolesService.AddRoleToUser(safeRoles, contexts, addRoleCommand.Roles);
         }
 
         public Task RemoveRole(RemoveRoleCommand removeRoleCommand, Contexts contexts)
         {
+            if (removeRoleCommand.Roles.Count > 5)
+            {
+                throw new InvalidArgumentsException();
+            }
             var safeRoles = this._queryBus.Execute(new GetDiscordServerSafeRolesQuery(contexts.Server.Id)).SafeRoles;
             return this._rolesService.DeleteRoleFromUser(safeRoles, contexts, removeRoleCommand.Roles);
         }
 
         public Task PrintRoles(RolesCommand rolesCommand, Contexts contexts)
         {
-            var messageService = this._messagesServiceFactory.Create(contexts);
+            var messagesService = this._messagesServiceFactory.Create(contexts);
             var query = new GetDiscordServerSafeRolesQuery(contexts.Server.Id);
             var safeRoles = this._queryBus.Execute(query).SafeRoles.ToList();
             if (!safeRoles.Any())
             {
-                return messageService.SendResponse(x => x.ServerDoesntHaveAnySafeRoles());
+                return messagesService.SendResponse(x => x.ServerDoesntHaveAnySafeRoles());
             }
-            var title = this._responsesService.GetResponse(contexts.Server.Id, x => x.AvailableSafeRoles());
-            var description = this._responsesService.GetResponse(contexts.Server.Id, x => x.AvailableSafeRolesDescription());
             var serverRoles = contexts.Server.GetRoles();
             var rolesNames = safeRoles
                 .Select(x => serverRoles.FirstOrDefault(serverRole => serverRole.Id == x.RoleId)?.Name)
                 .Where(x => x != default);
-            return messageService.SendEmbedMessage(title, description, rolesNames.Select(x => new KeyValuePair<string, string>(x, "Rola")));
+            return this.SendRolesAsEmbedMessage(rolesNames, messagesService, contexts.Server.Id);
+        }
+
+        private Task SendRolesAsEmbedMessage(IEnumerable<string> rolesNames, MessagesService messagesService, ulong serverId)
+        {
+            var title = this._responsesService.GetResponse(serverId, x => x.AvailableSafeRoles());
+            var description = this._responsesService.GetResponse(serverId, x => x.AvailableSafeRolesDescription());
+            var stringBuilder = new StringBuilder("**");
+            foreach (var role in rolesNames)
+            {
+                stringBuilder.AppendLine(role);
+            }
+            stringBuilder.Append("**");
+            var rolesResponse = this._responsesService.GetResponse(serverId, x => x.Roles()) + ":";
+            var values = new List<KeyValuePair<string, string>>
+            {
+                new KeyValuePair<string, string>(rolesResponse, stringBuilder.ToString())
+            };
+            return messagesService.SendEmbedMessage(title, description, values);
         }
     }
 }

@@ -372,5 +372,10 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("ExampleText");
         }
+
+        public static string Roles(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("Roles");
+        }
     }
 }

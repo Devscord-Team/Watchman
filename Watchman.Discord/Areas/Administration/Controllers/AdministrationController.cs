@@ -102,6 +102,10 @@ namespace Watchman.Discord.Areas.Administration.Controllers
                 }
                 throw new NotEnoughArgumentsException();
             }
+            if (command.Roles.Count > 5)
+            {
+                throw new InvalidArgumentsException();
+            }
             return this._rolesService.SetRolesAsSafe(contexts, command.Roles, setAsSafe: command.Safe);
         }
 

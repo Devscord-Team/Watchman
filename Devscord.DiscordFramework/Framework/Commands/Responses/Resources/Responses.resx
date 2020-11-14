@@ -309,4 +309,7 @@
   <data name="AvailableSafeRolesDescription" xml:space="preserve">
     <value>Poniżej wypisane są role, które możesz sobie przypisać.</value>
   </data>
+  <data name="Roles" xml:space="preserve">
+    <value>Role</value>
+  </data>
 </root>
