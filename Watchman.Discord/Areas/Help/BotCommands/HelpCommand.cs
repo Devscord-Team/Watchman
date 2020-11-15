@@ -9,7 +9,7 @@ namespace Watchman.Discord.Areas.Help.BotCommands
         public bool Json { get; set; }
 
         [Optional]
-        [SingleWord]
+        [Text]
         public string Command { get; set; }
     }
 }

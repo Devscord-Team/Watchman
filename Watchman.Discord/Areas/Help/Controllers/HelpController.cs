@@ -73,7 +73,7 @@ namespace Watchman.Discord.Areas.Help.Controllers
 
         private string NormalizeCommandName(string x)
         {
-            return x.ToLowerInvariant().TrimStart('-').Replace("command", string.Empty);
+            return x.ToLowerInvariant().TrimStart('-').Replace("command", string.Empty).Replace(" ", string.Empty);
         }
     }
 }
