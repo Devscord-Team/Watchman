@@ -32,7 +32,7 @@ Wyciąga wszystkie properties z `IBotCommand` i tworzy na ich podstawie obiekt `
   
 ## HelpDataCollectorService  
   
-Serwis zajmujący się pobraniem komend z projektu wyszukując po typie `IBotCommand`.  
+Serwis zajmujący się pobraniem komend z projektu za pomocą refleksji wyszukując po typie `IBotCommand`.  
 
 ```csharp
 public IEnumerable<BotCommandInformation> GetCommandsInfo(Assembly botAssembly)
@@ -40,10 +40,21 @@ public IEnumerable<BotCommandInformation> GetCommandsInfo(Assembly botAssembly)
   
 ## HelpMessageGeneratorService  
   
-Serwis ma za zadanie przetworzyć suche obiekty z bazy na tekst do wyświetlenia użytkownikowi.  
+Serwis ma za zadanie przetworzyć suche obiekty z bazy na wiadomość do wyświetlenia użytkownikowi.  
 
 ```csharp
-public IEnumerable<KeyValuePair<string, string>> MapToEmbedInput(IEnumerable<HelpInformation> helpInformations)
+public IEnumerable<KeyValuePair<string, string>> MapHelpForAllCommandsToEmbed(IEnumerable<HelpInformation> helpInformations, DiscordServerContext server)
 ```  
 
-Metoda ta tworzy listę opisów każdej komendy z obiektów `HelpInformation` (obiekt ten pochodzi bezpośrednio z fabryki tworzącej `HelpInformation` na podstawie `CommandInfo`, ponieważ to nim posługujemy się z domenie, np. aby zapisać do bazy).
+Metoda ta tworzy listę opisów każdej komendy z obiektów `HelpInformation` pobranych z bazy.  
+
+```csharp
+public IEnumerable<KeyValuePair<string, string>> MapHelpForOneCommandToEmbed(HelpInformation helpInformation, DiscordServerContext server)
+```
+
+Metoda ta tworzy opis dla jednej komendy na podstawie obiektu `HelpInformation` pobranego z bazy.  
+Jeśli przykład użycia w `HelpInformation` jest pusty to metoda skorzysta z klasy `HelpExampleUsageGenerator` aby wygenerować automatycznie taki przykład.  
+  
+## HelpExampleUsageGenerator  
+  
+Serwis generujący domyślny przykład użycia danej komendy, na podstawie parametrów jakie ta komenda posiada.  
