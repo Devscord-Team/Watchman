@@ -1,4 +1,5 @@
-﻿using Statsman.Core.TimeSplitting.Models;
+﻿using Devscord.DiscordFramework.Commons.Extensions;
+using Statsman.Core.TimeSplitting.Models;
 using Statsman.Core.TimeSplitting.Services;
 using Statsman.Models;
 using System;
@@ -30,32 +31,40 @@ namespace Statsman.Core.TimeSplitting
 
         public Task<(Stream Chart, ResultMessage Message)> PerMinute(StatisticsRequest request)
         {
-            return this.GetResult(request, DetailedPeriod.Minute, DateTime.UtcNow);
+            return this.GetResult(request, DetailedPeriod.Minute, DateTime.Now);
         }
 
         public Task<(Stream Chart, ResultMessage Message)> PerHour(StatisticsRequest request)
         {
-            return this.GetResult(request, DetailedPeriod.Minute, DateTime.UtcNow);
+            return this.GetResult(request, DetailedPeriod.Minute, DateTime.Now);
         }
 
         public Task<(Stream Chart, ResultMessage Message)> PerDay(StatisticsRequest request)
         {
-            return this.GetResult(request, DetailedPeriod.Day, DateTime.Today);
+            var today = DateTime.Today;
+            today = new DateTime(today.Year, today.Month, today.Day, 0, 0, 0, DateTimeKind.Local);
+            return this.GetResult(request, DetailedPeriod.Day, today);
         }
 
         public Task<(Stream Chart, ResultMessage Message)> PerWeek(StatisticsRequest request)
         {
-            return this.GetResult(request, DetailedPeriod.Week, DateTime.Today);
+            var today = DateTime.Today;
+            today = new DateTime(today.Year, today.Month, today.Day, 0, 0, 0, DateTimeKind.Local);
+            return this.GetResult(request, DetailedPeriod.Week, today);
         }
 
         public Task<(Stream Chart, ResultMessage Message)> PerMonth(StatisticsRequest request)
         {
-            return this.GetResult(request, DetailedPeriod.Month, DateTime.Today);
+            var today = DateTime.Today;
+            today = new DateTime(today.Year, today.Month, today.Day, 0, 0, 0, DateTimeKind.Local);
+            return this.GetResult(request, DetailedPeriod.Month, today);
         }
 
         public Task<(Stream Chart, ResultMessage Message)> PerQuarter(StatisticsRequest request)
         {
-            return this.GetResult(request, DetailedPeriod.Quarter, DateTime.Today);
+            var today = DateTime.Today;
+            today = new DateTime(today.Year, today.Month, today.Day, 0, 0, 0, DateTimeKind.Local);
+            return this.GetResult(request, DetailedPeriod.Quarter, today);
         }
 
         private async Task<(Stream Chart, ResultMessage Message)> GetResult(StatisticsRequest request, DetailedPeriod period, DateTime startTimeRangeTimeOfDay)
@@ -70,8 +79,8 @@ namespace Statsman.Core.TimeSplitting
         {
             return new ResultMessage($"Statistics",
                 $"{Enum.GetName(typeof(DetailedPeriod), period)}",
-                userId == 0 ? "All users" : $"User <@{userId}>",
-                channelId == 0 ? "All channels" : $"Channel <#{channelId}>",
+                userId == 0 ? "All users" : $"User {userId.GetUserMention()}",
+                channelId == 0 ? "All channels" : $"Channel {channelId.GetChannelMention()}",
                 $"{timeRange}");
         }
     }

@@ -50,7 +50,7 @@ namespace Statsman.Core.TimeSplitting.Services
 
         private Task<IReadOnlyList<Message>> GetMessages(StatisticsRequest statisticsRequest, TimeSpan timeBehind)
         {
-            return this.GetMessages(statisticsRequest, TimeRange.ToNow(DateTime.UtcNow.AddHours(-timeBehind.TotalHours)));
+            return this.GetMessages(statisticsRequest, TimeRange.ToNow(DateTime.Now.AddHours(-timeBehind.TotalHours)));
         }
 
         private async Task<IReadOnlyList<Message>> GetMessages(StatisticsRequest statisticsRequest, TimeRange timeRange)

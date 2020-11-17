@@ -25,7 +25,7 @@ namespace Devscord.DiscordFramework
             {
                 return null;
             }
-            var serverCommands = _customCommandsGroupedByBotCommand[serverId];
+            var serverCommands = this._customCommandsGroupedByBotCommand[serverId];
             try
             {
                 var command = serverCommands.SingleOrDefault(x => x.ExpectedBotCommandName == botCommand.FullName && x.Template.IsMatch(request.OriginalMessage));
@@ -39,7 +39,7 @@ namespace Devscord.DiscordFramework
 
         private async Task TryRefresh()
         {
-            if (_lastRefresh > DateTime.UtcNow.AddMinutes(-15))
+            if (this._lastRefresh > DateTime.UtcNow.AddMinutes(-15))
             {
                 return;
             }

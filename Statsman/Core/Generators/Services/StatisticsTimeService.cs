@@ -23,11 +23,13 @@ namespace Statsman.Core.Generators.Services
 
         public DateTime GetStartOfCurrentPeriod(string period)
         {
+            var today = DateTime.Today;
+            today = new DateTime(today.Year, today.Month, today.Day, 0, 0, 0, DateTimeKind.Local);
             return period switch
             {
-                Period.Day => DateTime.Today,
-                Period.Month => new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1),
-                Period.Quarter => this.GetQuarterStart(DateTime.Today),
+                Period.Day => today,
+                Period.Month => new DateTime(today.Year, today.Month, 1, 0, 0, 0, DateTimeKind.Local),
+                Period.Quarter => this.GetQuarterStart(today),
                 _ => throw new NotImplementedException()
             };
         }
@@ -69,10 +71,10 @@ namespace Statsman.Core.Generators.Services
         {
             return date.Month switch
             {
-                int month when month <= 3 => new DateTime(date.Year, 1, 1),
-                int month when month <= 6 => new DateTime(date.Year, 4, 1),
-                int month when month <= 9 => new DateTime(date.Year, 7, 1),
-                _ => new DateTime(date.Year, 10, 1)
+                int month when month <= 3 => new DateTime(date.Year, 1, 1, 0, 0, 0, DateTimeKind.Local),
+                int month when month <= 6 => new DateTime(date.Year, 4, 1, 0, 0, 0, DateTimeKind.Local),
+                int month when month <= 9 => new DateTime(date.Year, 7, 1, 0, 0, 0, DateTimeKind.Local),
+                _ => new DateTime(date.Year, 10, 1, 0, 0, 0, DateTimeKind.Local)
             };
         }
     }
