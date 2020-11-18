@@ -16,7 +16,7 @@ namespace Watchman.DomainModel.DiscordServer.Queries.Handlers
         public GetDiscordServerSafeRolesQueryResult Handle(GetDiscordServerSafeRolesQuery query)
         {
             var session = this._sessionFactory.Create();
-            var safeRoles = session.Get<Role>()
+            var safeRoles = session.Get<SafeRole>()
                 .Where(x => x.ServerId == query.ServerId);
 
             return new GetDiscordServerSafeRolesQueryResult(safeRoles);

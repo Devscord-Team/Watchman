@@ -130,7 +130,7 @@
     <value>Podane argumenty są zduplikowane.</value>
   </data>
   <data name="AvailableSafeRoles" xml:space="preserve">
-    <value>Dostępne role: {{roles}}</value>
+    <value>Dostępne role</value>
   </data>
   <data name="InvalidArguments" xml:space="preserve">
     <value>Podane argumenty są niepoprawne</value>
@@ -269,5 +269,47 @@
   </data>
   <data name="ThereAreNoMutedUsers" xml:space="preserve">
     <value>Na tym serwerze nie ma żadnych wyciszonych użytkowników.</value>
+  </data>
+  <data name="NoDefaultDescription" xml:space="preserve">
+    <value>Brak domyślnego opisu</value>
+  </data>
+  <data name="AvailableCommands" xml:space="preserve">
+    <value>Dostępne komendy:</value>
+  </data>
+  <data name="HereYouCanFindAvailableCommandsWithDescriptions" xml:space="preserve">
+    <value>Poniżej znajdziesz listę dostępnych komend wraz z ich opisami\nJeśli chcesz poznać dokładniejszy opis - zapraszamy do opisu w naszej dokumentacji\nhttps://watchman.readthedocs.io/pl/latest/156-lista-funkcjonalnosci/</value>
+  </data>
+  <data name="HowToUseCommand" xml:space="preserve">
+    <value>Jak używać komendy</value>
+  </data>
+  <data name="Example" xml:space="preserve">
+    <value>Przykład</value>
+  </data>
+  <data name="Parameters" xml:space="preserve">
+    <value>Parametry</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="ExampleChannelMention" xml:space="preserve">
+    <value>&lt;#12345678&gt;</value>
+  </data>
+  <data name="ExampleList" xml:space="preserve">
+    <value>jeden dwa trzy</value>
+  </data>
+  <data name="ExampleSingleWord" xml:space="preserve">
+    <value>JednoSłowo</value>
+  </data>
+  <data name="ExampleText" xml:space="preserve">
+    <value>"kilka słów"</value>
+  </data>
+  <data name="ExampleUserMention" xml:space="preserve">
+    <value>&lt;@12345678&gt;</value>
+  </data>
+  <data name="AvailableSafeRolesDescription" xml:space="preserve">
+    <value>Poniżej wypisane są role, które możesz sobie przypisać.</value>
+  </data>
+  <data name="Roles" xml:space="preserve">
+    <value>Role</value>
   </data>
 </root>

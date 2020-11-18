@@ -16,6 +16,7 @@ using Watchman.Integrations.Logging;
 using Watchman.Integrations.MongoDB;
 using Watchman.Discord.Integration.DevscordFramework;
 using Watchman.DomainModel.Configuration.Services;
+using Watchman.Discord.Areas.Administration.Services;
 
 namespace Watchman.Discord
 {
@@ -46,7 +47,7 @@ namespace Watchman.Discord
                         .AddFromIoC<ConfigurationService>(configurationService => configurationService.InitDefaultConfigurations)
                         .AddFromIoC<CustomCommandsLoader>(customCommandsLoader => customCommandsLoader.InitDefaultCustomCommands)
                         .AddFromIoC<HelpDataCollectorService, HelpDBGeneratorService>((dataCollector, helpService) =>
-                            () => helpService.FillDatabase(dataCollector.GetCommandsInfo(typeof(WatchmanBot).Assembly)))
+                            () => helpService.FillDatabase(dataCollector.GetBotCommandsInfo(typeof(WatchmanBot).Assembly)))
                         .AddFromIoC<ResponsesInitService>(responsesService => responsesService.InitNewResponsesFromResources)
                         .AddFromIoC<InitializationService, DiscordServersService>((initService, serversService) => async () =>
                         {
@@ -90,6 +91,11 @@ namespace Watchman.Discord
                 {
                     builder
                         .AddFromIoC<ComplaintsChannelService>(x => x.RemoveIfNeededComplaintsChannel);
+                })
+                .AddOnRoleRemovedHandlers(builder =>
+                {
+                    builder
+                        .AddFromIoC<TrustRolesService>(x => x.StopTrustingRole);
                 });
         }
 

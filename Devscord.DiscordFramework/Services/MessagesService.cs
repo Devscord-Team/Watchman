@@ -13,37 +13,32 @@ using MessageType = Devscord.DiscordFramework.Commons.MessageType;
 
 namespace Devscord.DiscordFramework.Services
 {
-    public class MessagesService : ICyclicService
+    public class MessagesService
     {
         public ulong GuildId { get; set; }
         public ulong ChannelId { get; set; }
 
-        private static readonly Dictionary<ulong, IEnumerable<Response>> _serversResponses = new Dictionary<ulong, IEnumerable<Response>>();
         private readonly ResponsesService _responsesService;
         private readonly MessageSplittingService _splittingService;
         private readonly EmbedMessageSplittingService _embedMessageSplittingService;
+        private readonly ResponsesCachingService _responsesCachingService;
 
-        public MessagesService(ResponsesService responsesService, MessageSplittingService splittingService, EmbedMessageSplittingService embedMessageSplittingService)
+        public MessagesService(ResponsesService responsesService, MessageSplittingService splittingService, EmbedMessageSplittingService embedMessageSplittingService, ResponsesCachingService responsesCachingService)
         {
             this._responsesService = responsesService;
             this._splittingService = splittingService;
             this._embedMessageSplittingService = embedMessageSplittingService;
-            if (!_serversResponses.Any())
-            {
-                this.Refresh().Wait();
-            }
+            this._responsesCachingService = responsesCachingService;
         }
 
-        public Task SendMessage(string message, MessageType messageType = MessageType.NormalText)
+        public async Task SendMessage(string message, MessageType messageType = MessageType.NormalText)
         {
             var channel = this.GetChannel();
             foreach (var mess in this._splittingService.SplitMessage(message, messageType))
             {
-                channel.SendMessageAsync(mess);
+                await channel.SendMessageAsync(mess);
                 Log.Information("Bot sent message {splitted} {message}", mess, messageType != MessageType.NormalText ? "splitted" : string.Empty);
             }
-
-            return Task.CompletedTask;
         }
 
         public Task SendEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, string>> values)
@@ -60,7 +55,7 @@ namespace Devscord.DiscordFramework.Services
 
         public Task SendResponse(Func<ResponsesService, string> response)
         {
-            this._responsesService.Responses = _serversResponses.GetValueOrDefault(this.GuildId) ?? this.GetResponsesForNewServer(this.GuildId);
+            this._responsesService.Responses = this._responsesCachingService.GetResponses(this.GuildId);
             var message = response.Invoke(this._responsesService);
             return this.SendMessage(message);
         }
@@ -78,17 +73,16 @@ namespace Devscord.DiscordFramework.Services
             await stream.DisposeAsync();
         }
 
-        public async Task SendExceptionResponse(BotException botException)
+        public Task SendExceptionResponse(BotException botException)
         {
-            var responseName = botException.GetType().Name.Replace("Exception", "");
+            var responseName = botException.GetType().Name.Replace("Exception", string.Empty);
             var responseManagerMethod = typeof(ResponsesManager).GetMethod(responseName);
             if (responseManagerMethod == null)
             {
                 Log.Error("{name} doesn't exists as a response", responseName);
-                await this.SendMessage($"{responseName} doesn't exists as a response"); // message typed into code, bcs it's called only when there is a problem with responses
-                return;
+                return this.SendMessage($"{responseName} doesn't exists as a response"); // message typed into code, bcs it's called only when there is a problem with responses
             }
-            await this.SendResponse(x =>
+            return this.SendResponse(x =>
             {
                 var arg = new object[] { x };
                 if (botException.Value != null)
@@ -97,25 +91,6 @@ namespace Devscord.DiscordFramework.Services
                 }
                 return (string)responseManagerMethod.Invoke(null, arg);
             });
-        }
-
-        public Task Refresh()
-        {
-            Log.Information("Refreshing responses cache...");
-            foreach (var serverId in _serversResponses.Keys.ToList())
-            {
-                var responses = this._responsesService.GetResponsesFunc(serverId);
-                _serversResponses[serverId] = responses;
-            }
-            Log.Information("Responses cache refreshed");
-            return Task.CompletedTask;
-        }
-
-        private IEnumerable<Response> GetResponsesForNewServer(ulong serverId)
-        {
-            var responses = this._responsesService.GetResponsesFunc(serverId).ToList();
-            _serversResponses.Add(serverId, responses);
-            return responses;
         }
 
         private IMessageChannel GetChannel()

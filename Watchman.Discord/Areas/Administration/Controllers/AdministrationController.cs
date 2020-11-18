@@ -11,16 +11,16 @@ using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
-using Watchman.Cqrs;
 using Watchman.Common.Models;
-using Watchman.DomainModel.Messages.Queries;
-using Watchman.Discord.Areas.Users.Services;
+using Watchman.Cqrs;
 using Watchman.Discord.Areas.Administration.BotCommands;
 using Watchman.Discord.Areas.Administration.Services;
 using Watchman.Discord.Areas.Protection.Strategies;
-using Watchman.DomainModel.DiscordServer.Queries;
-using Watchman.DomainModel.Configuration.Services;
+using Watchman.Discord.Areas.Users.Services;
 using Watchman.DomainModel.Configuration.ConfigurationItems;
+using Watchman.DomainModel.Configuration.Services;
+using Watchman.DomainModel.DiscordServer.Queries;
+using Watchman.DomainModel.Messages.Queries;
 
 namespace Watchman.Discord.Areas.Administration.Controllers
 {
@@ -92,51 +92,60 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         }
 
         [AdminCommand]
-        public async Task SetRoleAsSafe(SetRoleCommand command, Contexts contexts)
+        public Task SetRoleAsSafe(SetRoleCommand command, Contexts contexts)
         {
-            if (!command.Safe && !command.Unsafe)
+            if (command.Safe == command.Unsafe)
             {
+                if (command.Safe)
+                {
+                    throw new InvalidArgumentsException();
+                }
                 throw new NotEnoughArgumentsException();
             }
-            await this._rolesService.SetRolesAsSafe(contexts, command.Roles, setAsSafe: command.Safe);
+            if (command.Roles.Count > 5)
+            {
+                throw new InvalidArgumentsException();
+            }
+            return this._rolesService.SetRolesAsSafe(contexts, command.Roles, setAsSafe: command.Safe);
         }
 
         [AdminCommand]
-        public async Task SetRoleAsTrusted(TrustCommand trustCommand, Contexts contexts)
+        public Task SetRoleAsTrusted(TrustCommand trustCommand, Contexts contexts)
         {
-            await this._trustRolesService.TrustThisRole(trustCommand.Role, contexts);
+            return this._trustRolesService.TrustThisRole(trustCommand.Role, contexts);
         }
 
         [AdminCommand]
-        public async Task SetRoleAsUntrusted(UntrustCommand trustCommand, Contexts contexts)
+        public Task SetRoleAsUntrusted(UntrustCommand trustCommand, Contexts contexts)
         {
-            await this._trustRolesService.DontTrustThisRole(trustCommand.Role, contexts);
+            return this._trustRolesService.StopTrustingRole(trustCommand.Role, contexts);
         }
 
         [AdminCommand]
         public async Task GetSafeUsers(SafeUsersCommand safeUsersCommand, Contexts contexts)
         {
             var safeUsersIds = this._checkUserSafetyService.GetSafeUsersIds(contexts.Server.Id);
-            var values = new List<KeyValuePair<string, string>>();
-            foreach (var safeUserId in safeUsersIds)
-            {
-                var user = await this._usersService.GetUserByIdAsync(contexts.Server, safeUserId);
-                values.Add(new KeyValuePair<string, string>($"{user.Mention} -", user.JoinedServerAt()?.ToLocalTimeString() ?? "nieznana data"));
-            }
+            var users = safeUsersIds.ToAsyncEnumerable()
+                .SelectAwait(async x => await this._usersService.GetUserByIdAsync(contexts.Server, x))
+                .OrderBy(x => x.JoinedServerAt());
+
+            var values = await users.Select(user => new KeyValuePair<string, string>($"{user.Mention} -", user.JoinedServerAt()?.ToLocalTimeString() ?? string.Empty))
+                .ToListAsync();
+
             var messagesService = this._messagesServiceFactory.Create(contexts);
             if (!values.Any())
             {
                 await messagesService.SendEmbedMessage("Zaufani użytkownicy", "Serwer nie posiada zaufanych użytkowników", new Dictionary<string, string>());
                 return;
             }
-            var safeUsers = new Dictionary<string, Dictionary<string, string>>
+            var safeUsersDict = new Dictionary<string, Dictionary<string, string>>
             {
-                {"Zaufani użytkownicy", new Dictionary<string, string>(values)}
+                { "Zaufani użytkownicy", new Dictionary<string, string>(values) }
             };
             await messagesService.SendEmbedMessage(
                 "Zaufani użytkownicy",
                 $"Lista zaufanych użytkowników na serwerze {contexts.Server.Name}",
-                safeUsers);
+                safeUsersDict);
         }
 
         [AdminCommand]
