@@ -51,7 +51,7 @@ namespace Watchman.Discord.Areas.Administration.Services
             await this._checkUserSafetyService.Refresh();
         }
 
-        public async Task DontTrustThisRole(string roleName, Contexts contexts)
+        public async Task StopTrustingRole(string roleName, Contexts contexts)
         {
             var query = new GetServerTrustedRolesQuery(contexts.Server.Id);
             var trustedRolesIds = this._queryBus.Execute(query).TrustedRolesIds;
@@ -71,6 +71,12 @@ namespace Watchman.Discord.Areas.Administration.Services
             await this._commandBus.ExecuteAsync(command);
             await messagesService.SendResponse(x => x.RoleSetAsUntrusted(roleName));
             await this._checkUserSafetyService.Refresh();
+        }
+
+        public Task StopTrustingRole(UserRole role)
+        {
+            var command = new SetRoleAsUntrustedCommand(role.Id, role.ServerId);
+            return this._commandBus.ExecuteAsync(command);
         }
     }
 }

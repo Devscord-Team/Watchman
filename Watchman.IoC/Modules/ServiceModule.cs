@@ -2,6 +2,7 @@
 using Devscord.DiscordFramework;
 using Devscord.DiscordFramework.Framework.Commands.Parsing;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
+using Devscord.DiscordFramework.Services;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -16,8 +17,8 @@ namespace Watchman.IoC.Modules
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.Register((c, p) => new ResponsesService().SetGetResponsesFromDatabase(c.Resolve<IQueryBus>()))
-                .As<ResponsesService>()
+            builder.Register((c, p) => new ResponsesCachingService(c.Resolve<DiscordServersService>()).SetGetResponsesFromDatabase(c.Resolve<IQueryBus>()))
+                .As<ResponsesCachingService>()
                 .SingleInstance();
 
             builder.RegisterType<CustomCommandsLoader>()

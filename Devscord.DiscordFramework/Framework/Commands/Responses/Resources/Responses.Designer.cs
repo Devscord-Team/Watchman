@@ -97,11 +97,29 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dostępne role: {{roles}}.
+        ///   Looks up a localized string similar to Dostępne komendy:.
+        /// </summary>
+        public static string AvailableCommands {
+            get {
+                return ResourceManager.GetString("AvailableCommands", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dostępne role.
         /// </summary>
         public static string AvailableSafeRoles {
             get {
                 return ResourceManager.GetString("AvailableSafeRoles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Poniżej wypisane są role, które możesz sobie przypisać..
+        /// </summary>
+        public static string AvailableSafeRolesDescription {
+            get {
+                return ResourceManager.GetString("AvailableSafeRolesDescription", resourceCulture);
             }
         }
         
@@ -120,6 +138,78 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         public static string ComplaintsChannelHasBeenCreated {
             get {
                 return ResourceManager.GetString("ComplaintsChannelHasBeenCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Przykład.
+        /// </summary>
+        public static string Example {
+            get {
+                return ResourceManager.GetString("Example", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;#12345678&gt;.
+        /// </summary>
+        public static string ExampleChannelMention {
+            get {
+                return ResourceManager.GetString("ExampleChannelMention", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to jeden dwa trzy.
+        /// </summary>
+        public static string ExampleList {
+            get {
+                return ResourceManager.GetString("ExampleList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to JednoSłowo.
+        /// </summary>
+        public static string ExampleSingleWord {
+            get {
+                return ResourceManager.GetString("ExampleSingleWord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;kilka słów&quot;.
+        /// </summary>
+        public static string ExampleText {
+            get {
+                return ResourceManager.GetString("ExampleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;@12345678&gt;.
+        /// </summary>
+        public static string ExampleUserMention {
+            get {
+                return ResourceManager.GetString("ExampleUserMention", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Poniżej znajdziesz listę dostępnych komend wraz z ich opisami\nJeśli chcesz poznać dokładniejszy opis - zapraszamy do opisu w naszej dokumentacji\nhttps://watchman.readthedocs.io/pl/latest/156-lista-funkcjonalnosci/.
+        /// </summary>
+        public static string HereYouCanFindAvailableCommandsWithDescriptions {
+            get {
+                return ResourceManager.GetString("HereYouCanFindAvailableCommandsWithDescriptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Jak używać komendy.
+        /// </summary>
+        public static string HowToUseCommand {
+            get {
+                return ResourceManager.GetString("HowToUseCommand", resourceCulture);
             }
         }
         
@@ -169,6 +259,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Brak domyślnego opisu.
+        /// </summary>
+        public static string NoDefaultDescription {
+            get {
+                return ResourceManager.GetString("NoDefaultDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Nie masz wystarczających uprawnień do wywołania tej komendy..
         /// </summary>
         public static string NotAdminPermissions {
@@ -192,6 +291,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         public static string NumberOfMessagesIsHuge {
             get {
                 return ResourceManager.GetString("NumberOfMessagesIsHuge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parametry.
+        /// </summary>
+        public static string Parameters {
+            get {
+                return ResourceManager.GetString("Parameters", resourceCulture);
             }
         }
         
@@ -340,6 +448,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Role.
+        /// </summary>
+        public static string Roles {
+            get {
+                return ResourceManager.GetString("Roles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ustawiono rolę {{role}} jako zaufaną..
         /// </summary>
         public static string RoleSetAsTrusted {
@@ -444,6 +561,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         public static string TryToGoogleIt {
             get {
                 return ResourceManager.GetString("TryToGoogleIt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Typ.
+        /// </summary>
+        public static string Type {
+            get {
+                return ResourceManager.GetString("Type", resourceCulture);
             }
         }
         

@@ -20,7 +20,7 @@ namespace Watchman.DomainModel.Help.Queries.Handlers
             var defaultHelpInfos = allHelpInfos.Where(x => x.IsDefault);
             var customHelpInfos = allHelpInfos.Where(x => x.ServerId == query.ServerId).ToList();
 
-            customHelpInfos.AddRange(defaultHelpInfos.Where(x => customHelpInfos.All(c => c.MethodFullName != x.MethodFullName)));
+            customHelpInfos.AddRange(defaultHelpInfos.Where(x => customHelpInfos.All(c => c.CommandName != x.CommandName)));
             return new GetHelpInformationQueryResult(customHelpInfos);
         }
     }

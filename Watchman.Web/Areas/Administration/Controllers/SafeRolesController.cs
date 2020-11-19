@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO.Enumeration;
-using System.Linq;
-using System.Threading.Tasks;
-using Hangfire.MemoryStorage.Entities;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Watchman.Cqrs;
 using Watchman.DomainModel.DiscordServer.Commands;
@@ -20,16 +15,16 @@ namespace Watchman.Web.Areas.Administration.Controllers
         }
 
         [HttpPost]
-        public Task SetSafeRole(string roleName, ulong serverId)
+        public Task SetSafeRole(ulong roleId, ulong serverId)
         {
-            var command = new SetRoleAsSafeCommand(roleName, serverId);
+            var command = new SetRoleAsSafeCommand(roleId, serverId);
             return this._commandBus.ExecuteAsync(command);
         }
 
         [HttpPost]
-        public Task RemoveSafeRole(string roleName, ulong serverId)
+        public Task RemoveSafeRole(ulong roleId, ulong serverId)
         {
-            var command = new SetRoleAsUnsafeCommand(roleName, serverId);
+            var command = new SetRoleAsUnsafeCommand(roleId, serverId);
             return this._commandBus.ExecuteAsync(command);
         }
     }

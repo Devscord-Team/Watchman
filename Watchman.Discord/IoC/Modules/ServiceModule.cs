@@ -4,6 +4,7 @@ using Devscord.DiscordFramework.Framework.Commands.Responses;
 using System.Collections.Generic;
 using System.Reflection;
 using Devscord.DiscordFramework.Framework.Commands.Parsing;
+using Devscord.DiscordFramework.Services;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Commons;
 using Watchman.Discord.Integration.DevscordFramework;
@@ -15,7 +16,7 @@ namespace Watchman.Discord.IoC.Modules
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.Register((c, p) => new ResponsesService().SetGetResponsesFromDatabase(c.Resolve<IQueryBus>()))
+            builder.Register((c, p) => new ResponsesCachingService(c.Resolve<DiscordServersService>()).SetGetResponsesFromDatabase(c.Resolve<IQueryBus>()))
                 .As<ResponsesService>()
                 .InstancePerLifetimeScope();
 

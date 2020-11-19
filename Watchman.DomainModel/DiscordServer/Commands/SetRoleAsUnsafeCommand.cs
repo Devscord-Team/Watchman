@@ -2,7 +2,7 @@
 {
     public class SetRoleAsUnsafeCommand : UpdateSafetyOfRoleCommand
     {
-        public SetRoleAsUnsafeCommand(string roleName, ulong serverId) : base(roleName, serverId)
+        public SetRoleAsUnsafeCommand(ulong roleId, ulong serverId) : base(roleId, serverId)
         {
         }
     }
