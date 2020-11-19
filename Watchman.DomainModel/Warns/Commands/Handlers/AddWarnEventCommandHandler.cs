@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Watchman.Cqrs;
-using Watchman.Integrations.MongoDB;
+using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.Warns.Commands.Handlers
 {
@@ -15,7 +15,7 @@ namespace Watchman.DomainModel.Warns.Commands.Handlers
 
         public async Task HandleAsync(AddWarnEventCommand command)
         {
-            using var session = this._sessionFactory.Create();
+            using var session = this._sessionFactory.CreateMongo();
             var warnEvent = new WarnEvent(command.ReceiverId, command.GranterId, command.Reason, command.ServerId);
             await session.AddAsync(warnEvent);
         }

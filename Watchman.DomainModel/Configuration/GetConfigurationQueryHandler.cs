@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using Watchman.Cqrs;
-using Watchman.Integrations.MongoDB;
+using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.Configuration
 {
@@ -15,7 +15,7 @@ namespace Watchman.DomainModel.Configuration
 
         public GetConfigurationQueryResult Handle(GetConfigurationQuery query)
         {
-            using var session = this._sessionFactory.Create();
+            using var session = this._sessionFactory.CreateMongo();
             var allConfigurationItems = session.Get<ConfigurationItem>();
             var serverConfigurationItems = allConfigurationItems.Where(x => x.ServerId == query.ServerId);
             var defaultConfigurationItems = allConfigurationItems.Where(x => x.ServerId == 0);

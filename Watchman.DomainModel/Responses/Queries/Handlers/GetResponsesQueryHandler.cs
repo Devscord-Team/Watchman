@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using Watchman.Cqrs;
-using Watchman.Integrations.MongoDB;
+using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.Responses.Queries.Handlers
 {
@@ -15,7 +15,7 @@ namespace Watchman.DomainModel.Responses.Queries.Handlers
 
         public GetResponsesQueryResult Handle(GetResponsesQuery query)
         {
-            using var session = this._sessionFactory.Create();
+            using var session = this._sessionFactory.CreateMongo();
             var responses = session.Get<Response>().ToList();
             return new GetResponsesQueryResult(responses);
         }

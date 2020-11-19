@@ -8,7 +8,6 @@ using Devscord.DiscordFramework.Services;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Commons;
 using Watchman.Discord.Integration.DevscordFramework;
-using Watchman.DomainModel.Commons.Calculators.Statistics;
 using Watchman.DomainModel.Configuration.Services;
 
 namespace Watchman.Discord.IoC.Modules
@@ -19,10 +18,6 @@ namespace Watchman.Discord.IoC.Modules
         {
             builder.Register((c, p) => new ResponsesCachingService(c.Resolve<DiscordServersService>()).SetGetResponsesFromDatabase(c.Resolve<IQueryBus>()))
                 .As<ResponsesService>()
-                .InstancePerLifetimeScope();
-
-            builder.RegisterType<StatisticsCalculator>()
-                .As<IStatisticsCalculator>()
                 .InstancePerLifetimeScope();
 
             builder.RegisterType<CustomCommandsLoader>()

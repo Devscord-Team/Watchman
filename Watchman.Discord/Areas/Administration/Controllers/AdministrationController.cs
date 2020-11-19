@@ -49,7 +49,6 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             this._configurationService = configurationService;
         }
 
-        [AdminCommand]
         public async Task ReadUserMessages(MessagesCommand command, Contexts contexts)
         {
             var selectedUser = await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
@@ -57,8 +56,11 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             {
                 throw new UserNotFoundException(command.User.GetUserMention());
             }
-            var timeRange = TimeRange.ToNow(DateTime.UtcNow - command.Time); //todo: change DateTime.Now to Contexts.SentAt
-
+            if (!contexts.User.IsAdmin() && selectedUser.Id != command.User) //allow check own messages for everybody
+            {
+                throw new NotAdminPermissionsException();
+            }
+            var timeRange = TimeRange.ToNow(contexts.Message.SentAt - command.Time);
             var query = new GetMessagesQuery(contexts.Server.Id, userId: selectedUser.Id)
             {
                 SentDate = timeRange
@@ -86,7 +88,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             var linesBuilder = new StringBuilder().PrintManyLines(lines.ToArray(), contentStyleBox: true);
 
             await this._directMessagesService.TrySendMessage(contexts.User.Id, header);
-            await this._directMessagesService.TrySendMessage(contexts.User.Id, linesBuilder.ToString(), MessageType.BlockFormatted);
+            await this._directMessagesService.TrySendMessage(contexts.User.Id, linesBuilder.ToString(), MessageType.NormalText);
 
             await messagesService.SendResponse(x => x.SentByDmMessagesOfAskedUser(messages.Count, selectedUser));
         }

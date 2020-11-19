@@ -9,7 +9,6 @@ using System.Reflection;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Commons;
 using Watchman.Discord.Integration.DevscordFramework;
-using Watchman.DomainModel.Commons.Calculators.Statistics;
 using Watchman.DomainModel.Configuration.Services;
 
 namespace Watchman.IoC.Modules
@@ -20,10 +19,6 @@ namespace Watchman.IoC.Modules
         {
             builder.Register((c, p) => new ResponsesCachingService(c.Resolve<DiscordServersService>()).SetGetResponsesFromDatabase(c.Resolve<IQueryBus>()))
                 .As<ResponsesCachingService>()
-                .SingleInstance();
-
-            builder.RegisterType<StatisticsCalculator>()
-                .As<IStatisticsCalculator>()
                 .SingleInstance();
 
             builder.RegisterType<CustomCommandsLoader>()
@@ -47,7 +42,7 @@ namespace Watchman.IoC.Modules
                 var asm = stack.Pop();
 
                 builder.RegisterAssemblyTypes(asm)
-                    .Where(x => x.FullName.StartsWith("Watchman") || x.FullName.StartsWith("Devscord"))
+                    .Where(x => x.FullName.StartsWith("Watchman") || x.FullName.StartsWith("Devscord") || x.FullName.StartsWith("Statsman"))
                     .Where(x => x.GetConstructors().Any()) // todo: AutoFac v6.0 needs this line to work / maybe possible to remove in future when they'll fix it
                     .PreserveExistingDefaults()
                     .SingleInstance();

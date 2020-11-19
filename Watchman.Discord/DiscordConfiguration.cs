@@ -7,5 +7,6 @@
         public bool SendOnlyUnknownExceptionInfo { get; set; }
         public ulong ExceptionChannelId { get; set; }
         public ulong ExceptionServerId { get; set; }
+        public string LiteDbConnectionString { get; set; }
     }
 }

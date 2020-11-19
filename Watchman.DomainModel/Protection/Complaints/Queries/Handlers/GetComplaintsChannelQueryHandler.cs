@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using Watchman.Cqrs;
-using Watchman.Integrations.MongoDB;
+using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.Protection.Complaints.Queries.Handlers
 {
@@ -15,7 +15,7 @@ namespace Watchman.DomainModel.Protection.Complaints.Queries.Handlers
 
         public GetComplaintsChannelQueryResult Handle(GetComplaintsChannelQuery query)
         {
-            using var session = this._sessionFactory.Create();
+            using var session = this._sessionFactory.CreateMongo();
             var complaintsChannel = session.Get<ComplaintsChannel>().FirstOrDefault(x => x.ServerId == query.ServerId);
             return new GetComplaintsChannelQueryResult(complaintsChannel);
         }

@@ -4,8 +4,11 @@ using Hangfire;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Linq;
+using System.Reflection;
 using Watchman.Discord;
 using Watchman.IoC;
+using Watchman.Web.Jobs;
 
 namespace Watchman.Web.ServiceProviders
 {
@@ -20,8 +23,9 @@ namespace Watchman.Web.ServiceProviders
 
         public ContainerBuilder CreateBuilder(IServiceCollection services)
         {
-            var containerModule = new ContainerModule(this._configuration.GetConnectionString("Mongo"));
+            var containerModule = new ContainerModule(this._configuration.GetConnectionString("Mongo"), this._configuration.GetConnectionString("Lite"));
             var builder = containerModule.GetBuilder();
+            this.RegisterCustomServices(builder);
             builder.Populate(services);
             return builder;
         }
@@ -29,7 +33,6 @@ namespace Watchman.Web.ServiceProviders
         public IServiceProvider CreateServiceProvider(ContainerBuilder containerBuilder)
         {
             var container = containerBuilder.Build();
-
             var workflowBuilder = new WatchmanBot(new DiscordConfiguration
             {
                 MongoDbConnectionString = this._configuration.GetConnectionString("Mongo"),
@@ -41,6 +44,16 @@ namespace Watchman.Web.ServiceProviders
             workflowBuilder.Build();
             container.Resolve<HangfireJobsService>().SetDefaultJobs(container);
             return new AutofacServiceProvider(container);
+        }
+
+        private void RegisterCustomServices(ContainerBuilder builder)
+        {
+            var jobs = Assembly.GetAssembly(typeof(AutofacServiceProviderFactory)).GetTypes()
+                .Where(x => x.IsAssignableTo<IHangfireJob>() && !x.IsInterface).ToList();
+            foreach (var job in jobs)
+            {
+                builder.RegisterType(job).AsSelf().PreserveExistingDefaults().SingleInstance();
+            }
         }
     }
 }

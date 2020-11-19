@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Watchman.Cqrs;
-using Watchman.Integrations.MongoDB;
+using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.Protection.Antispam.Commands.Handlers
 {
@@ -15,7 +15,7 @@ namespace Watchman.DomainModel.Protection.Antispam.Commands.Handlers
 
         public async Task HandleAsync(AddProtectionPunishmentCommand command)
         {
-            using var session = this._sessionFactory.Create();
+            using var session = this._sessionFactory.CreateMongo();
             await session.AddAsync(command.ProtectionPunishment);
         }
     }

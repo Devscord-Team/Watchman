@@ -8,6 +8,7 @@
 *.user
 *.userosscache
 *.sln.docstates
+*.db
 
 config.json
 config-prod.json

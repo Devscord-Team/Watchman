@@ -12,6 +12,7 @@ using Watchman.Cqrs;
 using Watchman.DomainModel.DiscordServer.Queries;
 using Watchman.Discord.Areas.Users.Services;
 using Watchman.Discord.Areas.Users.BotCommands;
+using Devscord.DiscordFramework.Services;
 
 namespace Watchman.Discord.Areas.Users.Controllers
 {
@@ -20,20 +21,27 @@ namespace Watchman.Discord.Areas.Users.Controllers
         private readonly IQueryBus _queryBus;
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly RolesService _rolesService;
+        private readonly UsersService _usersService;
         private readonly ResponsesService _responsesService;
 
-        public UsersController(IQueryBus queryBus, MessagesServiceFactory messagesServiceFactory, RolesService rolesService, ResponsesService responsesService)
+        public UsersController(IQueryBus queryBus, MessagesServiceFactory messagesServiceFactory, RolesService rolesService, UsersService usersService, ResponsesService responsesService)
         {
             this._queryBus = queryBus;
             this._messagesServiceFactory = messagesServiceFactory;
             this._rolesService = rolesService;
+            this._usersService = usersService;
             this._responsesService = responsesService;
         }
 
         public Task GetAvatar(AvatarCommand avatarCommand, Contexts contexts)
         {
             var messageService = this._messagesServiceFactory.Create(contexts);
-            if (string.IsNullOrEmpty(contexts.User.AvatarUrl))
+            var user = contexts.User;
+            if (avatarCommand.User != 0)
+            {
+                user = this._usersService.GetUserByIdAsync(contexts.Server, avatarCommand.User).GetAwaiter().GetResult();
+            }
+            if (string.IsNullOrEmpty(user.AvatarUrl))
             {
                 return messageService.SendResponse(x => x.UserDoesntHaveAvatar(contexts.User));
             }

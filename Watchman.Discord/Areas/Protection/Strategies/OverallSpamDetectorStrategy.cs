@@ -45,7 +45,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
                 .Where(x => x != SpamProbability.None)
                 .ToList();
 
-            if (probabilities.Count == 0)
+            if (!probabilities.Any())
             {
                 return SpamProbability.None;
             }

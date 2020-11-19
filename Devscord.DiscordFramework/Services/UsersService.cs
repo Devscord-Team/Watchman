@@ -50,7 +50,7 @@ namespace Devscord.DiscordFramework.Services
         public async Task<UserContext> GetUserByMentionAsync(DiscordServerContext server, string mention)
         {
             var match = this._exMention.Match(mention);
-            if(!match.Success)
+            if (!match.Success)
             {
                 Log.Warning("Mention {mention} has not user ID", mention);
                 return null;
@@ -68,7 +68,7 @@ namespace Devscord.DiscordFramework.Services
         public async Task<UserContext> GetUserByIdAsync(DiscordServerContext server, ulong userId)
         {
             var user = await Server.GetGuildUser(userId, server.Id);
-            if(user == null)
+            if (user == null)
             {
                 Log.Warning("Cannot get user by id {userId}", userId);
                 return null;
