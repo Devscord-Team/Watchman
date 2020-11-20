@@ -37,7 +37,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
 
         private bool IsMessageWithMuchCapslock(string message, ulong serverId)
         {
-            message = message.Replace(" ", "");
+            message = message.Replace(" ", string.Empty);
             var upperLettersCount = message.Count(char.IsUpper);
             var percentageOfUpperLetters = upperLettersCount / (double)message.Length;
             var minUpperLettersCount = this._configurationService.GetConfigurationItem<MinUpperLettersCount>(serverId).Value;

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Watchman.Common.Models;
 using Watchman.DomainModel.Messages;
 
@@ -38,9 +37,9 @@ namespace Statsman.Core.Generators.Services
         {
             return period switch
             {
-                Period.Day => new Func<DateTime, int>(x => 1),
-                Period.Month => new Func<DateTime, int>(x => DateTime.DaysInMonth(x.Year, x.Month)),
-                Period.Quarter => new Func<DateTime, int>(x => new DateTime[] { x, x.AddMonths(1), x.AddMonths(2) }.Select(d => DateTime.DaysInMonth(d.Year, d.Month)).Sum()),
+                Period.Day => x => 1,
+                Period.Month => x => DateTime.DaysInMonth(x.Year, x.Month),
+                Period.Quarter => x => new[] { x, x.AddMonths(1), x.AddMonths(2) }.Select(d => DateTime.DaysInMonth(d.Year, d.Month)).Sum(),
                 _ => throw new NotImplementedException()
             };
         }
@@ -49,9 +48,9 @@ namespace Statsman.Core.Generators.Services
         {
             return period switch
             {
-                Period.Day => new Func<DateTime, int>(x => 1),
-                Period.Month => new Func<DateTime, int>(x => DateTime.DaysInMonth(x.AddMonths(-1).Year, x.AddMonths(-1).Month)),
-                Period.Quarter => new Func<DateTime, int>(x => new DateTime[] { x.AddMonths(-1), x.AddMonths(-2), x.AddMonths(-3) }.Select(d => DateTime.DaysInMonth(d.Year, d.Month)).Sum()),
+                Period.Day => x => 1,
+                Period.Month => x => DateTime.DaysInMonth(x.AddMonths(-1).Year, x.AddMonths(-1).Month),
+                Period.Quarter => x => new[] { x.AddMonths(-1), x.AddMonths(-2), x.AddMonths(-3) }.Select(d => DateTime.DaysInMonth(d.Year, d.Month)).Sum(),
                 _ => throw new NotImplementedException()
             };
         }
@@ -71,9 +70,9 @@ namespace Statsman.Core.Generators.Services
         {
             return date.Month switch
             {
-                int month when month <= 3 => new DateTime(date.Year, 1, 1, 0, 0, 0, DateTimeKind.Local),
-                int month when month <= 6 => new DateTime(date.Year, 4, 1, 0, 0, 0, DateTimeKind.Local),
-                int month when month <= 9 => new DateTime(date.Year, 7, 1, 0, 0, 0, DateTimeKind.Local),
+                <= 3 => new DateTime(date.Year, 1, 1, 0, 0, 0, DateTimeKind.Local),
+                <= 6 => new DateTime(date.Year, 4, 1, 0, 0, 0, DateTimeKind.Local),
+                <= 9 => new DateTime(date.Year, 7, 1, 0, 0, 0, DateTimeKind.Local),
                 _ => new DateTime(date.Year, 10, 1, 0, 0, 0, DateTimeKind.Local)
             };
         }
