@@ -38,7 +38,7 @@ namespace Watchman.DomainModel.Configuration.Services
             return _cachedConfigurationItem.Select(x => x.Value.GetValueOrDefault(serverId) ?? x.Value[DEFAULT_SERVER_ID]);
         }
 
-        public async Task SaveNewConfiguration(IMappedConfiguration changedConfiguration) // todo: not saving new configuration not tested
+        public async Task SaveNewConfiguration(IMappedConfiguration changedConfiguration) // todo: saving new configuration not tested
         {
             using var session = this._sessionFactory.CreateMongo();
             var existingConfiguration = session.Get<ConfigurationItem>()

@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
-using System.Threading.Tasks;
 using Autofac;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Models;
 using Hangfire;
 using Watchman.Discord.Areas.Protection.Services;
-using Watchman.Discord.Areas.Protection.Strategies;
 using Watchman.Discord.Areas.Responses.Services;
-using Watchman.DomainModel.Configuration;
 using Watchman.Web.Jobs;
 using Watchman.DomainModel.Configuration.Services;
 

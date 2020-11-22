@@ -33,7 +33,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
                 return SpamProbability.None;
             }
             var userIsSafe = this._userSafetyChecker.IsUserSafe(contexts.User.Id, contexts.Server.Id);
-            return userIsSafe switch //todo: rewrite this switch when we'll switch to c# 9
+            return userIsSafe switch
             {
                 true when messagesCount < howManyMessagesCount => SpamProbability.None,
                 false when messagesCount <= howManyMessagesCount / 2 => SpamProbability.Low,
