@@ -5,9 +5,10 @@ using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Watchman.Cqrs;
+using Watchman.DomainModel.Configuration;
 using Watchman.DomainModel.Protection.Complaints.Queries;
 
-namespace Watchman.DomainModel.Configuration.ConfigurationChangesHandlers
+namespace Watchman.Discord.Areas.Protection.Services
 {
     public class RolesWithAccessToComplaintsChannelChangesHandler : IConfigurationChangesHandler<IMappedConfiguration>
     {

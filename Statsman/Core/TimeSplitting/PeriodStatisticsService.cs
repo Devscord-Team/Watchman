@@ -1,30 +1,21 @@
-﻿using Devscord.DiscordFramework.Commons.Extensions;
-using Statsman.Core.TimeSplitting.Models;
+﻿using Statsman.Core.TimeSplitting.Models;
 using Statsman.Core.TimeSplitting.Services;
 using Statsman.Models;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Watchman.Common.Extensions;
 using Watchman.Common.Models;
-using Watchman.Cqrs;
-using Watchman.DomainModel.Messages;
-using Watchman.DomainModel.Messages.Queries;
-using Watchman.Integrations.Quickchart;
 
 namespace Statsman.Core.TimeSplitting
 {
     public partial class PeriodStatisticsService
     {
-        private readonly IQueryBus queryBus;
         private readonly ChartsService _chartsService;
         private readonly StatisticsGroupingService _statisticsGroupingService;
 
-        public PeriodStatisticsService(IQueryBus queryBus, ChartsService chartsService, StatisticsGroupingService statisticsGroupingService)
+        public PeriodStatisticsService(ChartsService chartsService, StatisticsGroupingService statisticsGroupingService)
         {
-            this.queryBus = queryBus;
             this._chartsService = chartsService;
             this._statisticsGroupingService = statisticsGroupingService;
         }
