@@ -40,7 +40,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                 var value = getValueByName.Invoke(property.Name, isList);
                 if (string.IsNullOrWhiteSpace(value as string) && !isList)
                 {
-                    // if we got to this point in the code, it means that property is optional (but which is not bool) and the user did not provide a value to this field, so we assign null to property. Property must be a type that takes null.
+                    // if user didn't provide a value to the optional (but not bool) property, we assign null, so an optional property has to be nullable
                     property.SetValue(instance, null);
                     continue;
                 }

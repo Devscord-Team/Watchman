@@ -10,7 +10,7 @@ using System.Text;
 
 namespace Devscord.DiscordFramework
 {
-    public class ValidatorOfCommandMethod
+    public class CommandMethodValidator
     {
         public bool IsValid(Contexts contexts, MethodInfo method)
         {

@@ -28,7 +28,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
                 .Returns(Task.FromResult(customCommands ?? new List<CustomCommand>()));
             var commandsContainer = new CommandsContainer(customCommandsLoader.Object);
 
-            var validatorOfCommand = new ValidatorOfCommandMethod();
+            var validatorOfCommand = new CommandMethodValidator();
 
             return new RunnerOfIBotCommandMethods(botCommandsService, commandsContainer, validatorOfCommand);
         }

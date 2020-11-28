@@ -8,9 +8,7 @@ using NUnit.Framework;
 
 namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethodsTests.Tests
 {
-    // "Conflict situations" means situations in which a given command matches default and custom version of a bot command at the same time. During these situations, "mechanism to resolve conflict situations" is runned. 
-    // It means a method which check what arguments are known for a bot command. Thanks to the mechanism, it is possible to determine if the command is in the default or custom version.
-    // It matters for command correctness because setting of version is needed to determine how to parse the commands
+    // "Conflict situations" means situations in which a given command matches default and custom version of a bot command at the same time.
     [TestFixture]
     class MechanismToResolveConflictSituationsTests
     {
@@ -28,7 +26,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         [Test]
         public async Task ShouldGiveCorrectArgs_WhenGivenCommandIsActuallyDefaultCommandButMatchesCustomVersionOfCommand()
         {
-            // Arrange:
+            // Arrange
             var customCommands = this._getterOfThings.CreateCustomCommandFor<SomeDefaultCommand>(@"-somedefault\s*(?<Time>.*)\s*(?<User>.*)\s*(?<List>.*)");
             var runner = this._getterOfThings.GetRunner(customCommands);
             var contexts = this._getterOfThings.GetContexts();
@@ -36,10 +34,10 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
             var testCommand = "-somedefault -time 4m -user <@123> -list abc qwerty";
             var request = this._commandParser.Parse(testCommand, DateTime.Now);
 
-            // Act:
+            // Act
             await runner.RunMethodsIBotCommand(request, contexts, controllerInfos);
 
-            // Assert:
+            // Assert
             var args = this._controller.DefaultCommandArgs;
             Assert.That(args.Time, Is.EqualTo(TimeSpan.FromMinutes(4)));
             Assert.That(args.User, Is.EqualTo(123UL));
@@ -49,7 +47,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         [Test]
         public async Task ShouldGiveRightArgs_WhenCommandIsCustomCommandButMatchesDefaultVersionOfCommand()
         {
-            // Arrange:
+            // Arrange
             var customCommands = this._getterOfThings.CreateCustomCommandFor<SomeCustomCommand>(@"-somecustom\s*-list\s*(?<List>.*)\s*(?<Bool>-b|-bool)\s*(?<Number>.*)");
             var runner = this._getterOfThings.GetRunner(customCommands);
             var contexts = this._getterOfThings.GetContexts();
@@ -57,10 +55,10 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
             var testCommand = "-somecustom -list 123 456 789 -b 123";
             var request = this._commandParser.Parse(testCommand, DateTime.Now);
 
-            // Act:
+            // Act
             await runner.RunMethodsIBotCommand(request, contexts, controllerInfos);
 
-            // Assert:
+            // Assert
             var args = this._controller.CustomCommandArgs;
             Assert.That(args.List, Is.EqualTo(new List<string> { "123", "456", "789" }));
             Assert.That(args.Bool, Is.EqualTo(true));

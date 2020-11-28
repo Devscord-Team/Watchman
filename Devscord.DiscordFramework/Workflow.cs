@@ -38,7 +38,7 @@ namespace Devscord.DiscordFramework
         internal Workflow(Assembly botAssembly, IComponentContext context)
         {
             this._context = context;
-            this._controllersService = new ControllersService(context, botAssembly, context.Resolve<RunnerOfIBotCommandMethods>(), context.Resolve<ValidatorOfCommandMethod>());
+            this._controllersService = new ControllersService(context, botAssembly, context.Resolve<RunnerOfIBotCommandMethods>(), context.Resolve<CommandMethodValidator>());
             this._commandParser = context.Resolve<CommandParser>();
             this._middlewaresService = context.Resolve<MiddlewaresService>();
         }

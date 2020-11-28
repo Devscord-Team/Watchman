@@ -40,7 +40,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         [TestCaseSource(nameof(_messagesAndExpectedTimesOrLists))]
         public async Task ShouldGiveExpectedValueForOptionalArg(string message, object expectedValue)
         {
-            // Arrange:
+            // Arrange
             var customCommands = this._getterOfThings.CreateCustomCommands(new (Type type, string regexInText)[] 
             { 
                 (typeof(OptionalArgsCommand), @"-custom_optional\s*int\s*(?<TestNullableInt>-?\d*)?"),
@@ -54,10 +54,10 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
             var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._controller);
             var request = this._commandParser.Parse(message, DateTime.Now);
 
-            // Act:
+            // Act
             await runner.RunMethodsIBotCommand(request, contexts, controllerInfos);
 
-            // Assert:
+            // Assert
             Assert.That(this._controller.GeneralValue, Is.EqualTo(expectedValue));
         }
 
@@ -66,17 +66,17 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         [TestCase("-custom_optional")]
         public async Task ShouldGiveDefaultValuesWhenOptionalArgsIsGivenWithoutArgs(string message)
         {
-            // Arrange:
+            // Arrange
             var customCommands = this._getterOfThings.CreateCustomCommandFor<OptionalArgsCommand>(@"-custom_optional");
             var runner = this._getterOfThings.GetRunner(customCommands);
             var contexts = this._getterOfThings.GetContexts();
             var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._controller);
             var request = this._commandParser.Parse(message, DateTime.Now);
 
-            // Act:
+            // Act
             await runner.RunMethodsIBotCommand(request, contexts, controllerInfos);
 
-            // Assert:
+            // Assert
             var args = this._controller.OptionalArgs;
             Assert.That(args.TestNullableInt, Is.EqualTo(null));
             Assert.That(args.TestTime, Is.EqualTo(null));
@@ -100,7 +100,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         [TestCase("-custom_optional list \"sth\" else\"")]
         public void ShouldThrowException_WhenOptionalArgIsGivenWithIncorrectValue(string message)
         {
-            // Arrange:
+            // Arrange
             var customCommands = this._getterOfThings.CreateCustomCommands(new (Type type, string regexInText)[]
             {
                 (typeof(OptionalArgsCommand), @"-custom_optional\s*int\s*(?<TestNullableInt>.*)?"),
@@ -114,10 +114,10 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
             var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._controller);
             var request = this._commandParser.Parse(message, DateTime.Now);
 
-            // Act:
+            // Act
             async Task RunMethodsFunc() => await runner.RunMethodsIBotCommand(request, contexts, controllerInfos);
 
-            // Assert:
+            // Assert
             Assert.ThrowsAsync<InvalidArgumentsException>(RunMethodsFunc);
         }
 
@@ -127,16 +127,16 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         [TestCase("-OptionalArgs    -testtime       ")]
         public void ShouldThrowException_WhenOptionalParametrIsGivenWithoutValue(string message)
         {
-            // Arrange:
+            // Arrange
             var runner = this._getterOfThings.GetRunner();
             var contexts = this._getterOfThings.GetContexts();
             var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._controller);
             var request = this._commandParser.Parse(message, DateTime.Now);
 
-            // Act:
+            // Act
             async Task RunMethodsFunc() => await runner.RunMethodsIBotCommand(request, contexts, controllerInfos);
 
-            // Assert:
+            // Assert
             Assert.ThrowsAsync<InvalidArgumentsException>(RunMethodsFunc);
         }
     }

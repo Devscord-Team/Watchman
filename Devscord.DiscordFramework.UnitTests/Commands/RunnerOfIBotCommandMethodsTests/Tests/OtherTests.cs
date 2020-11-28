@@ -5,6 +5,7 @@ using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Framework.Commands.Parsing;
 using NUnit.Framework;
 using Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethodsTests.BotCommands;
+using System.Runtime.CompilerServices;
 
 namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethodsTests.Tests
 {
@@ -25,32 +26,32 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         [Test]
         public void ShouldThrowException_WhenUserIsNotAdminAndUserUsesCommandOnlyForAdmin()
         {
-            // Arrange:
+            // Arrange
             var runner = this._getterOfThings.GetRunner();
             var contexts = this._getterOfThings.GetContexts(isOwnerOrAdmin: false);
             var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._controller);
             var request = this._commandParser.Parse("-optionalArgs", DateTime.Now);
 
-            // Act:
+            // Act
             async Task RunMethodsFunc() => await runner.RunMethodsIBotCommand(request, contexts, controllerInfos);
 
-            // Assert:
+            // Assert
             Assert.ThrowsAsync<NotAdminPermissionsException>(RunMethodsFunc);
         }
 
         [Test]
         public void ShouldDoesNotThrowException_WhenAdminUsesCommandOnlyForAdmin()
         {
-            // Arrange:
+            // Arrange
             var runner = this._getterOfThings.GetRunner();
             var contexts = this._getterOfThings.GetContexts(isOwnerOrAdmin: true);
             var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._controller);
             var request = this._commandParser.Parse("-optionalArgs", DateTime.Now);
 
-            // Act:
+            // Act
             async Task RunMethodsFunc() => await runner.RunMethodsIBotCommand(request, contexts, controllerInfos);
 
-            // Assert:
+            // Assert
             Assert.DoesNotThrowAsync(RunMethodsFunc);
         }
 
@@ -63,7 +64,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         [TestCase("-somedefault -t  -l sth -u <@123>")]
         public void ShouldThrowException_WhenCommandIsGivenWithoutAllRequiredArgs(string message)
         {
-            // Arrange:
+            // Arrange
             var customCommands = this._getterOfThings.CreateCustomCommands(new (Type type, string regexInText)[] 
             { 
                 (typeof(TextCommand), @"-custom_text\s*(?<TestText>.*)"),
@@ -75,10 +76,10 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
             var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._controller);
             var request = this._commandParser.Parse(message, DateTime.Now);
 
-            // Act:
+            // Act
             async Task RunMethodsFunc() => await runner.RunMethodsIBotCommand(request, contexts, controllerInfos);
 
-            // Assert:
+            // Assert
             Assert.ThrowsAsync<InvalidArgumentsException>(RunMethodsFunc);
         }
 
@@ -91,7 +92,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         [TestCase("-somedefault -t 4h -l sth else -u <@123>")]
         public void ShouldDoesNotThrowException_WhenGivenCommandHasEveryRequiredArg(string message)
         {
-            // Arrange:
+            // Arrange
             var customCommands = this._getterOfThings.CreateCustomCommands(new (Type type, string regexInText)[]
             {
                 (typeof(TextCommand), @"-custom_text\s*(?<TestText>.*)"),
@@ -103,10 +104,10 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
             var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._controller);
             var request = this._commandParser.Parse(message, DateTime.Now);
 
-            // Act:
+            // Act
             async Task RunMethodsFunc() => await runner.RunMethodsIBotCommand(request, contexts, controllerInfos);
 
-            // Assert:
+            // Assert
             Assert.DoesNotThrowAsync(RunMethodsFunc);
         }
     }

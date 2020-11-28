@@ -141,7 +141,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
                 }
                 switch (property.GeneralType)
                 {
-                    case BotCommandPropertyType.Number when CheckIfItIsNotRightNumber(value, property.ActualType):
+                    case BotCommandPropertyType.Number when !IsNumberValid(value, property.ActualType):
                     case BotCommandPropertyType.Time when !this._exTime.IsMatch(value):
                     case BotCommandPropertyType.UserMention when !this._exUserMention.IsMatch(value):
                     case BotCommandPropertyType.ChannelMention when !this._exChannelMention.IsMatch(value):
@@ -151,16 +151,17 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
             return true;
         }
 
-        private bool CheckIfItIsNotRightNumber(string value, Type type)
+        private bool IsNumberValid(string value, Type type)
         {
             try
             {
                 Convert.ChangeType(value, Nullable.GetUnderlyingType(type) ?? type);
-                return false;
+                return true;
+                //return false;
             }
             catch
             {
-                return true;
+                return false;
             }
         }
     }

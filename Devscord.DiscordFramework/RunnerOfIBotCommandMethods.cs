@@ -18,13 +18,13 @@ namespace Devscord.DiscordFramework
     {
         private readonly BotCommandsService _botCommandsService;
         private readonly CommandsContainer _commandsContainer;
-        private readonly ValidatorOfCommandMethod _validatorOfCommand;
+        private readonly CommandMethodValidator _commandMethodValidator;
 
-        public RunnerOfIBotCommandMethods(BotCommandsService botCommandsService, CommandsContainer commandsContainer, ValidatorOfCommandMethod validatorOfCommand)
+        public RunnerOfIBotCommandMethods(BotCommandsService botCommandsService, CommandsContainer commandsContainer, CommandMethodValidator commandMethodValidator)
         {
             this._botCommandsService = botCommandsService;
             this._commandsContainer = commandsContainer;
-            this._validatorOfCommand = validatorOfCommand;
+            this._commandMethodValidator = commandMethodValidator;
         }
 
         public async Task RunMethodsIBotCommand(DiscordRequest request, Contexts contexts, IEnumerable<ControllerInfo> controllers)
@@ -33,7 +33,7 @@ namespace Devscord.DiscordFramework
             {
                 using (LogContext.PushProperty("Controller", controllerInfo.Controller.GetType().Name))
                 {
-                    foreach (var method in controllerInfo.MethodsWhichAreCommands)
+                    foreach (var method in controllerInfo.Methods)
                     {
                         var commandInParameterType = method.GetParameters().First(x => typeof(IBotCommand).IsAssignableFrom(x.ParameterType)).ParameterType;
                         //TODO zoptymalizować, spokojnie można to pobierać wcześniej i używać raz, zamiast wszystko obliczać przy każdym odpaleniu
@@ -45,7 +45,7 @@ namespace Devscord.DiscordFramework
                         {
                             continue;
                         }
-                        if (!this._validatorOfCommand.IsValid(contexts, method))
+                        if (!this._commandMethodValidator.IsValid(contexts, method))
                         {
                             return;
                         }

@@ -11,7 +11,6 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
     class DefaultCommandsTests
     {
         private readonly GetterOfThingsAboutBotCommand _getterOfThings;
-        private readonly TestNumbersController _testNumbersController;
         private readonly TestController _testController;
         private readonly CommandParser _commandParser;
         private static readonly object[] _messagesAndExpectedTimes = new object[]
@@ -26,7 +25,6 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         public DefaultCommandsTests()
         {
             this._getterOfThings = new GetterOfThingsAboutBotCommand();
-            this._testNumbersController = new TestNumbersController();
             this._testController = new TestController();
             this._commandParser = new CommandParser();
         }
@@ -38,17 +36,17 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         [TestCase("-int       -testint      45   ", 45)]
         public async Task ShouldGiveExpectedIntNumber(string message, int expectedInt)
         {
-            // Arrange:
+            // Arrange
             var runner = this._getterOfThings.GetRunner();
             var contexts = this._getterOfThings.GetContexts();
-            var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._testNumbersController);
+            var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._testController);
             var request = this._commandParser.Parse(message, DateTime.Now);
 
-            // Act:
+            // Act
             await runner.RunMethodsIBotCommand(request, contexts, controllerInfos);
 
-            // Assert:
-            Assert.That(this._testNumbersController.ValueOfTestInt, Is.EqualTo(expectedInt));
+            // Assert
+            Assert.That(this._testController.ValueOfTestInt, Is.EqualTo(expectedInt));
         }
 
         [Test]
@@ -56,17 +54,17 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         [TestCase("-uint     -testuint      345123   ", 345123U)]
         public async Task ShouldGiveUIntNumber(string message, uint expectedUInt)
         {
-            // Arrange:
+            // Arrange
             var runner = this._getterOfThings.GetRunner();
             var contexts = this._getterOfThings.GetContexts();
-            var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._testNumbersController);
+            var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._testController);
             var request = this._commandParser.Parse(message, DateTime.Now);
 
-            // Act:
+            // Act
             await runner.RunMethodsIBotCommand(request, contexts, controllerInfos);
 
-            // Assert:
-            Assert.That(this._testNumbersController.ValueOfTestUInt, Is.EqualTo(expectedUInt));
+            // Assert
+            Assert.That(this._testController.ValueOfTestUInt, Is.EqualTo(expectedUInt));
         }
 
         [Test]
@@ -75,17 +73,17 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         [TestCase("-long     -testlong      223456   ", 223456L)]
         public async Task ShouldGiveExpectedLongNumber(string message, long expectedLong)
         {
-            // Arrange:
+            // Arrange
             var runner = this._getterOfThings.GetRunner();
             var contexts = this._getterOfThings.GetContexts();
-            var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._testNumbersController);
+            var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._testController);
             var request = this._commandParser.Parse(message, DateTime.Now);
 
-            // Act:
+            // Act
             await runner.RunMethodsIBotCommand(request, contexts, controllerInfos);
 
-            // Assert:
-            Assert.That(this._testNumbersController.ValueOfTestLong, Is.EqualTo(expectedLong));
+            // Assert
+            Assert.That(this._testController.ValueOfTestLong, Is.EqualTo(expectedLong));
         }
 
         [Test]
@@ -93,17 +91,17 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         [TestCase("-ulong     -testulong      88891   ", 88891UL)]
         public async Task ShouldGiveULongNumber(string message, ulong expectedULong)
         {
-            // Arrange:
+            // Arrange
             var runner = this._getterOfThings.GetRunner();
             var contexts = this._getterOfThings.GetContexts();
-            var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._testNumbersController);
+            var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._testController);
             var request = this._commandParser.Parse(message, DateTime.Now);
 
-            // Act:
+            // Act
             await runner.RunMethodsIBotCommand(request, contexts, controllerInfos);
 
-            // Assert:
-            Assert.That(this._testNumbersController.ValueOfTestULong, Is.EqualTo(expectedULong));
+            // Assert
+            Assert.That(this._testController.ValueOfTestULong, Is.EqualTo(expectedULong));
         }
 
         [Test]
@@ -113,17 +111,17 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         [TestCase("-double -testdouble -34,16     ", -34.16)]
         public async Task ShouldGiveExpectedDoubleNumber(string message, double expectedDouble)
         {
-            // Arrange:
+            // Arrange
             var runner = this._getterOfThings.GetRunner();
             var contexts = this._getterOfThings.GetContexts();
-            var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._testNumbersController);
+            var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._testController);
             var request = this._commandParser.Parse(message, DateTime.Now);
 
-            // Act:
+            // Act
             await runner.RunMethodsIBotCommand(request, contexts, controllerInfos);
 
-            // Assert:
-            Assert.That(this._testNumbersController.ValueOfTestDouble, Is.EqualTo(expectedDouble));
+            // Assert
+            Assert.That(this._testController.ValueOfTestDouble, Is.EqualTo(expectedDouble));
         }
 
         [Test]
@@ -133,17 +131,17 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         [TestCase("-decimal -testdecimal -12,18     ", -12.18)]
         public async Task ShouldGiveExpectedDecimalNumber(string message, decimal expectedDecimal)
         {
-            // Arrange:
+            // Arrange
             var runner = this._getterOfThings.GetRunner();
             var contexts = this._getterOfThings.GetContexts();
-            var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._testNumbersController);
+            var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._testController);
             var request = this._commandParser.Parse(message, DateTime.Now);
 
-            // Act:
+            // Act
             await runner.RunMethodsIBotCommand(request, contexts, controllerInfos);
 
-            // Assert:
-            Assert.That(this._testNumbersController.ValueOfTestDecimal, Is.EqualTo(expectedDecimal));
+            // Assert
+            Assert.That(this._testController.ValueOfTestDecimal, Is.EqualTo(expectedDecimal));
         }
 
         [Test]
@@ -160,16 +158,16 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         [TestCase("-double -testdouble 89.78", true)]
         public void ShouldThrowException_WhenNumberIsIncorrect(string message, bool shouldThrowException)
         {
-            // Arrange:
+            // Arrange
             var runner = this._getterOfThings.GetRunner();
             var contexts = this._getterOfThings.GetContexts();
-            var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._testNumbersController);
+            var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._testController);
             var request = this._commandParser.Parse(message, DateTime.Now);
 
-            // Act:
+            // Act
             async Task RunMethodsFunc() => await runner.RunMethodsIBotCommand(request, contexts, controllerInfos);
 
-            // Assert:
+            // Assert
             if (shouldThrowException)
             {
                 Assert.ThrowsAsync<InvalidArgumentsException>(RunMethodsFunc);
@@ -188,16 +186,16 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         [TestCase("-text   -testtext     \"sth else\"    ", "sth else")]
         public async Task ShouldGiveText(string message, string expectedText)
         {
-            // Arrange:
+            // Arrange
             var runner = this._getterOfThings.GetRunner();
             var contexts = this._getterOfThings.GetContexts();
             var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._testController);
             var request = this._commandParser.Parse(message, DateTime.Now);
 
-            // Act:
+            // Act
             await runner.RunMethodsIBotCommand(request, contexts, controllerInfos);
 
-            // Assert:
+            // Assert
             Assert.That(this._testController.ValueOfTestText, Is.EqualTo(expectedText));
         }
 
@@ -211,16 +209,16 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         [TestCase("-list -testlist \"anything\" anything else\"", true)]
         public void ShouldThrowException_WhenItIsIncorrectNumberOfQuotationMarks(string message, bool shouldThrowException)
         {
-            // Arrange:
+            // Arrange
             var runner = this._getterOfThings.GetRunner();
             var contexts = this._getterOfThings.GetContexts();
             var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._testController);
             var request = this._commandParser.Parse(message, DateTime.Now);
 
-            // Act:
+            // Act
             async Task RunMethodsFunc() => await runner.RunMethodsIBotCommand(request, contexts, controllerInfos);
 
-            // Assert:
+            // Assert
             if (shouldThrowException)
             {
                 Assert.ThrowsAsync<InvalidArgumentsException>(RunMethodsFunc);
@@ -234,32 +232,32 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         [Test]
         public async Task ShouldGiveTrue_WhenBoolArgumentWasGiven()
         {
-            // Arrange:
+            // Arrange
             var runner = this._getterOfThings.GetRunner();
             var contexts = this._getterOfThings.GetContexts();
             var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._testController);
             var request = this._commandParser.Parse("-bool -testbool", DateTime.Now);
 
-            // Act:
+            // Act
             await runner.RunMethodsIBotCommand(request, contexts, controllerInfos);
 
-            // Assert:
+            // Assert
             Assert.That(this._testController.ValueOfTestBool);
         }
 
         [Test]
         public async Task ShouldGiveFalse_WhenBoolArgumentWasNotGiven()
         {
-            // Arrange:
+            // Arrange
             var runner = this._getterOfThings.GetRunner();
             var contexts = this._getterOfThings.GetContexts();
             var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._testController);
             var request = this._commandParser.Parse("-bool", DateTime.Now);
 
-            // Act:
+            // Act
             await runner.RunMethodsIBotCommand(request, contexts, controllerInfos);
 
-            // Assert:
+            // Assert
             Assert.False(this._testController.ValueOfTestBool);
         }
 
@@ -269,16 +267,16 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         [TestCase("-singleword -testsingleword 1st 2nd", "1st")]
         public async Task ShouldGiveOnlyFirstWord(string message, string expectedWord)
         {
-            // Arrange:
+            // Arrange
             var runner = this._getterOfThings.GetRunner();
             var contexts = this._getterOfThings.GetContexts();
             var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._testController);
             var request = this._commandParser.Parse(message, DateTime.Now);
 
-            // Act:
+            // Act
             await runner.RunMethodsIBotCommand(request, contexts, controllerInfos);
 
-            // Assert:
+            // Assert
             Assert.That(this._testController.ValueOfTestSingleWord, Is.EqualTo(expectedWord));
         }
 
@@ -293,16 +291,16 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         [TestCase("-list -testlist \"arg 1\" arg2 \"arg 3 3 3\"", "arg 1", "arg2", "arg 3 3 3")]
         public async Task ShouldGiveList(string message, params string[] expectedArgs)
         {
-            // Arrange:
+            // Arrange
             var runner = this._getterOfThings.GetRunner();
             var contexts = this._getterOfThings.GetContexts();
             var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._testController);
             var request = this._commandParser.Parse(message, DateTime.Now);
 
-            // Act:
+            // Act
             await runner.RunMethodsIBotCommand(request, contexts, controllerInfos);
 
-            // Assert:
+            // Assert
             Assert.That(this._testController.ValueOfTestList, Is.EqualTo(expectedArgs));
         }
 
@@ -310,16 +308,16 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         [TestCaseSource(nameof(_messagesAndExpectedTimes))]
         public async Task ShouldGiveExpectedTime(string message, TimeSpan expectedTime)
         {
-            // Arrange:
+            // Arrange
             var runner = this._getterOfThings.GetRunner();
             var contexts = this._getterOfThings.GetContexts();
             var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._testController);
             var request = this._commandParser.Parse(message, DateTime.Now);
 
-            // Act:
+            // Act
             await runner.RunMethodsIBotCommand(request, contexts, controllerInfos);
 
-            // Assert:
+            // Assert
             Assert.That(this._testController.ValueOfTestTime, Is.EqualTo(expectedTime));
         }
 
@@ -330,16 +328,16 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         [TestCase("-time -testtime ms")]
         public void ShouldThrowException_WhenGivenCommandHasIncorrectTime(string message)
         {
-            // Arrange:
+            // Arrange
             var runner = this._getterOfThings.GetRunner();
             var contexts = this._getterOfThings.GetContexts();
             var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._testController);
             var request = this._commandParser.Parse(message, DateTime.Now);
 
-            // Act:
+            // Act
             async Task RunMethodsFunc() => await runner.RunMethodsIBotCommand(request, contexts, controllerInfos);
 
-            // Assert:
+            // Assert
             Assert.ThrowsAsync<InvalidArgumentsException>(RunMethodsFunc);
         }
 
@@ -348,16 +346,16 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         [TestCase("-usermention -testusermention <@!987654321>", 987654321ul)]
         public async Task ShouldGiveUserIdFromUserMention(string message, ulong expectedID)
         {
-            // Arrange:
+            // Arrange
             var runner = this._getterOfThings.GetRunner();
             var contexts = this._getterOfThings.GetContexts();
             var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._testController);
             var request = this._commandParser.Parse(message, DateTime.Now);
 
-            // Act:
+            // Act
             await runner.RunMethodsIBotCommand(request, contexts, controllerInfos);
 
-            // Assert:
+            // Assert
             Assert.That(this._testController.ValueOfTestUserMention, Is.EqualTo(expectedID));
         }
 
@@ -369,32 +367,32 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         [TestCase("-usermention -testusermention abc")]
         public void ShouldThrowException_WhenGivenCommandHasIncorrectUserMention(string message)
         {
-            // Arrange:
+            // Arrange
             var runner = this._getterOfThings.GetRunner();
             var contexts = this._getterOfThings.GetContexts();
             var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._testController);
             var request = this._commandParser.Parse(message, DateTime.Now);
 
-            // Act:
+            // Act
             async Task RunMethodsFunc() => await runner.RunMethodsIBotCommand(request, contexts, controllerInfos);
 
-            // Assert:
+            // Assert
             Assert.ThrowsAsync<InvalidArgumentsException>(RunMethodsFunc);
         }
 
         [Test]
         public async Task ShouldGiveChannelIdFromChannelMention([Random(1000ul, 10001ul, 1)] ulong expectedID)
         {
-            // Arrange:
+            // Arrange
             var runner = this._getterOfThings.GetRunner();
             var contexts = this._getterOfThings.GetContexts();
             var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._testController);
             var request = this._commandParser.Parse($"-channelmention -testchannelmention <#{expectedID}>", DateTime.Now);
 
-            // Act:
+            // Act
             await runner.RunMethodsIBotCommand(request, contexts, controllerInfos);
 
-            // Assert:
+            // Assert
             Assert.That(this._testController.ValueOfTestChannelMention, Is.EqualTo(expectedID));
         }
 
@@ -405,16 +403,16 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         [TestCase("-channelmention -testchannelmention abc")]
         public void ShouldThrowException_WhenGivenCommandHasIncorrectChannelMention(string message)
         {
-            // Arrange:
+            // Arrange
             var runner = this._getterOfThings.GetRunner();
             var contexts = this._getterOfThings.GetContexts();
             var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._testController);
             var request = this._commandParser.Parse(message, DateTime.Now);
 
-            // Act:
+            // Act
             async Task RunMethodsFunc() => await runner.RunMethodsIBotCommand(request, contexts, controllerInfos);
 
-            // Assert:
+            // Assert
             Assert.ThrowsAsync<InvalidArgumentsException>(RunMethodsFunc);
         }
 
@@ -424,16 +422,16 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         [TestCase("-USERMENTION -TESTUSERMENTION <@555>", 555UL)]
         public async Task ShouldProcessCommandCorrectlyRegardlessOfCase(string message, ulong expectedValue)
         {
-            // Arrange:
+            // Arrange
             var runner = this._getterOfThings.GetRunner();
             var contexts = this._getterOfThings.GetContexts();
             var controllerInfos = this._getterOfThings.GetListOfControllerInfo(this._testController);
             var request = this._commandParser.Parse(message, DateTime.Now);
 
-            // Act:
+            // Act
             await runner.RunMethodsIBotCommand(request, contexts, controllerInfos);
 
-            // Assert:
+            // Assert
             Assert.That(this._testController.ValueOfTestUserMention, Is.EqualTo(expectedValue));
         }
     }

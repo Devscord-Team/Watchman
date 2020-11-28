@@ -6,7 +6,6 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Newtonsoft.Json;
 using Serilog;
 using Serilog.Context;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -14,20 +13,20 @@ using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework
 {
-    public class ControllersService
+    internal class ControllersService
     {
         private readonly IComponentContext _context;
         private readonly Assembly _assembly;
         private readonly RunnerOfIBotCommandMethods _runnerOfIBotCommandMethods;
-        private readonly ValidatorOfCommandMethod _validatorOfCommand;
+        private readonly CommandMethodValidator _commandMethodValidator;
         private ControllersContainer _controllersContainer;
 
-        public ControllersService(IComponentContext context, Assembly assembly, RunnerOfIBotCommandMethods runnerOfIBotCommandMethods, ValidatorOfCommandMethod validatorOfCommand)
+        public ControllersService(IComponentContext context, Assembly assembly, RunnerOfIBotCommandMethods runnerOfIBotCommandMethods, CommandMethodValidator commandMethodValidator)
         {
             this._context = context;
             this._assembly = assembly;
             this._runnerOfIBotCommandMethods = runnerOfIBotCommandMethods;
-            this._validatorOfCommand = validatorOfCommand;
+            this._commandMethodValidator = commandMethodValidator;
         }
 
         public async Task Run(ulong messageId, DiscordRequest request, Contexts contexts)
@@ -86,7 +85,7 @@ namespace Devscord.DiscordFramework
             {
                 using (LogContext.PushProperty("Controller", controllerInfo.Controller.GetType().Name))
                 {
-                    foreach (var method in controllerInfo.MethodsWhichAreCommands)
+                    foreach (var method in controllerInfo.Methods)
                     {
                         if (isReadAlways)
                         {
@@ -96,7 +95,7 @@ namespace Devscord.DiscordFramework
                         }
 
                         var command = method.GetAttributeInstances<DiscordCommand>();
-                        if (this.IsMatchedCommand(command, request) && this._validatorOfCommand.IsValid(contexts, method))
+                        if (this.IsMatchedCommand(command, request) && this._commandMethodValidator.IsValid(contexts, method))
                         {
                             var task = InvokeMethod(request, contexts, controllerInfo, method);
                             tasks.Add(task);

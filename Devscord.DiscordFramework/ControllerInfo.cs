@@ -10,12 +10,12 @@ namespace Devscord.DiscordFramework
     public class ControllerInfo
     {
         public IController Controller { get; private set; }
-        public IEnumerable<MethodInfo> MethodsWhichAreCommands { get; private set; }
+        public IEnumerable<MethodInfo> Methods { get; private set; }
 
         public ControllerInfo(IController controller, IEnumerable<MethodInfo> methods = null)
         {
             this.Controller = controller;
-            this.MethodsWhichAreCommands = methods ?? this.GetMethods(controller);
+            this.Methods = methods ?? this.GetMethods(controller);
         }
 
         private IEnumerable<MethodInfo> GetMethods(IController controller)
