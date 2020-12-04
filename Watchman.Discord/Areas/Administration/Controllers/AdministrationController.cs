@@ -161,7 +161,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
                 await messagesService.SendResponse(x => x.ServerDoesntHaveAnyTrustedRole());
                 return;
             }
-            var trustedRolesNames = trustedRoles.Select(x => this._usersRolesService.GetRole(x, contexts.Server.Id));
+            var trustedRolesNames = trustedRoles.Select(x => this._usersRolesService.GetRole(x, contexts.Server.Id)).Where(x => x != null);
             await messagesService.SendEmbedMessage(
                 "Zaufane role",
                 $"Lista zaufanych roli na serwerze {contexts.Server.Name}",
