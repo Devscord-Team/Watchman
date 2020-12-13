@@ -16,11 +16,11 @@ namespace Devscord.DiscordFramework
 {
     public class RunnerOfIBotCommandMethods
     {
-        private readonly BotCommandsService _botCommandsService;
-        private readonly CommandsContainer _commandsContainer;
-        private readonly CommandMethodValidator _commandMethodValidator;
+        private readonly IBotCommandsService _botCommandsService;
+        private readonly ICommandsContainer _commandsContainer;
+        private readonly ICommandMethodValidator _commandMethodValidator;
 
-        public RunnerOfIBotCommandMethods(BotCommandsService botCommandsService, CommandsContainer commandsContainer, CommandMethodValidator commandMethodValidator)
+        public RunnerOfIBotCommandMethods(IBotCommandsService botCommandsService, ICommandsContainer commandsContainer, ICommandMethodValidator commandMethodValidator)
         {
             this._botCommandsService = botCommandsService;
             this._commandsContainer = commandsContainer;
@@ -38,7 +38,7 @@ namespace Devscord.DiscordFramework
                         var commandInParameterType = method.GetParameters().First(x => typeof(IBotCommand).IsAssignableFrom(x.ParameterType)).ParameterType;
                         //TODO zoptymalizować, spokojnie można to pobierać wcześniej i używać raz, zamiast wszystko obliczać przy każdym odpaleniu
                         var template = this._botCommandsService.GetCommandTemplate(commandInParameterType);
-                        var customCommand = await this._commandsContainer.GetCommand(request, commandInParameterType, contexts.Server.Id);
+                        var customCommand = await this._commandsContainer.GetCommand(request, commandInParameterType, contexts);
                         var isCommandMatchedWithCustom = customCommand != null;
                         var isThereDefaultCommandWithGivenName = request.Name.ToLowerInvariant() == template.NormalizedCommandName;
                         if (!isCommandMatchedWithCustom && !isThereDefaultCommandWithGivenName)

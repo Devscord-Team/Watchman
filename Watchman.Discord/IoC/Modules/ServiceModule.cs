@@ -9,6 +9,7 @@ using Watchman.Discord.Areas.Commons;
 using Watchman.Discord.Integration.DevscordFramework;
 using Watchman.DomainModel.Commons.Calculators.Statistics;
 using Watchman.DomainModel.Settings.Services;
+using Devscord.DiscordFramework.Framework.Commands.Services;
 
 namespace Watchman.Discord.IoC.Modules
 {
@@ -35,6 +36,18 @@ namespace Watchman.Discord.IoC.Modules
             builder.RegisterType<ConfigurationService>()
                 .As<IConfigurationService>()
                 .InstancePerLifetimeScope();
+
+            builder.RegisterType<CommandsContainer>()
+                .As<ICommandsContainer>()
+                .SingleInstance();
+
+            builder.RegisterType<CommandMethodValidator>()
+                .As<ICommandMethodValidator>()
+                .SingleInstance();
+
+            builder.RegisterType<BotCommandsService>()
+                .As<IBotCommandsService>()
+                .SingleInstance();
 
             var list = new List<string>();
             var stack = new Stack<Assembly>();

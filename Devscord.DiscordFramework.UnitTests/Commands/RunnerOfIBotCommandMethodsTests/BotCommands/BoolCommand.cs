@@ -3,7 +3,7 @@ using Devscord.DiscordFramework.Framework.Commands.PropertyAttributes;
 
 namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethodsTests.BotCommands
 {
-    class BoolCommand : IBotCommand
+    public class BoolCommand : IBotCommand
     {
         [Bool]
         public bool TestBool { get; set; }

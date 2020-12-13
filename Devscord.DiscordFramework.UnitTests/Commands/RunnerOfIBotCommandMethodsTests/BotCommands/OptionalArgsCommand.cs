@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethodsTests.BotCommands
 {
-    class OptionalArgsCommand : IBotCommand
+    public class OptionalArgsCommand : IBotCommand
     {
         [Optional]
         [Number]

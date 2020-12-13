@@ -5,7 +5,7 @@ using Devscord.DiscordFramework.Framework.Commands.PropertyAttributes;
 
 namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethodsTests.BotCommands
 {
-    class SomeCustomCommand : IBotCommand
+    public class SomeCustomCommand : IBotCommand
     {
         [List]
         public List<string> List { get; set; }

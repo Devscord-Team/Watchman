@@ -1,5 +1,6 @@
 ﻿using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
+using Devscord.DiscordFramework.Middlewares.Contexts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework
 {
-    public class CommandsContainer
+    public class CommandsContainer : ICommandsContainer
     {
         private readonly ICustomCommandsLoader _customCommandsLoader;
         private Dictionary<ulong, List<CustomCommand>> _customCommandsGroupedByBotCommand;
@@ -18,14 +19,14 @@ namespace Devscord.DiscordFramework
             this._customCommandsLoader = customCommandsLoader;
         }
 
-        public async Task<CustomCommand> GetCommand(DiscordRequest request, Type botCommand, ulong serverId)
+        public async Task<CustomCommand> GetCommand(DiscordRequest request, Type botCommand, Contexts contexts)
         {
             await this.TryRefresh();
-            if (!this._customCommandsGroupedByBotCommand.ContainsKey(serverId))
+            if (!this._customCommandsGroupedByBotCommand.ContainsKey(contexts.Server.Id))
             {
                 return null;
             }
-            var serverCommands = this._customCommandsGroupedByBotCommand[serverId];
+            var serverCommands = this._customCommandsGroupedByBotCommand[contexts.Server.Id];
             try
             {
                 var command = serverCommands.SingleOrDefault(x => x.ExpectedBotCommandName == botCommand.FullName && x.Template.IsMatch(request.OriginalMessage));

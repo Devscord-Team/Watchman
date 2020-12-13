@@ -5,7 +5,7 @@ using Devscord.DiscordFramework.Framework.Commands.PropertyAttributes;
 
 namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethodsTests.BotCommands
 {
-    class SomeDefaultCommand : IBotCommand
+    public class SomeDefaultCommand : IBotCommand
     {
         [Time]
         public TimeSpan Time { get; set; }

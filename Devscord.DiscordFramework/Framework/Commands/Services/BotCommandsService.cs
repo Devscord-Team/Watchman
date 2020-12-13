@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework.Framework.Commands.Services
 {
-    public class BotCommandsService
+    public class BotCommandsService : IBotCommandsService
     {
         private readonly BotCommandsTemplateBuilder botCommandsTemplateBuilder;
         private readonly BotCommandsParsingService botCommandParsingService;
@@ -46,11 +46,6 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
         public BotCommandTemplate GetCommandTemplate(Type commandType)
         {
             return this.botCommandsTemplateBuilder.GetCommandTemplate(commandType);
-        }
-
-        public T ParseRequestToCommand<T>(DiscordRequest request, BotCommandTemplate template) where T : IBotCommand
-        {
-            return (T) this.ParseRequestToCommand(typeof(T), request, template);
         }
 
         public IBotCommand ParseRequestToCommand(Type commandType, DiscordRequest request, BotCommandTemplate template)

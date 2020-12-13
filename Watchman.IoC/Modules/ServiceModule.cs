@@ -2,6 +2,7 @@
 using Devscord.DiscordFramework;
 using Devscord.DiscordFramework.Framework.Commands.Parsing;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
+using Devscord.DiscordFramework.Framework.Commands.Services;
 using System.Collections.Generic;
 using System.Reflection;
 using Watchman.Cqrs;
@@ -35,6 +36,18 @@ namespace Watchman.IoC.Modules
             builder.RegisterType<ConfigurationService>()
                 .As<IConfigurationService>()
                 .InstancePerLifetimeScope();
+
+            builder.RegisterType<CommandsContainer>()
+                .As<ICommandsContainer>()
+                .SingleInstance();
+
+            builder.RegisterType<CommandMethodValidator>()
+                .As<ICommandMethodValidator>()
+                .SingleInstance();
+
+            builder.RegisterType<BotCommandsService>()
+                .As<IBotCommandsService>()
+                .SingleInstance();
 
             var list = new List<string>();
             var stack = new Stack<Assembly>();

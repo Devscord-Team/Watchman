@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethodsTests.BotCommands;
-using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
 using Devscord.DiscordFramework.Middlewares.Contexts;
+using Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethodsTests.BotCommands;
+using System;
+using System.Collections.Generic;
 
 namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethodsTests.Controllers
 {
-    class TestController : IController
+    public abstract class TestController : IController
     {
         public int ValueOfTestInt { get; private set; }
         public uint ValueOfTestUInt { get; private set; }
@@ -66,7 +66,6 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
             ValueOfTestDecimal = command.TestDecimal;
         }
 
-        [AdminCommand]
         public void TestOptionalArgs(OptionalArgsCommand command, Contexts contexts)
         {
             if (command.TestNullableInt != null)
@@ -89,7 +88,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
             {
                 this.GeneralValue = command.TestList;
             }
-            this.OptionalArgs = command;  
+            this.OptionalArgs = command;
         }
 
         public void TestText(TextCommand command, Contexts contexts)
