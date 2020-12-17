@@ -37,7 +37,7 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
 
             foreach (var statistic in newStatistics)
             {
-                if(statistic == null)
+                if (statistic == null)
                 {
                     continue;
                 }
