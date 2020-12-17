@@ -24,7 +24,7 @@ namespace Statsman
             var labels = statistics.Count() switch
             {
                 int x when x <= 1 => dates.Select(x => x.ToString("yyyy-MM-dd HH")),
-                int x when x <= 30 => dates.Select(x => x.ToString("yyyy-MM-dd")),
+                int x when x <= 31 => dates.Select(x => x.ToString("yyyy-MM-dd")),
                 int x when x > 30 => dates.Select(x => x.ToString("yyyy-MM")),
                 _ => new List<string>()
             };

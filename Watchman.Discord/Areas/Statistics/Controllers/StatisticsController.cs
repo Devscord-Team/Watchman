@@ -63,8 +63,8 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
             var (chart, message) = await this.GetStatistics(command, contexts);
             if (command.Direct)
             {
-                await Task.Run(() => _directMessagesService.TrySendFile(contexts.User.Id, "Statistics.png", chart))
-                    .ContinueWith(x => _directMessagesService.TrySendEmbedMessage(contexts.User.Id, message.Title, string.Empty, message.GetArguments()));
+                await Task.Run(() => this._directMessagesService.TrySendFile(contexts.User.Id, "Statistics.png", chart))
+                    .ContinueWith(x => this._directMessagesService.TrySendEmbedMessage(contexts.User.Id, message.Title, string.Empty, message.GetArguments()));
             }
             else
             {
