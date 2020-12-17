@@ -37,6 +37,10 @@ namespace Watchman.DomainModel.Messages.Commands.Handlers
 
             foreach (var statistic in newStatistics)
             {
+                if (statistic == null)
+                {
+                    continue;
+                }
                 var similarStatistic = statisticsInRepository
                 .FirstOrDefault(x =>
                     x.ServerId == statistic.ServerId && x.UserId == statistic.UserId && x.ChannelId == statistic.ChannelId
