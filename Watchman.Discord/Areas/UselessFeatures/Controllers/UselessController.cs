@@ -41,7 +41,7 @@ namespace Watchman.Discord.Areas.UselessFeatures.Controllers
             return messagesService.SendMessage(urlAddress);
         }
 
-        public Task NoHello(DontaskCommand _, Contexts contexts)
+        public Task NoHello(NoHelloCommand _, Contexts contexts)
         {
             const string urlAddress = "https://www.nohello.com/";
             var messagesService = this._messagesServiceFactory.Create(contexts);
