@@ -92,7 +92,7 @@ namespace Statsman.Core.TimeSplitting.Services
             {
                 return latestMessages;
             }
-            var latestTimeRange = perDay.OrderBy(x => x.TimeRange).First();
+            var latestTimeRange = perDay.OrderBy(x => x.TimeRange.Start).First();
             return latestMessages.Where(x =>
             {
                 if (x.SentAt.Date > latestTimeRange.TimeRange.End) //in newer day

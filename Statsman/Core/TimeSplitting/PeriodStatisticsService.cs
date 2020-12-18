@@ -27,7 +27,7 @@ namespace Statsman.Core.TimeSplitting
 
         public Task<(Stream Chart, ResultMessage Message)> PerHour(StatisticsRequest request)
         {
-            return this.GetResult(request, DetailedPeriod.Minute, DateTime.Now);
+            return this.GetResult(request, DetailedPeriod.Hour, DateTime.Now);
         }
 
         public Task<(Stream Chart, ResultMessage Message)> PerDay(StatisticsRequest request)
@@ -60,8 +60,12 @@ namespace Statsman.Core.TimeSplitting
 
         private async Task<(Stream Chart, ResultMessage Message)> GetResult(StatisticsRequest request, DetailedPeriod period, DateTime startTimeRangeTimeOfDay)
         {
-            var timeRange = TimeRange.ToNow(startTimeRangeTimeOfDay.Add(request.TimeBehind));
-            var statistics = await this._statisticsGroupingService.GetStatisticsGroupedPerDetailedPeriod(request, timeRange, period);
+            var timeRange = TimeRange.ToNow(startTimeRangeTimeOfDay.Add(-request.TimeBehind));
+            var statistics = period switch 
+            {
+                <= DetailedPeriod.Hour => await this._statisticsGroupingService.GetStatisticsGroupedPerDetailedPeriod(request, timeRange, period),
+                _ => await this._statisticsGroupingService.GetStatisticsGroupedPerDaysPeriod(request, timeRange, period)
+            };
             return (Chart: await this._chartsService.GetImageStatisticsPerPeriod(statistics, $"Messages per {Enum.GetName(typeof(DetailedPeriod), period).ToLower()}"),
                 Message: this.GetMessage(request.UserId, request.ChannelId, period, timeRange));
         }
