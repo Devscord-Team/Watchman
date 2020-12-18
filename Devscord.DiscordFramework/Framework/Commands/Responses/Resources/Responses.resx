@@ -312,4 +312,7 @@
   <data name="Roles" xml:space="preserve">
     <value>Role</value>
   </data>
+  <data name="InviteMe" xml:space="preserve">
+    <value>Cześć! Kliknij w ten link aby zaprosić mnie nie swój serwer :)\n{{inviteBotUrl}}</value>
+  </data>
 </root>

@@ -377,5 +377,11 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("Roles");
         }
+
+        public static string InviteMe(this ResponsesService responsesService, Contexts contexts, string inviteBotUrl)
+        {
+            return responsesService.ProcessResponse("InviteMe", contexts,
+                new KeyValuePair<string, string>("inviteBotUrl", inviteBotUrl));
+        }
     }
 }

@@ -223,6 +223,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cześć! Kliknij w ten link aby zaprosić mnie nie swój serwer :)\n{{inviteBotUrl}}.
+        /// </summary>
+        public static string InviteMe {
+            get {
+                return ResourceManager.GetString("InviteMe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Podana komenda została dopasowana do więcej niż tylko jednego regexu (custom command), więc nie można jej wykonać. Należy zmienić regexy do tej komendy tak, aby nigdy nie było sytuacji, że do podanej komendy pasuje kilka regexów jednocześnie..
         /// </summary>
         public static string MoreThanOneRegexHasBeenMatched {
