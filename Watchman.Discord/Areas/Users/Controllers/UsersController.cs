@@ -42,9 +42,9 @@ namespace Watchman.Discord.Areas.Users.Controllers
             }
             if (string.IsNullOrEmpty(user.AvatarUrl))
             {
-                return messageService.SendResponse(x => x.UserDoesntHaveAvatar(contexts.User));
+                return messageService.SendResponse(x => x.UserDoesntHaveAvatar(user));
             }
-            return messageService.SendMessage(contexts.User.AvatarUrl);
+            return messageService.SendMessage(user.AvatarUrl);
         }
 
         public Task AddRole(AddRoleCommand addRoleCommand, Contexts contexts)
