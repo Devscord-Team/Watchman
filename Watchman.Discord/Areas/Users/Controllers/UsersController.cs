@@ -32,19 +32,19 @@ namespace Watchman.Discord.Areas.Users.Controllers
             this._responsesService = responsesService;
         }
 
-        public Task GetAvatar(AvatarCommand avatarCommand, Contexts contexts)
+        public async Task GetAvatar(AvatarCommand avatarCommand, Contexts contexts)
         {
             var messageService = this._messagesServiceFactory.Create(contexts);
             var user = contexts.User;
             if (avatarCommand.User != 0)
             {
-                user = this._usersService.GetUserByIdAsync(contexts.Server, avatarCommand.User).GetAwaiter().GetResult();
+                user = await this._usersService.GetUserByIdAsync(contexts.Server, avatarCommand.User);
             }
             if (string.IsNullOrEmpty(user.AvatarUrl))
             {
-                return messageService.SendResponse(x => x.UserDoesntHaveAvatar(contexts.User));
+                await messageService.SendResponse(x => x.UserDoesntHaveAvatar(user));
             }
-            return messageService.SendMessage(contexts.User.AvatarUrl);
+            await messageService.SendMessage(user.AvatarUrl);
         }
 
         public Task AddRole(AddRoleCommand addRoleCommand, Contexts contexts)
