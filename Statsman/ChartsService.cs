@@ -23,10 +23,9 @@ namespace Statsman
             var dates = statistics.Select(x => x.Time.Start);
             var labels = statistics.Count() switch
             {
-                int x when x <= 1 => dates.Select(x => x.ToString("yyyy-MM-dd HH")),
-                int x when x <= 31 => dates.Select(x => x.ToString("yyyy-MM-dd")),
-                int x when x > 30 => dates.Select(x => x.ToString("yyyy-MM")),
-                _ => new List<string>()
+                <= 2 => dates.Select(x => x.ToString("yyyy-MM-dd HH")),
+                <= 31 => dates.Select(x => x.ToString("yyyy-MM-dd")),
+                _ => dates.Select(x => x.ToString("yyyy-MM"))
             };
             var chart = new Chart
             {
