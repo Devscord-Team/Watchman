@@ -15,7 +15,7 @@ namespace Watchman.DomainModel.Wallet
         public ulong UserId { get; private set; }
         [BsonIgnore]
         public IEnumerable<ValueObjects.Transaction> Transactions { get; private set; }
-        public int Value { get; private set; } //calculate after transaction and user command
+        public uint Value { get; private set; } //calculate after transaction and user command
 
         public Wallet(ulong userId)
         {
@@ -39,7 +39,7 @@ namespace Watchman.DomainModel.Wallet
 
         public void CalculateValue()
         {
-            if(this.Transactions == null)
+            if(this.Transactions == null || !this.Transactions.Any())
             {
                 throw new ArgumentException("Fill transactions before calculate wallet value");
             }
@@ -55,7 +55,15 @@ namespace Watchman.DomainModel.Wallet
                     value += transaction.Value;
                 }
             }
-
+            if(value < 0)
+            {
+                throw new Exception("Wallet value cannot be negative");
+            }
+            if(this.Value == value)
+            {
+                return;
+            }
+            this.Value = Convert.ToUInt32(value);
             this.Update();
         }
     }

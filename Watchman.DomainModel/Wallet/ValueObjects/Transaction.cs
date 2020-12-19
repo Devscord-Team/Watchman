@@ -27,6 +27,10 @@ namespace Watchman.DomainModel.Wallet.ValueObjects
             this.Value = value;
             this.Title = title;
             this.Description = description;
+            if(!this.Validate())
+            {
+                throw new ArgumentException("System is trying to create transaction with invalid values");
+            }
         }
 
         public uint GetValue() //Get value always by this method, never by value property
