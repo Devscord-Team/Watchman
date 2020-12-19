@@ -5,12 +5,13 @@ nav:
   - "Instrukcja dla nowych osób w zespole Watchmana": 150-instrukcja-dla-nowych-osob-w-zespole-watchmana.md
   - "Jak zacząć rozwijać bota": 151-jak-zaczac-rozwijac-bota.md
   - "Dokumentacja techniczna":
+      - "Co testować i jak testować": co-testowac-i-jak-testowac.md
       - "Serwisy w frameworku": 135-serwisy-w-frameworku.md
       - "Jak rozwijać dokumentacje": 14-jak-rozwijac-dokumentacje.md
       - "Jak działa Workflow": 134-workflow.md
       - "Do czego używamy klasy Server": 141-do-czego-uzywamy-klasy-server.md
       - "Jak generowany jest help": 139-jak-dziala-generowanie-helpa.md
-      - "Czym są CustomCommands": "19-czym-sa-customcommands.md"
+      - "Czym są CustomCommands": 19-czym-sa-customcommands.md
       - "Jak działa Anty Spam": 16-jak-dziala-antyspam.md
       - "Jak działa konfiguracja": 11-jak-dziala-konfiguracja.md
       - 'Co się dzieje podczas inicjalizacji': 194-inicjalizacja.md
