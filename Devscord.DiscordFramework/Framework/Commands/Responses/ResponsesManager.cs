@@ -377,5 +377,10 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("Roles");
         }
+
+        public static string CustomCommandsHeader(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("CustomCommandsHeader");
+        }
     }
 }

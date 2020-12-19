@@ -1,4 +1,5 @@
 ﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
 using System;
@@ -15,21 +16,23 @@ namespace Watchman.Discord.Areas.CustomCommands.Controllers
 {
     public class CustomCommandsController : IController
     {
-        private readonly IQueryBus queryBus;
-        private readonly MessagesServiceFactory messagesServiceFactory;
+        private readonly IQueryBus _queryBus;
+        private readonly MessagesServiceFactory _messagesServiceFactory;
+        private readonly ResponsesService _responsesService;
 
-        public CustomCommandsController(IQueryBus queryBus, MessagesServiceFactory messagesServiceFactory)
+        public CustomCommandsController(IQueryBus queryBus, MessagesServiceFactory messagesServiceFactory, ResponsesService responsesService)
         {
-            this.queryBus = queryBus;
-            this.messagesServiceFactory = messagesServiceFactory;
+            this._queryBus = queryBus;
+            this._messagesServiceFactory = messagesServiceFactory;
+            this._responsesService = responsesService;
         }
 
         public async Task PrintCustomCommands(CustomCommandsCommand command, Contexts contexts)
         {
-            var getCustomCommandsQuery = new GetCustomCommandsQuery(contexts.Server.Id);
-            var customCommands = await this.queryBus.ExecuteAsync(getCustomCommandsQuery);
-            var messagesServices = this.messagesServiceFactory.Create(contexts);
-            await messagesServices.SendEmbedMessage("Custom commands", string.Empty, customCommands.CustomCommands.Select(x => new KeyValuePair<string, string>(x.CommandFullName, x.CustomTemplateRegex)));
+            var getCustomCommandsQuery = new GetCustomCommandsQuery(contexts.Server.Id); 
+            var customCommands = await this._queryBus.ExecuteAsync(getCustomCommandsQuery);
+            var messagesServices = this._messagesServiceFactory.Create(contexts);
+            await messagesServices.SendEmbedMessage(this._responsesService.CustomCommandsHeader(), string.Empty, customCommands.CustomCommands.Select(x => new KeyValuePair<string, string>(x.CommandFullName, x.CustomTemplateRegex)));
         }
     }
 }
