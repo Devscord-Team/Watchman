@@ -43,7 +43,7 @@ namespace Watchman.DomainModel.Wallet
             {
                 throw new ArgumentException("Fill transactions before calculate wallet value");
             }
-            var value = 0;
+            long value = 0;
             foreach (var transaction in this.Transactions)
             {
                 if(transaction.FromUserId == this.UserId)
@@ -52,7 +52,7 @@ namespace Watchman.DomainModel.Wallet
                 }
                 else 
                 {
-
+                    value += transaction.Value;
                 }
             }
 

@@ -15,11 +15,11 @@ namespace Watchman.DomainModel.Wallet.ValueObjects
         public ulong OnServerId { get; private set; }
         public ulong FromUserId { get; private set; }
         public ulong ToUserId { get; private set; }
-        public int Value { get; private set; }
+        public uint Value { get; private set; }
         public string Title { get; private set; }
         public string Description { get; private set; }
 
-        public Transaction(ulong onServerId, ulong fromUserId, ulong toUserId, int value, string title, string description)
+        public Transaction(ulong onServerId, ulong fromUserId, ulong toUserId, uint value, string title, string description)
         {
             this.OnServerId = onServerId;
             this.FromUserId = fromUserId;
@@ -29,7 +29,7 @@ namespace Watchman.DomainModel.Wallet.ValueObjects
             this.Description = description;
         }
 
-        public int GetValue() //Get value always by this method, never by value property
+        public uint GetValue() //Get value always by this method, never by value property
         {
             if (!this.isValid)
             {
@@ -55,7 +55,12 @@ namespace Watchman.DomainModel.Wallet.ValueObjects
                 this.isValid = false;
                 return this.isValid;
             }
-            if(string.IsNullOrWhiteSpace(this.Title))
+            if (this.Value < 0)
+            {
+                this.isValid = false;
+                return this.isValid;
+            }
+            if (string.IsNullOrWhiteSpace(this.Title))
             {
                 this.isValid = false;
                 return this.isValid;
