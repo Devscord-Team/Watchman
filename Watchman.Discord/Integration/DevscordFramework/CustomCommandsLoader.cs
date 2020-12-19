@@ -61,7 +61,7 @@ namespace Watchman.Discord.Integration.DevscordFramework
             {
                 if (commandsInBase.Any(x => x.ServerId == command.ServerId 
                                             && x.CommandFullName == command.CommandFullName 
-                                            && x.CustomTemplateRegex == command.CustomTemplateRegex))
+                                            && x.CustomTemplateRegex == "^" + command.CustomTemplateRegex))
                 {
                     continue;
                 }
