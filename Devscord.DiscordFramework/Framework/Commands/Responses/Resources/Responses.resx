@@ -312,4 +312,7 @@
   <data name="Roles" xml:space="preserve">
     <value>Role</value>
   </data>
+  <data name="CustomCommandsHeader" xml:space="preserve">
+    <value>Niestandardowe komendy</value>
+  </data>
 </root>

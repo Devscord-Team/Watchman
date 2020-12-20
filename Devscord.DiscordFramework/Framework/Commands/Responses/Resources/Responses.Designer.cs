@@ -142,6 +142,15 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Custom Commands.
+        /// </summary>
+        public static string CustomCommandsHeader {
+            get {
+                return ResourceManager.GetString("CustomCommandsHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Przykład.
         /// </summary>
         public static string Example {

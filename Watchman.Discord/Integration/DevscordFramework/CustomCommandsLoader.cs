@@ -35,7 +35,7 @@ namespace Watchman.Discord.Integration.DevscordFramework
         public async Task InitDefaultCustomCommands()
         {
             var customCommands = new List<AddCustomCommandsCommand>();
-            foreach (var serverId in new ulong[] { 636238466899902504, 597066406521208852 })
+            foreach (var serverId in new ulong[] { 636238466899902504, 597066406521208852, 402855295090688000 })
             {
                 customCommands.AddRange(new List<AddCustomCommandsCommand>
                 {
@@ -61,7 +61,7 @@ namespace Watchman.Discord.Integration.DevscordFramework
             {
                 if (commandsInBase.Any(x => x.ServerId == command.ServerId 
                                             && x.CommandFullName == command.CommandFullName 
-                                            && x.CustomTemplateRegex == command.CustomTemplateRegex))
+                                            && x.CustomTemplateRegex == "^" + command.CustomTemplateRegex))
                 {
                     continue;
                 }
