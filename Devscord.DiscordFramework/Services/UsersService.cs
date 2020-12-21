@@ -38,10 +38,10 @@ namespace Devscord.DiscordFramework.Services
             await socketUser.RemoveRoleAsync(socketRole);
         }
 
-        public async IAsyncEnumerable<UserContext> GetUsersAsync(DiscordServerContext server)
+        public IEnumerable<UserContext> GetUsers(DiscordServerContext server)
         {
             var guildUsers = Server.GetGuildUsers(server.Id);
-            await foreach (var user in guildUsers)
+            foreach (var user in guildUsers)
             {
                 yield return this._userContextsFactory.Create(user);
             }
@@ -50,7 +50,7 @@ namespace Devscord.DiscordFramework.Services
         public async Task<UserContext> GetUserByMentionAsync(DiscordServerContext server, string mention)
         {
             var match = this._exMention.Match(mention);
-            if(!match.Success)
+            if (!match.Success)
             {
                 Log.Warning("Mention {mention} has not user ID", mention);
                 return null;
@@ -68,7 +68,7 @@ namespace Devscord.DiscordFramework.Services
         public async Task<UserContext> GetUserByIdAsync(DiscordServerContext server, ulong userId)
         {
             var user = await Server.GetGuildUser(userId, server.Id);
-            if(user == null)
+            if (user == null)
             {
                 Log.Warning("Cannot get user by id {userId}", userId);
                 return null;

@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Watchman.Integrations.MongoDB;
+using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.DiscordServer.Commands.Handlers
 {
@@ -10,18 +10,13 @@ namespace Watchman.DomainModel.DiscordServer.Commands.Handlers
         {
         }
 
-        public override async Task HandleAsync(SetRoleAsUnsafeCommand command)
+        public override Task HandleAsync(SetRoleAsUnsafeCommand command)
         {
-            using var session = this._sessionFactory.Create();
-            var role = session.Get<Role>()
-                .Where(x => x.ServerId == command.ServerId)
-                .FirstOrDefault(x => x.Name == command.RoleName);
+            using var session = this._sessionFactory.CreateMongo();
+            var role = session.Get<SafeRole>()
+                .FirstOrDefault(x => x.ServerId == command.ServerId && x.RoleId == command.RoleId);
 
-            if (role == null)
-            {
-                return;
-            }
-            await session.DeleteAsync(role);
+            return role == null ? Task.CompletedTask : session.DeleteAsync(role);
         }
     }
 }

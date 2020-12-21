@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
-using Watchman.Integrations.MongoDB;
+using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.CustomCommands.Commands.Handlers
 {
@@ -16,7 +16,7 @@ namespace Watchman.DomainModel.CustomCommands.Commands.Handlers
 
         public async Task HandleAsync(DeleteCustomCommandsCommand command)
         {
-            using var session = this.sessionFactory.Create();
+            using var session = this.sessionFactory.CreateMongo();
             var customCommand = session.Get<CustomCommand>().FirstOrDefault(x => x.ServerId == command.ServerId && x.CommandFullName == command.CommandFullName);
             if (customCommand != null)
             {

@@ -12,10 +12,10 @@ namespace Watchman.Web.Areas.Statistics.Models.Dtos
         {
         }
 
-        public PeriodStatisticDto(PeriodStatistic periodStatistic)
-        {
-            this.TimeRange = new TimeRangeDto(periodStatistic.TimeRange);
-            this.Count = periodStatistic.Count;
-        }
+        //public PeriodStatisticDto(PeriodStatistic periodStatistic)
+        //{
+        //    this.TimeRange = new TimeRangeDto(periodStatistic.TimeRange);
+        //    this.Count = periodStatistic.Count;
+        //}
     }
 }

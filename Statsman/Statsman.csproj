@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Watchman.Cqrs\Watchman.Cqrs.csproj" />
+    <ProjectReference Include="..\Watchman.DomainModel\Watchman.DomainModel.csproj" />
+    <ProjectReference Include="..\Watchman.Integrations\Watchman.Integrations.csproj" />
+  </ItemGroup>
+
+</Project>

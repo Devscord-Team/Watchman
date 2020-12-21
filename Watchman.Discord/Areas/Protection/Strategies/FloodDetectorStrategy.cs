@@ -3,8 +3,8 @@ using System.Linq;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
-using Watchman.DomainModel.Settings.ConfigurationItems;
-using Watchman.DomainModel.Settings.Services;
+using Watchman.DomainModel.Configuration.ConfigurationItems;
+using Watchman.DomainModel.Configuration.Services;
 
 namespace Watchman.Discord.Areas.Protection.Strategies
 {
@@ -33,7 +33,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
                 return SpamProbability.None;
             }
             var userIsSafe = this._userSafetyChecker.IsUserSafe(contexts.User.Id, contexts.Server.Id);
-            return userIsSafe switch //todo: rewrite this switch when we'll switch to c# 9
+            return userIsSafe switch
             {
                 true when messagesCount < howManyMessagesCount => SpamProbability.None,
                 false when messagesCount <= howManyMessagesCount / 2 => SpamProbability.Low,

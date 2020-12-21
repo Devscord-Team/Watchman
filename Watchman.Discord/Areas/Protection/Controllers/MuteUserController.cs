@@ -1,20 +1,20 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Devscord.DiscordFramework.Commons.Exceptions;
+using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Common.Models;
 using Watchman.Discord.Areas.Protection.BotCommands;
-using Devscord.DiscordFramework.Commons.Extensions;
-using Devscord.DiscordFramework.Framework.Commands.Responses;
-using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Discord.Areas.Protection.Commands;
 using Watchman.Discord.Areas.Protection.Models;
 using Watchman.Discord.Areas.Protection.Services;
-using Watchman.DomainModel.Users;
+using Watchman.DomainModel.Protection.Mutes;
 
 namespace Watchman.Discord.Areas.Protection.Controllers
 {
@@ -41,7 +41,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         public async Task MuteUser(MuteCommand command, Contexts contexts)
         {
             var userToMute = await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
-            if (userToMute == null)
+            if (userToMute == null || userToMute.Id == this._usersService.GetBot().Id)
             {
                 throw new UserNotFoundException(command.User.GetUserMention());
             }
@@ -65,36 +65,32 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         [AdminCommand]
         public async Task MutedUsers(MutedUsersCommand mutedUsersCommand, Contexts contexts)
         {
-            var notUnmutedMuteEvents = _mutingHelper.GetNotUnmutedMuteEvents(contexts.Server.Id);
-            var mutedUsers = this._usersService.GetUsersAsync(contexts.Server);
-            var mutedUsersMessageData = await this.GetMuteEmbedMessage(notUnmutedMuteEvents.ToList(), mutedUsers);
+            var notUnmutedMuteEvents = this._mutingHelper.GetNotUnmutedMuteEvents(contexts.Server.Id);
+            var messagesService = this._messagesServiceFactory.Create(contexts);
+            var mutedUsersMessageData = this.GetMuteEmbedMessage(notUnmutedMuteEvents.ToList());
             if (!mutedUsersMessageData.Values.Any())
             {
-                await this._directMessagesService.TrySendMessage(contexts.User.Id, "Brak wyciszonych użytkowników!");
+                await messagesService.SendResponse(x => x.ThereAreNoMutedUsers());
                 return;
             }
             await this._directMessagesService.TrySendEmbedMessage(contexts.User.Id, mutedUsersMessageData.Title, mutedUsersMessageData.Description, mutedUsersMessageData.Values);
-            var messagesService = this._messagesServiceFactory.Create(contexts);
             await messagesService.SendResponse(x => x.MutedUsersListSent());
         }
 
-        private async Task<MutedUsersMessageData> GetMuteEmbedMessage(IEnumerable<MuteEvent> notUnmutedMuteEvents, IAsyncEnumerable<UserContext> users)
+        private MutedUsersMessageData GetMuteEmbedMessage(IReadOnlyList<MuteEvent> notUnmutedMuteEvents)
         {
             var title = "Lista wyciszonych użytkowników";
             var description = "Wyciszeni użytkownicy, powody oraz data wygaśnięcia";
             var values = new Dictionary<string, Dictionary<string, string>>();
-            await foreach (var user in users)
+            for (var i = 0; i < notUnmutedMuteEvents.Count; i++)
             {
-                var muteEvent = notUnmutedMuteEvents.FirstOrDefault(x => x.UserId == user.Id);
-                if (muteEvent == null)
-                {
-                    continue;
-                }
-                values.Add($"Użytkownik: {user.Name}",
+                var muteEvent = notUnmutedMuteEvents[i];
+                values.Add($"{i + 1}.",
                     new Dictionary<string, string>
                     {
-                        {"Powód:", muteEvent.Reason},
-                        {"Data zakończenia:", muteEvent.TimeRange.End.ToLocalTimeString() }
+                        { "Użytkownik:", muteEvent.UserId.GetUserMention() },
+                        { "Powód:", muteEvent.Reason },
+                        { "Data zakończenia:", muteEvent.TimeRange.End.ToLocalTimeString() }
                     });
             }
             return new MutedUsersMessageData(title, description, values);

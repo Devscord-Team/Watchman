@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using Watchman.Integrations.MongoDB;
+﻿using System.Collections.Generic;
+using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.Help
 {
@@ -8,17 +7,71 @@ namespace Watchman.DomainModel.Help
     {
         public const ulong EMPTY_SERVER_ID = 0;
 
-        public Guid HelpId { get; set; }
-        public IEnumerable<string> Names { get; set; }
-        public string MethodFullName { get; set; }
-        public IEnumerable<ArgumentInfo> ArgumentInfos { get; set; }
-        public IEnumerable<Description> Descriptions { get; set; }
-        public ulong ServerId { get; set; }
+        public string CommandName { get; private set; }
+        public string AreaName { get; private set; }
+        public IEnumerable<ArgumentInformation> ArgumentInformations { get; private set; }
+        public IEnumerable<Description> Descriptions { get; private set; }
+        public ulong ServerId { get; private set; }
+        public string DefaultLanguage { get; private set; } = "EN";
+        public string ExampleUsage { get; private set; }
         public bool IsDefault => this.ServerId == EMPTY_SERVER_ID;
 
-        public HelpInformation()
+        public HelpInformation(string commandName, string areaName, IEnumerable<ArgumentInformation> argumentInformations, IEnumerable<Description> descriptions, ulong serverId)
         {
-            this.HelpId = Guid.NewGuid();
+            this.CommandName = commandName;
+            this.AreaName = areaName;
+            this.ArgumentInformations = argumentInformations;
+            this.Descriptions = descriptions;
+            this.ServerId = serverId;
+        }
+
+        public HelpInformation SetCommandName(string commandName)
+        {
+            this.CommandName = commandName;
+            this.Update();
+            return this;
+        }
+
+        public HelpInformation SetAreaName(string areaName)
+        {
+            this.AreaName = areaName;
+            this.Update();
+            return this;
+        }
+
+        public HelpInformation SetArgumentInformations(IEnumerable<ArgumentInformation> argumentInformations)
+        {
+            this.ArgumentInformations = argumentInformations;
+            this.Update();
+            return this;
+        }
+
+        public HelpInformation SetDescriptions(IEnumerable<Description> descriptions)
+        {
+            this.Descriptions = descriptions;
+            this.Update();
+            return this;
+        }
+
+        public HelpInformation SetServerId(ulong serverId)
+        {
+            this.ServerId = serverId;
+            this.Update();
+            return this;
+        }
+
+        public HelpInformation SetDefaultLanguage(string defaultLanguage)
+        {
+            this.DefaultLanguage = defaultLanguage;
+            this.Update();
+            return this;
+        }
+
+        public HelpInformation SetExampleUsage(string exampleUsage)
+        {
+            this.ExampleUsage = exampleUsage;
+            this.Update();
+            return this;
         }
     }
 }

@@ -25,35 +25,37 @@ namespace Watchman.Discord.Areas.Help.Services
             this._helpInformationFactory = helpInformationFactory;
         }
 
-        public async Task FillDatabase(IEnumerable<CommandInfo> commandInfosFromAssembly)
+        public Task FillDatabase(IEnumerable<BotCommandInformation> commandInfosFromAssembly)
         {
-            var commandInfosFromAssemblyList = commandInfosFromAssembly.ToList(); // for not multiple enumerating
-
+            var commandInfosFromAssemblyList = commandInfosFromAssembly.ToList();
             var query = new GetHelpInformationQuery(HelpInformation.EMPTY_SERVER_ID);
             var helpInfos = this._queryBus.Execute(query).HelpInformations.ToList();
 
-            var newCommands = this.FindNewCommands(commandInfosFromAssemblyList, helpInfos).ToList();
-            await Task.Run(() => this.CheckIfExistsUselessHelp(commandInfosFromAssemblyList, helpInfos));
+            this.CheckIfExistsUselessHelp(commandInfosFromAssemblyList, helpInfos);
 
+            var newCommands = this.FindNewCommands(commandInfosFromAssemblyList, helpInfos).ToList();
+            if (!newCommands.Any())
+            {
+                return Task.CompletedTask;
+            }
             var newHelpInfos = newCommands.Select(x => this._helpInformationFactory.Create(x));
             var command = new AddHelpInformationCommand(newHelpInfos);
-            await this._commandBus.ExecuteAsync(command);
+            return this._commandBus.ExecuteAsync(command);
         }
 
-        private IEnumerable<CommandInfo> FindNewCommands(IEnumerable<CommandInfo> commandInfosFromAssembly, IEnumerable<HelpInformation> helpInfos)
+        private void CheckIfExistsUselessHelp(IEnumerable<BotCommandInformation> commandInfosFromAssembly, IEnumerable<HelpInformation> helpInfos)
         {
-            var defaultHelpInfosInDb = helpInfos.Where(x => x.IsDefault).ToList(); // for optimize checking only defaults
-            return commandInfosFromAssembly.Where(x => defaultHelpInfosInDb.All(h => h.MethodFullName != x.MethodFullName));
-        }
-
-        private Task CheckIfExistsUselessHelp(IEnumerable<CommandInfo> commandInfosFromAssembly, IEnumerable<HelpInformation> helpInfos)
-        {
-            var oldUselessHelps = helpInfos.Where(h => commandInfosFromAssembly.All(c => c.MethodFullName != h.MethodFullName));
+            var oldUselessHelps = helpInfos.Where(h => commandInfosFromAssembly.All(c => c.Name != h.CommandName));
             foreach (var oldHelp in oldUselessHelps)
             {
                 Log.Warning("Useless help info for method {oldHelp}", oldHelp.ToJson());
             }
-            return Task.CompletedTask;
+        }
+
+        private IEnumerable<BotCommandInformation> FindNewCommands(IEnumerable<BotCommandInformation> commandInfosFromAssembly, IEnumerable<HelpInformation> helpInfos)
+        {
+            var defaultHelpInfosInDb = helpInfos.Where(x => x.IsDefault); // for optimize checking only defaults
+            return commandInfosFromAssembly.Where(x => defaultHelpInfosInDb.All(h => h.CommandName != x.Name));
         }
     }
 }

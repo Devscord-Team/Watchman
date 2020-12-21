@@ -37,8 +37,8 @@ namespace Devscord.DiscordFramework.Services
             return new EmbedBuilder()
                 .WithThumbnailUrl(@"https://raw.githubusercontent.com/Devscord-Team/Watchman/master/avatar.png")
                 .WithFooter(new EmbedFooterBuilder()
-                .WithText(FOOTER_TEXT)
-                .WithIconUrl(@"https://raw.githubusercontent.com/Devscord-Team/Watchman/master/avatar.png"));
+                    .WithText(FOOTER_TEXT)
+                    .WithIconUrl(@"https://raw.githubusercontent.com/Devscord-Team/Watchman/master/avatar.png"));
         }
     }
 }

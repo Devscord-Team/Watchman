@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
-using Watchman.Integrations.MongoDB;
+using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.DiscordServer.Commands.Handlers
 {
@@ -16,7 +16,7 @@ namespace Watchman.DomainModel.DiscordServer.Commands.Handlers
 
         public async Task HandleAsync(SetRoleAsTrustedCommand command)
         {
-            using var session = this._sessionFactory.Create();
+            using var session = this._sessionFactory.CreateMongo();
             var trustedRoles = session.Get<TrustedRole>().Where(x => x.ServerId == command.ServerId);
             if (trustedRoles.Any(x => x.RoleId == command.RoleId))
             {

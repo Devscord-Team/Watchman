@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Devscord.DiscordFramework.Framework.Commands.PropertyAttributes;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
 using Serilog;
-using Watchman.DomainModel.Users;
+using Watchman.DomainModel.Protection.Mutes;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {
@@ -38,7 +37,7 @@ namespace Watchman.Discord.Areas.Protection.Services
             await foreach (var server in this._discordServersService.GetDiscordServersAsync())
             {
                 var serverMuteEvents = this._mutingHelper.GetNotUnmutedMuteEvents(server.Id).ToList();
-                if (serverMuteEvents.Count == 0)
+                if (!serverMuteEvents.Any())
                 {
                     continue;
                 }

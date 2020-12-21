@@ -4,7 +4,7 @@ using Devscord.DiscordFramework.Framework.Commands.AntiSpam;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Serilog;
-using Watchman.DomainModel.Settings.Services;
+using Watchman.DomainModel.Configuration.Services;
 
 namespace Watchman.Discord.Areas.Protection.Strategies
 {
@@ -45,7 +45,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
                 .Where(x => x != SpamProbability.None)
                 .ToList();
 
-            if (probabilities.Count == 0)
+            if (!probabilities.Any())
             {
                 return SpamProbability.None;
             }

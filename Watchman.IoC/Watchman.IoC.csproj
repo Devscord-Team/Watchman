@@ -1,15 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="5.2.0" />
+    <PackageReference Include="Autofac" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Devscord.DiscordFramework\Devscord.DiscordFramework.csproj" />
+    <ProjectReference Include="..\Statsman\Statsman.csproj" />
     <ProjectReference Include="..\Watchman.Common\Watchman.Common.csproj" />
     <ProjectReference Include="..\Watchman.Cqrs\Watchman.Cqrs.csproj" />
     <ProjectReference Include="..\Watchman.Discord\Watchman.Discord.csproj" />

@@ -1,45 +1,60 @@
 # Jak działa generowanie Helpa  
   
-Opisane niżej klasy możesz znaleźć w projekcie `Watchman.Discord`, w ścieżce `Areas/Help/`  
-Namespace: `Watchman.Discord.Areas.Help.Services`, `Watchman.Discord.Areas.Help.Factories` i `Devscord.DiscordFramework.Services`  
+Wraz z uruchomieniem bota zostaje uruchomiony serwis, który zbiera dane o wszystkich komendach (klasy typu IBotCommand).  
+Następnie informacje te są mapowane na `BotCommandInformation` (z uzupełnieniem kilku informacji na temat przyjmowanych argumentów przez daną komendę).  
+Na koniec z obiektów `BotCommandInformation` tworzone są obiekty `HelpInformation`, które wpisywane są za pomocą domeny do bazy.  
   
-### Podsumowanie:  
+W momencie wpisania przez użytkownika komendy `-help`, obiekty `HelpInformation` są pobierane z bazy (za pomocą domeny), a następnie na ich podstawie tworzona jest sformatowana wiadomość (jako Embed), która zostaje wysłana na kanał, z którego użytkownik wywołał komendę.  
   
-Wraz z uruchomieniem bota zostaje uruchomiony serwis z Frameworka, który zbiera dane o wszystkich kontrolerach.  
-Następnie informacje te są mapowane na `CommandInfo` (z uzupełnieniem domyślnych opisów), a na sam koniec wpisywane za pomocą domeny jako `HelpInformation` do bazy.  
-W momencie zapytania o Help przez użytkownika, obiekty `HelpInformation` są pobierane z bazy (za pomocą domeny), a następnie na ich podstawie tworzona jest sformatowana wiadomość (jako Embed) i zostaje wysłana na kanał, z którego użytkownik wywołał komendę.  
+W przypadku wywołania komendy `-help <nazwa_komendy>` np. `-help addrole` wyświetlana jest pomoc dla konkretnej jednej komendy wraz z oczekiwanymi parametrami i przykładowym użyciem (który może być wygenerowany przez `HelpExampleUsageGenerator`).  
   
 ## HelpDBGeneratorService  
   
-Ten serwis jest wywoływany tuż po uruchomieniu bota (patrz:  `Watchman.Discord.WatchmanBot/GetWorkflowBuilder`).  
+Ten serwis jest wywoływany tuż po uruchomieniu bota (patrz: `Watchman.Discord.WatchmanBot.GetWorkflowBuilder`).  
+
 ```csharp
-public async Task FillDatabase(IEnumerable<CommandInfo> commandInfosFromAssembly)
+public Task FillDatabase(IEnumerable<BotCommandInformation> commandInfosFromAssembly)
 ```  
-Przyjmuje wygenerowane obiekty CommandInfo. Opisy komend są filtrowane - zostają tylko te, których jeszcze nie ma w bazie (porównywane na podstawie nazwy metody).  
+
+Przyjmuje wygenerowane obiekty `BotCommandInformation`. Opisy komend są filtrowane - zostają tylko te, których jeszcze nie ma w bazie (porównywane na podstawie nazwy metody).  
 Nowe opisy wysyłane są do domeny (w niej odbywa się zapisanie do bazy).  
 Przy okazji serwis również sprawdza, czy nie ma przestarzałych opisów (dane metody już nie istnieją w kodzie) i ostrzega o nich (za pomocą `Log.Warning`).  
   
-## CommandsInfoFactory  
+## BotCommandInformationFactory  
   
-Fabryka mapująca kontrolery na informacje dla Helpa.  
+Fabryka mapująca `BotCommand` na informacje potrzebne dla `HelpInformation`.  
+
 ```csharp
-public IEnumerable<CommandInfo> Create(Type controller)
+public BotCommandInformation Create(Type controller)
 ```  
-Wyciąga wszystkie metody z atrybutem `DiscordCommand` i tworzy na ich podstawie obiekty `CommandInfo` (jedna metoda = jeden CommandInfo).  
-Opis komendy uzupełniany jest domyślną wartością ("Default").  
+
+Wyciąga wszystkie properties z `IBotCommand` i tworzy na ich podstawie obiekt `BotCommandInformation`.  
   
 ## HelpDataCollectorService  
   
-Serwis zajmujący się zmapowaniem komend na obiekty `CommandInfo` (patrz: `Devscord.DiscordFramework.Services.HelpDataCollectorService`).  
+Serwis zajmujący się pobraniem komend z projektu za pomocą refleksji wyszukując po typie `IBotCommand`.  
+
 ```csharp
-public IEnumerable<CommandInfo> GetCommandsInfo(Assembly botAssembly)
+public IEnumerable<BotCommandInformation> GetCommandsInfo(Assembly botAssembly)
 ```  
-Metoda ta najpierw wyszukuje wszystkie kontrolery, a następnie przekazuje je do `CommandsInfoFactory` oczekując obiektów CommandInfo, zawierających informacje o wszystkich komendach (`DiscordCommand`) we wszystkich kontrolerach.  
   
 ## HelpMessageGeneratorService  
   
-Serwis ma za zadanie przetworzyć suche obiekty z bazy na tekst do wyświetlenia użytkownikowi.  
+Serwis ma za zadanie przetworzyć suche obiekty z bazy na wiadomość do wyświetlenia użytkownikowi.  
+
 ```csharp
-public IEnumerable<KeyValuePair<string, string>> MapToEmbedInput(IEnumerable<HelpInformation> helpInformations)
+public IEnumerable<KeyValuePair<string, string>> MapHelpForAllCommandsToEmbed(IEnumerable<HelpInformation> helpInformations, DiscordServerContext server)
 ```  
-Metoda ta tworzy listę opisów każdej komendy z obiektów `HelpInformation` (obiekt ten pochodzi bezpośrednio z fabryki tworzącej `HelpInformation` na podstawie `CommandInfo`, ponieważ to nim posługujemy się z domenie, np. aby zapisać do bazy).
+
+Metoda ta tworzy listę opisów każdej komendy z obiektów `HelpInformation` pobranych z bazy.  
+
+```csharp
+public IEnumerable<KeyValuePair<string, string>> MapHelpForOneCommandToEmbed(HelpInformation helpInformation, DiscordServerContext server)
+```
+
+Metoda ta tworzy opis dla jednej komendy na podstawie obiektu `HelpInformation` pobranego z bazy.  
+Jeśli przykład użycia w `HelpInformation` jest pusty to metoda skorzysta z klasy `HelpExampleUsageGenerator` aby wygenerować automatycznie taki przykład.  
+  
+## HelpExampleUsageGenerator  
+  
+Serwis generujący domyślny przykład użycia danej komendy, na podstawie parametrów jakie ta komenda posiada.  

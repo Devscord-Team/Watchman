@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Serilog;
+using System.IO;
 
 namespace Devscord.DiscordFramework.Integration
 {
@@ -18,6 +19,7 @@ namespace Devscord.DiscordFramework.Integration
         internal static Func<SocketGuildUser, Task> UserJoined { get; set; }
         internal static Func<SocketGuild, Task> BotAddedToServer { get; set; }
         internal static Func<SocketChannel, Task> ChannelCreated { get; set; }
+        internal static Func<SocketChannel, Task> ChannelRemoved { get; set; }
         internal static Func<SocketRole, SocketRole, Task> RoleUpdated { get; set; }
         internal static Func<SocketRole, Task> RoleRemoved { get; set; }
         internal static Func<SocketRole, Task> RoleCreated { get; set; }
@@ -30,6 +32,7 @@ namespace Devscord.DiscordFramework.Integration
             _discordClient.UsersService.UserJoined += UserJoined;
             _discordClient.ServersService.BotAddedToServer += BotAddedToServer;
             _discordClient.ChannelsService.ChannelCreated += ChannelCreated;
+            _discordClient.ChannelsService.ChannelRemoved += ChannelRemoved;
             _discordClient.RolesService.RoleUpdated += RoleUpdated;
             _discordClient.RolesService.RoleCreated += RoleCreated;
             _discordClient.RolesService.RoleRemoved += RoleRemoved;
@@ -42,7 +45,7 @@ namespace Devscord.DiscordFramework.Integration
             return _discordClient.UsersService.GetGuildUser(userId, guildId);
         }
 
-        internal static IAsyncEnumerable<RestGuildUser> GetGuildUsers(ulong guildId)
+        internal static IEnumerable<IGuildUser> GetGuildUsers(ulong guildId)
         {
             return _discordClient.UsersService.GetGuildUsers(guildId);
         }
@@ -83,17 +86,42 @@ namespace Devscord.DiscordFramework.Integration
             return _discordClient.ChannelsService.SendDirectMessage(userId, message);
         }
 
+        internal static Task SendDirectFile(ulong userId, string fileName, Stream stream)
+        {
+            return _discordClient.ChannelsService.SendDirectFile(userId, fileName, stream);
+        }
+
         internal static IAsyncEnumerable<Message> GetMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong fromMessageId = 0, bool goBefore = true)
         {
             return _discordClient.ChannelsService.GetMessages(server, channel, limit, fromMessageId, goBefore);
         }
 
+        internal static Task<ITextChannel> CreateNewChannel(ulong serverId, string channelName)
+        {
+            return _discordClient.ChannelsService.CreateNewChannelAsync(serverId, channelName);
+        }
+
+        internal static Task SetRolePermissions(ChannelContext channel, DiscordServerContext server, ChangedPermissions permissions, UserRole role)
+        {
+            return _discordClient.ChannelsService.SetRolePermissions(channel, server, permissions, role);
+        }
+
+        internal static Task SetRolePermissions(IEnumerable<ChannelContext> channels, DiscordServerContext server, ChangedPermissions permissions, UserRole role)
+        {
+            return _discordClient.ChannelsService.SetRolePermissions(channels, server, permissions, role);
+        }
+
+        internal static Task RemoveRolePermissions(ChannelContext channel, DiscordServerContext server, UserRole role)
+        {
+            return _discordClient.ChannelsService.RemoveRolePermissions(channel, server, role);
+        }
+
+        //Roles
         internal static Task<UserRole> CreateNewRole(NewUserRole role, DiscordServerContext discordServer)
         {
             return _discordClient.RolesService.CreateNewRole(role, discordServer);
         }
 
-        //GetRoles
         internal static IEnumerable<UserRole> GetRoles(ulong guildId)
         {
             return _discordClient.RolesService.GetRoles(guildId);
@@ -102,16 +130,6 @@ namespace Devscord.DiscordFramework.Integration
         internal static IEnumerable<SocketRole> GetSocketRoles(ulong guildId)
         {
             return _discordClient.RolesService.GetSocketRoles(guildId);
-        }
-
-        internal static Task SetRolePermissions(ChannelContext channel, DiscordServerContext server, ChangedPermissions permissions, UserRole role)
-        {
-            return _discordClient.RolesService.SetRolePermissions(channel, server, permissions, role);
-        }
-
-        internal static Task SetRolePermissions(IEnumerable<ChannelContext> channels, DiscordServerContext server, ChangedPermissions permissions, UserRole role)
-        {
-            return _discordClient.RolesService.SetRolePermissions(channels, server, permissions, role);
         }
 
         internal static UserRole GetRole(ulong roleId, ulong guildId)

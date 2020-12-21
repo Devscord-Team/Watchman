@@ -2,7 +2,6 @@ using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 
 namespace Devscord.DiscordFramework.Framework.Commands.Responses
 {
@@ -80,8 +79,8 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         public static string MutedUser(this ResponsesService responsesService, UserContext user, DateTime timeEnd)
         {
             return responsesService.ProcessResponse("MutedUser",
-                new KeyValuePair<string, string>("user", user.Name),
-                new KeyValuePair<string, string>("timeEnd", TimeZoneInfo.ConvertTimeFromUtc(timeEnd, TimeZoneInfo.Local).ToString("dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture))); // this works when timeEnd.Kind is equal to DateTimeKind.Utc
+                new KeyValuePair<string, string>("user", user.Name), //todo: change to GetMention when message will be send as Embed
+                new KeyValuePair<string, string>("timeEnd", timeEnd.ToLocalTimeString()));
         }
 
         public static string UnmutedUser(this ResponsesService responsesService, UserContext user)
@@ -137,10 +136,14 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             return responsesService.ProcessResponse("ServerDoesntHaveAnySafeRoles");
         }
 
-        public static string AvailableSafeRoles(this ResponsesService responsesService, string roles)
+        public static string AvailableSafeRoles(this ResponsesService responsesService)
         {
-            return responsesService.ProcessResponse("AvailableSafeRoles",
-                new KeyValuePair<string, string>("roles", roles));
+            return responsesService.ProcessResponse("AvailableSafeRoles");
+        }
+
+        public static string AvailableSafeRolesDescription(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("AvailableSafeRolesDescription");
         }
 
         public static string NotEnoughArguments(this ResponsesService responsesService)
@@ -236,10 +239,10 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
             return responsesService.ProcessResponse("AllRolesSettingsChanged");
         }
 
-        public static string UserHasBeenWarned(this ResponsesService responsesService, string granter, string receiver, string reason)
+        public static string UserHasBeenWarned(this ResponsesService responsesService, string grantor, string receiver, string reason)
         {
             return responsesService.ProcessResponse("UserHasBeenWarned",
-                new KeyValuePair<string, string>("granter", granter),
+                new KeyValuePair<string, string>("grantor", grantor),
                 new KeyValuePair<string, string>("receiver", receiver),
                 new KeyValuePair<string, string>("reason", reason));
         }
@@ -274,6 +277,16 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
                 new KeyValuePair<string, string>("role", roleName));
         }
 
+        public static string ComplaintsChannelAlreadyExists(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("ComplaintsChannelAlreadyExists");
+        }
+
+        public static string ComplaintsChannelHasBeenCreated(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("ComplaintsChannelHasBeenCreated");
+        }
+
         public static string ServerDoesntHaveAnyTrustedRole(this ResponsesService responsesService)
         {
             return responsesService.ProcessResponse("ServerDoesntHaveAnyTrustedRole");
@@ -293,6 +306,81 @@ namespace Devscord.DiscordFramework.Framework.Commands.Responses
         {
             return responsesService.ProcessResponse("TryToGoogleIt",
                 new KeyValuePair<string, string>("link", link));
+        }
+
+        public static string ThereAreNoMutedUsers(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("ThereAreNoMutedUsers");
+        }
+
+        public static string NoDefaultDescription(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("NoDefaultDescription");
+        }
+
+        public static string AvailableCommands(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("AvailableCommands");
+        }
+
+        public static string HereYouCanFindAvailableCommandsWithDescriptions(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("HereYouCanFindAvailableCommandsWithDescriptions");
+        }
+
+        public static string HowToUseCommand(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("HowToUseCommand");
+        }
+
+        public static string Example(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("Example");
+        }
+
+        public static string Type(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("Type");
+        }
+
+        public static string Parameters(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("Parameters");
+        }
+
+        public static string ExampleChannelMention(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("ExampleChannelMention");
+        }
+
+        public static string ExampleUserMention(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("ExampleUserMention");
+        }
+
+        public static string ExampleList(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("ExampleList");
+        }
+
+        public static string ExampleSingleWord(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("ExampleSingleWord");
+        }
+
+        public static string ExampleText(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("ExampleText");
+        }
+
+        public static string Roles(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("Roles");
+        }
+
+        public static string CustomCommandsHeader(this ResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("CustomCommandsHeader");
         }
     }
 }

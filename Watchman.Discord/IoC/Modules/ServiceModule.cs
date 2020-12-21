@@ -4,12 +4,14 @@ using Devscord.DiscordFramework.Framework.Commands.Responses;
 using System.Collections.Generic;
 using System.Reflection;
 using Devscord.DiscordFramework.Framework.Commands.Parsing;
+using Devscord.DiscordFramework.Services;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Commons;
 using Watchman.Discord.Integration.DevscordFramework;
 using Watchman.DomainModel.Commons.Calculators.Statistics;
 using Watchman.DomainModel.Settings.Services;
 using Devscord.DiscordFramework.Framework.Commands.Services;
+using Watchman.DomainModel.Configuration.Services;
 
 namespace Watchman.Discord.IoC.Modules
 {
@@ -17,12 +19,8 @@ namespace Watchman.Discord.IoC.Modules
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.Register((c, p) => new ResponsesService().SetGetResponsesFromDatabase(c.Resolve<IQueryBus>()))
+            builder.Register((c, p) => new ResponsesCachingService(c.Resolve<DiscordServersService>()).SetGetResponsesFromDatabase(c.Resolve<IQueryBus>()))
                 .As<ResponsesService>()
-                .InstancePerLifetimeScope();
-
-            builder.RegisterType<StatisticsCalculator>()
-                .As<IStatisticsCalculator>()
                 .InstancePerLifetimeScope();
 
             builder.RegisterType<CustomCommandsLoader>()
@@ -35,7 +33,7 @@ namespace Watchman.Discord.IoC.Modules
 
             builder.RegisterType<ConfigurationService>()
                 .As<IConfigurationService>()
-                .InstancePerLifetimeScope();
+                .SingleInstance();
 
             builder.RegisterType<CommandsContainer>()
                 .As<ICommandsContainer>()

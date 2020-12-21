@@ -2,8 +2,8 @@
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam;
 using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
-using Watchman.DomainModel.Settings.ConfigurationItems;
-using Watchman.DomainModel.Settings.Services;
+using Watchman.DomainModel.Configuration.ConfigurationItems;
+using Watchman.DomainModel.Configuration.Services;
 
 namespace Watchman.Discord.Areas.Protection.Strategies
 {
@@ -37,7 +37,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
 
         private bool IsMessageWithMuchCapslock(string message, ulong serverId)
         {
-            message = message.Replace(" ", "");
+            message = message.Replace(" ", string.Empty);
             var upperLettersCount = message.Count(char.IsUpper);
             var percentageOfUpperLetters = upperLettersCount / (double)message.Length;
             var minUpperLettersCount = this._configurationService.GetConfigurationItem<MinUpperLettersCount>(serverId).Value;

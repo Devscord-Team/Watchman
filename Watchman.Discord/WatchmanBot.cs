@@ -1,26 +1,23 @@
 ﻿using Autofac;
 using Devscord.DiscordFramework;
-using Devscord.DiscordFramework.Commons.Extensions;
-using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
-using Devscord.DiscordFramework.Services.Factories;
 using MongoDB.Driver;
 using Serilog;
 using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Devscord.DiscordFramework.Commons.Exceptions;
 using Watchman.Discord.Areas.Help.Services;
 using Watchman.Discord.Areas.Initialization.Services;
 using Watchman.Discord.Areas.Protection.Services;
 using Watchman.Discord.Areas.Users.Services;
 using Watchman.Discord.Ioc;
 using Watchman.Integrations.Logging;
-using Watchman.Integrations.MongoDB;
-using Watchman.DomainModel.Settings.Services;
 using Watchman.Discord.Integration.DevscordFramework;
+using Watchman.Integrations.Database.MongoDB;
+using Watchman.DomainModel.Configuration;
+using Watchman.DomainModel.Configuration.Services;
+using Watchman.Discord.Areas.Administration.Services;
 
 namespace Watchman.Discord
 {
@@ -40,6 +37,7 @@ namespace Watchman.Discord
         public WorkflowBuilder GetWorkflowBuilder()
         {
             MongoConfiguration.Initialize();
+            ExceptionHandlerService.DiscordConfiguration = this._configuration;
 
             return WorkflowBuilder.Create(this._configuration.Token, this._context, typeof(WatchmanBot).Assembly)
                 .SetDefaultMiddlewares()
@@ -49,15 +47,9 @@ namespace Watchman.Discord
                         .AddHandler(() => Task.Run(() => Log.Information("Bot started and logged in...")))
                         .AddFromIoC<ConfigurationService>(configurationService => configurationService.InitDefaultConfigurations)
                         .AddFromIoC<CustomCommandsLoader>(customCommandsLoader => customCommandsLoader.InitDefaultCustomCommands)
-                        .AddFromIoC<HelpDataCollectorService, HelpDBGeneratorService>((dataCollector, helpService) => () =>
-                        {
-                            Task.Run(() => helpService.FillDatabase(dataCollector.GetCommandsInfo(typeof(WatchmanBot).Assembly)));
-                            return Task.CompletedTask;
-                        })
-                        .AddFromIoC<ResponsesInitService>(responsesService => async () =>
-                        {
-                            await responsesService.InitNewResponsesFromResources();
-                        })
+                        .AddFromIoC<HelpDataCollectorService, HelpDBGeneratorService>((dataCollector, helpService) =>
+                            () => helpService.FillDatabase(dataCollector.GetBotCommandsInfo(typeof(WatchmanBot).Assembly)))
+                        .AddFromIoC<ResponsesInitService>(responsesService => responsesService.InitNewResponsesFromResources)
                         .AddFromIoC<InitializationService, DiscordServersService>((initService, serversService) => async () =>
                         {
                             var stopwatch = Stopwatch.StartNew();
@@ -81,52 +73,31 @@ namespace Watchman.Discord
                 .AddOnDiscordServerAddedBotHandlers(builder =>
                 {
                     builder
-                        .AddFromIoC<InitializationService>(initService => async server => await initService.InitServer(server));
+                        .AddFromIoC<InitializationService>(initService => initService.InitServer);
                 })
                 .AddOnWorkflowExceptionHandlers(builder =>
                 {
                     builder
-                        .AddFromIoC<ExceptionHandlerService>(x => x.LogException)
-                        .AddHandler(this.PrintDebugExceptionInfo, onlyOnDebug: true)
-                        .AddHandler(this.SendExceptionInfo)
-                        .AddHandler(this.PrintExceptionOnConsole);
+                        .AddFromIoC<ExceptionHandlerService>(x => (e, _) => x.LogException(e))
+                        .AddFromIoC<ExceptionHandlerService>(x => x.SendExceptionResponse)
+                        .AddFromIoC<ExceptionHandlerService>(x => x.PrintDebugExceptionInfo, onlyOnDebug: true)
+                        .AddFromIoC<ExceptionHandlerService>(x => (e, _) => x.SendExceptionToDebugServer(e));
                 })
                 .AddOnChannelCreatedHandlers(builder =>
                 {
                     builder
-                        .AddFromIoC<MuteRoleInitService>(x => (_, server) => x.InitForServer(server));
+                        .AddFromIoC<MuteRoleInitService>(x => x.InitForChannelAsync);
+                })
+                .AddOnChannelRemovedHandler(builder =>
+                {
+                    builder
+                        .AddFromIoC<ComplaintsChannelService>(x => x.RemoveIfNeededComplaintsChannel);
+                })
+                .AddOnRoleRemovedHandlers(builder =>
+                {
+                    builder
+                        .AddFromIoC<TrustRolesService>(x => x.StopTrustingRole);
                 });
-        }
-
-        private void SendExceptionInfo(Exception e, Contexts contexts)
-        {
-            var exceptionMessage = this.BuildExceptionMessage(e).ToString();
-            var messagesService = this._context.Resolve<MessagesServiceFactory>().Create(contexts);
-            messagesService.ChannelId = this._configuration.ExceptionChannelID;
-            var isBotException = e.InnerException is BotException;
-            if (isBotException && this._configuration.SendOnlyUnknownExceptionInfo)
-            {
-                return;
-            }
-            messagesService.SendMessage(exceptionMessage, Devscord.DiscordFramework.Commons.MessageType.BlockFormatted);
-        }
-
-        private void PrintDebugExceptionInfo(Exception e, Contexts contexts)
-        {
-            var exceptionMessage = this.BuildExceptionMessage(e).ToString();
-            var messagesService = this._context.Resolve<MessagesServiceFactory>().Create(contexts);
-            messagesService.SendMessage(exceptionMessage, Devscord.DiscordFramework.Commons.MessageType.BlockFormatted);
-        }
-
-        private void PrintExceptionOnConsole(Exception e, Contexts contexts)
-        {
-            var exceptionMessage = this.BuildExceptionMessage(e).ToString();
-            Console.WriteLine(exceptionMessage);
-        }
-
-        private StringBuilder BuildExceptionMessage(Exception e)
-        {
-            return new StringBuilder($"{e.Message}\r\n\r\n{e.InnerException}\r\n\r\n{e.StackTrace}```").FormatMessageIntoBlock();
         }
 
         private IContainer GetAutofacContainer(DiscordConfiguration configuration)

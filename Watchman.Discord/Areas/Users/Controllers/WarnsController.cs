@@ -16,7 +16,7 @@ using Watchman.Discord.Areas.Protection.Services;
 using Watchman.Discord.Areas.Users.BotCommands;
 using Watchman.Discord.Areas.Users.BotCommands.Warns;
 using Watchman.DomainModel.Messages;
-using Watchman.DomainModel.Users;
+using Watchman.DomainModel.Protection;
 
 namespace Watchman.Discord.Areas.Protection.Controllers
 {

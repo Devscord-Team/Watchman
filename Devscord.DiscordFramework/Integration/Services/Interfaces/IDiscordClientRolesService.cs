@@ -15,8 +15,6 @@ namespace Devscord.DiscordFramework.Integration.Services.Interfaces
         Task<UserRole> CreateNewRole(NewUserRole role, DiscordServerContext discordServer);
         IEnumerable<UserRole> GetRoles(ulong guildId);
         IEnumerable<SocketRole> GetSocketRoles(ulong guildId);
-        Task SetRolePermissions(ChannelContext channel, DiscordServerContext server, ChangedPermissions permissions, UserRole role);
-        Task SetRolePermissions(IEnumerable<ChannelContext> channels, DiscordServerContext server, ChangedPermissions permissions, UserRole role);
         UserRole GetRole(ulong roleId, ulong guildId);
     }
 }

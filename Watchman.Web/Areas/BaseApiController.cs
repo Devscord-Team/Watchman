@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Watchman.Web.Areas
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Framework.Commands.Responses;
@@ -11,7 +9,6 @@ using Watchman.Cqrs;
 using Watchman.Discord.Areas.Protection.Strategies;
 using Watchman.DomainModel.DiscordServer.Commands;
 using Watchman.DomainModel.DiscordServer.Queries;
-using Watchman.DomainModel.Settings.ConfigurationItems;
 
 namespace Watchman.Discord.Areas.Administration.Services
 {
@@ -54,7 +51,7 @@ namespace Watchman.Discord.Areas.Administration.Services
             await this._checkUserSafetyService.Refresh();
         }
 
-        public async Task DontTrustThisRole(string roleName, Contexts contexts)
+        public async Task StopTrustingRole(string roleName, Contexts contexts)
         {
             var query = new GetServerTrustedRolesQuery(contexts.Server.Id);
             var trustedRolesIds = this._queryBus.Execute(query).TrustedRolesIds;
@@ -74,6 +71,12 @@ namespace Watchman.Discord.Areas.Administration.Services
             await this._commandBus.ExecuteAsync(command);
             await messagesService.SendResponse(x => x.RoleSetAsUntrusted(roleName));
             await this._checkUserSafetyService.Refresh();
+        }
+
+        public Task StopTrustingRole(UserRole role)
+        {
+            var command = new SetRoleAsUntrustedCommand(role.Id, role.ServerId);
+            return this._commandBus.ExecuteAsync(command);
         }
     }
 }

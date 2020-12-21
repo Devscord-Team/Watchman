@@ -18,12 +18,12 @@ namespace Watchman.Web.Areas.Statistics.Controllers
             this.queryBus = queryBus;
         }
 
-        [HttpGet]
-        public async Task<IEnumerable<PeriodStatisticDto>> GetMessagesStatisticsPerDay()
-        {
-            var query = new GetMessagesStatisticsQuery(Period.Day);
-            var result = await this.queryBus.ExecuteAsync(query);
-            return result.PeriodStatistics.Select(x => new PeriodStatisticDto(x));
-        }
+        //[HttpGet]
+        //public async Task<IEnumerable<PeriodStatisticDto>> GetMessagesStatisticsPerDay()
+        //{
+        //    var query = new GetMessagesStatisticsQuery(Period.Day);
+        //    var result = await this.queryBus.ExecuteAsync(query);
+        //    return result.PeriodStatistics.Select(x => new PeriodStatisticDto(x));
+        //}
     }
 }
