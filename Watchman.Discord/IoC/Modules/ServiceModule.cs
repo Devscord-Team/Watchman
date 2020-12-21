@@ -8,8 +8,6 @@ using Devscord.DiscordFramework.Services;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Commons;
 using Watchman.Discord.Integration.DevscordFramework;
-using Watchman.DomainModel.Commons.Calculators.Statistics;
-using Watchman.DomainModel.Settings.Services;
 using Devscord.DiscordFramework.Framework.Commands.Services;
 using Watchman.DomainModel.Configuration.Services;
 

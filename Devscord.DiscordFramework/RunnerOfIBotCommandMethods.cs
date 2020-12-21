@@ -79,7 +79,6 @@ namespace Devscord.DiscordFramework
 
             using (LogContext.PushProperty("Method", method.Name))
             {
-                var x = method.GetParameters();
                 var runningMethod = method.Invoke(controllerInfo.Controller, new object[] { command, contexts });
                 if (runningMethod is Task task)
                 {
