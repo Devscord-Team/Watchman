@@ -65,8 +65,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
             while (trimmedMess.Length > 0)
             {
                 var prefix = this.GetPrefix(trimmedMess);
-                var isNegativeNumber = prefix == "-" && trimmedMess.Length > 1 && char.IsDigit(trimmedMess[trimmedMess.IndexOf('-') + 1]);
-                var isStartingWithValue = prefix == null || isNegativeNumber;
+                var isStartingWithValue = prefix == null;
 
                 if (isStartingWithValue)
                 {
@@ -111,12 +110,22 @@ namespace Devscord.DiscordFramework.Framework.Commands.Parsing
             arg.Name = trimmedMessage[..lastArgNameIndex];
 
             trimmedMessage = trimmedMessage.CutStart(arg.Name).TrimStart();
-            if (!trimmedMessage.StartsWith(prefix))
+            if (!trimmedMessage.StartsWith(prefix) || IsFirstArgNegativeNumber(trimmedMessage))
             {
                 arg.Value = this.GetValue(trimmedMessage, out var nextIndexAfterValue);
                 trimmedMessage = trimmedMessage[nextIndexAfterValue..].TrimStart();
             }
             return arg;
+        }
+
+        private bool IsFirstArgNegativeNumber(string trimmedMessage)
+        {
+            var firstValueLength = trimmedMessage.Contains(' ') 
+                ? trimmedMessage.IndexOf(' ') 
+                : trimmedMessage.Length;
+
+            var firstValue = trimmedMessage[..firstValueLength];
+            return firstValue.Length > 1 && firstValue[0] == '-' && char.IsDigit(firstValue.CutStart("-")[0]);
         }
 
         private string GetValue(string valuesSegment, out int nextIndexAfterValue)
