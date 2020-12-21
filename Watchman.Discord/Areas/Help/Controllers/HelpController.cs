@@ -19,61 +19,24 @@ namespace Watchman.Discord.Areas.Help.Controllers
     {
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly HelpMessageGeneratorService _helpMessageGenerator;
-        private readonly IQueryBus _queryBus;
         private readonly ResponsesService _responsesService;
+        private readonly HelpService _helpService;
 
-        public HelpController(MessagesServiceFactory messagesServiceFactory, HelpMessageGeneratorService messageGeneratorService, IQueryBus queryBus, ResponsesService responsesService)
+        public HelpController(MessagesServiceFactory messagesServiceFactory, HelpMessageGeneratorService messageGeneratorService,
+            ResponsesService responsesService, HelpService helpService)
         {
             this._messagesServiceFactory = messagesServiceFactory;
             this._helpMessageGenerator = messageGeneratorService;
-            this._queryBus = queryBus;
             this._responsesService = responsesService;
+            this._helpService = helpService;
         }
 
         public Task PrintHelp(HelpCommand command, Contexts contexts)
         {
-            var helpInformations = this._queryBus.Execute(new GetHelpInformationQuery(contexts.Server.Id)).HelpInformations;
-            return string.IsNullOrEmpty(command.Command) 
-                ? this.PrintHelpForAllCommands(command, contexts, helpInformations) 
-                : this.PrintHelpForOneCommand(command, contexts, helpInformations);
-        }
-
-        private Task PrintHelpForAllCommands(HelpCommand command, Contexts contexts, IEnumerable<HelpInformation> helpInformations)
-        {
-            var messagesService = this._messagesServiceFactory.Create(contexts);
-            if (command.Json)
-            {
-                var helpMessage = this._helpMessageGenerator.GenerateJsonHelp(helpInformations);
-                return messagesService.SendMessage(helpMessage, MessageType.Json);
-            }
-            var availableCommandsResponse = this._responsesService.GetResponse(contexts.Server.Id, x => x.AvailableCommands());
-            var commandsDescriptionsResponses = this._responsesService.GetResponse(contexts.Server.Id, x => x.HereYouCanFindAvailableCommandsWithDescriptions());
-            return messagesService.SendEmbedMessage(title: availableCommandsResponse, description: commandsDescriptionsResponses,
-                this._helpMessageGenerator.MapHelpForAllCommandsToEmbed(helpInformations, contexts.Server));
-        }
-
-        private Task PrintHelpForOneCommand(HelpCommand command, Contexts contexts, IEnumerable<HelpInformation> helpInformations)
-        {
-            var helpInformation = helpInformations.FirstOrDefault(x => this.NormalizeCommandName(x.CommandName) == this.NormalizeCommandName(command.Command));
-            if (helpInformation == null)
-            {
-                return Task.CompletedTask;
-            }
-            var messagesService = this._messagesServiceFactory.Create(contexts);
-            var helpMessage = this._helpMessageGenerator.MapHelpForOneCommandToEmbed(helpInformation, contexts.Server);
-            var description = helpInformation.Descriptions
-                .FirstOrDefault(x => x.Language == helpInformation.DefaultLanguage)?.Text;
-            if (string.IsNullOrEmpty(description))
-            {
-                description = this._responsesService.GetResponse(contexts.Server.Id, x => x.NoDefaultDescription());
-            }
-            var howToUseCommand = this._responsesService.GetResponse(contexts.Server.Id, x => x.HowToUseCommand());
-            return messagesService.SendEmbedMessage($"{howToUseCommand} {helpInformation.CommandName.Replace("Command", string.Empty)}", description, helpMessage);
-        }
-
-        private string NormalizeCommandName(string x)
-        {
-            return x.ToLowerInvariant().TrimStart('-').Replace("command", string.Empty).Replace(" ", string.Empty);
+            var helpInformations = this._helpService.GetHelpInformations(contexts);
+            return string.IsNullOrEmpty(command.Command)
+                ? _helpService.PrintHelpForAllCommands(command.Json, contexts, helpInformations)
+                : this._helpService.PrintHelpForOneCommand(command.Command, contexts, helpInformations);
         }
     }
 }

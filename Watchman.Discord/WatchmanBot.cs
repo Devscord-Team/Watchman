@@ -78,10 +78,10 @@ namespace Watchman.Discord
                 .AddOnWorkflowExceptionHandlers(builder =>
                 {
                     builder
-                        .AddFromIoC<ExceptionHandlerService>(x => (e, _) => x.LogException(e))
+                        .AddFromIoC<ExceptionHandlerService>(x => (e, r, _) => x.LogException(e))
                         .AddFromIoC<ExceptionHandlerService>(x => x.SendExceptionResponse)
-                        .AddFromIoC<ExceptionHandlerService>(x => x.PrintDebugExceptionInfo, onlyOnDebug: true)
-                        .AddFromIoC<ExceptionHandlerService>(x => (e, _) => x.SendExceptionToDebugServer(e));
+                        .AddFromIoC<ExceptionHandlerService>(x => (e, r, c) =>  x.PrintDebugExceptionInfo(e, c), onlyOnDebug: true)
+                        .AddFromIoC<ExceptionHandlerService>(x => (e, r, _) => x.SendExceptionToDebugServer(e));
                 })
                 .AddOnChannelCreatedHandlers(builder =>
                 {

@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Devscord.DiscordFramework.Framework;
 using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
+using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Integration;
 using Devscord.DiscordFramework.Middlewares;
 using Devscord.DiscordFramework.Middlewares.Contexts;
@@ -127,7 +128,7 @@ namespace Devscord.DiscordFramework
             return this;
         }
 
-        public WorkflowBuilder AddOnWorkflowExceptionHandlers(Action<WorkflowBuilderHandlers<Func<Exception, Contexts, Task>>> action)
+        public WorkflowBuilder AddOnWorkflowExceptionHandlers(Action<WorkflowBuilderHandlers<Func<Exception, DiscordRequest, Contexts, Task>>> action)
         {
             this.AddHandlers(action, this._workflow.OnWorkflowException.Add);
             Log.Debug("OnWorkflowException handlers have been set");
