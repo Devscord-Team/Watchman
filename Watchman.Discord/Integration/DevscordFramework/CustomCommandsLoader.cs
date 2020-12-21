@@ -52,7 +52,7 @@ namespace Watchman.Discord.Integration.DevscordFramework
                     new AddCustomCommandsCommand("Watchman.Discord.Areas.Administration.BotCommands.MessagesCommand", @"-messages\s*(?<User>\<@!?\d+\>)\s*-t\s*(?<Time>\d+(ms|d|h|m|s))\s*(?<Force>-force|-f)?", serverId),
                     new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.Warns.AddWarnCommand", @"-add\s*warn\s*(?<User><\D{1,2}\d+>)\s*(?<Reason>.*)", serverId),
                     new AddCustomCommandsCommand("Watchman.Discord.Areas.Users.BotCommands.Warns.WarnsCommand", @"-warns\s*(?<User><\D{1,2}\d+>)?", serverId),
-                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Messaging.BotCommands.SendCommand", @"-send\s*(?<Channel>\<#\d+\>)\s*(?<Message>.*)", serverId),
+                    new AddCustomCommandsCommand("Watchman.Discord.Areas.Messaging.Administration.BotCommands.SendCommand", @"-send\s*(?<Channel>\<#\d+\>)\s*(?<Message>.*)", serverId),
                     new AddCustomCommandsCommand("Watchman.Discord.Areas.Help.BotCommands.HelpCommand", @"-help\s(?<Command>[\w\s]+)", serverId)
                 });
             }

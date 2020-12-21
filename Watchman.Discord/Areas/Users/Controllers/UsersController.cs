@@ -43,6 +43,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
             if (string.IsNullOrEmpty(user.AvatarUrl))
             {
                 await messageService.SendResponse(x => x.UserDoesntHaveAvatar(user));
+                return;
             }
             await messageService.SendMessage(user.AvatarUrl);
         }
