@@ -116,6 +116,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         }
 
         [Test]
+        [SetCulture("pl-PL")]   // for Github tests. The tests run right only for polish culture 
         [TestCase("-double -testdouble 8", 8.0)]
         [TestCase("-double -testdouble       -103", -103.0)]
         [TestCase("-double     -testdouble      23,998   ", 23.998)]
@@ -138,6 +139,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         }
 
         [Test]
+        [SetCulture("pl-PL")] 
         [TestCase("-decimal -testdecimal 9", 9.0)]
         [TestCase("-decimal -testdecimal       -234", -234.0)]
         [TestCase("-decimal     -testdecimal      67,578   ", 67.578)]
@@ -160,6 +162,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         }
 
         [Test]
+        [SetCulture("pl-PL")]
         [TestCase("-int -testint 6a", true)]
         [TestCase("-uint -testuint b", true)]
         [TestCase("-int -testint 67", false)]
