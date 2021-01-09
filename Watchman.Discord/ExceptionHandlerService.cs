@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Commons.Extensions;
+using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
 using Serilog;
+using Watchman.Discord.Areas.Help.Services;
 
 namespace Watchman.Discord
 {
@@ -16,6 +18,7 @@ namespace Watchman.Discord
     {
         private readonly DiscordServersService _discordServersService;
         private readonly MessagesServiceFactory _messagesServiceFactory;
+        private readonly HelpService _helpService;
         private Contexts _debugServerContexts;
 
         private Contexts DebugServerContexts
@@ -36,10 +39,11 @@ namespace Watchman.Discord
 
         public static DiscordConfiguration DiscordConfiguration { get; set; }
 
-        public ExceptionHandlerService(MessagesServiceFactory messagesServiceFactory, DiscordServersService discordServersService)
+        public ExceptionHandlerService(MessagesServiceFactory messagesServiceFactory, DiscordServersService discordServersService, HelpService helpService)
         {
             this._messagesServiceFactory = messagesServiceFactory;
             this._discordServersService = discordServersService;
+            this._helpService =  helpService;
         }
 
         public Task LogException(Exception e)
@@ -48,8 +52,13 @@ namespace Watchman.Discord
             return Task.CompletedTask;
         }
 
-        public Task SendExceptionResponse(Exception e, Contexts contexts)
+        public Task SendExceptionResponse(Exception e, DiscordRequest request, Contexts contexts)
         {
+            if (e is InvalidArgumentsException && request is not null)
+            {
+                return this.SendHelpWhenInvalidArguments(request.Name, contexts);
+            }
+
             var messagesService = this._messagesServiceFactory.Create(contexts ?? this.DebugServerContexts);
             var mostInnerException = e.InnerException ?? e;
             while (mostInnerException.InnerException != null)
@@ -80,6 +89,12 @@ namespace Watchman.Discord
             var exceptionMessage = this.BuildExceptionMessage(e).ToString();
             var messagesService = this._messagesServiceFactory.Create(contexts);
             return messagesService.SendMessage(exceptionMessage, MessageType.BlockFormatted);
+        }
+
+        private Task SendHelpWhenInvalidArguments(string commandName, Contexts contexts)
+        {
+            var helpInformations = this._helpService.GetHelpInformations(contexts);
+            return this._helpService.PrintHelpForOneCommand(commandName, contexts, helpInformations);
         }
 
         private StringBuilder BuildExceptionMessage(Exception e)

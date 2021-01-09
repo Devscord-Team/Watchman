@@ -39,7 +39,7 @@ namespace Devscord.DiscordFramework
         public List<Func<UserRole, Task>> OnRoleCreated { get; set; } = new List<Func<UserRole, Task>>();
         public List<Func<UserRole, Task>> OnRoleRemoved { get; set; } = new List<Func<UserRole, Task>>();
         public List<Func<SocketMessage, Task>> OnMessageReceived { get; set; } = new List<Func<SocketMessage, Task>>();
-        public List<Func<Exception, Contexts, Task>> OnWorkflowException { get; set; } = new List<Func<Exception, Contexts, Task>>();
+        public List<Func<Exception, DiscordRequest, Contexts, Task>> OnWorkflowException { get; set; } = new List<Func<Exception, DiscordRequest, Contexts, Task>>();
 
         internal Workflow(Assembly botAssembly, IComponentContext context)
         {
@@ -94,14 +94,14 @@ namespace Devscord.DiscordFramework
             var task = func.Invoke(arg1);
             return this.TryToAwaitTask(task);
         }
-
+        
         private Task WithExceptionHandlerAwait<T, W>(Func<T, W, Task> func, T arg1, W arg2)
         {
             var task = func.Invoke(arg1, arg2);
             return this.TryToAwaitTask(task);
         }
 
-        private async Task TryToAwaitTask(Task task, Contexts sendExceptionsContexts = null)
+        private async Task TryToAwaitTask(Task task, DiscordRequest request = null, Contexts sendExceptionsContexts = null)
         {
             try
             {
@@ -110,7 +110,7 @@ namespace Devscord.DiscordFramework
             catch (Exception e)
             {
                 Log.Error(e, e.StackTrace);
-                this.OnWorkflowException.ForEach(x => x.Invoke(e, sendExceptionsContexts));
+                this.OnWorkflowException.ForEach(x => x.Invoke(e, request, sendExceptionsContexts));
             }
         }
 
@@ -124,7 +124,7 @@ namespace Devscord.DiscordFramework
             var request = this.ParseRequest(socketMessage);
 
             Log.Information("Starting controllers");
-            await this.TryToAwaitTask(this._controllersService.Run(socketMessage.Id, request, contexts), contexts);
+            await this.TryToAwaitTask(this._controllersService.Run(socketMessage.Id, request, contexts), request, contexts);
 
             var elapsedRun = this._stopWatch.ElapsedTicks;
             var elapsedMilliseconds = this._stopWatch.ElapsedMilliseconds;

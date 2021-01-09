@@ -15,6 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Areas\Help\Services\HelpServices.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="IoC\Modules\ServiceModule.cs~RF3633ec.TMP" />
   </ItemGroup>
 
