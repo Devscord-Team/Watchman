@@ -12,6 +12,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Framework\Commands\BotCommandDescription\CommandDescription.Designer.cs">
+      <DependentUpon>CommandDescription.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="Framework\Commands\Responses\Resources\Responses.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -30,6 +35,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Framework\Commands\BotCommandDescription\CommandDescription.resx">
+      <LastGenOutput>CommandDescription.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Framework\Commands\Responses\Resources\Responses.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Responses.Designer.cs</LastGenOutput>
