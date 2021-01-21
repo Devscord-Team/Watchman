@@ -13,13 +13,19 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
     {
         private readonly Regex _exTime = new Regex(@"(?<Value>\d+)(?<Unit>(ms|d|h|m|s))", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         private readonly Regex _exMention = new Regex(@"\d+", RegexOptions.Compiled);
+        private readonly UniversalNumberParser _numberParser;
+
+        public BotCommandsPropertyConversionService(UniversalNumberParser numberParser)
+        {
+            this._numberParser = numberParser;
+        }
 
         public object ConvertType(string value, BotCommandProperty botCommandProperty)
         {
             return botCommandProperty.GeneralType switch
             {
                 BotCommandPropertyType.Time => this.ToTimeSpan(value),
-                BotCommandPropertyType.Number => Convert.ChangeType(value, Nullable.GetUnderlyingType(botCommandProperty.ActualType) ?? botCommandProperty.ActualType),
+                BotCommandPropertyType.Number => this._numberParser.Parse(value, botCommandProperty.ActualType),
                 BotCommandPropertyType.Bool => bool.Parse(value),
                 BotCommandPropertyType.UserMention => ulong.Parse(_exMention.Match(value).Value),
                 BotCommandPropertyType.ChannelMention => ulong.Parse(_exMention.Match(value).Value),

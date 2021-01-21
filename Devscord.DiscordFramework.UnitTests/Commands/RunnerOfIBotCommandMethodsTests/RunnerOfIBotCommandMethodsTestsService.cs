@@ -17,23 +17,24 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         public static IBotCommandsService GetBotCommandsServiceMock()
         {
             var mock = new Mock<IBotCommandsService>();
+            var numberParser = new UniversalNumberParser();
 
             mock.Setup(m => m.IsDefaultCommand(It.IsAny<BotCommandTemplate>(), It.IsAny<IEnumerable<DiscordRequestArgument>>(), It.IsAny<bool>()))
                 .Returns<BotCommandTemplate, IEnumerable<DiscordRequestArgument>, bool>((template, args, isCommandMatchedWithCustom) => 
-                    new BotCommandsMatchingService().IsDefaultCommand(template, args, isCommandMatchedWithCustom));
+                    new BotCommandsMatchingService(numberParser).IsDefaultCommand(template, args, isCommandMatchedWithCustom));
 
             mock.Setup(m => m.AreDefaultCommandArgumentsCorrect(It.IsAny<BotCommandTemplate>(), It.IsAny<IEnumerable<DiscordRequestArgument>>()))
                 .Returns<BotCommandTemplate, IEnumerable<DiscordRequestArgument>>((template, args) => 
-                    new BotCommandsMatchingService().AreDefaultCommandArgumentsCorrect(template, args));
+                    new BotCommandsMatchingService(numberParser).AreDefaultCommandArgumentsCorrect(template, args));
 
             mock.Setup(m => m.AreCustomCommandArgumentsCorrect(It.IsAny<BotCommandTemplate>(), It.IsAny<Regex>(), It.IsAny<string>()))
                 .Returns<BotCommandTemplate, Regex, string>((template, customTemplate, input) =>
-                    new BotCommandsMatchingService().AreCustomCommandArgumentsCorrect(template, customTemplate, input));
+                    new BotCommandsMatchingService(numberParser).AreCustomCommandArgumentsCorrect(template, customTemplate, input));
 
             mock.Setup(m => m.GetCommandTemplate(It.IsAny<Type>()))
                 .Returns<Type>(commandType => new BotCommandsTemplateBuilder().GetCommandTemplate(commandType));
 
-            var botCommandsParsingService = new BotCommandsParsingService(new BotCommandsPropertyConversionService(), new BotCommandsRequestValueGetterService());
+            var botCommandsParsingService = new BotCommandsParsingService(new BotCommandsPropertyConversionService(numberParser), new BotCommandsRequestValueGetterService());
             mock.Setup(m => m.ParseRequestToCommand(It.IsAny<Type>(), It.IsAny<DiscordRequest>(), It.IsAny<BotCommandTemplate>()))
                 .Returns<Type, DiscordRequest, BotCommandTemplate>((commandType, request, template) => 
                     botCommandsParsingService.ParseRequestToCommand(commandType, request, template));

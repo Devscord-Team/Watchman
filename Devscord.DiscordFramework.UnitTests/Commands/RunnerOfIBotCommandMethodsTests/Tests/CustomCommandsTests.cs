@@ -118,11 +118,10 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         }
 
         [Test]
-        [SetCulture("pl-PL")]   // for Github tests. The tests run right only for polish culture 
         [TestCase("-custom double 8", 8.0)]
         [TestCase("-custom double       -103", -103.0)]
         [TestCase("-custom     double      23,998   ", 23.998)]
-        [TestCase("-custom double -34,16     ", -34.16)]
+        [TestCase("-custom double -34.16     ", -34.16)]
         public async Task ShouldGiveExpectedDoubleNumber(string message, double expectedDouble)
         {
             // Arrange
@@ -141,10 +140,9 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         }
 
         [Test]
-        [SetCulture("pl-PL")]
         [TestCase("-custom decimal 9", 9.0)]
         [TestCase("-custom decimal       -234", -234.0)]
-        [TestCase("-custom     decimal      67,578   ", 67.578)]
+        [TestCase("-custom     decimal      67.578   ", 67.578)]
         [TestCase("-custom decimal -12,18     ", -12.18)]
         public async Task ShouldGiveExpectedDecimalNumber(string message, decimal expectedDecimal)
         {
@@ -164,7 +162,6 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         }
 
         [Test]
-        [SetCulture("pl-PL")]
         [TestCase("-custom int 6a", @"-custom\s*int\s*(?<TestInt>.*)", typeof(IntCommand), true)]
         [TestCase("-custom uint b", @"-custom\s*uint\s*(?<TestUInt>.*)", typeof(UIntCommand), true)]
         [TestCase("-custom int 67", @"-custom\s*int\s*(?<TestInt>.*)", typeof(IntCommand), false)]
@@ -176,7 +173,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         [TestCase("-custom uint   85 ", @"-custom\s*uint\s*(?<TestUInt>.*)", typeof(UIntCommand), false)]
         [TestCase("-custom    long   56 ", @"-custom\s*long\s*(?<TestLong>.*)", typeof(LongCommand), false)]
         [TestCase("-custom    double   67,89 ", @"-custom\s*double\s*(?<TestDouble>.*)", typeof(DoubleCommand), false)]
-        [TestCase("-custom double 89.78", @"-custom\s*double\s*(?<TestDouble>.*)", typeof(DoubleCommand), true)]
+        [TestCase("-custom double 89.78", @"-custom\s*double\s*(?<TestDouble>.*)", typeof(DoubleCommand), false)]
         public void ShouldThrowException_WhenNumberIsIncorrect(string message, string regex, Type type, bool shouldThrowException)
         {
             // Arrange

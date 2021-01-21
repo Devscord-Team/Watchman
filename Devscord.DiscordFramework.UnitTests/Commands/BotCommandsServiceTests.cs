@@ -1,6 +1,7 @@
 ﻿using Devscord.DiscordFramework.Framework.Commands.Builders;
 using Devscord.DiscordFramework.Framework.Commands.Properties;
 using Devscord.DiscordFramework.Framework.Commands.Services;
+using Devscord.DiscordFramework.Framework.Commands;
 using NUnit.Framework;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -50,7 +51,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands
             var template = new BotCommandsTemplateBuilder().GetCommandTemplate(typeof(SmallTestCommand));
             var customTemplate = new Regex(@"run\s*(?<TestUser>\<\@\S+\>)?\s*(?<TestNumber>\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
             var input = "-run <@1234567890> 12";
-            var parsingService = new BotCommandsParsingService(new BotCommandsPropertyConversionService(), new BotCommandsRequestValueGetterService()); //todo mock and test
+            var parsingService = new BotCommandsParsingService(new BotCommandsPropertyConversionService(new UniversalNumberParser()), new BotCommandsRequestValueGetterService()); //todo mock and test
 
             //Act
             var result = (SmallTestCommand) parsingService.ParseCustomTemplate(typeof(SmallTestCommand), template, customTemplate, input);

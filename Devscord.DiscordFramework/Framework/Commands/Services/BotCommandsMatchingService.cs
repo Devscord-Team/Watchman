@@ -15,6 +15,12 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
         private readonly Regex _exTime = new Regex(@"\d+(ms|d|h|m|s)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         private readonly Regex _exUserMention = new Regex(@"\<@!?\d+\>", RegexOptions.Compiled);
         private readonly Regex _exChannelMention = new Regex(@"\<#\d+\>", RegexOptions.Compiled);
+        private readonly UniversalNumberParser _numberParser;
+
+        public BotCommandsMatchingService(UniversalNumberParser numberParser)
+        {
+            this._numberParser = numberParser;
+        }
 
         public bool IsDefaultCommand(BotCommandTemplate template, IEnumerable<DiscordRequestArgument> arguments, bool isCommandMatchedWithCustom)
         {
@@ -154,7 +160,7 @@ namespace Devscord.DiscordFramework.Framework.Commands.Services
         {
             try
             {
-                Convert.ChangeType(value, Nullable.GetUnderlyingType(type) ?? type);
+                this._numberParser.Parse(value, type);
                 return true;
             }
             catch

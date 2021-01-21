@@ -116,10 +116,9 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         }
 
         [Test]
-        [SetCulture("pl-PL")]   // for Github tests. The tests run right only for polish culture 
         [TestCase("-double -testdouble 8", 8.0)]
         [TestCase("-double -testdouble       -103", -103.0)]
-        [TestCase("-double     -testdouble      23,998   ", 23.998)]
+        [TestCase("-double     -testdouble      23.998   ", 23.998)]
         [TestCase("-double -testdouble -34,16     ", -34.16)]
         public async Task ShouldGiveExpectedDoubleNumber(string message, double expectedDouble)
         {
@@ -139,11 +138,10 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         }
 
         [Test]
-        [SetCulture("pl-PL")] 
         [TestCase("-decimal -testdecimal 9", 9.0)]
         [TestCase("-decimal -testdecimal       -234", -234.0)]
         [TestCase("-decimal     -testdecimal      67,578   ", 67.578)]
-        [TestCase("-decimal -testdecimal -12,18     ", -12.18)]
+        [TestCase("-decimal -testdecimal -12.18     ", -12.18)]
         public async Task ShouldGiveExpectedDecimalNumber(string message, decimal expectedDecimal)
         {
             // Arrange
@@ -162,7 +160,6 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         }
 
         [Test]
-        [SetCulture("pl-PL")]
         [TestCase("-int -testint 6a", true)]
         [TestCase("-uint -testuint b", true)]
         [TestCase("-int -testint 67", false)]
@@ -173,7 +170,7 @@ namespace Devscord.DiscordFramework.UnitTests.Commands.RunnerOfIBotCommandMethod
         [TestCase("-uint -testuint   85 ", false)]
         [TestCase("-long    -testlong   56 ", false)]
         [TestCase("-double    -testdouble   67,89 ", false)]
-        [TestCase("-double -testdouble 89.78", true)]
+        [TestCase("-double -testdouble 89.78", false)]
         public void ShouldThrowException_WhenNumberIsIncorrect(string message, bool shouldThrowException)
         {
             // Arrange
