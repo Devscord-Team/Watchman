@@ -14,17 +14,17 @@ namespace Watchman.DomainModel.Wallet
     {
         public ulong UserId { get; private set; }
         [BsonIgnore]
-        public IEnumerable<ValueObjects.Transaction> Transactions { get; private set; }
+        public IEnumerable<ValueObjects.WalletTransaction> Transactions { get; private set; }
         public uint Value { get; private set; } //calculate after transaction and user command
 
         public Wallet(ulong userId)
         {
             this.UserId = userId;
-            this.Transactions = new List<ValueObjects.Transaction>();
+            this.Transactions = new List<ValueObjects.WalletTransaction>();
             this.Value = 0;
         }
 
-        public void FillTransactions(IEnumerable<ValueObjects.Transaction> transactions)
+        public void FillTransactions(IEnumerable<ValueObjects.WalletTransaction> transactions)
         {
             if(transactions.Any(x => x.FromUserId != this.UserId && x.ToUserId != this.UserId))
             {

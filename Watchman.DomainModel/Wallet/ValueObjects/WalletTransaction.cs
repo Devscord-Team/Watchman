@@ -8,7 +8,7 @@ using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.Wallet.ValueObjects
 {
-    public class Transaction : Entity
+    public class WalletTransaction : Entity
     {
         private bool isValid;
 
@@ -19,7 +19,7 @@ namespace Watchman.DomainModel.Wallet.ValueObjects
         public string Title { get; private set; }
         public string Description { get; private set; }
 
-        public Transaction(ulong onServerId, ulong fromUserId, ulong toUserId, uint value, string title, string description)
+        public WalletTransaction(ulong onServerId, ulong fromUserId, ulong toUserId, uint value, string title, string description)
         {
             this.OnServerId = onServerId;
             this.FromUserId = fromUserId;
