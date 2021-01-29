@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Watchman.Cqrs;
+using Watchman.DomainModel.Wallet.Commands;
+using Watchman.DomainModel.Wallet.Queries;
 
 namespace Watchman.Discord.Areas.Wallet.Services
 {
@@ -21,7 +23,14 @@ namespace Watchman.Discord.Areas.Wallet.Services
 
         public Task TryCreateServerWalletForUser(ulong serverId, ulong userId)
         {
-            return Task.CompletedTask;
+            var walletInRepositoryQuery = new GetUserWalletQuery(serverId, userId);
+            var walletInRepository = this.queryBus.Execute(walletInRepositoryQuery).Wallet;
+            if (walletInRepository != null)
+            {
+                return Task.CompletedTask;
+            }
+            var initializeWalletForUser = new InitializeWalletForUserCommand(serverId, userId);
+            return this.commandBus.ExecuteAsync(initializeWalletForUser);
         }
     }
 }

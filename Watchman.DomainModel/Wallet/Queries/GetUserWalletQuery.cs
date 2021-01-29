@@ -10,10 +10,12 @@ namespace Watchman.DomainModel.Wallet.Queries
 {
     public class GetUserWalletQuery : IQuery<GetUserWalletQueryResult>
     {
+        public ulong ServerId { get; private set; }
         public ulong UserId { get; private set; }
 
-        public GetUserWalletQuery(ulong userId)
+        public GetUserWalletQuery(ulong serverId, ulong userId)
         {
+            this.ServerId = serverId;
             this.UserId = userId;
         }
     }
