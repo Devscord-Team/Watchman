@@ -51,14 +51,14 @@ namespace Watchman.Discord.Areas.Administration.Controllers
 
         public async Task ReadUserMessages(MessagesCommand command, Contexts contexts)
         {
+            if (!contexts.User.IsAdmin() && command.User != contexts.User.Id) //allow check own messages for everybody
+            {
+                throw new NotAdminPermissionsException();
+            }
             var selectedUser = await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
             if (selectedUser == null)
             {
                 throw new UserNotFoundException(command.User.GetUserMention());
-            }
-            if (!contexts.User.IsAdmin() && selectedUser.Id != contexts.User.Id) //allow check own messages for everybody
-            {
-                throw new NotAdminPermissionsException();
             }
             var timeRange = TimeRange.ToNow(contexts.Message.SentAt - command.Time);
             var query = new GetMessagesQuery(contexts.Server.Id, userId: selectedUser.Id)
