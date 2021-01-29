@@ -8,6 +8,6 @@ namespace Watchman.Discord.Areas.Wallet.Controllers
      */
     public class WalletEarningsController : IController
     {
-
+        //maybe there should be only service that is working in background
     }
 }

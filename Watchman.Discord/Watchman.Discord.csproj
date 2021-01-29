@@ -60,7 +60,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Wallet\BotCommands\" />
+    <Folder Include="Areas\Wallet\Services\" />
   </ItemGroup>
 
 </Project>

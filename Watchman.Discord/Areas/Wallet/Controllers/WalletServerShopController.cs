@@ -26,7 +26,7 @@ namespace Watchman.Discord.Areas.Wallet.Controllers
         {
         }
 
-        public void BuyProduct()
+        public void BuyServerProduct()
         {
         }
     }
