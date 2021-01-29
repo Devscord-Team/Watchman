@@ -1,4 +1,7 @@
 ﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+using Devscord.DiscordFramework.Middlewares.Contexts;
+
+using Watchman.Discord.Areas.Wallet.BotCommands.Shops;
 
 namespace Watchman.Discord.Areas.Wallet.Controllers
 {
@@ -8,23 +11,23 @@ namespace Watchman.Discord.Areas.Wallet.Controllers
      */
     public class WalletUserShopController : IController
     {
-        public void ShowServerShop()
+        public void ShowServerShop(ShowUserShopCommand command, Contexts contexts)
         {
         }
 
-        public void AddProductToShop()
+        public void AddProductToShop(AddProductToUserShopCommand command, Contexts contexts)
         {
         }
 
-        public void RemoveProductFromShop()
+        public void RemoveProductFromShop(RemoveProductFromUserShopCommand command, Contexts contexts)
         {
         }
 
-        public void UpdateProductInShop()
+        public void UpdateProductInShop(UpdateProductInUserShopCommand command, Contexts contexts)
         {
         }
 
-        public void BuyProduct()
+        public void BuyProduct(BuyUserProductCommand command, Contexts contexts)
         {
         }
     }

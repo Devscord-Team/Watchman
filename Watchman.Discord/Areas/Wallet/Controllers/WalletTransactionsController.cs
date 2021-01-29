@@ -1,10 +1,13 @@
 ﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+using Devscord.DiscordFramework.Middlewares.Contexts;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
+using Watchman.Discord.Areas.Wallet.BotCommands.Transactions;
 
 namespace Watchman.Discord.Areas.Wallet.Controllers
 {
@@ -15,7 +18,7 @@ namespace Watchman.Discord.Areas.Wallet.Controllers
      */
     public class WalletTransactionsController : IController 
     {
-        public void CreateTransaction()
+        public void CreateTransaction(CreateTransactionCommand command, Contexts contexts)
         {
 
         }
@@ -23,7 +26,7 @@ namespace Watchman.Discord.Areas.Wallet.Controllers
         /*
          * ask other side for allowment to undo transaction
          */
-        public void UndoMyTransaction()
+        public void UndoMyTransaction(UndoMyTransactionCommand command, Contexts contexts)
         {
 
         }
@@ -31,7 +34,7 @@ namespace Watchman.Discord.Areas.Wallet.Controllers
         /*
          * moderator should have possiblity to undo transaction between users
          */
-        public void ForceUndoTransaction()
+        public void ForceUndoTransaction(ForceUndoTransactionCommand command, Contexts contexts)
         {
 
         }
