@@ -1,4 +1,7 @@
 ﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+using Devscord.DiscordFramework.Middlewares.Contexts;
+
+using Watchman.Discord.Areas.Wallet.BotCommands.Display;
 
 namespace Watchman.Discord.Areas.Wallet.Controllers
 {
@@ -7,31 +10,31 @@ namespace Watchman.Discord.Areas.Wallet.Controllers
      */
     public class WalletDisplayController : IController
     {
-        public void ShowMyWalet()
+        public void ShowMyWalet(ShowMyWalletCommand command, Contexts contexts)
         {
 
         }
 
-        public void ShowDifferentUserWallet()
+        public void ShowDifferentUserWallet(ShowDifferentUserWalletCommand command, Contexts contexts)
         {
 
         }
 
-        public void ShowServerSectionWallet()
+        public void ShowServerSectionWallet(ShowServerSectionWalletCommand command, Contexts contexts)
         {
 
         }
 
-        public void ShowServerWallet()
+        public void ShowServerWallet(ShowServerWalletCommand command, Contexts contexts)
         {
 
         }
 
-        public void ShowServerWalletSectionConfiguration()
+        public void ShowServerWalletSectionConfiguration(ShowServerWalletSectionConfigurationCommand command, Contexts contexts)
         {
         }
 
-        public void ShowServerWalletConfiguration()
+        public void ShowServerWalletConfiguration(ShowServerWalletConfigurationCommand command, Contexts contexts)
         {
         }
     }
