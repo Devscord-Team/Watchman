@@ -19,6 +19,7 @@ using Watchman.DomainModel.Configuration;
 using Watchman.DomainModel.Configuration.Services;
 using Watchman.Discord.Areas.Administration.Services;
 using Watchman.Discord.Areas.Wallet.Services;
+using System.Collections.Generic;
 
 namespace Watchman.Discord
 {
@@ -63,19 +64,23 @@ namespace Watchman.Discord
                             await serversService.GetDiscordServersAsync().ForEachAwaitAsync(initService.InitServer);
                             Log.Information(stopwatch.ElapsedMilliseconds.ToString());
                         })
-                        .AddFromIoC<WalletsInitializationService>(walletsInitService => walletsInitService.CreateWalletsForUsersThatDontHaveWallet)
+                        .AddFromIoC<WalletsInitializationService, DiscordServersService>((walletsInitService, serversService) => 
+                            () => serversService.GetDiscordServersAsync().ForEachAwaitAsync(server => this.InitializeWalletForUsersOnServer(walletsInitService, serversService, server.Id)))
                         .AddHandler(() => Task.Run(() => Log.Information("Bot has done every Ready tasks.")));
                 })
                 .AddOnUserJoinedHandlers(builder =>
                 {
                     builder
                         .AddFromIoC<WelcomeUserService>(x => x.WelcomeUser)
-                        .AddFromIoC<MutingRejoinedUsersService>(x => x.MuteAgainIfNeeded);
+                        .AddFromIoC<MutingRejoinedUsersService>(x => x.MuteAgainIfNeeded)
+                        .AddFromIoC<WalletsInitializationService>(x => (contexts) => x.TryCreateServerWalletForUser(contexts.Server.Id, contexts.User.Id));
+
                 })
                 .AddOnDiscordServerAddedBotHandlers(builder =>
                 {
                     builder
-                        .AddFromIoC<InitializationService>(initService => initService.InitServer);
+                        .AddFromIoC<InitializationService>(initService => initService.InitServer)
+                        .AddFromIoC<WalletsInitializationService, DiscordServersService>((walletsInitService, serversService) => (serverContext) => this.InitializeWalletForUsersOnServer(walletsInitService, serversService, serverContext.Id));
                 })
                 .AddOnWorkflowExceptionHandlers(builder =>
                 {
@@ -100,6 +105,18 @@ namespace Watchman.Discord
                     builder
                         .AddFromIoC<TrustRolesService>(x => x.StopTrustingRole);
                 });
+        }
+
+        private async Task InitializeWalletForUsersOnServer(WalletsInitializationService walletsInitService, DiscordServersService serversService, ulong serverId)
+        {
+            var usersOnServer = await serversService.GetUsersIdsFromServer(serverId);
+            var tasks = new List<Task>();
+            foreach (var userId in usersOnServer)
+            {
+                var task = walletsInitService.TryCreateServerWalletForUser(serverId, userId);
+                tasks.Add(task);
+            }
+            Task.WaitAll(tasks.ToArray());
         }
 
         private IContainer GetAutofacContainer(DiscordConfiguration configuration)

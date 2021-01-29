@@ -66,5 +66,12 @@ namespace Devscord.DiscordFramework.Integration.Services
             this.ConnectedTimes.Add(DateTime.Now);
             return Task.CompletedTask;
         }
+
+        public Task<ulong[]> GetUsersIdsFromServer(ulong serverId)
+        {
+            var guild = this._client.GetGuild(serverId);
+            var userIds = guild.Users.Select(x => x.Id).ToArray();
+            return Task.FromResult(userIds);
+        }
     }
 }

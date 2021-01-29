@@ -13,13 +13,15 @@ namespace Watchman.DomainModel.Wallet
 {
     public class Wallet : Entity, IAggregateRoot
     {
+        public ulong ServerId { get; private set; }
         public ulong UserId { get; private set; }
         [BsonIgnore]
         public IEnumerable<WalletTransaction> Transactions { get; private set; }
         public uint Value { get; private set; } //calculate after transaction and user command
 
-        public Wallet(ulong userId)
+        public Wallet(ulong serverId, ulong userId)
         {
+            this.ServerId = serverId;
             this.UserId = userId;
             this.Transactions = new List<WalletTransaction>();
             this.Value = 0;

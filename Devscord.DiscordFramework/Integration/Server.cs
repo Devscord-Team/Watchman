@@ -157,5 +157,10 @@ namespace Devscord.DiscordFramework.Integration
         {
             return _discordClient.ServersService.GetGuild(guildId);
         }
+
+        internal static Task<ulong[]> GetUsersIdsFromServer(ulong serverId)
+        {
+            return _discordClient.ServersService.GetUsersIdsFromServer(serverId);
+        }
     }
 }

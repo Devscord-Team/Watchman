@@ -16,5 +16,10 @@ namespace Devscord.DiscordFramework.Services
         {
             return Server.GetDiscordServerAsync(serverId);
         }
+
+        public Task<ulong[]> GetUsersIdsFromServer(ulong serverId)
+        {
+            return Server.GetUsersIdsFromServer(serverId);
+        }
     }
 }
