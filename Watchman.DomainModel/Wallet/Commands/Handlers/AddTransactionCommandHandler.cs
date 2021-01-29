@@ -32,6 +32,11 @@ namespace Watchman.DomainModel.Wallet.Commands.Handlers
 
         private Task RefreshWallet(ISession session, ulong serverId, ulong userId, WalletTransaction newTransaction)
         {
+            if(userId == WalletTransaction.DEVSCORD_TEAM_TRANSACTION_USER_ID)
+            {
+                return Task.CompletedTask;
+            }
+
             var wallet = session.Get<Wallet>().FirstOrDefault(x => x.ServerId == serverId && x.UserId == userId);
 
             var timestamp = DateTime.UtcNow;

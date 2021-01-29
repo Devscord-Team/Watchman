@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Wallet.Commands;
 using Watchman.DomainModel.Wallet.Queries;
+using Watchman.DomainModel.Wallet.ValueObjects;
 
 namespace Watchman.Discord.Areas.Wallet.Services
 {
@@ -31,6 +32,21 @@ namespace Watchman.Discord.Areas.Wallet.Services
             }
             var initializeWalletForUser = new InitializeWalletForUserCommand(serverId, userId);
             return this.commandBus.ExecuteAsync(initializeWalletForUser);
+        }
+
+        public async Task TryCreateServerWalletForServer(ulong serverId)
+        {
+            var walletInRepositoryQuery = new GetUserWalletQuery(serverId, 0);
+            var walletInRepository = this.queryBus.Execute(walletInRepositoryQuery).Wallet;
+            if (walletInRepository != null)
+            {
+                return;
+            }
+            var initializeWalletForUser = new InitializeWalletForUserCommand(serverId, 0);
+            await this.commandBus.ExecuteAsync(initializeWalletForUser);
+
+            var initialMoneyCommand = new AddTransactionCommand(serverId, WalletTransaction.DEVSCORD_TEAM_TRANSACTION_USER_ID, 0, 1000, "Initial transaction", string.Empty);
+            await this.commandBus.ExecuteAsync(initialMoneyCommand);
         }
     }
 }

@@ -12,6 +12,8 @@ namespace Watchman.DomainModel.Wallet.ValueObjects
     //we don't want to do any transactions when our code isn't correct
     public class WalletTransaction : Entity
     {
+        public static ulong DEVSCORD_TEAM_TRANSACTION_USER_ID = 636274997786312723; //Watchman UserId
+
         private bool isValid;
 
         public ulong OnServerId { get; private set; }
@@ -55,12 +57,7 @@ namespace Watchman.DomainModel.Wallet.ValueObjects
                 this.isValid = false;
                 return this.isValid;
             }
-            if(this.FromUserId == 0 || this.ToUserId == 0)
-            {
-                this.isValid = false;
-                return this.isValid;
-            }
-            if(this.Value == 0)
+            if (this.Value == 0)
             {
                 this.isValid = false;
                 return this.isValid;
@@ -71,11 +68,6 @@ namespace Watchman.DomainModel.Wallet.ValueObjects
                 return this.isValid;
             }
             if (string.IsNullOrWhiteSpace(this.Title))
-            {
-                this.isValid = false;
-                return this.isValid;
-            }
-            if(string.IsNullOrWhiteSpace(this.Description))
             {
                 this.isValid = false;
                 return this.isValid;

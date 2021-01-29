@@ -33,10 +33,6 @@ namespace Watchman.DomainModel.Wallet
             {
                 throw new ArgumentException("System is trying to put transactions to wrong wallet");
             }
-            if(transactions != null)
-            {
-                throw new ArgumentException("System is trying to put transactions to wallet that already has transactions");
-            }
             this.Transactions = transactions;
             if(calculate)
             {

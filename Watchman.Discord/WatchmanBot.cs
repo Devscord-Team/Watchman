@@ -65,6 +65,8 @@ namespace Watchman.Discord
                             Log.Information(stopwatch.ElapsedMilliseconds.ToString());
                         })
                         .AddFromIoC<WalletsInitializationService, DiscordServersService>((walletsInitService, serversService) => 
+                            () => serversService.GetDiscordServersAsync().ForEachAwaitAsync(server => walletsInitService.TryCreateServerWalletForServer(server.Id)))
+                        .AddFromIoC<WalletsInitializationService, DiscordServersService>((walletsInitService, serversService) =>
                             () => serversService.GetDiscordServersAsync().ForEachAwaitAsync(server => this.InitializeWalletForUsersOnServer(walletsInitService, serversService, server.Id)))
                         .AddHandler(() => Task.Run(() => Log.Information("Bot has done every Ready tasks.")));
                 })
@@ -80,6 +82,8 @@ namespace Watchman.Discord
                 {
                     builder
                         .AddFromIoC<InitializationService>(initService => initService.InitServer)
+                        .AddFromIoC<WalletsInitializationService, DiscordServersService>((walletsInitService, serversService) =>
+                            (serverContext) => serversService.GetDiscordServersAsync().ForEachAwaitAsync(server => walletsInitService.TryCreateServerWalletForServer(serverContext.Id)))
                         .AddFromIoC<WalletsInitializationService, DiscordServersService>((walletsInitService, serversService) => (serverContext) => this.InitializeWalletForUsersOnServer(walletsInitService, serversService, serverContext.Id));
                 })
                 .AddOnWorkflowExceptionHandlers(builder =>
