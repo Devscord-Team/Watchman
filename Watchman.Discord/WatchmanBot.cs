@@ -20,6 +20,7 @@ using Watchman.DomainModel.Configuration.Services;
 using Watchman.Discord.Areas.Administration.Services;
 using Watchman.Discord.Areas.Wallet.Services;
 using System.Collections.Generic;
+using Watchman.DomainModel.Wallet.ValueObjects;
 
 namespace Watchman.Discord
 {
@@ -117,6 +118,10 @@ namespace Watchman.Discord
             var tasks = new List<Task>();
             foreach (var userId in usersOnServer)
             {
+                if(userId == WalletTransaction.DEVSCORD_TEAM_TRANSACTION_USER_ID)
+                {
+                    continue;
+                }
                 var task = walletsInitService.TryCreateServerWalletForUser(serverId, userId);
                 tasks.Add(task);
             }
