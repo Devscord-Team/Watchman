@@ -8,6 +8,9 @@ namespace Watchman.Discord.Areas.Wallet.Controllers
      */
     public class WalletEarningsController : IController
     {
-        //maybe there should be only service that is working in background
+        public void GetAutoEarnings() //get earnings from for example written messages (get all messages of user, check previous transactions and create new transaction server->user)
+        {
+
+        }
     }
 }

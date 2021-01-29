@@ -37,5 +37,9 @@ namespace Watchman.Discord.Areas.Wallet.Controllers
         public void ShowServerWalletConfiguration(ShowServerWalletConfigurationCommand command, Contexts contexts)
         {
         }
+
+        public void ShowServerWalletConfigurationForUser(ShowServerWalletConfigurationForUserCommand command, Contexts contexts)
+        {
+        }
     }
 }
