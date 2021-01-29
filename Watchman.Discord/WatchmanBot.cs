@@ -18,6 +18,7 @@ using Watchman.Integrations.Database.MongoDB;
 using Watchman.DomainModel.Configuration;
 using Watchman.DomainModel.Configuration.Services;
 using Watchman.Discord.Areas.Administration.Services;
+using Watchman.Discord.Areas.Wallet.Services;
 
 namespace Watchman.Discord
 {
@@ -62,6 +63,7 @@ namespace Watchman.Discord
                             await serversService.GetDiscordServersAsync().ForEachAwaitAsync(initService.InitServer);
                             Log.Information(stopwatch.ElapsedMilliseconds.ToString());
                         })
+                        .AddFromIoC<WalletsInitializationService>(walletsInitService => walletsInitService.CreateWalletsForUsersThatDontHaveWallet)
                         .AddHandler(() => Task.Run(() => Log.Information("Bot has done every Ready tasks.")));
                 })
                 .AddOnUserJoinedHandlers(builder =>

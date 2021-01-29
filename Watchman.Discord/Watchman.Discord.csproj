@@ -59,8 +59,4 @@
     </EmbeddedResource>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Areas\Wallet\Services\" />
-  </ItemGroup>
-
 </Project>
