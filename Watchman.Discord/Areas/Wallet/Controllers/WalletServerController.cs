@@ -1,4 +1,7 @@
 ﻿using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+using Devscord.DiscordFramework.Middlewares.Contexts;
+
+using Watchman.Discord.Areas.Wallet.BotCommands.Server;
 
 namespace Watchman.Discord.Areas.Wallet.Controllers
 {
@@ -15,49 +18,49 @@ namespace Watchman.Discord.Areas.Wallet.Controllers
      */
     public class WalletServerController : IController 
     {
-        public void CreateSection()
+        public void CreateSection(CreateSectionCommand command, Contexts contexts)
         {
         }
 
-        public void RemoveSection()
+        public void RemoveSection(RemoveSectionCommand command, Contexts contexts)
         {
         }
 
-        public void CreateSectionsGroup()
+        public void CreateSectionsGroup(CreateSectionsGroupCommand command, Contexts contexts)
         {
         }
 
-        public void AddSectionToGroup()
+        public void AddSectionToGroup(AddSectionToGroupCommand command, Contexts contexts)
         {
         }
 
-        public void RemoveSectionFromGroup()
+        public void RemoveSectionFromGroup(RemoveSectionFromGroupCommand command, Contexts contexts)
         {
         }
 
-        public void SetUserPermissionsInSections()
+        public void SetUserPermissionsInSections(SetUserPermissionsInSectionsCommand command, Contexts contexts)
         {
         }
 
-        public void SetUserPermissionsInSectionsGroup()
+        public void SetUserPermissionsInSectionsGroup(SetUserPermissionsInSectionsGroupCommand command, Contexts contexts)
         {
         }
 
-        public void SetSectionMonthlyBudget()
+        public void SetSectionMonthlyBudget(SetSectionMonthlyBudgetCommand command, Contexts contexts)
         {
         }
 
-        public void SetServerMonthlyIncome()
-        {
-
-        }
-
-        public void SetTransactionTax()
+        public void SetServerMonthlyIncome(SetServerMonthlyIncomeCommand command, Contexts contexts)
         {
 
         }
 
-        public void SetBoostingAdditionalIncome()
+        public void SetTransactionTax(SetTransactionTaxCommand command, Contexts contexts)
+        {
+
+        }
+
+        public void SetBoostingAdditionalIncome(SetBoostingAdditionalIncomeCommand command, Contexts contexts)
         {
 
         }
