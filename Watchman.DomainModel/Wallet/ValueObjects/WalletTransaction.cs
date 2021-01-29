@@ -8,6 +8,8 @@ using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.Wallet.ValueObjects
 {
+    //todo - block transactions mechanism when in last time was any exception (wallet calculation)
+    //we don't want to do any transactions when our code isn't correct
     public class WalletTransaction : Entity
     {
         private bool isValid;
@@ -19,8 +21,12 @@ namespace Watchman.DomainModel.Wallet.ValueObjects
         public string Title { get; private set; }
         public string Description { get; private set; }
 
-        public WalletTransaction(ulong onServerId, ulong fromUserId, ulong toUserId, uint value, string title, string description)
+        public WalletTransaction(ulong onServerId, ulong fromUserId, ulong toUserId, uint value, string title, string description, bool firstUserWalletValueIsCalculated, bool secondUserWalletValueIsCalculated)
         {
+            if(!firstUserWalletValueIsCalculated || secondUserWalletValueIsCalculated)
+            {
+                throw new ArgumentException("Both wallets must be calculated");
+            }
             this.OnServerId = onServerId;
             this.FromUserId = fromUserId;
             this.ToUserId = toUserId;
