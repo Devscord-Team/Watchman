@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Watchman.DomainModel.Wallet.ValueObjects;
 using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.Wallet
@@ -14,17 +15,17 @@ namespace Watchman.DomainModel.Wallet
     {
         public ulong UserId { get; private set; }
         [BsonIgnore]
-        public IEnumerable<ValueObjects.WalletTransaction> Transactions { get; private set; }
+        public IEnumerable<WalletTransaction> Transactions { get; private set; }
         public uint Value { get; private set; } //calculate after transaction and user command
 
         public Wallet(ulong userId)
         {
             this.UserId = userId;
-            this.Transactions = new List<ValueObjects.WalletTransaction>();
+            this.Transactions = new List<WalletTransaction>();
             this.Value = 0;
         }
 
-        public void FillTransactions(IEnumerable<ValueObjects.WalletTransaction> transactions)
+        public void FillTransactions(IEnumerable<WalletTransaction> transactions, bool calculate = true)
         {
             if(transactions.Any(x => x.FromUserId != this.UserId && x.ToUserId != this.UserId))
             {
@@ -35,6 +36,10 @@ namespace Watchman.DomainModel.Wallet
                 throw new ArgumentException("System is trying to put transactions to wallet that already has transactions");
             }
             this.Transactions = transactions;
+            if(calculate)
+            {
+                this.CalculateValue();
+            }
         }
 
         public void CalculateValue()

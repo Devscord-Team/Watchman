@@ -59,4 +59,8 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Areas\Wallet\BotCommands\" />
+  </ItemGroup>
+
 </Project>
