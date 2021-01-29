@@ -25,12 +25,12 @@ namespace Watchman.DomainModel.Wallet.Commands.Handlers
 
             using var session = this.sessionFactory.CreateMongo();
             Task.WaitAll(
-                this.CalculateWallet(session, command.OnServerId, command.FromUserId, transaction), 
-                this.CalculateWallet(session, command.OnServerId, command.ToUserId, transaction));
+                this.RefreshWallet(session, command.OnServerId, command.FromUserId, transaction), 
+                this.RefreshWallet(session, command.OnServerId, command.ToUserId, transaction));
             return session.AddAsync(transaction);
         }
 
-        private Task CalculateWallet(ISession session, ulong serverId, ulong userId, WalletTransaction newTransaction)
+        private Task RefreshWallet(ISession session, ulong serverId, ulong userId, WalletTransaction newTransaction)
         {
             var wallet = session.Get<Wallet>().FirstOrDefault(x => x.ServerId == serverId && x.UserId == userId);
 
@@ -39,19 +39,19 @@ namespace Watchman.DomainModel.Wallet.Commands.Handlers
 
             fromUserTransactions.Add(newTransaction); //IMPORTANT
 
-            this.RefreshWallet(wallet, fromUserTransactions);
+            this.CalculateWallet(wallet, fromUserTransactions);
 
             var transactionsCreatedInMeantime = this.GetUserTransactions(session, serverId, userId).Where(x => x.CreatedAt >= timestamp);
             if (transactionsCreatedInMeantime.Any()) //double check -> maybe there should be loop, but double should be enough
             {
                 fromUserTransactions.AddRange(transactionsCreatedInMeantime);
-                this.RefreshWallet(wallet, fromUserTransactions);
+                this.CalculateWallet(wallet, fromUserTransactions);
             }
 
             return session.UpdateAsync(wallet);
         }
 
-        private void RefreshWallet(Wallet wallet, IEnumerable<WalletTransaction> transactions)
+        private void CalculateWallet(Wallet wallet, IEnumerable<WalletTransaction> transactions)
         {
             if (transactions.Any())
             {
