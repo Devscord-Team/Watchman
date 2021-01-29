@@ -21,11 +21,11 @@ namespace Watchman.DomainModel.Wallet.ValueObjects
         public string Title { get; private set; }
         public string Description { get; private set; }
 
-        public WalletTransaction(ulong onServerId, ulong fromUserId, ulong toUserId, uint value, string title, string description, bool firstUserWalletValueIsCalculated, bool secondUserWalletValueIsCalculated)
+        public WalletTransaction(ulong onServerId, ulong fromUserId, ulong toUserId, uint value, string title, string description, bool fromUserWalletValueIsCalculated)
         {
-            if(!firstUserWalletValueIsCalculated || secondUserWalletValueIsCalculated)
+            if(!fromUserWalletValueIsCalculated)
             {
-                throw new ArgumentException("Both wallets must be calculated");
+                throw new ArgumentException("User wallet must be calculated");
             }
             this.OnServerId = onServerId;
             this.FromUserId = fromUserId;
@@ -84,5 +84,7 @@ namespace Watchman.DomainModel.Wallet.ValueObjects
             this.isValid = true;
             return this.isValid;
         }
+
+        public bool IsValid => this.isValid;
     }
 }

@@ -14,7 +14,7 @@ namespace Watchman.DomainModel.Wallet
     public class Wallet : Entity, IAggregateRoot
     {
         public ulong ServerId { get; private set; }
-        public ulong UserId { get; private set; }
+        public ulong UserId { get; private set; } //if 0 -> this is server wallet
         [BsonIgnore]
         public IEnumerable<WalletTransaction> Transactions { get; private set; }
         public uint Value { get; private set; } //calculate after transaction and user command
@@ -53,13 +53,17 @@ namespace Watchman.DomainModel.Wallet
             long value = 0;
             foreach (var transaction in this.Transactions)
             {
+                if(!transaction.IsValid)
+                {
+                    transaction.Validate();
+                }
                 if(transaction.FromUserId == this.UserId)
                 {
-                    value -= transaction.Value;
+                    value -= transaction.GetValue();
                 }
                 else 
                 {
-                    value += transaction.Value;
+                    value += transaction.GetValue();
                 }
             }
             if(value < 0)
