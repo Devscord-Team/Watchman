@@ -4,6 +4,7 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,7 +30,7 @@ namespace Watchman.Discord.Areas.Wallet.Controllers
             this.messagesServiceFactory = messagesServiceFactory;
         }
 
-        public Task ShowWalet(ShowWalletCommand command, Contexts contexts)
+        public Task ShowWallet(ShowWalletCommand command, Contexts contexts)
         {
             var userId = contexts.User.Id;
             if(command.User > 0)
@@ -55,7 +56,7 @@ namespace Watchman.Discord.Areas.Wallet.Controllers
             var transactionsQuery = new GetUserLastTransactionsQuery(contexts.Server.Id, userId, command.Quantity);
             var transactions = this.queryBus.Execute(transactionsQuery).Transactions;
             var messagesService = this.messagesServiceFactory.Create(contexts);
-            return messagesService.SendEmbedMessage("Transactions", $"Last {command.Quantity} transactions of user: {userId.GetUserMention()}", 
+            return messagesService.SendEmbedMessage("Transactions", $"Last {transactions.Count()} transactions of user: {userId.GetUserMention()}", 
                 transactions.Select(transaction => 
                 {
                     var stringBuilder = new StringBuilder();

@@ -9,11 +9,11 @@ namespace Watchman.DomainModel.Wallet.Queries
         public ulong UserId { get; private set; }
         public int Quantity { get; private set; }
 
-        public GetUserLastTransactionsQuery(ulong serverId, ulong userId, uint quantity)
+        public GetUserLastTransactionsQuery(ulong serverId, ulong userId, int quantity)
         {
             this.ServerId = serverId;
             this.UserId = userId;
-            this.Quantity = (int)quantity;
+            this.Quantity = quantity;
         }
     }
 }

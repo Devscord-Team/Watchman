@@ -9,6 +9,6 @@ namespace Watchman.Discord.Areas.Wallet.BotCommands.Display
         [UserMention]
         public ulong User { get; set; }
         [Number]
-        public uint Quantity { get; set; }
+        public int Quantity { get; set; }
     }
 }
