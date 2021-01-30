@@ -60,16 +60,15 @@ namespace Watchman.Discord.Areas.Wallet.Controllers
                 transactions.Select(transaction => 
                 {
                     var stringBuilder = new StringBuilder();
-                    stringBuilder.AppendLine($"{transaction.Title}");
                     if(!string.IsNullOrWhiteSpace(transaction.Description))
                     {
                         stringBuilder.AppendLine($"Description:");
                         stringBuilder.AppendLine(transaction.Description);
+                        stringBuilder.AppendLine();
                     }
-                    stringBuilder.AppendLine($"====");
                     stringBuilder.AppendLine($"From user: {transaction.FromUserId.GetUserMention()}");
                     stringBuilder.AppendLine($"To user: {transaction.ToUserId.GetUserMention()}");
-                    stringBuilder.AppendLine($"====");
+                    stringBuilder.AppendLine();
                     stringBuilder.AppendLine($"Value: {transaction.Value}");
                     stringBuilder.AppendLine($"Created at: {transaction.CreatedAt}");
 

@@ -41,15 +41,15 @@ namespace Devscord.DiscordFramework.Services
             }
         }
 
-        public Task SendEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, string>> values)
+        public Task SendEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, string>> values, EmbedColor embedColor = EmbedColor.Primary)
         {
-            var embeds = this._embedMessageSplittingService.SplitEmbedMessage(title, description, values);
+            var embeds = this._embedMessageSplittingService.SplitEmbedMessage(title, description, values, embedColor);
             return this.SendEmbedSplitMessages(embeds);
         }
 
-        public Task SendEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, Dictionary<string, string>>> values)
+        public Task SendEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, Dictionary<string, string>>> values, EmbedColor embedColor = EmbedColor.Primary)
         {
-            var embeds = this._embedMessageSplittingService.SplitEmbedMessage(title, description, values);
+            var embeds = this._embedMessageSplittingService.SplitEmbedMessage(title, description, values, embedColor);
             return this.SendEmbedSplitMessages(embeds);
         }
 

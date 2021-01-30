@@ -17,25 +17,25 @@ namespace Devscord.DiscordFramework.Services
             this._embedMessagesService = embedMessagesService;
         }
 
-        internal IEnumerable<Embed> SplitEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, string>> values)
+        internal IEnumerable<Embed> SplitEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, string>> values, EmbedColor embedColor)
         {
             var leftForValues = MAX_EMBED_LENGTH - title.Length - description.Length;
             var messages = this.SplitMessage(values, leftForValues).ToList();
-            yield return this._embedMessagesService.Generate(title, description, messages.FirstOrDefault() ?? new Dictionary<string, string>());
+            yield return this._embedMessagesService.Generate(title, description, messages.FirstOrDefault() ?? new Dictionary<string, string>(), embedColor);
             foreach (var message in messages.Skip(1))
             {
-                yield return this._embedMessagesService.Generate(title: null, description: null, message);
+                yield return this._embedMessagesService.Generate(title: null, description: null, message, embedColor);
             }
         }
 
-        internal IEnumerable<Embed> SplitEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, Dictionary<string, string>>> values)
+        internal IEnumerable<Embed> SplitEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, Dictionary<string, string>>> values, EmbedColor embedColor)
         {
             var leftForValues = MAX_EMBED_LENGTH - title.Length - description.Length - this._embedMessagesService.FooterLength;
             var messages = this.SplitMessage(values, leftForValues).ToList();
-            yield return this._embedMessagesService.Generate(title, description, messages.FirstOrDefault() ?? new Dictionary<string, Dictionary<string, string>>());
+            yield return this._embedMessagesService.Generate(title, description, messages.FirstOrDefault() ?? new Dictionary<string, Dictionary<string, string>>(), embedColor);
             foreach (var message in messages.Skip(1))
             {
-                yield return this._embedMessagesService.Generate(title: null, description: null, message);
+                yield return this._embedMessagesService.Generate(title: null, description: null, message, embedColor);
             }
         }
 
