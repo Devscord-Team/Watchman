@@ -27,7 +27,7 @@ namespace Watchman.DomainModel.Wallet
             this.Value = 0;
         }
 
-        public void FillTransactions(IEnumerable<WalletTransaction> transactions, bool calculate = true)
+        public void FillTransactions(IEnumerable<WalletTransaction> transactions, bool calculate = false)
         {
             if(transactions.Any(x => x.FromUserId != this.UserId && x.ToUserId != this.UserId))
             {

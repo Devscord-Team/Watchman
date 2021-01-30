@@ -11,7 +11,6 @@
 
   <ItemGroup>
     <Folder Include="Wallet\Extensions\" />
-    <Folder Include="Wallet\Services\" />
   </ItemGroup>
 
 </Project>

@@ -3,9 +3,12 @@ using Devscord.DiscordFramework.Framework.Commands.PropertyAttributes;
 
 namespace Watchman.Discord.Areas.Wallet.BotCommands.Display
 {
-    public class ShowDifferentUserWalletCommand : IBotCommand
+    public class ShowLastTransactionsCommand : IBotCommand
     {
+        [Optional]
         [UserMention]
         public ulong User { get; set; }
+        [Number]
+        public uint Quantity { get; set; }
     }
 }

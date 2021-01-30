@@ -85,7 +85,8 @@ namespace Watchman.Discord
                         .AddFromIoC<InitializationService>(initService => initService.InitServer)
                         .AddFromIoC<WalletsInitializationService, DiscordServersService>((walletsInitService, serversService) =>
                             (serverContext) => serversService.GetDiscordServersAsync().ForEachAwaitAsync(server => walletsInitService.TryCreateServerWalletForServer(serverContext.Id)))
-                        .AddFromIoC<WalletsInitializationService, DiscordServersService>((walletsInitService, serversService) => (serverContext) => this.InitializeWalletForUsersOnServer(walletsInitService, serversService, serverContext.Id));
+                        .AddFromIoC<WalletsInitializationService, DiscordServersService>((walletsInitService, serversService) => 
+                            (serverContext) => this.InitializeWalletForUsersOnServer(walletsInitService, serversService, serverContext.Id));
                 })
                 .AddOnWorkflowExceptionHandlers(builder =>
                 {
@@ -115,13 +116,10 @@ namespace Watchman.Discord
         private async Task InitializeWalletForUsersOnServer(WalletsInitializationService walletsInitService, DiscordServersService serversService, ulong serverId)
         {
             var usersOnServer = await serversService.GetUsersIdsFromServer(serverId);
-            var tasks = new List<Task>();
-            foreach (var userId in usersOnServer)
-            {
-                var task = walletsInitService.TryCreateServerWalletForUser(serverId, userId);
-                tasks.Add(task);
-            }
-            Task.WaitAll(tasks.ToArray());
+            var tasks = usersOnServer
+                .Select(userId => walletsInitService.TryCreateServerWalletForUser(serverId, userId))
+                .ToArray();
+            Task.WaitAll(tasks);
         }
 
         private IContainer GetAutofacContainer(DiscordConfiguration configuration)
