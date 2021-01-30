@@ -24,6 +24,10 @@ namespace Watchman.Discord.Areas.Wallet.Services
 
         public Task TryCreateServerWalletForUser(ulong serverId, ulong userId)
         {
+            if (userId == WalletTransaction.DEVSCORD_TEAM_TRANSACTION_USER_ID)
+            {
+                return Task.CompletedTask;
+            }
             var walletInRepositoryQuery = new GetUserWalletQuery(serverId, userId);
             var walletInRepository = this.queryBus.Execute(walletInRepositoryQuery).Wallet;
             if (walletInRepository != null)

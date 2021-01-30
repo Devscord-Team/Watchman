@@ -118,10 +118,6 @@ namespace Watchman.Discord
             var tasks = new List<Task>();
             foreach (var userId in usersOnServer)
             {
-                if(userId == WalletTransaction.DEVSCORD_TEAM_TRANSACTION_USER_ID)
-                {
-                    continue;
-                }
                 var task = walletsInitService.TryCreateServerWalletForUser(serverId, userId);
                 tasks.Add(task);
             }
