@@ -40,5 +40,12 @@ namespace Watchman.Discord.Areas.UselessFeatures.Controllers
             var messagesService = this._messagesServiceFactory.Create(contexts);
             return messagesService.SendMessage(urlAddress);
         }
+
+        public Task InviteBot(InviteBotCommand _, Contexts contexts)
+        {
+            const string urlAddress = "https://discordapp.com/api/oauth2/authorize?client_id=636274997786312723&permissions=2147483127&scope=bot";
+            var messagesService = this._messagesServiceFactory.Create(contexts);
+            return messagesService.SendMessage(urlAddress);
+        }
     }
 }

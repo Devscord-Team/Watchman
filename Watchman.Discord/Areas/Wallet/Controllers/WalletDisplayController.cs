@@ -40,7 +40,8 @@ namespace Watchman.Discord.Areas.Wallet.Controllers
             var messagesService = this.messagesServiceFactory.Create(contexts);
             return messagesService.SendEmbedMessage("Wallet", $"Wallet of user: {userId.GetUserMention()}", new List<KeyValuePair<string, string>> 
             { 
-                new KeyValuePair<string, string>("Value", wallet.Value.ToString()) 
+                new KeyValuePair<string, string>("Value", wallet.Value.ToString()),
+                new KeyValuePair<string, string>("Last Update", wallet.UpdatedAt.ToString()),
             });
         }
 

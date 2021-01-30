@@ -36,6 +36,7 @@ namespace Devscord.DiscordFramework.Services
         {
             return new EmbedBuilder()
                 .WithThumbnailUrl(@"https://raw.githubusercontent.com/Devscord-Team/Watchman/master/avatar.png")
+                .WithColor(23, 147, 237) //maybe there should be many colors
                 .WithFooter(new EmbedFooterBuilder()
                     .WithText(FOOTER_TEXT)
                     .WithIconUrl(@"https://raw.githubusercontent.com/Devscord-Team/Watchman/master/avatar.png"));
