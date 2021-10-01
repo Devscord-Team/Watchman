@@ -6,12 +6,17 @@ namespace Watchman.DomainModel.Configuration
     public abstract class MappedConfiguration<T> : IMappedConfiguration
     {
         public abstract T Value { get; set; }
-        public ulong ServerId { get; }
+        public ulong ServerId { get; private set; }
         public string Name { get; }
 
         public MappedConfiguration(ulong serverId)
         {
             this.Name = this.GetType().Name;
+            this.ServerId = serverId;
+        }
+
+        public void SetServerId(ulong serverId)
+        {
             this.ServerId = serverId;
         }
 

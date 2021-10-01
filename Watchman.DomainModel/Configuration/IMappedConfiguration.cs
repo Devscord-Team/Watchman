@@ -4,5 +4,6 @@
     {
         ulong ServerId { get; }
         string Name { get; }
+        void SetServerId(ulong serverId);
     }
 }
