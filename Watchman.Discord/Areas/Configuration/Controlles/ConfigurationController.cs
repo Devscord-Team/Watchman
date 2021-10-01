@@ -39,6 +39,5 @@ namespace Watchman.Discord.Areas.Configuration.Controlles
 
             await this._configurationService.SaveNewConfiguration(configItem);
         }
-        
     }
 }
