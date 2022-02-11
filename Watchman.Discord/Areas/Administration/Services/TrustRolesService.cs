@@ -12,15 +12,22 @@ using Watchman.DomainModel.DiscordServer.Queries;
 
 namespace Watchman.Discord.Areas.Administration.Services
 {
-    public class TrustRolesService
+    public interface ITrustRolesService
+    {
+        Task TrustThisRole(string roleName, Contexts contexts);
+        Task StopTrustingRole(string roleName, Contexts contexts);
+        Task StopTrustingRole(UserRole role);
+    }
+
+    public class TrustRolesService : ITrustRolesService
     {
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
         private readonly IMessagesServiceFactory _messagesServiceFactory;
-        private readonly CheckUserSafetyService _checkUserSafetyService;
-        private readonly UsersRolesService _usersRolesService;
+        private readonly ICheckUserSafetyService _checkUserSafetyService;
+        private readonly IUsersRolesService _usersRolesService;
 
-        public TrustRolesService(IQueryBus queryBus, ICommandBus commandBus, IMessagesServiceFactory messagesServiceFactory, CheckUserSafetyService checkUserSafetyService, UsersRolesService usersRolesService)
+        public TrustRolesService(IQueryBus queryBus, ICommandBus commandBus, IMessagesServiceFactory messagesServiceFactory, ICheckUserSafetyService checkUserSafetyService, IUsersRolesService usersRolesService)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;
