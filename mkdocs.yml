@@ -15,7 +15,7 @@ nav:
       - "Jak działa Anty Spam": 16-jak-dziala-antyspam.md
       - "Jak działa konfiguracja": 11-jak-dziala-konfiguracja.md
       - 'Co się dzieje podczas inicjalizacji': 194-inicjalizacja.md
-  - "Watchman V2"
+  - "Watchman V2":
     - "Postanowienia": WatchmanV2/1-postanowienia.md
 theme:
   name: "material"
