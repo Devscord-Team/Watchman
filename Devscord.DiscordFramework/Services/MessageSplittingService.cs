@@ -7,7 +7,12 @@ using System.Text;
 
 namespace Devscord.DiscordFramework.Services
 {
-    public class MessageSplittingService
+    public interface IMessageSplittingService
+    {
+        IEnumerable<string> SplitMessage(string fullMessage, MessageType messageType);
+    }
+
+    public class MessageSplittingService : IMessageSplittingService
     {
         private const int MAX_MESSAGE_LENGTH = 1990; // for safety reason I made it smaller than 2000
 

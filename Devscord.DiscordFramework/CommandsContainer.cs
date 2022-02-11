@@ -7,7 +7,12 @@ using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework
 {
-    public class CommandsContainer
+    public interface ICommandsContainer
+    {
+        Task<CustomCommand> GetCommand(DiscordRequest request, Type botCommand, ulong serverId);
+    }
+
+    public class CommandsContainer : ICommandsContainer
     {
         private readonly ICustomCommandsLoader _customCommandsLoader;
         private Dictionary<ulong, List<CustomCommand>> _customCommandsGroupedByBotCommand;

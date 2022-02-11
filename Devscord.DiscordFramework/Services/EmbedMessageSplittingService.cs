@@ -5,7 +5,13 @@ using Discord;
 
 namespace Devscord.DiscordFramework.Services
 {
-    public class EmbedMessageSplittingService
+    public interface IEmbedMessageSplittingService
+    {
+        IEnumerable<Embed> SplitEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, string>> values);
+        IEnumerable<Embed> SplitEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, Dictionary<string, string>>> values);
+    }
+
+    public class EmbedMessageSplittingService : IEmbedMessageSplittingService
     {
         private const int MAX_FIELDS = 25;
         private const int MAX_FIELD_LENGTH = 950;
@@ -17,7 +23,7 @@ namespace Devscord.DiscordFramework.Services
             this._embedMessagesService = embedMessagesService;
         }
 
-        internal IEnumerable<Embed> SplitEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, string>> values)
+        public IEnumerable<Embed> SplitEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, string>> values)
         {
             var leftForValues = MAX_EMBED_LENGTH - title.Length - description.Length;
             var messages = this.SplitMessage(values, leftForValues).ToList();
@@ -28,7 +34,7 @@ namespace Devscord.DiscordFramework.Services
             }
         }
 
-        internal IEnumerable<Embed> SplitEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, Dictionary<string, string>>> values)
+        public IEnumerable<Embed> SplitEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, Dictionary<string, string>>> values)
         {
             var leftForValues = MAX_EMBED_LENGTH - title.Length - description.Length - this._embedMessagesService.FooterLength;
             var messages = this.SplitMessage(values, leftForValues).ToList();

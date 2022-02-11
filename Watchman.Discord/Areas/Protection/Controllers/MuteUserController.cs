@@ -21,13 +21,13 @@ namespace Watchman.Discord.Areas.Protection.Controllers
     public class MuteUserController : IController
     {
         private readonly MutingHelper _mutingHelper;
-        private readonly DirectMessagesService _directMessagesService;
+        private readonly IDirectMessagesService _directMessagesService;
         private readonly MutingService _mutingService;
         private readonly UnmutingService _unmutingService;
-        private readonly UsersService _usersService;
-        private readonly MessagesServiceFactory _messagesServiceFactory;
+        private readonly IUsersService _usersService;
+        private readonly IMessagesServiceFactory _messagesServiceFactory;
 
-        public MuteUserController(MutingService mutingService, UnmutingService unmutingService, UsersService usersService, DirectMessagesService directMessagesService, MutingHelper mutingHelper, MessagesServiceFactory messagesServiceFactory)
+        public MuteUserController(MutingService mutingService, UnmutingService unmutingService, IUsersService usersService, IDirectMessagesService directMessagesService, MutingHelper mutingHelper, IMessagesServiceFactory messagesServiceFactory)
         {
             this._mutingService = mutingService;
             this._unmutingService = unmutingService;

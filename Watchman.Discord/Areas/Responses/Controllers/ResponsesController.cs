@@ -14,11 +14,11 @@ namespace Watchman.Discord.Areas.Responses.Controllers
 {
     public class ResponsesController : IController
     {
-        private readonly MessagesServiceFactory _messagesServiceFactory;
+        private readonly IMessagesServiceFactory _messagesServiceFactory;
         private readonly Services.ResponsesService _responsesService;
         private readonly ResponsesMessageService _responsesMessageService;
 
-        public ResponsesController(MessagesServiceFactory messagesServiceFactory, Services.ResponsesService responsesService, ResponsesMessageService responsesMessageService)
+        public ResponsesController(IMessagesServiceFactory messagesServiceFactory, Services.ResponsesService responsesService, ResponsesMessageService responsesMessageService)
         {
             this._messagesServiceFactory = messagesServiceFactory;
             this._responsesService = responsesService;

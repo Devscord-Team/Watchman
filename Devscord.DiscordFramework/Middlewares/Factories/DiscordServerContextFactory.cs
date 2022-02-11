@@ -7,17 +7,21 @@ using System.Linq;
 
 namespace Devscord.DiscordFramework.Middlewares.Factories
 {
-    internal class DiscordServerContextFactory : IContextFactory<IGuild, DiscordServerContext>
+    public interface IDiscordServerContextFactory : IContextFactory<IGuild, DiscordServerContext>
     {
-        private readonly UsersService _usersService;
-        private readonly UsersRolesService _usersRolesService;
+    }
+
+    internal class DiscordServerContextFactory : IDiscordServerContextFactory
+    {
+        private readonly IUsersService _usersService;
+        private readonly IUsersRolesService _usersRolesService;
         private readonly UserContextsFactory _userContextsFactory;
         private readonly ChannelContextFactory _channelContextFactory;
 
         public DiscordServerContextFactory(IComponentContext context)
         {
-            this._usersService = context.Resolve<UsersService>();
-            this._usersRolesService = context.Resolve<UsersRolesService>();
+            this._usersService = context.Resolve<IUsersService>();
+            this._usersRolesService = context.Resolve<IUsersRolesService>();
             this._userContextsFactory = context.Resolve<UserContextsFactory>();
             this._channelContextFactory = context.Resolve<ChannelContextFactory>();
         }

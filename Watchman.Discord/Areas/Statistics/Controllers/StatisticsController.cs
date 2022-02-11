@@ -28,16 +28,14 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
     public class StatisticsController : IController
     {
         private readonly PeriodStatisticsService _periodStatisticsService;
-        private readonly ConfigurationService _configurationService;
-        private readonly IQueryBus _queryBus;
+        private readonly IConfigurationService _configurationService;
         private readonly ICommandBus _commandBus;
-        private readonly MessagesServiceFactory _messagesServiceFactory;
-        private readonly DirectMessagesService _directMessagesService;
+        private readonly IMessagesServiceFactory _messagesServiceFactory;
+        private readonly IDirectMessagesService _directMessagesService;
 
-        public StatisticsController(IQueryBus queryBus, ICommandBus commandBus, MessagesServiceFactory messagesServiceFactory, 
-            PeriodStatisticsService periodStatisticsService, ConfigurationService configurationService, DirectMessagesService directMessagesService)
+        public StatisticsController(ICommandBus commandBus, IMessagesServiceFactory messagesServiceFactory, 
+            PeriodStatisticsService periodStatisticsService, IConfigurationService configurationService, IDirectMessagesService directMessagesService)
         {
-            this._queryBus = queryBus;
             this._commandBus = commandBus;
             this._messagesServiceFactory = messagesServiceFactory;
             this._periodStatisticsService = periodStatisticsService;

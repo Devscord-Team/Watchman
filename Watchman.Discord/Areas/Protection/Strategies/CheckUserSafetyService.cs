@@ -14,7 +14,13 @@ using Message = Watchman.DomainModel.Messages.Message;
 
 namespace Watchman.Discord.Areas.Protection.Strategies
 {
-    public class CheckUserSafetyService : ICyclicService, IUserSafetyChecker
+    public interface ICheckUserSafetyService : ICyclicService, IUserSafetyChecker
+    {
+        bool IsUserSafe(ulong userId, ulong serverId);
+        HashSet<ulong> GetSafeUsersIds(ulong serverId);
+    }
+
+    public class CheckUserSafetyService : ICheckUserSafetyService
     {
         private Dictionary<ulong, ServerSafeUsers> _safeUsersOnServers;
         private readonly IQueryBus _queryBus;

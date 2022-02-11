@@ -8,11 +8,11 @@ namespace Devscord.DiscordFramework.Middlewares
 {
     public class UserMiddleware : IMiddleware
     {
-        private readonly UserContextsFactory _userContextsFactory;
+        private readonly IUserContextsFactory _userContextsFactory;
 
-        public UserMiddleware(IComponentContext context)
+        public UserMiddleware(IUserContextsFactory userContextsFactory)
         {
-            this._userContextsFactory = new UserContextsFactory(context, context.Resolve<UsersService>());
+            this._userContextsFactory = userContextsFactory;
         }
 
         public IDiscordContext Process(SocketMessage data)

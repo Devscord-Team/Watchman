@@ -27,16 +27,18 @@ namespace Watchman.Discord.Areas.Administration.Controllers
     public class AdministrationController : IController
     {
         private readonly IQueryBus _queryBus;
-        private readonly UsersService _usersService;
-        private readonly DirectMessagesService _directMessagesService;
-        private readonly MessagesServiceFactory _messagesServiceFactory;
-        private readonly RolesService _rolesService;
-        private readonly TrustRolesService _trustRolesService;
-        private readonly CheckUserSafetyService _checkUserSafetyService;
-        private readonly UsersRolesService _usersRolesService;
+        private readonly IUsersService _usersService;
+        private readonly IDirectMessagesService _directMessagesService;
+        private readonly IMessagesServiceFactory _messagesServiceFactory;
+        private readonly IRolesService _rolesService;
+        private readonly ITrustRolesService _trustRolesService;
+        private readonly ICheckUserSafetyService _checkUserSafetyService;
+        private readonly IUsersRolesService _usersRolesService;
         private readonly IConfigurationService _configurationService;
 
-        public AdministrationController(IQueryBus queryBus, UsersService usersService, DirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, RolesService rolesService, TrustRolesService trustRolesService, CheckUserSafetyService checkUserSafetyService, UsersRolesService usersRolesService, IConfigurationService configurationService)
+        public AdministrationController(IQueryBus queryBus, IUsersService usersService, IDirectMessagesService directMessagesService, 
+            IMessagesServiceFactory messagesServiceFactory, IRolesService rolesService, ITrustRolesService trustRolesService, 
+            ICheckUserSafetyService checkUserSafetyService, IUsersRolesService usersRolesService, IConfigurationService configurationService)
         {
             this._queryBus = queryBus;
             this._usersService = usersService;

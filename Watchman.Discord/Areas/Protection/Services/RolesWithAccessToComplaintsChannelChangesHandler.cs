@@ -15,12 +15,12 @@ namespace Watchman.Discord.Areas.Protection.Services
         private static List<Permission> ReadingAndSending => new List<Permission> {Permission.ReadMessages, Permission.SendMessages};
         private static ChangedPermissions AccessPermissions => new ChangedPermissions(allowPermissions: ReadingAndSending, denyPermissions: null);
 
-        private readonly DiscordServersService _discordServersService;
-        private readonly UsersRolesService _usersRolesService;
-        private readonly ChannelsService _channelsService;
+        private readonly IDiscordServersService _discordServersService;
+        private readonly IUsersRolesService _usersRolesService;
+        private readonly IChannelsService _channelsService;
         private readonly IQueryBus _queryBus;
 
-        public RolesWithAccessToComplaintsChannelChangesHandler(IQueryBus queryBus, DiscordServersService discordServersService, UsersRolesService usersRolesService, ChannelsService channelsService)
+        public RolesWithAccessToComplaintsChannelChangesHandler(IQueryBus queryBus, IDiscordServersService discordServersService, IUsersRolesService usersRolesService, IChannelsService channelsService)
         {
             this._discordServersService = discordServersService;
             this._usersRolesService = usersRolesService;

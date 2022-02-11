@@ -22,16 +22,14 @@ namespace Watchman.Discord.Areas.Protection.Controllers
 {
     public class WarnsController : IController
     {
-        private readonly MessagesServiceFactory _messagesServiceFactory;
-        private readonly UsersService _usersService;
-        private readonly DirectMessagesService _directMessagesService;
-        private readonly WarnsService _warnService;
+        private readonly IMessagesServiceFactory _messagesServiceFactory;
+        private readonly IUsersService _usersService;
+        private readonly IWarnsService _warnService;
 
-        public WarnsController(MessagesServiceFactory messagesServiceFactory, UsersService usersService, DirectMessagesService directMessagesService, WarnsService warnService)
+        public WarnsController(IMessagesServiceFactory messagesServiceFactory, IUsersService usersService, IWarnsService warnService)
         {
             this._messagesServiceFactory = messagesServiceFactory;
             this._usersService = usersService;
-            this._directMessagesService = directMessagesService;
             this._warnService = warnService;
         }
 

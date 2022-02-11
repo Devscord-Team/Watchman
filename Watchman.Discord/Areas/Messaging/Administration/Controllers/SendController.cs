@@ -8,9 +8,9 @@ namespace Watchman.Discord.Areas.Messaging.Administration.Controllers
 {
     public class SendController : IController
     {
-        private readonly MessagesServiceFactory _messagesServiceFactory;
+        private readonly IMessagesServiceFactory _messagesServiceFactory;
         
-        public SendController(MessagesServiceFactory messagesServiceFactory)
+        public SendController(IMessagesServiceFactory messagesServiceFactory)
         {
             this._messagesServiceFactory = messagesServiceFactory;
         }

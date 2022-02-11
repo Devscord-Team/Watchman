@@ -5,6 +5,12 @@ using System.Collections.Generic;
 
 namespace Devscord.DiscordFramework.Services
 {
+    public interface IMessagesHistoryService
+    {
+        IAsyncEnumerable<Message> ReadMessagesAsync(DiscordServerContext server, ChannelContext channelContext, int limit);
+        IAsyncEnumerable<Message> ReadMessagesAsync(DiscordServerContext server, ChannelContext channelContext, int limit, ulong fromMessageId, bool goBefore);
+    }
+
     public class MessagesHistoryService
     {
         public IAsyncEnumerable<Message> ReadMessagesAsync(DiscordServerContext server, ChannelContext channelContext, int limit)

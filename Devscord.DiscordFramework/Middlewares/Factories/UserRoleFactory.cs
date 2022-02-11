@@ -5,6 +5,11 @@ using System.Linq;
 
 namespace Devscord.DiscordFramework.Middlewares.Factories
 {
+    public interface IUserRoleFactory
+    {
+        UserRole Create(IRole socketRole);
+    }
+
     public class UserRoleFactory
     {
         public UserRole Create(IRole socketRole)

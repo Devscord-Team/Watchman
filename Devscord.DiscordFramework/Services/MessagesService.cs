@@ -13,17 +13,30 @@ using MessageType = Devscord.DiscordFramework.Commons.MessageType;
 
 namespace Devscord.DiscordFramework.Services
 {
-    public class MessagesService
+    public interface IMessagesService
+    {
+        public ulong GuildId { get; set; }
+        public ulong ChannelId { get; set; }
+        Task SendMessage(string message, MessageType messageType = MessageType.NormalText);
+        Task SendEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, string>> values);
+        Task SendEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, Dictionary<string, string>>> values);
+        Task SendResponse(Func<IResponsesService, string> response);
+        Task SendFile(string filePath);
+        Task SendFile(string fileName, Stream stream);
+        Task SendExceptionResponse(BotException botException);
+    }
+
+    public class MessagesService : IMessagesService
     {
         public ulong GuildId { get; set; }
         public ulong ChannelId { get; set; }
 
-        private readonly ResponsesService _responsesService;
-        private readonly MessageSplittingService _splittingService;
-        private readonly EmbedMessageSplittingService _embedMessageSplittingService;
-        private readonly ResponsesCachingService _responsesCachingService;
+        private readonly IResponsesService _responsesService;
+        private readonly IMessageSplittingService _splittingService;
+        private readonly IEmbedMessageSplittingService _embedMessageSplittingService;
+        private readonly IResponsesCachingService _responsesCachingService;
 
-        public MessagesService(ResponsesService responsesService, MessageSplittingService splittingService, EmbedMessageSplittingService embedMessageSplittingService, ResponsesCachingService responsesCachingService)
+        public MessagesService(IResponsesService responsesService, IMessageSplittingService splittingService, IEmbedMessageSplittingService embedMessageSplittingService, IResponsesCachingService responsesCachingService)
         {
             this._responsesService = responsesService;
             this._splittingService = splittingService;
@@ -53,7 +66,7 @@ namespace Devscord.DiscordFramework.Services
             return this.SendEmbedSplitMessages(embeds);
         }
 
-        public Task SendResponse(Func<ResponsesService, string> response)
+        public Task SendResponse(Func<IResponsesService, string> response)
         {
             this._responsesService.Responses = this._responsesCachingService.GetResponses(this.GuildId);
             var message = response.Invoke(this._responsesService);
@@ -93,7 +106,7 @@ namespace Devscord.DiscordFramework.Services
             });
         }
 
-        private IMessageChannel GetChannel()
+        private IMessageChannel GetChannel() //todo add adapter
         {
             RestGuild guild = null;
             if (this.GuildId != default)

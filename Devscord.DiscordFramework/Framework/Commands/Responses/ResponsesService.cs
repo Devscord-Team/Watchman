@@ -7,20 +7,28 @@ using System.Linq;
 
 namespace Devscord.DiscordFramework.Framework.Commands.Responses
 {
-    public class ResponsesService
+    public interface IResponsesService
+    {
+        IEnumerable<Response> Responses { get; set; }
+        string GetResponse(ulong serverId, Func<IResponsesService, string> getResponse);
+        string ProcessResponse(string response, params KeyValuePair<string, string>[] values);
+        string ProcessResponse(string response, Contexts contexts, params KeyValuePair<string, string>[] values);
+    }
+
+    public class ResponsesService : IResponsesService //todo use configuration instead
     {
         public IEnumerable<Response> Responses { get; set; }
 
         private readonly ResponsesCachingService _responsesCachingService;
-        private readonly ResponsesParser _responsesParser;
+        private readonly IResponsesParser _responsesParser;
 
-        public ResponsesService(ResponsesCachingService responsesCachingService, ResponsesParser responsesParser)
+        public ResponsesService(ResponsesCachingService responsesCachingService, IResponsesParser responsesParser)
         {
             this._responsesCachingService = responsesCachingService;
             this._responsesParser = responsesParser;
         }
 
-        public string GetResponse(ulong serverId, Func<ResponsesService, string> getResponse)
+        public string GetResponse(ulong serverId, Func<IResponsesService, string> getResponse)
         {
             this.Responses = this._responsesCachingService.GetResponses(serverId);
             var response = getResponse.Invoke(this);
