@@ -25,7 +25,6 @@ namespace Devscord.DiscordFramework
         private readonly IWorkflow _workflow;
         private readonly IComponentContext _context;
 
-
         private WorkflowBuilder(string token, IWorkflow workflow, IComponentContext context)
         {
             this._client = new DiscordSocketClient(new DiscordSocketConfig
