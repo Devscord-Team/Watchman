@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using Watchman.Discord.Areas.Messaging.Administration.BotCommands;
 using Watchman.Discord.Areas.Messaging.Administration.Controllers;
 
-namespace Watchman.Discord.UnitTests.Administration
+namespace Watchman.Discord.UnitTests.Messaging
 {
     [TestFixture]
     internal class SendControllerTests
