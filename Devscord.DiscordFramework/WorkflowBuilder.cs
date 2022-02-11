@@ -23,8 +23,10 @@ namespace Devscord.DiscordFramework
         private readonly DiscordSocketClient _client;
         private readonly string _token;
         private readonly IWorkflow _workflow;
+        private readonly IComponentContext _context;
 
-        private WorkflowBuilder(string token, IWorkflow workflow)
+
+        private WorkflowBuilder(string token, IWorkflow workflow, IComponentContext context)
         {
             this._client = new DiscordSocketClient(new DiscordSocketConfig
             {
@@ -32,11 +34,12 @@ namespace Devscord.DiscordFramework
             });
             this._token = token;
             this._workflow = workflow;
+            this._context = context;
         }
 
-        public static WorkflowBuilder Create(string token, IWorkflow workflow)
+        public static WorkflowBuilder Create(string token, IWorkflow workflow, IComponentContext context)
         {
-            return new WorkflowBuilder(token, workflow);
+            return new WorkflowBuilder(token, workflow, context);
         }
 
         public WorkflowBuilder SetMessageHandler(Func<SocketMessage, Task> action)

@@ -39,7 +39,7 @@ namespace Watchman.Discord
             MongoConfiguration.Initialize();
             ExceptionHandlerService.DiscordConfiguration = this._configuration; //todo ioc
 
-            return WorkflowBuilder.Create(this._configuration.Token, this._context.Resolve<IWorkflow>())
+            return WorkflowBuilder.Create(this._configuration.Token, this._context.Resolve<IWorkflow>(), this._context)
                 .SetDefaultMiddlewares()
                 .AddOnReadyHandlers(builder =>
                 {

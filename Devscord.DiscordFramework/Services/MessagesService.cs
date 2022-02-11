@@ -15,6 +15,8 @@ namespace Devscord.DiscordFramework.Services
 {
     public interface IMessagesService
     {
+        public ulong GuildId { get; set; }
+        public ulong ChannelId { get; set; }
         Task SendMessage(string message, MessageType messageType = MessageType.NormalText);
         Task SendEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, string>> values);
         Task SendEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, Dictionary<string, string>>> values);
@@ -104,7 +106,7 @@ namespace Devscord.DiscordFramework.Services
             });
         }
 
-        private IMessageChannel GetChannel()
+        private IMessageChannel GetChannel() //todo add adapter
         {
             RestGuild guild = null;
             if (this.GuildId != default)

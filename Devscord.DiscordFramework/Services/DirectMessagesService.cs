@@ -22,8 +22,8 @@ namespace Devscord.DiscordFramework.Services
     public class DirectMessagesService : IDirectMessagesService
     {
         private readonly IResponsesService _responsesService;
-        private readonly MessageSplittingService _messageSplittingService;
-        private readonly EmbedMessagesService _embedMessagesService;
+        private readonly IMessageSplittingService _messageSplittingService;
+        private readonly IEmbedMessagesService _embedMessagesService;
         private readonly IEmbedMessageSplittingService _embedMessageSplittingService;
 
         public DirectMessagesService(IResponsesService responsesService, IMessageSplittingService messageSplittingService, IEmbedMessagesService embedMessagesService, IEmbedMessageSplittingService embedMessageSplittingService)

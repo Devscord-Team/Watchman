@@ -25,4 +25,8 @@
     <ProjectReference Include="..\Watchman.Discord\Watchman.Discord.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Users\" />
+  </ItemGroup>
+
 </Project>
