@@ -17,11 +17,11 @@ namespace Devscord.DiscordFramework.Services
 
     public class ChannelsService : IChannelsService
     {
-        private readonly ChannelContextFactory _channelContextFactory;
+        private readonly IChannelContextFactory _channelContextFactory;
 
-        public ChannelsService()
+        public ChannelsService(IChannelContextFactory channelContextFactory)
         {
-            this._channelContextFactory = new ChannelContextFactory();
+            this._channelContextFactory = channelContextFactory;
         }
 
         public async Task<ChannelContext> CreateNewChannelAsync(DiscordServerContext server, string channelName)

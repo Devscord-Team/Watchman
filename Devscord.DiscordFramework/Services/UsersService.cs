@@ -28,12 +28,12 @@ namespace Devscord.DiscordFramework.Services
 
     public class UsersService : IUsersService
     {
-        private readonly UserContextsFactory _userContextsFactory;
+        private readonly IUserContextsFactory _userContextsFactory;
         private readonly Regex _exMention = new Regex(@"\d+", RegexOptions.Compiled);
 
-        public UsersService(IComponentContext context)
+        public UsersService(IUserContextsFactory userContextsFactor)
         {
-            this._userContextsFactory = new UserContextsFactory(context, this);
+            this._userContextsFactory = userContextsFactor;
         }
 
         public async Task AddRoleAsync(UserRole role, UserContext user, DiscordServerContext server)

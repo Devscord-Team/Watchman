@@ -16,11 +16,11 @@ namespace Watchman.Discord.Areas.Administration.Services
     {
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
-        private readonly MessagesServiceFactory _messagesServiceFactory;
+        private readonly IMessagesServiceFactory _messagesServiceFactory;
         private readonly CheckUserSafetyService _checkUserSafetyService;
         private readonly UsersRolesService _usersRolesService;
 
-        public TrustRolesService(IQueryBus queryBus, ICommandBus commandBus, MessagesServiceFactory messagesServiceFactory, CheckUserSafetyService checkUserSafetyService, UsersRolesService usersRolesService)
+        public TrustRolesService(IQueryBus queryBus, ICommandBus commandBus, IMessagesServiceFactory messagesServiceFactory, CheckUserSafetyService checkUserSafetyService, UsersRolesService usersRolesService)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;

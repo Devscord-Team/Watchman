@@ -12,7 +12,7 @@ namespace Devscord.DiscordFramework.Services
 {
     public interface IDirectMessagesService
     {
-        Task<bool> TrySendMessage(ulong userId, Func<ResponsesService, string> response, Contexts contexts);
+        Task<bool> TrySendMessage(ulong userId, Func<IResponsesService, string> response, Contexts contexts);
         Task<bool> TrySendMessage(ulong userId, string message, Commons.MessageType messageType = Commons.MessageType.NormalText);
         Task<bool> TrySendEmbedMessage(ulong userId, string title, string description, IEnumerable<KeyValuePair<string, string>> values);
         Task<bool> TrySendEmbedMessage(ulong userId, string title, string description, IEnumerable<KeyValuePair<string, Dictionary<string, string>>> values);
@@ -21,12 +21,12 @@ namespace Devscord.DiscordFramework.Services
 
     public class DirectMessagesService : IDirectMessagesService
     {
-        private readonly ResponsesService _responsesService;
+        private readonly IResponsesService _responsesService;
         private readonly MessageSplittingService _messageSplittingService;
         private readonly EmbedMessagesService _embedMessagesService;
         private readonly IEmbedMessageSplittingService _embedMessageSplittingService;
 
-        public DirectMessagesService(ResponsesService responsesService, MessageSplittingService messageSplittingService, EmbedMessagesService embedMessagesService, IEmbedMessageSplittingService embedMessageSplittingService)
+        public DirectMessagesService(IResponsesService responsesService, IMessageSplittingService messageSplittingService, IEmbedMessagesService embedMessagesService, IEmbedMessageSplittingService embedMessageSplittingService)
         {
             this._responsesService = responsesService;
             this._messageSplittingService = messageSplittingService;
@@ -34,7 +34,7 @@ namespace Devscord.DiscordFramework.Services
             this._embedMessageSplittingService = embedMessageSplittingService;
         }
 
-        public Task<bool> TrySendMessage(ulong userId, Func<ResponsesService, string> response, Contexts contexts)
+        public Task<bool> TrySendMessage(ulong userId, Func<IResponsesService, string> response, Contexts contexts)
         {
             var message = this._responsesService.GetResponse(contexts.Server.Id, response);
             return this.TrySendMessage(userId, message);

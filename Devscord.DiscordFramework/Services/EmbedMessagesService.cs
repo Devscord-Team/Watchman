@@ -4,12 +4,18 @@ using System.Linq;
 
 namespace Devscord.DiscordFramework.Services
 {
-    public class EmbedMessagesService
+    public interface IEmbedMessagesService
+    {
+        Embed Generate(string title, string description, IEnumerable<KeyValuePair<string, string>> values);
+        Embed Generate(string title, string description, IEnumerable<KeyValuePair<string, Dictionary<string, string>>> values);
+    }
+
+    public class EmbedMessagesService : IEmbedMessagesService
     {
         internal int FooterLength => FOOTER_TEXT.Length;
         private const string FOOTER_TEXT = @"Wygenerowane przez https://github.com/Devscord-Team/Watchman";
 
-        internal Embed Generate(string title, string description, IEnumerable<KeyValuePair<string, string>> values)
+        public Embed Generate(string title, string description, IEnumerable<KeyValuePair<string, string>> values)
         {
             var builder = this.GetDefault();
             builder.Title = title;
@@ -21,7 +27,7 @@ namespace Devscord.DiscordFramework.Services
             return builder.Build();
         }
 
-        internal Embed Generate(string title, string description, IEnumerable<KeyValuePair<string, Dictionary<string, string>>> values)
+        public Embed Generate(string title, string description, IEnumerable<KeyValuePair<string, Dictionary<string, string>>> values)
         {
             var flatValues = new Dictionary<string, string>();
             foreach (var (subtitle, lines) in values)

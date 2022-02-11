@@ -8,12 +8,16 @@ using System.Linq;
 
 namespace Devscord.DiscordFramework.Middlewares.Factories
 {
-    internal class UserContextsFactory : IContextFactory<IUser, UserContext>
+    public interface IUserContextsFactory : IContextFactory<IUser, UserContext>
+    {
+    }
+
+    internal class UserContextsFactory : IUserContextsFactory
     {
         private readonly IUsersRolesService _usersRolesService;
-        private readonly DiscordServersService _discordServersService;
+        private readonly IDiscordServersService _discordServersService;
 
-        public UserContextsFactory(IUsersRolesService usersRolesService, DiscordServersService discordServersService)
+        public UserContextsFactory(IUsersRolesService usersRolesService, IDiscordServersService discordServersService)
         {
             this._usersRolesService = usersRolesService;
             this._discordServersService = discordServersService;

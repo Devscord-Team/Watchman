@@ -17,11 +17,11 @@ namespace Watchman.Discord.Areas.Initialization.Services
         private UserContext BotContext => this._botContext ??= this._usersService.GetBot();
 
         private readonly ICommandBus _commandBus;
-        private readonly MessagesHistoryService _messagesHistoryService;
+        private readonly IMessagesHistoryService _messagesHistoryService;
         private readonly UsersService _usersService;
         private UserContext _botContext;
 
-        public ServerScanningService(ICommandBus commandBus, MessagesHistoryService messagesHistoryService, UsersService usersService)
+        public ServerScanningService(ICommandBus commandBus, IMessagesHistoryService messagesHistoryService, UsersService usersService)
         {
             this._commandBus = commandBus;
             this._messagesHistoryService = messagesHistoryService;

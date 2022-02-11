@@ -29,14 +29,14 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         private readonly IQueryBus _queryBus;
         private readonly IUsersService _usersService;
         private readonly IDirectMessagesService _directMessagesService;
-        private readonly MessagesServiceFactory _messagesServiceFactory;
+        private readonly IMessagesServiceFactory _messagesServiceFactory;
         private readonly RolesService _rolesService;
         private readonly TrustRolesService _trustRolesService;
         private readonly CheckUserSafetyService _checkUserSafetyService;
         private readonly IUsersRolesService _usersRolesService;
         private readonly IConfigurationService _configurationService;
 
-        public AdministrationController(IQueryBus queryBus, IUsersService usersService, IDirectMessagesService directMessagesService, MessagesServiceFactory messagesServiceFactory, RolesService rolesService, TrustRolesService trustRolesService, CheckUserSafetyService checkUserSafetyService, IUsersRolesService usersRolesService, IConfigurationService configurationService)
+        public AdministrationController(IQueryBus queryBus, IUsersService usersService, IDirectMessagesService directMessagesService, IMessagesServiceFactory messagesServiceFactory, RolesService rolesService, TrustRolesService trustRolesService, CheckUserSafetyService checkUserSafetyService, IUsersRolesService usersRolesService, IConfigurationService configurationService)
         {
             this._queryBus = queryBus;
             this._usersService = usersService;
