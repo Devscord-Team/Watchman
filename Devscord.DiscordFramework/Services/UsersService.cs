@@ -14,7 +14,19 @@ using Serilog;
 
 namespace Devscord.DiscordFramework.Services
 {
-    public class UsersService
+    public interface IUsersService
+    {
+        Task AddRoleAsync(UserRole role, UserContext user, DiscordServerContext server);
+        Task RemoveRoleAsync(UserRole role, UserContext user, DiscordServerContext server);
+        IEnumerable<UserContext> GetUsers(DiscordServerContext server);
+        Task<UserContext> GetUserByMentionAsync(DiscordServerContext server, string mention);
+        Task<bool> IsUserStillOnServerAsync(DiscordServerContext server, ulong userId);
+        Task<UserContext> GetUserByIdAsync(DiscordServerContext server, ulong userId);
+        DateTime? GetUserJoinedServerAt(ulong userId, ulong serverId);
+        UserContext GetBot();
+    }
+
+    public class UsersService : IUsersService
     {
         private readonly UserContextsFactory _userContextsFactory;
         private readonly Regex _exMention = new Regex(@"\d+", RegexOptions.Compiled);
@@ -79,11 +91,6 @@ namespace Devscord.DiscordFramework.Services
         public DateTime? GetUserJoinedServerAt(ulong userId, ulong serverId)
         {
             return Server.GetGuildUser(userId, serverId).Result?.JoinedAt?.DateTime;
-        }
-
-        internal DateTime? GetUserJoinedServerAt(IGuildUser user)
-        {
-            return user.JoinedAt?.DateTime;
         }
 
         public UserContext GetBot()

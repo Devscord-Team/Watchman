@@ -12,9 +12,9 @@ namespace Watchman.Discord.Areas.Initialization.Services
     {
         private readonly IQueryBus _queryBus;
         private readonly UsersRolesService _usersRolesService;
-        private readonly ChannelsService _channelsService;
+        private readonly IChannelsService _channelsService;
 
-        public MuteRoleInitService(IQueryBus queryBus, UsersRolesService usersRolesService, ChannelsService channelsService)
+        public MuteRoleInitService(IQueryBus queryBus, UsersRolesService usersRolesService, IChannelsService channelsService)
         {
             this._queryBus = queryBus;
             this._usersRolesService = usersRolesService;

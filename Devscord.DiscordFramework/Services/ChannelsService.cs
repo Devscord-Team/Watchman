@@ -7,7 +7,15 @@ using Devscord.DiscordFramework.Middlewares.Factories;
 
 namespace Devscord.DiscordFramework.Services
 {
-    public class ChannelsService
+    public interface IChannelsService
+    {
+        Task<ChannelContext> CreateNewChannelAsync(DiscordServerContext server, string channelName);
+        Task SetPermissions(ChannelContext channel, DiscordServerContext server, ChangedPermissions permissions, UserRole userRole);
+        Task SetPermissions(IEnumerable<ChannelContext> channels, DiscordServerContext server, ChangedPermissions permissions, UserRole userRole);
+        Task RemovePermissions(ChannelContext channel, DiscordServerContext server, UserRole userRole);
+    }
+
+    public class ChannelsService : IChannelsService
     {
         private readonly ChannelContextFactory _channelContextFactory;
 

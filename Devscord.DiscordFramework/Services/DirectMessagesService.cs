@@ -10,14 +10,23 @@ using System.IO;
 
 namespace Devscord.DiscordFramework.Services
 {
-    public class DirectMessagesService
+    public interface IDirectMessagesService
+    {
+        Task<bool> TrySendMessage(ulong userId, Func<ResponsesService, string> response, Contexts contexts);
+        Task<bool> TrySendMessage(ulong userId, string message, Commons.MessageType messageType = Commons.MessageType.NormalText);
+        Task<bool> TrySendEmbedMessage(ulong userId, string title, string description, IEnumerable<KeyValuePair<string, string>> values);
+        Task<bool> TrySendEmbedMessage(ulong userId, string title, string description, IEnumerable<KeyValuePair<string, Dictionary<string, string>>> values);
+        Task<bool> TrySendFile(ulong userId, string fileName, Stream stream);
+    }
+
+    public class DirectMessagesService : IDirectMessagesService
     {
         private readonly ResponsesService _responsesService;
         private readonly MessageSplittingService _messageSplittingService;
         private readonly EmbedMessagesService _embedMessagesService;
-        private readonly EmbedMessageSplittingService _embedMessageSplittingService;
+        private readonly IEmbedMessageSplittingService _embedMessageSplittingService;
 
-        public DirectMessagesService(ResponsesService responsesService, MessageSplittingService messageSplittingService, EmbedMessagesService embedMessagesService, EmbedMessageSplittingService embedMessageSplittingService)
+        public DirectMessagesService(ResponsesService responsesService, MessageSplittingService messageSplittingService, EmbedMessagesService embedMessagesService, IEmbedMessageSplittingService embedMessageSplittingService)
         {
             this._responsesService = responsesService;
             this._messageSplittingService = messageSplittingService;

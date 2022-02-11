@@ -21,13 +21,11 @@ namespace Watchman.Integrations.Logging
                 .Enrich.WithThreadId()
                 .Enrich.WithMachineName()
                 .Enrich.WithEnvironmentUserName()
-                .WriteTo.File(jsonFormatter, "logs/all/log-.json", rollingInterval: RollingInterval.Day, shared: true, flushToDiskInterval: TimeSpan.FromSeconds(15), restrictedToMinimumLevel: LogEventLevel.Verbose)
-                .WriteTo.File(jsonFormatter, "logs/warningplus/log-.json", rollingInterval: RollingInterval.Day, shared: true, flushToDiskInterval: TimeSpan.FromSeconds(15), restrictedToMinimumLevel: LogEventLevel.Warning)
                 .WriteTo.File(jsonFormatter, "logs/errorplus/log-.json", rollingInterval: RollingInterval.Day, shared: true, flushToDiskInterval: TimeSpan.FromSeconds(15), restrictedToMinimumLevel: LogEventLevel.Error)
                 .WriteTo.Console(
-                    restrictedToMinimumLevel: LogEventLevel.Verbose,
+                    restrictedToMinimumLevel: LogEventLevel.Warning,
                     outputTemplate: "[{Timestamp:dd-MM-yyyy} - {Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
-                .WriteTo.Debug(restrictedToMinimumLevel: LogEventLevel.Verbose)
+                .WriteTo.Debug(restrictedToMinimumLevel: LogEventLevel.Warning)
                 .CreateLogger();
             return logger;
         }

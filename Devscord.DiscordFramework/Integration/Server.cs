@@ -12,7 +12,7 @@ using System.IO;
 
 namespace Devscord.DiscordFramework.Integration
 {
-    internal static class Server
+    internal static class Server //todo singleton instad static class
     {
         private static Services.Interfaces.IDiscordClient _discordClient;
 

@@ -7,7 +7,15 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 
 namespace Devscord.DiscordFramework.Services
 {
-    public class UsersRolesService
+    public interface IUsersRolesService
+    {
+        Task<UserRole> CreateNewRole(DiscordServerContext server, NewUserRole userRole);
+        UserRole GetRoleByName(string name, DiscordServerContext server);
+        IEnumerable<UserRole> GetRoles(DiscordServerContext server);
+        UserRole GetRole(ulong roleId, ulong serverId);
+    }
+
+    public class UsersRolesService : IUsersRolesService
     {
         public const string MUTED_ROLE_NAME = "muted";
 
