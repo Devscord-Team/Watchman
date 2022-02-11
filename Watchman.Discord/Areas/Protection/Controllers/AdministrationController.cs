@@ -10,10 +10,10 @@ namespace Watchman.Discord.Areas.Protection.Controllers
 {
     public class AdministrationController : IController
     {
-        private readonly MessagesServiceFactory _messagesServiceFactory;
+        private readonly IMessagesServiceFactory _messagesServiceFactory;
         private readonly ComplaintsChannelService _complaintsChannelService;
 
-        public AdministrationController(MessagesServiceFactory messagesServiceFactory, ComplaintsChannelService complaintsChannelService)
+        public AdministrationController(IMessagesServiceFactory messagesServiceFactory, ComplaintsChannelService complaintsChannelService)
         {
             this._messagesServiceFactory = messagesServiceFactory;
             this._complaintsChannelService = complaintsChannelService;
