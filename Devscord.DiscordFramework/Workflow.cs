@@ -19,15 +19,21 @@ using Serilog;
 
 namespace Devscord.DiscordFramework
 {
-    internal class Workflow
+    public interface IWorkflow
     {
-        private readonly CommandParser _commandParser;
-        private readonly MiddlewaresService _middlewaresService;
-        private readonly ControllersService _controllersService;
-        private readonly DiscordServerContextFactory _discordServerContextFactory;
-        private readonly UserContextsFactory _userContextsFactory;
-        private readonly ChannelContextFactory _channelContextFactory;
-        private readonly UserRoleFactory _userRoleFactory;
+        Workflow AddMiddleware<T>() where T : IMiddleware;
+        void MapHandlers(DiscordSocketClient client);
+    }
+
+    public class Workflow : IWorkflow
+    {
+        private readonly IControllersService _controllersService;
+        private readonly ICommandParser _commandParser;
+        private readonly IMiddlewaresService _middlewaresService;
+        private readonly IDiscordServerContextFactory _discordServerContextFactory;
+        private readonly IUserContextsFactory _userContextsFactory;
+        private readonly IChannelContextFactory _channelContextFactory;
+        private readonly IUserRoleFactory _userRoleFactory;
         private readonly Stopwatch _stopWatch = new Stopwatch();
 
         public List<Func<Task>> OnReady { get; set; } = new List<Func<Task>>();
@@ -41,25 +47,27 @@ namespace Devscord.DiscordFramework
         public List<Func<SocketMessage, Task>> OnMessageReceived { get; set; } = new List<Func<SocketMessage, Task>>();
         public List<Func<Exception, DiscordRequest, Contexts, Task>> OnWorkflowException { get; set; } = new List<Func<Exception, DiscordRequest, Contexts, Task>>();
 
-        internal Workflow(Assembly botAssembly, IComponentContext context)
+        public Workflow(Assembly botAssembly, IControllersService controllersService, ICommandParser commandParser, 
+            IMiddlewaresService middlewaresService, IDiscordServerContextFactory discordServerContextFactory, IUserContextsFactory userContextsFactory, 
+            IChannelContextFactory channelContextFactory, IUserRoleFactory userRoleFactory)
         {
-            this._controllersService = new ControllersService(context, botAssembly, context.Resolve<BotCommandsService>(), context.Resolve<CommandsContainer>());
-            this._commandParser = context.Resolve<CommandParser>();
-            this._middlewaresService = context.Resolve<MiddlewaresService>();
-            this._discordServerContextFactory = context.Resolve<DiscordServerContextFactory>();
-            this._userContextsFactory = context.Resolve<UserContextsFactory>();
-            this._channelContextFactory = context.Resolve<ChannelContextFactory>();
-            this._userRoleFactory = context.Resolve<UserRoleFactory>();
+            this._controllersService = controllersService;
+            this._commandParser = commandParser;
+            this._middlewaresService = middlewaresService;
+            this._discordServerContextFactory = discordServerContextFactory;
+            this._userContextsFactory = userContextsFactory;
+            this._channelContextFactory = channelContextFactory;
+            this._userRoleFactory = userRoleFactory;
         }
 
-        internal Workflow AddMiddleware<T>() where T : IMiddleware
+        public Workflow AddMiddleware<T>() where T : IMiddleware
         {
             this._middlewaresService.AddMiddleware<T>();
             Log.Debug("Added Middleware: {middlewareName}", nameof(T));
             return this;
         }
 
-        internal void MapHandlers(DiscordSocketClient client)
+        public void MapHandlers(DiscordSocketClient client)
         {
             this.OnReady.ForEach(x => client.Ready += () => this.WithExceptionHandlerAwait(x));
             this.OnMessageReceived.Add(message =>
