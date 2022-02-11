@@ -19,7 +19,7 @@ namespace Devscord.DiscordFramework.Framework
                 return;
             }
             var sw = Stopwatch.StartNew();
-            var discordClient = new DiscordClient(client, context);
+            var discordClient = new DiscordClient(client, context);//todo ioc
             Server.Initialize(discordClient);
             Initialized = true;
 

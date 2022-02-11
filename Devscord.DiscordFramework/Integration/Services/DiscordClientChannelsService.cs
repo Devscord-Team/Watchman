@@ -26,10 +26,11 @@ namespace Devscord.DiscordFramework.Integration.Services
         private DiscordSocketRestClient _restClient => this._client.Rest;
         private readonly DiscordSocketClient _client;
         private readonly IDiscordClientUsersService _discordClientUsersService;
-        private readonly UserContextsFactory _userContextsFactory;
-        private readonly CommandParser _commandParser;
+        private readonly IUserContextsFactory _userContextsFactory;
+        private readonly ICommandParser _commandParser;
 
-        public DiscordClientChannelsService(DiscordSocketClient client, IDiscordClientUsersService discordClientUsersService, UserContextsFactory userContextsFactory, CommandParser commandParser)
+        //todo add adapter to DiscordSocketClient
+        public DiscordClientChannelsService(DiscordSocketClient client, IDiscordClientUsersService discordClientUsersService, IUserContextsFactory userContextsFactory, ICommandParser commandParser)
         {
             this._client = client;
             this._discordClientUsersService = discordClientUsersService;

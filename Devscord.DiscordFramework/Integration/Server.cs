@@ -26,7 +26,7 @@ namespace Devscord.DiscordFramework.Integration
         internal static List<DateTime> ConnectedTimes => _discordClient.ServersService.ConnectedTimes;
         internal static List<DateTime> DisconnectedTimes => _discordClient.ServersService.DisconnectedTimes;
 
-        internal static void Initialize(Services.Interfaces.IDiscordClient discordClient)
+        internal static void Initialize(Services.Interfaces.IDiscordClient discordClient) //todo use IDiscordClient over Server
         {
             _discordClient = discordClient;
             _discordClient.UsersService.UserJoined += UserJoined;
