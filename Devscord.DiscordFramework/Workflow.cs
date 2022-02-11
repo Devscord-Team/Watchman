@@ -21,6 +21,17 @@ namespace Devscord.DiscordFramework
 {
     public interface IWorkflow
     {
+        List<Func<Task>> OnReady { get; set; }
+        List<Func<Contexts, Task>> OnUserJoined { get; set; }
+        List<Func<DiscordServerContext, Task>> OnDiscordServerAddedBot { get; set; }
+        List<Func<ChannelContext, DiscordServerContext, Task>> OnChannelCreated { get; set; }
+        List<Func<ChannelContext, DiscordServerContext, Task>> OnChannelRemoved { get; set; }
+        List<Func<UserRole, UserRole, Task>> OnRoleUpdated { get; set; }
+        List<Func<UserRole, Task>> OnRoleCreated { get; set; }
+        List<Func<UserRole, Task>> OnRoleRemoved { get; set; }
+        List<Func<SocketMessage, Task>> OnMessageReceived { get; set; }
+        List<Func<Exception, DiscordRequest, Contexts, Task>> OnWorkflowException { get; set; }
+
         Workflow AddMiddleware<T>() where T : IMiddleware;
         void MapHandlers(DiscordSocketClient client);
     }
@@ -47,7 +58,7 @@ namespace Devscord.DiscordFramework
         public List<Func<SocketMessage, Task>> OnMessageReceived { get; set; } = new List<Func<SocketMessage, Task>>();
         public List<Func<Exception, DiscordRequest, Contexts, Task>> OnWorkflowException { get; set; } = new List<Func<Exception, DiscordRequest, Contexts, Task>>();
 
-        public Workflow(Assembly botAssembly, IControllersService controllersService, ICommandParser commandParser, 
+        public Workflow(IControllersService controllersService, ICommandParser commandParser, 
             IMiddlewaresService middlewaresService, IDiscordServerContextFactory discordServerContextFactory, IUserContextsFactory userContextsFactory, 
             IChannelContextFactory channelContextFactory, IUserRoleFactory userRoleFactory)
         {

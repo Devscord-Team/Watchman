@@ -39,7 +39,7 @@ namespace Watchman.Discord
             MongoConfiguration.Initialize();
             ExceptionHandlerService.DiscordConfiguration = this._configuration; //todo ioc
 
-            return WorkflowBuilder.Create(this._configuration.Token, this._context, typeof(WatchmanBot).Assembly)
+            return WorkflowBuilder.Create(this._configuration.Token, this._context.Resolve<IWorkflow>())
                 .SetDefaultMiddlewares()
                 .AddOnReadyHandlers(builder =>
                 {
@@ -50,7 +50,7 @@ namespace Watchman.Discord
                         .AddFromIoC<IHelpDataCollectorService, HelpDBGeneratorService>((dataCollector, helpService) =>
                             () => helpService.FillDatabase(dataCollector.GetBotCommandsInfo(typeof(WatchmanBot).Assembly)))
                         .AddFromIoC<ResponsesInitService>(responsesService => responsesService.InitNewResponsesFromResources)
-                        .AddFromIoC<InitializationService, DiscordServersService>((initService, serversService) => async () =>
+                        .AddFromIoC<InitializationService, IDiscordServersService>((initService, serversService) => async () =>
                         {
                             var stopwatch = Stopwatch.StartNew();
                             // when bot was offline for less than 1 minutes, it doesn't make sense to init all servers

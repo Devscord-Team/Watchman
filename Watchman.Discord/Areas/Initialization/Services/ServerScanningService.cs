@@ -12,7 +12,12 @@ using Watchman.DomainModel.Messages.Commands;
 
 namespace Watchman.Discord.Areas.Initialization.Services
 {
-    public class ServerScanningService
+    public interface IServerScanningService
+    {
+        Task ScanChannelHistory(DiscordServerContext server, ChannelContext channel, DateTime? startTime = null);
+    }
+
+    public class ServerScanningService : IServerScanningService
     {
         private UserContext BotContext => this._botContext ??= this._usersService.GetBot();
 

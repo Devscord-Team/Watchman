@@ -21,11 +21,11 @@ namespace Watchman.Discord.Areas.Protection.Services
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
         private readonly IConfigurationService _configurationService;
-        private readonly ChannelsService _channelsService;
-        private readonly UsersRolesService _usersRolesService;
-        private readonly DiscordServersService _discordServersService;
+        private readonly IChannelsService _channelsService;
+        private readonly IUsersRolesService _usersRolesService;
+        private readonly IDiscordServersService _discordServersService;
 
-        public ComplaintsChannelService(IQueryBus queryBus, ICommandBus commandBus, IConfigurationService configurationService, ChannelsService channelsService, UsersRolesService usersRolesService, DiscordServersService discordServersService)
+        public ComplaintsChannelService(IQueryBus queryBus, ICommandBus commandBus, IConfigurationService configurationService, IChannelsService channelsService, IUsersRolesService usersRolesService, IDiscordServersService discordServersService)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;

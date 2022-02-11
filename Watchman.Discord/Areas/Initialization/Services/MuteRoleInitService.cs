@@ -8,13 +8,19 @@ using Watchman.DomainModel.Protection.Complaints.Queries;
 
 namespace Watchman.Discord.Areas.Initialization.Services
 {
-    public class MuteRoleInitService
+    public interface IMuteRoleInitService
+    {
+        Task InitForServerAsync(DiscordServerContext server);
+        Task InitForChannelAsync(ChannelContext channel, DiscordServerContext server);
+    }
+
+    public class MuteRoleInitService : IMuteRoleInitService
     {
         private readonly IQueryBus _queryBus;
-        private readonly UsersRolesService _usersRolesService;
+        private readonly IUsersRolesService _usersRolesService;
         private readonly IChannelsService _channelsService;
 
-        public MuteRoleInitService(IQueryBus queryBus, UsersRolesService usersRolesService, IChannelsService channelsService)
+        public MuteRoleInitService(IQueryBus queryBus, IUsersRolesService usersRolesService, IChannelsService channelsService)
         {
             this._queryBus = queryBus;
             this._usersRolesService = usersRolesService;
