@@ -17,6 +17,7 @@ nav:
       - 'Co się dzieje podczas inicjalizacji': 194-inicjalizacja.md
   - "Watchman V2":
     - "Postanowienia": WatchmanV2/1-postanowienia.md
+    - "Testowanie i refaktoryzacja": WatchmanV2/2-testowanie-i-refaktoryzacja.md
 theme:
   name: "material"
   language: pl
