@@ -1,4 +1,4 @@
-﻿using Devscord.DiscordFramework.Framework.Commands.Responses;
+﻿using Devscord.DiscordFramework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Newtonsoft.Json;
 using System.Collections.Generic;

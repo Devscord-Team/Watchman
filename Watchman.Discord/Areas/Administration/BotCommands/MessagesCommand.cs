@@ -1,8 +1,8 @@
-﻿using Devscord.DiscordFramework.Framework.Commands;
+﻿using Devscord.DiscordFramework.Commands;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Devscord.DiscordFramework.Framework.Commands.PropertyAttributes;
+using Devscord.DiscordFramework.Commands.PropertyAttributes;
 
 namespace Watchman.Discord.Areas.Administration.BotCommands
 {

@@ -1,5 +1,5 @@
 ﻿using Devscord.DiscordFramework.Commons;
-using Devscord.DiscordFramework.Framework.Commands.Responses;
+using Devscord.DiscordFramework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
 using System;

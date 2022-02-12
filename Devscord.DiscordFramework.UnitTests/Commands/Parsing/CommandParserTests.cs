@@ -1,6 +1,6 @@
 ﻿using Devscord.DiscordFramework.Commons.Exceptions;
-using Devscord.DiscordFramework.Framework.Commands.Parsing;
-using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
+using Devscord.DiscordFramework.Commands.Parsing;
+using Devscord.DiscordFramework.Commands.Parsing.Models;
 using NUnit.Framework;
 using System;
 using System.Linq;

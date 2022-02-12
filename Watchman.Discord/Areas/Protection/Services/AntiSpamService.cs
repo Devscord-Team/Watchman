@@ -1,11 +1,11 @@
-﻿using Devscord.DiscordFramework.Framework.Commands.Responses;
+﻿using Devscord.DiscordFramework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Serilog;
 using System;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Common.Models;
-using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
+using Devscord.DiscordFramework.Commands.AntiSpam.Models;
 using Watchman.DomainModel.Protection.Mutes;
 
 namespace Watchman.Discord.Areas.Protection.Services

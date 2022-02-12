@@ -1,4 +1,4 @@
-﻿using Devscord.DiscordFramework.Framework.Commands.Responses;
+﻿using Devscord.DiscordFramework.Commands.Responses;
 using System.Linq;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Responses.Queries;

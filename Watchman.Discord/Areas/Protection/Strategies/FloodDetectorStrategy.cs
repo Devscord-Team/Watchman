@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using Devscord.DiscordFramework.Framework.Commands.AntiSpam;
-using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
+using Devscord.DiscordFramework.Commands.AntiSpam;
+using Devscord.DiscordFramework.Commands.AntiSpam.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Watchman.DomainModel.Configuration.ConfigurationItems;
 using Watchman.DomainModel.Configuration.Services;

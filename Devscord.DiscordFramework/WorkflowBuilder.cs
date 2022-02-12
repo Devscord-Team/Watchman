@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using Devscord.DiscordFramework.Framework;
-using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
-using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
+using Devscord.DiscordFramework.Architecture.Middlewares;
+using Devscord.DiscordFramework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Integration;
 using Devscord.DiscordFramework.Middlewares;
 using Devscord.DiscordFramework.Middlewares.Contexts;

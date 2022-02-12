@@ -1,9 +1,9 @@
 ﻿using Autofac;
 using Devscord.DiscordFramework;
-using Devscord.DiscordFramework.Framework.Commands.Responses;
+using Devscord.DiscordFramework.Commands.Responses;
 using System.Collections.Generic;
 using System.Reflection;
-using Devscord.DiscordFramework.Framework.Commands.Parsing;
+using Devscord.DiscordFramework.Commands.Parsing;
 using Devscord.DiscordFramework.Services;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Commons;

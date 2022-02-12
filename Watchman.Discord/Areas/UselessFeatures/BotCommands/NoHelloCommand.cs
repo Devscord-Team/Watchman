@@ -1,4 +1,4 @@
-﻿using Devscord.DiscordFramework.Framework.Commands;
+﻿using Devscord.DiscordFramework.Commands;
 
 using System;
 using System.Collections.Generic;

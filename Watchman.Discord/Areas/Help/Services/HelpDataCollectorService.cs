@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using Devscord.DiscordFramework.Commons.Extensions;
-using Devscord.DiscordFramework.Framework.Commands;
+using Devscord.DiscordFramework.Commands;
 using Devscord.DiscordFramework.Services.Factories;
 using Devscord.DiscordFramework.Services.Models;
 

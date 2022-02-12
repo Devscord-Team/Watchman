@@ -1,9 +1,10 @@
 ﻿using Devscord.DiscordFramework.Commons.Exceptions;
-using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
+using Devscord.DiscordFramework.Commands.Parsing.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Devscord.DiscordFramework.Commands.Parsing.Models;
 
 namespace Devscord.DiscordFramework
 {

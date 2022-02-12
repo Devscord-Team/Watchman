@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Text.RegularExpressions;
-using Devscord.DiscordFramework.Framework.Commands.AntiSpam;
-using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
+using Devscord.DiscordFramework.Commands.AntiSpam;
+using Devscord.DiscordFramework.Commands.AntiSpam.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 
 namespace Watchman.Discord.Areas.Protection.Strategies

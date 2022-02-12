@@ -1,6 +1,6 @@
-﻿using Devscord.DiscordFramework.Framework.Commands.Builders;
-using Devscord.DiscordFramework.Framework.Commands.Properties;
-using Devscord.DiscordFramework.Framework.Commands.Services;
+﻿using Devscord.DiscordFramework.Commands.Builders;
+using Devscord.DiscordFramework.Commands.Properties;
+using Devscord.DiscordFramework.Commands.Services;
 using NUnit.Framework;
 using System.Linq;
 using System.Text.RegularExpressions;

@@ -1,5 +1,5 @@
 ﻿using Devscord.DiscordFramework.Commons;
-using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+using Devscord.DiscordFramework.Architecture.Controllers;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Cqrs;
@@ -10,7 +10,7 @@ using Watchman.DomainModel.Help.Queries;
 using Watchman.DomainModel.Help;
 using System.Collections.Generic;
 using System.Linq;
-using Devscord.DiscordFramework.Framework.Commands.Responses;
+using Devscord.DiscordFramework.Commands.Responses;
 using System;
 
 namespace Watchman.Discord.Areas.Help.Controllers

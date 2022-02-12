@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+using Devscord.DiscordFramework.Architecture.Controllers;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
 using System.Threading.Tasks;

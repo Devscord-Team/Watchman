@@ -8,6 +8,9 @@ namespace Watchman.Discord
     {
         public static void Main(string[] args)
         {
+            //old version, not supported
+
+            /*
 #if DEBUG
             var configPath = "config.json";
 #elif RELEASE
@@ -19,6 +22,7 @@ namespace Watchman.Discord
             var workflowBuilder = watchman.GetWorkflowBuilder();
             workflowBuilder.Build();
             Thread.Sleep(Timeout.Infinite);
+            */
         }
     }
 }

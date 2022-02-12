@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
+using Devscord.DiscordFramework.Commands.AntiSpam.Models;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Protection.Antispam;
 using Watchman.DomainModel.Protection.Antispam.Commands;

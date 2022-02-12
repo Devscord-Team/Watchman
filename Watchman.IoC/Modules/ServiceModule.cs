@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using Devscord.DiscordFramework;
-using Devscord.DiscordFramework.Framework.Commands.Parsing;
-using Devscord.DiscordFramework.Framework.Commands.Responses;
+using Devscord.DiscordFramework.Commands.Parsing;
+using Devscord.DiscordFramework.Commands.Responses;
 using Devscord.DiscordFramework.Services;
 using System.Collections.Generic;
 using System.Linq;

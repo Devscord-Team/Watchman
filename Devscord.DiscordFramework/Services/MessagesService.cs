@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Commons.Exceptions;
-using Devscord.DiscordFramework.Framework.Commands.Responses;
+using Devscord.DiscordFramework.Commands.Responses;
 using Devscord.DiscordFramework.Integration;
 using Discord;
 using Discord.Rest;

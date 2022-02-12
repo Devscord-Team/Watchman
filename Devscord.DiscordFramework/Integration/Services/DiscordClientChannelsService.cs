@@ -1,5 +1,5 @@
 ﻿using System;
-using Devscord.DiscordFramework.Framework.Commands.Parsing;
+using Devscord.DiscordFramework.Commands.Parsing;
 using Devscord.DiscordFramework.Integration.Services.Interfaces;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Middlewares.Factories;
@@ -13,7 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Commons.Extensions;
-using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
+using Devscord.DiscordFramework.Commands.Parsing.Models;
 using System.IO;
 
 namespace Devscord.DiscordFramework.Integration.Services

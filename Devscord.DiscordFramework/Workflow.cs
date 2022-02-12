@@ -6,10 +6,10 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Autofac;
 using Devscord.DiscordFramework.Commons.Extensions;
-using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
-using Devscord.DiscordFramework.Framework.Commands.Parsing;
-using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
-using Devscord.DiscordFramework.Framework.Commands.Services;
+using Devscord.DiscordFramework.Architecture.Middlewares;
+using Devscord.DiscordFramework.Commands.Parsing;
+using Devscord.DiscordFramework.Commands.Parsing.Models;
+using Devscord.DiscordFramework.Commands.Services;
 using Devscord.DiscordFramework.Integration;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Middlewares.Factories;
@@ -35,7 +35,7 @@ namespace Devscord.DiscordFramework
         Workflow AddMiddleware<T>() where T : IMiddleware;
         void MapHandlers(DiscordSocketClient client);
     }
-
+    //todo testy wydajnościowe
     public class Workflow : IWorkflow
     {
         private readonly IControllersService _controllersService;

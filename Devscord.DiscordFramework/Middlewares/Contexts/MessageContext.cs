@@ -1,5 +1,5 @@
 ﻿using System;
-using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
+using Devscord.DiscordFramework.Architecture.Middlewares;
 
 namespace Devscord.DiscordFramework.Middlewares.Contexts
 {
