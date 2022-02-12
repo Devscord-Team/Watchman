@@ -19,7 +19,7 @@ using Serilog;
 
 namespace Devscord.DiscordFramework
 {
-    internal class Workflow
+    public interface IWorkflow
     {
         List<Func<Task>> OnReady { get; set; }
         List<Func<Contexts, Task>> OnUserJoined { get; set; }
@@ -35,7 +35,7 @@ namespace Devscord.DiscordFramework
         Workflow AddMiddleware<T>() where T : IMiddleware;
         void MapHandlers(DiscordSocketClient client);
     }
-
+    //todo testy wydajnościowe
     public class Workflow : IWorkflow
     {
         private readonly IControllersService _controllersService;

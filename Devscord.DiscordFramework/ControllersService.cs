@@ -22,7 +22,7 @@ namespace Devscord.DiscordFramework
     {
         Task Run(ulong messageId, DiscordRequest request, Contexts contexts);
     }
-
+    //todo testy wydajnościowe
     internal class ControllersService : IControllersService
     {
         private readonly IComponentContext _context;
