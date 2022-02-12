@@ -106,7 +106,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
                 }
                 throw new NotEnoughArgumentsException();
             }
-            if (command.Roles.Count > 5)
+            if (command.Roles.Count > 5 || !command.Roles.Any())
             {
                 throw new InvalidArgumentsException();
             }
