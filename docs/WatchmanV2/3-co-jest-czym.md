@@ -42,30 +42,30 @@ Własna implementacja wzorca CQRS.
 
 Zestaw klas pomocniczych, które mogą być użyte w dowolnym miejscu w aplikacji, poza `DiscordFramework`.
 
-# Co wie o czym
+## Co wie o czym
 
 Jedną z zalet posiadania wielu warstw, jest możliwość zdefiniowania która warstwa może być widoczna dla której warstwy. W niektórych momentach jest to dodatkowym utrudnieniem, bo pewne rzeczy trzeba "obchodzić', ale ostatecznie zyskujemy na tym większą czytelność i przejrzystosć aplikacji.
 
-## 1. DiscordFramework
+### 1. DiscordFramework
 
 Docelowo ma być w innym repozytorium, ta warstwa docelowo nie powinna mieć zależności z niczym.
 
-## 2. Discord
+### 2. Discord
 
 Może korzystać z wszystkich warstw. Używa głównie DiscordFramework i DomainModel.
 
-## 3. Web
+### 3. Web
 
 Nie może wiedzieć o DiscordFramework, używa DomainModel i Discord.
 
-## 4. DomainModel
+### 4. DomainModel
 
 Staramy się żemy DomainModel był jak najbardziej niezależny, ale może używać Integrations i Common.
 
-## 5. Integrations, IoC, Cqrs
+### 5. Integrations, IoC, Cqrs
 
 Powinny być jak najbardziej niezależne, ale może używać Common.
 
-## 6. Common
+### 6. Common
 
 Jest niezależne, może być używane przez wszystko poza DiscordFramework.
