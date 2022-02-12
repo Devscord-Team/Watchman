@@ -43,8 +43,4 @@
       <LastGenOutput>Responses.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Framework\" />
-  </ItemGroup>
 </Project>
