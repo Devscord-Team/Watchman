@@ -1,6 +1,6 @@
 ﻿using Devscord.DiscordFramework.Commons.Extensions;
-using Devscord.DiscordFramework.Framework.Architecture.Controllers;
-using Devscord.DiscordFramework.Framework.Commands;
+using Devscord.DiscordFramework.Architecture.Controllers;
+using Devscord.DiscordFramework.Commands;
 using Serilog;
 using System.Collections.Generic;
 using System.Linq;

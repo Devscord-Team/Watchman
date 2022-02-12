@@ -1,10 +1,10 @@
 ﻿using Autofac;
 using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Commons.Extensions;
-using Devscord.DiscordFramework.Framework.Architecture.Controllers;
-using Devscord.DiscordFramework.Framework.Commands;
-using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
-using Devscord.DiscordFramework.Framework.Commands.Services;
+using Devscord.DiscordFramework.Architecture.Controllers;
+using Devscord.DiscordFramework.Commands;
+using Devscord.DiscordFramework.Commands.Parsing.Models;
+using Devscord.DiscordFramework.Commands.Services;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Newtonsoft.Json;
 using Serilog;

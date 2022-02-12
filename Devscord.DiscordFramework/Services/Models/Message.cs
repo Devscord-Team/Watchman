@@ -1,4 +1,4 @@
-﻿using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
+﻿using Devscord.DiscordFramework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 
 namespace Devscord.DiscordFramework.Services.Models

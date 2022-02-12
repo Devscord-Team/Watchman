@@ -1,6 +1,6 @@
 ﻿using System;
-using Devscord.DiscordFramework.Framework.Commands.AntiSpam;
-using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
+using Devscord.DiscordFramework.Commands.AntiSpam;
+using Devscord.DiscordFramework.Commands.AntiSpam.Models;
 using Serilog;
 using Watchman.Discord.Areas.Protection.Services;
 

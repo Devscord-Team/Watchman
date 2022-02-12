@@ -1,5 +1,5 @@
-﻿using Devscord.DiscordFramework.Framework.Commands;
-using Devscord.DiscordFramework.Framework.Commands.PropertyAttributes;
+﻿using Devscord.DiscordFramework.Commands;
+using Devscord.DiscordFramework.Commands.PropertyAttributes;
 
 namespace Watchman.Discord.Areas.UselessFeatures.BotCommands
 {

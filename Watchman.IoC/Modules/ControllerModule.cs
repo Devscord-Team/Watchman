@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Devscord.DiscordFramework.Framework.Architecture.Controllers;
+using Devscord.DiscordFramework.Architecture.Controllers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Devscord.DiscordFramework.Framework.Commands.AntiSpam;
-using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
+using Devscord.DiscordFramework.Commands.AntiSpam;
+using Devscord.DiscordFramework.Commands.AntiSpam.Models;
 using Devscord.DiscordFramework.Services.Models;
 using Moq;
 using NUnit.Framework;

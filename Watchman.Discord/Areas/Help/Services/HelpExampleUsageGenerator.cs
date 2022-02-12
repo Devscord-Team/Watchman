@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
-using Devscord.DiscordFramework.Framework.Commands.PropertyAttributes;
-using Devscord.DiscordFramework.Framework.Commands.Responses;
+using Devscord.DiscordFramework.Commands.PropertyAttributes;
+using Devscord.DiscordFramework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Watchman.DomainModel.Help;
 

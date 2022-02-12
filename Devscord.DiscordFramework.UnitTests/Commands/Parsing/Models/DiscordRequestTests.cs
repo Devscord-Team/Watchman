@@ -1,4 +1,4 @@
-﻿using Devscord.DiscordFramework.Framework.Commands.Parsing;
+﻿using Devscord.DiscordFramework.Commands.Parsing;
 using NUnit.Framework;
 using System;
 

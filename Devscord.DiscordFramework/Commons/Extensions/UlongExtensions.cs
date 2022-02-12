@@ -1,4 +1,4 @@
-﻿using Devscord.DiscordFramework.Framework.Commands.PropertyAttributes;
+﻿using Devscord.DiscordFramework.Commands.PropertyAttributes;
 using System;
 using System.Collections.Generic;
 using System.Text;

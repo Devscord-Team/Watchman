@@ -1,4 +1,4 @@
-﻿using Devscord.DiscordFramework.Framework.Commands.Parsing;
+﻿using Devscord.DiscordFramework.Commands.Parsing;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Discord;
 

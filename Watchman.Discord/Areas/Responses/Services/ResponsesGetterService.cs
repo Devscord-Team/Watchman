@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Devscord.DiscordFramework.Framework.Commands.Responses;
+using Devscord.DiscordFramework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Serilog;
 using Watchman.Cqrs;
@@ -31,7 +31,7 @@ namespace Watchman.Discord.Areas.Responses.Services
         {
             Log.Information("Initializing default responses...");
             var managerMethods = typeof(ResponsesManager).GetMethods();
-            var defaultResponses = typeof(Devscord.DiscordFramework.Framework.Commands.Responses.Resources.Responses).GetProperties()
+            var defaultResponses = typeof(Devscord.DiscordFramework.Commands.Responses.Resources.Responses).GetProperties()
                 .Where(x => x.PropertyType.Name == "String")
                 .Select(prop =>
                 {

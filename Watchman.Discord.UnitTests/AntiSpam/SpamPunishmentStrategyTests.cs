@@ -1,5 +1,5 @@
 ﻿using System;
-using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
+using Devscord.DiscordFramework.Commands.AntiSpam.Models;
 using Moq;
 using NUnit.Framework;
 using Watchman.Discord.Areas.Protection.Services;

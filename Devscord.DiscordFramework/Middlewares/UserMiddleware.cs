@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Devscord.DiscordFramework.Framework.Architecture.Middlewares;
+using Devscord.DiscordFramework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Middlewares.Factories;
 using Devscord.DiscordFramework.Services;
 using Discord.WebSocket;
