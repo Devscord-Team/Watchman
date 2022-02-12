@@ -13,6 +13,6 @@ Szczególnie istotne są
 
 [Jak zacząć rozwijać bota](https://watchman.readthedocs.io/pl/latest/151-jak-zaczac-rozwijac-bota/)  
 
-** UWAGA
+## UWAGA
 
 Dawna część dokumentacji nie była odświeżana od wielu miesięcy, możliwe że duża część informacji jest już przestarzała. Jeśli chcesz mieć gwarancje że to co czytasz jest aktualne, sprawdź zakładkę "Watchman V2".
