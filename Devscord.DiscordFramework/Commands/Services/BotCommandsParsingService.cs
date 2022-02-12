@@ -1,12 +1,13 @@
-﻿using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
+﻿using Devscord.DiscordFramework.Commands.Parsing.Models;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Devscord.DiscordFramework.Framework.Commands.Properties;
+using Devscord.DiscordFramework.Commands.Properties;
 using Devscord.DiscordFramework.Commons.Exceptions;
 using System.Collections.Generic;
+using Devscord.DiscordFramework.Commands;
 
-namespace Devscord.DiscordFramework.Framework.Commands.Services
+namespace Devscord.DiscordFramework.Commands.Services
 {
     public class BotCommandsParsingService
     {

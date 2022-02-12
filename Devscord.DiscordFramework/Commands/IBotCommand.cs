@@ -1,4 +1,4 @@
-﻿namespace Devscord.DiscordFramework.Framework.Commands
+﻿namespace Devscord.DiscordFramework.Commands
 {
     public interface IBotCommand
     {

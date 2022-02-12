@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Devscord.DiscordFramework.Framework.Commands.Parsing.Models
+namespace Devscord.DiscordFramework.Commands.Parsing.Models
 {
     public class DiscordRequest //TODO add lazy loading for everything except IsCommandForBot
     {

@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Devscord.DiscordFramework.Framework.Commands.Responses
+namespace Devscord.DiscordFramework.Commands.Responses
 {
     public class ResponsesService
     {

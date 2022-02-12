@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models
+namespace Devscord.DiscordFramework.Commands.AntiSpam.Models
 {
     public readonly struct Punishment
     {

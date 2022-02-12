@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Devscord.DiscordFramework.Framework.Architecture.Controllers
+namespace Devscord.DiscordFramework.Architecture.Controllers
 {
     [AttributeUsage(AttributeTargets.Method)]
     public class AdminCommand : Attribute

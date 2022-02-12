@@ -3,7 +3,7 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using System;
 using System.Collections.Generic;
 
-namespace Devscord.DiscordFramework.Framework.Commands.Responses
+namespace Devscord.DiscordFramework.Commands.Responses
 {
     public static class ResponsesManager
     {

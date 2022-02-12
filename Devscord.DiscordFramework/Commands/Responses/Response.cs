@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Devscord.DiscordFramework.Framework.Commands.Responses
+namespace Devscord.DiscordFramework.Commands.Responses
 {
     public class Response
     {

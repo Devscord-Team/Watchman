@@ -1,4 +1,4 @@
-﻿namespace Devscord.DiscordFramework.Framework.Architecture.Controllers
+﻿namespace Devscord.DiscordFramework.Architecture.Controllers
 {
     public interface IController
     {

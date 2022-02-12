@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
-using Devscord.DiscordFramework.Framework.Commands.Properties;
+using Devscord.DiscordFramework.Commands;
+using Devscord.DiscordFramework.Commands.Parsing.Models;
+using Devscord.DiscordFramework.Commands.Properties;
 
-namespace Devscord.DiscordFramework.Framework.Commands.Services
+namespace Devscord.DiscordFramework.Commands.Services
 {
     public class BotCommandsRequestValueGetterService
     {

@@ -1,4 +1,4 @@
-﻿namespace Devscord.DiscordFramework.Framework.Commands.Parsing.Models
+﻿namespace Devscord.DiscordFramework.Commands.Parsing.Models
 {
     public class DiscordRequestArgument
     {

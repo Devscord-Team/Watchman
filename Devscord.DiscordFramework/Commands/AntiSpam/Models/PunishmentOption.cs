@@ -1,4 +1,4 @@
-﻿namespace Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models
+﻿namespace Devscord.DiscordFramework.Commands.AntiSpam.Models
 {
     public enum PunishmentOption
     {

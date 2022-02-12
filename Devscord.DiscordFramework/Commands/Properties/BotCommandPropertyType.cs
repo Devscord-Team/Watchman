@@ -1,4 +1,4 @@
-﻿namespace Devscord.DiscordFramework.Framework.Commands.Properties
+﻿namespace Devscord.DiscordFramework.Commands.Properties
 {
     public enum BotCommandPropertyType
     {

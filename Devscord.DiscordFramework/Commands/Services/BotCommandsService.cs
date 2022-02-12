@@ -1,11 +1,12 @@
-﻿using Devscord.DiscordFramework.Framework.Commands.Builders;
-using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
+﻿using Devscord.DiscordFramework.Commands;
+using Devscord.DiscordFramework.Commands.Builders;
+using Devscord.DiscordFramework.Commands.Parsing.Models;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Devscord.DiscordFramework.Framework.Commands.Services
+namespace Devscord.DiscordFramework.Commands.Services
 {
     public class BotCommandsService
     {

@@ -1,6 +1,6 @@
-﻿using Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models;
+﻿using Devscord.DiscordFramework.Commands.AntiSpam.Models;
 
-namespace Devscord.DiscordFramework.Framework.Commands.AntiSpam
+namespace Devscord.DiscordFramework.Commands.AntiSpam
 {
     public interface ISpamPunishmentStrategy
     {

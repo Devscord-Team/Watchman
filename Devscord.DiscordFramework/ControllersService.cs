@@ -18,6 +18,7 @@ using System.Text.RegularExpressions;
 
 namespace Devscord.DiscordFramework
 {
+    //todo testy wydajnościowe
     internal class ControllersService
     {
         private readonly IComponentContext _context;

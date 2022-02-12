@@ -1,4 +1,4 @@
-﻿namespace Devscord.DiscordFramework.Framework.Commands.PropertyAttributes
+﻿namespace Devscord.DiscordFramework.Commands.PropertyAttributes
 {
     public class Text : CommandPropertyAttribute
     {

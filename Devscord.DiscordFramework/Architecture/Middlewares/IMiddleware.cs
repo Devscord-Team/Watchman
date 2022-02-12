@@ -1,6 +1,6 @@
 ﻿using Discord.WebSocket;
 
-namespace Devscord.DiscordFramework.Framework.Architecture.Middlewares
+namespace Devscord.DiscordFramework.Architecture.Middlewares
 {
     public interface IMiddleware
     {

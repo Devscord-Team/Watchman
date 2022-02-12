@@ -19,6 +19,7 @@ using Serilog;
 
 namespace Devscord.DiscordFramework
 {
+    //todo testy wydajnościowe
     internal class Workflow
     {
         private readonly CommandParser _commandParser;

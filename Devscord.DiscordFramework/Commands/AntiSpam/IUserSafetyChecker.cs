@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Devscord.DiscordFramework.Framework.Commands.AntiSpam
+namespace Devscord.DiscordFramework.Commands.AntiSpam
 {
     public interface IUserSafetyChecker
     {

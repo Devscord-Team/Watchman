@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
+using Devscord.DiscordFramework.Commands.Parsing.Models;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Models;
 
-namespace Devscord.DiscordFramework.Framework.Commands.AntiSpam.Models
+namespace Devscord.DiscordFramework.Commands.AntiSpam.Models
 {
     public class ServerMessagesCacheService : ICyclicService
     {

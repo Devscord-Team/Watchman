@@ -1,8 +1,8 @@
-﻿using Devscord.DiscordFramework.Framework.Commands.Properties;
+﻿using Devscord.DiscordFramework.Commands.Properties;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Devscord.DiscordFramework.Framework.Commands
+namespace Devscord.DiscordFramework.Commands
 {
     public class BotCommandTemplate
     {

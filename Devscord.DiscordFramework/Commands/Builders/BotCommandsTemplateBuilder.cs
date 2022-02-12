@@ -1,11 +1,12 @@
-﻿using Devscord.DiscordFramework.Framework.Commands.Properties;
-using Devscord.DiscordFramework.Framework.Commands.PropertyAttributes;
+﻿using Devscord.DiscordFramework.Commands;
+using Devscord.DiscordFramework.Commands.Properties;
+using Devscord.DiscordFramework.Commands.PropertyAttributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Devscord.DiscordFramework.Framework.Commands.Builders
+namespace Devscord.DiscordFramework.Commands.Builders
 {
     public class BotCommandsTemplateBuilder
     {

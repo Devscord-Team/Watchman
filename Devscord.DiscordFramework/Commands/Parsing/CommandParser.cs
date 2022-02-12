@@ -1,11 +1,11 @@
 ﻿using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Commons.Extensions;
-using Devscord.DiscordFramework.Framework.Commands.Parsing.Models;
+using Devscord.DiscordFramework.Commands.Parsing.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Devscord.DiscordFramework.Framework.Commands.Parsing
+namespace Devscord.DiscordFramework.Commands.Parsing
 {
     public class CommandParser
     {

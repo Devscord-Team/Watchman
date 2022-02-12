@@ -1,4 +1,4 @@
-﻿namespace Devscord.DiscordFramework.Framework.Architecture.Middlewares
+﻿namespace Devscord.DiscordFramework.Architecture.Middlewares
 {
     public interface IDiscordContext
     {

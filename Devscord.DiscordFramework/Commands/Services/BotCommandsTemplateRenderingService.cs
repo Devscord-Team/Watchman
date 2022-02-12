@@ -1,8 +1,9 @@
-﻿using Devscord.DiscordFramework.Framework.Commands.Properties;
+﻿using Devscord.DiscordFramework.Commands;
+using Devscord.DiscordFramework.Commands.Properties;
 using System;
 using System.Text;
 
-namespace Devscord.DiscordFramework.Framework.Commands.Services
+namespace Devscord.DiscordFramework.Commands.Services
 {
     public class BotCommandsTemplateRenderingService
     {

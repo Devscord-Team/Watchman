@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Devscord.DiscordFramework.Framework.Commands.Responses
+namespace Devscord.DiscordFramework.Commands.Responses
 {
     internal static class ContextsToResponseFields
     {

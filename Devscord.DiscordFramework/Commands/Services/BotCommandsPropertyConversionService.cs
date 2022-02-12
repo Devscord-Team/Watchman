@@ -1,5 +1,5 @@
 ﻿using Devscord.DiscordFramework.Commons.Exceptions;
-using Devscord.DiscordFramework.Framework.Commands.Properties;
+using Devscord.DiscordFramework.Commands.Properties;
 using Devscord.DiscordFramework.Integration;
 using System;
 using System.Globalization;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Devscord.DiscordFramework.Framework.Commands.Services
+namespace Devscord.DiscordFramework.Commands.Services
 {
     public class BotCommandsPropertyConversionService
     {

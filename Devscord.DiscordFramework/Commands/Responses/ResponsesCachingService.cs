@@ -4,7 +4,7 @@ using System.Linq;
 using Devscord.DiscordFramework.Services;
 using Serilog;
 
-namespace Devscord.DiscordFramework.Framework.Commands.Responses
+namespace Devscord.DiscordFramework.Commands.Responses
 {
     public class ResponsesCachingService
     {
