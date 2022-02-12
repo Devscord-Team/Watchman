@@ -18,6 +18,7 @@ nav:
   - "Watchman V2":
     - "Postanowienia": WatchmanV2/1-postanowienia.md
     - "Testowanie i refaktoryzacja": WatchmanV2/2-testowanie-i-refaktoryzacja.md
+    - "Co jest czym": WatchmanV2/3-co-jest-czym.md
 theme:
   name: "material"
   language: pl
