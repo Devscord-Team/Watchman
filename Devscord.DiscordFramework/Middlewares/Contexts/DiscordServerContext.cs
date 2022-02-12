@@ -16,7 +16,8 @@ namespace Devscord.DiscordFramework.Middlewares.Contexts
         private readonly Func<DiscordServerContext, IEnumerable<ChannelContext>> _getTextChannels;
         private readonly Func<UserContext> _getOwner;
 
-        public DiscordServerContext(ulong id, string name, Func<UserContext> owner, ChannelContext landingChannel, Func<DiscordServerContext, IEnumerable<ChannelContext>> getTextChannels, Func<DiscordServerContext, IEnumerable<UserContext>> getServerUsers, Func<DiscordServerContext, IEnumerable<UserRole>> getServerRoles)
+        public DiscordServerContext(ulong id, string name, Func<UserContext> owner, ChannelContext landingChannel, Func<DiscordServerContext, 
+            IEnumerable<ChannelContext>> getTextChannels, Func<DiscordServerContext, IEnumerable<UserContext>> getServerUsers, Func<DiscordServerContext, IEnumerable<UserRole>> getServerRoles)
         {
             this._getServerUsers = getServerUsers;
             this._getServerRoles = getServerRoles;

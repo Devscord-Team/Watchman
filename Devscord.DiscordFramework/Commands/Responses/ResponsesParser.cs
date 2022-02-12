@@ -3,7 +3,12 @@ using System.Text.RegularExpressions;
 
 namespace Devscord.DiscordFramework.Commands.Responses
 {
-    public class ResponsesParser
+    public interface IResponsesParser
+    {
+        string Parse(Response response, IEnumerable<KeyValuePair<string, string>> values);
+    }
+
+    public class ResponsesParser : IResponsesParser
     {
         public string Parse(Response response, IEnumerable<KeyValuePair<string, string>> values)
         {

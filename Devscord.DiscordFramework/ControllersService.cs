@@ -18,17 +18,21 @@ using System.Text.RegularExpressions;
 
 namespace Devscord.DiscordFramework
 {
-    //todo testy wydajnościowe
-    internal class ControllersService
+    public interface IControllersService
+    {
+        Task Run(ulong messageId, DiscordRequest request, Contexts contexts);
+    }
+
+    internal class ControllersService : IControllersService
     {
         private readonly IComponentContext _context;
         private readonly Assembly _assembly;
         private readonly BotCommandsService _botCommandsService;
-        private readonly CommandsContainer _commandsContainer;
+        private readonly ICommandsContainer _commandsContainer;
         private ControllersContainer _controllersContainer;
 
         public ControllersService(IComponentContext context, Assembly assembly, BotCommandsService botCommandsService,
-            CommandsContainer commandsContainer)
+            ICommandsContainer commandsContainer)
         {
             this._context = context;
             this._assembly = assembly;

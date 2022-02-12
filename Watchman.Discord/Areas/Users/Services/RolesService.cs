@@ -12,12 +12,19 @@ using Watchman.DomainModel.DiscordServer.Queries;
 
 namespace Watchman.Discord.Areas.Users.Services
 {
-    public class RolesService
+    public interface IRolesService
     {
-        private readonly UsersService _usersService;
-        private readonly UsersRolesService _usersRolesService;
+        Task AddRoleToUser(IEnumerable<SafeRole> safeRoles, Contexts contexts, IReadOnlyCollection<string> rolesToAdd);
+        Task DeleteRoleFromUser(IEnumerable<SafeRole> safeRoles, Contexts contexts, IReadOnlyCollection<string> rolesToRemove);
+        Task SetRolesAsSafe(Contexts contexts, IReadOnlyCollection<string> commandRoles, bool setAsSafe);
+    }
+
+    public class RolesService : IRolesService
+    {
+        private readonly IUsersService _usersService;
+        private readonly IUsersRolesService _usersRolesService;
         private readonly IQueryBus _queryBus;
-        private readonly MessagesServiceFactory _messagesServiceFactory;
+        private readonly IMessagesServiceFactory _messagesServiceFactory;
         private readonly ICommandBus _commandBus;
 
         public RolesService(UsersService usersService, UsersRolesService usersRolesService, IQueryBus queryBus, MessagesServiceFactory messagesServiceFactory, ICommandBus commandBus)

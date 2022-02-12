@@ -18,12 +18,12 @@ namespace Watchman.Discord.Areas.Users.Controllers
     public class UsersController : IController
     {
         private readonly IQueryBus _queryBus;
-        private readonly MessagesServiceFactory _messagesServiceFactory;
-        private readonly RolesService _rolesService;
-        private readonly UsersService _usersService;
-        private readonly ResponsesService _responsesService;
+        private readonly IMessagesServiceFactory _messagesServiceFactory;
+        private readonly IRolesService _rolesService;
+        private readonly IUsersService _usersService;
+        private readonly IResponsesService _responsesService;
 
-        public UsersController(IQueryBus queryBus, MessagesServiceFactory messagesServiceFactory, RolesService rolesService, UsersService usersService, ResponsesService responsesService)
+        public UsersController(IQueryBus queryBus, IMessagesServiceFactory messagesServiceFactory, IRolesService rolesService, IUsersService usersService, IResponsesService responsesService)
         {
             this._queryBus = queryBus;
             this._messagesServiceFactory = messagesServiceFactory;
@@ -83,7 +83,7 @@ namespace Watchman.Discord.Areas.Users.Controllers
             return this.SendRolesAsEmbedMessage(rolesNames, messagesService, contexts.Server.Id);
         }
 
-        private Task SendRolesAsEmbedMessage(IEnumerable<string> rolesNames, MessagesService messagesService, ulong serverId)
+        private Task SendRolesAsEmbedMessage(IEnumerable<string> rolesNames, IMessagesService messagesService, ulong serverId)
         {
             var title = this._responsesService.GetResponse(serverId, x => x.AvailableSafeRoles());
             var description = this._responsesService.GetResponse(serverId, x => x.AvailableSafeRolesDescription());

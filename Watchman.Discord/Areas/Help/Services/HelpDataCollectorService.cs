@@ -8,11 +8,16 @@ using Devscord.DiscordFramework.Services.Models;
 
 namespace Watchman.Discord.Areas.Help.Services
 {
-    public class HelpDataCollectorService
+    public interface IHelpDataCollectorService
     {
-        private readonly BotCommandInformationFactory _botCommandInformationFactory;
+        IEnumerable<BotCommandInformation> GetBotCommandsInfo(Assembly botAssembly);
+    }
 
-        public HelpDataCollectorService(BotCommandInformationFactory botCommandInformationFactory)
+    public class HelpDataCollectorService : IHelpDataCollectorService
+    {
+        private readonly IBotCommandInformationFactory _botCommandInformationFactory;
+
+        public HelpDataCollectorService(IBotCommandInformationFactory botCommandInformationFactory)
         {
             this._botCommandInformationFactory = botCommandInformationFactory;
         }

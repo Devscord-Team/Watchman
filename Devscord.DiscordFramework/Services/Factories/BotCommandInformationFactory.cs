@@ -8,7 +8,12 @@ using System.Text.RegularExpressions;
 
 namespace Devscord.DiscordFramework.Services.Factories
 {
-    public class BotCommandInformationFactory
+    public interface IBotCommandInformationFactory
+    {
+        BotCommandInformation Create(Type botCommand);
+    }
+
+    public class BotCommandInformationFactory : IBotCommandInformationFactory
     {
         private readonly Regex _areaNameRegex = new Regex(@"^Watchman\.Discord\.Areas\.(?<AreaName>\w+)", RegexOptions.Compiled | RegexOptions.Multiline);
 

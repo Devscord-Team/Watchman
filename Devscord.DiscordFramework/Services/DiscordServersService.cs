@@ -5,7 +5,13 @@ using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework.Services
 {
-    public class DiscordServersService
+    public interface IDiscordServersService
+    {
+        IAsyncEnumerable<DiscordServerContext> GetDiscordServersAsync();
+        Task<DiscordServerContext> GetDiscordServerAsync(ulong serverId);
+    }
+
+    public class DiscordServersService : IDiscordServersService
     {
         public IAsyncEnumerable<DiscordServerContext> GetDiscordServersAsync()
         {

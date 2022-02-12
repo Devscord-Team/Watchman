@@ -45,6 +45,7 @@ namespace Watchman.IoC.Modules
                     .Where(x => x.FullName.StartsWith("Watchman") || x.FullName.StartsWith("Devscord") || x.FullName.StartsWith("Statsman"))
                     .Where(x => x.GetConstructors().Any()) // todo: AutoFac v6.0 needs this line to work / maybe possible to remove in future when they'll fix it
                     .PreserveExistingDefaults()
+                    .AsImplementedInterfaces()
                     .SingleInstance();
 
                 foreach (var reference in asm.GetReferencedAssemblies())

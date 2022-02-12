@@ -37,9 +37,9 @@ namespace Watchman.Discord
         public WorkflowBuilder GetWorkflowBuilder()
         {
             MongoConfiguration.Initialize();
-            ExceptionHandlerService.DiscordConfiguration = this._configuration;
+            ExceptionHandlerService.DiscordConfiguration = this._configuration; //todo ioc
 
-            return WorkflowBuilder.Create(this._configuration.Token, this._context, typeof(WatchmanBot).Assembly)
+            return WorkflowBuilder.Create(this._configuration.Token, this._context.Resolve<IWorkflow>(), this._context)
                 .SetDefaultMiddlewares()
                 .AddOnReadyHandlers(builder =>
                 {
@@ -47,10 +47,10 @@ namespace Watchman.Discord
                         .AddHandler(() => Task.Run(() => Log.Information("Bot started and logged in...")))
                         .AddFromIoC<ConfigurationService>(configurationService => configurationService.InitDefaultConfigurations)
                         .AddFromIoC<CustomCommandsLoader>(customCommandsLoader => customCommandsLoader.InitDefaultCustomCommands)
-                        .AddFromIoC<HelpDataCollectorService, HelpDBGeneratorService>((dataCollector, helpService) =>
+                        .AddFromIoC<IHelpDataCollectorService, HelpDBGeneratorService>((dataCollector, helpService) =>
                             () => helpService.FillDatabase(dataCollector.GetBotCommandsInfo(typeof(WatchmanBot).Assembly)))
                         .AddFromIoC<ResponsesInitService>(responsesService => responsesService.InitNewResponsesFromResources)
-                        .AddFromIoC<InitializationService, DiscordServersService>((initService, serversService) => async () =>
+                        .AddFromIoC<InitializationService, IDiscordServersService>((initService, serversService) => async () =>
                         {
                             var stopwatch = Stopwatch.StartNew();
                             // when bot was offline for less than 1 minutes, it doesn't make sense to init all servers
@@ -78,10 +78,10 @@ namespace Watchman.Discord
                 .AddOnWorkflowExceptionHandlers(builder =>
                 {
                     builder
-                        .AddFromIoC<ExceptionHandlerService>(x => (e, r, _) => x.LogException(e))
-                        .AddFromIoC<ExceptionHandlerService>(x => x.SendExceptionResponse)
-                        .AddFromIoC<ExceptionHandlerService>(x => (e, r, c) =>  x.PrintDebugExceptionInfo(e, c), onlyOnDebug: true)
-                        .AddFromIoC<ExceptionHandlerService>(x => (e, r, _) => x.SendExceptionToDebugServer(e));
+                        .AddFromIoC<IExceptionHandlerService>(x => (e, r, _) => x.LogException(e))
+                        .AddFromIoC<IExceptionHandlerService>(x => x.SendExceptionResponse)
+                        .AddFromIoC<IExceptionHandlerService>(x => (e, r, c) =>  x.PrintDebugExceptionInfo(e, c), onlyOnDebug: true)
+                        .AddFromIoC<IExceptionHandlerService>(x => (e, r, _) => x.SendExceptionToDebugServer(e));
                 })
                 .AddOnChannelCreatedHandlers(builder =>
                 {

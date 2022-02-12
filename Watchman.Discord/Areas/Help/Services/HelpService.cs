@@ -13,7 +13,14 @@ using Watchman.DomainModel.Help.Queries;
 
 namespace Watchman.Discord.Areas.Help.Services
 {
-    public class HelpService
+    public interface IHelpService
+    {
+        IEnumerable<HelpInformation> GetHelpInformations(Contexts contexts);
+        Task PrintHelpForAllCommands(bool printAsJson, Contexts contexts, IEnumerable<HelpInformation> helpInformations);
+        Task PrintHelpForOneCommand(string commandName, Contexts contexts, IEnumerable<HelpInformation> helpInformations);
+    }
+
+    public class HelpService : IHelpService
     {
         private readonly MessagesServiceFactory _messagesServiceFactory;
         private readonly HelpMessageGeneratorService _helpMessageGenerator;

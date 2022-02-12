@@ -7,7 +7,12 @@ using System.Linq;
 
 namespace Devscord.DiscordFramework.Commands.Parsing
 {
-    public class CommandParser
+    public interface ICommandParser
+    {
+        DiscordRequest Parse(string message, DateTime sentAt);
+    }
+
+    public class CommandParser : ICommandParser
     {
         private readonly string[] _possiblePrefixes = { "!", "--", "-", "^", "$", "%" };
 

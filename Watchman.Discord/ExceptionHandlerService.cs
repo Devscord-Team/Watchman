@@ -14,11 +14,19 @@ using Watchman.Discord.Areas.Help.Services;
 
 namespace Watchman.Discord
 {
-    public class ExceptionHandlerService
+    public interface IExceptionHandlerService
     {
-        private readonly DiscordServersService _discordServersService;
-        private readonly MessagesServiceFactory _messagesServiceFactory;
-        private readonly HelpService _helpService;
+        Task LogException(Exception e);
+        Task SendExceptionResponse(Exception e, DiscordRequest request, Contexts contexts);
+        Task SendExceptionToDebugServer(Exception e);
+        Task PrintDebugExceptionInfo(Exception e, Contexts contexts);
+    }
+
+    public class ExceptionHandlerService : IExceptionHandlerService
+    {
+        private readonly IDiscordServersService _discordServersService;
+        private readonly IMessagesServiceFactory _messagesServiceFactory;
+        private readonly IHelpService _helpService;
         private Contexts _debugServerContexts;
 
         private Contexts DebugServerContexts
@@ -39,7 +47,7 @@ namespace Watchman.Discord
 
         public static DiscordConfiguration DiscordConfiguration { get; set; }
 
-        public ExceptionHandlerService(MessagesServiceFactory messagesServiceFactory, DiscordServersService discordServersService, HelpService helpService)
+        public ExceptionHandlerService(IMessagesServiceFactory messagesServiceFactory, IDiscordServersService discordServersService, IHelpService helpService)
         {
             this._messagesServiceFactory = messagesServiceFactory;
             this._discordServersService = discordServersService;

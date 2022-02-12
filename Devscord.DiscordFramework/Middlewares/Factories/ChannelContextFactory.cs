@@ -3,7 +3,11 @@ using Discord;
 
 namespace Devscord.DiscordFramework.Middlewares.Factories
 {
-    internal class ChannelContextFactory : IContextFactory<IChannel, ChannelContext>
+    public interface IChannelContextFactory : IContextFactory<IChannel, ChannelContext>
+    {
+    }
+
+    internal class ChannelContextFactory : IChannelContextFactory
     {
         public ChannelContext Create(IChannel restChannel)
         {

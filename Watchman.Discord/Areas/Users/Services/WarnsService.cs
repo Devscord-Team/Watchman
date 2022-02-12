@@ -21,19 +21,20 @@ using Watchman.DomainModel.Warns.Queries;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {
-    public class WarnsService
+    public interface IWarnsService
     {
-        private readonly UsersService _usersService;
-        private readonly MessagesServiceFactory _messagesServiceFactory;
-        private readonly DirectMessagesService _directMessagesService;
+        Task AddWarnToUser(AddWarnCommand command, Contexts contexts, UserContext targetUser);
+        IEnumerable<KeyValuePair<string, string>> GetWarns(UserContext mentionedUser, ulong serverId);
+        IEnumerable<WarnEvent> GetWarnEvents(ulong serverId, ulong userId);
+    }
+
+    public class WarnsService : IWarnsService
+    {
         private readonly ICommandBus _commandBus;
         private readonly IQueryBus _queryBus;
 
-        public WarnsService(UsersService usersService, MessagesServiceFactory messagesServiceFactory, DirectMessagesService directMessagesService, ICommandBus commandBus, IQueryBus queryBus)
+        public WarnsService(ICommandBus commandBus, IQueryBus queryBus)
         {
-            this._messagesServiceFactory = messagesServiceFactory;
-            this._directMessagesService = directMessagesService;
-            this._usersService = usersService;
             this._commandBus = commandBus;
             this._queryBus = queryBus;
         }

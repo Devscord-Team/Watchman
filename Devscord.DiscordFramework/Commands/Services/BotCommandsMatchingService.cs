@@ -75,7 +75,7 @@ namespace Devscord.DiscordFramework.Commands.Services
 
         private List<string> GetArgsWithoutListSubarguments(List<string> argumentsNames, List<string> listsNames)
         {
-            for (int i = 0; i < argumentsNames.Count; i++)
+            for (var i = 0; i < argumentsNames.Count; i++)
             {
                 if (!listsNames.Contains(argumentsNames[i]))
                 {

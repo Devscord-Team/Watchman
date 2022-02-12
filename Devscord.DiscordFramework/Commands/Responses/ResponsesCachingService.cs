@@ -6,14 +6,20 @@ using Serilog;
 
 namespace Devscord.DiscordFramework.Commands.Responses
 {
-    public class ResponsesCachingService
+    public interface IResponsesCachingService
+    {
+        IEnumerable<Response> GetResponses(ulong serverId);
+        void UpdateServerResponses(ulong serverId);
+    }
+
+    public class ResponsesCachingService : IResponsesCachingService
     {
         public Func<ulong, IEnumerable<Response>> GetResponsesFunc { get; set; } = x => throw new NotImplementedException();
 
-        private readonly DiscordServersService _discordServersService;
+        private readonly IDiscordServersService _discordServersService;
         private static readonly Dictionary<ulong, IEnumerable<Response>> _serversResponses = new Dictionary<ulong, IEnumerable<Response>>();
 
-        public ResponsesCachingService(DiscordServersService discordServersService)
+        public ResponsesCachingService(IDiscordServersService discordServersService)
         {
             this._discordServersService = discordServersService;
         }

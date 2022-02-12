@@ -7,6 +7,12 @@ using System.Linq;
 
 namespace Devscord.DiscordFramework
 {
+    public interface IMiddlewaresService
+    {
+        void AddMiddleware<T>() where T : IMiddleware;
+        Contexts RunMiddlewares(SocketMessage socketMessage);
+    }
+
     internal class MiddlewaresService
     {
         public IEnumerable<IMiddleware> Middlewares => this._middlewares;

@@ -22,23 +22,23 @@ namespace Devscord.DiscordFramework
 
         private readonly DiscordSocketClient _client;
         private readonly string _token;
+        private readonly IWorkflow _workflow;
         private readonly IComponentContext _context;
-        private readonly Workflow _workflow;
 
-        private WorkflowBuilder(string token, IComponentContext context, Assembly botAssembly)
+        private WorkflowBuilder(string token, IWorkflow workflow, IComponentContext context)
         {
             this._client = new DiscordSocketClient(new DiscordSocketConfig
             {
                 TotalShards = 1
             });
             this._token = token;
+            this._workflow = workflow;
             this._context = context;
-            this._workflow = new Workflow(botAssembly, context);
         }
 
-        public static WorkflowBuilder Create(string token, IComponentContext context, Assembly botAssembly)
+        public static WorkflowBuilder Create(string token, IWorkflow workflow, IComponentContext context)
         {
-            return new WorkflowBuilder(token, context, botAssembly);
+            return new WorkflowBuilder(token, workflow, context);
         }
 
         public WorkflowBuilder SetMessageHandler(Func<SocketMessage, Task> action)
