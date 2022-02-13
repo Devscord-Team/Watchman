@@ -1,11 +1,13 @@
 ﻿using Autofac;
 using LiteDB;
 using MongoDB.Driver;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Watchman.Integrations.Database;
 
 namespace Watchman.IoC.Modules
 {
+    [ExcludeFromCodeCoverage]
     public class DatabaseModule : Autofac.Module
     {
         private readonly string _mongoConnectionString;

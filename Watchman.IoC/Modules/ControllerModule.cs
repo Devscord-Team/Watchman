@@ -1,11 +1,13 @@
 ﻿using Autofac;
 using Devscord.DiscordFramework.Architecture.Controllers;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
 namespace Watchman.IoC.Modules
 {
+    [ExcludeFromCodeCoverage]
     public class ControllerModule : Autofac.Module
     {
         protected override void Load(ContainerBuilder builder)
@@ -24,7 +26,7 @@ namespace Watchman.IoC.Modules
 
                 var controllers = asm.GetTypes()
                     .Where(type => typeof(IController).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)
-                    .ToList();
+                    .ToArray();
 
                 foreach (var controller in controllers)
                 {

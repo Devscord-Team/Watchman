@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using Hangfire;
 using Hangfire.Annotations;
@@ -17,6 +18,7 @@ using Microsoft.OpenApi.Models;
 
 namespace Watchman.Web
 {
+    [ExcludeFromCodeCoverage]
     public class Startup
     {
         public Startup(IConfiguration configuration)

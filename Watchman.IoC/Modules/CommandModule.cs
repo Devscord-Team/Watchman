@@ -1,11 +1,13 @@
 ﻿using Autofac;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using Watchman.Cqrs;
 
 namespace Watchman.IoC.Modules
 {
+    [ExcludeFromCodeCoverage]
     public class CommandModule : Autofac.Module
     {
         protected override void Load(ContainerBuilder builder)
@@ -20,7 +22,7 @@ namespace Watchman.IoC.Modules
 
                 var handlers = asm.GetTypes()
                     .Where(type => typeof(ICommandHandler).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)
-                    .ToList();
+                    .ToArray();
 
                 foreach (var handler in handlers)
                 {
