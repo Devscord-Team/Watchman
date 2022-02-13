@@ -23,7 +23,7 @@ namespace Watchman.Discord.UnitTests.TestObjectFactories
 
         public DiscordServerContext CreateServerContext(ulong serverId)
         {
-            //todo possiblity to provide configuration, maybe there should be mocks or stubs
+            //todo possiblity to provide configuration
             return new DiscordServerContext(
                 serverId, 
                 fixture.Create<string>(), 
