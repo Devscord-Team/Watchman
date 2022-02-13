@@ -17,26 +17,19 @@ namespace Watchman.Discord.Areas.Help.Controllers
 {
     public class HelpController : IController
     {
-        private readonly MessagesServiceFactory _messagesServiceFactory;
-        private readonly HelpMessageGeneratorService _helpMessageGenerator;
-        private readonly ResponsesService _responsesService;
-        private readonly HelpService _helpService;
+        private readonly IHelpService helpService;
 
-        public HelpController(MessagesServiceFactory messagesServiceFactory, HelpMessageGeneratorService messageGeneratorService,
-            ResponsesService responsesService, HelpService helpService)
+        public HelpController(IHelpService helpService)
         {
-            this._messagesServiceFactory = messagesServiceFactory;
-            this._helpMessageGenerator = messageGeneratorService;
-            this._responsesService = responsesService;
-            this._helpService = helpService;
+            this.helpService = helpService;
         }
 
         public Task PrintHelp(HelpCommand command, Contexts contexts)
         {
-            var helpInformations = this._helpService.GetHelpInformations(contexts);
+            var helpInformations = this.helpService.GetHelpInformations(contexts);
             return string.IsNullOrEmpty(command.Command)
-                ? _helpService.PrintHelpForAllCommands(command.Json, contexts, helpInformations)
-                : this._helpService.PrintHelpForOneCommand(command.Command, contexts, helpInformations);
+                ? helpService.PrintHelpForAllCommands(command.Json, contexts, helpInformations)
+                : this.helpService.PrintHelpForOneCommand(command.Command, contexts, helpInformations);
         }
     }
 }
