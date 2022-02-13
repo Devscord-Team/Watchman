@@ -26,9 +26,11 @@ namespace Watchman.Discord.UnitTests.Muting
 
         //what if userContext and userBotContext has same ID? chance is low, but never zero
         [Test, AutoData]
-        public async Task MuteUser_ShouldMuteUser(MuteCommand command, Contexts contexts, UserContext userContext, UserContext userBotContext)
+        public async Task MuteUser_ShouldMuteUser(MuteCommand command, UserContext userContext, UserContext userBotContext, DiscordServerContext serverContext, ChannelContext channelContext)
         {
             //Arrange
+            var contexts = new Contexts(serverContext, channelContext, userContext);
+
             var commandBusMock = new Mock<ICommandBus>();
             var usersServiceMock = new Mock<IUsersService>();
             var unmutingServiceMock = new Mock<IUnmutingService>();
@@ -51,9 +53,11 @@ namespace Watchman.Discord.UnitTests.Muting
         }
 
         [Test, AutoData]
-        public async Task MuteUser_ShouldUnmuteUserInFuture(MuteCommand command, Contexts contexts, UserContext userContext, UserContext userBotContext)
+        public async Task MuteUser_ShouldUnmuteUserInFuture(MuteCommand command, UserContext userContext, UserContext userBotContext, DiscordServerContext serverContext, ChannelContext channelContext)
         {
             //Arrange
+            var contexts = new Contexts(serverContext, channelContext, userContext);
+
             var commandBusMock = new Mock<ICommandBus>();
             var usersServiceMock = new Mock<IUsersService>();
             var unmutingServiceMock = new Mock<IUnmutingService>();
@@ -94,9 +98,11 @@ namespace Watchman.Discord.UnitTests.Muting
         }
 
         [Test, AutoData]
-        public void MuteUser_ShouldThrowExceptionIfUserTriedToMuteWatchman(MuteCommand command, Contexts contexts, UserContext userBotContext)
+        public void MuteUser_ShouldThrowExceptionIfUserTriedToMuteWatchman(MuteCommand command, UserContext userBotContext, DiscordServerContext serverContext, ChannelContext channelContext)
         {
             //Arrange
+            var contexts = new Contexts(serverContext, channelContext, userBotContext);
+
             var commandBusMock = new Mock<ICommandBus>();
             var usersServiceMock = new Mock<IUsersService>();
 
