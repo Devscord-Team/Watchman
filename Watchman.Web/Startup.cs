@@ -106,7 +106,7 @@ namespace Watchman.Web
 
         public class HangfireDashboardFilter : IDashboardAuthorizationFilter
         {
-            public bool Authorize([NotNull] DashboardContext context) //TODO check auth on production
+            public bool Authorize(DashboardContext context) //TODO check auth on production
             {
 #if DEBUG
                 return true;
