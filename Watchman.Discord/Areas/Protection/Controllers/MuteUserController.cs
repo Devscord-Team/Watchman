@@ -15,26 +15,29 @@ using Watchman.Discord.Areas.Protection.Commands;
 using Watchman.Discord.Areas.Protection.Models;
 using Watchman.Discord.Areas.Protection.Services;
 using Watchman.DomainModel.Protection.Mutes;
+using Watchman.Cqrs;
+using Watchman.Discord.Areas.Protection.Services.Commands;
+using Watchman.DomainModel.Protection.Mutes.Services;
 
 namespace Watchman.Discord.Areas.Protection.Controllers
 {
     public class MuteUserController : IController
     {
-        private readonly MutingHelper _mutingHelper;
         private readonly IDirectMessagesService _directMessagesService;
-        private readonly MutingService _mutingService;
+        private readonly ICommandBus commandBus;
         private readonly UnmutingService _unmutingService;
         private readonly IUsersService _usersService;
         private readonly IMessagesServiceFactory _messagesServiceFactory;
+        private readonly IMutingService mutingService;
 
-        public MuteUserController(MutingService mutingService, UnmutingService unmutingService, IUsersService usersService, IDirectMessagesService directMessagesService, MutingHelper mutingHelper, IMessagesServiceFactory messagesServiceFactory)
+        public MuteUserController(ICommandBus commandBus, UnmutingService unmutingService, IUsersService usersService, IDirectMessagesService directMessagesService, IMessagesServiceFactory messagesServiceFactory, IMutingService mutingService)
         {
-            this._mutingService = mutingService;
+            this.commandBus = commandBus;
             this._unmutingService = unmutingService;
             this._usersService = usersService;
             this._directMessagesService = directMessagesService;
-            this._mutingHelper = mutingHelper;
             this._messagesServiceFactory = messagesServiceFactory;
+            this.mutingService = mutingService;
         }
 
         [AdminCommand]
@@ -47,7 +50,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             }
             var timeRange = TimeRange.FromNow(DateTime.UtcNow + command.Time); //todo: change DateTime.UtcNow to Contexts.SentAt
             var muteEvent = new MuteEvent(userToMute.Id, timeRange, command.Reason, contexts.Server.Id, contexts.Channel.Id);
-            await this._mutingService.MuteUserOrOverwrite(contexts, muteEvent, userToMute);
+            await this.commandBus.ExecuteAsync(new MuteUserOrOverwriteCommand(contexts, muteEvent, userToMute));
             this._unmutingService.UnmuteInFuture(contexts, muteEvent, userToMute);
         }
 
@@ -65,7 +68,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         [AdminCommand]
         public async Task MutedUsers(MutedUsersCommand mutedUsersCommand, Contexts contexts)
         {
-            var notUnmutedMuteEvents = this._mutingHelper.GetNotUnmutedMuteEvents(contexts.Server.Id);
+            var notUnmutedMuteEvents = this.mutingService.GetNotUnmutedMuteEvents(contexts.Server.Id);
             var messagesService = this._messagesServiceFactory.Create(contexts);
             var mutedUsersMessageData = this.GetMuteEmbedMessage(notUnmutedMuteEvents.ToList());
             if (!mutedUsersMessageData.Values.Any())
