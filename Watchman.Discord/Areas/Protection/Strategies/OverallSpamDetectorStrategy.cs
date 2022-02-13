@@ -7,7 +7,6 @@ using Serilog;
 
 namespace Watchman.Discord.Areas.Protection.Strategies
 {
-
     public class OverallSpamDetectorStrategy : IOverallSpamDetector
     {
         private readonly IServerMessagesCacheService _serverMessagesCacheService;
