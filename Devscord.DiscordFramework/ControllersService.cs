@@ -76,7 +76,7 @@ namespace Devscord.DiscordFramework
         {
             var controllers = this._assembly.GetTypesByInterface<IController>()
                 .Select(x => new ControllerInfo((IController) this._context.Resolve(x)))
-                .ToList();
+                .ToArray();
             this._controllersContainer = new ControllersContainer(controllers);
         }
 
