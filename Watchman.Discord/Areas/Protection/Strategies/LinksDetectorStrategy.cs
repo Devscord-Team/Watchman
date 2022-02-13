@@ -16,7 +16,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             this._userSafetyChecker = userSafetyChecker;
         }
 
-        public SpamProbability GetSpamProbability(ServerMessagesCacheService serverMessagesCacheService, Contexts contexts)
+        public SpamProbability GetSpamProbability(IServerMessagesCacheService serverMessagesCacheService, Contexts contexts)
         {
             var content = serverMessagesCacheService.GetLastUserMessages(contexts.User.Id, contexts.Server.Id).Last().Content;
             if (!this._linkRegex.IsMatch(content))

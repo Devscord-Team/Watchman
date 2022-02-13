@@ -1,4 +1,6 @@
-﻿using Devscord.DiscordFramework.Services;
+﻿using Devscord.DiscordFramework.Commands.AntiSpam;
+using Devscord.DiscordFramework.Commands.AntiSpam.Models;
+using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
 using Moq;
 using System;
@@ -63,6 +65,30 @@ namespace Watchman.Discord.UnitTests.TestObjectFactories
                 unmutingServiceMock.Object, 
                 usersServiceMock.Object, 
                 messagesServiceFactoryMock.Object);
+        }
+
+        internal AntiSpamController CreateAntiSpamController(
+            Mock<IServerMessagesCacheService> serverMessagesCacheServiceMock = null, Mock<ICheckUserSafetyService> checkUserSafetyServiceMock = null,
+            Mock<IPunishmentsCachingService> punishmentsCachingServiceMock = null, Mock<IAntiSpamService> antiSpamServiceMock = null,
+            Mock<IConfigurationService> configurationServiceMock = null, Mock<ISpamPunishmentStrategy> spamPunishmentStrategyMock = null,
+            Mock<IOverallSpamDetectorStrategyFactory> overallSpamDetectorStrategyFactoryMock = null)
+        {
+            serverMessagesCacheServiceMock ??= new Mock<IServerMessagesCacheService>();
+            checkUserSafetyServiceMock ??= new Mock<ICheckUserSafetyService>();
+            punishmentsCachingServiceMock ??= new Mock<IPunishmentsCachingService>();
+            antiSpamServiceMock ??= new Mock<IAntiSpamService>();
+            configurationServiceMock ??= new Mock<IConfigurationService>();
+            spamPunishmentStrategyMock ??= new Mock<ISpamPunishmentStrategy>();
+            overallSpamDetectorStrategyFactoryMock ??= new Mock<IOverallSpamDetectorStrategyFactory>();
+
+            return new AntiSpamController(
+                serverMessagesCacheServiceMock.Object,
+                checkUserSafetyServiceMock.Object,
+                punishmentsCachingServiceMock.Object,
+                antiSpamServiceMock.Object,
+                configurationServiceMock.Object,
+                spamPunishmentStrategyMock.Object,
+                overallSpamDetectorStrategyFactoryMock.Object);
         }
     }
 }

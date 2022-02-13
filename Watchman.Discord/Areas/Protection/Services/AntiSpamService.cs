@@ -12,13 +12,18 @@ using Watchman.Discord.Areas.Protection.Services.Commands;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {
+    public interface IAntiSpamService
+    {
+        Task SetPunishment(Contexts contexts, Punishment punishment);
+    }
+
     public class AntiSpamService
     {
         private readonly ICommandBus commandBus;
-        private readonly MessagesServiceFactory _messagesServiceFactory;
-        private readonly UnmutingService _unmutingService;
+        private readonly IMessagesServiceFactory _messagesServiceFactory;
+        private readonly IUnmutingService _unmutingService;
 
-        public AntiSpamService(ICommandBus commandBus, MessagesServiceFactory messagesServiceFactory, UnmutingService unmutingService)
+        public AntiSpamService(ICommandBus commandBus, IMessagesServiceFactory messagesServiceFactory, IUnmutingService unmutingService)
         {
             this.commandBus = commandBus;
             this._messagesServiceFactory = messagesServiceFactory;
