@@ -1,8 +1,10 @@
 ﻿using Autofac;
+using System.Diagnostics.CodeAnalysis;
 using Watchman.IoC.Modules;
 
 namespace Watchman.IoC
 {
+    [ExcludeFromCodeCoverage]
     public class ContainerModule
     {
         private readonly string _mongoConnectionString;

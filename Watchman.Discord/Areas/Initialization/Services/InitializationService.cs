@@ -28,26 +28,13 @@ namespace Watchman.Discord.Areas.Initialization.Services
         public async Task InitServer(DiscordServerContext server)
         {
             Log.Information("Initializing server: {server}", server.ToJson());
-            await this.MuteRoleInit(server);
-            var lastInitDate = this.GetLastInitDate(server);
-            await this.ReadServerMessagesHistory(server, lastInitDate);
-            await this.NotifyDomainAboutInit(server);
-            Log.Information("Done server: {server}", server.ToJson());
-        }
-
-        private async Task MuteRoleInit(DiscordServerContext server)
-        {
             await this._muteRoleInitService.InitForServerAsync(server);
-            Log.Information("Mute role initialized: {server}", server.Name);
-        }
-
-        private async Task ReadServerMessagesHistory(DiscordServerContext server, DateTime lastInitDate)
-        {
-            foreach (var textChannel in server.GetTextChannels())
+            var lastInitDate = this.GetLastInitDate(server); foreach (var textChannel in server.GetTextChannels())
             {
                 await this._serverScanningService.ScanChannelHistory(server, textChannel, lastInitDate);
             }
-            Log.Information("Read messages history: {server}", server.Name);
+            await this._commandBus.ExecuteAsync(new AddInitEventCommand(server.Id, endedAt: DateTime.UtcNow));
+            Log.Information("Done server: {server}", server.ToJson());
         }
 
         private DateTime GetLastInitDate(DiscordServerContext server)
@@ -58,15 +45,8 @@ namespace Watchman.Discord.Areas.Initialization.Services
             {
                 return DateTime.UnixEpoch;
             }
-
             var lastInitEvent = initEvents.Max(x => x.EndedAt);
             return lastInitEvent;
-        }
-
-        private async Task NotifyDomainAboutInit(DiscordServerContext server)
-        {
-            var command = new AddInitEventCommand(server.Id, endedAt: DateTime.UtcNow);
-            await this._commandBus.ExecuteAsync(command);
         }
     }
 }

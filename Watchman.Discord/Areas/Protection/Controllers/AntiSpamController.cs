@@ -16,56 +16,50 @@ namespace Watchman.Discord.Areas.Protection.Controllers
 {
     public class AntiSpamController : IController
     {
-        private readonly ServerMessagesCacheService _serverMessagesCacheService;
-        private readonly PunishmentsCachingService _punishmentsCachingService;
-        private readonly AntiSpamService _antiSpamService;
+        private readonly IServerMessagesCacheService _serverMessagesCacheService;
+        private readonly IPunishmentsCachingService _punishmentsCachingService;
+        private readonly IAntiSpamService _antiSpamService;
         private readonly IOverallSpamDetector _overallSpamDetector;
         private readonly ISpamPunishmentStrategy _spamPunishmentStrategy;
 
         // to avoid giving a few mutes in just a few seconds to the same user
-        private static readonly Dictionary<ulong, DateTime> _lastUserPunishmentDate = new Dictionary<ulong, DateTime>();
+        //changed to public because of tests
+        public static readonly Dictionary<ulong, DateTime> LastUserPunishmentDate = new Dictionary<ulong, DateTime>(); 
         // it's really needed - to avoid multiple warning and muting the same user
-        private static bool _isNowChecking;
+        //todo there should be something like queue, because we want to check last user's message
+        private static readonly List<ulong> usersNowChecking = new List<ulong>();
 
-        public AntiSpamController(ServerMessagesCacheService serverMessagesCacheService, ICheckUserSafetyService checkUserSafetyService, PunishmentsCachingService punishmentsCachingService, AntiSpamService antiSpamService, IConfigurationService configurationService)
+        public AntiSpamController(IServerMessagesCacheService serverMessagesCacheService, ICheckUserSafetyService checkUserSafetyService, 
+            IPunishmentsCachingService punishmentsCachingService, IAntiSpamService antiSpamService, IConfigurationService configurationService, 
+            ISpamPunishmentStrategy spamPunishmentStrategy, IOverallSpamDetectorStrategyFactory overallSpamDetectorStrategyFactory)
         {
             this._serverMessagesCacheService = serverMessagesCacheService;
             this._punishmentsCachingService = punishmentsCachingService;
             this._antiSpamService = antiSpamService;
-            this._overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessagesCacheService, checkUserSafetyService, configurationService);
-            this._spamPunishmentStrategy = new SpamPunishmentStrategy(punishmentsCachingService);
+            this._overallSpamDetector = overallSpamDetectorStrategyFactory.GetStrategyWithDefaultDetectors(serverMessagesCacheService, checkUserSafetyService, configurationService);
+            this._spamPunishmentStrategy = spamPunishmentStrategy;
         }
 
         [ReadAlways]
         public async Task Scan(DiscordRequest request, Contexts contexts)
         {
-            var stopwatch = Stopwatch.StartNew();
-            Log.Information("Started scanning the message");
-
             this._serverMessagesCacheService.AddMessage(request, contexts);
-            if (this.ShouldCheckThisMessage(contexts.User.Id, request))
+            if (this.ShouldCheckThisMessage(contexts.User.Id, request) == false)
             {
-                _isNowChecking = true;
-                var spamProbability = this._overallSpamDetector.GetOverallSpamProbability(contexts);
-                if (spamProbability != SpamProbability.None)
-                {
-                    Log.Information("{SpamProbability} for {user}", spamProbability, contexts.User.Name);
-                    await this.HandlePossibleSpam(contexts, spamProbability, request.SentAt);
-                }
-                _isNowChecking = false;
+                return;
             }
-            Log.Information("Scanned");
-            Log.Information("antispam: {ticks}ticks", stopwatch.ElapsedTicks);
+            usersNowChecking.Add(contexts.User.Id);
+            var spamProbability = this._overallSpamDetector.GetOverallSpamProbability(contexts);
+            if (spamProbability != SpamProbability.None)
+            {
+                await this.HandlePossibleSpam(contexts, spamProbability, request.SentAt);
+            }
+            usersNowChecking.Remove(contexts.User.Id);
         }
 
         private bool ShouldCheckThisMessage(ulong userId, DiscordRequest request)
-        {
-            if (_isNowChecking || request.IsCommandForBot) // interactions with bot shouldn't be considered as spam
-            {
-                return false;
-            }
-            return !_lastUserPunishmentDate.TryGetValue(userId, out var time) || time < request.SentAt.AddSeconds(-5);
-        }
+            => usersNowChecking.Contains(userId) ? false 
+            : !LastUserPunishmentDate.TryGetValue(userId, out var time) || time < request.SentAt.AddSeconds(-5);
 
         private async Task HandlePossibleSpam(Contexts contexts, SpamProbability spamProbability, DateTime messageSentAt)
         {
@@ -76,15 +70,14 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             {
                 await this._punishmentsCachingService.AddUserPunishment(contexts.User.Id, punishment);
                 this.UpdateLastPunishmentDate(contexts.User.Id, messageSentAt);
-                Log.Information("{PunishmentOption} for user: {user}", punishment.PunishmentOption, contexts.User.Name);
             }
         }
 
         private void UpdateLastPunishmentDate(ulong userId, DateTime messageSentAt)
         {
-            if (!_lastUserPunishmentDate.TryAdd(userId, messageSentAt))
+            if (!LastUserPunishmentDate.TryAdd(userId, messageSentAt))
             {
-                _lastUserPunishmentDate[userId] = messageSentAt;
+                LastUserPunishmentDate[userId] = messageSentAt;
             }
         }
     }

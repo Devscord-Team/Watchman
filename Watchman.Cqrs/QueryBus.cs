@@ -15,7 +15,7 @@ namespace Watchman.Cqrs
 
         public W Execute<W>(IQuery<W> query) where W : IQueryResult
         {
-            Log.Debug("Query: {query}", query);
+            //Log.Debug("Query: {query}", query);
             if (query == null)
             {
                 throw new ArgumentNullException(nameof(query),
@@ -29,7 +29,6 @@ namespace Watchman.Cqrs
 
         public Task<W> ExecuteAsync<W>(IQuery<W> query) where W : IQueryResult
         {
-            //TODO make it better
             return Task.FromResult(this.Execute(query));
         }
     }

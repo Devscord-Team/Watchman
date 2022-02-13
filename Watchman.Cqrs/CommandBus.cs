@@ -16,7 +16,7 @@ namespace Watchman.Cqrs
 
         public Task ExecuteAsync<T>(T command) where T : ICommand
         {
-            Log.Debug("Command: {command}", command);
+            //Log.Debug("Command: {command}", command);
             if (command == null)
             {
                 throw new ArgumentNullException(nameof(command),

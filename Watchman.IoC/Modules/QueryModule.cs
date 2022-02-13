@@ -1,14 +1,15 @@
 using Autofac;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using Watchman.Cqrs;
 
 namespace Watchman.IoC.Modules
 {
+    [ExcludeFromCodeCoverage]
     public class QueryModule : Autofac.Module
     {
-
         protected override void Load(ContainerBuilder builder)
         {
             var list = new List<string>();
@@ -21,7 +22,7 @@ namespace Watchman.IoC.Modules
 
                 var handlers = asm.GetTypes()
                     .Where(type => typeof(IQueryHandler).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)
-                    .ToList();
+                    .ToArray();
 
                 foreach (var handler in handlers)
                 {

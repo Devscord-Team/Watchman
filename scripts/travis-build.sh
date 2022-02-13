@@ -11,5 +11,6 @@ chmod +x codecov
 
 ./codecov -f "/Devscord.DiscordFramework.UnitTests/coverage.opencover.xml"
 ./codecov -f "/Watchman.Discord.UnitTests/coverage.opencover.xml"
+./codecov -f "/Watchman.Discord.IntegrationTests/coverage.opencover.xml"
 ./codecov -f "/Watchman.DomainModel.UnitTests/coverage.opencover.xml"
 ./codecov -f "/Watchman.Integration.Tests/coverage.opencover.xml"

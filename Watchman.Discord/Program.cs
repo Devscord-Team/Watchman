@@ -1,9 +1,11 @@
 ﻿using Newtonsoft.Json;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading;
 
 namespace Watchman.Discord
 {
+    [ExcludeFromCodeCoverage]
     internal class Program
     {
         public static void Main(string[] args)

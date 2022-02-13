@@ -7,10 +7,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Watchman.Cqrs;
 using Watchman.Discord.Areas.Administration.Services;
 using Watchman.Discord.Areas.Help.Services;
 using Watchman.Discord.Areas.Initialization.Services;
 using Watchman.Discord.Areas.Protection.Services;
+using Watchman.Discord.Areas.Protection.Services.Commands;
 using Watchman.Discord.Areas.Users.Services;
 using Watchman.Discord.Integration.DevscordFramework;
 using Watchman.DomainModel.Configuration.Services;
@@ -52,7 +54,7 @@ namespace Watchman.Discord.Extensions
             {
                 builder
                     .AddFromIoC<WelcomeUserService>(x => x.WelcomeUser)
-                    .AddFromIoC<MutingRejoinedUsersService>(x => x.MuteAgainIfNeeded);
+                    .AddFromIoC<ICommandBus>(commandBus => (contexts) => commandBus.ExecuteAsync(new MuteAgainIfNeededCommand(contexts)));
             });
         }
 

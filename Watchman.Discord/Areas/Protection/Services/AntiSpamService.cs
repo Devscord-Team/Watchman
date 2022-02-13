@@ -7,18 +7,25 @@ using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Common.Models;
 using Devscord.DiscordFramework.Commands.AntiSpam.Models;
 using Watchman.DomainModel.Protection.Mutes;
+using Watchman.Cqrs;
+using Watchman.Discord.Areas.Protection.Services.Commands;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {
+    public interface IAntiSpamService
+    {
+        Task SetPunishment(Contexts contexts, Punishment punishment);
+    }
+
     public class AntiSpamService
     {
-        private readonly MutingService _mutingService;
-        private readonly MessagesServiceFactory _messagesServiceFactory;
-        private readonly UnmutingService _unmutingService;
+        private readonly ICommandBus commandBus;
+        private readonly IMessagesServiceFactory _messagesServiceFactory;
+        private readonly IUnmutingService _unmutingService;
 
-        public AntiSpamService(MutingService mutingService, MessagesServiceFactory messagesServiceFactory, UnmutingService unmutingService)
+        public AntiSpamService(ICommandBus commandBus, IMessagesServiceFactory messagesServiceFactory, IUnmutingService unmutingService)
         {
-            this._mutingService = mutingService;
+            this.commandBus = commandBus;
             this._messagesServiceFactory = messagesServiceFactory;
             this._unmutingService = unmutingService;
         }
@@ -47,7 +54,7 @@ namespace Watchman.Discord.Areas.Protection.Services
         {
             var timeRange = new TimeRange(DateTime.UtcNow, DateTime.UtcNow.Add(length));
             var muteEvent = new MuteEvent(contexts.User.Id, timeRange, "Spam detected (by bot)", contexts.Server.Id, contexts.Channel.Id);
-            await this._mutingService.MuteUserOrOverwrite(contexts, muteEvent, contexts.User);
+            await this.commandBus.ExecuteAsync(new MuteUserOrOverwriteCommand(contexts, muteEvent, contexts.User));
             this._unmutingService.UnmuteInFuture(contexts, muteEvent, contexts.User);
         }
     }

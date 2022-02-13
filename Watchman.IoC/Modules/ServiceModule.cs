@@ -4,6 +4,7 @@ using Devscord.DiscordFramework.Commands.Parsing;
 using Devscord.DiscordFramework.Commands.Responses;
 using Devscord.DiscordFramework.Services;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using Watchman.Cqrs;
@@ -13,6 +14,7 @@ using Watchman.DomainModel.Configuration.Services;
 
 namespace Watchman.IoC.Modules
 {
+    [ExcludeFromCodeCoverage]
     public class ServiceModule : Autofac.Module
     {
         protected override void Load(ContainerBuilder builder)

@@ -48,7 +48,8 @@ namespace Watchman.Discord.UnitTests.AntiSpam
                 new SmallMessage(messageContent3, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.UtcNow.AddSeconds(-15), GetMessagesQuery.GET_ALL_SERVERS),
                 new SmallMessage(messageContent4, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.UtcNow.AddSeconds(-10), GetMessagesQuery.GET_ALL_SERVERS)
             });
-            var overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessages, userSafetyChecker.Object, this._configurationService);
+            var overallSpamDetectorStrategyFactory = new OverallSpamDetectorStrategyFactory();
+            var overallSpamDetector = overallSpamDetectorStrategyFactory.GetStrategyWithDefaultDetectors(serverMessages, userSafetyChecker.Object, this._configurationService);
             
             // Act
             var overallSpamProbability = overallSpamDetector.GetOverallSpamProbability(contexts);
@@ -81,7 +82,8 @@ namespace Watchman.Discord.UnitTests.AntiSpam
                 new SmallMessage(messageContent3, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.UtcNow.AddSeconds(-15), GetMessagesQuery.GET_ALL_SERVERS),
                 new SmallMessage(messageContent4, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.UtcNow.AddSeconds(-10), GetMessagesQuery.GET_ALL_SERVERS)
             });
-            var overallSpamDetector = OverallSpamDetectorStrategy.GetStrategyWithDefaultDetectors(serverMessages, userSafetyChecker.Object, this._configurationService);
+            var overallSpamDetectorStrategyFactory = new OverallSpamDetectorStrategyFactory();
+            var overallSpamDetector = overallSpamDetectorStrategyFactory.GetStrategyWithDefaultDetectors(serverMessages, userSafetyChecker.Object, this._configurationService);
 
             // Act
             var overallSpamProbability = overallSpamDetector.GetOverallSpamProbability(contexts);

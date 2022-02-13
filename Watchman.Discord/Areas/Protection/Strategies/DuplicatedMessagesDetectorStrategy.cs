@@ -19,7 +19,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             this._configurationService = configurationService;
         }
 
-        public SpamProbability GetSpamProbability(ServerMessagesCacheService serverMessagesCacheService, Contexts contexts)
+        public SpamProbability GetSpamProbability(IServerMessagesCacheService serverMessagesCacheService, Contexts contexts)
         {
             var userId = contexts.User.Id;
             var serverId = contexts.Server.Id;

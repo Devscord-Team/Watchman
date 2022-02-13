@@ -16,8 +16,6 @@ namespace Watchman.Discord.Areas.Protection.Strategies
 {
     public interface ICheckUserSafetyService : ICyclicService, IUserSafetyChecker
     {
-        bool IsUserSafe(ulong userId, ulong serverId);
-        HashSet<ulong> GetSafeUsersIds(ulong serverId);
     }
 
     public class CheckUserSafetyService : ICheckUserSafetyService

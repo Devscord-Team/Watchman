@@ -9,13 +9,22 @@ using Devscord.DiscordFramework.Services.Models;
 
 namespace Devscord.DiscordFramework.Commands.AntiSpam.Models
 {
-    public class ServerMessagesCacheService : ICyclicService
+    public interface IServerMessagesCacheService : ICyclicService
+    {
+        void OverwriteMessages(IEnumerable<SmallMessage> smallMessages);
+        void AddMessage(SmallMessage smallMessage);
+        void AddMessage(DiscordRequest request, Contexts contexts);
+        IEnumerable<SmallMessage> GetLastUserMessages(ulong userId, ulong serverId);
+    }
+
+    public class ServerMessagesCacheService : IServerMessagesCacheService
     {
         private static Dictionary<ulong, List<SmallMessage>> _usersMessages;
 
         static ServerMessagesCacheService()
         {
             _usersMessages = new Dictionary<ulong, List<SmallMessage>>();
+            //todo remove logic from constructor
             RemoveOldMessagesCyclic();
         }
 

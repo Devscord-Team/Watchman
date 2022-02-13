@@ -1,27 +1,15 @@
 ﻿using Autofac;
 using Devscord.DiscordFramework;
-using Devscord.DiscordFramework.Services;
 using MongoDB.Driver;
 using Serilog;
-using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Watchman.Discord.Areas.Help.Services;
-using Watchman.Discord.Areas.Initialization.Services;
-using Watchman.Discord.Areas.Protection.Services;
-using Watchman.Discord.Areas.Users.Services;
-using Watchman.Discord.Ioc;
 using Watchman.Integrations.Logging;
-using Watchman.Discord.Integration.DevscordFramework;
 using Watchman.Integrations.Database.MongoDB;
-using Watchman.DomainModel.Configuration;
-using Watchman.DomainModel.Configuration.Services;
-using Watchman.Discord.Areas.Administration.Services;
 using Watchman.Discord.Extensions;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Watchman.Discord
 {
+    [ExcludeFromCodeCoverage]
     public class WatchmanBot
     {
         private readonly DiscordConfiguration _configuration;

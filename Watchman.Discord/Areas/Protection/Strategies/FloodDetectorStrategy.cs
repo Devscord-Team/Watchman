@@ -19,7 +19,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             this._userSafetyChecker = userSafetyChecker;
         }
 
-        public SpamProbability GetSpamProbability(ServerMessagesCacheService serverMessagesCacheService, Contexts contexts)
+        public SpamProbability GetSpamProbability(IServerMessagesCacheService serverMessagesCacheService, Contexts contexts)
         {
             var howManyMessagesCount = this._configurationService.GetConfigurationItem<HowManyMessagesInShortTimeToBeSpam>(contexts.Server.Id).Value;
             var howManySeconds = this._configurationService.GetConfigurationItem<HowLongIsShortTimeInSeconds>(contexts.Server.Id).Value;
