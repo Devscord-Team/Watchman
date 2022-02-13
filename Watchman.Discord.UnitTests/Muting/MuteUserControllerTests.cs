@@ -23,13 +23,16 @@ namespace Watchman.Discord.UnitTests.Muting
     internal class MuteUserControllerTests
     {
         private readonly TestControllersFactory testControllersFactory = new();
+        private readonly TestContextsFactory testContextsFactory = new();
 
         //what if userContext and userBotContext has same ID? chance is low, but never zero
         [Test, AutoData]
-        public async Task MuteUser_ShouldMuteUser(MuteCommand command, UserContext userContext, UserContext userBotContext, DiscordServerContext serverContext, ChannelContext channelContext)
+        public async Task MuteUser_ShouldMuteUser(MuteCommand command)
         {
             //Arrange
-            var contexts = new Contexts(serverContext, channelContext, userContext);
+            var userContext = testContextsFactory.CreateUserContext(1);
+            var userBotContext = testContextsFactory.CreateUserContext(2);
+            var contexts = testContextsFactory.CreateContexts(1, 1, 1);
 
             var commandBusMock = new Mock<ICommandBus>();
             var usersServiceMock = new Mock<IUsersService>();
@@ -53,10 +56,12 @@ namespace Watchman.Discord.UnitTests.Muting
         }
 
         [Test, AutoData]
-        public async Task MuteUser_ShouldUnmuteUserInFuture(MuteCommand command, UserContext userContext, UserContext userBotContext, DiscordServerContext serverContext, ChannelContext channelContext)
+        public async Task MuteUser_ShouldUnmuteUserInFuture(MuteCommand command)
         {
             //Arrange
-            var contexts = new Contexts(serverContext, channelContext, userContext);
+            var userContext = testContextsFactory.CreateUserContext(1);
+            var userBotContext = testContextsFactory.CreateUserContext(2);
+            var contexts = testContextsFactory.CreateContexts(1, 1, 1);
 
             var commandBusMock = new Mock<ICommandBus>();
             var usersServiceMock = new Mock<IUsersService>();
@@ -81,13 +86,15 @@ namespace Watchman.Discord.UnitTests.Muting
         }
 
         [Test, AutoData]
-        public void MuteUser_ShouldThrowExceptionIfUserNotExist(MuteCommand command, Contexts contexts)
+        public void MuteUser_ShouldThrowExceptionIfUserNotExist(MuteCommand command)
         {
             //Arrange
+            var contexts = testContextsFactory.CreateContexts(1, 1, 1);
+
             var commandBusMock = new Mock<ICommandBus>();
             var usersServiceMock = new Mock<IUsersService>();
             usersServiceMock.Setup(x => x.GetUserByIdAsync(It.IsAny<DiscordServerContext>(), It.IsAny<ulong>()))
-                .Returns<DiscordServerContext, ulong>((a, b) => null);
+                .Returns<DiscordServerContext, ulong>((a, b) => Task.FromResult(null as UserContext));
             var controller = this.testControllersFactory.CreateMuteUserController(commandBusMock: commandBusMock, usersServiceMock: usersServiceMock);
 
             //Act
@@ -98,10 +105,12 @@ namespace Watchman.Discord.UnitTests.Muting
         }
 
         [Test, AutoData]
-        public void MuteUser_ShouldThrowExceptionIfUserTriedToMuteWatchman(MuteCommand command, UserContext userBotContext, DiscordServerContext serverContext, ChannelContext channelContext)
+        public void MuteUser_ShouldThrowExceptionIfUserTriedToMuteWatchman(MuteCommand command)
         {
             //Arrange
-            var contexts = new Contexts(serverContext, channelContext, userBotContext);
+            var userContext = testContextsFactory.CreateUserContext(1);
+            var userBotContext = testContextsFactory.CreateUserContext(2);
+            var contexts = testContextsFactory.CreateContexts(1, 1, 1);
 
             var commandBusMock = new Mock<ICommandBus>();
             var usersServiceMock = new Mock<IUsersService>();
