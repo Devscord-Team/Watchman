@@ -46,37 +46,29 @@ namespace Devscord.DiscordFramework
             {
                 this.LoadControllers();
             }
+            var readAlwaysMethods = this._controllersContainer.WithReadAlways;
+            var readAlwaysTask = Task.Run(() => this.RunMethods(request, contexts, readAlwaysMethods, true));
 
-            using (LogContext.PushProperty("MessageId", messageId))
-            using (LogContext.PushProperty("Request", JsonConvert.SerializeObject(request)))
-            using (LogContext.PushProperty("SendByUserId", contexts.User.Id))
-            using (LogContext.PushProperty("OnChannelId", contexts.Channel.Id))
-            using (LogContext.PushProperty("OnServerId", contexts.Server.Id))
+            Task commandsTask = null;
+            Task botCommandsTask = null;
+            if (request.IsCommandForBot)
             {
-                var readAlwaysMethods = this._controllersContainer.WithReadAlways;
-                var readAlwaysTask = Task.Run(() => this.RunMethods(request, contexts, readAlwaysMethods, true));
+                var discordCommandMethods = this._controllersContainer.WithDiscordCommand;
+                commandsTask = Task.Run(() => this.RunMethods(request, contexts, discordCommandMethods, false));
 
-                Task commandsTask = null;
-                Task botCommandsTask = null;
-                if (request.IsCommandForBot)
-                {
-                    var discordCommandMethods = this._controllersContainer.WithDiscordCommand;
-                    commandsTask = Task.Run(() => this.RunMethods(request, contexts, discordCommandMethods, false));
-                    var discordBotCommandMethods = this._controllersContainer.WithIBotCommand;
-                    //TODO zoptymalizować
-                    botCommandsTask = Task.Run(() => this.RunMethodsIBotCommand(request, contexts, discordBotCommandMethods));
-                }
+                var discordBotCommandMethods = this._controllersContainer.WithIBotCommand;
+                botCommandsTask = Task.Run(() => this.RunMethodsIBotCommand(request, contexts, discordBotCommandMethods));
+            }
 
-                // ReadAlwaysMethods should be first in throwing exception, bcs every ReadAlways exception is Error
-                await readAlwaysTask;
-                if (commandsTask != null)
-                {
-                    await commandsTask;
-                }
-                if (botCommandsTask != null)
-                {
-                    await botCommandsTask;
-                }
+            // ReadAlwaysMethods should be first in throwing exception, bcs every ReadAlways exception is Error
+            await readAlwaysTask;
+            if (commandsTask != null)
+            {
+                await commandsTask;
+            }
+            if (botCommandsTask != null)
+            {
+                await botCommandsTask;
             }
         }
 
@@ -94,23 +86,20 @@ namespace Devscord.DiscordFramework
             var tasks = new List<Task>();
             foreach (var controllerInfo in controllers)
             {
-                using (LogContext.PushProperty("Controller", controllerInfo.Controller.GetType().Name))
+                foreach (var method in controllerInfo.Methods)
                 {
-                    foreach (var method in controllerInfo.Methods)
+                    if (isReadAlways)
                     {
-                        if (isReadAlways)
-                        {
-                            var task = InvokeMethod(request, contexts, controllerInfo, method);
-                            tasks.Add(task);
-                            continue;
-                        }
+                        var task = InvokeMethod(request, contexts, controllerInfo, method);
+                        tasks.Add(task);
+                        continue;
+                    }
 
-                        var command = method.GetAttributeInstances<DiscordCommand>();
-                        if (this.IsMatchedCommand(command, request) && this.IsValid(contexts, method))
-                        {
-                            var task = InvokeMethod(request, contexts, controllerInfo, method);
-                            tasks.Add(task);
-                        }
+                    var command = method.GetAttributeInstances<DiscordCommand>();
+                    if (this.IsMatchedCommand(command, request) && this.IsValid(contexts, method))
+                    {
+                        var task = InvokeMethod(request, contexts, controllerInfo, method);
+                        tasks.Add(task);
                     }
                 }
             }
@@ -126,27 +115,24 @@ namespace Devscord.DiscordFramework
 
             foreach (var controllerInfo in controllers)
             {
-                using (LogContext.PushProperty("Controller", controllerInfo.Controller.GetType().Name))
+                foreach (var method in controllerInfo.Methods)
                 {
-                    foreach (var method in controllerInfo.Methods)
+                    var commandInParameterType = method.GetParameters().First(x => typeof(IBotCommand).IsAssignableFrom(x.ParameterType)).ParameterType;
+                    //TODO zoptymalizować, spokojnie można to pobierać wcześniej i używać raz, zamiast wszystko obliczać przy każdym odpaleniu
+                    var template = this._botCommandsService.GetCommandTemplate(commandInParameterType);
+                    var customCommand = await this._commandsContainer.GetCommand(request, commandInParameterType, contexts.Server.Id);
+                    var isCommandMatchedWithCustom = customCommand != null;
+                    var isThereDefaultCommandWithGivenName = request.Name.ToLowerInvariant() == template.NormalizedCommandName;
+                    if (!isCommandMatchedWithCustom && !isThereDefaultCommandWithGivenName)
                     {
-                        var commandInParameterType = method.GetParameters().First(x => typeof(IBotCommand).IsAssignableFrom(x.ParameterType)).ParameterType;
-                        //TODO zoptymalizować, spokojnie można to pobierać wcześniej i używać raz, zamiast wszystko obliczać przy każdym odpaleniu
-                        var template = this._botCommandsService.GetCommandTemplate(commandInParameterType);
-                        var customCommand = await this._commandsContainer.GetCommand(request, commandInParameterType, contexts.Server.Id);
-                        var isCommandMatchedWithCustom = customCommand != null;
-                        var isThereDefaultCommandWithGivenName = request.Name.ToLowerInvariant() == template.NormalizedCommandName;
-                        if (!isCommandMatchedWithCustom && !isThereDefaultCommandWithGivenName)
-                        {
-                            continue;
-                        }
-                        if (!this.IsValid(contexts, method))
-                        { 
-                            return;
-                        }
-                        var command = this.CreateBotCommand(isThereDefaultCommandWithGivenName, template, commandInParameterType, request, customCommand?.Template, isCommandMatchedWithCustom);
-                        await InvokeMethod(command, contexts, controllerInfo, method);
+                        continue;
                     }
+                    if (!this.IsValid(contexts, method))
+                    { 
+                        return;
+                    }
+                    var command = this.CreateBotCommand(isThereDefaultCommandWithGivenName, template, commandInParameterType, request, customCommand?.Template, isCommandMatchedWithCustom);
+                    await InvokeMethod(command, contexts, controllerInfo, method);
                 }
             }
         }
@@ -186,42 +172,19 @@ namespace Devscord.DiscordFramework
 
         private void CheckPermissions(MethodInfo method, Contexts contexts)
         {
-            Log.Information("Checking permissions for user {user} for method {method}", contexts.User.ToString(), method.Name);
             if (method.HasAttribute<AdminCommand>() && !contexts.User.IsAdmin())
             {
                 throw new NotAdminPermissionsException();
             }
-            Log.Information("User {user} have permissions for method {method}", contexts.User.ToString(), method.Name);
         }
 
         private static Task InvokeMethod(DiscordRequest request, Contexts contexts, ControllerInfo controllerInfo, MethodInfo method)
-        {
-            Log.Information("Invoke in controller {controller} method {method}", controllerInfo.Controller.GetType().Name, method.Name);
-
-            using (LogContext.PushProperty("Method", method.Name))
-            {
-                var runningMethod = method.Invoke(controllerInfo.Controller, new object[] { request, contexts });
-                if (runningMethod is Task task)
-                {
-                    return task;
-                }
-            }
-            return Task.CompletedTask;
-        }
+            => SmartInvokeMethod(method, method => method.Invoke(controllerInfo.Controller, new object[] { request, contexts }));
 
         private static Task InvokeMethod(IBotCommand command, Contexts contexts, ControllerInfo controllerInfo, MethodInfo method)
-        {
-            Log.Information("Invoke in controller {controller} method {method}", controllerInfo.Controller.GetType().Name, method.Name);
+            => SmartInvokeMethod(method, method => method.Invoke(controllerInfo.Controller, new object[] { command, contexts }));
 
-            using (LogContext.PushProperty("Method", method.Name))
-            {
-                var runningMethod = method.Invoke(controllerInfo.Controller, new object[] { command, contexts });
-                if (runningMethod is Task task)
-                {
-                    return task;
-                }
-            }
-            return Task.CompletedTask;
-        }
+        private static Task SmartInvokeMethod(MethodInfo method, Func<MethodInfo, object> methodInvoke)
+            => methodInvoke.Invoke(method) is Task task ? task : Task.CompletedTask;
     }
 }
