@@ -19,10 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="IoC\Modules\ServiceModule.cs~RF3633ec.TMP" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Serilog" Version="2.10.0" />
   </ItemGroup>
 
