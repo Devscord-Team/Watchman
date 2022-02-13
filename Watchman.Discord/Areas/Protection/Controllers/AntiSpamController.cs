@@ -26,7 +26,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         //changed to public because of tests
         public static readonly Dictionary<ulong, DateTime> LastUserPunishmentDate = new Dictionary<ulong, DateTime>(); 
         // it's really needed - to avoid multiple warning and muting the same user
-        private static bool _isNowChecking;
+        private static readonly List<ulong> usersNowChecking = new List<ulong>();
 
         public AntiSpamController(IServerMessagesCacheService serverMessagesCacheService, ICheckUserSafetyService checkUserSafetyService, IPunishmentsCachingService punishmentsCachingService, 
             IAntiSpamService antiSpamService, IConfigurationService configurationService, ISpamPunishmentStrategy spamPunishmentStrategy, IOverallSpamDetectorStrategyFactory overallSpamDetectorStrategyFactory)
@@ -46,17 +46,17 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             {
                 return;
             }
-            _isNowChecking = true;
+            usersNowChecking.Add(contexts.User.Id);
             var spamProbability = this._overallSpamDetector.GetOverallSpamProbability(contexts);
             if (spamProbability != SpamProbability.None)
             {
                 await this.HandlePossibleSpam(contexts, spamProbability, request.SentAt);
             }
-            _isNowChecking = false;
+            usersNowChecking.Remove(contexts.User.Id);
         }
 
         private bool ShouldCheckThisMessage(ulong userId, DiscordRequest request)
-            => _isNowChecking ? false 
+            => usersNowChecking.Contains(userId) ? false 
             : !LastUserPunishmentDate.TryGetValue(userId, out var time) || time < request.SentAt.AddSeconds(-5);
 
         private async Task HandlePossibleSpam(Contexts contexts, SpamProbability spamProbability, DateTime messageSentAt)
