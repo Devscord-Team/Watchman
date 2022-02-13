@@ -26,6 +26,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         //changed to public because of tests
         public static readonly Dictionary<ulong, DateTime> LastUserPunishmentDate = new Dictionary<ulong, DateTime>(); 
         // it's really needed - to avoid multiple warning and muting the same user
+        //todo there should be something like queue, because we want to check last user's message
         private static readonly List<ulong> usersNowChecking = new List<ulong>();
 
         public AntiSpamController(IServerMessagesCacheService serverMessagesCacheService, ICheckUserSafetyService checkUserSafetyService, IPunishmentsCachingService punishmentsCachingService, 
