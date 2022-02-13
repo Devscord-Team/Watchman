@@ -23,21 +23,17 @@ namespace Watchman.Discord.Areas.Protection.Controllers
 {
     public class MuteUserController : IController
     {
-        private readonly IDirectMessagesService _directMessagesService;
         private readonly ICommandBus commandBus;
-        private readonly UnmutingService _unmutingService;
+        private readonly IUnmutingService _unmutingService;
         private readonly IUsersService _usersService;
         private readonly IMessagesServiceFactory _messagesServiceFactory;
-        private readonly IMutingService mutingService;
 
-        public MuteUserController(ICommandBus commandBus, UnmutingService unmutingService, IUsersService usersService, IDirectMessagesService directMessagesService, IMessagesServiceFactory messagesServiceFactory, IMutingService mutingService)
+        public MuteUserController(ICommandBus commandBus, IUnmutingService unmutingService, IUsersService usersService, IMessagesServiceFactory messagesServiceFactory)
         {
             this.commandBus = commandBus;
             this._unmutingService = unmutingService;
             this._usersService = usersService;
-            this._directMessagesService = directMessagesService;
             this._messagesServiceFactory = messagesServiceFactory;
-            this.mutingService = mutingService;
         }
 
         [AdminCommand]
@@ -62,41 +58,15 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             {
                 throw new UserNotFoundException(command.User.GetUserMention());
             }
-            await this._unmutingService.UnmuteNow(contexts, userToUnmute);
+            await this.commandBus.ExecuteAsync(new UnmuteNowCommand(contexts, userToUnmute));
         }
 
         [AdminCommand]
         public async Task MutedUsers(MutedUsersCommand mutedUsersCommand, Contexts contexts)
         {
-            var notUnmutedMuteEvents = this.mutingService.GetNotUnmutedMuteEvents(contexts.Server.Id);
+            await this.commandBus.ExecuteAsync(new SendMutedUsersDirectMessageCommand(contexts));
             var messagesService = this._messagesServiceFactory.Create(contexts);
-            var mutedUsersMessageData = this.GetMuteEmbedMessage(notUnmutedMuteEvents.ToList());
-            if (!mutedUsersMessageData.Values.Any())
-            {
-                await messagesService.SendResponse(x => x.ThereAreNoMutedUsers());
-                return;
-            }
-            await this._directMessagesService.TrySendEmbedMessage(contexts.User.Id, mutedUsersMessageData.Title, mutedUsersMessageData.Description, mutedUsersMessageData.Values);
             await messagesService.SendResponse(x => x.MutedUsersListSent());
-        }
-
-        private MutedUsersMessageData GetMuteEmbedMessage(IReadOnlyList<MuteEvent> notUnmutedMuteEvents)
-        {
-            var title = "Lista wyciszonych użytkowników";
-            var description = "Wyciszeni użytkownicy, powody oraz data wygaśnięcia";
-            var values = new Dictionary<string, Dictionary<string, string>>();
-            for (var i = 0; i < notUnmutedMuteEvents.Count; i++)
-            {
-                var muteEvent = notUnmutedMuteEvents[i];
-                values.Add($"{i + 1}.",
-                    new Dictionary<string, string>
-                    {
-                        { "Użytkownik:", muteEvent.UserId.GetUserMention() },
-                        { "Powód:", muteEvent.Reason },
-                        { "Data zakończenia:", muteEvent.TimeRange.End.ToLocalTimeString() }
-                    });
-            }
-            return new MutedUsersMessageData(title, description, values);
         }
     }
 }
