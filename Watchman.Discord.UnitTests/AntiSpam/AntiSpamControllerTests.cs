@@ -24,15 +24,14 @@ namespace Watchman.Discord.UnitTests.AntiSpam
         private readonly TestContextsFactory testContextsFactory = new();
 
         [Test]
-        [TestCase(1, SpamProbability.None, false)]
-        [TestCase(2, SpamProbability.Low, true)]
-        [TestCase(3, SpamProbability.Medium, true)]
-        [TestCase(4, SpamProbability.Sure, true)]
-        //userId is int because TestCase can't handle ulong in params
-        public async Task Scan_ShouldPunishIfDetectorsFoundAnything(int userId, SpamProbability detectedSpamProbability, bool shouldInvokeSetPunishment)
+        [TestCase(1u, SpamProbability.None, false)]
+        [TestCase(2u, SpamProbability.Low, true)]
+        [TestCase(3u, SpamProbability.Medium, true)]
+        [TestCase(4u, SpamProbability.Sure, true)]
+        public async Task Scan_ShouldPunishIfDetectorsFoundAnything(ulong userId, SpamProbability detectedSpamProbability, bool shouldInvokeSetPunishment)
         {
             //Arrange
-            var contexts = this.testContextsFactory.CreateContexts(1, 1, userId: ulong.Parse(userId.ToString()));
+            var contexts = this.testContextsFactory.CreateContexts(1, 1, userId: userId);
             var request = new DiscordRequest();
 
             var serverMessagesCacheServiceMock = new Mock<IServerMessagesCacheService>();
