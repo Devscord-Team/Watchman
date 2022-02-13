@@ -19,7 +19,8 @@ namespace Devscord.DiscordFramework.Services
 
     public class UsersRolesService : IUsersRolesService
     {
-        public const string MUTED_ROLE_NAME = "muted";//todo should be in Domain
+        //todo should be in Domain
+        public const string MUTED_ROLE_NAME = "muted";
 
         public Task<UserRole> CreateNewRole(DiscordServerContext server, NewUserRole userRole)
             => Server.CreateNewRole(userRole, server);
