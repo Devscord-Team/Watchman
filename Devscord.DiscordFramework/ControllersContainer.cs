@@ -2,7 +2,6 @@
 using Devscord.DiscordFramework.Architecture.Controllers;
 using Devscord.DiscordFramework.Commands;
 using Serilog;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Devscord.DiscordFramework
@@ -16,17 +15,17 @@ namespace Devscord.DiscordFramework
         public ControllersContainer(ControllerInfo[] controllers)
         {
             this.WithReadAlways = controllers
-                .Select(x => new ControllerInfo(x.Controller, x.Methods.Where(m => m.HasAttribute<ReadAlways>())))
+                .Select(x => new ControllerInfo(x.Controller, x.Methods.Where(m => m.HasAttribute<ReadAlways>()).ToArray()))
                 .Where(x => x.Methods.Any()).ToArray();
             Log.Debug("Found {quantity} ReadAlwayd methods", this.WithReadAlways == null ? 0 : this.WithReadAlways.SelectMany(x => x.Methods).Count());
 
             this.WithDiscordCommand = controllers
-                .Select(x => new ControllerInfo(x.Controller, x.Methods.Where(m => m.HasAttribute<DiscordCommand>())))
+                .Select(x => new ControllerInfo(x.Controller, x.Methods.Where(m => m.HasAttribute<DiscordCommand>()).ToArray()))
                 .Where(x => x.Methods.Any()).ToArray();
             Log.Debug("Found {quantity} DiscordCommand methods", this.WithDiscordCommand == null ? 0 : this.WithDiscordCommand.SelectMany(x => x.Methods).Count());
 
             this.WithIBotCommand = controllers
-                .Select(x => new ControllerInfo(x.Controller, x.Methods.Where(x => x.HasParameter<IBotCommand>())))
+                .Select(x => new ControllerInfo(x.Controller, x.Methods.Where(x => x.HasParameter<IBotCommand>()).ToArray()))
                 .Where(x => x.Methods.Any()).ToArray();
             Log.Debug("Found {quantity} IBotCommand methods", this.WithIBotCommand == null ? 0 : this.WithIBotCommand.SelectMany(x => x.Methods).Count());
         }
