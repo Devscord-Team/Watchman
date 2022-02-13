@@ -24,11 +24,28 @@ namespace Watchman.Discord.UnitTests.AntiSpam
         private readonly TestContextsFactory testContextsFactory = new();
 
         [Test]
-        [TestCase(1u, SpamProbability.None, false)]
-        [TestCase(2u, SpamProbability.Low, true)]
-        [TestCase(3u, SpamProbability.Medium, true)]
-        [TestCase(4u, SpamProbability.Sure, true)]
-        public async Task Scan_ShouldPunishIfDetectorsFoundAnything(ulong userId, SpamProbability detectedSpamProbability, bool shouldInvokeSetPunishment)
+
+        [TestCase(1u, SpamProbability.None, false, PunishmentOption.Nothing, false)]
+        [TestCase(11u, SpamProbability.None, false, PunishmentOption.Warn, false)]
+        [TestCase(111u, SpamProbability.None, false, PunishmentOption.Mute, false)]
+
+        [TestCase(2u, SpamProbability.Low, true, PunishmentOption.Nothing, false)]
+        [TestCase(22u, SpamProbability.Low, true, PunishmentOption.Warn, true)]
+        [TestCase(222u, SpamProbability.Low, true, PunishmentOption.Mute, true)]
+
+        [TestCase(3u, SpamProbability.Medium, true, PunishmentOption.Nothing, false)]
+        [TestCase(33u, SpamProbability.Medium, true, PunishmentOption.Warn, true)]
+        [TestCase(333u, SpamProbability.Medium, true, PunishmentOption.Mute, true)]
+
+        [TestCase(4u, SpamProbability.Sure, true, PunishmentOption.Nothing, false)]
+        [TestCase(44u, SpamProbability.Sure, true, PunishmentOption.Warn, true)]
+        [TestCase(444u, SpamProbability.Sure, true, PunishmentOption.Mute, true)]
+        public async Task Scan_ShouldPunishIfDetectorsFoundAnything(
+            ulong userId, 
+            SpamProbability detectedSpamProbability, 
+            bool shouldInvokeSetPunishment,
+            PunishmentOption punishmentOption,
+            bool shouldAddPunishmentToUser)
         {
             //Arrange
             var contexts = this.testContextsFactory.CreateContexts(1, 1, userId: userId);
@@ -48,17 +65,21 @@ namespace Watchman.Discord.UnitTests.AntiSpam
                     It.IsAny<IConfigurationService>()))
                 .Returns(overallSpamDetectorMock.Object);
 
+            var punishment = new Punishment(punishmentOption, DateTime.UtcNow, TimeSpan.FromSeconds(15));
             var spamPunishmentStrategyMock = new Mock<ISpamPunishmentStrategy>();
             spamPunishmentStrategyMock.Setup(x => x.GetPunishment(It.IsAny<ulong>(), It.IsAny<SpamProbability>()))
-                .Returns(new Punishment(PunishmentOption.Warn, DateTime.UtcNow, TimeSpan.FromSeconds(15)));
+                .Returns(punishment);
 
             var antiSpamServiceMock = new Mock<IAntiSpamService>();
+
+            var punishmentsCachingServiceMock = new Mock<IPunishmentsCachingService>();
 
             var controller = this.testControllersFactory.CreateAntiSpamController(
                 serverMessagesCacheServiceMock: serverMessagesCacheServiceMock,
                 overallSpamDetectorStrategyFactoryMock: overallSpamDetectorStrategyFactoryMock,
                 antiSpamServiceMock: antiSpamServiceMock,
-                spamPunishmentStrategyMock: spamPunishmentStrategyMock);
+                spamPunishmentStrategyMock: spamPunishmentStrategyMock,
+                punishmentsCachingServiceMock: punishmentsCachingServiceMock);
 
             //Act
             await controller.Scan(request, contexts);
@@ -68,6 +89,7 @@ namespace Watchman.Discord.UnitTests.AntiSpam
             overallSpamDetectorMock.Verify(x => x.GetOverallSpamProbability(contexts), Times.Once);
             spamPunishmentStrategyMock.Verify(x => x.GetPunishment(contexts.User.Id, detectedSpamProbability), shouldInvokeSetPunishment ? Times.Once : Times.Never);
             antiSpamServiceMock.Verify(x => x.SetPunishment(contexts, It.IsAny<Punishment>()), shouldInvokeSetPunishment ? Times.Once : Times.Never);
+            punishmentsCachingServiceMock.Verify(x => x.AddUserPunishment(contexts.User.Id, punishment), shouldAddPunishmentToUser ? Times.Once : Times.Never);
         }
     }
 }
