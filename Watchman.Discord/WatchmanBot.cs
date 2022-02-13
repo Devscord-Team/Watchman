@@ -5,9 +5,11 @@ using Serilog;
 using Watchman.Integrations.Logging;
 using Watchman.Integrations.Database.MongoDB;
 using Watchman.Discord.Extensions;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Watchman.Discord
 {
+    [ExcludeFromCodeCoverage]
     public class WatchmanBot
     {
         private readonly DiscordConfiguration _configuration;
