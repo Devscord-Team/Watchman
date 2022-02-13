@@ -80,7 +80,7 @@ namespace Devscord.DiscordFramework
             this._controllersContainer = new ControllersContainer(controllers);
         }
 
-        private void RunMethods(DiscordRequest request, Contexts contexts, IEnumerable<ControllerInfo> controllers, bool isReadAlways)
+        private void RunMethods(DiscordRequest request, Contexts contexts, ControllerInfo[] controllers, bool isReadAlways)
         {
             var tasks = new List<Task>();
             foreach (var controllerInfo in controllers)
@@ -105,7 +105,7 @@ namespace Devscord.DiscordFramework
             Task.WaitAll(tasks.ToArray());
         }
 
-        private async Task RunMethodsIBotCommand(DiscordRequest request, Contexts contexts, IEnumerable<ControllerInfo> controllers)
+        private async Task RunMethodsIBotCommand(DiscordRequest request, Contexts contexts, ControllerInfo[] controllers)
         {
             if (!request.IsCommandForBot)
             {
