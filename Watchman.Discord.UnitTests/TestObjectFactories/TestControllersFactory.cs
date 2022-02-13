@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Administration.Controllers;
 using Watchman.Discord.Areas.Administration.Services;
+using Watchman.Discord.Areas.Protection.Controllers;
+using Watchman.Discord.Areas.Protection.Services;
 using Watchman.Discord.Areas.Protection.Strategies;
 using Watchman.Discord.Areas.Users.Services;
 using Watchman.DomainModel.Configuration.Services;
@@ -17,7 +19,8 @@ namespace Watchman.Discord.UnitTests.TestObjectFactories
 {
     internal class TestControllersFactory
     {
-        internal AdministrationController CreateAdministrationController(
+        //todo rename other administration controllers
+        internal Areas.Administration.Controllers.AdministrationController CreateAdministrationController(
             Mock<IQueryBus> queryBusMock = null, Mock<IUsersService> usersServiceMock = null, 
             Mock<IDirectMessagesService> directMessagesServiceMock = null, Mock<IMessagesServiceFactory> messagesServiceFactoryMock = null, 
             Mock<IRolesService> rolesServiceMock = null, Mock<ITrustRolesService> trustRolesServiceMock = null,
@@ -34,7 +37,7 @@ namespace Watchman.Discord.UnitTests.TestObjectFactories
             usersRolesServiceMock ??= new Mock<IUsersRolesService>();
             configurationServiceMock ??= new Mock<IConfigurationService>();
 
-            return new AdministrationController(
+            return new Areas.Administration.Controllers.AdministrationController(
                 queryBusMock.Object,
                 usersServiceMock.Object,
                 directMessagesServiceMock.Object,
@@ -44,6 +47,22 @@ namespace Watchman.Discord.UnitTests.TestObjectFactories
                 checkUserSafetyServiceMock.Object,
                 usersRolesServiceMock.Object,
                 configurationServiceMock.Object);
+        }
+
+        internal MuteUserController CreateMuteUserController(
+            Mock<ICommandBus> commandBusMock = null, Mock<IUnmutingService> unmutingServiceMock = null, 
+            Mock<IUsersService> usersServiceMock = null, Mock<IMessagesServiceFactory> messagesServiceFactoryMock = null)
+        {
+            commandBusMock ??= new Mock<ICommandBus>();
+            unmutingServiceMock ??= new Mock<IUnmutingService>();
+            usersServiceMock ??= new Mock<IUsersService>();
+            messagesServiceFactoryMock ??= new Mock<IMessagesServiceFactory>();
+
+            return new MuteUserController(
+                commandBusMock.Object, 
+                unmutingServiceMock.Object, 
+                usersServiceMock.Object, 
+                messagesServiceFactoryMock.Object);
         }
     }
 }
