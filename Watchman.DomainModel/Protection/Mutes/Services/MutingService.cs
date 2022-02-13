@@ -45,7 +45,6 @@ namespace Watchman.DomainModel.Protection.Mutes.Services
             => this.queryBus.Execute(new GetMuteEventsQuery(serverId, takeOnlyNotUnmuted: true))
             .MuteEvents;
 
-
         // in the same time there should exists only one MUTED MuteEvent per user per server (FirstOrDefault)
         public MuteEvent GetNotUnmutedUserMuteEvent(ulong serverId, ulong userId)
             => this.queryBus.Execute(new GetMuteEventsQuery(serverId, takeOnlyNotUnmuted: true, userId))
