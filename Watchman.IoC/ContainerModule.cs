@@ -4,6 +4,7 @@ using Watchman.IoC.Modules;
 
 namespace Watchman.IoC
 {
+    //todo check and improve registration performance
     [ExcludeFromCodeCoverage]
     public class ContainerModule
     {

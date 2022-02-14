@@ -15,7 +15,13 @@ namespace Watchman.IoC.Modules
             var list = new List<string>();
             var stack = new Stack<Assembly>();
 
-            stack.Push(Assembly.GetEntryAssembly());
+            var entryAssembly = Assembly.GetEntryAssembly();
+            if (entryAssembly.FullName.ToLower().Contains("testhost"))
+            {
+                var botDllPath = entryAssembly.Location.Replace("testhost.dll", "Watchman.Discord.dll");
+                entryAssembly = Assembly.LoadFrom(botDllPath);
+            }
+            stack.Push(entryAssembly);
             do
             {
                 var asm = stack.Pop();
@@ -28,7 +34,8 @@ namespace Watchman.IoC.Modules
                 {
                     builder.RegisterType(handler)
                         .As(handler.GetInterfaces().First())
-                        .InstancePerLifetimeScope();
+                        .PreserveExistingDefaults()
+                        .SingleInstance();
                 }
 
                 foreach (var reference in asm.GetReferencedAssemblies())

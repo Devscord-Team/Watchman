@@ -9,7 +9,6 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients
 {
     internal class FakeDiscordClient : IDiscordClient
     {
-
         public IDiscordClientUsersService UsersService { get; set; }
         public IDiscordClientChannelsService ChannelsService { get; set; }
         public IDiscordClientRolesService RolesService { get; set; }

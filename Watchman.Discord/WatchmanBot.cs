@@ -19,7 +19,6 @@ namespace Watchman.Discord
         {
             this._configuration = configuration;
             this._context = context;
-            Log.Logger = SerilogInitializer.Initialize(this._context.Resolve<IMongoDatabase>());
             Log.Information("Bot created...");
         }
 

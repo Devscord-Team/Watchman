@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients;
+using Watchman.Discord.IntegrationTests.TestEnvironment.FakeDatabases;
 using Watchman.IoC;
 
 namespace Watchman.Discord.IntegrationTests.TestEnvironment
@@ -18,7 +19,10 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment
 
             var builder = new ContainerBuilder();
             builder.RegisterInstance(() => new FakeDiscordClient())
-                .As<IDiscordClient>()
+                .AsImplementedInterfaces()
+                .SingleInstance();
+            builder.RegisterInstance(() => new FakeSessionFactory())
+                .AsImplementedInterfaces()
                 .SingleInstance();
 
             var container = new ContainerModule();
