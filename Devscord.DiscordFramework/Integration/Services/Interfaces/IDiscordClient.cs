@@ -2,6 +2,7 @@
 {
     public interface IDiscordClient
     {
+        IDiscordClientMessagesService MessagesService { get; }
         IDiscordClientUsersService UsersService { get; }
         IDiscordClientChannelsService ChannelsService { get; }
         IDiscordClientRolesService RolesService { get; }

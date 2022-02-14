@@ -16,6 +16,7 @@ namespace Devscord.DiscordFramework.Integration
     {
         private static Services.Interfaces.IDiscordClient _discordClient;
 
+        internal static Func<SocketMessage, Task> MessageReceived { get; set; }
         internal static Func<SocketGuildUser, Task> UserJoined { get; set; }
         internal static Func<SocketGuild, Task> BotAddedToServer { get; set; }
         internal static Func<SocketChannel, Task> ChannelCreated { get; set; }
@@ -29,6 +30,7 @@ namespace Devscord.DiscordFramework.Integration
         internal static void Initialize(Services.Interfaces.IDiscordClient discordClient) //todo use IDiscordClient over Server
         {
             _discordClient = discordClient;
+            _discordClient.MessagesService.MessageReceived += MessageReceived;
             _discordClient.UsersService.UserJoined += UserJoined;
             _discordClient.ServersService.BotAddedToServer += BotAddedToServer;
             _discordClient.ChannelsService.ChannelCreated += ChannelCreated;

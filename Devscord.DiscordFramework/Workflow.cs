@@ -82,22 +82,12 @@ namespace Devscord.DiscordFramework
         public void MapHandlers(DiscordSocketClient client)
         {
             this.OnReady.ForEach(x => client.Ready += () => this.WithExceptionHandlerAwait(x));
-            this.OnMessageReceived.ForEach(func => client.MessageReceived += message =>
-            {
-                _ = this.WithExceptionHandlerAwait(func, message);
-                return Task.CompletedTask;
-            });
             this.MapHandlers();
         }
 
         public void MapHandlers()
         {
-            this.OnMessageReceived.Add(message =>
-            {
-                _ = this.WithExceptionHandlerAwait(this.MessageReceived, message);
-                return Task.CompletedTask;
-            });
-            
+            Server.MessageReceived += message => this.WithExceptionHandlerAwait(this.MessageReceived, message);
             Server.UserJoined += user => this.WithExceptionHandlerAwait(this.CallUserJoined, user);
             Server.BotAddedToServer += guild => this.WithExceptionHandlerAwait(this.CallServerAddedBot, guild);
             Server.ChannelCreated += channel => this.WithExceptionHandlerAwait(this.CallServerChannelCreated, channel);
