@@ -17,9 +17,9 @@ namespace Watchman.Discord.Areas.Initialization.Services
     public class ResponsesInitService : IResponsesInitService
     {
         private readonly ICommandBus _commandBus;
-        private readonly ResponsesGetterService _responsesGetterService;
+        private readonly IResponsesGetterService _responsesGetterService;
 
-        public ResponsesInitService(ICommandBus commandBus, ResponsesGetterService responsesGetterService)
+        public ResponsesInitService(ICommandBus commandBus, IResponsesGetterService responsesGetterService)
         {
             this._commandBus = commandBus;
             this._responsesGetterService = responsesGetterService;

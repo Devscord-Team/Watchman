@@ -11,8 +11,12 @@ namespace Devscord.DiscordFramework.Services
         IAsyncEnumerable<Message> ReadMessagesAsync(DiscordServerContext server, ChannelContext channelContext, int limit, ulong fromMessageId, bool goBefore);
     }
 
-    public class MessagesHistoryService
+    public class MessagesHistoryService : IMessagesHistoryService
     {
+        public MessagesHistoryService()
+        {
+        }
+
         public IAsyncEnumerable<Message> ReadMessagesAsync(DiscordServerContext server, ChannelContext channelContext, int limit)
         {
             return Server.GetMessages(server, channelContext, limit);

@@ -10,7 +10,13 @@ using Response = Watchman.DomainModel.Responses.Response;
 
 namespace Watchman.Discord.Areas.Responses.Services
 {
-    public class ResponsesGetterService
+    public interface IResponsesGetterService
+    {
+        IEnumerable<Response> GetResponsesFromBase();
+        IEnumerable<Response> GetResponsesFromResources();
+    }
+
+    public class ResponsesGetterService : IResponsesGetterService
     {
         private const int DEFAULT_SERVER_ID = 0;
         private readonly IQueryBus _queryBus;
