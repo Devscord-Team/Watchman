@@ -23,22 +23,22 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients
         public Func<SocketChannel, Task> ChannelCreated { get; set; }
         public Func<SocketChannel, Task> ChannelRemoved { get; set; }
 
-        public async Task SendDirectMessage(ulong userId, string message)
+        public Task SendDirectMessage(ulong userId, string message)
         {
             throw new NotImplementedException();
         }
 
-        public async Task SendDirectEmbedMessage(ulong userId, Embed embed)
+        public Task SendDirectEmbedMessage(ulong userId, Embed embed)
         {
             throw new NotImplementedException();
         }
 
-        public async Task SendDirectFile(ulong userId, string fileName, Stream stream)
+        public Task SendDirectFile(ulong userId, string fileName, Stream stream)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<IChannel> GetChannel(ulong channelId, IGuild guild)
+        public Task<IChannel> GetChannel(ulong channelId, IGuild guild)
         {
             throw new NotImplementedException();
         }
@@ -48,27 +48,27 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients
             throw new NotImplementedException();
         }
 
-        public async Task<IGuildChannel> GetGuildChannel(ulong channelId, RestGuild guild = null)
+        public Task<IGuildChannel> GetGuildChannel(ulong channelId, RestGuild guild = null)
         {
             throw new NotImplementedException();
         }
 
-        public async IAsyncEnumerable<Message> GetMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong fromMessageId = 0, bool goBefore = true)
+        public IAsyncEnumerable<Message> GetMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong fromMessageId = 0, bool goBefore = true)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<bool> CanBotReadTheChannelAsync(IMessageChannel textChannel)
+        public Task<bool> CanBotReadTheChannelAsync(IMessageChannel textChannel)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<ITextChannel> CreateNewChannelAsync(ulong serverId, string channelName)
+        public Task<ITextChannel> CreateNewChannelAsync(ulong serverId, string channelName)
         {
             throw new NotImplementedException();
         }
 
-        public async Task SetRolePermissions(IEnumerable<ChannelContext> channels, DiscordServerContext server, ChangedPermissions permissions, UserRole role)
+        public Task SetRolePermissions(IEnumerable<ChannelContext> channels, DiscordServerContext server, ChangedPermissions permissions, UserRole role)
         {
             throw new NotImplementedException();
         }
@@ -78,7 +78,7 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients
             throw new NotImplementedException();
         }
 
-        public async Task RemoveRolePermissions(ChannelContext channel, DiscordServerContext server, UserRole role)
+        public Task RemoveRolePermissions(ChannelContext channel, DiscordServerContext server, UserRole role)
         {
             throw new NotImplementedException();
         }

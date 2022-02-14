@@ -20,7 +20,7 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients
         public Func<SocketRole, Task> RoleCreated { get; set; }
         public Func<SocketRole, Task> RoleRemoved { get; set; }
 
-        public async Task<UserRole> CreateNewRole(NewUserRole role, DiscordServerContext discordServer)
+        public Task<UserRole> CreateNewRole(NewUserRole role, DiscordServerContext discordServer)
         {
             throw new NotImplementedException();
         }

@@ -14,17 +14,17 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients
         public Func<SocketGuildUser, Task> UserJoined { get; set; }
 
 
-        public async Task<RestUser> GetUser(ulong userId)
+        public Task<RestUser> GetUser(ulong userId)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<bool> IsUserStillOnServer(ulong userId, ulong guildId)
+        public Task<bool> IsUserStillOnServer(ulong userId, ulong guildId)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<RestGuildUser> GetGuildUser(ulong userId, ulong guildId)
+        public Task<RestGuildUser> GetGuildUser(ulong userId, ulong guildId)
         {
             throw new NotImplementedException();
         }

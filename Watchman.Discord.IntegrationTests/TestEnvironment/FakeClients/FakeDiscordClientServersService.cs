@@ -17,7 +17,7 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients
         public List<DateTime> DisconnectedTimes { get; set; } = new List<DateTime>();
         public List<DateTime> ConnectedTimes { get; set; } = new List<DateTime>();
 
-        public async Task<RestGuild> GetGuild(ulong guildId)
+        public Task<RestGuild> GetGuild(ulong guildId)
         {
             throw new NotImplementedException();
         }
@@ -32,7 +32,7 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<string>> GetExistingInviteLinks(ulong serverId)
+        public Task<IEnumerable<string>> GetExistingInviteLinks(ulong serverId)
         {
             throw new NotImplementedException();
         }
