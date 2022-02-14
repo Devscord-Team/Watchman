@@ -1,9 +1,11 @@
 ﻿using Autofac;
+using Devscord.DiscordFramework.Integration.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients;
 using Watchman.IoC;
 
 namespace Watchman.Discord.IntegrationTests.TestEnvironment
@@ -15,6 +17,9 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment
             var configuration = new DiscordConfiguration();
 
             var builder = new ContainerBuilder();
+            builder.RegisterInstance(() => new FakeDiscordClient())
+                .As<IDiscordClient>()
+                .SingleInstance();
 
             var container = new ContainerModule();
             builder = container.FillBuilder(builder);
