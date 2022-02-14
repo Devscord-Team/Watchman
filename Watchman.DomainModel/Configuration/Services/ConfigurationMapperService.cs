@@ -5,7 +5,13 @@ using Serilog;
 
 namespace Watchman.DomainModel.Configuration.Services
 {
-    public class ConfigurationMapperService
+    public interface IConfigurationMapperService
+    {
+        Dictionary<Type, Dictionary<ulong, IMappedConfiguration>> GetMappedConfigurations(IEnumerable<ConfigurationItem> configurationItems);
+        ConfigurationItem MapIntoBaseFormat(IMappedConfiguration mappedConfiguration);
+    }
+
+    public class ConfigurationMapperService : IConfigurationMapperService
     {
         private readonly ConfigurationItemsSearcherService _configurationItemsSearcher;
 

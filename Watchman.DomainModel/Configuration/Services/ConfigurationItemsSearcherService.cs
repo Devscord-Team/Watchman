@@ -6,7 +6,12 @@ using Watchman.DomainModel.Configuration.ConfigurationItems;
 
 namespace Watchman.DomainModel.Configuration.Services
 {
-    public class ConfigurationItemsSearcherService
+    public interface IConfigurationItemsSearcherService
+    {
+        List<Type> ConfigurationTypes { get; }
+    }
+
+    public class ConfigurationItemsSearcherService : IConfigurationItemsSearcherService
     {
         public List<Type> ConfigurationTypes { get; }
 

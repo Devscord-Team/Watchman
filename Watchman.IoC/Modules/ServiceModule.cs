@@ -75,6 +75,7 @@ namespace Watchman.IoC.Modules
                 builder.RegisterType(type)
                     .PreserveExistingDefaults()
                     .AsImplementedInterfaces()
+                    .AsSelf()
                     .SingleInstance();
             }
         }

@@ -12,12 +12,13 @@ namespace Watchman.DomainModel.Configuration.Services
         private const ulong DEFAULT_SERVER_ID = 0;
         private readonly IComponentContext _componentContext;
         private readonly ISessionFactory _sessionFactory;
-        private readonly ConfigurationMapperService _configurationMapperService;
-        private readonly ConfigurationItemsSearcherService _configurationTypesSearcher;
+        private readonly IConfigurationMapperService _configurationMapperService;
+        private readonly IConfigurationItemsSearcherService _configurationTypesSearcher;
         private static Dictionary<Guid, int> _configurationVersions;
         private static Dictionary<Type, Dictionary<ulong, IMappedConfiguration>> _cachedConfigurationItem;
 
-        public ConfigurationService(IComponentContext componentContext, ISessionFactory sessionFactory, ConfigurationMapperService configurationMapperService, ConfigurationItemsSearcherService configurationTypesSearcher)
+        public ConfigurationService(IComponentContext componentContext, ISessionFactory sessionFactory, 
+            IConfigurationMapperService configurationMapperService, IConfigurationItemsSearcherService configurationTypesSearcher)
         {
             this._componentContext = componentContext;
             this._sessionFactory = sessionFactory;

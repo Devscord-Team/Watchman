@@ -13,6 +13,10 @@ namespace Devscord.DiscordFramework.Services
 
     public class DiscordServersService : IDiscordServersService
     {
+        public DiscordServersService()
+        {
+        }
+
         public IAsyncEnumerable<DiscordServerContext> GetDiscordServersAsync()
         {
             return Server.GetDiscordServersAsync();
