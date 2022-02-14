@@ -19,12 +19,13 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment
             var configuration = new DiscordConfiguration();
 
             var builder = new ContainerBuilder();
-            builder.RegisterType<FakeSessionFactory>()
-                .As<ISessionFactory>()
-                .SingleInstance();
-            builder.RegisterType<FakeDiscordClient>()
-                .As<IDiscordClient>()
-                .SingleInstance();
+            builder.RegisterType<FakeSessionFactory>().As<ISessionFactory>().SingleInstance().PreserveExistingDefaults();
+
+            builder.RegisterType<FakeDiscordClientUsersService>().As<IDiscordClientUsersService>().SingleInstance();
+            builder.RegisterType<FakeDiscordClientChannelsService>().As<IDiscordClientChannelsService>().SingleInstance();
+            builder.RegisterType<FakeDiscordClientRolesService>().As<IDiscordClientRolesService>().SingleInstance();
+            builder.RegisterType<FakeDiscordClientServersService>().As<IDiscordClientServersService>().SingleInstance();
+            builder.RegisterType<FakeDiscordClient>().As<IDiscordClient>().SingleInstance().PreserveExistingDefaults();
 
             var container = new ContainerModule();
             builder = container.FillBuilder(builder);

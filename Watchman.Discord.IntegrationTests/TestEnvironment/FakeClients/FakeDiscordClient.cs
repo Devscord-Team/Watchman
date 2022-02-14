@@ -14,14 +14,6 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients
         public IDiscordClientRolesService RolesService { get; set; }
         public IDiscordClientServersService ServersService { get; set; }
 
-        public FakeDiscordClient()
-        {
-            this.UsersService = new FakeDiscordClientUsersService();
-            this.ChannelsService = new FakeDiscordClientChannelsService();
-            this.RolesService = new FakeDiscordClientRolesService();
-            this.ServersService = new FakeDiscordClientServersService();
-        }
-
         public FakeDiscordClient(IDiscordClientUsersService usersService, IDiscordClientChannelsService channelsService, 
             IDiscordClientRolesService rolesService, IDiscordClientServersService serversService)
         {
