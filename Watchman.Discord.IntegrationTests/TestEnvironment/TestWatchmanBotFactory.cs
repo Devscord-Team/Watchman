@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients;
 using Watchman.Discord.IntegrationTests.TestEnvironment.FakeDatabases;
+using Watchman.Discord.IntegrationTests.TestEnvironment.Models;
 using Watchman.Integrations.Database;
 using Watchman.IoC;
 
@@ -53,9 +54,11 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment
 
         public async Task SendMessage(string text)
         {
-            await client.MessagesService.MessageReceived.Invoke()
-
-            await Task.CompletedTask;
+            var message = new FakeMessage
+            {
+                Content = text
+            };
+            await client.MessagesService.MessageReceived.Invoke(message);
         }
     }
 }

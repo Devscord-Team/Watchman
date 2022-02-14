@@ -29,7 +29,7 @@ namespace Devscord.DiscordFramework
         List<Func<UserRole, UserRole, Task>> OnRoleUpdated { get; set; }
         List<Func<UserRole, Task>> OnRoleCreated { get; set; }
         List<Func<UserRole, Task>> OnRoleRemoved { get; set; }
-        List<Func<SocketMessage, Task>> OnMessageReceived { get; set; }
+        List<Func<IMessage, Task>> OnMessageReceived { get; set; }
         List<Func<Exception, DiscordRequest, Contexts, Task>> OnWorkflowException { get; set; }
 
         Workflow AddMiddleware<T>() where T : IMiddleware;
@@ -56,7 +56,7 @@ namespace Devscord.DiscordFramework
         public List<Func<UserRole, UserRole, Task>> OnRoleUpdated { get; set; } = new List<Func<UserRole, UserRole, Task>>();
         public List<Func<UserRole, Task>> OnRoleCreated { get; set; } = new List<Func<UserRole, Task>>();
         public List<Func<UserRole, Task>> OnRoleRemoved { get; set; } = new List<Func<UserRole, Task>>();
-        public List<Func<SocketMessage, Task>> OnMessageReceived { get; set; } = new List<Func<SocketMessage, Task>>();
+        public List<Func<IMessage, Task>> OnMessageReceived { get; set; } = new List<Func<IMessage, Task>>();
         public List<Func<Exception, DiscordRequest, Contexts, Task>> OnWorkflowException { get; set; } = new List<Func<Exception, DiscordRequest, Contexts, Task>>();
 
         public Workflow(IControllersService controllersService, ICommandParser commandParser, 
@@ -129,7 +129,7 @@ namespace Devscord.DiscordFramework
             }
         }
 
-        private async Task MessageReceived(SocketMessage socketMessage)
+        private async Task MessageReceived(IMessage socketMessage)
         {
             if (this.ShouldIgnoreMessage(socketMessage))
             {
@@ -151,7 +151,7 @@ namespace Devscord.DiscordFramework
             this._stopWatch.Reset();
         }
 
-        private DiscordRequest ParseRequest(SocketMessage socketMessage)
+        private DiscordRequest ParseRequest(IMessage socketMessage)
         {
             this._stopWatch.Restart();
             Log.Information("Processing message: {content} from user {user} started", socketMessage.Content, socketMessage.Author);
@@ -166,7 +166,7 @@ namespace Devscord.DiscordFramework
             return request;
         }
 
-        private Contexts GetContexts(SocketMessage socketMessage)
+        private Contexts GetContexts(IMessage socketMessage)
         {
             this._stopWatch.Restart();
             var contexts = this.middlewaresService.RunMiddlewares(socketMessage);
@@ -180,7 +180,7 @@ namespace Devscord.DiscordFramework
             return contexts;
         }
 
-        private bool ShouldIgnoreMessage(SocketMessage socketMessage)
+        private bool ShouldIgnoreMessage(IMessage socketMessage)
         {
 #if DEBUG
             if (!socketMessage.Channel.Name.Contains("test"))
