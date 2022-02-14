@@ -16,7 +16,7 @@ namespace Devscord.DiscordFramework.Integration
     {
         private static Services.Interfaces.IDiscordClient _discordClient;
 
-        internal static Func<SocketMessage, Task> MessageReceived { get; set; }
+        internal static Func<IMessage, Task> MessageReceived { get; set; }
         internal static Func<SocketGuildUser, Task> UserJoined { get; set; }
         internal static Func<SocketGuild, Task> BotAddedToServer { get; set; }
         internal static Func<SocketChannel, Task> ChannelCreated { get; set; }

@@ -85,7 +85,7 @@ namespace Devscord.DiscordFramework
             return this;
         }
 
-        public WorkflowBuilder AddOnMessageReceivedHandlers(Action<WorkflowBuilderHandlers<Func<SocketMessage, Task>>> action)
+        public WorkflowBuilder AddOnMessageReceivedHandlers(Action<WorkflowBuilderHandlers<Func<IMessage, Task>>> action)
         {
             this.AddHandlers(action, this._workflow.OnMessageReceived.Add);
             Log.Debug("OnMessageReceived handlers have been set");
