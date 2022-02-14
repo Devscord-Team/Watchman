@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Devscord.DiscordFramework.Integration.Services.Interfaces;
+using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,6 +53,8 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment
 
         public async Task SendMessage(string text)
         {
+            await client.MessagesService.MessageReceived.Invoke()
+
             await Task.CompletedTask;
         }
     }
