@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework.Integration.Services.Interfaces
 {
-    internal interface IDiscordClientRolesService
+    public interface IDiscordClientRolesService
     {
         Func<SocketRole, SocketRole, Task> RoleUpdated { get; set; }
         Func<SocketRole, Task> RoleCreated { get; set; }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework.Integration.Services.Interfaces
 {
-    internal interface IDiscordClientServersService
+    public interface IDiscordClientServersService
     {
         Func<SocketGuild, Task> BotAddedToServer { get; set; }
         List<DateTime> ConnectedTimes { get; set; }

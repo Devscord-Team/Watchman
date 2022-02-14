@@ -1,6 +1,6 @@
 ﻿namespace Devscord.DiscordFramework.Integration.Services.Interfaces
 {
-    internal interface IDiscordClient
+    public interface IDiscordClient
     {
         IDiscordClientUsersService UsersService { get; }
         IDiscordClientChannelsService ChannelsService { get; }

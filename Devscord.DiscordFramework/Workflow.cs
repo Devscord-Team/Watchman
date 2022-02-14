@@ -34,6 +34,7 @@ namespace Devscord.DiscordFramework
 
         Workflow AddMiddleware<T>() where T : IMiddleware;
         void MapHandlers(DiscordSocketClient client);
+        void MapHandlers();
     }
     //todo testy wydajnościowe
     public class Workflow : IWorkflow
@@ -81,6 +82,11 @@ namespace Devscord.DiscordFramework
         public void MapHandlers(DiscordSocketClient client)
         {
             this.OnReady.ForEach(x => client.Ready += () => this.WithExceptionHandlerAwait(x));
+            this.MapHandlers();
+        }
+
+        public void MapHandlers()
+        {
             this.OnMessageReceived.Add(message =>
             {
                 _ = this.WithExceptionHandlerAwait(this.MessageReceived, message);

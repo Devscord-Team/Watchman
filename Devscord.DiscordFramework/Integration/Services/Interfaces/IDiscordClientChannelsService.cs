@@ -11,7 +11,7 @@ using Devscord.DiscordFramework.Commons;
 
 namespace Devscord.DiscordFramework.Integration.Services.Interfaces
 {
-    internal interface IDiscordClientChannelsService
+    public interface IDiscordClientChannelsService
     {
         Func<SocketChannel, Task> ChannelCreated { get; set; }
         Func<SocketChannel, Task> ChannelRemoved { get; set; }

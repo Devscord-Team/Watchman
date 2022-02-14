@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Devscord.DiscordFramework.Integration;
 using Devscord.DiscordFramework.Integration.Services;
+using Devscord.DiscordFramework.Integration.Services.Interfaces;
 using Discord.WebSocket;
 using Serilog;
 using System.Diagnostics;
@@ -32,6 +33,15 @@ namespace Devscord.DiscordFramework.Framework
             }
             Log.Information("Bot is connected. {ticks}ticks | {ms}ms", sw.ElapsedTicks, sw.ElapsedMilliseconds);
             sw.Stop();
+        }
+
+        //at now it is used only for tests
+        public static void Initialize(IComponentContext context)
+        {
+            var discordClient = context.Resolve<IDiscordClient>();
+            Server.Initialize(discordClient);
+
+            Initialized = true;
         }
     }
 }

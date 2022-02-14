@@ -7,7 +7,7 @@ using Discord;
 
 namespace Devscord.DiscordFramework.Integration.Services.Interfaces
 {
-    internal interface IDiscordClientUsersService
+    public interface IDiscordClientUsersService
     {
         Func<SocketGuildUser, Task> UserJoined { get; set; }
         Task<RestGuildUser> GetGuildUser(ulong userId, ulong guildId);

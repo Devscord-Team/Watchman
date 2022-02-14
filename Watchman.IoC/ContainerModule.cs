@@ -10,6 +10,10 @@ namespace Watchman.IoC
         private readonly string _mongoConnectionString;
         private readonly string _liteConnectionString;
 
+        public ContainerModule()
+        {
+        }
+
         public ContainerModule(string mongoConnectionString, string liteConnectionString)
         {
             this._mongoConnectionString = mongoConnectionString;
@@ -19,6 +23,11 @@ namespace Watchman.IoC
         public ContainerBuilder GetBuilder()
         {
             var builder = new ContainerBuilder();
+            return this.FillBuilder(builder);
+        }
+
+        public ContainerBuilder FillBuilder(ContainerBuilder builder)
+        {
             builder.RegisterModule(new DatabaseModule(this._mongoConnectionString, this._liteConnectionString));
             builder.RegisterModule<CommandModule>();
             builder.RegisterModule<QueryModule>();
