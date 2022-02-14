@@ -22,12 +22,12 @@ namespace Watchman.Discord.Areas.Help.Services
 
     public class HelpService : IHelpService
     {
-        private readonly MessagesServiceFactory _messagesServiceFactory;
-        private readonly HelpMessageGeneratorService _helpMessageGenerator;
-        private readonly ResponsesService _responsesService;
+        private readonly IMessagesServiceFactory _messagesServiceFactory;
+        private readonly IHelpMessageGeneratorService _helpMessageGenerator;
+        private readonly IResponsesService _responsesService;
         private readonly IQueryBus _queryBus;
 
-        public HelpService(MessagesServiceFactory messagesServiceFactory, HelpMessageGeneratorService messageGeneratorService, ResponsesService responsesService, IQueryBus queryBus)
+        public HelpService(IMessagesServiceFactory messagesServiceFactory, IHelpMessageGeneratorService messageGeneratorService, IResponsesService responsesService, IQueryBus queryBus)
         {
             this._messagesServiceFactory =  messagesServiceFactory;
             this._helpMessageGenerator = messageGeneratorService;

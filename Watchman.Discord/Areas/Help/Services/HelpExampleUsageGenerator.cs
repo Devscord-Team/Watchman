@@ -8,11 +8,17 @@ using Watchman.DomainModel.Help;
 
 namespace Watchman.Discord.Areas.Help.Services
 {
-    public class HelpExampleUsageGenerator
+    public interface IHelpExampleUsageGenerator
     {
-        private readonly ResponsesService _responsesService;
+        string GetExampleUsage(HelpInformation helpInformation, DiscordServerContext server);
+        string GetExampleValue(ArgumentInformation argument, DiscordServerContext server);
+    }
 
-        public HelpExampleUsageGenerator(ResponsesService responsesService)
+    public class HelpExampleUsageGenerator : IHelpExampleUsageGenerator
+    {
+        private readonly IResponsesService _responsesService;
+
+        public HelpExampleUsageGenerator(IResponsesService responsesService)
         {
             this._responsesService = responsesService;
         }

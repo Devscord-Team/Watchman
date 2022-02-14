@@ -8,12 +8,19 @@ using Watchman.DomainModel.Help;
 
 namespace Watchman.Discord.Areas.Help.Services
 {
-    public class HelpMessageGeneratorService
+    public interface IHelpMessageGeneratorService
     {
-        private readonly ResponsesService _responsesService;
-        private readonly HelpExampleUsageGenerator _helpExampleUsageGenerator;
+        string GenerateJsonHelp(IEnumerable<HelpInformation> helpInformations);
+        IEnumerable<KeyValuePair<string, string>> MapHelpForAllCommandsToEmbed(IEnumerable<HelpInformation> helpInformations, DiscordServerContext server);
+        IEnumerable<KeyValuePair<string, string>> MapHelpForOneCommandToEmbed(HelpInformation helpInformation, DiscordServerContext server);
+    }
 
-        public HelpMessageGeneratorService(ResponsesService responsesService, HelpExampleUsageGenerator helpExampleUsageGenerator)
+    public class HelpMessageGeneratorService : IHelpMessageGeneratorService
+    {
+        private readonly IResponsesService _responsesService;
+        private readonly IHelpExampleUsageGenerator _helpExampleUsageGenerator;
+
+        public HelpMessageGeneratorService(IResponsesService responsesService, IHelpExampleUsageGenerator helpExampleUsageGenerator)
         {
             this._responsesService = responsesService;
             this._helpExampleUsageGenerator = helpExampleUsageGenerator;
@@ -49,8 +56,8 @@ namespace Watchman.Discord.Areas.Help.Services
                 helpBuilder.AppendLine($"**{argument.Name}**");
                 helpBuilder.AppendLine($"```{typeResponse.ToLowerInvariant()}: {argument.ExpectedTypeName}");
                 var exampleValue = argument.ExampleValue ?? this._helpExampleUsageGenerator.GetExampleValue(argument, server);
-                helpBuilder.AppendLine(!string.IsNullOrWhiteSpace(exampleValue) 
-                    ? $"{exampleResponse.ToLowerInvariant()}: {exampleValue}```" 
+                helpBuilder.AppendLine(!string.IsNullOrWhiteSpace(exampleValue)
+                    ? $"{exampleResponse.ToLowerInvariant()}: {exampleValue}```"
                     : "```");
             }
             var parametersResponse = this._responsesService.GetResponse(server.Id, x => x.Parameters());
