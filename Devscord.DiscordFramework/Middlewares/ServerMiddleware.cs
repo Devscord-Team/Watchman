@@ -8,11 +8,11 @@ namespace Devscord.DiscordFramework.Middlewares
 {
     public class ServerMiddleware : IMiddleware
     {
-        private readonly DiscordServerContextFactory _discordServerContextFactory;
+        private readonly IDiscordServerContextFactory _discordServerContextFactory;
 
-        public ServerMiddleware(IComponentContext context)
+        public ServerMiddleware(IDiscordServerContextFactory discordServerContextFactory)
         {
-            this._discordServerContextFactory = new DiscordServerContextFactory(context);
+            this._discordServerContextFactory = discordServerContextFactory;
         }
 
         public IDiscordContext Process(SocketMessage data)

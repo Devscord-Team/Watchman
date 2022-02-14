@@ -39,13 +39,13 @@ namespace Devscord.DiscordFramework
     //todo testy wydajnościowe
     public class Workflow : IWorkflow
     {
-        private readonly IControllersService _controllersService;
-        private readonly ICommandParser _commandParser;
-        private readonly IMiddlewaresService _middlewaresService;
-        private readonly IDiscordServerContextFactory _discordServerContextFactory;
-        private readonly IUserContextsFactory _userContextsFactory;
-        private readonly IChannelContextFactory _channelContextFactory;
-        private readonly IUserRoleFactory _userRoleFactory;
+        private readonly IControllersService controllersService;
+        private readonly ICommandParser commandParser;
+        private readonly IMiddlewaresService middlewaresService;
+        private readonly IDiscordServerContextFactory discordServerContextFactory;
+        private readonly IUserContextsFactory userContextsFactory;
+        private readonly IChannelContextFactory channelContextFactory;
+        private readonly IUserRoleFactory userRoleFactory;
         private readonly Stopwatch _stopWatch = new Stopwatch();
 
         public List<Func<Task>> OnReady { get; set; } = new List<Func<Task>>();
@@ -63,18 +63,18 @@ namespace Devscord.DiscordFramework
             IMiddlewaresService middlewaresService, IDiscordServerContextFactory discordServerContextFactory, IUserContextsFactory userContextsFactory, 
             IChannelContextFactory channelContextFactory, IUserRoleFactory userRoleFactory)
         {
-            this._controllersService = controllersService;
-            this._commandParser = commandParser;
-            this._middlewaresService = middlewaresService;
-            this._discordServerContextFactory = discordServerContextFactory;
-            this._userContextsFactory = userContextsFactory;
-            this._channelContextFactory = channelContextFactory;
-            this._userRoleFactory = userRoleFactory;
+            this.controllersService = controllersService;
+            this.commandParser = commandParser;
+            this.middlewaresService = middlewaresService;
+            this.discordServerContextFactory = discordServerContextFactory;
+            this.userContextsFactory = userContextsFactory;
+            this.channelContextFactory = channelContextFactory;
+            this.userRoleFactory = userRoleFactory;
         }
 
         public Workflow AddMiddleware<T>() where T : IMiddleware
         {
-            this._middlewaresService.AddMiddleware<T>();
+            this.middlewaresService.AddMiddleware<T>();
             Log.Debug("Added Middleware: {middlewareName}", nameof(T));
             return this;
         }
@@ -149,7 +149,7 @@ namespace Devscord.DiscordFramework
             var request = this.ParseRequest(socketMessage);
 
             Log.Information("Starting controllers");
-            await this.TryToAwaitTask(this._controllersService.Run(socketMessage.Id, request, contexts), request, contexts);
+            await this.TryToAwaitTask(this.controllersService.Run(socketMessage.Id, request, contexts), request, contexts);
 
             var elapsedRun = this._stopWatch.ElapsedTicks;
             var elapsedMilliseconds = this._stopWatch.ElapsedMilliseconds;
@@ -165,7 +165,7 @@ namespace Devscord.DiscordFramework
         {
             this._stopWatch.Restart();
             Log.Information("Processing message: {content} from user {user} started", socketMessage.Content, socketMessage.Author);
-            var request = this._commandParser.Parse(socketMessage.Content, socketMessage.Timestamp.UtcDateTime);
+            var request = this.commandParser.Parse(socketMessage.Content, socketMessage.Timestamp.UtcDateTime);
             var elapsedParse = this._stopWatch.ElapsedTicks;
             Log.Information("Parsing time: {elapsedParse}ticks", elapsedParse);
 #if DEBUG
@@ -179,7 +179,7 @@ namespace Devscord.DiscordFramework
         private Contexts GetContexts(SocketMessage socketMessage)
         {
             this._stopWatch.Restart();
-            var contexts = this._middlewaresService.RunMiddlewares(socketMessage);
+            var contexts = this.middlewaresService.RunMiddlewares(socketMessage);
             var elapsedMiddlewares = this._stopWatch.ElapsedTicks;
             Log.Information("Middlewares time: {elapsedMiddlewares}ticks", elapsedMiddlewares);
 #if DEBUG
@@ -214,9 +214,9 @@ namespace Devscord.DiscordFramework
 
         private async Task CallUserJoined(SocketGuildUser guildUser)
         {
-            var userContext = this._userContextsFactory.Create(guildUser);
+            var userContext = this.userContextsFactory.Create(guildUser);
             var guild = await Server.GetGuild(guildUser.Guild.Id);
-            var discordServer = this._discordServerContextFactory.Create(guild);
+            var discordServer = this.discordServerContextFactory.Create(guild);
             var landingChannel = discordServer.LandingChannel;
 
             var contexts = new Contexts(discordServer, landingChannel, userContext);
@@ -227,7 +227,7 @@ namespace Devscord.DiscordFramework
         private async Task CallServerAddedBot(SocketGuild guild)
         {
             var restGuild = await Server.GetGuild(guild.Id);
-            var discordServer = this._discordServerContextFactory.Create(restGuild);
+            var discordServer = this.discordServerContextFactory.Create(restGuild);
             Log.Information("Bot added to server {server} with owner: {owner}", discordServer.ToJson(), guild.Owner.ToString());
             this.OnDiscordServerAddedBot.ForEach(x => x.Invoke(discordServer));
         }
@@ -238,21 +238,21 @@ namespace Devscord.DiscordFramework
             {
                 return;
             }
-            var channel = this._channelContextFactory.Create(socketChannel);
+            var channel = this.channelContextFactory.Create(socketChannel);
             Log.Information("Channel has been created {channel}", channel.ToJson());
             var guildChannel = await Server.GetGuildChannel(socketChannel.Id);
             var guild = await Server.GetGuild(guildChannel.GuildId); // must get guild by id (not from guildChannel.Guild) - in opposite way it won't work
-            var server = this._discordServerContextFactory.Create(guild);
+            var server = this.discordServerContextFactory.Create(guild);
 
             Task.WaitAll(this.OnChannelCreated.Select(x => x.Invoke(channel, server)).ToArray());
         }
 
         private Task CallServerChannelRemoved(SocketChannel socketChannel)
         {
-            var channel = this._channelContextFactory.Create(socketChannel);
+            var channel = this.channelContextFactory.Create(socketChannel);
             Log.Information("Channel has been removed {channel}", channel.ToJson());
             var guild = ((IGuildChannel)socketChannel).Guild;
-            var server = this._discordServerContextFactory.Create(guild);
+            var server = this.discordServerContextFactory.Create(guild);
 
             Task.WaitAll(this.OnChannelRemoved.Select(x => x.Invoke(channel, server)).ToArray());
             return Task.CompletedTask;
@@ -260,8 +260,8 @@ namespace Devscord.DiscordFramework
 
         private Task CallRoleUpdated(SocketRole from, SocketRole to)
         {
-            var fromRole = this._userRoleFactory.Create(from);
-            var toRole = this._userRoleFactory.Create(to);
+            var fromRole = this.userRoleFactory.Create(from);
+            var toRole = this.userRoleFactory.Create(to);
             Log.Information("Role has been updated from {fromRole} to {toRole}", fromRole.ToJson(), toRole.ToJson());
 
             this.OnRoleUpdated.ForEach(x => x.Invoke(fromRole, toRole));
@@ -270,7 +270,7 @@ namespace Devscord.DiscordFramework
 
         private Task CallRoleCreated(SocketRole role)
         {
-            var userRole = this._userRoleFactory.Create(role);
+            var userRole = this.userRoleFactory.Create(role);
             Log.Information("Role has been created {role}", userRole.ToJson());
             this.OnRoleCreated.ForEach(x => x.Invoke(userRole));
             return Task.CompletedTask;
@@ -278,7 +278,7 @@ namespace Devscord.DiscordFramework
 
         private Task CallRoleRemoved(SocketRole role)
         {
-            var userRole = this._userRoleFactory.Create(role);
+            var userRole = this.userRoleFactory.Create(role);
             Log.Information("Role has been removed {role}", userRole.ToJson());
             this.OnRoleRemoved.ForEach(x => x.Invoke(userRole));
             return Task.CompletedTask;
