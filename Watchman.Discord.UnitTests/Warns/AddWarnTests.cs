@@ -34,18 +34,29 @@ namespace Watchman.Discord.UnitTests.Warns
             //Arrange
             var userContext = testContextsFactory.CreateUserContext(1);
             var userBotContext = testContextsFactory.CreateUserContext(2);
+            var serverContext = testContextsFactory.CreateServerContext(1);
+            var channelContext = testContextsFactory.CreateChannelContext(1);
 
-            
 
+            var messagesServiceMock = new Mock<IMessagesService>();
             var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
             var warnsServiceMock = new Mock<IWarnsService>();
             var usersServiceMock = new Mock<IUsersService>();
+
+
 
             usersServiceMock.Setup(x => x.GetUserByIdAsync(It.IsAny<DiscordServerContext>(), It.IsAny<ulong>()))
                 .Returns<DiscordServerContext, ulong>((a, b) => Task.FromResult(userBotContext));
             usersServiceMock.Setup(x => x.GetBot())
                 .Returns(userBotContext);
+            messagesServiceFactoryMock.Setup(x => x.Create(It.IsAny<Contexts>()))
+                .Returns(messagesServiceMock.Object);
+
+            
+
             contexts.SetContext(userContext);
+            contexts.SetContext(serverContext);
+            contexts.SetContext(channelContext);
 
 
             var controller = this.testControllersFactory.CreateWarnsController(
@@ -58,7 +69,9 @@ namespace Watchman.Discord.UnitTests.Warns
 
             //Assert
             messagesServiceFactoryMock.Verify(x => x.Create(contexts), Times.Once);
-            warnsServiceMock.Verify(x => x.AddWarnToUser(command, contexts, userContext), Times.Once);
+            warnsServiceMock.Verify(x => x.AddWarnToUser(command, contexts, userContext));
+            
+            //warnsServiceMock.Verify(x => x.AddWarnToUser(command, contexts, userContext), Times.Once);
 
 
 
