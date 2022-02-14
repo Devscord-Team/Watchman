@@ -9,6 +9,17 @@ using Discord;
 
 namespace Devscord.DiscordFramework.Integration.Services
 {
+    internal class DiscordClientMessagesService : IDiscordClientMessagesService
+    {
+        private readonly DiscordSocketClient client;
+        public Func<SocketMessage, Task> MessageReceived { get; set; }
+
+        public DiscordClientMessagesService(DiscordSocketClient client)
+        {
+            this.client = client;
+        }
+    }
+
     internal class DiscordClientUsersService : IDiscordClientUsersService
     {
         private DiscordSocketRestClient _restClient => this._client.Rest;

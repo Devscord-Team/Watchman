@@ -21,6 +21,7 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment
             var builder = new ContainerBuilder();
             builder.RegisterType<FakeSessionFactory>().As<ISessionFactory>().SingleInstance().PreserveExistingDefaults();
 
+            builder.RegisterType<FakeDiscordClientMessagesService>().As<IDiscordClientMessagesService>().SingleInstance();
             builder.RegisterType<FakeDiscordClientUsersService>().As<IDiscordClientUsersService>().SingleInstance();
             builder.RegisterType<FakeDiscordClientChannelsService>().As<IDiscordClientChannelsService>().SingleInstance();
             builder.RegisterType<FakeDiscordClientRolesService>().As<IDiscordClientRolesService>().SingleInstance();
@@ -34,12 +35,21 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment
             var workflowBuilder = new WatchmanBot(configuration, context)
                 .GetWorkflowBuilder(useDiscordNetClient: false);
             workflowBuilder.Build();
-            return new BotCommandsRunner();
+
+            var client = context.Resolve<IDiscordClient>();
+            return new BotCommandsRunner(client);
         }
     }
 
     public class BotCommandsRunner
     {
+        private readonly IDiscordClient client;
+
+        public BotCommandsRunner(IDiscordClient client)
+        {
+            this.client = client;
+        }
+
         public async Task SendMessage(string text)
         {
             await Task.CompletedTask;

@@ -13,6 +13,7 @@ namespace Devscord.DiscordFramework.Integration.Services
         private readonly DiscordSocketClient _client;
         private readonly IComponentContext _context;
 
+        public IDiscordClientMessagesService MessagesService { get; private set; }
         public IDiscordClientUsersService UsersService { get; private set; }
         public IDiscordClientChannelsService ChannelsService { get; private set; }
         public IDiscordClientRolesService RolesService { get; private set; }
@@ -35,6 +36,7 @@ namespace Devscord.DiscordFramework.Integration.Services
             var userRoleFactory = this._context.Resolve<IUserRoleFactory>();
             var userContextFactory = this._context.Resolve<IUserContextsFactory>();
             var commandParser = this._context.Resolve<ICommandParser>();
+            this.MessagesService = new DiscordClientMessagesService(this._client);
             this.UsersService = new DiscordClientUsersService(this._client);
             this.ChannelsService = new DiscordClientChannelsService(this._client, this.UsersService, userContextFactory, commandParser);
             this.RolesService = new DiscordClientRolesService(this._client, userRoleFactory);
