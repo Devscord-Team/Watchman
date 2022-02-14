@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Commons;
 using Watchman.Discord.Integration.DevscordFramework;
@@ -31,10 +32,16 @@ namespace Watchman.IoC.Modules
             var typesToRegister = new List<Type>();
 
             var entryAssembly = Assembly.GetEntryAssembly();
-            if(entryAssembly.FullName.ToLower().Contains("testhost"))
+            var botDllPath = Regex.Replace(entryAssembly.Location.Replace("\\", "/"), @"[^\/]*?\.dll$", "Watchman.Discord.dll");
+            var botAssembly = Assembly.LoadFrom(botDllPath);
+
+            builder.RegisterInstance(botAssembly)
+                .As<Assembly>()
+                .SingleInstance();
+
+            if (entryAssembly.FullName.ToLower().Contains("testhost"))
             {
-                var botDllPath = entryAssembly.Location.Replace("testhost.dll", "Watchman.Discord.dll");
-                entryAssembly = Assembly.LoadFrom(botDllPath);
+                entryAssembly = botAssembly;
             }
             stack.Push(entryAssembly);
             do
@@ -43,7 +50,8 @@ namespace Watchman.IoC.Modules
 
                 var types = asm.GetTypes()
                     .Where(x => x.FullName.StartsWith("Watchman") || x.FullName.StartsWith("Devscord") || x.FullName.StartsWith("Statsman"))
-                    .Where(type => !type.IsInterface && !type.IsAbstract)
+                    .Where(x => !x.IsInterface && !x.IsAbstract && x.GetConstructors().Any())
+                    .Where(x => x.GetInterfaces().Where(x => x.Name != "IAsyncStateMachine").Any())
                     .ToArray();
 
                 foreach (var type in types)

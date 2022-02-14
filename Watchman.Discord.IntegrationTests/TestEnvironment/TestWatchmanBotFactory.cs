@@ -18,10 +18,10 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment
             var configuration = new DiscordConfiguration();
 
             var builder = new ContainerBuilder();
-            builder.RegisterInstance(() => new FakeDiscordClient())
+            builder.RegisterInstance(() => new FakeSessionFactory())
                 .AsImplementedInterfaces()
                 .SingleInstance();
-            builder.RegisterInstance(() => new FakeSessionFactory())
+            builder.RegisterInstance(() => new FakeDiscordClient())
                 .AsImplementedInterfaces()
                 .SingleInstance();
 
@@ -29,7 +29,8 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment
             builder = container.FillBuilder(builder);
             var context = builder.Build();
 
-            var workflowBuilder = new WatchmanBot(configuration, context).GetWorkflowBuilder();
+            var workflowBuilder = new WatchmanBot(configuration, context)
+                .GetWorkflowBuilder(useDiscordNetClient: false);
             workflowBuilder.Build();
             return new BotCommandsRunner();
         }

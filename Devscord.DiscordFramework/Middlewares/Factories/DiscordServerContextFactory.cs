@@ -15,15 +15,16 @@ namespace Devscord.DiscordFramework.Middlewares.Factories
     {
         private readonly IUsersService _usersService;
         private readonly IUsersRolesService _usersRolesService;
-        private readonly UserContextsFactory _userContextsFactory;
-        private readonly ChannelContextFactory _channelContextFactory;
+        private readonly IUserContextsFactory _userContextsFactory;
+        private readonly IChannelContextFactory _channelContextFactory;
 
-        public DiscordServerContextFactory(IComponentContext context)
+        public DiscordServerContextFactory(IUsersService usersService, IUsersRolesService usersRolesService, 
+            IUserContextsFactory userContextsFactory, IChannelContextFactory channelContextFactory)
         {
-            this._usersService = context.Resolve<IUsersService>();
-            this._usersRolesService = context.Resolve<IUsersRolesService>();
-            this._userContextsFactory = context.Resolve<UserContextsFactory>();
-            this._channelContextFactory = context.Resolve<ChannelContextFactory>();
+            this._usersService = usersService;
+            this._usersRolesService = usersRolesService;
+            this._userContextsFactory = userContextsFactory;
+            this._channelContextFactory = channelContextFactory;
         }
 
         public DiscordServerContext Create(IGuild guild)

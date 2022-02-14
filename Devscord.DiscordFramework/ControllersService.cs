@@ -26,16 +26,16 @@ namespace Devscord.DiscordFramework
     internal class ControllersService : IControllersService
     {
         private readonly IComponentContext _context;
-        private readonly Assembly _assembly;
-        private readonly BotCommandsService _botCommandsService;
+        private readonly Assembly controllersAssembly;
+        private readonly IBotCommandsService _botCommandsService;
         private readonly ICommandsContainer _commandsContainer;
         private ControllersContainer _controllersContainer;
 
-        public ControllersService(IComponentContext context, Assembly assembly, BotCommandsService botCommandsService,
+        public ControllersService(IComponentContext context, Assembly controllersAssembly, IBotCommandsService botCommandsService,
             ICommandsContainer commandsContainer)
         {
             this._context = context;
-            this._assembly = assembly;
+            this.controllersAssembly = controllersAssembly;
             this._botCommandsService = botCommandsService;
             this._commandsContainer = commandsContainer;
         }
@@ -74,7 +74,7 @@ namespace Devscord.DiscordFramework
 
         private void LoadControllers()
         {
-            var controllers = this._assembly.GetTypesByInterface<IController>()
+            var controllers = this.controllersAssembly.GetTypesByInterface<IController>()
                 .Select(x => new ControllerInfo((IController) this._context.Resolve(x)))
                 .ToArray();
             this._controllersContainer = new ControllersContainer(controllers);

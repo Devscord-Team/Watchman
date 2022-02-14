@@ -8,15 +8,27 @@ using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework.Commands.Services
 {
-    public class BotCommandsService
+    public interface IBotCommandsService
     {
-        private readonly BotCommandsTemplateBuilder botCommandsTemplateBuilder;
-        private readonly BotCommandsParsingService botCommandParsingService;
-        private readonly BotCommandsMatchingService botCommandMatchingService;
-        private readonly BotCommandsTemplateRenderingService botCommandsTemplateRenderingService;
+        string RenderTextTemplate(BotCommandTemplate template);
+        bool IsDefaultCommand(BotCommandTemplate template, IEnumerable<DiscordRequestArgument> arguments, bool isCommandMatchedWithCustom);
+        bool AreDefaultCommandArgumentsCorrect(BotCommandTemplate template, IEnumerable<DiscordRequestArgument> arguments);
+        bool AreCustomCommandArgumentsCorrect(BotCommandTemplate template, Regex customTemplate, string input);
+        BotCommandTemplate GetCommandTemplate(Type commandType);
+        T ParseRequestToCommand<T>(DiscordRequest request, BotCommandTemplate template) where T : IBotCommand;
+        IBotCommand ParseRequestToCommand(Type commandType, DiscordRequest request, BotCommandTemplate template);
+        IBotCommand ParseCustomTemplate(Type commandType, BotCommandTemplate template, Regex customTemplate, string input);
+    }
 
-        public BotCommandsService(BotCommandsTemplateBuilder botCommandsTemplateBuilder, BotCommandsParsingService botCommandParsingService,
-            BotCommandsMatchingService botCommandMatchingService, BotCommandsTemplateRenderingService botCommandsTemplateRenderingService)
+    public class BotCommandsService : IBotCommandsService
+    {
+        private readonly IBotCommandsTemplateBuilder botCommandsTemplateBuilder;
+        private readonly IBotCommandsParsingService botCommandParsingService;
+        private readonly IBotCommandsMatchingService botCommandMatchingService;
+        private readonly IBotCommandsTemplateRenderingService botCommandsTemplateRenderingService;
+
+        public BotCommandsService(IBotCommandsTemplateBuilder botCommandsTemplateBuilder, IBotCommandsParsingService botCommandParsingService,
+            IBotCommandsMatchingService botCommandMatchingService, IBotCommandsTemplateRenderingService botCommandsTemplateRenderingService)
         {
             this.botCommandsTemplateBuilder = botCommandsTemplateBuilder;
             this.botCommandParsingService = botCommandParsingService;

@@ -13,7 +13,7 @@ namespace Devscord.DiscordFramework
         Contexts RunMiddlewares(SocketMessage socketMessage);
     }
 
-    internal class MiddlewaresService
+    internal class MiddlewaresService : IMiddlewaresService
     {
         public IEnumerable<IMiddleware> Middlewares => this._middlewares;
 

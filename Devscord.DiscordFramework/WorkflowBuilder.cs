@@ -41,9 +41,9 @@ namespace Devscord.DiscordFramework
             this.useDiscordNetClient = useDiscordNetClient;
         }
 
-        public static WorkflowBuilder Create(string token, IWorkflow workflow, IComponentContext context)
+        public static WorkflowBuilder Create(string token, IWorkflow workflow, IComponentContext context, bool useDiscordNetClient = true)
         {
-            return new WorkflowBuilder(token, workflow, context);
+            return new WorkflowBuilder(token, workflow, context, useDiscordNetClient);
         }
 
         public WorkflowBuilder SetMessageHandler(Func<SocketMessage, Task> action)

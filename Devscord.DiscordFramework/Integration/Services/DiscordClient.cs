@@ -31,10 +31,10 @@ namespace Devscord.DiscordFramework.Integration.Services
             {
                 return;
             }
-            var serverContextFactory = this._context.Resolve<DiscordServerContextFactory>();
-            var userRoleFactory = this._context.Resolve<UserRoleFactory>();
-            var userContextFactory = this._context.Resolve<UserContextsFactory>();
-            var commandParser = this._context.Resolve<CommandParser>();
+            var serverContextFactory = this._context.Resolve<IDiscordServerContextFactory>();
+            var userRoleFactory = this._context.Resolve<IUserRoleFactory>();
+            var userContextFactory = this._context.Resolve<IUserContextsFactory>();
+            var commandParser = this._context.Resolve<ICommandParser>();
             this.UsersService = new DiscordClientUsersService(this._client);
             this.ChannelsService = new DiscordClientChannelsService(this._client, this.UsersService, userContextFactory, commandParser);
             this.RolesService = new DiscordClientRolesService(this._client, userRoleFactory);

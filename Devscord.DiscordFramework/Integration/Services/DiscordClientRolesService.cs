@@ -22,10 +22,10 @@ namespace Devscord.DiscordFramework.Integration.Services
 
         private DiscordSocketRestClient _restClient => this._client.Rest;
         private readonly DiscordSocketClient _client;
-        private readonly UserRoleFactory _userRoleFactory;
+        private readonly IUserRoleFactory _userRoleFactory;
         private List<SocketRole> _roles;
 
-        public DiscordClientRolesService(DiscordSocketClient client, UserRoleFactory userRoleFactory)
+        public DiscordClientRolesService(DiscordSocketClient client, IUserRoleFactory userRoleFactory)
         {
             this._client = client;
             this._userRoleFactory = userRoleFactory;

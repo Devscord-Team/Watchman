@@ -9,12 +9,18 @@ using Devscord.DiscordFramework.Commands;
 
 namespace Devscord.DiscordFramework.Commands.Services
 {
-    public class BotCommandsParsingService
+    public interface IBotCommandsParsingService
     {
-        private readonly BotCommandsPropertyConversionService _botCommandPropertyConversionService;
-        private readonly BotCommandsRequestValueGetterService _botCommandsRequestValueGetterService;
+        IBotCommand ParseCustomTemplate(Type commandType, BotCommandTemplate template, Regex customTemplate, string input);
+        IBotCommand ParseRequestToCommand(Type commandType, DiscordRequest request, BotCommandTemplate template);
+    }
 
-        public BotCommandsParsingService(BotCommandsPropertyConversionService botCommandPropertyConversionService, BotCommandsRequestValueGetterService botCommandsRequestValueGetterService)
+    public class BotCommandsParsingService : IBotCommandsParsingService
+    {
+        private readonly IBotCommandsPropertyConversionService _botCommandPropertyConversionService;
+        private readonly IBotCommandsRequestValueGetterService _botCommandsRequestValueGetterService;
+
+        public BotCommandsParsingService(IBotCommandsPropertyConversionService botCommandPropertyConversionService, IBotCommandsRequestValueGetterService botCommandsRequestValueGetterService)
         {
             this._botCommandPropertyConversionService = botCommandPropertyConversionService;
             this._botCommandsRequestValueGetterService = botCommandsRequestValueGetterService;
@@ -37,7 +43,7 @@ namespace Devscord.DiscordFramework.Commands.Services
             foreach (var property in commandType.GetProperties())
             {
                 var propertyType = template.Properties.First(x => x.Name == property.Name).Type;
-                var isList = propertyType == BotCommandPropertyType.List;         
+                var isList = propertyType == BotCommandPropertyType.List;
                 var value = getValueByName.Invoke(property.Name, isList);
                 if (string.IsNullOrWhiteSpace(value as string) && !isList)
                 {
@@ -60,7 +66,7 @@ namespace Devscord.DiscordFramework.Commands.Services
                     property.SetValue(instance, convertedType);
                 }
             }
-            return (IBotCommand) instance;
+            return (IBotCommand)instance;
         }
     }
 }

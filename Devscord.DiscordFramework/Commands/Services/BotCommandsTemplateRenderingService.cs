@@ -5,7 +5,12 @@ using System.Text;
 
 namespace Devscord.DiscordFramework.Commands.Services
 {
-    public class BotCommandsTemplateRenderingService
+    public interface IBotCommandsTemplateRenderingService
+    {
+        string RenderTextTemplate(BotCommandTemplate template);
+    }
+
+    public class BotCommandsTemplateRenderingService : IBotCommandsTemplateRenderingService
     {
         public string RenderTextTemplate(BotCommandTemplate template)
         {
