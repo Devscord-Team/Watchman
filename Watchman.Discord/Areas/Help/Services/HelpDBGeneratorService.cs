@@ -12,13 +12,18 @@ using Watchman.DomainModel.Help.Queries;
 
 namespace Watchman.Discord.Areas.Help.Services
 {
-    public class HelpDBGeneratorService
+    public interface IHelpDBGeneratorService
+    {
+        Task FillDatabase(IEnumerable<BotCommandInformation> commandInfosFromAssembly);
+    }
+
+    public class HelpDBGeneratorService : IHelpDBGeneratorService
     {
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
-        private readonly HelpInformationFactory _helpInformationFactory;
+        private readonly IHelpInformationFactory _helpInformationFactory;
 
-        public HelpDBGeneratorService(IQueryBus queryBus, ICommandBus commandBus, HelpInformationFactory helpInformationFactory)
+        public HelpDBGeneratorService(IQueryBus queryBus, ICommandBus commandBus, IHelpInformationFactory helpInformationFactory)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;

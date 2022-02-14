@@ -5,11 +5,16 @@ using Watchman.DomainModel.Help;
 
 namespace Watchman.Discord.Areas.Help.Factories
 {
-    public class HelpInformationFactory
+    public interface IHelpInformationFactory
     {
-        private readonly ArgumentInfoFactory _argumentInfoFactory;
+        HelpInformation Create(BotCommandInformation commandInformation);
+    }
 
-        public HelpInformationFactory(ArgumentInfoFactory argumentInfoFactory)
+    public class HelpInformationFactory : IHelpInformationFactory
+    {
+        private readonly IArgumentInfoFactory _argumentInfoFactory;
+
+        public HelpInformationFactory(IArgumentInfoFactory argumentInfoFactory)
         {
             this._argumentInfoFactory = argumentInfoFactory;
         }

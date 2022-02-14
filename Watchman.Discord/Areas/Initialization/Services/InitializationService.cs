@@ -10,7 +10,12 @@ using Watchman.DomainModel.Configuration.Queries;
 
 namespace Watchman.Discord.Areas.Initialization.Services
 {
-    public class InitializationService
+    public interface IInitializationService
+    {
+        Task InitServer(DiscordServerContext server);
+    }
+
+    public class InitializationService : IInitializationService
     {
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
