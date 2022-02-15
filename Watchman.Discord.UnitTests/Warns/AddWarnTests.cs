@@ -19,14 +19,10 @@ using Devscord.DiscordFramework.Commands.AntiSpam.Models;
 
 namespace Watchman.Discord.UnitTests.Warns
 {
-
     internal class AddWarnTests
     {
         private readonly TestControllersFactory testControllersFactory = new();
         private readonly TestContextsFactory testContextsFactory = new();
-
-
-
 
         [Test, AutoData]
         public async Task ShouldAddWarnToUser(AddWarnCommand command)
@@ -49,25 +45,12 @@ namespace Watchman.Discord.UnitTests.Warns
                 messagesServiceFactoryMock: messagesServiceFactoryMock,
                 warnsServiceMock: warnsServiceMock,
                 usersServiceMock: usersServiceMock);
-
             //Asset
               await controller.AddWarn(command, contexts);
-
             //Assert
             messagesServiceFactoryMock.Verify(x => x.Create(contexts), Times.Once);
             warnsServiceMock.Verify(x => x.AddWarnToUser(command, contexts, userContext));
             usersServiceMock.Verify(x => x.GetUserByIdAsync(contexts.Server, command.User));
-            
-            //warnsServiceMock.Verify(x => x.AddWarnToUser(command, contexts, userContext), Times.Once);
-
-
-
-
-            //var messageService = messageServiceFactoryMock.Create(contexts);
-            //var mentionedUser = await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
-            //await this._warnService.AddWarnToUser(command, contexts, mentionedUser);
-            //await messageService.SendResponse(x => x.UserHasBeenWarned(contexts.User.Name, mentionedUser.Name, command.Reason));
         }
-
     }
 }
