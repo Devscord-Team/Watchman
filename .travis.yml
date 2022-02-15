@@ -12,7 +12,15 @@ before_script:
   - sudo apt-get update
   - sudo apt-get install -y dotnet-sdk-6.0
 script:
-  - "./scripts/travis-build.sh"
+  - dotnet build --configuration Release
+  - dotnet test Watchman.sln /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+  - curl -Os https://uploader.codecov.io/latest/linux/codecov
+  - chmod +x codecov
+  - ./codecov -f "/Devscord.DiscordFramework.UnitTests/coverage.opencover.xml"
+  - ./codecov -f "/Watchman.Discord.UnitTests/coverage.opencover.xml"
+  - ./codecov -f "/Watchman.Discord.IntegrationTests/coverage.opencover.xml"
+  - ./codecov -f "/Watchman.DomainModel.UnitTests/coverage.opencover.xml"
+  - ./codecov -f "/Watchman.Integration.Tests/coverage.opencover.xml"
 before_deploy:
     - openssl aes-256-cbc -K $encrypted_db2095f63ba3_key -iv $encrypted_db2095f63ba3_iv -in deploy_rsa.enc -out /tmp/deploy_rsa -d
     - eval "$(ssh-agent -s)"
