@@ -3,31 +3,24 @@ dist: focal
 mono: none
 services:
   - docker
-  
-jobs:
-  include:
-    - stage: install-deps
-      script:
-      - chmod -R a+x scripts
-      - wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-      - sudo dpkg -i packages-microsoft-prod.deb
-      - sudo apt-get update
-      - sudo apt-get install -y apt-transport-https
-      - sudo apt-get update
-      - sudo apt-get install -y dotnet-sdk-6.0
-      - curl -Os https://uploader.codecov.io/latest/linux/codecov
-      - chmod +x codecov
-    - stage: build
-      script: dotnet build --configuration Release
-    - stage: tests
-      script: dotnet test Watchman.sln /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
-    - stage: deploy-coverage
-      script:
-      - ./codecov -f "/Devscord.DiscordFramework.UnitTests/coverage.opencover.xml"
-      - ./codecov -f "/Watchman.Discord.UnitTests/coverage.opencover.xml"
-      - ./codecov -f "/Watchman.Discord.IntegrationTests/coverage.opencover.xml"
-      - ./codecov -f "/Watchman.DomainModel.UnitTests/coverage.opencover.xml"
-      - ./codecov -f "/Watchman.Integration.Tests/coverage.opencover.xml"
+before_script:
+  - chmod -R a+x scripts
+  - wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+  - sudo dpkg -i packages-microsoft-prod.deb
+  - sudo apt-get update
+  - sudo apt-get install -y apt-transport-https
+  - sudo apt-get update
+  - sudo apt-get install -y dotnet-sdk-6.0
+  - curl -Os https://uploader.codecov.io/latest/linux/codecov
+  - chmod +x codecov
+script:
+  - dotnet build --configuration Release
+  - dotnet test Watchman.sln /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+  - ./codecov -f "/Devscord.DiscordFramework.UnitTests/coverage.opencover.xml"
+  - ./codecov -f "/Watchman.Discord.UnitTests/coverage.opencover.xml"
+  - ./codecov -f "/Watchman.Discord.IntegrationTests/coverage.opencover.xml"
+  - ./codecov -f "/Watchman.DomainModel.UnitTests/coverage.opencover.xml"
+  - ./codecov -f "/Watchman.Integration.Tests/coverage.opencover.xml"
 before_deploy:
     - openssl aes-256-cbc -K $encrypted_db2095f63ba3_key -iv $encrypted_db2095f63ba3_iv -in deploy_rsa.enc -out /tmp/deploy_rsa -d
     - eval "$(ssh-agent -s)"
