@@ -19,7 +19,7 @@ using Devscord.DiscordFramework.Commands.AntiSpam.Models;
 
 namespace Watchman.Discord.UnitTests.Warns
 {
-    internal class WarnControllerTests
+    internal class WarnsControllerTests
     {
         private readonly TestControllersFactory testControllersFactory = new();
         private readonly TestContextsFactory testContextsFactory = new();
@@ -50,8 +50,8 @@ namespace Watchman.Discord.UnitTests.Warns
 
             //Assert
             messagesServiceFactoryMock.Verify(x => x.Create(contexts), Times.Once);
-            warnsServiceMock.Verify(x => x.AddWarnToUser(command, contexts, userContext),Times.Once);
-            usersServiceMock.Verify(x => x.GetUserByIdAsync(contexts.Server, command.User),Times.Once);
+            warnsServiceMock.Verify(x => x.AddWarnToUser(command, contexts, userContext), Times.Once);
+            usersServiceMock.Verify(x => x.GetUserByIdAsync(contexts.Server, command.User), Times.Once);
         }
     }
 }
