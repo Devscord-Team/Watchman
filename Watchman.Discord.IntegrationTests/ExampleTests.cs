@@ -12,14 +12,14 @@ namespace Watchman.Discord.IntegrationTests
     {
         private TestWatchmanBotFactory testWatchmanBotFactory = new ();
 
-        [Test]
+        //[Test]
         public async Task Example()
         {
             //Arrange
-            var commandsRunner = this.testWatchmanBotFactory.CreateCommandsRunner();
+            //var commandsRunner = this.testWatchmanBotFactory.CreateCommandsRunner();
 
             //Act
-            await commandsRunner.SendMessage("test");
+            //await commandsRunner.SendMessage("test");
         }
     }
 }
