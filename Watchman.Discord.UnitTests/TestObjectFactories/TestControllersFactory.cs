@@ -90,5 +90,18 @@ namespace Watchman.Discord.UnitTests.TestObjectFactories
                 spamPunishmentStrategyMock.Object,
                 overallSpamDetectorStrategyFactoryMock.Object);
         }
+        internal WarnsController CreateWarnsController(
+            Mock<IMessagesServiceFactory> messagesServiceFactoryMock = null, Mock<IUsersService> usersServiceMock = null,
+            Mock<IWarnsService> warnsServiceMock = null)
+        {
+            messagesServiceFactoryMock ??= new Mock<IMessagesServiceFactory>();
+            usersServiceMock ??= new Mock<IUsersService>();
+            warnsServiceMock ??= new Mock<IWarnsService>();
+
+            return new WarnsController(
+                messagesServiceFactoryMock.Object,
+                usersServiceMock.Object,
+                warnsServiceMock.Object);
+        }
     }
 }
