@@ -56,7 +56,7 @@ namespace Watchman.Discord.UnitTests.Warns
             //Assert
             messagesServiceFactoryMock.Verify(x => x.Create(contexts), Times.Once);
             warnsServiceMock.Verify(x => x.AddWarnToUser(command, contexts, userContext));
-
+            usersServiceMock.Verify(x => x.GetUserByIdAsync(contexts.Server, command.User));
             
             //warnsServiceMock.Verify(x => x.AddWarnToUser(command, contexts, userContext), Times.Once);
 
