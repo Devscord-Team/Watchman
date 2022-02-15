@@ -13,11 +13,9 @@ before_script:
   - sudo apt-get install -y dotnet-sdk-6.0
   - curl -Os https://uploader.codecov.io/latest/linux/codecov
   - chmod +x codecov
-script:
+  script:
   - dotnet build --configuration Release
-script:
   - dotnet test Watchman.sln /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
-script:
   - ./codecov -f "/Devscord.DiscordFramework.UnitTests/coverage.opencover.xml"
   - ./codecov -f "/Watchman.Discord.UnitTests/coverage.opencover.xml"
   - ./codecov -f "/Watchman.Discord.IntegrationTests/coverage.opencover.xml"
