@@ -15,6 +15,7 @@ namespace Watchman.Discord.IntegrationTests
         //[Test]
         public async Task Example()
         {
+            //todo performance
             //Arrange
             //var commandsRunner = this.testWatchmanBotFactory.CreateCommandsRunner();
 
