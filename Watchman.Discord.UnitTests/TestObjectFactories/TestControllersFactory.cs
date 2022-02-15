@@ -98,7 +98,6 @@ namespace Watchman.Discord.UnitTests.TestObjectFactories
             usersServiceMock ??= new Mock<IUsersService>();
             warnsServiceMock ??= new Mock<IWarnsService>();
 
-
             return new WarnsController(
                 messagesServiceFactoryMock.Object,
                 usersServiceMock.Object,
