@@ -19,13 +19,13 @@ using Devscord.DiscordFramework.Commands.AntiSpam.Models;
 
 namespace Watchman.Discord.UnitTests.Warns
 {
-    internal class AddWarnTests
+    internal class WarnControllerTests
     {
         private readonly TestControllersFactory testControllersFactory = new();
         private readonly TestContextsFactory testContextsFactory = new();
 
         [Test, AutoData]
-        public async Task ShouldAddWarnToUser(AddWarnCommand command)
+        public async Task AddWarn_ShouldAddWarnToUser(AddWarnCommand command)
         {
             //Arrange
             var userContext = testContextsFactory.CreateUserContext(1);
@@ -37,7 +37,6 @@ namespace Watchman.Discord.UnitTests.Warns
                 .Returns(messagesServiceMock.Object);
             var warnsServiceMock = new Mock<IWarnsService>();
             var usersServiceMock = new Mock<IUsersService>();
-
             usersServiceMock.Setup(x => x.GetUserByIdAsync(It.IsAny<DiscordServerContext>(), It.IsAny<ulong>()))
                 .Returns<DiscordServerContext, ulong>((a, b) => Task.FromResult(userContext));
 
@@ -45,12 +44,14 @@ namespace Watchman.Discord.UnitTests.Warns
                 messagesServiceFactoryMock: messagesServiceFactoryMock,
                 warnsServiceMock: warnsServiceMock,
                 usersServiceMock: usersServiceMock);
+            
             //Asset
-              await controller.AddWarn(command, contexts);
+            await controller.AddWarn(command, contexts);
+
             //Assert
             messagesServiceFactoryMock.Verify(x => x.Create(contexts), Times.Once);
-            warnsServiceMock.Verify(x => x.AddWarnToUser(command, contexts, userContext));
-            usersServiceMock.Verify(x => x.GetUserByIdAsync(contexts.Server, command.User));
+            warnsServiceMock.Verify(x => x.AddWarnToUser(command, contexts, userContext),Times.Once);
+            usersServiceMock.Verify(x => x.GetUserByIdAsync(contexts.Server, command.User),Times.Once);
         }
     }
 }
