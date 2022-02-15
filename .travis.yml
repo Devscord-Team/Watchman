@@ -15,11 +15,11 @@ before_script:
   - chmod +x codecov
 jobs:
  include:
-  - stage: build
+  - stage: "build"
   script: dotnet build --configuration Release
-  - stage: test
+  - stage: "test"
   script: dotnet test Watchman.sln /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
-  - stage: upload-coverage
+  - stage: "upload-coverage"
   script:
     - ./codecov -f "/Devscord.DiscordFramework.UnitTests/coverage.opencover.xml"
     - ./codecov -f "/Watchman.Discord.UnitTests/coverage.opencover.xml"
