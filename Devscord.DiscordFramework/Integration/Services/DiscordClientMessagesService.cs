@@ -13,7 +13,9 @@ namespace Devscord.DiscordFramework.Integration.Services
 
         public DiscordClientMessagesService(DiscordSocketClient client)
         {
+            //todo add removed, edited etc
             this.client = client;
+            this.client.MessageReceived += this.MessageReceived;
         }
     }
 }
