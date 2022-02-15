@@ -3,10 +3,6 @@ dist: focal
 mono: none
 services:
   - docker
-stages:
-  - compile
-  - test
-  - deploy-coverage
 before_script:
   - chmod -R a+x scripts
   - wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
@@ -17,14 +13,9 @@ before_script:
   - sudo apt-get install -y dotnet-sdk-6.0
   - curl -Os https://uploader.codecov.io/latest/linux/codecov
   - chmod +x codecov
-stage: compile
-  script:
-    - dotnet build --configuration Release
-stage: test
-  script:
+script:
+  - dotnet build --configuration Release
   - dotnet test Watchman.sln /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
-stage: deploy-coverage
-  script:
   - ./codecov -f "/Devscord.DiscordFramework.UnitTests/coverage.opencover.xml"
   - ./codecov -f "/Watchman.Discord.UnitTests/coverage.opencover.xml"
   - ./codecov -f "/Watchman.Discord.IntegrationTests/coverage.opencover.xml"
