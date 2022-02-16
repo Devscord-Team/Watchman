@@ -37,6 +37,7 @@ namespace Watchman.Discord.UnitTests.Warns
             var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
             messagesServiceFactoryMock.Setup(x => x.Create(It.IsAny<Contexts>()))
                 .Returns(messagesServiceMock.Object);
+
             var warnsServiceMock = new Mock<IWarnsService>();
             var usersServiceMock = new Mock<IUsersService>();
             usersServiceMock.Setup(x => x.GetUserByIdAsync(It.IsAny<DiscordServerContext>(), It.IsAny<ulong>()))
@@ -67,6 +68,7 @@ namespace Watchman.Discord.UnitTests.Warns
             var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
             messagesServiceFactoryMock.Setup(x => x.Create(It.IsAny<Contexts>()))
                 .Returns(messagesServiceMock.Object);
+
             var warnsServiceMock = new Mock<IWarnsService>();
             warnsServiceMock.Setup(x => x.GetWarns(It.IsAny<UserContext>(), It.IsAny<ulong>()))
                 .Returns<UserContext, ulong>((a, b) => new List<KeyValuePair<string, string>>());
@@ -98,12 +100,15 @@ namespace Watchman.Discord.UnitTests.Warns
             var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
             messagesServiceFactoryMock.Setup(x => x.Create(It.IsAny<Contexts>()))
                 .Returns(messagesServiceMock.Object);
+
             var warnsServiceMock = new Mock<IWarnsService>();
             warnsServiceMock.Setup(x => x.GetWarns(It.IsAny<UserContext>(), It.IsAny<ulong>()))
                 .Returns<UserContext, ulong>((a, b) => new List<KeyValuePair<string, string>>());
+
             var usersServiceMock = new Mock<IUsersService>();
             usersServiceMock.Setup(x => x.GetUserByIdAsync(It.IsAny<DiscordServerContext>(), It.IsAny<ulong>()))
                 .Returns(Task.FromResult(mentionedUserContext));
+
             var controller = this.testControllersFactory.CreateWarnsController(
                 messagesServiceFactoryMock: messagesServiceFactoryMock,
                 warnsServiceMock: warnsServiceMock,
