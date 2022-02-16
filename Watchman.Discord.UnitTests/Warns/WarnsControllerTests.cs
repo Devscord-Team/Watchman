@@ -124,7 +124,7 @@ namespace Watchman.Discord.UnitTests.Warns
         }
 
         [Test]
-        public async Task GetWarn_ShouldThrowExceptionIfUserNotFound()
+        public void GetWarn_ShouldThrowExceptionIfUserNotFound()
         {
             //Arrange
             var contexts = testContextsFactory.CreateContexts(1, 1, 1);
