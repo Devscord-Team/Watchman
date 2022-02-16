@@ -84,7 +84,6 @@ namespace Watchman.Discord.UnitTests.Warns
             messagesServiceFactoryMock.Verify(x => x.Create(contexts), Times.Once);
             warnsServiceMock.Verify(x => x.GetWarns(contexts.User, contexts.Server.Id), Times.Once);
             messagesServiceMock.Verify(x => x.SendEmbedMessage(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IEnumerable<KeyValuePair<string, string>>>()), Times.Once);
-
         }
 
         [Test]
