@@ -42,7 +42,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             await messageService.SendResponse(x => x.UserHasBeenWarned(contexts.User.Name, mentionedUser.Name, command.Reason));
         }
 
-        public async Task Warns(WarnsCommand command, Contexts contexts)
+        public async Task GetWarns(WarnsCommand command, Contexts contexts)
         {
             var messageService = this._messagesServiceFactory.Create(contexts);
             var mentionedUser = command.User == 0 ? contexts.User : await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
