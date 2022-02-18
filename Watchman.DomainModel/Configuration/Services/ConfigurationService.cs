@@ -27,11 +27,15 @@ namespace Watchman.DomainModel.Configuration.Services
             this.Refresh();
         }
 
-        public T GetConfigurationItem<T>(ulong serverId) where T : IMappedConfiguration
+        public T GetConfigurationItem<T>(ulong serverId) 
+            where T : IMappedConfiguration
         {
-            var configurations = _cachedConfigurationItem[typeof(T)];
-            var serverConfiguration = configurations.GetValueOrDefault(serverId) ?? configurations[DEFAULT_SERVER_ID];
-            return (T)serverConfiguration;
+            if(_cachedConfigurationItem.TryGetValue(typeof(T), out var configurations))
+            {
+                var configurationItem = configurations.GetValueOrDefault(serverId) ?? configurations[DEFAULT_SERVER_ID];
+                return (T)configurationItem;
+            }
+            return (T) Activator.CreateInstance(typeof(T), new object[] { serverId });
         }
 
         public IEnumerable<IMappedConfiguration> GetConfigurationItems(ulong serverId)
