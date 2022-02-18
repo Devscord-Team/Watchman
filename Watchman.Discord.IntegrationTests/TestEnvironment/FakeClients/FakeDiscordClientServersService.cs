@@ -1,6 +1,7 @@
 ﻿using Devscord.DiscordFramework.Integration.Services.Interfaces;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Middlewares.Factories;
+using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
 using Serilog;
@@ -13,11 +14,11 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients
 {
     internal class FakeDiscordClientServersService : IDiscordClientServersService
     {
-        public Func<SocketGuild, Task> BotAddedToServer { get; set; } = x => Task.CompletedTask;
+        public Func<IGuild, Task> BotAddedToServer { get; set; } = x => Task.CompletedTask;
         public List<DateTime> DisconnectedTimes { get; set; } = new List<DateTime>();
         public List<DateTime> ConnectedTimes { get; set; } = new List<DateTime>();
 
-        public Task<RestGuild> GetGuild(ulong guildId)
+        public Task<IGuild> GetGuild(ulong guildId)
         {
             throw new NotImplementedException();
         }

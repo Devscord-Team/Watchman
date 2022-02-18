@@ -1,6 +1,7 @@
 ﻿using Devscord.DiscordFramework.Integration.Services.Interfaces;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Middlewares.Factories;
+using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
 using Serilog;
@@ -17,7 +18,7 @@ namespace Devscord.DiscordFramework.Integration.Services
         private readonly DiscordSocketClient _client;
         private readonly IDiscordServerContextFactory _discordServerContextFactory;
 
-        public Func<SocketGuild, Task> BotAddedToServer { get; set; } = x => Task.CompletedTask;
+        public Func<IGuild, Task> BotAddedToServer { get; set; } = x => Task.CompletedTask;
         public List<DateTime> DisconnectedTimes { get; set; } = new List<DateTime>();
         public List<DateTime> ConnectedTimes { get; set; } = new List<DateTime>();
 
@@ -31,7 +32,7 @@ namespace Devscord.DiscordFramework.Integration.Services
             this._client.Connected += this.BotConnected;
         }
 
-        public async Task<RestGuild> GetGuild(ulong guildId)
+        public async Task<IGuild> GetGuild(ulong guildId)
         {
             return await this._restClient.GetGuildAsync(guildId);
         }

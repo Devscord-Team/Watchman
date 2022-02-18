@@ -17,13 +17,13 @@ namespace Devscord.DiscordFramework.Integration
         private static Services.Interfaces.IDiscordClient _discordClient;
 
         internal static Func<IMessage, Task> MessageReceived { get; set; }
-        internal static Func<SocketGuildUser, Task> UserJoined { get; set; }
-        internal static Func<SocketGuild, Task> BotAddedToServer { get; set; }
-        internal static Func<SocketChannel, Task> ChannelCreated { get; set; }
-        internal static Func<SocketChannel, Task> ChannelRemoved { get; set; }
-        internal static Func<SocketRole, SocketRole, Task> RoleUpdated { get; set; }
-        internal static Func<SocketRole, Task> RoleRemoved { get; set; }
-        internal static Func<SocketRole, Task> RoleCreated { get; set; }
+        internal static Func<IGuildUser, Task> UserJoined { get; set; }
+        internal static Func<IGuild, Task> BotAddedToServer { get; set; }
+        internal static Func<IChannel, Task> ChannelCreated { get; set; }
+        internal static Func<IChannel, Task> ChannelRemoved { get; set; }
+        internal static Func<IRole, IRole, Task> RoleUpdated { get; set; }
+        internal static Func<IRole, Task> RoleRemoved { get; set; }
+        internal static Func<IRole, Task> RoleCreated { get; set; }
         internal static List<DateTime> ConnectedTimes => _discordClient.ServersService.ConnectedTimes;
         internal static List<DateTime> DisconnectedTimes => _discordClient.ServersService.DisconnectedTimes;
 
@@ -42,7 +42,7 @@ namespace Devscord.DiscordFramework.Integration
         }
 
         //Users
-        internal static Task<RestGuildUser> GetGuildUser(ulong userId, ulong guildId)
+        internal static Task<IGuildUser> GetGuildUser(ulong userId, ulong guildId)
         {
             return _discordClient.UsersService.GetGuildUser(userId, guildId);
         }
@@ -52,7 +52,7 @@ namespace Devscord.DiscordFramework.Integration
             return _discordClient.UsersService.GetGuildUsers(guildId);
         }
 
-        internal static Task<RestUser> GetUser(ulong userId)
+        internal static Task<IUser> GetUser(ulong userId)
         {
             return _discordClient.UsersService.GetUser(userId);
         }
@@ -68,12 +68,12 @@ namespace Devscord.DiscordFramework.Integration
         }
 
         //Channels
-        internal static Task<IChannel> GetChannel(ulong channelId, RestGuild guild = null)
+        internal static Task<IChannel> GetChannel(ulong channelId, IGuild guild = null)
         {
             return _discordClient.ChannelsService.GetChannel(channelId, guild);
         }
 
-        internal static Task<IGuildChannel> GetGuildChannel(ulong channelId, RestGuild guild = null)
+        internal static Task<IGuildChannel> GetGuildChannel(ulong channelId, IGuild guild = null)
         {
             return _discordClient.ChannelsService.GetGuildChannel(channelId, guild);
         }
@@ -129,7 +129,7 @@ namespace Devscord.DiscordFramework.Integration
             return _discordClient.RolesService.GetRoles(guildId);
         }
 
-        internal static IEnumerable<SocketRole> GetSocketRoles(ulong guildId)
+        internal static IEnumerable<IRole> GetSocketRoles(ulong guildId)
         {
             return _discordClient.RolesService.GetSocketRoles(guildId);
         }
@@ -155,7 +155,7 @@ namespace Devscord.DiscordFramework.Integration
             return _discordClient.ServersService.GetExistingInviteLinks(serverId);
         }
 
-        internal static Task<RestGuild> GetGuild(ulong guildId)
+        internal static Task<IGuild> GetGuild(ulong guildId)
         {
             return _discordClient.ServersService.GetGuild(guildId);
         }

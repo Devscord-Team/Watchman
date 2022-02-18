@@ -16,20 +16,20 @@ namespace Devscord.DiscordFramework.Integration.Services
 {
     internal class DiscordClientRolesService : IDiscordClientRolesService
     {
-        public Func<SocketRole, SocketRole, Task> RoleUpdated { get; set; }
-        public Func<SocketRole, Task> RoleCreated { get; set; }
-        public Func<SocketRole, Task> RoleRemoved { get; set; }
+        public Func<IRole, IRole, Task> RoleUpdated { get; set; }
+        public Func<IRole, Task> RoleCreated { get; set; }
+        public Func<IRole, Task> RoleRemoved { get; set; }
 
         private DiscordSocketRestClient _restClient => this._client.Rest;
         private readonly DiscordSocketClient _client;
         private readonly IUserRoleFactory _userRoleFactory;
-        private List<SocketRole> _roles;
+        private List<IRole> _roles;
 
         public DiscordClientRolesService(DiscordSocketClient client, IUserRoleFactory userRoleFactory)
         {
             this._client = client;
             this._userRoleFactory = userRoleFactory;
-            this._client.Ready += () => Task.Run(() => this._roles = this._client.Guilds.SelectMany(x => x.Roles).ToList());
+            this._client.Ready += () => Task.Run(() => this._roles = this._client.Guilds.SelectMany(x => x.Roles).Select(x => (IRole)x).ToList());
             this._client.RoleCreated += this.AddRole;
             this._client.RoleCreated += x => this.RoleCreated(x);
             this._client.RoleDeleted += this.RemoveRole;
@@ -55,11 +55,11 @@ namespace Devscord.DiscordFramework.Integration.Services
             return restRole == null ? null : this._userRoleFactory.Create(restRole);
         }
 
-        public IEnumerable<SocketRole> GetSocketRoles(ulong guildId)
+        public IEnumerable<IRole> GetSocketRoles(ulong guildId)
         {
             if (this._roles == null)
             {
-                this._roles = this._client.Guilds.SelectMany(x => x.Roles).ToList();
+                this._roles = this._client.Guilds.SelectMany(x => x.Roles).Select(x => (IRole) x).ToList();
             }
             if (this._roles.All(x => x.Guild.Id != guildId))
             {
@@ -73,19 +73,19 @@ namespace Devscord.DiscordFramework.Integration.Services
             return this.GetSocketRoles(guildId).Select(x => this._userRoleFactory.Create(x));
         }
 
-        private Task AddRole(SocketRole role)
+        private Task AddRole(IRole role)
         {
             this._roles.Add(role);
             return Task.CompletedTask;
         }
 
-        private Task RemoveRole(SocketRole role)
+        private Task RemoveRole(IRole role)
         {
             this._roles.Remove(role);
             return Task.CompletedTask;
         }
 
-        private Task UpdateRole(SocketRole from, SocketRole to)
+        private Task UpdateRole(IRole from, IRole to)
         {
             this._roles.Remove(from);
             this._roles.Add(to);

@@ -10,17 +10,16 @@ namespace Watchman.Discord.IntegrationTests
 {
     internal class ExampleTests
     {
-        //private TestWatchmanBotFactory testWatchmanBotFactory = new ();
+        private TestWatchmanBotFactory testWatchmanBotFactory = new();
 
-        //[Test]
-        //public async Task Example()
-        //{
-            //todo performance
+        [Test]
+        public async Task Example()
+        {
             //Arrange
-            //var commandsRunner = this.testWatchmanBotFactory.CreateCommandsRunner();
+            var commandsRunner = this.testWatchmanBotFactory.CreateCommandsRunner();
 
             //Act
-            //await commandsRunner.SendMessage("test");
-        //}
+            await commandsRunner.SendMessage("test");
+        }
     }
 }

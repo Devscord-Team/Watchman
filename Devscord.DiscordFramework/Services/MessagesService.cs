@@ -108,7 +108,7 @@ namespace Devscord.DiscordFramework.Services
 
         private IMessageChannel GetChannel() //todo add adapter
         {
-            RestGuild guild = null;
+            IGuild guild = null;
             if (this.GuildId != default)
             {
                 guild = Server.GetGuild(this.GuildId).Result;

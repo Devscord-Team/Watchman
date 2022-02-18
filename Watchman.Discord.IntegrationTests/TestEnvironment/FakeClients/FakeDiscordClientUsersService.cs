@@ -11,9 +11,9 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients
 {
     internal class FakeDiscordClientUsersService : IDiscordClientUsersService
     {
-        public Func<SocketGuildUser, Task> UserJoined { get; set; }
+        public Func<IGuildUser, Task> UserJoined { get; set; }
 
-        public Task<RestUser> GetUser(ulong userId)
+        public Task<IUser> GetUser(ulong userId)
         {
             throw new NotImplementedException();
         }
@@ -23,7 +23,7 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients
             throw new NotImplementedException();
         }
 
-        public Task<RestGuildUser> GetGuildUser(ulong userId, ulong guildId)
+        public Task<IGuildUser> GetGuildUser(ulong userId, ulong guildId)
         {
             throw new NotImplementedException();
         }

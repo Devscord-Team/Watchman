@@ -16,9 +16,9 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients
 {
     internal class FakeDiscordClientRolesService : IDiscordClientRolesService
     {
-        public Func<SocketRole, SocketRole, Task> RoleUpdated { get; set; }
-        public Func<SocketRole, Task> RoleCreated { get; set; }
-        public Func<SocketRole, Task> RoleRemoved { get; set; }
+        public Func<IRole, IRole, Task> RoleUpdated { get; set; }
+        public Func<IRole, Task> RoleCreated { get; set; }
+        public Func<IRole, Task> RoleRemoved { get; set; }
 
         public Task<UserRole> CreateNewRole(NewUserRole role, DiscordServerContext discordServer)
         {
@@ -30,7 +30,7 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients
             throw new NotImplementedException();
         }
 
-        public IEnumerable<SocketRole> GetSocketRoles(ulong guildId)
+        public IEnumerable<IRole> GetSocketRoles(ulong guildId)
         {
             throw new NotImplementedException();
         }

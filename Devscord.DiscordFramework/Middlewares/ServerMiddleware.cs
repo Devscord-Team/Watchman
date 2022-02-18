@@ -18,9 +18,9 @@ namespace Devscord.DiscordFramework.Middlewares
 
         public IDiscordContext Process(IMessage data)
         {
-            var serverInfo = ((SocketGuildChannel) data.Channel).Guild;
-            var guild = Server.GetGuild(serverInfo.Id).Result;
-            return this._discordServerContextFactory.Create(guild);
+            var serverInfo = ((IGuildChannel) data.Channel).Guild;
+            //var guild = Server.GetGuild(serverInfo.Id).Result;
+            return this._discordServerContextFactory.Create(serverInfo);
         }
     }
 }

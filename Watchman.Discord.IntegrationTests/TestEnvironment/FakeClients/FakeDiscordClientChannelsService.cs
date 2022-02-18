@@ -20,8 +20,8 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients
 {
     internal class FakeDiscordClientChannelsService : IDiscordClientChannelsService
     {
-        public Func<SocketChannel, Task> ChannelCreated { get; set; }
-        public Func<SocketChannel, Task> ChannelRemoved { get; set; }
+        public Func<IChannel, Task> ChannelCreated { get; set; }
+        public Func<IChannel, Task> ChannelRemoved { get; set; }
 
         public Task SendDirectMessage(ulong userId, string message)
         {
@@ -48,7 +48,7 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients
             throw new NotImplementedException();
         }
 
-        public Task<IGuildChannel> GetGuildChannel(ulong channelId, RestGuild guild = null)
+        public Task<IGuildChannel> GetGuildChannel(ulong channelId, IGuild guild = null)
         {
             throw new NotImplementedException();
         }
