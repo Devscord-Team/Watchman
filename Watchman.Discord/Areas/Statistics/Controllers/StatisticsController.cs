@@ -25,16 +25,17 @@ using Watchman.DomainModel.Messages.Queries;
 
 namespace Watchman.Discord.Areas.Statistics.Controllers
 {
+    /*
     public class StatisticsController : IController
     {
-        private readonly PeriodStatisticsService _periodStatisticsService;
+        private readonly IPeriodStatisticsService _periodStatisticsService;
         private readonly IConfigurationService _configurationService;
         private readonly ICommandBus _commandBus;
         private readonly IMessagesServiceFactory _messagesServiceFactory;
         private readonly IDirectMessagesService _directMessagesService;
 
         public StatisticsController(ICommandBus commandBus, IMessagesServiceFactory messagesServiceFactory, 
-            PeriodStatisticsService periodStatisticsService, IConfigurationService configurationService, IDirectMessagesService directMessagesService)
+            IPeriodStatisticsService periodStatisticsService, IConfigurationService configurationService, IDirectMessagesService directMessagesService)
         {
             this._commandBus = commandBus;
             this._messagesServiceFactory = messagesServiceFactory;
@@ -129,5 +130,5 @@ namespace Watchman.Discord.Areas.Statistics.Controllers
             return this._periodStatisticsService.PerQuarter(request);
         }
     }
-    
+    */
 }

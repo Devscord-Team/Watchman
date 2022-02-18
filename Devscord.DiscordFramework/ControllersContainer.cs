@@ -17,7 +17,7 @@ namespace Devscord.DiscordFramework
             this.WithReadAlways = controllers
                 .Select(x => new ControllerInfo(x.Controller, x.Methods.Where(m => m.HasAttribute<ReadAlways>()).ToArray()))
                 .Where(x => x.Methods.Any()).ToArray();
-            Log.Debug("Found {quantity} ReadAlwayd methods", this.WithReadAlways == null ? 0 : this.WithReadAlways.SelectMany(x => x.Methods).Count());
+            Log.Debug("Found {quantity} ReadAlways methods", this.WithReadAlways == null ? 0 : this.WithReadAlways.SelectMany(x => x.Methods).Count());
 
             this.WithDiscordCommand = controllers
                 .Select(x => new ControllerInfo(x.Controller, x.Methods.Where(m => m.HasAttribute<DiscordCommand>()).ToArray()))

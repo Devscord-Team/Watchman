@@ -19,17 +19,16 @@ namespace Watchman.Discord
         {
             this._configuration = configuration;
             this._context = context;
-            Log.Logger = SerilogInitializer.Initialize(this._context.Resolve<IMongoDatabase>());
             Log.Information("Bot created...");
         }
 
-        public WorkflowBuilder GetWorkflowBuilder()
+        public WorkflowBuilder GetWorkflowBuilder(bool useDiscordNetClient = true)
         {
             MongoConfiguration.Initialize();
             ExceptionHandlerService.DiscordConfiguration = this._configuration; //todo ioc
 
             return WorkflowBuilder
-                .Create(this._configuration.Token, this._context.Resolve<IWorkflow>(), this._context)
+                .Create(this._configuration.Token, this._context.Resolve<IWorkflow>(), this._context, useDiscordNetClient)
                 .SetDefaultMiddlewares()
                 .SetOnReady()
                 .SetOnUserJoined()

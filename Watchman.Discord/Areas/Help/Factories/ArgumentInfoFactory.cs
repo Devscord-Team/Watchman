@@ -4,8 +4,17 @@ using Watchman.DomainModel.Help;
 
 namespace Watchman.Discord.Areas.Help.Factories
 {
-    public class ArgumentInfoFactory
+    public interface IArgumentInfoFactory
     {
+        ArgumentInformation Create(BotArgumentInformation argument);
+    }
+
+    public class ArgumentInfoFactory : IArgumentInfoFactory
+    {
+        public ArgumentInfoFactory()
+        {
+        }
+
         public ArgumentInformation Create(BotArgumentInformation argument)
         {
             var defaultDescription = new List<Description>

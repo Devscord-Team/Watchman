@@ -19,6 +19,10 @@ namespace Devscord.DiscordFramework.Services
 
     public class UsersRolesService : IUsersRolesService
     {
+        public UsersRolesService()
+        {
+        }
+
         //todo should be in Domain
         public const string MUTED_ROLE_NAME = "muted";
 

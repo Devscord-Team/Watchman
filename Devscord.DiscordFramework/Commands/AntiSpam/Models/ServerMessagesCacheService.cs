@@ -28,6 +28,10 @@ namespace Devscord.DiscordFramework.Commands.AntiSpam.Models
             RemoveOldMessagesCyclic();
         }
 
+        public ServerMessagesCacheService()
+        {
+        }
+
         public void OverwriteMessages(IEnumerable<SmallMessage> smallMessages)
         {
             _usersMessages = smallMessages.GroupBy(x => x.UserId).ToDictionary(x => x.Key, x => x.ToList());

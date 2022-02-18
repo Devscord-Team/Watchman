@@ -9,7 +9,12 @@ using Watchman.Integrations.Quickchart.Models;
 
 namespace Statsman
 {
-    public class ChartsService
+    public interface IChartsService
+    {
+        Task<Stream> GetImageStatisticsPerPeriod(IEnumerable<TimeStatisticItem> statistics, string label);
+    }
+
+    public class ChartsService : IChartsService
     {
         private readonly QuickchartService _quickchartService;
 

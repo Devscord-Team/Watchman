@@ -13,9 +13,15 @@ using Watchman.DomainModel.Protection.Complaints.Queries;
 
 namespace Watchman.Discord.Areas.Protection.Services
 {
-    public class ComplaintsChannelService
+    public interface IComplaintsChannelService
     {
-        private static List<Permission> ReadingAndSending => new List<Permission> {Permission.ReadMessages, Permission.SendMessages};
+        Task<ChannelContext> CreateComplaintsChannel(string channelName, Contexts contexts);
+        Task RemoveIfNeededComplaintsChannel(ChannelContext channel, DiscordServerContext server);
+    }
+
+    public class ComplaintsChannelService : IComplaintsChannelService
+    {
+        private static List<Permission> ReadingAndSending => new List<Permission> { Permission.ReadMessages, Permission.SendMessages };
         private static ChangedPermissions AccessPermissions => new ChangedPermissions(allowPermissions: ReadingAndSending, denyPermissions: null);
 
         private readonly IQueryBus _queryBus;
@@ -25,7 +31,8 @@ namespace Watchman.Discord.Areas.Protection.Services
         private readonly IUsersRolesService _usersRolesService;
         private readonly IDiscordServersService _discordServersService;
 
-        public ComplaintsChannelService(IQueryBus queryBus, ICommandBus commandBus, IConfigurationService configurationService, IChannelsService channelsService, IUsersRolesService usersRolesService, IDiscordServersService discordServersService)
+        public ComplaintsChannelService(IQueryBus queryBus, ICommandBus commandBus, IConfigurationService configurationService,
+            IChannelsService channelsService, IUsersRolesService usersRolesService, IDiscordServersService discordServersService)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;
@@ -76,8 +83,8 @@ namespace Watchman.Discord.Areas.Protection.Services
             var mutedRole = serverRoles.FirstOrDefault(x => x.Name == UsersRolesService.MUTED_ROLE_NAME);
 
             var rolesIdsWithAccess = this._configurationService.GetConfigurationItem<RolesWithAccessToComplaintsChannel>(contexts.Server.Id);
-            var rolesWithAccess = rolesIdsWithAccess.Value == null 
-                ? contexts.Server.GetRoles().Where(x => x.Permissions.Contains(Permission.ManageGuild)).ToList() 
+            var rolesWithAccess = rolesIdsWithAccess.Value == null
+                ? contexts.Server.GetRoles().Where(x => x.Permissions.Contains(Permission.ManageGuild)).ToList()
                 : rolesIdsWithAccess.Value.Select(roleId => serverRoles.FirstOrDefault(serverRole => roleId == serverRole.Id)).ToList();
             rolesWithAccess.Add(mutedRole);
 

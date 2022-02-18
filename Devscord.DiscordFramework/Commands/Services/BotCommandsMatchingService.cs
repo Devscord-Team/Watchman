@@ -12,7 +12,14 @@ using System.Text.RegularExpressions;
 
 namespace Devscord.DiscordFramework.Commands.Services
 {
-    public class BotCommandsMatchingService
+    public interface IBotCommandsMatchingService
+    {
+        bool AreCustomCommandArgumentsCorrect(BotCommandTemplate template, Regex customTemplate, string input);
+        bool AreDefaultCommandArgumentsCorrect(BotCommandTemplate template, IEnumerable<DiscordRequestArgument> arguments);
+        bool IsDefaultCommand(BotCommandTemplate template, IEnumerable<DiscordRequestArgument> arguments, bool isCommandMatchedWithCustom);
+    }
+
+    public class BotCommandsMatchingService : IBotCommandsMatchingService
     {
         private readonly Regex _exTime = new Regex(@"\d+(ms|d|h|m|s)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         private readonly Regex _exUserMention = new Regex(@"\<@!?\d+\>", RegexOptions.Compiled);
@@ -33,7 +40,7 @@ namespace Devscord.DiscordFramework.Commands.Services
         }
 
         public bool AreDefaultCommandArgumentsCorrect(BotCommandTemplate template, IEnumerable<DiscordRequestArgument> arguments)
-        {  
+        {
             var argsAndValues = arguments
                 .Select(arg => new KeyValuePair<string, string>(arg.Name, arg.Value))
                 .ToList();

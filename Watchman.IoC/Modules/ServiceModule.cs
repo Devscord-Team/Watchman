@@ -1,12 +1,15 @@
 ﻿using Autofac;
 using Devscord.DiscordFramework;
+using Devscord.DiscordFramework.Architecture.Controllers;
 using Devscord.DiscordFramework.Commands.Parsing;
 using Devscord.DiscordFramework.Commands.Responses;
 using Devscord.DiscordFramework.Services;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Commons;
 using Watchman.Discord.Integration.DevscordFramework;
@@ -20,35 +23,42 @@ namespace Watchman.IoC.Modules
         protected override void Load(ContainerBuilder builder)
         {
             builder.Register((c, p) => new ResponsesCachingService(c.Resolve<DiscordServersService>()).SetGetResponsesFromDatabase(c.Resolve<IQueryBus>()))
-                .As<ResponsesCachingService>()
-                .SingleInstance();
-
-            builder.RegisterType<CustomCommandsLoader>()
-                .As<ICustomCommandsLoader>()
-                .SingleInstance();
-
-            builder.RegisterType<CommandParser>()
-                .As<CommandParser>()
-                .SingleInstance();
-
-            builder.RegisterType<ConfigurationService>()
-                .As<IConfigurationService>()
+                .PreserveExistingDefaults()
+                .As<IResponsesCachingService>()
                 .SingleInstance();
 
             var list = new List<string>();
             var stack = new Stack<Assembly>();
 
-            stack.Push(Assembly.GetEntryAssembly());
+            var typesToRegister = new List<Type>();
+
+            var entryAssembly = Assembly.GetEntryAssembly();
+            var botDllPath = Regex.Replace(entryAssembly.Location.Replace("\\", "/"), @"[^\/]*?\.dll$", "Watchman.Discord.dll");
+            var botAssembly = Assembly.LoadFrom(botDllPath);
+
+            builder.RegisterInstance(botAssembly)
+                .As<Assembly>()
+                .SingleInstance();
+
+            if (entryAssembly.FullName.ToLower().Contains("testhost"))
+            {
+                entryAssembly = botAssembly;
+            }
+            stack.Push(entryAssembly);
             do
             {
                 var asm = stack.Pop();
 
-                builder.RegisterAssemblyTypes(asm)
+                var types = asm.GetTypes()
                     .Where(x => x.FullName.StartsWith("Watchman") || x.FullName.StartsWith("Devscord") || x.FullName.StartsWith("Statsman"))
-                    .Where(x => x.GetConstructors().Any()) // todo: AutoFac v6.0 needs this line to work / maybe possible to remove in future when they'll fix it
-                    .PreserveExistingDefaults()
-                    .AsImplementedInterfaces()
-                    .SingleInstance();
+                    .Where(x => !x.IsInterface && !x.IsAbstract && x.GetConstructors().Any())
+                    .Where(x => x.GetInterfaces().Where(x => x.Name != "IAsyncStateMachine").Any())
+                    .ToArray();
+
+                foreach (var type in types)
+                { 
+                    typesToRegister.Add(type);
+                }
 
                 foreach (var reference in asm.GetReferencedAssemblies())
                 {
@@ -60,6 +70,25 @@ namespace Watchman.IoC.Modules
                 }
             }
             while (stack.Count > 0);
+
+            foreach (var type in typesToRegister)
+            {
+                if(typeof(IController).IsAssignableFrom(type))
+                {
+                    builder.RegisterType(type)
+                    .PreserveExistingDefaults()
+                    .AsSelf()
+                    .SingleInstance();
+                }
+                else
+                {
+                    builder.RegisterType(type)
+                    .PreserveExistingDefaults()
+                    .AsImplementedInterfaces()
+                    .AsSelf()
+                    .SingleInstance();
+                }
+            }
         }
     }
 }

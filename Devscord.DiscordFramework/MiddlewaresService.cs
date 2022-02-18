@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Devscord.DiscordFramework.Architecture.Middlewares;
 using Devscord.DiscordFramework.Middlewares.Contexts;
+using Discord;
 using Discord.WebSocket;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,10 @@ namespace Devscord.DiscordFramework
     public interface IMiddlewaresService
     {
         void AddMiddleware<T>() where T : IMiddleware;
-        Contexts RunMiddlewares(SocketMessage socketMessage);
+        Contexts RunMiddlewares(IMessage socketMessage);
     }
 
-    internal class MiddlewaresService
+    internal class MiddlewaresService : IMiddlewaresService
     {
         public IEnumerable<IMiddleware> Middlewares => this._middlewares;
 
@@ -35,7 +36,7 @@ namespace Devscord.DiscordFramework
             this._middlewares.Add(instance);
         }
 
-        public Contexts RunMiddlewares(SocketMessage socketMessage)
+        public Contexts RunMiddlewares(IMessage socketMessage)
         {
             var contextsInstance = new Contexts();
             var discordContexts = this.GetMiddlewaresOutput(socketMessage);
@@ -46,7 +47,7 @@ namespace Devscord.DiscordFramework
             return contextsInstance;
         }
 
-        private IEnumerable<IDiscordContext> GetMiddlewaresOutput(SocketMessage socketMessage)
+        private IEnumerable<IDiscordContext> GetMiddlewaresOutput(IMessage socketMessage)
         {
             return this._middlewares.Select(x => x.Process(socketMessage));
         }

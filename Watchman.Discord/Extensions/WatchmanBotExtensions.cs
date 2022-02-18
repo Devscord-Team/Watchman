@@ -27,12 +27,12 @@ namespace Watchman.Discord.Extensions
             {
                 builder
                     .AddHandler(() => Task.Run(() => Log.Information("Bot started and logged in...")))
-                    .AddFromIoC<ConfigurationService>(configurationService => configurationService.InitDefaultConfigurations)
-                    .AddFromIoC<CustomCommandsLoader>(customCommandsLoader => customCommandsLoader.InitDefaultCustomCommands)
-                    .AddFromIoC<IHelpDataCollectorService, HelpDBGeneratorService>((dataCollector, helpService) =>
+                    .AddFromIoC<IConfigurationService>(configurationService => configurationService.InitDefaultConfigurations)
+                    .AddFromIoC<ICustomCommandsLoader>(customCommandsLoader => customCommandsLoader.InitDefaultCustomCommands)
+                    .AddFromIoC<IHelpDataCollectorService, IHelpDBGeneratorService>((dataCollector, helpService) =>
                         () => helpService.FillDatabase(dataCollector.GetBotCommandsInfo(typeof(WatchmanBot).Assembly)))
-                    .AddFromIoC<ResponsesInitService>(responsesService => responsesService.InitNewResponsesFromResources)
-                    .AddFromIoC<InitializationService, IDiscordServersService>((initService, serversService) => async () =>
+                    .AddFromIoC<IResponsesInitService>(responsesService => responsesService.InitNewResponsesFromResources)
+                    .AddFromIoC<IInitializationService, IDiscordServersService>((initService, serversService) => async () =>
                     {
                         var stopwatch = Stopwatch.StartNew();
                         // when bot was offline for less than 1 minutes, it doesn't make sense to init all servers
@@ -53,7 +53,7 @@ namespace Watchman.Discord.Extensions
             return builder.AddOnUserJoinedHandlers(builder =>
             {
                 builder
-                    .AddFromIoC<WelcomeUserService>(x => x.WelcomeUser)
+                    .AddFromIoC<IWelcomeUserService>(x => x.WelcomeUser)
                     .AddFromIoC<ICommandBus>(commandBus => (contexts) => commandBus.ExecuteAsync(new MuteAgainIfNeededCommand(contexts)));
             });
         }
@@ -63,7 +63,7 @@ namespace Watchman.Discord.Extensions
             return builder.AddOnDiscordServerAddedBotHandlers(builder =>
             {
                 builder
-                    .AddFromIoC<InitializationService>(initService => initService.InitServer);
+                    .AddFromIoC<IInitializationService>(initService => initService.InitServer);
             });
         }
 
@@ -84,7 +84,7 @@ namespace Watchman.Discord.Extensions
             return builder.AddOnChannelCreatedHandlers(builder =>
             {
                 builder
-                    .AddFromIoC<MuteRoleInitService>(x => x.InitForChannelAsync);
+                    .AddFromIoC<IMuteRoleInitService>(x => x.InitForChannelAsync);
             });
         }
 
@@ -93,7 +93,7 @@ namespace Watchman.Discord.Extensions
             return builder.AddOnChannelRemovedHandler(builder =>
             {
                 builder
-                    .AddFromIoC<ComplaintsChannelService>(x => x.RemoveIfNeededComplaintsChannel);
+                    .AddFromIoC<IComplaintsChannelService>(x => x.RemoveIfNeededComplaintsChannel);
             });
         }
 
@@ -102,7 +102,7 @@ namespace Watchman.Discord.Extensions
             return builder.AddOnRoleRemovedHandlers(builder =>
             {
                 builder
-                    .AddFromIoC<TrustRolesService>(x => x.StopTrustingRole);
+                    .AddFromIoC<ITrustRolesService>(x => x.StopTrustingRole);
             });
         }
     }

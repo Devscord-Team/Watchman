@@ -11,13 +11,13 @@ using Devscord.DiscordFramework.Commons;
 
 namespace Devscord.DiscordFramework.Integration.Services.Interfaces
 {
-    internal interface IDiscordClientChannelsService
+    public interface IDiscordClientChannelsService
     {
-        Func<SocketChannel, Task> ChannelCreated { get; set; }
-        Func<SocketChannel, Task> ChannelRemoved { get; set; }
+        Func<IChannel, Task> ChannelCreated { get; set; }
+        Func<IChannel, Task> ChannelRemoved { get; set; }
         Task<IChannel> GetChannel(ulong channelId, IGuild guild);
         IChannel GetChannel(ulong channelId, ulong serverId);
-        Task<IGuildChannel> GetGuildChannel(ulong channelId, RestGuild guild);
+        Task<IGuildChannel> GetGuildChannel(ulong channelId, IGuild guild);
         Task SendDirectEmbedMessage(ulong userId, Embed embed);
         Task SendDirectMessage(ulong userId, string message);
         IAsyncEnumerable<Message> GetMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong fromMessageId = 0, bool goBefore = true);

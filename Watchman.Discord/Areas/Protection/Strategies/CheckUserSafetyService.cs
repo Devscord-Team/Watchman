@@ -22,11 +22,11 @@ namespace Watchman.Discord.Areas.Protection.Strategies
     {
         private Dictionary<ulong, ServerSafeUsers> _safeUsersOnServers;
         private readonly IQueryBus _queryBus;
-        private readonly DiscordServersService _discordServersService;
+        private readonly IDiscordServersService _discordServersService;
         private readonly IConfigurationService _configurationService;
-        private readonly UsersService _usersService;
+        private readonly IUsersService _usersService;
 
-        public CheckUserSafetyService(IQueryBus queryBus, DiscordServersService discordServersService, IConfigurationService configurationService, UsersService usersService)
+        public CheckUserSafetyService(IQueryBus queryBus, IDiscordServersService discordServersService, IConfigurationService configurationService, IUsersService usersService)
         {
             this._queryBus = queryBus;
             this._discordServersService = discordServersService;

@@ -15,10 +15,10 @@ namespace Watchman.Discord.Areas.Responses.Controllers
     public class ResponsesController : IController
     {
         private readonly IMessagesServiceFactory _messagesServiceFactory;
-        private readonly Services.ResponsesService _responsesService;
-        private readonly ResponsesMessageService _responsesMessageService;
+        private readonly Services.IResponsesService _responsesService;
+        private readonly IResponsesMessageService _responsesMessageService;
 
-        public ResponsesController(IMessagesServiceFactory messagesServiceFactory, Services.ResponsesService responsesService, ResponsesMessageService responsesMessageService)
+        public ResponsesController(IMessagesServiceFactory messagesServiceFactory, Services.IResponsesService responsesService, IResponsesMessageService responsesMessageService)
         {
             this._messagesServiceFactory = messagesServiceFactory;
             this._responsesService = responsesService;

@@ -20,8 +20,8 @@ namespace Devscord.DiscordFramework.Integration.Services
 {
     internal class DiscordClientChannelsService : IDiscordClientChannelsService
     {
-        public Func<SocketChannel, Task> ChannelCreated { get; set; }
-        public Func<SocketChannel, Task> ChannelRemoved { get; set; }
+        public Func<IChannel, Task> ChannelCreated { get; set; }
+        public Func<IChannel, Task> ChannelRemoved { get; set; }
 
         private DiscordSocketRestClient _restClient => this._client.Rest;
         private readonly DiscordSocketClient _client;
@@ -94,7 +94,7 @@ namespace Devscord.DiscordFramework.Integration.Services
             return this._restClient.GetChannelAsync(channelId).GetAwaiter().GetResult(); // it should never go here - maybe it should be possible to remove this code
         }
 
-        public async Task<IGuildChannel> GetGuildChannel(ulong channelId, RestGuild guild = null)
+        public async Task<IGuildChannel> GetGuildChannel(ulong channelId, IGuild guild = null)
         {
             if (guild != null)
             {
@@ -199,7 +199,7 @@ namespace Devscord.DiscordFramework.Integration.Services
             await channelSocket.RemovePermissionOverwriteAsync(socketRole);
         }
 
-        private SocketRole GetSocketRole(DiscordServerContext server, UserRole role)
+        private IRole GetSocketRole(DiscordServerContext server, UserRole role)
         {
             var socketRole = Server.GetSocketRoles(server.Id).FirstOrDefault(x => x.Id == role.Id);
             if (socketRole == null)

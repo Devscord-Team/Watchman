@@ -7,7 +7,13 @@ using Devscord.DiscordFramework.Commands.Properties;
 
 namespace Devscord.DiscordFramework.Commands.Services
 {
-    public class BotCommandsRequestValueGetterService
+    public interface IBotCommandsRequestValueGetterService
+    {
+        object GetValueByName(string key, bool isList, DiscordRequest request, BotCommandTemplate template);
+        object GetValueByNameFromCustomCommand(string key, bool isList, BotCommandTemplate template, Match match);
+    }
+
+    public class BotCommandsRequestValueGetterService : IBotCommandsRequestValueGetterService
     {
         public object GetValueByName(string key, bool isList, DiscordRequest request, BotCommandTemplate template)
         {
@@ -49,7 +55,7 @@ namespace Devscord.DiscordFramework.Commands.Services
             }
             if (argType == BotCommandPropertyType.SingleWord)
             {
-                return value.Split().First().Trim('\"'); 
+                return value.Split().First().Trim('\"');
             }
             if (argType == BotCommandPropertyType.Text)
             {

@@ -19,10 +19,10 @@ namespace Devscord.DiscordFramework.Commands.Responses
     {
         public IEnumerable<Response> Responses { get; set; }
 
-        private readonly ResponsesCachingService _responsesCachingService;
+        private readonly IResponsesCachingService _responsesCachingService;
         private readonly IResponsesParser _responsesParser;
 
-        public ResponsesService(ResponsesCachingService responsesCachingService, IResponsesParser responsesParser)
+        public ResponsesService(IResponsesCachingService responsesCachingService, IResponsesParser responsesParser)
         {
             this._responsesCachingService = responsesCachingService;
             this._responsesParser = responsesParser;

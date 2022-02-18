@@ -17,7 +17,7 @@ namespace Watchman.DomainModel.Protection.Mutes.Services
         Task MarkAsUnmuted(MuteEvent muteEvent);
     }
 
-    public class MutingService
+    public class MutingService : IMutingService
     {
         private readonly ICommandBus commandBus;
         private readonly IQueryBus queryBus;

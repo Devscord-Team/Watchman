@@ -12,12 +12,13 @@ namespace Watchman.DomainModel.Configuration.Services
         private const ulong DEFAULT_SERVER_ID = 0;
         private readonly IComponentContext _componentContext;
         private readonly ISessionFactory _sessionFactory;
-        private readonly ConfigurationMapperService _configurationMapperService;
-        private readonly ConfigurationItemsSearcherService _configurationTypesSearcher;
+        private readonly IConfigurationMapperService _configurationMapperService;
+        private readonly IConfigurationItemsSearcherService _configurationTypesSearcher;
         private static Dictionary<Guid, int> _configurationVersions;
         private static Dictionary<Type, Dictionary<ulong, IMappedConfiguration>> _cachedConfigurationItem;
 
-        public ConfigurationService(IComponentContext componentContext, ISessionFactory sessionFactory, ConfigurationMapperService configurationMapperService, ConfigurationItemsSearcherService configurationTypesSearcher)
+        public ConfigurationService(IComponentContext componentContext, ISessionFactory sessionFactory, 
+            IConfigurationMapperService configurationMapperService, IConfigurationItemsSearcherService configurationTypesSearcher)
         {
             this._componentContext = componentContext;
             this._sessionFactory = sessionFactory;
@@ -26,11 +27,15 @@ namespace Watchman.DomainModel.Configuration.Services
             this.Refresh();
         }
 
-        public T GetConfigurationItem<T>(ulong serverId) where T : IMappedConfiguration
+        public T GetConfigurationItem<T>(ulong serverId) 
+            where T : IMappedConfiguration
         {
-            var configurations = _cachedConfigurationItem[typeof(T)];
-            var serverConfiguration = configurations.GetValueOrDefault(serverId) ?? configurations[DEFAULT_SERVER_ID];
-            return (T)serverConfiguration;
+            if(_cachedConfigurationItem.TryGetValue(typeof(T), out var configurations))
+            {
+                var configurationItem = configurations.GetValueOrDefault(serverId) ?? configurations[DEFAULT_SERVER_ID];
+                return (T)configurationItem;
+            }
+            return (T) Activator.CreateInstance(typeof(T), new object[] { serverId });
         }
 
         public IEnumerable<IMappedConfiguration> GetConfigurationItems(ulong serverId)

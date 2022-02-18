@@ -23,10 +23,10 @@ namespace Watchman.Discord.Areas.Initialization.Services
 
         private readonly ICommandBus _commandBus;
         private readonly IMessagesHistoryService _messagesHistoryService;
-        private readonly UsersService _usersService;
+        private readonly IUsersService _usersService;
         private UserContext _botContext;
 
-        public ServerScanningService(ICommandBus commandBus, IMessagesHistoryService messagesHistoryService, UsersService usersService)
+        public ServerScanningService(ICommandBus commandBus, IMessagesHistoryService messagesHistoryService, IUsersService usersService)
         {
             this._commandBus = commandBus;
             this._messagesHistoryService = messagesHistoryService;

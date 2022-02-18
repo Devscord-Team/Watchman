@@ -10,7 +10,7 @@ namespace Devscord.DiscordFramework.Middlewares.Factories
         UserRole Create(IRole socketRole);
     }
 
-    public class UserRoleFactory
+    public class UserRoleFactory : IUserRoleFactory
     {
         public UserRole Create(IRole socketRole)
         {

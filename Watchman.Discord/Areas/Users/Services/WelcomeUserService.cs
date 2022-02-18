@@ -5,11 +5,16 @@ using System.Threading.Tasks;
 
 namespace Watchman.Discord.Areas.Users.Services
 {
-    public class WelcomeUserService
+    public interface IWelcomeUserService
     {
-        private readonly MessagesServiceFactory _messagesServiceFactory;
+        Task WelcomeUser(Contexts contexts);
+    }
 
-        public WelcomeUserService(MessagesServiceFactory messagesServiceFactory)
+    public class WelcomeUserService : IWelcomeUserService
+    {
+        private readonly IMessagesServiceFactory _messagesServiceFactory;
+
+        public WelcomeUserService(IMessagesServiceFactory messagesServiceFactory)
         {
             this._messagesServiceFactory = messagesServiceFactory;
         }

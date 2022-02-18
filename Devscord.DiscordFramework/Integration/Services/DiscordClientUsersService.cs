@@ -14,7 +14,7 @@ namespace Devscord.DiscordFramework.Integration.Services
         private DiscordSocketRestClient _restClient => this._client.Rest;
         private readonly DiscordSocketClient _client;
 
-        public Func<SocketGuildUser, Task> UserJoined { get; set; }
+        public Func<IGuildUser, Task> UserJoined { get; set; }
 
         public DiscordClientUsersService(DiscordSocketClient client)
         {
@@ -22,7 +22,7 @@ namespace Devscord.DiscordFramework.Integration.Services
             this._client.UserJoined += user => this.UserJoined(user);
         }
 
-        public async Task<RestUser> GetUser(ulong userId)
+        public async Task<IUser> GetUser(ulong userId)
         {
             var user = await this._restClient.GetUserAsync(userId);
             if (user == null)
@@ -41,7 +41,7 @@ namespace Devscord.DiscordFramework.Integration.Services
             return await this.GetGuildUser(userId, guildId) != null;
         }
 
-        public async Task<RestGuildUser> GetGuildUser(ulong userId, ulong guildId)
+        public async Task<IGuildUser> GetGuildUser(ulong userId, ulong guildId)
         {
             var guild = await this._restClient.GetGuildAsync(guildId);
             var user = await guild.GetUserAsync(userId);

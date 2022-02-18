@@ -7,13 +7,13 @@ using Discord;
 
 namespace Devscord.DiscordFramework.Integration.Services.Interfaces
 {
-    internal interface IDiscordClientUsersService
+    public interface IDiscordClientUsersService
     {
-        Func<SocketGuildUser, Task> UserJoined { get; set; }
-        Task<RestGuildUser> GetGuildUser(ulong userId, ulong guildId);
+        Func<IGuildUser, Task> UserJoined { get; set; }
+        Task<IGuildUser> GetGuildUser(ulong userId, ulong guildId);
         Task<bool> IsUserStillOnServer(ulong userId, ulong guildId);
         IEnumerable<IGuildUser> GetGuildUsers(ulong guildId);
-        Task<RestUser> GetUser(ulong userId);
+        Task<IUser> GetUser(ulong userId);
         RestUser GetBotUser();
     }
 }

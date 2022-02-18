@@ -98,12 +98,12 @@ namespace Devscord.DiscordFramework.Services
             return this._userContextsFactory.Create(Server.GetBotUser());
         }
 
-        private async Task<RestGuildUser> GetRestUser(UserContext user, DiscordServerContext server)
+        private async Task<IGuildUser> GetRestUser(UserContext user, DiscordServerContext server)
         {
             return await Server.GetGuildUser(user.Id, server.Id);
         }
 
-        private SocketRole GetRole(ulong roleId, DiscordServerContext server)
+        private IRole GetRole(ulong roleId, DiscordServerContext server)
         {
             return Server.GetSocketRoles(server.Id).First(x => x.Id == roleId);
         }

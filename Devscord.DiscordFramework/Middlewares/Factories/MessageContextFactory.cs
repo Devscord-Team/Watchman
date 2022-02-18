@@ -4,7 +4,11 @@ using Discord;
 
 namespace Devscord.DiscordFramework.Middlewares.Factories
 {
-    internal class MessageContextFactory : IContextFactory<IMessage, MessageContext>
+    internal interface IMessageContextFactory : IContextFactory<IMessage, MessageContext>
+    {
+    }
+
+    internal class MessageContextFactory :  IMessageContextFactory
     {
         private CommandParser _commandParser;
 
@@ -15,7 +19,7 @@ namespace Devscord.DiscordFramework.Middlewares.Factories
 
         public MessageContext Create(IMessage message)
         {
-            bool isBotCommand = this._commandParser.Parse(message.Content, message.Timestamp.UtcDateTime).IsCommandForBot;
+            var isBotCommand = this._commandParser.Parse(message.Content, message.Timestamp.UtcDateTime).IsCommandForBot;
             return new MessageContext(message.Timestamp.UtcDateTime, isBotCommand);
         }
     }

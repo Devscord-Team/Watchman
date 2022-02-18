@@ -10,10 +10,10 @@ namespace Watchman.Discord.Areas.UselessFeatures.Controllers
 {
     public class GoogleController : IController
     {
-        private readonly MessagesServiceFactory _messagesServiceFactory;
+        private readonly IMessagesServiceFactory _messagesServiceFactory;
         private const string GOOGLE_BASE_URL = "http://letmegooglethat.com/?q=";
 
-        public GoogleController(MessagesServiceFactory messagesServiceFactory)
+        public GoogleController(IMessagesServiceFactory messagesServiceFactory)
         {
             this._messagesServiceFactory = messagesServiceFactory;
         }

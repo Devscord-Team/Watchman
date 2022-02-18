@@ -8,7 +8,12 @@ using System.Reflection;
 
 namespace Devscord.DiscordFramework.Commands.Builders
 {
-    public class BotCommandsTemplateBuilder
+    public interface IBotCommandsTemplateBuilder
+    {
+        BotCommandTemplate GetCommandTemplate(Type commandType);
+    }
+
+    public class BotCommandsTemplateBuilder : IBotCommandsTemplateBuilder
     {
         public BotCommandTemplate GetCommandTemplate(Type commandType)
         {

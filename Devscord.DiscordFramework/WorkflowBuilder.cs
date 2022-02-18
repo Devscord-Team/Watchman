@@ -24,25 +24,31 @@ namespace Devscord.DiscordFramework
         private readonly string _token;
         private readonly IWorkflow _workflow;
         private readonly IComponentContext _context;
+        private readonly bool useDiscordNetClient;
 
-        private WorkflowBuilder(string token, IWorkflow workflow, IComponentContext context)
+        private WorkflowBuilder(string token, IWorkflow workflow, IComponentContext context, bool useDiscordNetClient = true)
         {
-            this._client = new DiscordSocketClient(new DiscordSocketConfig
+            if(useDiscordNetClient)
             {
-                TotalShards = 1
-            });
+                this._client = new DiscordSocketClient(new DiscordSocketConfig
+                {
+                    TotalShards = 1
+                });
+            }
             this._token = token;
             this._workflow = workflow;
             this._context = context;
+            this.useDiscordNetClient = useDiscordNetClient;
         }
 
-        public static WorkflowBuilder Create(string token, IWorkflow workflow, IComponentContext context)
+        public static WorkflowBuilder Create(string token, IWorkflow workflow, IComponentContext context, bool useDiscordNetClient = true)
         {
-            return new WorkflowBuilder(token, workflow, context);
+            return new WorkflowBuilder(token, workflow, context, useDiscordNetClient);
         }
 
         public WorkflowBuilder SetMessageHandler(Func<SocketMessage, Task> action)
         {
+            //todo use workflow
             this._client.MessageReceived += action;
             return this;
         }
@@ -79,7 +85,7 @@ namespace Devscord.DiscordFramework
             return this;
         }
 
-        public WorkflowBuilder AddOnMessageReceivedHandlers(Action<WorkflowBuilderHandlers<Func<SocketMessage, Task>>> action)
+        public WorkflowBuilder AddOnMessageReceivedHandlers(Action<WorkflowBuilderHandlers<Func<IMessage, Task>>> action)
         {
             this.AddHandlers(action, this._workflow.OnMessageReceived.Add);
             Log.Debug("OnMessageReceived handlers have been set");
@@ -147,12 +153,18 @@ namespace Devscord.DiscordFramework
 
         public WorkflowBuilder Build()
         {
-            this._workflow.MapHandlers(this._client);
-
-            this._client.LoginAsync(TokenType.Bot, this._token).Wait();
-            this._client.StartAsync().Wait();
-
-            ServerInitializer.Initialize(this._client, this._context);
+            if (this.useDiscordNetClient)
+            {
+                this._workflow.MapHandlers(this._client);
+                this._client.LoginAsync(TokenType.Bot, this._token).Wait();
+                this._client.StartAsync().Wait();
+                ServerInitializer.Initialize(this._client, this._context);
+            }
+            else
+            {
+                this._workflow.MapHandlers();
+                ServerInitializer.Initialize(this._context);
+            }
             return this;
         }
     }

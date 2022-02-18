@@ -26,6 +26,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Devscord.DiscordFramework\Devscord.DiscordFramework.csproj" />
 		<ProjectReference Include="..\Watchman.Discord\Watchman.Discord.csproj" />
+		<ProjectReference Include="..\Watchman.IoC\Watchman.IoC.csproj" />
 	</ItemGroup>
 
 </Project>
