@@ -18,7 +18,6 @@ using System.IO;
 
 namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients
 {
-
     internal class FakeDiscordClientChannelsService : IDiscordClientChannelsService
     {
         public Func<SocketChannel, Task> ChannelCreated { get; set; }

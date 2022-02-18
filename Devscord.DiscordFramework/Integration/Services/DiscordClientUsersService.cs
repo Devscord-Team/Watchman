@@ -9,7 +9,6 @@ using Discord;
 
 namespace Devscord.DiscordFramework.Integration.Services
 {
-
     internal class DiscordClientUsersService : IDiscordClientUsersService
     {
         private DiscordSocketRestClient _restClient => this._client.Rest;

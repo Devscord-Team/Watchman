@@ -13,7 +13,6 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients
     {
         public Func<SocketGuildUser, Task> UserJoined { get; set; }
 
-
         public Task<RestUser> GetUser(ulong userId)
         {
             throw new NotImplementedException();

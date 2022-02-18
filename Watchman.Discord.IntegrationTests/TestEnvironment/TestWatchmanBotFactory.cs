@@ -5,10 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients;
 using Watchman.Discord.IntegrationTests.TestEnvironment.FakeDatabases;
-using Watchman.Discord.IntegrationTests.TestEnvironment.Models;
 using Watchman.Integrations.Database;
 using Watchman.IoC;
 
@@ -40,25 +38,6 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment
 
             var client = context.Resolve<IDiscordClient>();
             return new BotCommandsRunner(client);
-        }
-    }
-
-    public class BotCommandsRunner
-    {
-        private readonly IDiscordClient client;
-
-        public BotCommandsRunner(IDiscordClient client)
-        {
-            this.client = client;
-        }
-
-        public async Task SendMessage(string text)
-        {
-            var message = new FakeMessage
-            {
-                Content = text
-            };
-            await client.MessagesService.MessageReceived.Invoke(message);
         }
     }
 }
