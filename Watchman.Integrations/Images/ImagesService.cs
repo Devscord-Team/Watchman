@@ -5,8 +5,17 @@ using System.Linq;
 
 namespace Watchman.Integrations.Images
 {
-    public class ImagesService
+    public interface IImagesService
     {
+        IEnumerable<Image> GetImagesFromResources(Func<string, bool> selector = null);
+    }
+
+    public class ImagesService : IImagesService
+    {
+        public ImagesService()
+        {
+        }
+
         public IEnumerable<Image> GetImagesFromResources(Func<string, bool> selector = null)
         {
             var imagesProperty = typeof(Images).GetProperties().Where(x => x.PropertyType.Name == "Byte[]");

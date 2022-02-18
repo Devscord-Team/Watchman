@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Devscord.DiscordFramework;
+using Devscord.DiscordFramework.Architecture.Controllers;
 using Devscord.DiscordFramework.Commands.Parsing;
 using Devscord.DiscordFramework.Commands.Responses;
 using Devscord.DiscordFramework.Services;
@@ -72,11 +73,21 @@ namespace Watchman.IoC.Modules
 
             foreach (var type in typesToRegister)
             {
-                builder.RegisterType(type)
+                if(typeof(IController).IsAssignableFrom(type))
+                {
+                    builder.RegisterType(type)
+                    .PreserveExistingDefaults()
+                    .AsSelf()
+                    .SingleInstance();
+                }
+                else
+                {
+                    builder.RegisterType(type)
                     .PreserveExistingDefaults()
                     .AsImplementedInterfaces()
                     .AsSelf()
                     .SingleInstance();
+                }
             }
         }
     }

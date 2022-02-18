@@ -11,10 +11,10 @@ namespace Watchman.Discord.Areas.UselessFeatures.Controllers
 {
     public class UselessController : IController
     {
-        private readonly MessagesServiceFactory _messagesServiceFactory;
-        private readonly ImagesService _imagesService;
+        private readonly IMessagesServiceFactory _messagesServiceFactory;
+        private readonly IImagesService _imagesService;
 
-        public UselessController(MessagesServiceFactory messagesServiceFactory, ImagesService imageService)
+        public UselessController(IMessagesServiceFactory messagesServiceFactory, IImagesService imageService)
         {
             this._messagesServiceFactory = messagesServiceFactory;
             this._imagesService = imageService;

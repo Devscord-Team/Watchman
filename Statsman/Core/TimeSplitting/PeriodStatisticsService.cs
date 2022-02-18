@@ -9,12 +9,22 @@ using Watchman.Common.Models;
 
 namespace Statsman.Core.TimeSplitting
 {
-    public partial class PeriodStatisticsService
+    public interface IPeriodStatisticsService
     {
-        private readonly ChartsService _chartsService;
+        Task<(Stream Chart, ResultMessage Message)> PerDay(StatisticsRequest request);
+        Task<(Stream Chart, ResultMessage Message)> PerHour(StatisticsRequest request);
+        Task<(Stream Chart, ResultMessage Message)> PerMinute(StatisticsRequest request);
+        Task<(Stream Chart, ResultMessage Message)> PerMonth(StatisticsRequest request);
+        Task<(Stream Chart, ResultMessage Message)> PerQuarter(StatisticsRequest request);
+        Task<(Stream Chart, ResultMessage Message)> PerWeek(StatisticsRequest request);
+    }
+
+    public partial class PeriodStatisticsService : IPeriodStatisticsService
+    {
+        private readonly IChartsService _chartsService;
         private readonly StatisticsGroupingService _statisticsGroupingService;
 
-        public PeriodStatisticsService(ChartsService chartsService, StatisticsGroupingService statisticsGroupingService)
+        public PeriodStatisticsService(IChartsService chartsService, StatisticsGroupingService statisticsGroupingService)
         {
             this._chartsService = chartsService;
             this._statisticsGroupingService = statisticsGroupingService;
@@ -61,7 +71,7 @@ namespace Statsman.Core.TimeSplitting
         private async Task<(Stream Chart, ResultMessage Message)> GetResult(StatisticsRequest request, DetailedPeriod period, DateTime startTimeRangeTimeOfDay)
         {
             var timeRange = TimeRange.ToNow(startTimeRangeTimeOfDay.Add(-request.TimeBehind));
-            var statistics = period switch 
+            var statistics = period switch
             {
                 <= DetailedPeriod.Hour => await this._statisticsGroupingService.GetStatisticsGroupedPerDetailedPeriod(request, timeRange, period),
                 _ => await this._statisticsGroupingService.GetStatisticsGroupedPerDaysPeriod(request, timeRange, period)

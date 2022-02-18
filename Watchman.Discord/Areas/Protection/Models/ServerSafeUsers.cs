@@ -12,7 +12,7 @@ namespace Watchman.Discord.Areas.Protection.Models
         public ulong ServerId { get; }
         public HashSet<ulong> SafeUsers { get; }
 
-        public ServerSafeUsers(IEnumerable<Message> serverMessages, ulong serverId, int minAverageMessagesPerWeek, int minAbsoluteMessagesCount, HashSet<ulong> trustedRolesIds, UsersService usersService, DiscordServersService discordServersService)
+        public ServerSafeUsers(IEnumerable<Message> serverMessages, ulong serverId, int minAverageMessagesPerWeek, int minAbsoluteMessagesCount, HashSet<ulong> trustedRolesIds, IUsersService usersService, IDiscordServersService discordServersService)
         {
             this.ServerId = serverId;
             var server = discordServersService.GetDiscordServerAsync(serverId).GetAwaiter().GetResult();
@@ -24,7 +24,7 @@ namespace Watchman.Discord.Areas.Protection.Models
                 .ToHashSet();
         }
 
-        private static bool IsUserSafe(IReadOnlyCollection<Message> userMessages, UserContext user, ulong serverId, int minAverageMessagesPerWeek, int minAbsoluteMessagesCount, HashSet<ulong> trustedRolesIds, UsersService usersService)
+        private static bool IsUserSafe(IReadOnlyCollection<Message> userMessages, UserContext user, ulong serverId, int minAverageMessagesPerWeek, int minAbsoluteMessagesCount, HashSet<ulong> trustedRolesIds, IUsersService usersService)
         {
             if (user == null || userMessages.Count < minAbsoluteMessagesCount)
             {
@@ -54,7 +54,7 @@ namespace Watchman.Discord.Areas.Protection.Models
             return avg > minAverageMessagesPerWeek;
         }
 
-        private static int GetHowManyDaysUserIsOnThisServer(ulong userId, ulong serverId, UsersService usersService)
+        private static int GetHowManyDaysUserIsOnThisServer(ulong userId, ulong serverId, IUsersService usersService)
         {
             var joinedAt = usersService.GetUserJoinedServerAt(userId, serverId) ?? DateTime.Now;
             return (int)(DateTime.Now.Date - joinedAt.Date).TotalDays;

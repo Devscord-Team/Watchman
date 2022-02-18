@@ -17,7 +17,7 @@ namespace Watchman.Discord.Areas.Protection.Services
         Task SetPunishment(Contexts contexts, Punishment punishment);
     }
 
-    public class AntiSpamService
+    public class AntiSpamService : IAntiSpamService
     {
         private readonly ICommandBus commandBus;
         private readonly IMessagesServiceFactory _messagesServiceFactory;

@@ -7,7 +7,15 @@ using Watchman.DomainModel.Responses.Queries;
 
 namespace Watchman.Discord.Areas.Responses.Services
 {
-    public class ResponsesService
+    public interface IResponsesService
+    {
+        Task AddCustomResponse(string onEvent, string message, ulong serverId);
+        Task<Response> GetResponseByOnEvent(string onEvent, ulong serverId = 0);
+        Task RemoveResponse(string onEvent, ulong serverId);
+        Task UpdateResponse(Guid id, string message);
+    }
+
+    public class ResponsesService : IResponsesService
     {
         private readonly ICommandBus _commandBus;
         private readonly IQueryBus _queryBus;

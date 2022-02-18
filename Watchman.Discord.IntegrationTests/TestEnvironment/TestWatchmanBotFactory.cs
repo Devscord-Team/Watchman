@@ -1,10 +1,5 @@
 ﻿using Autofac;
 using Devscord.DiscordFramework.Integration.Services.Interfaces;
-using Discord.WebSocket;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients;
 using Watchman.Discord.IntegrationTests.TestEnvironment.FakeDatabases;
 using Watchman.Integrations.Database;

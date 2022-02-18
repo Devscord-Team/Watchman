@@ -139,18 +139,12 @@ namespace Devscord.DiscordFramework
             var request = this.ParseRequest(socketMessage);
 
             await this.TryToAwaitTask(this.controllersService.Run(socketMessage.Id, request, contexts), request, contexts);
-
-            var elapsedRun = this._stopWatch.ElapsedTicks;
-            var elapsedMilliseconds = this._stopWatch.ElapsedMilliseconds;
-            this._stopWatch.Stop();
-            this._stopWatch.Reset();
         }
 
         private DiscordRequest ParseRequest(IMessage socketMessage)
         {
             this._stopWatch.Restart();
             var request = this.commandParser.Parse(socketMessage.Content, socketMessage.Timestamp.UtcDateTime);
-            var elapsedParse = this._stopWatch.ElapsedTicks;
             return request;
         }
 

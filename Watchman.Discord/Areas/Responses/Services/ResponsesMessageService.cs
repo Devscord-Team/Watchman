@@ -11,13 +11,18 @@ using Watchman.Discord.Areas.Responses.BotCommands;
 
 namespace Watchman.Discord.Areas.Responses.Services
 {
-    public class ResponsesMessageService
+    public interface IResponsesMessageService
+    {
+        Task PrintResponses(ResponsesCommand command, Contexts contexts);
+    }
+
+    public class ResponsesMessageService : IResponsesMessageService
     {
         private const string DESCRIPTION = "dokumentacja:\nhttps://watchman.readthedocs.io/pl/latest/135-services-in-framework/";
-        private readonly ResponsesGetterService _responsesDatabase;
-        private readonly MessagesServiceFactory _messagesServiceFactory;
+        private readonly IResponsesGetterService _responsesDatabase;
+        private readonly IMessagesServiceFactory _messagesServiceFactory;
 
-        public ResponsesMessageService(ResponsesGetterService responsesDatabase, MessagesServiceFactory messagesServiceFactory)
+        public ResponsesMessageService(IResponsesGetterService responsesDatabase, IMessagesServiceFactory messagesServiceFactory)
         {
             this._responsesDatabase = responsesDatabase;
             this._messagesServiceFactory = messagesServiceFactory;
@@ -34,7 +39,7 @@ namespace Watchman.Discord.Areas.Responses.Services
             {
                 return messagesService.SendEmbedMessage("Nadpisane odpowiedzi:", DESCRIPTION, this.GetCustomResponses(contexts.Server.Id));
             }
-            return messagesService.SendEmbedMessage("Wszystkie odpowiedzi:", DESCRIPTION, this.GetAllResponses(contexts.Server.Id)); 
+            return messagesService.SendEmbedMessage("Wszystkie odpowiedzi:", DESCRIPTION, this.GetAllResponses(contexts.Server.Id));
         }
 
         private IEnumerable<KeyValuePair<string, string>> GetDefaultResponses()
@@ -80,7 +85,7 @@ namespace Watchman.Discord.Areas.Responses.Services
 
             return this.GetRawMessage(response.Message) + result;
         }
-        
+
         private string GetRawMessage(string message)
         {
             return message.Replace("`", @"\`").Replace("*", @"\*");
