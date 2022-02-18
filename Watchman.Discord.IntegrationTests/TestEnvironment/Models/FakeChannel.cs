@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
 {
-    internal class FakeChannel : IGuildChannel, IMessageChannel
+    internal class FakeChannel : IGuildChannel, IMessageChannel, ITextChannel
     {
         public int Position { get; set; }
 
@@ -22,12 +22,32 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
 
         public ulong Id { get; set; }
 
+        public bool IsNsfw { get; set; }
+
+        public string Topic { get; set; }
+
+        public int SlowModeInterval { get; set; }
+
+        public string Mention { get; set; }
+
+        public ulong? CategoryId { get; set; }
+
         public Task AddPermissionOverwriteAsync(IRole role, OverwritePermissions permissions, RequestOptions options = null)
         {
             throw new NotImplementedException();
         }
 
         public Task AddPermissionOverwriteAsync(IUser user, OverwritePermissions permissions, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IInviteMetadata> CreateInviteAsync(int? maxAge = 86400, int? maxUses = null, bool isTemporary = false, bool isUnique = false, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IWebhook> CreateWebhookAsync(string name, Stream avatar = null, RequestOptions options = null)
         {
             throw new NotImplementedException();
         }
@@ -47,7 +67,27 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
             throw new NotImplementedException();
         }
 
+        public Task DeleteMessagesAsync(IEnumerable<IMessage> messages, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteMessagesAsync(IEnumerable<ulong> messageIds, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
         public IDisposable EnterTypingState(RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ICategoryChannel> GetCategoryAsync(CacheMode mode = CacheMode.AllowDownload, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IReadOnlyCollection<IInviteMetadata>> GetInvitesAsync(RequestOptions options = null)
         {
             throw new NotImplementedException();
         }
@@ -97,7 +137,22 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
             throw new NotImplementedException();
         }
 
+        public Task<IWebhook> GetWebhookAsync(ulong id, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IReadOnlyCollection<IWebhook>> GetWebhooksAsync(RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task ModifyAsync(Action<GuildChannelProperties> func, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task ModifyAsync(Action<TextChannelProperties> func, RequestOptions options = null)
         {
             throw new NotImplementedException();
         }
@@ -123,6 +178,11 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
         }
 
         public Task<IUserMessage> SendMessageAsync(string text = null, bool isTTS = false, Embed embed = null, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SyncPermissionsAsync(RequestOptions options = null)
         {
             throw new NotImplementedException();
         }

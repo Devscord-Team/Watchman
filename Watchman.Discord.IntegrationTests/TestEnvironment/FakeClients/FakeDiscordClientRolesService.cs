@@ -27,7 +27,7 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients
 
         public UserRole GetRole(ulong roleId, ulong guildId)
         {
-            throw new NotImplementedException();
+            return new UserRole(roleId, "generatedRole", 1);
         }
 
         public IEnumerable<IRole> GetSocketRoles(ulong guildId)
@@ -37,7 +37,13 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients
 
         public IEnumerable<UserRole> GetRoles(ulong guildId)
         {
-            throw new NotImplementedException();
+            return new List<UserRole>()
+            {
+                new UserRole(1, "1", 1),
+                new UserRole(2, "2", 1),
+                new UserRole(3, "3", 1),
+                new UserRole(4, "4", 1),
+            };
         }
     }
 }

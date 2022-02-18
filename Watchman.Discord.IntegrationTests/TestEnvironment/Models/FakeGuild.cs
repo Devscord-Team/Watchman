@@ -226,7 +226,8 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
 
         public Task<ITextChannel> GetSystemChannelAsync(CacheMode mode = CacheMode.AllowDownload, RequestOptions options = null)
         {
-            throw new NotImplementedException();
+            var channel = new FakeChannel() { Id = 5, Name = "TestSystemChannel" } as ITextChannel;
+            return Task.FromResult(channel);
         }
 
         public Task<ITextChannel> GetTextChannelAsync(ulong id, CacheMode mode = CacheMode.AllowDownload, RequestOptions options = null)

@@ -34,35 +34,35 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
 
         public IImmutableSet<ClientType> ActiveClients { get; set; }
 
-        public DateTimeOffset? JoinedAt => throw new NotImplementedException();
+        public DateTimeOffset? JoinedAt { get; set; }
 
-        public string Nickname => throw new NotImplementedException();
+        public string Nickname { get; set; }
 
-        public GuildPermissions GuildPermissions => throw new NotImplementedException();
+        public GuildPermissions GuildPermissions { get; set; }
 
-        public IGuild Guild => throw new NotImplementedException();
+        public IGuild Guild { get; set; }
 
-        public ulong GuildId => throw new NotImplementedException();
+        public ulong GuildId { get; set; } = 1;
 
-        public DateTimeOffset? PremiumSince => throw new NotImplementedException();
+        public DateTimeOffset? PremiumSince { get; set; }
 
-        public IReadOnlyCollection<ulong> RoleIds => throw new NotImplementedException();
+        public IReadOnlyCollection<ulong> RoleIds { get; set; } = new List<ulong>() { 1, 2, 3 };
 
-        public bool IsDeafened => throw new NotImplementedException();
+        public bool IsDeafened { get; set; }
 
-        public bool IsMuted => throw new NotImplementedException();
+        public bool IsMuted { get; set; }
 
-        public bool IsSelfDeafened => throw new NotImplementedException();
+        public bool IsSelfDeafened { get; set; }
 
-        public bool IsSelfMuted => throw new NotImplementedException();
+        public bool IsSelfMuted { get; set; }
 
-        public bool IsSuppressed => throw new NotImplementedException();
+        public bool IsSuppressed { get; set; }
 
-        public IVoiceChannel VoiceChannel => throw new NotImplementedException();
+        public IVoiceChannel VoiceChannel { get; set; }
 
-        public string VoiceSessionId => throw new NotImplementedException();
+        public string VoiceSessionId { get; set; }
 
-        public bool IsStreaming => throw new NotImplementedException();
+        public bool IsStreaming { get; set; }
 
         public Task AddRoleAsync(IRole role, RequestOptions options = null)
         {
@@ -76,7 +76,7 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
 
         public string GetAvatarUrl(ImageFormat format = ImageFormat.Auto, ushort size = 128)
         {
-            throw new NotImplementedException();
+            return "test url";
         }
 
         public string GetDefaultAvatarUrl()
