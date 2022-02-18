@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Watchman.Discord.IntegrationTests.TestEnvironment.Models;
 
 namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients
 {
@@ -18,19 +19,40 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients
         public List<DateTime> DisconnectedTimes { get; set; } = new List<DateTime>();
         public List<DateTime> ConnectedTimes { get; set; } = new List<DateTime>();
 
+        private List<ChannelContext> channelContexts = new List<ChannelContext>()
+        {
+        };
+
         public Task<IGuild> GetGuild(ulong guildId)
         {
-            throw new NotImplementedException();
+            var guild = new FakeGuild()
+            {
+                Id = 1,
+                Name = "TestServer",
+                OwnerId = 5,
+                CreatedAt = DateTime.UtcNow.AddDays(-30),
+                Roles = new List<IRole>()
+                {
+                    new FakeRole() { Id = 1, Name = "First", CreatedAt = DateTime.UtcNow.AddDays(-5), },
+                    new FakeRole() { Id = 2, Name = "Second", CreatedAt = DateTime.UtcNow.AddDays(-5), },
+                    new FakeRole() { Id = 3, Name = "Third", CreatedAt = DateTime.UtcNow.AddDays(-5), },
+                }
+
+            } as IGuild;
+            return Task.FromResult(guild);
         }
 
-        public IAsyncEnumerable<DiscordServerContext> GetDiscordServersAsync()
+        public async IAsyncEnumerable<DiscordServerContext> GetDiscordServersAsync()
         {
-            throw new NotImplementedException();
+            var item = await this.GetDiscordServerAsync(1);
+            yield return item;
         }
 
         public Task<DiscordServerContext> GetDiscordServerAsync(ulong serverId)
         {
-            throw new NotImplementedException();
+            var landingChannel = new ChannelContext(1, "landing");
+            var server = new DiscordServerContext(1, "Test", () => null, landingChannel, _ => this.channelContexts, _ => null, _ => null);
+            return Task.FromResult(server);
         }
 
         public Task<IEnumerable<string>> GetExistingInviteLinks(ulong serverId)
