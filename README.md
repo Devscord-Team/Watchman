@@ -9,3 +9,7 @@
 ### Dokumentacja
 
 [Link do dokumentacji](https://watchman.readthedocs.io/pl/latest/)
+
+### Discord na którym rozmawiamy o planach dotyczących projektu
+
+[Zaproszenie do discorda](https://discord.gg/w2NtcJB)
