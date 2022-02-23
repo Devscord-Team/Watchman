@@ -5,7 +5,6 @@ using Devscord.DiscordFramework.Commands.AntiSpam.Models;
 using Devscord.DiscordFramework.Services.Models;
 using Moq;
 using Watchman.DomainModel.Configuration.Services;
-using Watchman.DomainModel.Messages.Queries;
 
 namespace Watchman.Discord.UnitTests.AntiSpam
 {
@@ -22,7 +21,7 @@ namespace Watchman.Discord.UnitTests.AntiSpam
 
         public SpamProbability GetSpamProbability(bool isUserSafe, params string[] messagesContent)
         {
-            var smallMessages = messagesContent.Select(x => new SmallMessage(x, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.UtcNow, GetMessagesQuery.GET_ALL_SERVERS));
+            var smallMessages = messagesContent.Select(x => new SmallMessage(x, AntiSpamTestsService.DEFAULT_TEST_USER_ID, DateTime.UtcNow, 0));
             return this.GetSpamProbability(isUserSafe, smallMessages.ToArray());
         }
 
@@ -31,7 +30,7 @@ namespace Watchman.Discord.UnitTests.AntiSpam
             // Arrange
             var userSafetyChecker = new Mock<IUserSafetyChecker>();
             userSafetyChecker
-                .Setup(x => x.IsUserSafe(AntiSpamTestsService.DEFAULT_TEST_USER_ID, GetMessagesQuery.GET_ALL_SERVERS))
+                .Setup(x => x.IsUserSafe(AntiSpamTestsService.DEFAULT_TEST_USER_ID, 0))
                 .Returns(isUserSafe);
 
             var lastMessage = smallMessages.Last();

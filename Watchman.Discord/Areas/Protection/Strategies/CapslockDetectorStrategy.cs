@@ -11,7 +11,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
     {
         private readonly IConfigurationService _configurationService;
 
-        public CapslockDetectorStrategy(IUserSafetyChecker userSafetyChecker, IConfigurationService configurationService)
+        public CapslockDetectorStrategy(/*IUserSafetyChecker userSafetyChecker,*/ IConfigurationService configurationService)
         {
             this._configurationService = configurationService;
         }

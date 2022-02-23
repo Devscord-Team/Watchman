@@ -31,7 +31,7 @@ namespace Devscord.DiscordFramework.Framework
                 Log.Information("Waiting for connection... {time}ms after initialization", waiting++ * 100);
                 Task.Delay(100).Wait();
             }
-            Log.Information("Bot is connected. {ticks}ticks | {ms}ms", sw.ElapsedTicks, sw.ElapsedMilliseconds);
+            Log.Information("Bot is connected. {ms}ms", sw.ElapsedMilliseconds);
             sw.Stop();
         }
 

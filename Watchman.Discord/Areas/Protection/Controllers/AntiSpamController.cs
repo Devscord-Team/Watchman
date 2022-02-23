@@ -29,14 +29,14 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         //todo there should be something like queue, because we want to check last user's message
         private static readonly List<ulong> usersNowChecking = new List<ulong>();
 
-        public AntiSpamController(IServerMessagesCacheService serverMessagesCacheService, ICheckUserSafetyService checkUserSafetyService, 
+        public AntiSpamController(IServerMessagesCacheService serverMessagesCacheService, /*ICheckUserSafetyService checkUserSafetyService,*/ 
             IPunishmentsCachingService punishmentsCachingService, IAntiSpamService antiSpamService, IConfigurationService configurationService, 
             ISpamPunishmentStrategy spamPunishmentStrategy, IOverallSpamDetectorStrategyFactory overallSpamDetectorStrategyFactory)
         {
             this._serverMessagesCacheService = serverMessagesCacheService;
             this._punishmentsCachingService = punishmentsCachingService;
             this._antiSpamService = antiSpamService;
-            this._overallSpamDetector = overallSpamDetectorStrategyFactory.GetStrategyWithDefaultDetectors(serverMessagesCacheService, checkUserSafetyService, configurationService);
+            this._overallSpamDetector = overallSpamDetectorStrategyFactory.GetStrategyWithDefaultDetectors(serverMessagesCacheService, /*checkUserSafetyService,*/ configurationService);
             this._spamPunishmentStrategy = spamPunishmentStrategy;
         }
 

@@ -26,7 +26,7 @@ namespace Watchman.Discord.UnitTests.TestObjectFactories
             Mock<IQueryBus> queryBusMock = null, Mock<IUsersService> usersServiceMock = null, 
             Mock<IDirectMessagesService> directMessagesServiceMock = null, Mock<IMessagesServiceFactory> messagesServiceFactoryMock = null, 
             Mock<IRolesService> rolesServiceMock = null, Mock<ITrustRolesService> trustRolesServiceMock = null,
-            Mock<ICheckUserSafetyService> checkUserSafetyServiceMock = null, Mock<IUsersRolesService> usersRolesServiceMock = null, 
+            /*Mock<ICheckUserSafetyService> checkUserSafetyServiceMock = null,*/ Mock<IUsersRolesService> usersRolesServiceMock = null, 
             Mock<IConfigurationService> configurationServiceMock = null)
         {
             queryBusMock ??= new Mock<IQueryBus>();
@@ -35,7 +35,7 @@ namespace Watchman.Discord.UnitTests.TestObjectFactories
             messagesServiceFactoryMock ??= new Mock<IMessagesServiceFactory>();
             rolesServiceMock ??= new Mock<IRolesService>();
             trustRolesServiceMock ??= new Mock<ITrustRolesService>();
-            checkUserSafetyServiceMock ??= new Mock<ICheckUserSafetyService>();
+            //checkUserSafetyServiceMock ??= new Mock<ICheckUserSafetyService>();
             usersRolesServiceMock ??= new Mock<IUsersRolesService>();
             configurationServiceMock ??= new Mock<IConfigurationService>();
 
@@ -46,7 +46,7 @@ namespace Watchman.Discord.UnitTests.TestObjectFactories
                 messagesServiceFactoryMock.Object,
                 rolesServiceMock.Object,
                 trustRolesServiceMock.Object,
-                checkUserSafetyServiceMock.Object,
+                //checkUserSafetyServiceMock.Object,
                 usersRolesServiceMock.Object,
                 configurationServiceMock.Object);
         }
@@ -68,13 +68,13 @@ namespace Watchman.Discord.UnitTests.TestObjectFactories
         }
 
         internal AntiSpamController CreateAntiSpamController(
-            Mock<IServerMessagesCacheService> serverMessagesCacheServiceMock = null, Mock<ICheckUserSafetyService> checkUserSafetyServiceMock = null,
+            Mock<IServerMessagesCacheService> serverMessagesCacheServiceMock = null, //Mock<ICheckUserSafetyService> checkUserSafetyServiceMock = null,
             Mock<IPunishmentsCachingService> punishmentsCachingServiceMock = null, Mock<IAntiSpamService> antiSpamServiceMock = null,
             Mock<IConfigurationService> configurationServiceMock = null, Mock<ISpamPunishmentStrategy> spamPunishmentStrategyMock = null,
             Mock<IOverallSpamDetectorStrategyFactory> overallSpamDetectorStrategyFactoryMock = null)
         {
             serverMessagesCacheServiceMock ??= new Mock<IServerMessagesCacheService>();
-            checkUserSafetyServiceMock ??= new Mock<ICheckUserSafetyService>();
+            //checkUserSafetyServiceMock ??= new Mock<ICheckUserSafetyService>();
             punishmentsCachingServiceMock ??= new Mock<IPunishmentsCachingService>();
             antiSpamServiceMock ??= new Mock<IAntiSpamService>();
             configurationServiceMock ??= new Mock<IConfigurationService>();
@@ -83,7 +83,7 @@ namespace Watchman.Discord.UnitTests.TestObjectFactories
 
             return new AntiSpamController(
                 serverMessagesCacheServiceMock.Object,
-                checkUserSafetyServiceMock.Object,
+                //checkUserSafetyServiceMock.Object,
                 punishmentsCachingServiceMock.Object,
                 antiSpamServiceMock.Object,
                 configurationServiceMock.Object,

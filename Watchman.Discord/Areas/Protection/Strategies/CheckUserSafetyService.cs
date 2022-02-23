@@ -7,13 +7,12 @@ using Serilog;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Protection.Models;
 using Watchman.DomainModel.DiscordServer.Queries;
-using Watchman.DomainModel.Messages.Queries;
 using Watchman.DomainModel.Configuration.ConfigurationItems;
 using Watchman.DomainModel.Configuration.Services;
-using Message = Watchman.DomainModel.Messages.Message;
 
 namespace Watchman.Discord.Areas.Protection.Strategies
 {
+    /*
     public interface ICheckUserSafetyService : ICyclicService, IUserSafetyChecker
     {
     }
@@ -77,4 +76,5 @@ namespace Watchman.Discord.Areas.Protection.Strategies
                 });
         }
     }
+    */
 }
