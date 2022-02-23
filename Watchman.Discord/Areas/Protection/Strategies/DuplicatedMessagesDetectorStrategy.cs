@@ -10,12 +10,12 @@ namespace Watchman.Discord.Areas.Protection.Strategies
 {
     public class DuplicatedMessagesDetectorStrategy : ISpamDetector
     {
-        private readonly IUserSafetyChecker _userSafetyChecker;
+        //private readonly IUserSafetyChecker _userSafetyChecker;
         private readonly IConfigurationService _configurationService;
 
-        public DuplicatedMessagesDetectorStrategy(IUserSafetyChecker userSafetyChecker, IConfigurationService configurationService)
+        public DuplicatedMessagesDetectorStrategy(/*IUserSafetyChecker userSafetyChecker*/ IConfigurationService configurationService)
         {
-            this._userSafetyChecker = userSafetyChecker;
+            //this._userSafetyChecker = userSafetyChecker;
             this._configurationService = configurationService;
         }
 
@@ -37,7 +37,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
                 .SkipLast(1) // because I'm comparing all the other messages to the last message
                 .Count(x => this.GetDifferencePercent(x.Content, content) < percentOfSimilarityToSuspectSpam);
 
-            var isUserSafe = this._userSafetyChecker.IsUserSafe(userId, serverId);
+            var isUserSafe = false; //= this._userSafetyChecker.IsUserSafe(userId, serverId);
             return similarMessagesCount switch
             {
                 0 => SpamProbability.None,

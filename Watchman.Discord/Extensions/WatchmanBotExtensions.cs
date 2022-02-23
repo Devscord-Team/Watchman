@@ -34,7 +34,6 @@ namespace Watchman.Discord.Extensions
                     .AddFromIoC<IResponsesInitService>(responsesService => responsesService.InitNewResponsesFromResources)
                     .AddFromIoC<IInitializationService, IDiscordServersService>((initService, serversService) => async () =>
                     {
-                        var stopwatch = Stopwatch.StartNew();
                         // when bot was offline for less than 1 minutes, it doesn't make sense to init all servers
                         if (WorkflowBuilder.DisconnectedTimes.LastOrDefault() > DateTime.Now.AddMinutes(-1))
                         {
@@ -42,7 +41,6 @@ namespace Watchman.Discord.Extensions
                             return;
                         }
                         await serversService.GetDiscordServersAsync().ForEachAwaitAsync(initService.InitServer);
-                        Log.Information(stopwatch.ElapsedMilliseconds.ToString());
                     })
                     .AddHandler(() => Task.Run(() => Log.Information("Bot has done every Ready tasks.")));
             });

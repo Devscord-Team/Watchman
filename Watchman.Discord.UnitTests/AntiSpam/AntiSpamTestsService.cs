@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Moq;
-using Watchman.DomainModel.Messages.Queries;
 using Watchman.DomainModel.Configuration.ConfigurationItems;
 using Watchman.DomainModel.Configuration.Services;
 
@@ -16,16 +15,16 @@ namespace Watchman.Discord.UnitTests.AntiSpam
             var configurationService = new Mock<IConfigurationService>();
             configurationService
                 .Setup(x => x.GetConfigurationItem<PercentOfSimilarityBetweenMessagesToSuspectSpam>(It.IsAny<ulong>()))
-                .Returns(new PercentOfSimilarityBetweenMessagesToSuspectSpam(GetMessagesQuery.GET_ALL_SERVERS));
+                .Returns(new PercentOfSimilarityBetweenMessagesToSuspectSpam(0));
             configurationService
                 .Setup(x => x.GetConfigurationItem<MinUpperLettersCount>(It.IsAny<ulong>()))
-                .Returns(new MinUpperLettersCount(GetMessagesQuery.GET_ALL_SERVERS));
+                .Returns(new MinUpperLettersCount(0));
             configurationService
                 .Setup(x => x.GetConfigurationItem<HowLongIsShortTimeInSeconds>(It.IsAny<ulong>()))
-                .Returns(new HowLongIsShortTimeInSeconds(GetMessagesQuery.GET_ALL_SERVERS));
+                .Returns(new HowLongIsShortTimeInSeconds(0));
             configurationService
                 .Setup(x => x.GetConfigurationItem<HowManyMessagesInShortTimeToBeSpam>(It.IsAny<ulong>()))
-                .Returns(new HowManyMessagesInShortTimeToBeSpam(GetMessagesQuery.GET_ALL_SERVERS));
+                .Returns(new HowManyMessagesInShortTimeToBeSpam(0));
             return configurationService;
         }
 
@@ -33,7 +32,7 @@ namespace Watchman.Discord.UnitTests.AntiSpam
         {
             var contexts = new Contexts();
             contexts.SetContext(new UserContext(userId ?? DEFAULT_TEST_USER_ID, null, new List<UserRole>(), null, null, (_) => false, null));
-            contexts.SetContext(new DiscordServerContext(serverId ?? GetMessagesQuery.GET_ALL_SERVERS, null, null, null, null, null, null));
+            contexts.SetContext(new DiscordServerContext(serverId ?? 0, null, null, null, null, null, null));
             return contexts;
         }
     }

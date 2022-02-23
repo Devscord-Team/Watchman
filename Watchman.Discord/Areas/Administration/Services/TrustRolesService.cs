@@ -24,15 +24,15 @@ namespace Watchman.Discord.Areas.Administration.Services
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
         private readonly IMessagesServiceFactory _messagesServiceFactory;
-        private readonly ICheckUserSafetyService _checkUserSafetyService;
+        //private readonly ICheckUserSafetyService _checkUserSafetyService;
         private readonly IUsersRolesService _usersRolesService;
 
-        public TrustRolesService(IQueryBus queryBus, ICommandBus commandBus, IMessagesServiceFactory messagesServiceFactory, ICheckUserSafetyService checkUserSafetyService, IUsersRolesService usersRolesService)
+        public TrustRolesService(IQueryBus queryBus, ICommandBus commandBus, IMessagesServiceFactory messagesServiceFactory, /*ICheckUserSafetyService checkUserSafetyService,*/ IUsersRolesService usersRolesService)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;
             this._messagesServiceFactory = messagesServiceFactory;
-            this._checkUserSafetyService = checkUserSafetyService;
+            //this._checkUserSafetyService = checkUserSafetyService;
             this._usersRolesService = usersRolesService;
         }
 
@@ -55,7 +55,7 @@ namespace Watchman.Discord.Areas.Administration.Services
             var command = new SetRoleAsTrustedCommand(role.Id, contexts.Server.Id);
             await this._commandBus.ExecuteAsync(command);
             await messagesService.SendResponse(x => x.RoleSetAsTrusted(roleName));
-            await this._checkUserSafetyService.Refresh();
+            //await this._checkUserSafetyService.Refresh();
         }
 
         public async Task StopTrustingRole(string roleName, Contexts contexts)
@@ -77,7 +77,7 @@ namespace Watchman.Discord.Areas.Administration.Services
             var command = new SetRoleAsUntrustedCommand(role.Id, contexts.Server.Id);
             await this._commandBus.ExecuteAsync(command);
             await messagesService.SendResponse(x => x.RoleSetAsUntrusted(roleName));
-            await this._checkUserSafetyService.Refresh();
+            //await this._checkUserSafetyService.Refresh();
         }
 
         public Task StopTrustingRole(UserRole role)
