@@ -61,7 +61,7 @@ namespace Watchman.Discord.UnitTests.AntiSpam
             overallSpamDetectorStrategyFactoryMock
                 .Setup(x => x.GetStrategyWithDefaultDetectors(
                     It.IsAny<IServerMessagesCacheService>(),
-                    It.IsAny<IUserSafetyChecker>(),
+                    //It.IsAny<IUserSafetyChecker>(),
                     It.IsAny<IConfigurationService>()))
                 .Returns(overallSpamDetectorMock.Object);
 

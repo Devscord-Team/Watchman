@@ -7,6 +7,7 @@ using Watchman.Discord.Areas.Protection.Strategies;
 
 namespace Watchman.Discord.UnitTests.AntiSpam
 {
+    /*
     [TestFixture]
     internal class SpamDetectorsStrategiesTests
     {
@@ -130,4 +131,5 @@ namespace Watchman.Discord.UnitTests.AntiSpam
             Assert.That(spamProbability, Is.EqualTo(SpamProbability.None));
         }
     }
+    */
 }
