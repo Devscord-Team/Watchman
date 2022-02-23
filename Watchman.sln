@@ -29,9 +29,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Watchman.Discord.UnitTests"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Watchman.Integration.Tests", "Watchman.Integration.Tests\Watchman.Integration.Tests.csproj", "{16F0CD33-126A-4255-B147-476E6597E02C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Statsman", "Statsman\Statsman.csproj", "{0E0453CD-0F39-458A-AC91-B31915F35291}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watchman.Discord.IntegrationTests", "Watchman.Discord.IntegrationTests\Watchman.Discord.IntegrationTests.csproj", "{C6C754BC-9EF1-4BCE-99E2-A5C2BB758DC0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Watchman.Discord.IntegrationTests", "Watchman.Discord.IntegrationTests\Watchman.Discord.IntegrationTests.csproj", "{C6C754BC-9EF1-4BCE-99E2-A5C2BB758DC0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -87,10 +85,6 @@ Global
 		{16F0CD33-126A-4255-B147-476E6597E02C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16F0CD33-126A-4255-B147-476E6597E02C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16F0CD33-126A-4255-B147-476E6597E02C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0E0453CD-0F39-458A-AC91-B31915F35291}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0E0453CD-0F39-458A-AC91-B31915F35291}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0E0453CD-0F39-458A-AC91-B31915F35291}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0E0453CD-0F39-458A-AC91-B31915F35291}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C6C754BC-9EF1-4BCE-99E2-A5C2BB758DC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C6C754BC-9EF1-4BCE-99E2-A5C2BB758DC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6C754BC-9EF1-4BCE-99E2-A5C2BB758DC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
