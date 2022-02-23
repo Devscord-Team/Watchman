@@ -42,7 +42,7 @@ namespace Watchman.Web.ServiceProviders
             }, container.Resolve<IComponentContext>()).GetWorkflowBuilder();
 
             workflowBuilder.Build();
-            container.Resolve<HangfireJobsService>().SetDefaultJobs(container);
+            container.Resolve<IHangfireJobsService>().SetDefaultJobs(container);
             return new AutofacServiceProvider(container);
         }
 
