@@ -29,7 +29,16 @@ namespace Watchman.Discord.UnitTests.Users
             usersServiceMock.Setup(x => x.GetUserByIdAsync(It.IsAny<DiscordServerContext>(), It.IsAny<ulong>()))
                 .Returns<DiscordServerContext, ulong>((a, b) => Task.FromResult(userContext));
 
-            
+            var controller = this.testControllersFactory.CreateUsersController(usersServiceMock: usersServiceMock);
+
+            //Act
+            await controller.GetAvatar(command, contexts);
+
+            //Assert
+            usersServiceMock.Verify(x => x.GetUserByIdAsync(contexts.Server, command.User), Times.Once);
+
+
+
         }
 
     }
