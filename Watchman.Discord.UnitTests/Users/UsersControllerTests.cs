@@ -25,11 +25,11 @@ namespace Watchman.Discord.UnitTests.Users
             var contexts = testContextsFactory.CreateContexts(1, 1, 1);
 
             var messagesServiceMock = new Mock<IMessagesService>();
-            messagesServiceMock.Setup(x => x.SendMessage(It.IsAny<UserContext>()))
-                .Returns()
             var usersServiceMock = new Mock<IUsersService>();
             usersServiceMock.Setup(x => x.GetUserByIdAsync(It.IsAny<DiscordServerContext>(), It.IsAny<ulong>()))
                 .Returns<DiscordServerContext, ulong>((a, b) => Task.FromResult(userContext));
+
+            
         }
 
     }
