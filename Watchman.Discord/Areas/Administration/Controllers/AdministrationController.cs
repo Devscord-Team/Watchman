@@ -20,7 +20,6 @@ using Watchman.Discord.Areas.Users.Services;
 using Watchman.DomainModel.Configuration.ConfigurationItems;
 using Watchman.DomainModel.Configuration.Services;
 using Watchman.DomainModel.DiscordServer.Queries;
-using Watchman.DomainModel.Messages.Queries;
 
 namespace Watchman.Discord.Areas.Administration.Controllers
 {
@@ -32,13 +31,13 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         private readonly IMessagesServiceFactory _messagesServiceFactory;
         private readonly IRolesService _rolesService;
         private readonly ITrustRolesService _trustRolesService;
-        private readonly ICheckUserSafetyService _checkUserSafetyService;
+        //private readonly ICheckUserSafetyService _checkUserSafetyService;
         private readonly IUsersRolesService _usersRolesService;
         private readonly IConfigurationService _configurationService;
 
         public AdministrationController(IQueryBus queryBus, IUsersService usersService, IDirectMessagesService directMessagesService, 
             IMessagesServiceFactory messagesServiceFactory, IRolesService rolesService, ITrustRolesService trustRolesService, 
-            ICheckUserSafetyService checkUserSafetyService, IUsersRolesService usersRolesService, IConfigurationService configurationService)
+            /*ICheckUserSafetyService checkUserSafetyService,*/ IUsersRolesService usersRolesService, IConfigurationService configurationService)
         {
             this._queryBus = queryBus;
             this._usersService = usersService;
@@ -46,53 +45,9 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             this._messagesServiceFactory = messagesServiceFactory;
             this._rolesService = rolesService;
             this._trustRolesService = trustRolesService;
-            this._checkUserSafetyService = checkUserSafetyService;
+            //this._checkUserSafetyService = checkUserSafetyService;
             this._usersRolesService = usersRolesService;
             this._configurationService = configurationService;
-        }
-
-        public async Task ReadUserMessages(MessagesCommand command, Contexts contexts)
-        {
-            if (!contexts.User.IsAdmin() && command.User != contexts.User.Id) //allow check own messages for everybody
-            {
-                throw new NotAdminPermissionsException();
-            }
-            var selectedUser = await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
-            if (selectedUser == null)
-            {
-                throw new UserNotFoundException(command.User.GetUserMention());
-            }
-            var timeRange = TimeRange.ToNow(contexts.Message.SentAt - command.Time);
-            var query = new GetMessagesQuery(contexts.Server.Id, userId: selectedUser.Id)
-            {
-                SentDate = timeRange
-            };
-            var messages = this._queryBus.Execute(query).Messages
-                .OrderBy(x => x.SentAt)
-                .ToList();
-
-            var messagesService = this._messagesServiceFactory.Create(contexts);
-            var maxNumberOfMessages = this._configurationService.GetConfigurationItem<MaxNumberOfMessagesDisplayedByMessageCommandWithoutForce>(contexts.Server.Id).Value;
-            if (messages.Count > maxNumberOfMessages && !command.Force)
-            {
-                await messagesService.SendResponse(x => x.NumberOfMessagesIsHuge(messages.Count));
-                return;
-            }
-
-            if (!messages.Any())
-            {
-                await messagesService.SendResponse(x => x.UserDidntWriteAnyMessageInThisTime(selectedUser));
-                return;
-            }
-
-            var header = $"Messages from user {selectedUser} starting at {timeRange.Start.ToLocalTimeString()}";
-            var lines = messages.Select(x => $"{x.SentAt.ToLocalTimeString()} {x.Author.Name}: {x.Content.Replace("```", "")}");
-            var linesBuilder = new StringBuilder().PrintManyLines(lines.ToArray(), contentStyleBox: true);
-
-            await this._directMessagesService.TrySendMessage(contexts.User.Id, header);
-            await this._directMessagesService.TrySendMessage(contexts.User.Id, linesBuilder.ToString(), MessageType.NormalText);
-
-            await messagesService.SendResponse(x => x.SentByDmMessagesOfAskedUser(messages.Count, selectedUser));
         }
 
         [AdminCommand]
@@ -125,6 +80,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             return this._trustRolesService.StopTrustingRole(trustCommand.Role, contexts);
         }
 
+        /*
         [AdminCommand]
         public async Task GetSafeUsers(SafeUsersCommand safeUsersCommand, Contexts contexts)
         {
@@ -151,6 +107,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
                 $"Lista zaufanych użytkowników na serwerze {contexts.Server.Name}",
                 safeUsersDict);
         }
+        */
 
         [AdminCommand]
         public async Task GetTrustedRoles(TrustedRolesCommand trustedRolesCommand, Contexts contexts)

@@ -15,7 +15,7 @@ namespace Devscord.DiscordFramework.Integration.Services
         {
             //todo add removed, edited etc
             this.client = client;
-            this.client.MessageReceived += this.MessageReceived;
+            this.client.MessageReceived += (message) => this.MessageReceived(message);
         }
     }
 }

@@ -14,7 +14,14 @@ using Watchman.DomainModel.Configuration.Services;
 
 namespace Watchman.Web
 {
-    public class HangfireJobsService
+    public interface IHangfireJobsService
+    {
+        void AddJobs(IContainer container, IRecurringJobManager recurringJobManager);
+        void AddServices(IContainer container, IRecurringJobManager recurringJobManager);
+        void SetDefaultJobs(IContainer container);
+    }
+
+    public class HangfireJobsService : IHangfireJobsService
     {
         public void SetDefaultJobs(IContainer container)
         {
@@ -48,7 +55,7 @@ namespace Watchman.Web
         {
             Assembly.GetAssembly(typeof(HangfireJobsService)).GetTypes()
                 .Where(x => x.IsAssignableTo<IHangfireJob>() && !x.IsInterface)
-                .Select(x => (x.Name, Job: (IHangfireJob) container.Resolve(x))).ToList()
+                .Select(x => (x.Name, Job: (IHangfireJob)container.Resolve(x))).ToList()
                 .ForEach(x =>
                 {
                     recurringJobManager.AddOrUpdate(this.FixJobName(x.Name), () => x.Job.Do(), this.GetCronExpression(x.Job.Frequency));

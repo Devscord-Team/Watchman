@@ -40,6 +40,11 @@ namespace Watchman.IoC.Modules
 
                 foreach (var reference in asm.GetReferencedAssemblies())
                 {
+                    if(!reference.FullName.Contains("Watchman") && !reference.FullName.Contains("Devscord"))
+                    {
+                        continue;
+                    }
+
                     if (!list.Contains(reference.FullName))
                     {
                         stack.Push(Assembly.Load(reference));

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
-using Watchman.DomainModel.Messages;
 
 namespace Watchman.Discord.Areas.Protection.Models
 {
+    /*
     public readonly struct ServerSafeUsers
     {
         public ulong ServerId { get; }
@@ -65,4 +65,5 @@ namespace Watchman.Discord.Areas.Protection.Models
             return date.AddDays(-1 * (int)date.DayOfWeek).Date;
         }
     }
+    */
 }

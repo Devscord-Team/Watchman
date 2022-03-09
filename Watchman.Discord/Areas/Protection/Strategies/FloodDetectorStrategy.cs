@@ -11,12 +11,12 @@ namespace Watchman.Discord.Areas.Protection.Strategies
     public class FloodDetectorStrategy : ISpamDetector
     {
         private readonly IConfigurationService _configurationService;
-        private readonly IUserSafetyChecker _userSafetyChecker;
+        //private readonly IUserSafetyChecker _userSafetyChecker;
 
-        public FloodDetectorStrategy(IUserSafetyChecker userSafetyChecker, IConfigurationService configurationService)
+        public FloodDetectorStrategy(/*IUserSafetyChecker userSafetyChecker,*/ IConfigurationService configurationService)
         {
             this._configurationService = configurationService;
-            this._userSafetyChecker = userSafetyChecker;
+            //this._userSafetyChecker = userSafetyChecker;
         }
 
         public SpamProbability GetSpamProbability(IServerMessagesCacheService serverMessagesCacheService, Contexts contexts)
@@ -32,7 +32,7 @@ namespace Watchman.Discord.Areas.Protection.Strategies
             {
                 return SpamProbability.None;
             }
-            var userIsSafe = this._userSafetyChecker.IsUserSafe(contexts.User.Id, contexts.Server.Id);
+            var userIsSafe = true; //this._userSafetyChecker.IsUserSafe(contexts.User.Id, contexts.Server.Id);
             return userIsSafe switch
             {
                 true when messagesCount < howManyMessagesCount => SpamProbability.None,
