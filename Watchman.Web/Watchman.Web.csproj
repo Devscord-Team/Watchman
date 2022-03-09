@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Areas\Helps\Services\**" />
+    <Content Remove="Areas\Helps\Services\**" />
+    <EmbeddedResource Remove="Areas\Helps\Services\**" />
+    <None Remove="Areas\Helps\Services\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AspNet.Security.OAuth.Discord" Version="5.0.0" />
     <PackageReference Include="HangFire" Version="1.7.17" />
     <PackageReference Include="Hangfire.Core" Version="1.7.17" />
@@ -35,7 +42,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Folder Include="Areas\Helps\Services\" />
     <Folder Include="Areas\Responses\Services\" />
     <Folder Include="Areas\Statistics\Services\" />
   </ItemGroup>
@@ -46,7 +52,7 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-    <Content Update="appsettings.Production.json">
+    <Content Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>

@@ -7,9 +7,9 @@ namespace Watchman.Web.Areas.Channels.Controllers
 {
     public class ChannelsController : BaseApiController
     {
-        private readonly WatchmanService _watchmanService;
+        private readonly IWatchmanService _watchmanService;
 
-        public ChannelsController(WatchmanService watchmanService)
+        public ChannelsController(IWatchmanService watchmanService)
         {
             this._watchmanService = watchmanService;
         }
