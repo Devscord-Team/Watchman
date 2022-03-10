@@ -33,7 +33,10 @@ script:
   - rm /Watchman.Integration.Tests/coverage.opencover.xml
 deploy:
   provider: script
-  script: scripts/travis-deploy.sh
+  script: 
+  - docker build -t $DOCKERHUB_LOGIN/watchman-web .
+  - docker login -p $DOCKERHUB_PASS -u $DOCKERHUB_LOGIN
+  - docker push $DOCKERHUB_LOGIN/watchman-web:latest
   on:
     branch: master
 notifications:
