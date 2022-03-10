@@ -21,8 +21,7 @@ namespace Watchman.Discord.UnitTests.TestObjectFactories
 {
     internal class TestControllersFactory
     {
-        //todo rename other administration controllers
-        internal Areas.Administration.Controllers.AdministrationController CreateAdministrationController(
+        internal AdministrationController CreateAdministrationController(
             Mock<IQueryBus> queryBusMock = null, Mock<IUsersService> usersServiceMock = null, 
             Mock<IDirectMessagesService> directMessagesServiceMock = null, Mock<IMessagesServiceFactory> messagesServiceFactoryMock = null, 
             Mock<IRolesService> rolesServiceMock = null, Mock<ITrustRolesService> trustRolesServiceMock = null,
