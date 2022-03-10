@@ -16,14 +16,27 @@ before_script:
 script:
   - dotnet build --configuration Release
   - dotnet test Watchman.sln /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+  
   - ./codecov -f "/Devscord.DiscordFramework.UnitTests/coverage.opencover.xml"
+  - rm /Devscord.DiscordFramework.UnitTests/coverage.opencover.xml
+  
   - ./codecov -f "/Watchman.Discord.UnitTests/coverage.opencover.xml"
+  - rm /Watchman.Discord.UnitTests/coverage.opencover.xml
+  
   - ./codecov -f "/Watchman.Discord.IntegrationTests/coverage.opencover.xml"
+  - rm /Watchman.Discord.IntegrationTests/coverage.opencover.xml
+  
   - ./codecov -f "/Watchman.DomainModel.UnitTests/coverage.opencover.xml"
+  - rm /Watchman.DomainModel.UnitTests/coverage.opencover.xml
+  
   - ./codecov -f "/Watchman.Integration.Tests/coverage.opencover.xml"
+  - rm /Watchman.Integration.Tests/coverage.opencover.xml
 deploy:
   provider: script
-  script: scripts/travis-deploy.sh
+  script: 
+  - docker build -t $DOCKERHUB_LOGIN/watchman-web .
+  - docker login -p $DOCKERHUB_PASS -u $DOCKERHUB_LOGIN
+  - docker push $DOCKERHUB_LOGIN/watchman-web:latest
   on:
     branch: master
 notifications:
