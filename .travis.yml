@@ -21,6 +21,11 @@ script:
   - ./codecov -f "/Watchman.Discord.IntegrationTests/coverage.opencover.xml"
   - ./codecov -f "/Watchman.DomainModel.UnitTests/coverage.opencover.xml"
   - ./codecov -f "/Watchman.Integration.Tests/coverage.opencover.xml"
+deploy:
+  provider: script
+  script: scripts/travis-deploy.sh
+  on:
+    branch: master
 notifications:
   email:
     on_success: never
