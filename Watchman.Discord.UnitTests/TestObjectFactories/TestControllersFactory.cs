@@ -27,7 +27,7 @@ namespace Watchman.Discord.UnitTests.TestObjectFactories
             Mock<IDirectMessagesService> directMessagesServiceMock = null, Mock<IMessagesServiceFactory> messagesServiceFactoryMock = null, 
             Mock<IRolesService> rolesServiceMock = null, Mock<ITrustRolesService> trustRolesServiceMock = null,
             /*Mock<ICheckUserSafetyService> checkUserSafetyServiceMock = null,*/ Mock<IUsersRolesService> usersRolesServiceMock = null, 
-            Mock<IConfigurationService> configurationServiceMock = null, Mock<IComplaintsChannelService> complaintsChannelServiceMock)
+            Mock<IConfigurationService> configurationServiceMock = null, Mock<IComplaintsChannelService> complaintsChannelServiceMock = null)
         {
             queryBusMock ??= new Mock<IQueryBus>();
             usersServiceMock ??= new Mock<IUsersService>();
