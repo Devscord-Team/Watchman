@@ -27,7 +27,7 @@ namespace Watchman.Discord.UnitTests.TestObjectFactories
             Mock<IDirectMessagesService> directMessagesServiceMock = null, Mock<IMessagesServiceFactory> messagesServiceFactoryMock = null, 
             Mock<IRolesService> rolesServiceMock = null, Mock<ITrustRolesService> trustRolesServiceMock = null,
             /*Mock<ICheckUserSafetyService> checkUserSafetyServiceMock = null,*/ Mock<IUsersRolesService> usersRolesServiceMock = null, 
-            Mock<IConfigurationService> configurationServiceMock = null)
+            Mock<IConfigurationService> configurationServiceMock = null, Mock<IComplaintsChannelService> complaintsChannelServiceMock)
         {
             queryBusMock ??= new Mock<IQueryBus>();
             usersServiceMock ??= new Mock<IUsersService>();
@@ -38,8 +38,9 @@ namespace Watchman.Discord.UnitTests.TestObjectFactories
             //checkUserSafetyServiceMock ??= new Mock<ICheckUserSafetyService>();
             usersRolesServiceMock ??= new Mock<IUsersRolesService>();
             configurationServiceMock ??= new Mock<IConfigurationService>();
+            complaintsChannelServiceMock ??= new Mock<IComplaintsChannelService>();
 
-            return new Areas.Administration.Controllers.AdministrationController(
+            return new AdministrationController(
                 queryBusMock.Object,
                 usersServiceMock.Object,
                 directMessagesServiceMock.Object,
@@ -48,7 +49,8 @@ namespace Watchman.Discord.UnitTests.TestObjectFactories
                 trustRolesServiceMock.Object,
                 //checkUserSafetyServiceMock.Object,
                 usersRolesServiceMock.Object,
-                configurationServiceMock.Object);
+                configurationServiceMock.Object,
+                complaintsChannelServiceMock.Object);
         }
 
         internal MuteUserController CreateMuteUserController(
