@@ -16,4 +16,9 @@ jobs:
         passphrase: ${{ secrets.SSH_KEY_PASS }}
         port: ${{ secrets.PORT }}
         script: |
-          mkdir test123
+          cd watchman-deploy
+          curl -o docker-compose.yml https://raw.githubusercontent.com/Devscord-Team/Watchman/master/docker-compose.yml
+          docker-compose pull
+          docker-compose down
+          docker-compose up -d
+          exit
