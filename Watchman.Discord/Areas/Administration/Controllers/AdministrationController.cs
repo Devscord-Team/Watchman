@@ -34,10 +34,12 @@ namespace Watchman.Discord.Areas.Administration.Controllers
         //private readonly ICheckUserSafetyService _checkUserSafetyService;
         private readonly IUsersRolesService _usersRolesService;
         private readonly IConfigurationService _configurationService;
+        private readonly IComplaintsChannelService complaintsChannelService;
 
         public AdministrationController(IQueryBus queryBus, IUsersService usersService, IDirectMessagesService directMessagesService, 
             IMessagesServiceFactory messagesServiceFactory, IRolesService rolesService, ITrustRolesService trustRolesService, 
-            /*ICheckUserSafetyService checkUserSafetyService,*/ IUsersRolesService usersRolesService, IConfigurationService configurationService)
+            /*ICheckUserSafetyService checkUserSafetyService,*/ IUsersRolesService usersRolesService, IConfigurationService configurationService,
+            IComplaintsChannelService complaintsChannelService)
         {
             this._queryBus = queryBus;
             this._usersService = usersService;
@@ -48,6 +50,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             //this._checkUserSafetyService = checkUserSafetyService;
             this._usersRolesService = usersRolesService;
             this._configurationService = configurationService;
+            this.complaintsChannelService = complaintsChannelService;
         }
 
         [AdminCommand]
@@ -125,6 +128,15 @@ namespace Watchman.Discord.Areas.Administration.Controllers
                 "Zaufane role",
                 $"Lista zaufanych roli na serwerze {contexts.Server.Name}",
                 trustedRolesNames.Select(x => new KeyValuePair<string, string>("Nazwa roli:", x.Name)));
+        }
+
+        [AdminCommand]
+        public async Task CreateChannelForComplaints(ComplaintsChannelCommand command, Contexts contexts)
+        {
+            var complaintsChannelName = string.IsNullOrWhiteSpace(command.Name) ? "skargi" : command.Name;
+            _ = await this.complaintsChannelService.CreateComplaintsChannel(complaintsChannelName, contexts);
+            var messagesService = this._messagesServiceFactory.Create(contexts);
+            await messagesService.SendResponse(x => x.ComplaintsChannelHasBeenCreated());
         }
     }
 }

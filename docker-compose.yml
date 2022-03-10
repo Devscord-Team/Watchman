@@ -1,7 +1,17 @@
 version: '3'
-services: 
+services:
+    mongodb:
+        image: mongo:latest
+        container_name: mongodb
+        ports:
+            - "27017:27017"
+        volumes:
+        - db-data:/data/db
+        - mongo-config:/data/configdb
     watchman-web:
-        image: gagyn/watchman
+        image: marcin99b/watchman-web
+        depends_on:
+            - mongodb
         ports:
             - "8080:80"
         restart: "unless-stopped"
@@ -9,3 +19,6 @@ services:
             - ./appsettings.json:/app/appsettings.json
             - /etc/localtime:/etc/localtime:ro
             - ./logs:/app/logs
+volumes:
+    db-data:
+    mongo-config:
