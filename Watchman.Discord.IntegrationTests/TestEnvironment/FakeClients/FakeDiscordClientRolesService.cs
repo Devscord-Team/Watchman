@@ -22,7 +22,7 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients
 
         public Task<UserRole> CreateNewRole(NewUserRole role, DiscordServerContext discordServer)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(new UserRole(99, "createdRole", 1));
         }
 
         public UserRole GetRole(ulong roleId, ulong guildId)
