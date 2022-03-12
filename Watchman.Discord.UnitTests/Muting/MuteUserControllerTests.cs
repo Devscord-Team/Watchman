@@ -128,5 +128,48 @@ namespace Watchman.Discord.UnitTests.Muting
             //Assert
             commandBusMock.Verify(x => x.ExecuteAsync(It.IsAny<MuteUserOrOverwriteCommand>()), Times.Never);
         }
+
+        [Test, AutoData]
+        public async Task UnmuteUser_ShouldUnmuteUser(UnmuteCommand command)
+        {
+            //Arrange
+            var userContext = testContextsFactory.CreateUserContext(1);
+            var contexts = testContextsFactory.CreateContexts(1, 1, 1);
+
+            var commandBusMock = new Mock<ICommandBus>();
+            var usersServiceMock = new Mock<IUsersService>();
+
+            usersServiceMock.Setup(x => x.GetUserByIdAsync(It.IsAny<DiscordServerContext>(), It.IsAny<ulong>()))
+                .Returns<DiscordServerContext, ulong>((a, b) => Task.FromResult(userContext));
+
+            var controller = this.testControllersFactory.CreateMuteUserController(commandBusMock: commandBusMock, usersServiceMock: usersServiceMock);
+
+            //Act
+            await controller.UnmuteUser(command, contexts);
+
+            //Assert
+            commandBusMock.Verify(x => x.ExecuteAsync(It.IsAny<UnmuteNowCommand>()), Times.Once);
+        }
+
+        [Test, AutoData]
+        public void UnmuteUser_ShouldThrowExceptionIfUserNotExist(UnmuteCommand command)
+        {
+            //Arrange
+            var contexts = testContextsFactory.CreateContexts(1, 1, 1);
+
+            var commandBusMock = new Mock<ICommandBus>();
+            var usersServiceMock = new Mock<IUsersService>();
+
+            usersServiceMock.Setup(x => x.GetUserByIdAsync(It.IsAny<DiscordServerContext>(), It.IsAny<ulong>()))
+                .Returns<DiscordServerContext, ulong>((a, b) => Task.FromResult(null as UserContext));
+
+            var controller = this.testControllersFactory.CreateMuteUserController(commandBusMock: commandBusMock, usersServiceMock: usersServiceMock);
+
+            //Act
+            Assert.ThrowsAsync<UserNotFoundException>(() => controller.UnmuteUser(command, contexts));
+
+            //Assert
+            commandBusMock.Verify(x => x.ExecuteAsync(It.IsAny<UnmuteNowCommand>()), Times.Never);
+        }
     }
 }
