@@ -11,7 +11,7 @@ using Watchman.DomainModel.Configuration.Services;
 using Watchman.DomainModel.Protection.Complaints.Commands;
 using Watchman.DomainModel.Protection.Complaints.Queries;
 
-namespace Watchman.Discord.Areas.Protection.Services
+namespace Watchman.Discord.Areas.Administration.Services
 {
     public interface IComplaintsChannelService
     {

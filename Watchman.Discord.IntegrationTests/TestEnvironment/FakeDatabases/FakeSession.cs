@@ -8,7 +8,7 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeDatabases
 {
     internal class FakeSession : ISession
     {
-        public Dictionary<string, List<object>> database = new Dictionary<string, List<object>>();
+        public static Dictionary<string, List<object>> database = new Dictionary<string, List<object>>();
 
         public T Get<T>(Guid id) where T : Entity
         {
@@ -23,7 +23,7 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeDatabases
         public Task AddAsync<T>(T entity) where T : Entity
         {
             var name = this.GetCollectionName<T>();
-            this.database[name].Add(entity);
+            database[name].Add(entity);
             return Task.CompletedTask;
         }
 
@@ -59,7 +59,7 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeDatabases
             var index = this.FindIndex(entity);
             if (index != -1)
             {
-                this.database[name].RemoveAt(index);
+                database[name].RemoveAt(index);
             }
             return Task.CompletedTask;
         }
@@ -76,15 +76,15 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeDatabases
         private List<T> GetCollection<T>() where T : Entity
         {
             var name = this.GetCollectionName<T>();
-            return this.database[name].Select(x => (T) x).ToList();
+            return database[name].Select(x => (T) x).ToList();
         }
 
         private string GetCollectionName<T>() where T : Entity
         {
             var typeName = typeof(T).FullName;
-            if (!this.database.ContainsKey(typeName))
+            if (!database.ContainsKey(typeName))
             {
-                this.database.Add(typeName, new List<object>());
+                database.Add(typeName, new List<object>());
             }
             return typeName;
         }

@@ -8,7 +8,12 @@ using Watchman.Discord.Integration.Channels.Commands;
 
 namespace Watchman.Web.Areas.Commons.Integration
 {
-    public class WatchmanService
+    public interface IWatchmanService
+    {
+        Task SendMessageToChannel(ulong guildId, ulong channelId, string message);
+    }
+
+    public class WatchmanService : IWatchmanService
     {
         private readonly ICommandBus _commandBus;
 

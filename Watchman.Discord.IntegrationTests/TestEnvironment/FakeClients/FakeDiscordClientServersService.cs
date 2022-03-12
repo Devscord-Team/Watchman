@@ -21,6 +21,12 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients
 
         private List<ChannelContext> channelContexts = new List<ChannelContext>()
         {
+            new ChannelContext(0, "zero"),
+            new ChannelContext(1, "a"),
+            new ChannelContext(2, "b"),
+            new ChannelContext(3, "c"),
+            new ChannelContext(4, "d"),
+            new ChannelContext(5, "e"),
         };
 
         public Task<IGuild> GetGuild(ulong guildId)
@@ -50,7 +56,7 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients
         public Task<DiscordServerContext> GetDiscordServerAsync(ulong serverId)
         {
             var landingChannel = new ChannelContext(1, "landing");
-            var server = new DiscordServerContext(1, "Test", () => null, landingChannel, _ => this.channelContexts, _ => null, _ => null);
+            var server = new DiscordServerContext(1, "Test", () => new UserContext(1, "test", null, null, null, null, null), landingChannel, _ => this.channelContexts, _ => null, _ => null);
             return Task.FromResult(server);
         }
 

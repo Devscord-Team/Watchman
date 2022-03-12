@@ -6,9 +6,9 @@ namespace Watchman.Discord.Integration.Channels.Commands.Handlers
 {
     public class SendMessageToChannelCommandHandler : ICommandHandler<SendMessageToChannelCommand>
     {
-        private readonly MessagesServiceFactory _messagesServiceFactory;
+        private readonly IMessagesServiceFactory _messagesServiceFactory;
 
-        public SendMessageToChannelCommandHandler(MessagesServiceFactory messagesServiceFactory)
+        public SendMessageToChannelCommandHandler(IMessagesServiceFactory messagesServiceFactory)
         {
             this._messagesServiceFactory = messagesServiceFactory;
         }

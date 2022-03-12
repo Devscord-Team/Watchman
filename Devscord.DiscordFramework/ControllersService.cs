@@ -54,10 +54,15 @@ namespace Devscord.DiscordFramework
             if (request.IsCommandForBot)
             {
                 var discordCommandMethods = this._controllersContainer.WithDiscordCommand;
-                commandsTask = Task.Run(() => this.RunMethods(request, contexts, discordCommandMethods, false));
-
+                if(discordCommandMethods.Any())
+                {
+                    commandsTask = Task.Run(() => this.RunMethods(request, contexts, discordCommandMethods, false));
+                }
                 var discordBotCommandMethods = this._controllersContainer.WithIBotCommand;
-                botCommandsTask = Task.Run(() => this.RunMethodsIBotCommand(request, contexts, discordBotCommandMethods));
+                if (discordBotCommandMethods.Any())
+                {
+                    botCommandsTask = Task.Run(() => this.RunMethodsIBotCommand(request, contexts, discordBotCommandMethods));
+                }
             }
 
             // ReadAlwaysMethods should be first in throwing exception, bcs every ReadAlways exception is Error

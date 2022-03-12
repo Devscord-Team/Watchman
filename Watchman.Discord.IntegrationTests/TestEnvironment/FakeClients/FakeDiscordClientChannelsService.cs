@@ -15,6 +15,7 @@ using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Commands.Parsing.Models;
 using System.IO;
+using Watchman.Discord.IntegrationTests.TestEnvironment.Models;
 
 namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients
 {
@@ -40,17 +41,17 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients
 
         public Task<IChannel> GetChannel(ulong channelId, IGuild guild)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(new FakeChannel() { Id = 5, Name = "TestSystemChannel" } as IChannel);
         }
 
         public IChannel GetChannel(ulong channelId, ulong serverId)
         {
-            throw new NotImplementedException();
+            return new FakeChannel() { Id = 5, Name = "TestSystemChannel" } as IChannel;
         }
 
         public Task<IGuildChannel> GetGuildChannel(ulong channelId, IGuild guild = null)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(new FakeChannel() { Id = 5, Name = "TestSystemChannel" } as IGuildChannel);
         }
 
         public IAsyncEnumerable<Message> GetMessages(DiscordServerContext server, ChannelContext channel, int limit, ulong fromMessageId = 0, bool goBefore = true)
@@ -60,27 +61,27 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients
 
         public Task<bool> CanBotReadTheChannelAsync(IMessageChannel textChannel)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(false);
         }
 
         public Task<ITextChannel> CreateNewChannelAsync(ulong serverId, string channelName)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(new FakeChannel() { Id = 5, Name = "TestSystemChannel" } as ITextChannel);
         }
 
         public Task SetRolePermissions(IEnumerable<ChannelContext> channels, DiscordServerContext server, ChangedPermissions permissions, UserRole role)
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
 
         public Task SetRolePermissions(ChannelContext channel, DiscordServerContext server, ChangedPermissions permissions, UserRole role)
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
 
         public Task RemoveRolePermissions(ChannelContext channel, DiscordServerContext server, UserRole role)
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
     }
 }
