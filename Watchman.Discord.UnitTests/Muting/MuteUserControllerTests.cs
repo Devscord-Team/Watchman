@@ -1,8 +1,10 @@
 ﻿using AutoFixture;
 using AutoFixture.NUnit3;
+using Devscord.DiscordFramework.Commands.Responses;
 using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
+using Devscord.DiscordFramework.Services.Factories;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -12,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Protection.BotCommands;
+using Watchman.Discord.Areas.Protection.Commands;
 using Watchman.Discord.Areas.Protection.Services;
 using Watchman.Discord.Areas.Protection.Services.Commands;
 using Watchman.Discord.UnitTests.TestObjectFactories;
@@ -170,6 +173,50 @@ namespace Watchman.Discord.UnitTests.Muting
 
             //Assert
             commandBusMock.Verify(x => x.ExecuteAsync(It.IsAny<UnmuteNowCommand>()), Times.Never);
+        }
+
+        [Test, AutoData]
+        public async Task GetMutedUsers_ShouldSendMutedUsersDirectMessage(MutedUsersCommand command)
+        {
+            //Arrange
+            var contexts = testContextsFactory.CreateContexts(1, 1, 1);
+            var messagesServiceMock = new Mock<IMessagesService>();
+
+            var commandBusMock = new Mock<ICommandBus>();
+            var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
+
+            messagesServiceFactoryMock.Setup(x => x.Create(It.IsAny<Contexts>()))
+                .Returns(messagesServiceMock.Object);
+
+            var controller = this.testControllersFactory.CreateMuteUserController(commandBusMock: commandBusMock, messagesServiceFactoryMock: messagesServiceFactoryMock);
+
+            //Act
+            await controller.GetMutedUsers(command, contexts);
+
+            //Assert
+            commandBusMock.Verify(x => x.ExecuteAsync(It.IsAny<SendMutedUsersDirectMessageCommand>()), Times.Once);
+        }
+
+        [Test, AutoData]
+        public async Task GetMutedUsers_ShouldSendMutedUsersListSentResponse(MutedUsersCommand command)
+        {
+            //Arrange
+            var contexts = testContextsFactory.CreateContexts(1, 1, 1);
+            var messagesServiceMock = new Mock<IMessagesService>();
+
+            var commandBusMock = new Mock<ICommandBus>();
+            var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
+
+            messagesServiceFactoryMock.Setup(x => x.Create(It.IsAny<Contexts>()))
+                .Returns(messagesServiceMock.Object);
+
+            var controller = this.testControllersFactory.CreateMuteUserController(commandBusMock: commandBusMock, messagesServiceFactoryMock: messagesServiceFactoryMock);
+
+            //Act
+            await controller.GetMutedUsers(command, contexts);
+
+            //Assert
+            messagesServiceMock.Verify(x => x.SendResponse(It.IsAny<Func<IResponsesService, string>>()), Times.Once);
         }
     }
 }
