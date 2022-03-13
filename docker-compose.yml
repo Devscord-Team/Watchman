@@ -12,7 +12,7 @@ services:
         image: marcin99b/watchman-web
         depends_on:
             - mongodb
-        ports:
+        #ports:
             #- "8080:80" - uncomment when auth will be done
         restart: "unless-stopped"
         volumes:
