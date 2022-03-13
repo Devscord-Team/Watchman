@@ -68,7 +68,5 @@ namespace Watchman.Discord.IntegrationTests
             //Act
             Assert.DoesNotThrowAsync(() => commandsRunner.SendMessage("-help"));
         }
-
-        
     }
 }
