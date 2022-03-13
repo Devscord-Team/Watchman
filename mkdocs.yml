@@ -16,6 +16,7 @@ nav:
       - "Jak działa konfiguracja": 11-jak-dziala-konfiguracja.md
       - 'Co się dzieje podczas inicjalizacji': 194-inicjalizacja.md
   - "Watchman V2":
+    - "Getting started": WatchmanV2/0-getting-started.md
     - "Postanowienia": WatchmanV2/1-postanowienia.md
     - "Testowanie i refaktoryzacja": WatchmanV2/2-testowanie-i-refaktoryzacja.md
     - "Co jest czym": WatchmanV2/3-co-jest-czym.md
