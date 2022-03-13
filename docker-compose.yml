@@ -3,8 +3,8 @@ services:
     mongodb:
         image: mongo:latest
         container_name: mongodb
-        ports:
-            - "27017:27017"
+        #ports:
+        #    - "27017:27017"
         volumes:
         - db-data:/data/db
         - mongo-config:/data/configdb
@@ -12,8 +12,8 @@ services:
         image: marcin99b/watchman-web
         depends_on:
             - mongodb
-        ports:
-            - "8080:80"
+        #ports:
+            #- "8080:80" - uncomment when auth will be done
         restart: "unless-stopped"
         volumes:
             - ./appsettings.json:/app/appsettings.json
