@@ -40,7 +40,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             this._spamPunishmentStrategy = spamPunishmentStrategy;
         }
 
-        [ReadAlways]
+        //[ReadAlways] //TODO IMPORTANT
         public async Task Scan(DiscordRequest request, Contexts contexts)
         {
             this._serverMessagesCacheService.AddMessage(request, contexts);
