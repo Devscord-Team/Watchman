@@ -11,9 +11,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord.Rest;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Devscord.DiscordFramework.Integration.Services
 {
+    [ExcludeFromCodeCoverage]
     internal class DiscordClientRolesService : IDiscordClientRolesService
     {
         public Func<IRole, IRole, Task> RoleUpdated { get; set; }

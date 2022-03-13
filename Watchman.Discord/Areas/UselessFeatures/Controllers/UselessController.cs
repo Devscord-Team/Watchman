@@ -6,6 +6,8 @@ using Devscord.DiscordFramework.Services.Factories;
 using System.Threading.Tasks;
 using Watchman.Discord.Areas.UselessFeatures.BotCommands;
 using Watchman.Integrations.Images;
+using System.Web;
+using Devscord.DiscordFramework.Commands.Responses;
 
 namespace Watchman.Discord.Areas.UselessFeatures.Controllers
 {
@@ -46,6 +48,14 @@ namespace Watchman.Discord.Areas.UselessFeatures.Controllers
             const string urlAddress = "https://www.nohello.com/";
             var messagesService = this._messagesServiceFactory.Create(contexts);
             return messagesService.SendMessage(urlAddress);
+        }
+
+        public Task PrintGoogle(GoogleCommand googleCommand, Contexts contexts)
+        {
+            const string GOOGLE_BASE_URL = "http://letmegooglethat.com/?q=";
+            var searchLink = GOOGLE_BASE_URL + HttpUtility.UrlEncode(googleCommand.Search);
+            var messagesService = this._messagesServiceFactory.Create(contexts);
+            return messagesService.SendResponse(x => x.TryToGoogleIt(searchLink));
         }
     }
 }

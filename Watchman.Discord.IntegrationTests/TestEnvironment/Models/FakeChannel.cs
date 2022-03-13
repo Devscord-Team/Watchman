@@ -169,17 +169,17 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
 
         public Task<IUserMessage> SendFileAsync(string filePath, string text = null, bool isTTS = false, Embed embed = null, RequestOptions options = null, bool isSpoiler = false)
         {
-            return Task.FromResult(null as IUserMessage);
+            return Task.FromResult(new FakeMessage() as IUserMessage);
         }
 
         public Task<IUserMessage> SendFileAsync(Stream stream, string filename, string text = null, bool isTTS = false, Embed embed = null, RequestOptions options = null, bool isSpoiler = false)
         {
-            return Task.FromResult(null as IUserMessage);
+            return Task.FromResult(new FakeMessage() as IUserMessage);
         }
 
         public Task<IUserMessage> SendMessageAsync(string text = null, bool isTTS = false, Embed embed = null, RequestOptions options = null)
         {
-            return Task.FromResult(null as IUserMessage);
+            return Task.FromResult(new FakeMessage() as IUserMessage);
         }
 
         public Task SyncPermissionsAsync(RequestOptions options = null)

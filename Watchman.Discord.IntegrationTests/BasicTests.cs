@@ -45,6 +45,21 @@ namespace Watchman.Discord.IntegrationTests
         }
 
         [Test]
+        [TestCase("-dontask")]
+        [TestCase("-google -search test")]
+        [TestCase("-marchew")]
+        [TestCase("-maruda")]
+        [TestCase("-nohello")]
+        public void UselessFeatures_ShouldNotThrowException(string commandName)
+        {
+            //Arrange
+            var commandsRunner = this.testWatchmanBotFactory.CreateCommandsRunner();
+
+            //Act
+            Assert.DoesNotThrowAsync(() => commandsRunner.SendMessage(commandName));
+        }
+
+        [Test]
         public void Help_ShouldNotThrowException()
         {
             //Arrange

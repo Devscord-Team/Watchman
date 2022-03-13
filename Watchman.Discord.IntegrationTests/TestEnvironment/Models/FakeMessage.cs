@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
 {
-    internal class FakeMessage : IMessage
+    internal class FakeMessage : IMessage, IUserMessage
     {
         public MessageType Type { get; set; }
 
@@ -68,6 +68,21 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
             throw new NotImplementedException();
         }
 
+        public Task ModifyAsync(Action<MessageProperties> func, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task ModifySuppressionAsync(bool suppressEmbeds, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task PinAsync(RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task RemoveAllReactionsAsync(RequestOptions options = null)
         {
             return Task.CompletedTask;
@@ -81,6 +96,16 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
         public Task RemoveReactionAsync(IEmote emote, ulong userId, RequestOptions options = null)
         {
             return Task.CompletedTask;
+        }
+
+        public string Resolve(TagHandling userHandling = TagHandling.Name, TagHandling channelHandling = TagHandling.Name, TagHandling roleHandling = TagHandling.Name, TagHandling everyoneHandling = TagHandling.Ignore, TagHandling emojiHandling = TagHandling.Name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UnpinAsync(RequestOptions options = null)
+        {
+            throw new NotImplementedException();
         }
     }
 }
