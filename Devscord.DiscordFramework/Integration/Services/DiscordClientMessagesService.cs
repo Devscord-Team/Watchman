@@ -2,10 +2,12 @@
 using Discord;
 using Discord.WebSocket;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework.Integration.Services
 {
+    [ExcludeFromCodeCoverage]
     internal class DiscordClientMessagesService : IDiscordClientMessagesService
     {
         private readonly DiscordSocketClient client;
