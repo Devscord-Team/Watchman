@@ -1,16 +1,12 @@
-name: .NET Core
-
+name: Build and Test
 on:
   push:
     branches: [ '*' ]
   pull_request:
     branches: [ '*' ]
-
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET Core
@@ -22,4 +18,12 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Test
-      run: dotnet test --no-restore --verbosity normal
+      run: |
+        curl -Os https://uploader.codecov.io/latest/linux/codecov
+        chmod +x codecov
+        dotnet test Watchman.sln /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+        ./codecov -f "/Devscord.DiscordFramework.UnitTests/coverage.opencover.xml"
+        ./codecov -f "/Watchman.Discord.UnitTests/coverage.opencover.xml"
+        ./codecov -f "/Watchman.Discord.IntegrationTests/coverage.opencover.xml"
+        ./codecov -f "/Watchman.DomainModel.UnitTests/coverage.opencover.xml"
+        ./codecov -f "/Watchman.Integration.Tests/coverage.opencover.xml"
