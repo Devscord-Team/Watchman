@@ -1,4 +1,4 @@
-name: Build and Test
+name: .NET 6.0 Build and TesT
 on:
   push:
     branches: [ '*' ]
