@@ -64,12 +64,49 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
 
         public bool IsStreaming { get; set; }
 
+        public UserProperties? PublicFlags => throw new NotImplementedException();
+
+        public IReadOnlyCollection<IActivity> Activities => throw new NotImplementedException();
+
+        public string DisplayName => throw new NotImplementedException();
+
+        public string DisplayAvatarId => throw new NotImplementedException();
+
+        public string GuildAvatarId => throw new NotImplementedException();
+
+        public bool? IsPending => throw new NotImplementedException();
+
+        public int Hierarchy => throw new NotImplementedException();
+
+        public DateTimeOffset? TimedOutUntil => throw new NotImplementedException();
+
+        public bool IsVideoing => throw new NotImplementedException();
+
+        public DateTimeOffset? RequestToSpeakTimestamp => throw new NotImplementedException();
+
+        IReadOnlyCollection<ClientType> IPresence.ActiveClients => throw new NotImplementedException();
+
         public Task AddRoleAsync(IRole role, RequestOptions options = null)
         {
             throw new NotImplementedException();
         }
 
+        public Task AddRoleAsync(ulong roleId, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task AddRolesAsync(IEnumerable<IRole> roles, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task AddRolesAsync(IEnumerable<ulong> roleIds, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IDMChannel> CreateDMChannelAsync(RequestOptions options = null)
         {
             throw new NotImplementedException();
         }
@@ -80,6 +117,16 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
         }
 
         public string GetDefaultAvatarUrl()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetDisplayAvatarUrl(ImageFormat format = ImageFormat.Auto, ushort size = 128)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetGuildAvatarUrl(ImageFormat format = ImageFormat.Auto, ushort size = 128)
         {
             throw new NotImplementedException();
         }
@@ -109,7 +156,27 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
             throw new NotImplementedException();
         }
 
+        public Task RemoveRoleAsync(ulong roleId, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task RemoveRolesAsync(IEnumerable<IRole> roles, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RemoveRolesAsync(IEnumerable<ulong> roleIds, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RemoveTimeOutAsync(RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SetTimeOutAsync(TimeSpan span, RequestOptions options = null)
         {
             throw new NotImplementedException();
         }
