@@ -15,7 +15,7 @@ services:
         environment:
             - ACCEPT_EULA=Y
         ports:
-            - "5341:5341"
+            - "80:8001"
     watchman-web:
         image: marcin99b/watchman-web:latest
         depends_on:
