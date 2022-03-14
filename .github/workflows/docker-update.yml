@@ -1,4 +1,4 @@
-name: .NET Core
+name: Docker build and update
 
 on:
   push:
