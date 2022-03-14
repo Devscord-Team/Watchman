@@ -8,4 +8,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install dependencies
-      run: docker build -t ${{ secrets.DOCKER_LOGIN }}/watchman-web . && docker login -p ${{ secrets.DOCKER_PASS }} -u ${{ secrets.DOCKER_LOGIN }} && docker push ${{ secrets.DOCKER_LOGIN }}/watchman-web:latest
+      run: |
+        docker build -t ${{ secrets.DOCKER_LOGIN }}/watchman-web .
+        docker login -u ${{ secrets.DOCKER_LOGIN }} -p ${{ secrets.DOCKER_PASS }} 
+        docker push ${{ secrets.DOCKER_LOGIN }}/watchman-web:latest
