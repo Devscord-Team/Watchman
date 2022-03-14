@@ -16,6 +16,7 @@ services:
             - ACCEPT_EULA=Y
         ports:
             - "80:8001"
+            - "443:4431"
     watchman-web:
         image: marcin99b/watchman-web:latest
         depends_on:
