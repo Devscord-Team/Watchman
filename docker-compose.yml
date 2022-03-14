@@ -6,19 +6,30 @@ services:
         #ports:
         #    - "27017:27017"
         volumes:
-        - db-data:/data/db
-        - mongo-config:/data/configdb
+            - db-data:/data/db
+            - mongo-config:/data/configdb
+    seq:
+        image: datalust/seq:latest
+        restart: "unless-stopped"
+        volumes:
+            - datadrive:/data
+        environment:
+            - ACCEPT_EULA=Y
+        ports:
+            - "5341:5341"
+            - "80:80"
     watchman-web:
-        image: marcin99b/watchman-web
+        image: marcin99b/watchman-web:latest
         depends_on:
             - mongodb
+            - seq
         #ports:
             #- "8080:80" - uncomment when auth will be done
         restart: "unless-stopped"
         volumes:
             - ./appsettings.json:/app/appsettings.json
             - /etc/localtime:/etc/localtime:ro
-            - ./logs:/app/logs
 volumes:
     db-data:
     mongo-config:
+    datadrive:
