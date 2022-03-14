@@ -46,11 +46,23 @@ namespace Devscord.DiscordFramework
             {
                 this.LoadControllers();
             }
-            var readAlwaysMethods = this._controllersContainer.WithReadAlways;
-            var readAlwaysTask = Task.Run(() => this.RunMethods(request, contexts, readAlwaysMethods, true));
+            using var _ = LogContext.PushProperty("MessageId", contexts.Message.MessageId);
+            Log.Information("Start processing request {message} that is recognized as command {isCommand} from user {userId} on channel {channelId} on server {serverId}", 
+                request.OriginalMessage, 
+                request.IsCommandForBot,
+                contexts.User.Id,
+                contexts.Channel.Id,
+                contexts.Server.Id);
 
+            Task readAlwaysTask = null;
             Task commandsTask = null;
             Task botCommandsTask = null;
+
+            var readAlwaysMethods = this._controllersContainer.WithReadAlways;
+            if(readAlwaysMethods.Any())
+            {
+                readAlwaysTask = Task.Run(() => this.RunMethods(request, contexts, readAlwaysMethods, true));
+            }
             if (request.IsCommandForBot)
             {
                 var discordCommandMethods = this._controllersContainer.WithDiscordCommand;
@@ -66,7 +78,10 @@ namespace Devscord.DiscordFramework
             }
 
             // ReadAlwaysMethods should be first in throwing exception, bcs every ReadAlways exception is Error
-            await readAlwaysTask;
+            if(readAlwaysTask != null)
+            {
+                await readAlwaysTask;
+            }
             if (commandsTask != null)
             {
                 await commandsTask;
@@ -94,6 +109,7 @@ namespace Devscord.DiscordFramework
                 {
                     if (isReadAlways)
                     {
+                        Log.Information("Invoking command {invokedCommand}", method.Name);
                         var task = InvokeMethod(request, contexts, controllerInfo, method);
                         tasks.Add(task);
                         continue;
@@ -102,6 +118,7 @@ namespace Devscord.DiscordFramework
                     var command = method.GetAttributeInstances<DiscordCommand>();
                     if (this.IsMatchedCommand(command, request) && this.IsValid(contexts, method))
                     {
+                        Log.Information("Invoking command {invokedCommand}", command.First().Command);
                         var task = InvokeMethod(request, contexts, controllerInfo, method);
                         tasks.Add(task);
                     }
@@ -136,6 +153,7 @@ namespace Devscord.DiscordFramework
                         return;
                     }
                     var command = this.CreateBotCommand(isThereDefaultCommandWithGivenName, template, commandInParameterType, request, customCommand?.Template, isCommandMatchedWithCustom);
+                    Log.Information("Invoking command {invokedCommand}", command.GetType().Name);
                     await InvokeMethod(command, contexts, controllerInfo, method);
                 }
             }

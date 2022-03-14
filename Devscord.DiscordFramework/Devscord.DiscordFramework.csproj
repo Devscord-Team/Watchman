@@ -5,9 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="6.0.0" />
-    <PackageReference Include="Discord.Net" Version="2.2.0" />
-    <PackageReference Include="PCRE.NET" Version="0.13.1" />
+    <PackageReference Include="Autofac" Version="6.3.0" />
+    <PackageReference Include="Discord.Net" Version="3.4.1" />
+    <PackageReference Include="PCRE.NET" Version="0.18.1" />
     <PackageReference Include="Serilog" Version="2.10.0" />
   </ItemGroup>
 
