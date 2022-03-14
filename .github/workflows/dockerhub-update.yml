@@ -1,5 +1,4 @@
-name: Docker build and update
-
+name: Update DockerHub
 on:
   push:
     branches: [ 'master' ]
