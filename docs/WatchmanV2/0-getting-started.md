@@ -38,12 +38,15 @@ Plik `appsettings` uzupełniamy
   },
   "ConnectionStrings": {
     "Mongo": "mongodb://localhost:27017/devscord",
-    "Lite": "watchman.db",
-    "Seq": "http://localhost:5341"
+    "Lite": "watchman.db"
   },
   "Discord": {
     "Token": "",
     "SendOnlyUnknownExceptionInfo": true
+  },
+  "Seq": {
+    "Address": "http://localhost:5341",
+    "ApiKey": ""
   }
 }
 ```
