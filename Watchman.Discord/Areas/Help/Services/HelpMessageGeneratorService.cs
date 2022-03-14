@@ -61,7 +61,11 @@ namespace Watchman.Discord.Areas.Help.Services
                     : "```");
             }
             var parametersResponse = this._responsesService.GetResponse(server.Id, x => x.Parameters());
-            yield return new KeyValuePair<string, string>($"__{parametersResponse}__", helpBuilder.ToString());
+            var helpBuilderResult = helpBuilder.ToString();
+            if (!string.IsNullOrWhiteSpace(helpBuilderResult))
+            {
+                yield return new KeyValuePair<string, string>($"__{parametersResponse}__", helpBuilderResult);
+            }
             var exampleCommandUsage = helpInformation.ExampleUsage ?? this._helpExampleUsageGenerator.GetExampleUsage(helpInformation, server);
             yield return new KeyValuePair<string, string>($"__{exampleResponse}__", exampleCommandUsage);
         }
