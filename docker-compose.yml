@@ -27,7 +27,6 @@ services:
         volumes:
             - ./appsettings.json:/app/appsettings.json
             - /etc/localtime:/etc/localtime:ro
-            - ./logs:/app/logs
 volumes:
     db-data:
     mongo-config:
