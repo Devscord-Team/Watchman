@@ -28,7 +28,7 @@ namespace Watchman.Integrations.Logging
                     restrictedToMinimumLevel: LogEventLevel.Warning,
                     outputTemplate: "[{Timestamp:dd-MM-yyyy} - {Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
                 .WriteTo.Debug(restrictedToMinimumLevel: LogEventLevel.Information)
-                .WriteTo.Seq(configuration.GetConnectionString("Seq"), LogEventLevel.Information)
+                .WriteTo.Seq(configuration["Seq:Address"], LogEventLevel.Information, apiKey: configuration["Seq:ApiKey"])
                 .CreateLogger();
             return logger;
         }
