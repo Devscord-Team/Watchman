@@ -12,11 +12,12 @@ services:
         image: datalust/seq:latest
         restart: "unless-stopped"
         volumes:
-            - /datadrive:/data
+            - datadrive:/data
         environment:
             - ACCEPT_EULA=Y
         ports:
-            - "5341:80"
+            - "5341:5341"
+            - "80:80"
     watchman-web:
         image: marcin99b/watchman-web:latest
         depends_on:
@@ -31,3 +32,4 @@ services:
 volumes:
     db-data:
     mongo-config:
+    datadrive:
