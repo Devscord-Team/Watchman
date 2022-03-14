@@ -1,6 +1,5 @@
 name: Production deploy
 on:
-  workflow_dispatch:
   push:
     branches: [ 'release' ]
 jobs:
