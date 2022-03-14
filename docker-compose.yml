@@ -10,6 +10,7 @@ services:
             - mongo-config:/data/configdb
     seq:
         image: datalust/seq:latest
+        restart: "unless-stopped"
         volumes:
             - /datadrive:/data
         environment:
