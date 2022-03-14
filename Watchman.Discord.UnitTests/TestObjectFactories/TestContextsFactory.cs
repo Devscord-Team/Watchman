@@ -56,7 +56,7 @@ namespace Watchman.Discord.UnitTests.TestObjectFactories
 
         public MessageContext CreateMessageContext()
         {
-            return new MessageContext(DateTime.UtcNow.AddMilliseconds(-500), false);
+            return new MessageContext(fixture.Create<ulong>(), DateTime.UtcNow.AddMilliseconds(-500), false);
         }
     }
 }

@@ -1,37 +1,34 @@
-﻿using MongoDB.Driver;
+﻿using Microsoft.Extensions.Configuration;
+using MongoDB.Driver;
 using Serilog;
 using Serilog.Events;
 using Serilog.Formatting.Json;
 using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using Serilog.Sinks.Seq;
 
 namespace Watchman.Integrations.Logging
 {
+    [ExcludeFromCodeCoverage]
     public class SerilogInitializer
     {
-        public static ILogger Initialize(IMongoDatabase mongoDatabase)
+        public static ILogger Initialize(IConfigurationRoot configuration)
         {
 #if DEBUG
             Serilog.Debugging.SelfLog.Enable(msg => Debug.WriteLine(msg));
 #endif
-            var jsonFormatter = new JsonFormatter(closingDelimiter: $",{Environment.NewLine}");
             var logger = new LoggerConfiguration()
                 .MinimumLevel.Verbose()
                 .Enrich.FromLogContext()
                 .Enrich.WithThreadId()
                 .Enrich.WithMachineName()
                 .Enrich.WithEnvironmentUserName()
-                .WriteTo.File(
-                    jsonFormatter, 
-                    "logs/log-.json", 
-                    rollingInterval: RollingInterval.Hour, 
-                    shared: true, 
-                    flushToDiskInterval: TimeSpan.FromSeconds(15), 
-                    restrictedToMinimumLevel: LogEventLevel.Information)
                 .WriteTo.Console(
                     restrictedToMinimumLevel: LogEventLevel.Warning,
                     outputTemplate: "[{Timestamp:dd-MM-yyyy} - {Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
                 .WriteTo.Debug(restrictedToMinimumLevel: LogEventLevel.Information)
+                .WriteTo.Seq(configuration.GetConnectionString("Seq"), LogEventLevel.Information)
                 .CreateLogger();
             return logger;
         }

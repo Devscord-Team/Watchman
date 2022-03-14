@@ -53,9 +53,28 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
 
         public ulong Id { get; set; }
 
+        public bool MentionedEveryone => throw new NotImplementedException();
+
+        public string CleanContent => throw new NotImplementedException();
+
+        public IReadOnlyCollection<IMessageComponent> Components => throw new NotImplementedException();
+
+        public IReadOnlyCollection<IStickerItem> Stickers => throw new NotImplementedException();
+
+        public MessageFlags? Flags => throw new NotImplementedException();
+
+        public IMessageInteraction Interaction => throw new NotImplementedException();
+
+        public IUserMessage ReferencedMessage => throw new NotImplementedException();
+
         public Task AddReactionAsync(IEmote emote, RequestOptions options = null)
         {
             return Task.CompletedTask;
+        }
+
+        public Task CrosspostAsync(RequestOptions options = null)
+        {
+            throw new NotImplementedException();
         }
 
         public Task DeleteAsync(RequestOptions options = null)
@@ -86,6 +105,11 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
         public Task RemoveAllReactionsAsync(RequestOptions options = null)
         {
             return Task.CompletedTask;
+        }
+
+        public Task RemoveAllReactionsForEmoteAsync(IEmote emote, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
         }
 
         public Task RemoveReactionAsync(IEmote emote, IUser user, RequestOptions options = null)

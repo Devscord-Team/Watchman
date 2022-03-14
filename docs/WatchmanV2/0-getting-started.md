@@ -4,6 +4,7 @@
 
 - .NET 6.0
 - MongoDB
+- Seq
 - Konto discord z włączonym trybem developera (pozwala na kopiowanie ID serwerów/kanałów/użytkowników)
 - Własny serwer discord z stworzoną instancją bota (polecam skorzystać z [Dokumentacji od Discorda](https://discord.com/developers/docs/intro)
 
@@ -23,6 +24,7 @@ Tryb `Debug` w którym będziesz domyślnie testować aplikacje, obsługuje jedy
 Ich struktura powinna być identyczna, `appsettings.json` jest używany jeśli odpalamy aplikacje w trybie `release`, a `appsettings.Development.json` jeśli w trybie `debug` (domyślny).
 
 Plik `appsettings` uzupełniamy
+
 ```json
 {
   "Logging": {
@@ -36,14 +38,16 @@ Plik `appsettings` uzupełniamy
   },
   "ConnectionStrings": {
     "Mongo": "mongodb://localhost:27017/devscord",
-    "Lite": "watchman.db"
+    "Lite": "watchman.db",
+    "Seq": "http://localhost:5341"
   },
   "Discord": {
     "Token": "",
-    "SendOnlyUnknownExceptionInfo":  true
+    "SendOnlyUnknownExceptionInfo": true
   }
 }
 ```
+
 - `ExceptionServerId` - tutaj wpisujesz ID swojego serwera
 - `ExceptionChannelId` - tutaj wpisujesz ID swojego kanału `debug-logs` (nazwa kanału nie ma znaczenia)
 - `Token` - tutaj wpisujesz token bota, informację jak go stworzyć i dodać na swój serwer możesz znaleźć w [dokumentacji discorda](https://discord.com/developers/docs/intro)
