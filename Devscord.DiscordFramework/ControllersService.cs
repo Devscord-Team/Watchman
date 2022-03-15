@@ -15,6 +15,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 namespace Devscord.DiscordFramework
 {
@@ -29,8 +30,7 @@ namespace Devscord.DiscordFramework
         private readonly Assembly controllersAssembly;
         private readonly IBotCommandsService _botCommandsService;
         private readonly ICommandsContainer _commandsContainer;
-        private ControllersContainer _controllersContainer;
-
+        private ControllersContainer controllersContainer;
         public ControllersService(IComponentContext context, Assembly controllersAssembly, IBotCommandsService botCommandsService,
             ICommandsContainer commandsContainer)
         {
@@ -42,11 +42,12 @@ namespace Devscord.DiscordFramework
 
         public async Task Run(ulong messageId, DiscordRequest request, Contexts contexts)
         {
-            if (this._controllersContainer == null)
+            if (this.controllersContainer == null)
             {
                 this.LoadControllers();
             }
-            using var _ = LogContext.PushProperty("MessageId", contexts.Message.MessageId);
+            using var messageIdHandler = LogContext.PushProperty("MessageId", contexts.Message.MessageId);
+            using var recognizedAsCommandHandler = LogContext.PushProperty("RecognizedAsCommand", request.IsCommandForBot);
             Log.Information("Start processing request {message} that is recognized as command {isCommand} from user {userId} on channel {channelId} on server {serverId}", 
                 request.OriginalMessage, 
                 request.IsCommandForBot,
@@ -58,22 +59,49 @@ namespace Devscord.DiscordFramework
             Task commandsTask = null;
             Task botCommandsTask = null;
 
-            var readAlwaysMethods = this._controllersContainer.WithReadAlways;
+            var runStopwatch = new Stopwatch();
+            runStopwatch.Start();
+
+            var readAlwaysMethods = this.controllersContainer.WithReadAlways;
             if(readAlwaysMethods.Any())
             {
-                readAlwaysTask = Task.Run(() => this.RunMethods(request, contexts, readAlwaysMethods, true));
+                readAlwaysTask = Task.Run(() => 
+                {
+                    var stopwatch = new Stopwatch();
+                    stopwatch.Start();
+                    this.RunMethods(request, contexts, readAlwaysMethods, true);
+                    stopwatch.Stop();
+                    Log.Information("Elapsed time {elapsedReadAlwaysMS}ms for ReadAlways}", 
+                        stopwatch.ElapsedMilliseconds, request.OriginalMessage, request.IsCommandForBot);
+                });
             }
             if (request.IsCommandForBot)
             {
-                var discordCommandMethods = this._controllersContainer.WithDiscordCommand;
+                var discordCommandMethods = this.controllersContainer.WithDiscordCommand;
                 if(discordCommandMethods.Any())
                 {
-                    commandsTask = Task.Run(() => this.RunMethods(request, contexts, discordCommandMethods, false));
+                    commandsTask = Task.Run(() => 
+                    {
+                        var stopwatch = new Stopwatch();
+                        stopwatch.Start();
+                        this.RunMethods(request, contexts, discordCommandMethods, false);
+                        stopwatch.Stop();
+                        Log.Information("Elapsed time {elapsedDiscordCommandMS}ms} for DiscordRequest",
+                            stopwatch.ElapsedMilliseconds, request.OriginalMessage, request.IsCommandForBot);
+                    });
                 }
-                var discordBotCommandMethods = this._controllersContainer.WithIBotCommand;
+                var discordBotCommandMethods = this.controllersContainer.WithIBotCommand;
                 if (discordBotCommandMethods.Any())
                 {
-                    botCommandsTask = Task.Run(() => this.RunMethodsIBotCommand(request, contexts, discordBotCommandMethods));
+                    botCommandsTask = Task.Run(async () => 
+                    {
+                        var stopwatch = new Stopwatch();
+                        stopwatch.Start();
+                        await this.RunMethodsIBotCommand(request, contexts, discordBotCommandMethods);
+                        stopwatch.Stop();
+                        Log.Information("Elapsed time {elapsedIBotCommandMS}ms} for IBotCommand",
+                            stopwatch.ElapsedMilliseconds, request.OriginalMessage, request.IsCommandForBot);
+                    });
                 }
             }
 
@@ -90,6 +118,10 @@ namespace Devscord.DiscordFramework
             {
                 await botCommandsTask;
             }
+
+            runStopwatch.Stop();
+            Log.Information("Elapsed time {elapsedFullMessageProcessMS}ms for message {message} recognized as command {isCommand}",
+                runStopwatch.ElapsedMilliseconds, request.OriginalMessage, request.IsCommandForBot);
         }
 
         private void LoadControllers()
@@ -97,7 +129,7 @@ namespace Devscord.DiscordFramework
             var controllers = this.controllersAssembly.GetTypesByInterface<IController>()
                 .Select(x => new ControllerInfo((IController) this._context.Resolve(x)))
                 .ToArray();
-            this._controllersContainer = new ControllersContainer(controllers);
+            this.controllersContainer = new ControllersContainer(controllers);
         }
 
         private void RunMethods(DiscordRequest request, Contexts contexts, ControllerInfo[] controllers, bool isReadAlways)

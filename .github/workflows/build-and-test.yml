@@ -6,6 +6,7 @@ on:
     branches: [ '*' ]
 jobs:
   build:
+    name: .NET 6.0 Build and test
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
