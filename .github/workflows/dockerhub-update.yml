@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Install dependencies
+    - name: Update dockerhub
       run: |
         docker build -t ${{ secrets.DOCKER_LOGIN }}/watchman-web .
         docker login -u ${{ secrets.DOCKER_LOGIN }} -p ${{ secrets.DOCKER_PASS }} 
