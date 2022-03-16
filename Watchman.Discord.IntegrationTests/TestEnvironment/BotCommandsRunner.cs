@@ -16,7 +16,7 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment
             this.client = client;
         }
 
-        public async Task SendMessage(string text)
+        public async Task SendMessage(string text, bool isOwner = false)
         {
             var message = new FakeMessage
             {
@@ -24,7 +24,7 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment
                 CreatedAt = DateTime.UtcNow.AddMilliseconds(-10),
                 Author = new FakeUser() 
                 { 
-                    Id = 1,
+                    Id = 5,
                     IsBot = false,
                     IsWebhook = false,
                     Username = "TestUser",
@@ -42,7 +42,7 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment
                     {
                         Id = 1,
                         Name = "TestServer",
-                        OwnerId = 5,
+                        OwnerId = isOwner ? 5u : 4u,
                         CreatedAt = DateTime.UtcNow.AddDays(-30),
                         Roles = new List<IRole>()
                         { 
