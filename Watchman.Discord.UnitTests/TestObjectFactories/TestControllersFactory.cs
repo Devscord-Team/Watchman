@@ -126,7 +126,6 @@ namespace Watchman.Discord.UnitTests.TestObjectFactories
                 rolesServiceMock.Object,
                 usersServiceMock.Object,
                 responsesServiceMock.Object);
-
         }
     }
 }
