@@ -41,7 +41,7 @@ namespace Watchman.Discord.IntegrationTests
             var commandsRunner = this.testWatchmanBotFactory.CreateCommandsRunner();
 
             //Act
-            Assert.ThrowsAsync<InvalidArgumentsException>(() => commandsRunner.SendMessage("-setrole")); //without params
+            Assert.ThrowsAsync<InvalidArgumentsException>(() => commandsRunner.SendMessage("-setrole", true)); //without params
         }
 
         [Test]
