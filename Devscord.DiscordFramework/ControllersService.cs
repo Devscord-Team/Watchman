@@ -188,7 +188,10 @@ namespace Devscord.DiscordFramework
 
         private bool IsValid(Contexts contexts, MethodInfo method)
         {
-            this.CheckPermissions(method, contexts);
+            if(!this.CheckPermissions(method, contexts))
+            {
+                throw new NotAdminPermissionsException();
+            }
             return true;
         }
 
@@ -219,12 +222,13 @@ namespace Devscord.DiscordFramework
             });
         }
 
-        private void CheckPermissions(MethodInfo method, Contexts contexts)
+        private bool CheckPermissions(MethodInfo method, Contexts contexts)
         {
             if (method.HasAttribute<AdminCommand>() && !contexts.User.IsAdmin())
             {
-                throw new NotAdminPermissionsException();
+                return false;
             }
+            return true;
         }
 
         private static Task InvokeMethod(DiscordRequest request, Contexts contexts, ControllerInfo controllerInfo, MethodInfo method)
