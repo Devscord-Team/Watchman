@@ -41,7 +41,22 @@ namespace Watchman.Discord.IntegrationTests
             var commandsRunner = this.testWatchmanBotFactory.CreateCommandsRunner();
 
             //Act
-            Assert.ThrowsAsync<InvalidArgumentsException>(() => commandsRunner.SendMessage("-setrole")); //without params
+            Assert.ThrowsAsync<InvalidArgumentsException>(() => commandsRunner.SendMessage("-setrole", true)); //without params
+        }
+
+        [Test]
+        [TestCase("-dontask")]
+        [TestCase("-google -search test")]
+        [TestCase("-marchew")]
+        [TestCase("-maruda")]
+        [TestCase("-nohello")]
+        public void UselessFeatures_ShouldNotThrowException(string commandName)
+        {
+            //Arrange
+            var commandsRunner = this.testWatchmanBotFactory.CreateCommandsRunner();
+
+            //Act
+            Assert.DoesNotThrowAsync(() => commandsRunner.SendMessage(commandName));
         }
 
         [Test]
@@ -52,6 +67,19 @@ namespace Watchman.Discord.IntegrationTests
 
             //Act
             Assert.DoesNotThrowAsync(() => commandsRunner.SendMessage("-help"));
+        }
+
+        [Test]
+        [TestCase("-mute -user <@123> -time 10s -reason test")]
+        [TestCase("-unmute -user <@123>")]
+        [TestCase("-trustedroles")]
+        public void AdminCommands_IfNotOwnerShouldThrowException(string command)
+        {
+            //Arrange
+            var commandsRunner = this.testWatchmanBotFactory.CreateCommandsRunner();
+
+            //Act
+            Assert.ThrowsAsync<NotAdminPermissionsException>(() => commandsRunner.SendMessage(command));
         }
     }
 }

@@ -1,4 +1,6 @@
-[![Build Status](https://app.travis-ci.com/Devscord-Team/Watchman.svg?branch=master)](https://app.travis-ci.com/github/Devscord-Team/Watchman)
+[![.NET 6.0 Build and test](https://github.com/Devscord-Team/Watchman/actions/workflows/build-and-test.yml/badge.svg?branch=master)](https://github.com/Devscord-Team/Watchman/actions/workflows/build-and-test.yml)
+[![Update DockerHub](https://github.com/Devscord-Team/Watchman/actions/workflows/dockerhub-update.yml/badge.svg?branch=master)](https://github.com/Devscord-Team/Watchman/actions/workflows/dockerhub-update.yml)
+
 [![CodeFactor](https://www.codefactor.io/repository/github/devscord-team/watchman/badge)](https://www.codefactor.io/repository/github/devscord-team/watchman)
 [![codecov](https://codecov.io/gh/Devscord-Team/Watchman/branch/master/graph/badge.svg?token=lLEREQvQth)](https://codecov.io/gh/Devscord-Team/Watchman)
 

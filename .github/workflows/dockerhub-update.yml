@@ -1,0 +1,15 @@
+name: Update DockerHub
+on:
+  push:
+    branches: [ 'master' ]
+jobs:
+  build:
+    name: 'Update DockerHub'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Update dockerhub
+      run: |
+        docker build -t ${{ secrets.DOCKER_LOGIN }}/watchman-web .
+        docker login -u ${{ secrets.DOCKER_LOGIN }} -p ${{ secrets.DOCKER_PASS }} 
+        docker push ${{ secrets.DOCKER_LOGIN }}/watchman-web:latest

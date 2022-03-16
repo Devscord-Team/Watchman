@@ -20,7 +20,7 @@ namespace Devscord.DiscordFramework.Middlewares.Factories
         public MessageContext Create(IMessage message)
         {
             var isBotCommand = this._commandParser.Parse(message.Content, message.Timestamp.UtcDateTime).IsCommandForBot;
-            return new MessageContext(message.Timestamp.UtcDateTime, isBotCommand);
+            return new MessageContext(message.Id, message.Timestamp.UtcDateTime, isBotCommand);
         }
     }
 }

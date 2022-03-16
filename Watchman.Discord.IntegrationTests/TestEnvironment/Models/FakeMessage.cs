@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
 {
-    internal class FakeMessage : IMessage
+    internal class FakeMessage : IMessage, IUserMessage
     {
         public MessageType Type { get; set; }
 
@@ -53,9 +53,28 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
 
         public ulong Id { get; set; }
 
+        public bool MentionedEveryone => throw new NotImplementedException();
+
+        public string CleanContent => throw new NotImplementedException();
+
+        public IReadOnlyCollection<IMessageComponent> Components => throw new NotImplementedException();
+
+        public IReadOnlyCollection<IStickerItem> Stickers => throw new NotImplementedException();
+
+        public MessageFlags? Flags => throw new NotImplementedException();
+
+        public IMessageInteraction Interaction => throw new NotImplementedException();
+
+        public IUserMessage ReferencedMessage => throw new NotImplementedException();
+
         public Task AddReactionAsync(IEmote emote, RequestOptions options = null)
         {
             return Task.CompletedTask;
+        }
+
+        public Task CrosspostAsync(RequestOptions options = null)
+        {
+            throw new NotImplementedException();
         }
 
         public Task DeleteAsync(RequestOptions options = null)
@@ -68,9 +87,29 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
             throw new NotImplementedException();
         }
 
+        public Task ModifyAsync(Action<MessageProperties> func, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task ModifySuppressionAsync(bool suppressEmbeds, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task PinAsync(RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task RemoveAllReactionsAsync(RequestOptions options = null)
         {
             return Task.CompletedTask;
+        }
+
+        public Task RemoveAllReactionsForEmoteAsync(IEmote emote, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
         }
 
         public Task RemoveReactionAsync(IEmote emote, IUser user, RequestOptions options = null)
@@ -81,6 +120,16 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
         public Task RemoveReactionAsync(IEmote emote, ulong userId, RequestOptions options = null)
         {
             return Task.CompletedTask;
+        }
+
+        public string Resolve(TagHandling userHandling = TagHandling.Name, TagHandling channelHandling = TagHandling.Name, TagHandling roleHandling = TagHandling.Name, TagHandling everyoneHandling = TagHandling.Ignore, TagHandling emojiHandling = TagHandling.Name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UnpinAsync(RequestOptions options = null)
+        {
+            throw new NotImplementedException();
         }
     }
 }

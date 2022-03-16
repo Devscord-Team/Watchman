@@ -47,6 +47,26 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
             throw new NotImplementedException();
         }
 
+        public Task<IInviteMetadata> CreateInviteToApplicationAsync(ulong applicationId, int? maxAge = 86400, int? maxUses = null, bool isTemporary = false, bool isUnique = false, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IInviteMetadata> CreateInviteToApplicationAsync(DefaultApplications application, int? maxAge = 86400, int? maxUses = null, bool isTemporary = false, bool isUnique = false, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IInviteMetadata> CreateInviteToStreamAsync(IUser user, int? maxAge = 86400, int? maxUses = null, bool isTemporary = false, bool isUnique = false, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IThreadChannel> CreateThreadAsync(string name, ThreadType type = ThreadType.PublicThread, ThreadArchiveDuration autoArchiveDuration = ThreadArchiveDuration.OneDay, IMessage message = null, bool? invitable = null, int? slowmode = null, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<IWebhook> CreateWebhookAsync(string name, Stream avatar = null, RequestOptions options = null)
         {
             throw new NotImplementedException();
@@ -157,6 +177,11 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
             throw new NotImplementedException();
         }
 
+        public Task<IUserMessage> ModifyMessageAsync(ulong messageId, Action<MessageProperties> func, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task RemovePermissionOverwriteAsync(IRole role, RequestOptions options = null)
         {
             throw new NotImplementedException();
@@ -169,17 +194,42 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
 
         public Task<IUserMessage> SendFileAsync(string filePath, string text = null, bool isTTS = false, Embed embed = null, RequestOptions options = null, bool isSpoiler = false)
         {
-            return Task.FromResult(null as IUserMessage);
+            return Task.FromResult(new FakeMessage() as IUserMessage);
         }
 
         public Task<IUserMessage> SendFileAsync(Stream stream, string filename, string text = null, bool isTTS = false, Embed embed = null, RequestOptions options = null, bool isSpoiler = false)
         {
-            return Task.FromResult(null as IUserMessage);
+            return Task.FromResult(new FakeMessage() as IUserMessage);
+        }
+
+        public Task<IUserMessage> SendFileAsync(string filePath, string text = null, bool isTTS = false, Embed embed = null, RequestOptions options = null, bool isSpoiler = false, AllowedMentions allowedMentions = null, MessageReference messageReference = null, MessageComponent components = null, ISticker[] stickers = null, Embed[] embeds = null, MessageFlags flags = MessageFlags.None)
+        {
+            return Task.FromResult(new FakeMessage() as IUserMessage);
+        }
+
+        public Task<IUserMessage> SendFileAsync(Stream stream, string filename, string text = null, bool isTTS = false, Embed embed = null, RequestOptions options = null, bool isSpoiler = false, AllowedMentions allowedMentions = null, MessageReference messageReference = null, MessageComponent components = null, ISticker[] stickers = null, Embed[] embeds = null, MessageFlags flags = MessageFlags.None)
+        {
+            return Task.FromResult(new FakeMessage() as IUserMessage);
+        }
+
+        public Task<IUserMessage> SendFileAsync(FileAttachment attachment, string text = null, bool isTTS = false, Embed embed = null, RequestOptions options = null, AllowedMentions allowedMentions = null, MessageReference messageReference = null, MessageComponent components = null, ISticker[] stickers = null, Embed[] embeds = null, MessageFlags flags = MessageFlags.None)
+        {
+            return Task.FromResult(new FakeMessage() as IUserMessage);
+        }
+
+        public Task<IUserMessage> SendFilesAsync(IEnumerable<FileAttachment> attachments, string text = null, bool isTTS = false, Embed embed = null, RequestOptions options = null, AllowedMentions allowedMentions = null, MessageReference messageReference = null, MessageComponent components = null, ISticker[] stickers = null, Embed[] embeds = null, MessageFlags flags = MessageFlags.None)
+        {
+            return Task.FromResult(new FakeMessage() as IUserMessage);
         }
 
         public Task<IUserMessage> SendMessageAsync(string text = null, bool isTTS = false, Embed embed = null, RequestOptions options = null)
         {
-            return Task.FromResult(null as IUserMessage);
+            return Task.FromResult(new FakeMessage() as IUserMessage);
+        }
+
+        public Task<IUserMessage> SendMessageAsync(string text = null, bool isTTS = false, Embed embed = null, RequestOptions options = null, AllowedMentions allowedMentions = null, MessageReference messageReference = null, MessageComponent components = null, ISticker[] stickers = null, Embed[] embeds = null, MessageFlags flags = MessageFlags.None)
+        {
+            return Task.FromResult(new FakeMessage() as IUserMessage);
         }
 
         public Task SyncPermissionsAsync(RequestOptions options = null)

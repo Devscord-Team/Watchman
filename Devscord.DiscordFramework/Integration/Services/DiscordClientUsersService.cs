@@ -6,9 +6,11 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Discord;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Devscord.DiscordFramework.Integration.Services
 {
+    [ExcludeFromCodeCoverage]
     internal class DiscordClientUsersService : IDiscordClientUsersService
     {
         private DiscordSocketRestClient _restClient => this._client.Rest;

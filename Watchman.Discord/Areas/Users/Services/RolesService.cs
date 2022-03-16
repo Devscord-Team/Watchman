@@ -1,9 +1,11 @@
 ﻿using Devscord.DiscordFramework.Commands.Responses;
+using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
 using Watchman.DomainModel.DiscordServer;
@@ -42,17 +44,20 @@ namespace Watchman.Discord.Areas.Users.Services
             var safeRolesIds = safeRoles.Select(x => x.RoleId).ToList();
             var addedRoles = new List<string>();
 
+            var messagesToSend = new StringBuilder();
             foreach (var role in rolesToAdd)
             {
                 if (contexts.User.Roles.Select(x => x.Name).Contains(role))
                 {
-                    await messagesService.SendResponse(x => x.RoleIsInUserAlready(contexts, role));
+                    var response = messagesService.RenderResponse(x => x.RoleIsInUserAlready(contexts, role));
+                    messagesToSend.AppendLine(response);
                     continue;
                 }
                 var serverRole = this._usersRolesService.GetRoleByName(role, contexts.Server);
                 if (serverRole == null || !safeRolesIds.Contains(serverRole.Id))
                 {
-                    await messagesService.SendResponse(x => x.RoleNotFoundOrIsNotSafe(contexts, role));
+                    var response = messagesService.RenderResponse(x => x.RoleNotFoundOrIsNotSafe(contexts, role));
+                    messagesToSend.AppendLine(response);
                     continue;
                 }
                 await this._usersService.AddRoleAsync(serverRole, contexts.User, contexts.Server);
@@ -64,7 +69,8 @@ namespace Watchman.Discord.Areas.Users.Services
             }
             else
             {
-                addedRoles.ForEach(async role => await messagesService.SendResponse(x => x.RoleAddedToUser(contexts, role)));
+                addedRoles.ForEach(role => messagesToSend.AppendLine(messagesService.RenderResponse(x => x.RoleAddedToUser(contexts, role))));
+                await messagesService.SendMessage(messagesToSend.ToString(), MessageType.BlockFormatted);
             }
         }
 
@@ -74,17 +80,20 @@ namespace Watchman.Discord.Areas.Users.Services
             var safeRolesIds = safeRoles.Select(x => x.RoleId).ToList();
             var removedRoles = new List<string>();
 
+            var messagesToSend = new StringBuilder();
             foreach (var role in rolesToRemove)
             {
                 if (!contexts.User.Roles.Select(x => x.Name).Contains(role))
                 {
-                    await messagesService.SendResponse(x => x.RoleNotFoundInUser(contexts, role));
+                    var response = messagesService.RenderResponse(x => x.RoleNotFoundInUser(contexts, role));
+                    messagesToSend.AppendLine(response);
                     continue;
                 }
                 var serverRole = this._usersRolesService.GetRoleByName(role, contexts.Server);
                 if (serverRole == null || !safeRolesIds.Contains(serverRole.Id))
                 {
-                    await messagesService.SendResponse(x => x.RoleNotFoundOrIsNotSafe(contexts, role));
+                    var response = messagesService.RenderResponse(x => x.RoleNotFoundOrIsNotSafe(contexts, role));
+                    messagesToSend.AppendLine(response);
                     continue;
                 }
                 await this._usersService.RemoveRoleAsync(serverRole, contexts.User, contexts.Server);
@@ -96,7 +105,8 @@ namespace Watchman.Discord.Areas.Users.Services
             }
             else
             {
-                removedRoles.ForEach(async role => await messagesService.SendResponse(x => x.RoleRemovedFromUser(contexts, role)));
+                removedRoles.ForEach(role => messagesToSend.AppendLine(messagesService.RenderResponse(x => x.RoleRemovedFromUser(contexts, role))));
+                await messagesService.SendMessage(messagesToSend.ToString(), MessageType.BlockFormatted);
             }
         }
 

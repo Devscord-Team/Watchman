@@ -56,7 +56,7 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients
         public Task<DiscordServerContext> GetDiscordServerAsync(ulong serverId)
         {
             var landingChannel = new ChannelContext(1, "landing");
-            var server = new DiscordServerContext(1, "Test", () => new UserContext(1, "test", null, null, null, null, null), landingChannel, _ => this.channelContexts, _ => null, _ => null);
+            var server = new DiscordServerContext(1, "Test", () => new UserContext(5, "test", null, null, null, null, null), landingChannel, _ => this.channelContexts, _ => null, _ => null);
             return Task.FromResult(server);
         }
 

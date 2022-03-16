@@ -1,9 +1,11 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Conventions;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Watchman.Integrations.Database.MongoDB
 {
+    [ExcludeFromCodeCoverage]
     public static class MongoConfiguration
     {
         private static bool _initialized;

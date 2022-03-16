@@ -15,9 +15,11 @@ using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Commands.Parsing.Models;
 using System.IO;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Devscord.DiscordFramework.Integration.Services
 {
+    [ExcludeFromCodeCoverage]
     internal class DiscordClientChannelsService : IDiscordClientChannelsService
     {
         public Func<IChannel, Task> ChannelCreated { get; set; }

@@ -1,0 +1,30 @@
+name: .NET 6.0 Build and test
+on:
+  push:
+    branches: [ '*' ]
+  pull_request:
+    branches: [ '*' ]
+jobs:
+  build:
+    name: .NET 6.0 Build and test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.100
+    - name: Install dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+    - name: Test
+      run: |
+        curl -Os https://uploader.codecov.io/latest/linux/codecov
+        chmod +x codecov
+        dotnet test Watchman.sln /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+        ./codecov -f "/Devscord.DiscordFramework.UnitTests/coverage.opencover.xml"
+        ./codecov -f "/Watchman.Discord.UnitTests/coverage.opencover.xml"
+        ./codecov -f "/Watchman.Discord.IntegrationTests/coverage.opencover.xml"
+        ./codecov -f "/Watchman.DomainModel.UnitTests/coverage.opencover.xml"
+        ./codecov -f "/Watchman.Integration.Tests/coverage.opencover.xml"
