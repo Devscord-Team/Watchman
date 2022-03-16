@@ -20,6 +20,10 @@ namespace Devscord.DiscordFramework.Services
         {
             if (fullMessage.Length < MAX_MESSAGE_LENGTH)
             {
+                if(messageType == MessageType.BlockFormatted)
+                {
+                    return new List<string> { $"```\r\n{fullMessage}\r\n```" };
+                }
                 return new List<string> { fullMessage };
             }
 

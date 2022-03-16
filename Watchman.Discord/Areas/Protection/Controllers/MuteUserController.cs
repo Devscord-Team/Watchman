@@ -51,7 +51,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         }
 
         [AdminCommand]
-        public async Task UnmuteUserAsync(UnmuteCommand command, Contexts contexts)
+        public async Task UnmuteUser(UnmuteCommand command, Contexts contexts)
         {
             var userToUnmute = await this._usersService.GetUserByIdAsync(contexts.Server, command.User);
             if (userToUnmute == null)
@@ -62,7 +62,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
         }
 
         [AdminCommand]
-        public async Task MutedUsers(MutedUsersCommand mutedUsersCommand, Contexts contexts)
+        public async Task GetMutedUsers(MutedUsersCommand mutedUsersCommand, Contexts contexts)
         {
             await this.commandBus.ExecuteAsync(new SendMutedUsersDirectMessageCommand(contexts));
             var messagesService = this._messagesServiceFactory.Create(contexts);

@@ -7,11 +7,13 @@ using Discord.WebSocket;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Devscord.DiscordFramework.Integration.Services
 {
+    [ExcludeFromCodeCoverage]
     internal class DiscordClientServersService : IDiscordClientServersService
     {
         private DiscordSocketRestClient _restClient => this._client.Rest;

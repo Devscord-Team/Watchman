@@ -4,9 +4,11 @@ using Devscord.DiscordFramework.Integration.Services.Interfaces;
 using Devscord.DiscordFramework.Middlewares.Factories;
 using Discord.WebSocket;
 using Serilog;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Devscord.DiscordFramework.Integration.Services
 {
+    [ExcludeFromCodeCoverage]
     internal class DiscordClient : IDiscordClient
     {
         private bool _initialized;

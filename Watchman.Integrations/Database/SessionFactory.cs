@@ -1,10 +1,12 @@
 ﻿using LiteDB;
 using MongoDB.Driver;
+using System.Diagnostics.CodeAnalysis;
 using Watchman.Integrations.Database.LiteDB;
 using Watchman.Integrations.Database.MongoDB;
 
 namespace Watchman.Integrations.Database
 {
+    [ExcludeFromCodeCoverage]
     public class SessionFactory : ISessionFactory
     {
         private readonly IMongoDatabase mongoDatabase;

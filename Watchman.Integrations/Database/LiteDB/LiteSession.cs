@@ -2,12 +2,14 @@
 using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Watchman.Integrations.Database.LiteDB
 {
+    [ExcludeFromCodeCoverage]
     public class LiteSession : ISession
     {
         private readonly ILiteDatabase _database;

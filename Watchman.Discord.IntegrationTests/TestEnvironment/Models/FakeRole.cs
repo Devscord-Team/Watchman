@@ -31,12 +31,23 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
 
         public string Mention { get; set; }
 
+        public string Icon => throw new NotImplementedException();
+
+        public Emoji Emoji => throw new NotImplementedException();
+
+        public RoleTags Tags => throw new NotImplementedException();
+
         public int CompareTo(IRole other)
         {
             throw new NotImplementedException();
         }
 
         public Task DeleteAsync(RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetIconUrl()
         {
             throw new NotImplementedException();
         }

@@ -3,6 +3,7 @@ using Discord.Audio;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
@@ -79,6 +80,40 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
 
         public ulong Id { get; set; }
 
+        public bool IsWidgetEnabled => throw new NotImplementedException();
+
+        public string DiscoverySplashId => throw new NotImplementedException();
+
+        public string DiscoverySplashUrl => throw new NotImplementedException();
+
+        public ulong? WidgetChannelId => throw new NotImplementedException();
+
+        public ulong? RulesChannelId => throw new NotImplementedException();
+
+        public ulong? PublicUpdatesChannelId => throw new NotImplementedException();
+
+        public IReadOnlyCollection<ICustomSticker> Stickers => throw new NotImplementedException();
+
+        public int? MaxPresences => throw new NotImplementedException();
+
+        public int? MaxMembers => throw new NotImplementedException();
+
+        public int? MaxVideoChannelUsers => throw new NotImplementedException();
+
+        public int? ApproximateMemberCount => throw new NotImplementedException();
+
+        public int? ApproximatePresenceCount => throw new NotImplementedException();
+
+        public int MaxBitrate => throw new NotImplementedException();
+
+        public NsfwLevel NsfwLevel => throw new NotImplementedException();
+
+        public bool IsBoostProgressBarEnabled => throw new NotImplementedException();
+
+        public ulong MaxUploadLimit => throw new NotImplementedException();
+
+        GuildFeatures IGuild.Features => throw new NotImplementedException();
+
         public Task AddBanAsync(IUser user, int pruneDays = 0, string reason = null, RequestOptions options = null)
         {
             throw new NotImplementedException();
@@ -94,12 +129,27 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
             throw new NotImplementedException();
         }
 
+        public Task<IReadOnlyCollection<IApplicationCommand>> BulkOverwriteApplicationCommandsAsync(ApplicationCommandProperties[] properties, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IApplicationCommand> CreateApplicationCommandAsync(ApplicationCommandProperties properties, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<ICategoryChannel> CreateCategoryAsync(string name, Action<GuildChannelProperties> func = null, RequestOptions options = null)
         {
             throw new NotImplementedException();
         }
 
         public Task<GuildEmote> CreateEmoteAsync(string name, Image image, Optional<IEnumerable<IRole>> roles = default, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IGuildScheduledEvent> CreateEventAsync(string name, DateTimeOffset startTime, GuildScheduledEventType type, GuildScheduledEventPrivacyLevel privacyLevel = GuildScheduledEventPrivacyLevel.Private, string description = null, DateTimeOffset? endTime = null, ulong? channelId = null, string location = null, Image? coverImage = null, RequestOptions options = null)
         {
             throw new NotImplementedException();
         }
@@ -115,6 +165,26 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
         }
 
         public Task<IRole> CreateRoleAsync(string name, GuildPermissions? permissions = null, Color? color = null, bool isHoisted = false, bool isMentionable = false, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IStageChannel> CreateStageChannelAsync(string name, Action<VoiceChannelProperties> func = null, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ICustomSticker> CreateStickerAsync(string name, string description, IEnumerable<string> tags, Image image, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ICustomSticker> CreateStickerAsync(string name, string description, IEnumerable<string> tags, string path, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ICustomSticker> CreateStickerAsync(string name, string description, IEnumerable<string> tags, Stream stream, string filename, RequestOptions options = null)
         {
             throw new NotImplementedException();
         }
@@ -139,12 +209,32 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
             throw new NotImplementedException();
         }
 
+        public Task DeleteStickerAsync(ICustomSticker sticker, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DisconnectAsync(IGuildUser user)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task DownloadUsersAsync()
         {
             throw new NotImplementedException();
         }
 
         public Task<IVoiceChannel> GetAFKChannelAsync(CacheMode mode = CacheMode.AllowDownload, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IApplicationCommand> GetApplicationCommandAsync(ulong id, CacheMode mode = CacheMode.AllowDownload, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IReadOnlyCollection<IApplicationCommand>> GetApplicationCommandsAsync(RequestOptions options = null)
         {
             throw new NotImplementedException();
         }
@@ -204,6 +294,21 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
             throw new NotImplementedException();
         }
 
+        public Task<IReadOnlyCollection<GuildEmote>> GetEmotesAsync(RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IGuildScheduledEvent> GetEventAsync(ulong id, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IReadOnlyCollection<IGuildScheduledEvent>> GetEventsAsync(RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<IReadOnlyCollection<IGuildIntegration>> GetIntegrationsAsync(RequestOptions options = null)
         {
             throw new NotImplementedException();
@@ -219,7 +324,37 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
             throw new NotImplementedException();
         }
 
+        public Task<ITextChannel> GetPublicUpdatesChannelAsync(CacheMode mode = CacheMode.AllowDownload, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
         public IRole GetRole(ulong id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ITextChannel> GetRulesChannelAsync(CacheMode mode = CacheMode.AllowDownload, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IStageChannel> GetStageChannelAsync(ulong id, CacheMode mode = CacheMode.AllowDownload, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IReadOnlyCollection<IStageChannel>> GetStageChannelsAsync(CacheMode mode = CacheMode.AllowDownload, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ICustomSticker> GetStickerAsync(ulong id, CacheMode mode = CacheMode.AllowDownload, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IReadOnlyCollection<ICustomSticker>> GetStickersAsync(CacheMode mode = CacheMode.AllowDownload, RequestOptions options = null)
         {
             throw new NotImplementedException();
         }
@@ -236,6 +371,16 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
         }
 
         public Task<IReadOnlyCollection<ITextChannel>> GetTextChannelsAsync(CacheMode mode = CacheMode.AllowDownload, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IThreadChannel> GetThreadChannelAsync(ulong id, CacheMode mode = CacheMode.AllowDownload, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IReadOnlyCollection<IThreadChannel>> GetThreadChannelsAsync(CacheMode mode = CacheMode.AllowDownload, RequestOptions options = null)
         {
             throw new NotImplementedException();
         }
@@ -280,6 +425,11 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
             throw new NotImplementedException();
         }
 
+        public Task<IGuildChannel> GetWidgetChannelAsync(CacheMode mode = CacheMode.AllowDownload, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task LeaveAsync(RequestOptions options = null)
         {
             throw new NotImplementedException();
@@ -300,7 +450,22 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
             throw new NotImplementedException();
         }
 
+        public Task ModifyWidgetAsync(Action<GuildWidgetProperties> func, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task MoveAsync(IGuildUser user, IVoiceChannel targetChannel)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<int> PruneUsersAsync(int days = 30, bool simulate = false, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> PruneUsersAsync(int days = 30, bool simulate = false, RequestOptions options = null, IEnumerable<ulong> includeRoleIds = null)
         {
             throw new NotImplementedException();
         }
@@ -321,6 +486,11 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.Models
         }
 
         public Task ReorderRolesAsync(IEnumerable<ReorderRoleProperties> args, RequestOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IReadOnlyCollection<IGuildUser>> SearchUsersAsync(string query, int limit = 1000, CacheMode mode = CacheMode.AllowDownload, RequestOptions options = null)
         {
             throw new NotImplementedException();
         }
