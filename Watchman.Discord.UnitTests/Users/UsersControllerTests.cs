@@ -1,4 +1,5 @@
 ﻿using AutoFixture.NUnit3;
+using Devscord.DiscordFramework.Commons;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
@@ -25,25 +26,26 @@ namespace Watchman.Discord.UnitTests.Users
             //Arrange
             var userContext = testContextsFactory.CreateUserContext(1);
             var contexts = testContextsFactory.CreateContexts(1, 1, 1);
-
             var messagesServiceMock = new Mock<IMessagesService>();
+            messagesServiceMock.Setup(x => x.SendMessage(It.IsAny<string>(), It.IsAny<MessageType>()))
+               .Returns<string, MessageType>((a, b) => Task.FromResult(userContext.AvatarUrl));
             var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
-            messagesServiceFactoryMock.Setup(x => x.Create(It.IsAny))
+            messagesServiceFactoryMock.Setup(x => x.Create(It.IsAny<Contexts>()))
+                .Returns(messagesServiceMock.Object);
             var usersServiceMock = new Mock<IUsersService>();
             usersServiceMock.Setup(x => x.GetUserByIdAsync(It.IsAny<DiscordServerContext>(), It.IsAny<ulong>()))
                 .Returns<DiscordServerContext, ulong>((a, b) => Task.FromResult(userContext));
 
-            var controller = this.testControllersFactory.CreateUsersController(usersServiceMock: usersServiceMock);
-
+            var controller = this.testControllersFactory.CreateUsersController(
+                usersServiceMock: usersServiceMock,
+                messagesServiceFactoryMock: messagesServiceFactoryMock);
+               
             //Act
             await controller.GetAvatar(command, contexts);
 
             //Assert
             usersServiceMock.Verify(x => x.GetUserByIdAsync(contexts.Server, command.User), Times.Once);
-
-
-
+            messagesServiceMock.Verify(x => x.SendMessage(userContext.AvatarUrl, It.IsAny<MessageType>()), Times.Once);
         }
-
     }
 }
