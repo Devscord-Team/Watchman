@@ -51,6 +51,7 @@ namespace Watchman.Discord.Areas.Protection.Controllers
             var warns = this._warnService.GetWarns(mentionedUser, contexts.Server.Id);
             await messageService.SendEmbedMessage("Ostrzeżenia", string.Empty, warns);
 
+
         }
     }
 }
