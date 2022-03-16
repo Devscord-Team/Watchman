@@ -135,10 +135,16 @@ namespace Devscord.DiscordFramework
             {
                 return;
             }
+            var runStopwatch = new Stopwatch();
+            runStopwatch.Start();
             var contexts = this.GetContexts(socketMessage);
             var request = this.ParseRequest(socketMessage);
 
             await this.TryToAwaitTask(this.controllersService.Run(socketMessage.Id, request, contexts), request, contexts);
+
+            runStopwatch.Stop();
+            Log.Information("Elapsed time {elapsedFullMessageProcessMS}ms for message {message} recognized as command {isCommand}",
+                runStopwatch.ElapsedMilliseconds, request.OriginalMessage, request.IsCommandForBot);
         }
 
         private DiscordRequest ParseRequest(IMessage socketMessage)

@@ -21,6 +21,7 @@ namespace Devscord.DiscordFramework.Services
         Task SendEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, string>> values);
         Task SendEmbedMessage(string title, string description, IEnumerable<KeyValuePair<string, Dictionary<string, string>>> values);
         Task SendResponse(Func<IResponsesService, string> response);
+        string RenderResponse(Func<IResponsesService, string> response);
         Task SendFile(string filePath);
         Task SendFile(string fileName, Stream stream);
         Task SendExceptionResponse(BotException botException);
@@ -68,9 +69,15 @@ namespace Devscord.DiscordFramework.Services
 
         public Task SendResponse(Func<IResponsesService, string> response)
         {
+            var message = this.RenderResponse(response);
+            return this.SendMessage(message);
+        }
+
+        public string RenderResponse(Func<IResponsesService, string> response)
+        {
             this._responsesService.Responses = this._responsesCachingService.GetResponses(this.GuildId);
             var message = response.Invoke(this._responsesService);
-            return this.SendMessage(message);
+            return message;
         }
 
         public async Task SendFile(string filePath)

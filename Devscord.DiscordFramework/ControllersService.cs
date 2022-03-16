@@ -59,8 +59,7 @@ namespace Devscord.DiscordFramework
             Task commandsTask = null;
             Task botCommandsTask = null;
 
-            var runStopwatch = new Stopwatch();
-            runStopwatch.Start();
+            
 
             var readAlwaysMethods = this.controllersContainer.WithReadAlways;
             if(readAlwaysMethods.Any())
@@ -118,10 +117,6 @@ namespace Devscord.DiscordFramework
             {
                 await botCommandsTask;
             }
-
-            runStopwatch.Stop();
-            Log.Information("Elapsed time {elapsedFullMessageProcessMS}ms for message {message} recognized as command {isCommand}",
-                runStopwatch.ElapsedMilliseconds, request.OriginalMessage, request.IsCommandForBot);
         }
 
         private void LoadControllers()
