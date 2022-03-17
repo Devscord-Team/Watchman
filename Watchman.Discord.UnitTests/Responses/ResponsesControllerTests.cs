@@ -35,6 +35,7 @@ namespace Watchman.Discord.UnitTests.Responses
             var messagesServiceMock = new Mock<IMessagesService>();
             messagesServiceMock.Setup(x => x.SendResponse((Func<Devscord.DiscordFramework.Commands.Responses.IResponsesService, string>)It.IsAny<Func<IResponsesService, string>>()))
                 .Returns(Task.CompletedTask);
+
             
 
             var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
