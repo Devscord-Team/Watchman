@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Watchman.Discord.Areas.Responses.BotCommands;
 using Watchman.Discord.UnitTests.TestObjectFactories;
 using Devscord.DiscordFramework.Commands.Responses;
+using IResponsesService = Watchman.Discord.Areas.Responses.Services.IResponsesService;
 
 namespace Watchman.Discord.UnitTests.Responses
 {
@@ -21,32 +22,86 @@ namespace Watchman.Discord.UnitTests.Responses
         private readonly TestControllersFactory testControllersFactory = new();
         private readonly TestContextsFactory testContextsFactory = new();
         [Test, AutoData]
-        public async Task ShouldUpdateResponse(UpdateResponseCommand command, Contexts contexts)
+        public async Task UpdateResponse_ShouldUpdateResponse(UpdateResponseCommand command)
         {
-            var userContext = testContextsFactory.CreateUserContext(1);
-
-            var watchmanResponsesServiceMock = new Mock<Areas.Responses.Services.IResponsesService>();
-            watchmanResponsesServiceMock.Setup(x => x.GetResponseByOnEvent(It.IsAny<string>(), It.IsAny<ulong>()))
-                .Returns((Task<DomainModel.Responses.Response>)watchmanResponsesServiceMock.Object);
-            watchmanResponsesServiceMock.Setup(x => x.UpdateResponse(It.IsAny<Guid>(), It.IsAny<string>()))
-                .Returns(Task.CompletedTask);
-            var devscordResponsesServiceMock = new Mock<Devscord.DiscordFramework.Commands.Responses.IResponsesService>();
-            //devscordResponsesServiceMock.Setup(x => x.ResponseHasBeenUpdated(It.IsAny<Contexts>(), It.IsAny<UpdateResponseCommand>(), It.IsAny<DomainResponse>))
+            //Arrange
+            var expectedResponse = new DomainModel.Responses.Response("test", "test", (ulong)43, new string[] { "test" });
+            var serverId = 5u;
+            var contexts = this.testContextsFactory.CreateContexts(serverId, 1, 1);
             var messagesServiceMock = new Mock<IMessagesService>();
-            messagesServiceMock.Setup(x => x.SendResponse((Func<Devscord.DiscordFramework.Commands.Responses.IResponsesService, string>)It.IsAny<Func<IResponsesService, string>>()))
-                .Returns(Task.CompletedTask);
-
-            
-
             var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
             messagesServiceFactoryMock.Setup(x => x.Create(It.IsAny<Contexts>()))
                 .Returns(messagesServiceMock.Object);
+            var responsesServiceMock = new Mock<IResponsesService>();
+            responsesServiceMock.Setup(x => x.GetResponseByOnEvent(It.IsAny<string>(), It.IsAny<ulong>()))
+                .Returns(Task.FromResult(expectedResponse));
 
-            var controller = this.testControllersFactory.Cre
+            var controller = this.testControllersFactory.CreateResponsesController(
+                messagesServiceFactoryMock: messagesServiceFactoryMock,
+                responsesServiceMock: responsesServiceMock);
 
+            //Act
+            await controller.UpdateResponse(command, contexts);
 
+            //Assert
+            messagesServiceFactoryMock.Verify(x => x.Create(contexts), Times.Once);
+            responsesServiceMock.Verify(x => x.GetResponseByOnEvent(It.IsAny<string>(), serverId), Times.Once);
+            responsesServiceMock.Verify(x => x.GetResponseByOnEvent(It.IsAny<string>(), DomainModel.Responses.Response.DEFAULT_SERVER_ID), Times.Once);
+            responsesServiceMock.Verify(x => x.RemoveResponse(It.IsAny<string>(), It.Is<ulong>(a => a != contexts.Server.Id)), Times.Never);
+            responsesServiceMock.Verify(x => x.UpdateResponse(expectedResponse.Id, It.IsAny<string>()), Times.Once);
+        }
 
+        [Test, AutoData]
+        public async Task UpdateResponse_ShouldNotFindAnyResponse(UpdateResponseCommand command)
+        {
+            //Arrange
+            var contexts = this.testContextsFactory.CreateContexts(5, 1, 1);
 
+            var messagesServiceMock = new Mock<IMessagesService>();
+            var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
+            messagesServiceFactoryMock.Setup(x => x.Create(It.IsAny<Contexts>()))
+                .Returns(messagesServiceMock.Object);
+            var responsesServiceMock = new Mock<IResponsesService>();
+
+            var controller = this.testControllersFactory.CreateResponsesController(
+                messagesServiceFactoryMock: messagesServiceFactoryMock,
+                responsesServiceMock: responsesServiceMock);
+
+            //Act
+            await controller.UpdateResponse(command, contexts);
+
+            //Assert
+            messagesServiceFactoryMock.Verify(x => x.Create(contexts), Times.Once);
+            responsesServiceMock.Verify(x => x.RemoveResponse(It.IsAny<string>(), It.IsAny<ulong>()), Times.Never);
+        }
+
+        [Test, AutoData]
+        public async Task UpdateResponse_ShouldRemoveServerResponseIfItsSameAsDefault(UpdateResponseCommand command)
+        {
+            //Arrange
+            var contexts = this.testContextsFactory.CreateContexts(5, 1, 1);
+            var expectedResponse = new DomainModel.Responses.Response("test", "test", (ulong)43, new string[] { "test" });
+
+            var messagesServiceMock = new Mock<IMessagesService>();
+            var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
+            messagesServiceFactoryMock.Setup(x => x.Create(It.IsAny<Contexts>()))
+                .Returns(messagesServiceMock.Object);
+            var responsesServiceMock = new Mock<IResponsesService>();
+            responsesServiceMock.Setup(x => x.GetResponseByOnEvent(It.IsAny<string>(), It.IsAny<ulong>()))
+               .Returns(Task.FromResult(new DomainModel.Responses.Response("test", command.Message, 43u, new string[] { "test" })));
+            
+            var controller = this.testControllersFactory.CreateResponsesController(
+                messagesServiceFactoryMock: messagesServiceFactoryMock,
+                responsesServiceMock: responsesServiceMock);
+
+            //Act
+            await controller.UpdateResponse(command, contexts);
+
+            //Assert
+            messagesServiceFactoryMock.Verify(x => x.Create(contexts), Times.Once);
+            responsesServiceMock.Verify(x => x.GetResponseByOnEvent(It.IsAny<string>(), DomainModel.Responses.Response.DEFAULT_SERVER_ID), Times.Once);
+            responsesServiceMock.Verify(x => x.RemoveResponse(It.IsAny<string>(), It.IsAny<ulong>()), Times.Once);
+            responsesServiceMock.Verify(x => x.UpdateResponse(expectedResponse.Id, It.IsAny<string>()), Times.Never);
         }
     }
 }
