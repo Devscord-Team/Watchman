@@ -29,8 +29,8 @@ namespace Watchman.Discord.Areas.Responses.Controllers
         public async Task AddResponse(AddResponseCommand command, Contexts contexts)
         {
             var messageService = this._messagesServiceFactory.Create(contexts);
-            var response = await this._responsesService.GetResponseByOnEvent(command.OnEvent);
-            if (response == null)
+            var defaultResponse = await this._responsesService.GetResponseByOnEvent(command.OnEvent, DomainResponse.DEFAULT_SERVER_ID);
+            if (defaultResponse == null)
             {
                 await messageService.SendResponse(x => x.ResponseNotFound(contexts, command.OnEvent));
                 return;
@@ -41,8 +41,6 @@ namespace Watchman.Discord.Areas.Responses.Controllers
                 await messageService.SendResponse(x => x.ResponseAlreadyExists(contexts, command.OnEvent));
                 return;
             }
-
-            var defaultResponse = await this._responsesService.GetResponseByOnEvent(command.OnEvent, DomainResponse.DEFAULT_SERVER_ID);
             if (defaultResponse.Message == command.Message)
             {
                 await messageService.SendResponse(x => x.ResponseAlreadyExists(contexts, command.OnEvent));
