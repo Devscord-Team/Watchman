@@ -103,5 +103,59 @@ namespace Watchman.Discord.UnitTests.Responses
             responsesServiceMock.Verify(x => x.RemoveResponse(It.IsAny<string>(), It.IsAny<ulong>()), Times.Once);
             responsesServiceMock.Verify(x => x.UpdateResponse(expectedResponse.Id, It.IsAny<string>()), Times.Never);
         }
+        [Test]
+        public async Task RemoveResponse_ShouldRemoveResponse()
+        {
+            //Arrange
+            var contexts = this.testContextsFactory.CreateContexts(1, 1, 1);
+
+            var serverId = 5ul;
+            var command = new RemoveResponseCommand() { OnEvent = "test" };
+            var expectedResponse = new DomainModel.Responses.Response("test", "test", (ulong)43, new string[] { "test" });
+           
+            var messagesServiceMock = new Mock<IMessagesService>();
+            var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
+            messagesServiceFactoryMock.Setup(x => x.Create(It.IsAny<Contexts>()))
+                .Returns(messagesServiceMock.Object);
+            var responsesServiceMock = new Mock<IResponsesService>();
+            responsesServiceMock.Setup(x => x.GetResponseByOnEvent(It.IsAny<string>(), It.IsAny<ulong>()))
+                .Returns(Task.FromResult(expectedResponse));
+
+            var controller = this.testControllersFactory.CreateResponsesController(
+                messagesServiceFactoryMock: messagesServiceFactoryMock,
+                responsesServiceMock: responsesServiceMock);
+
+            //Act
+            await controller.RemoveResponse(command, contexts);
+
+            //Assert
+            messagesServiceFactoryMock.Verify(x => x.Create(contexts), Times.Once());
+            responsesServiceMock.Verify(x => x.GetResponseByOnEvent(It.IsAny<string>(), It.IsAny<ulong>()), Times.Once);
+            responsesServiceMock.Verify(x => x.RemoveResponse(It.IsAny<string>(), It.IsAny<ulong>()), Times.Once);
+        }
+        [Test]
+        public async Task RemoveResponse_ShouldNotRemoveResponse()
+        {
+            //Arrange
+            var contexts = this.testContextsFactory.CreateContexts(5, 1, 1);
+            var command = new RemoveResponseCommand() { OnEvent = "test" };
+
+            var messagesServiceMock = new Mock<IMessagesService>();
+            var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
+            messagesServiceFactoryMock.Setup(x => x.Create(It.IsAny<Contexts>()))
+                .Returns(messagesServiceMock.Object);
+            var responsesServiceMock = new Mock<IResponsesService>();
+
+            var controller = this.testControllersFactory.CreateResponsesController(
+                messagesServiceFactoryMock: messagesServiceFactoryMock,
+                responsesServiceMock: responsesServiceMock);
+
+            //Act
+            await controller.RemoveResponse(command, contexts);
+
+            //Assert
+            messagesServiceFactoryMock.Verify(x => x.Create(contexts), Times.Once);
+            responsesServiceMock.Verify(x => x.RemoveResponse(It.IsAny<string>(), It.IsAny<ulong>()), Times.Never);
+        }
     }
-}
+}   
