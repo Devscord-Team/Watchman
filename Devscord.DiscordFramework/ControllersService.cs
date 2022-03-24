@@ -59,8 +59,6 @@ namespace Devscord.DiscordFramework
             Task commandsTask = null;
             Task botCommandsTask = null;
 
-            
-
             var readAlwaysMethods = this.controllersContainer.WithReadAlways;
             if(readAlwaysMethods.Any())
             {
