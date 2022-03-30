@@ -78,7 +78,7 @@ namespace Watchman.Discord.UnitTests.Responses
         }
 
         [Test, AutoData]
-        public async Task AddResponse_ShouldNotAddResponseBecauseItsNull(AddResponseCommand command)
+        public async Task AddResponse_ShouldNotAddResponseBecauseDefaultResponseItsNull(AddResponseCommand command)
         {
             var contexts = this.testContextsFactory.CreateContexts(5, 1, 1);
 
