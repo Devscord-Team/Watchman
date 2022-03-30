@@ -52,7 +52,7 @@ namespace Watchman.Discord.UnitTests.Responses
         }
 
         [Test, AutoData]
-        public async Task UpdateResponse_ShouldNotFindAnyResponse(UpdateResponseCommand command)
+        public async Task UpdateResponse_ShouldNotUpdateResponseIfItsNull(UpdateResponseCommand command)
         {
             //Arrange
             var contexts = this.testContextsFactory.CreateContexts(5, 1, 1);
