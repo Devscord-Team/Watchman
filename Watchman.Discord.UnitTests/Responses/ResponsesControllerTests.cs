@@ -133,12 +133,11 @@ namespace Watchman.Discord.UnitTests.Responses
             responsesServiceMock.Verify(x => x.GetResponseByOnEvent(It.IsAny<string>(), It.IsAny<ulong>()), Times.Once);
             responsesServiceMock.Verify(x => x.RemoveResponse(It.IsAny<string>(), It.IsAny<ulong>()), Times.Once);
         }
-        [Test]
-        public async Task RemoveResponse_ShouldNotRemoveResponse()
+        [Test, AutoData]
+        public async Task RemoveResponse_ShouldNotRemoveResponse(RemoveResponseCommand command)
         {
             //Arrange
             var contexts = this.testContextsFactory.CreateContexts(5, 1, 1);
-            var command = new RemoveResponseCommand() { OnEvent = "test" };
 
             var messagesServiceMock = new Mock<IMessagesService>();
             var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
