@@ -28,7 +28,6 @@ namespace Watchman.Discord.UnitTests.Responses
             //Arrange
             var contexts = this.testContextsFactory.CreateContexts(15, 1, 1);
             var response = new DomainModel.Responses.Response("test", "test", (ulong)43, new string[] { "test" });
-            var serverResponse = new DomainModel.Responses.Response("test1", "test1", (ulong)54, new string[] { "test1" });
 
             var messagesServiceMock = new Mock<IMessagesService>();
             var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
@@ -48,7 +47,7 @@ namespace Watchman.Discord.UnitTests.Responses
             //Assert
             responsesServiceMock.Verify(x => x.GetResponseByOnEvent(command.OnEvent, DomainModel.Responses.Response.DEFAULT_SERVER_ID), Times.Once);
             responsesServiceMock.Verify(x => x.GetResponseByOnEvent(command.OnEvent, contexts.Server.Id), Times.Once);
-            responsesServiceMock.Verify(x => x.AddCustomResponse(command.OnEvent, command.Message, contexts.Server.Id), Times.Once);
+            responsesServiceMock.Verify(x => x.AddCustomResponse(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<ulong>()), Times.Once);
         }
 
         [Test, AutoData]
@@ -98,7 +97,7 @@ namespace Watchman.Discord.UnitTests.Responses
 
             //Assert
             responsesServiceMock.Verify(x => x.GetResponseByOnEvent(command.OnEvent, DomainModel.Responses.Response.DEFAULT_SERVER_ID), Times.Once);
-            responsesServiceMock.Verify(x => x.AddCustomResponse(command.OnEvent, command.Message, contexts.Server.Id), Times.Never);
+            responsesServiceMock.Verify(x => x.AddCustomResponse(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<ulong>()), Times.Never);
         }
     }
 }   
