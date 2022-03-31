@@ -2,8 +2,8 @@
 using Devscord.DiscordFramework.Commands.AntiSpam.Models;
 using Moq;
 using NUnit.Framework;
-using Watchman.Discord.Areas.Protection.Services;
-using Watchman.Discord.Areas.Protection.Strategies;
+using Watchman.Discord.Areas.AntiSpam.Services;
+using Watchman.Discord.Areas.AntiSpam.Strategies;
 
 namespace Watchman.Discord.UnitTests.AntiSpam
 {

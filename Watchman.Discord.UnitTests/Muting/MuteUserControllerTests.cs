@@ -13,12 +13,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
-using Watchman.Discord.Areas.Protection.BotCommands;
-using Watchman.Discord.Areas.Protection.Commands;
-using Watchman.Discord.Areas.Protection.Services;
-using Watchman.Discord.Areas.Protection.Services.Commands;
+using Watchman.Discord.Areas.Muting.BotCommands;
+using Watchman.Discord.Areas.Muting.Services;
+using Watchman.Discord.Areas.Muting.Services.Commands;
 using Watchman.Discord.UnitTests.TestObjectFactories;
-using Watchman.DomainModel.Protection.Mutes;
+using Watchman.DomainModel.Muting;
 
 namespace Watchman.Discord.UnitTests.Muting
 {

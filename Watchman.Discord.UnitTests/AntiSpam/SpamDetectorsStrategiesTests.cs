@@ -3,7 +3,6 @@ using System.Linq;
 using Devscord.DiscordFramework.Commands.AntiSpam.Models;
 using Devscord.DiscordFramework.Services.Models;
 using NUnit.Framework;
-using Watchman.Discord.Areas.Protection.Strategies;
 
 namespace Watchman.Discord.UnitTests.AntiSpam
 {

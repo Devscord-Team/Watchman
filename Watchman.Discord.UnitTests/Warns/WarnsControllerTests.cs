@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Watchman.Discord.Areas.Protection.Services;
+using Watchman.Discord.Areas.Muting.Services;
 using Watchman.Discord.Areas.Users.BotCommands;
 using FluentAssertions;
 using Watchman.Discord.UnitTests.TestObjectFactories;

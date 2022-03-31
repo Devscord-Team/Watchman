@@ -12,11 +12,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Watchman.Discord.Areas.Protection.Services;
+using Watchman.Discord.Areas.Muting.Services;
 using Watchman.Discord.Areas.Users.BotCommands;
 using Watchman.Discord.Areas.Users.BotCommands.Warns;
 
-namespace Watchman.Discord.Areas.Protection.Controllers
+namespace Watchman.Discord.Areas.Muting.Controllers
 {
     public class WarnsController : IController
     {

@@ -68,8 +68,8 @@ namespace Devscord.DiscordFramework
                     stopwatch.Start();
                     this.RunMethods(request, contexts, readAlwaysMethods, true);
                     stopwatch.Stop();
-                    Log.Information("Elapsed time {elapsedReadAlwaysMS}ms for ReadAlways}", 
-                        stopwatch.ElapsedMilliseconds, request.OriginalMessage, request.IsCommandForBot);
+                    Log.Information("Elapsed time {elapsedReadAlwaysTicks}Ticks for ReadAlways}", 
+                        stopwatch.ElapsedTicks, request.OriginalMessage, request.IsCommandForBot);
                 });
             }
             if (request.IsCommandForBot)
@@ -83,8 +83,8 @@ namespace Devscord.DiscordFramework
                         stopwatch.Start();
                         this.RunMethods(request, contexts, discordCommandMethods, false);
                         stopwatch.Stop();
-                        Log.Information("Elapsed time {elapsedDiscordCommandMS}ms} for DiscordRequest",
-                            stopwatch.ElapsedMilliseconds, request.OriginalMessage, request.IsCommandForBot);
+                        Log.Information("Elapsed time {elapsedDiscordCommandTicks}Ticks} for DiscordRequest",
+                            stopwatch.ElapsedTicks, request.OriginalMessage, request.IsCommandForBot);
                     });
                 }
                 var discordBotCommandMethods = this.controllersContainer.WithIBotCommand;
@@ -96,8 +96,8 @@ namespace Devscord.DiscordFramework
                         stopwatch.Start();
                         await this.RunMethodsIBotCommand(request, contexts, discordBotCommandMethods);
                         stopwatch.Stop();
-                        Log.Information("Elapsed time {elapsedIBotCommandMS}ms} for IBotCommand",
-                            stopwatch.ElapsedMilliseconds, request.OriginalMessage, request.IsCommandForBot);
+                        Log.Information("Elapsed time {elapsedIBotCommandTicks}Ticks} for IBotCommand",
+                            stopwatch.ElapsedTicks, request.OriginalMessage, request.IsCommandForBot);
                     });
                 }
             }
