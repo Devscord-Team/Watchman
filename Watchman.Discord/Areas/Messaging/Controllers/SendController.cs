@@ -2,14 +2,14 @@
 using Devscord.DiscordFramework.Architecture.Controllers;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services.Factories;
-using Watchman.Discord.Areas.Messaging.Administration.BotCommands;
+using Watchman.Discord.Areas.Messaging.BotCommands;
 
-namespace Watchman.Discord.Areas.Messaging.Administration.Controllers
+namespace Watchman.Discord.Areas.Messaging.Controllers
 {
     public class SendController : IController
     {
         private readonly IMessagesServiceFactory _messagesServiceFactory;
-        
+
         public SendController(IMessagesServiceFactory messagesServiceFactory)
         {
             this._messagesServiceFactory = messagesServiceFactory;
