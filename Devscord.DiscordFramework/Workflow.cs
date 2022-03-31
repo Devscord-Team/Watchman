@@ -32,7 +32,7 @@ namespace Devscord.DiscordFramework
         List<Func<IMessage, Task>> OnMessageReceived { get; set; }
         List<Func<Exception, DiscordRequest, Contexts, Task>> OnWorkflowException { get; set; }
 
-        Workflow AddMiddleware<T>() where T : IMiddleware;
+        IWorkflow AddMiddleware<T>() where T : IMiddleware;
         void MapHandlers(DiscordSocketClient client);
         void MapHandlers();
     }
@@ -72,7 +72,7 @@ namespace Devscord.DiscordFramework
             this.userRoleFactory = userRoleFactory;
         }
 
-        public Workflow AddMiddleware<T>() where T : IMiddleware
+        public IWorkflow AddMiddleware<T>() where T : IMiddleware
         {
             this.middlewaresService.AddMiddleware<T>();
             Log.Debug("Added Middleware: {middlewareName}", nameof(T));
