@@ -11,5 +11,5 @@ jobs:
     - name: Update dockerhub
       run: |
         docker build -t ${{ secrets.DOCKER_LOGIN }}/watchman-web .
-        docker login -u ${{ secrets.DOCKER_LOGIN }} -p ${{ secrets.DOCKER_PASS }} 
+        docker login -u ${{ secrets.DOCKER_LOGIN }} -p ${{ secrets.DOCKER_PASS }}
         docker push ${{ secrets.DOCKER_LOGIN }}/watchman-web:latest
