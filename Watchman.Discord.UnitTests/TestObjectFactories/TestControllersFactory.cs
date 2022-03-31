@@ -1,5 +1,6 @@
 ﻿using Devscord.DiscordFramework.Commands.AntiSpam;
 using Devscord.DiscordFramework.Commands.AntiSpam.Models;
+using Devscord.DiscordFramework.Commands.Responses;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
 using Moq;
@@ -16,6 +17,7 @@ using Watchman.Discord.Areas.Protection.Services;
 using Watchman.Discord.Areas.Protection.Strategies;
 using Watchman.Discord.Areas.Responses.Controllers;
 using Watchman.Discord.Areas.Responses.Services;
+using Watchman.Discord.Areas.Users.Controllers;
 using Watchman.Discord.Areas.Users.Services;
 using Watchman.DomainModel.Configuration.Services;
 
@@ -105,6 +107,27 @@ namespace Watchman.Discord.UnitTests.TestObjectFactories
                 messagesServiceFactoryMock.Object,
                 usersServiceMock.Object,
                 warnsServiceMock.Object);
+        }
+
+        internal UsersController CreateUsersController(
+            Mock<IQueryBus> queryBusMock = null, 
+            Mock<IMessagesServiceFactory> messagesServiceFactoryMock = null, 
+            Mock<IRolesService> rolesServiceMock = null, 
+            Mock<IUsersService> usersServiceMock = null, 
+            Mock<IResponsesService> responsesServiceMock = null)
+        {
+            queryBusMock ??= new Mock<IQueryBus>();
+            messagesServiceFactoryMock ??= new Mock<IMessagesServiceFactory>();
+            rolesServiceMock ??= new Mock<IRolesService>();
+            usersServiceMock ??= new Mock<IUsersService>();
+            responsesServiceMock ??= new Mock<IResponsesService>();
+
+            return new UsersController(
+                queryBusMock.Object,
+                messagesServiceFactoryMock.Object,
+                rolesServiceMock.Object,
+                usersServiceMock.Object,
+                responsesServiceMock.Object);
         }
 
         internal ResponsesController CreateResponsesController(
