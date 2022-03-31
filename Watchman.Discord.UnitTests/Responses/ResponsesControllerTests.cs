@@ -25,7 +25,7 @@ namespace Watchman.Discord.UnitTests.Responses
         {
             //Arrange
             var contexts = this.testContextsFactory.CreateContexts(15, 1, 1);
-            var response = new DomainModel.Responses.Response("test", "test", (ulong)43, new string[] { "test" });
+            var response = new DomainModel.Responses.Response("test", "test", 43ul, new string[] { "test" });
 
             var messagesServiceMock = new Mock<IMessagesService>();
             var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
@@ -53,7 +53,7 @@ namespace Watchman.Discord.UnitTests.Responses
         {
             //Arrange
             var contexts = this.testContextsFactory.CreateContexts(5, 1, 1);
-            var expectedResponse = new DomainModel.Responses.Response("test", "test", (ulong)43, new string[] { "test" });
+            var expectedResponse = new DomainModel.Responses.Response("test", "test", 43ul, new string[] { "test" });
 
             var messagesServiceMock = new Mock<IMessagesService>();
             var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
