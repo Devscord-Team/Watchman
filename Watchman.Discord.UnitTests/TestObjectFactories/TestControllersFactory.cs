@@ -12,14 +12,16 @@ using System.Threading.Tasks;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Administration.Controllers;
 using Watchman.Discord.Areas.Administration.Services;
-using Watchman.Discord.Areas.Protection.Controllers;
-using Watchman.Discord.Areas.Protection.Services;
-using Watchman.Discord.Areas.Protection.Strategies;
+using Watchman.Discord.Areas.Muting.Controllers;
+using Watchman.Discord.Areas.Muting.Services;
 using Watchman.Discord.Areas.Users.Controllers;
 using Watchman.Discord.Areas.Responses.Controllers;
 using Watchman.Discord.Areas.Responses.Services;
 using Watchman.Discord.Areas.Users.Services;
 using Watchman.DomainModel.Configuration.Services;
+using Watchman.Discord.Areas.AntiSpam.Controllers;
+using Watchman.Discord.Areas.AntiSpam.Services;
+using Watchman.Discord.Areas.AntiSpam.Strategies;
 
 namespace Watchman.Discord.UnitTests.TestObjectFactories
 {

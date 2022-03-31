@@ -7,7 +7,7 @@ using Devscord.DiscordFramework.Commands.AntiSpam.Models;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Models;
 using Hangfire;
-using Watchman.Discord.Areas.Protection.Services;
+using Watchman.Discord.Areas.Muting.Services;
 using Watchman.Discord.Areas.Responses.Services;
 using Watchman.Web.Jobs;
 using Watchman.DomainModel.Configuration.Services;

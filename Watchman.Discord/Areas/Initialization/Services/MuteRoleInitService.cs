@@ -4,7 +4,7 @@ using Devscord.DiscordFramework.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
-using Watchman.DomainModel.Protection.Complaints.Queries;
+using Watchman.DomainModel.Complaints.Queries;
 
 namespace Watchman.Discord.Areas.Initialization.Services
 {

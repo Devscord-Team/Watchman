@@ -16,7 +16,6 @@ using Watchman.Cqrs;
 using Watchman.Discord.Areas.Administration.BotCommands;
 using Watchman.Discord.Areas.Administration.Controllers;
 using Watchman.Discord.Areas.Administration.Services;
-using Watchman.Discord.Areas.Protection.Strategies;
 using Watchman.Discord.Areas.Users.Services;
 using Watchman.Discord.UnitTests.TestObjectFactories;
 using Watchman.DomainModel.Configuration.Services;

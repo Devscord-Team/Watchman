@@ -9,9 +9,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Watchman.Discord.Areas.Protection.Controllers;
-using Watchman.Discord.Areas.Protection.Services;
-using Watchman.Discord.Areas.Protection.Strategies;
+using Watchman.Discord.Areas.AntiSpam.Services;
+using Watchman.Discord.Areas.AntiSpam.Strategies;
+using Watchman.Discord.Areas.Muting.Controllers;
+using Watchman.Discord.Areas.Muting.Services;
 using Watchman.Discord.UnitTests.TestObjectFactories;
 using Watchman.DomainModel.Configuration.Services;
 

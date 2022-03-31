@@ -17,7 +17,7 @@ using Watchman.DomainModel.Warns;
 using Watchman.DomainModel.Warns.Commands;
 using Watchman.DomainModel.Warns.Queries;
 
-namespace Watchman.Discord.Areas.Protection.Services
+namespace Watchman.Discord.Areas.Muting.Services
 {
     public interface IWarnsService
     {
