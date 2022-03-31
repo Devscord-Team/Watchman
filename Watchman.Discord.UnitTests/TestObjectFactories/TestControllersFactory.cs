@@ -15,9 +15,9 @@ using Watchman.Discord.Areas.Administration.Services;
 using Watchman.Discord.Areas.Protection.Controllers;
 using Watchman.Discord.Areas.Protection.Services;
 using Watchman.Discord.Areas.Protection.Strategies;
+using Watchman.Discord.Areas.Users.Controllers;
 using Watchman.Discord.Areas.Responses.Controllers;
 using Watchman.Discord.Areas.Responses.Services;
-using Watchman.Discord.Areas.Users.Controllers;
 using Watchman.Discord.Areas.Users.Services;
 using Watchman.DomainModel.Configuration.Services;
 
@@ -132,11 +132,11 @@ namespace Watchman.Discord.UnitTests.TestObjectFactories
 
         internal ResponsesController CreateResponsesController(
             Mock<IMessagesServiceFactory> messagesServiceFactoryMock = null,
-            Mock<Watchman.Discord.Areas.Responses.Services.IResponsesService> responsesServiceMock = null,
+            Mock<Areas.Responses.Services.IResponsesService> responsesServiceMock = null,
             Mock<IResponsesMessageService> responsesMessageServiceMock = null)
         {
             messagesServiceFactoryMock ??= new Mock<IMessagesServiceFactory>();
-            responsesServiceMock ??= new Mock<Watchman.Discord.Areas.Responses.Services.IResponsesService>();
+            responsesServiceMock ??= new Mock<Areas.Responses.Services.IResponsesService>();
             responsesMessageServiceMock ??= new Mock<IResponsesMessageService>();
           
             return new ResponsesController(
