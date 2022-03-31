@@ -1,7 +1,7 @@
 ﻿using Devscord.DiscordFramework.Commands;
 using Devscord.DiscordFramework.Commands.PropertyAttributes;
 
-namespace Watchman.Discord.Areas.Messaging.Administration.BotCommands
+namespace Watchman.Discord.Areas.Messaging.BotCommands
 {
     public class SendCommand : IBotCommand
     {

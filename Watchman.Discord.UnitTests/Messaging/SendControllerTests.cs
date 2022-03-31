@@ -10,8 +10,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Watchman.Discord.Areas.Messaging.Administration.BotCommands;
 using Watchman.Discord.Areas.Messaging.Administration.Controllers;
+using Watchman.Discord.Areas.Messaging.BotCommands;
 
 namespace Watchman.Discord.UnitTests.Messaging
 {
