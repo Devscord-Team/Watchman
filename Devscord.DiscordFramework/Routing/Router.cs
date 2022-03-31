@@ -57,10 +57,12 @@ namespace Devscord.DiscordFramework.Routing
                 contexts.Server.Id);
 
             // ReadAlwaysMethods should be first in throwing exception, bcs every ReadAlways exception is Error
-            await this.TryRunReadAlways(request, contexts);
-            Task.WaitAll(
-                this.TryRunDiscordCommands(request, contexts), 
-                this.TryRunBotCommands(request, contexts));
+            var readAlways = this.TryRunReadAlways(request, contexts);
+            var discordCommands = this.TryRunDiscordCommands(request, contexts);
+            var botCommands = this.TryRunBotCommands(request, contexts);
+            await readAlways;
+            await discordCommands;
+            await botCommands;
         }
 
         private void LoadControllers()
@@ -132,11 +134,10 @@ namespace Devscord.DiscordFramework.Routing
                         tasks.Add(task);
                         continue;
                     }
-
-                    var command = method.GetAttributeInstances<DiscordCommand>();
-                    if (this.IsMatchedCommand(command, request) && this.IsValid(contexts, method))
+                    var command = method.GetAttributeInstances<DiscordCommand>().FirstOrDefault();
+                    if (command?.IsMatched(request) == true && this.IsValid(contexts, method))
                     {
-                        Log.Information("Invoking command {invokedCommand}", command.First().Command);
+                        Log.Information("Invoking command {invokedCommand}", command.CommandName);
                         var task = InvokeMethod(request, contexts, controllerInfo, method);
                         tasks.Add(task);
                     }
@@ -201,16 +202,6 @@ namespace Devscord.DiscordFramework.Routing
             {
                 throw new InvalidArgumentsException();
             }
-        }
-
-        private bool IsMatchedCommand(IEnumerable<DiscordCommand> commands, DiscordRequest request)
-        {
-            return commands.Any(x =>
-            {
-                var withoutPrefix = request.OriginalMessage.CutStart(request.Prefix);
-                return withoutPrefix.StartsWith(x.Command)
-                       && (withoutPrefix.Length == x.Command.Length || withoutPrefix[x.Command.Length] == ' ');
-            });
         }
 
         private bool CheckPermissions(MethodInfo method, Contexts contexts)
