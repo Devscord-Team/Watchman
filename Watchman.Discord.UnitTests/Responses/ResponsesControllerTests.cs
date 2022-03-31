@@ -1,5 +1,4 @@
 ﻿using AutoFixture.NUnit3;
-using Watchman.Discord.Areas.Responses.Services;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
@@ -12,8 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Watchman.Discord.Areas.Responses.BotCommands;
 using Watchman.Discord.UnitTests.TestObjectFactories;
-using Devscord.DiscordFramework.Commands.Responses;
-using IResponsesService = Watchman.Discord.Areas.Responses.Services.IResponsesService;
+using Watchman.Discord.Areas.Responses.Services;
 
 namespace Watchman.Discord.UnitTests.Responses
 {
