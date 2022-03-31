@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Devscord.DiscordFramework
+namespace Devscord.DiscordFramework.Routing.Models
 {
     internal class ControllerInfo
     {

@@ -4,8 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Devscord.DiscordFramework.Commands;
 
-namespace Devscord.DiscordFramework
+namespace Devscord.DiscordFramework.Routing.Models
 {
     public interface ICommandsContainer
     {
@@ -39,7 +40,7 @@ namespace Devscord.DiscordFramework
             catch (InvalidOperationException)
             {
                 throw new MoreThanOneRegexHasBeenMatchedException();
-            }   
+            }
         }
 
         private async Task TryRefresh()

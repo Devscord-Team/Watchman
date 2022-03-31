@@ -1,4 +1,5 @@
 ﻿using Devscord.DiscordFramework;
+using Devscord.DiscordFramework.Commands;
 using Devscord.DiscordFramework.Services;
 using Serilog;
 using System;
