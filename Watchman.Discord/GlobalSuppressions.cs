@@ -3,7 +3,6 @@
 // Project-level suppressions either have no target or are given
 // a specific target and scoped to a namespace, type, member, etc.
 
-
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>", Scope = "member", Target = "~M:Watchman.Discord.Areas.Initialization.Controllers.InitializationController.Init(Devscord.DiscordFramework.Commands.Parsing.Models.DiscordRequest,Devscord.DiscordFramework.Middlewares.Contexts.Contexts)")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>", Scope = "member", Target = "~M:Watchman.Discord.Areas.Muting.Controllers.AntiSpamController.Scan(Devscord.DiscordFramework.Commands.Parsing.Models.DiscordRequest,Devscord.DiscordFramework.Middlewares.Contexts.Contexts)")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>", Scope = "member", Target = "~M:Watchman.Discord.Areas.Users.Controllers.UsersController.GetAvatar(Devscord.DiscordFramework.Commands.Parsing.Models.DiscordRequest,Devscord.DiscordFramework.Middlewares.Contexts.Contexts)")]

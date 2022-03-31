@@ -6,7 +6,6 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 
 namespace Watchman.Discord.Areas.AntiSpam.Strategies
 {
-
     public class LinksDetectorStrategy : ISpamDetector
     {
         private readonly Regex _linkRegex = new Regex(@"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)", RegexOptions.Compiled);
