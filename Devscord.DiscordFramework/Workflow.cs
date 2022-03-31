@@ -16,6 +16,8 @@ using Devscord.DiscordFramework.Middlewares.Factories;
 using Discord;
 using Discord.WebSocket;
 using Serilog;
+using Devscord.DiscordFramework.Middlewares;
+using Devscord.DiscordFramework.Routing;
 
 namespace Devscord.DiscordFramework
 {
@@ -39,31 +41,30 @@ namespace Devscord.DiscordFramework
 
     public class Workflow : IWorkflow
     {
-        private readonly IControllersService controllersService;
+        private readonly IRouter router;
         private readonly ICommandParser commandParser;
-        private readonly IMiddlewaresService middlewaresService;
+        private readonly IMiddlewaresRunner middlewaresService;
         private readonly IDiscordServerContextFactory discordServerContextFactory;
         private readonly IUserContextsFactory userContextsFactory;
         private readonly IChannelContextFactory channelContextFactory;
         private readonly IUserRoleFactory userRoleFactory;
-        private readonly Stopwatch _stopWatch = new Stopwatch();
 
-        public List<Func<Task>> OnReady { get; set; } = new List<Func<Task>>();
-        public List<Func<Contexts, Task>> OnUserJoined { get; set; } = new List<Func<Contexts, Task>>();
-        public List<Func<DiscordServerContext, Task>> OnDiscordServerAddedBot { get; set; } = new List<Func<DiscordServerContext, Task>>();
-        public List<Func<ChannelContext, DiscordServerContext, Task>> OnChannelCreated { get; set; } = new List<Func<ChannelContext, DiscordServerContext, Task>>();
-        public List<Func<ChannelContext, DiscordServerContext, Task>> OnChannelRemoved { get; set; } = new List<Func<ChannelContext, DiscordServerContext, Task>>();
-        public List<Func<UserRole, UserRole, Task>> OnRoleUpdated { get; set; } = new List<Func<UserRole, UserRole, Task>>();
-        public List<Func<UserRole, Task>> OnRoleCreated { get; set; } = new List<Func<UserRole, Task>>();
-        public List<Func<UserRole, Task>> OnRoleRemoved { get; set; } = new List<Func<UserRole, Task>>();
-        public List<Func<IMessage, Task>> OnMessageReceived { get; set; } = new List<Func<IMessage, Task>>();
-        public List<Func<Exception, DiscordRequest, Contexts, Task>> OnWorkflowException { get; set; } = new List<Func<Exception, DiscordRequest, Contexts, Task>>();
+        public List<Func<Task>> OnReady { get; set; } = new();
+        public List<Func<Contexts, Task>> OnUserJoined { get; set; } = new();
+        public List<Func<DiscordServerContext, Task>> OnDiscordServerAddedBot { get; set; } = new();
+        public List<Func<ChannelContext, DiscordServerContext, Task>> OnChannelCreated { get; set; } = new();
+        public List<Func<ChannelContext, DiscordServerContext, Task>> OnChannelRemoved { get; set; } = new();
+        public List<Func<UserRole, UserRole, Task>> OnRoleUpdated { get; set; } = new();
+        public List<Func<UserRole, Task>> OnRoleCreated { get; set; } = new();
+        public List<Func<UserRole, Task>> OnRoleRemoved { get; set; } = new();
+        public List<Func<IMessage, Task>> OnMessageReceived { get; set; } = new();
+        public List<Func<Exception, DiscordRequest, Contexts, Task>> OnWorkflowException { get; set; } = new();
 
-        public Workflow(IControllersService controllersService, ICommandParser commandParser, 
-            IMiddlewaresService middlewaresService, IDiscordServerContextFactory discordServerContextFactory, IUserContextsFactory userContextsFactory, 
+        public Workflow(IRouter controllersService, ICommandParser commandParser,
+            IMiddlewaresRunner middlewaresService, IDiscordServerContextFactory discordServerContextFactory, IUserContextsFactory userContextsFactory,
             IChannelContextFactory channelContextFactory, IUserRoleFactory userRoleFactory)
         {
-            this.controllersService = controllersService;
+            this.router = controllersService;
             this.commandParser = commandParser;
             this.middlewaresService = middlewaresService;
             this.discordServerContextFactory = discordServerContextFactory;
@@ -109,7 +110,7 @@ namespace Devscord.DiscordFramework
             var task = func.Invoke(arg1);
             return this.TryToAwaitTask(task);
         }
-        
+
         private Task WithExceptionHandlerAwait<T, W>(Func<T, W, Task> func, T arg1, W arg2)
         {
             var task = func.Invoke(arg1, arg2);
@@ -140,7 +141,7 @@ namespace Devscord.DiscordFramework
             var contexts = this.GetContexts(socketMessage);
             var request = this.ParseRequest(socketMessage);
 
-            await this.TryToAwaitTask(this.controllersService.Run(socketMessage.Id, request, contexts), request, contexts);
+            await this.TryToAwaitTask(this.router.Run(socketMessage.Id, request, contexts), request, contexts);
 
             runStopwatch.Stop();
             Log.Information("Elapsed time {elapsedFullMessageProcessTicks}ticks for message {message} recognized as command {isCommand}",
@@ -149,16 +150,13 @@ namespace Devscord.DiscordFramework
 
         private DiscordRequest ParseRequest(IMessage socketMessage)
         {
-            this._stopWatch.Restart();
             var request = this.commandParser.Parse(socketMessage.Content, socketMessage.Timestamp.UtcDateTime);
             return request;
         }
 
         private Contexts GetContexts(IMessage socketMessage)
         {
-            this._stopWatch.Restart();
             var contexts = this.middlewaresService.RunMiddlewares(socketMessage);
-            var elapsedMiddlewares = this._stopWatch.ElapsedTicks;
             return contexts;
         }
 

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Devscord.DiscordFramework
+namespace Devscord.DiscordFramework.Commands
 {
     public interface ICustomCommandsLoader
     {

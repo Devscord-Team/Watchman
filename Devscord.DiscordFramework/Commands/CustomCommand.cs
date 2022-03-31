@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Devscord.DiscordFramework
+namespace Devscord.DiscordFramework.Commands
 {
     public class CustomCommand
     {
