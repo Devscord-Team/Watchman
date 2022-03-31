@@ -24,7 +24,7 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment
                 CreatedAt = DateTime.UtcNow.AddMilliseconds(-10),
                 Author = new FakeUser() 
                 { 
-                    Id = 5,
+                    Id = isOwner ? 5u : 1u,
                     IsBot = false,
                     IsWebhook = false,
                     Username = "TestUser",

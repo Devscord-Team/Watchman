@@ -1,4 +1,5 @@
 ﻿using Devscord.DiscordFramework;
+using Devscord.DiscordFramework.Commands;
 using Devscord.DiscordFramework.Services;
 using Serilog;
 using System;
@@ -11,7 +12,7 @@ using Watchman.Cqrs;
 using Watchman.Discord.Areas.Administration.Services;
 using Watchman.Discord.Areas.Help.Services;
 using Watchman.Discord.Areas.Initialization.Services;
-using Watchman.Discord.Areas.Protection.Services.Commands;
+using Watchman.Discord.Areas.Muting.Services.Commands;
 using Watchman.Discord.Areas.Users.Services;
 using Watchman.Discord.Integration.DevscordFramework;
 using Watchman.DomainModel.Configuration.Services;

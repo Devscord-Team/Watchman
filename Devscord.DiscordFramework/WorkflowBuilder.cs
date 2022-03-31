@@ -46,13 +46,6 @@ namespace Devscord.DiscordFramework
             return new WorkflowBuilder(token, workflow, context, useDiscordNetClient);
         }
 
-        public WorkflowBuilder SetMessageHandler(Func<SocketMessage, Task> action)
-        {
-            //todo use workflow
-            this._client.MessageReceived += action;
-            return this;
-        }
-
         public WorkflowBuilder SetDefaultMiddlewares()
         {
             this._workflow

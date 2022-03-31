@@ -6,7 +6,6 @@ using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Cqrs;
-using Watchman.Discord.Areas.Protection.Strategies;
 using Watchman.DomainModel.DiscordServer.Commands;
 using Watchman.DomainModel.DiscordServer.Queries;
 

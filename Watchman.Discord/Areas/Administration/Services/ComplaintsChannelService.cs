@@ -8,8 +8,8 @@ using Devscord.DiscordFramework.Services;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Configuration.ConfigurationItems;
 using Watchman.DomainModel.Configuration.Services;
-using Watchman.DomainModel.Protection.Complaints.Commands;
-using Watchman.DomainModel.Protection.Complaints.Queries;
+using Watchman.DomainModel.Complaints.Commands;
+using Watchman.DomainModel.Complaints.Queries;
 
 namespace Watchman.Discord.Areas.Administration.Services
 {
