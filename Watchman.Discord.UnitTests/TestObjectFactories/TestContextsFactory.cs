@@ -13,11 +13,11 @@ namespace Watchman.Discord.UnitTests.TestObjectFactories
     {
         private readonly Fixture fixture = new ();
 
-        public Contexts CreateContexts(ulong serverId, ulong channelId, ulong userId)
+        public Contexts CreateContexts(ulong serverId, ulong channelId, ulong userId, string avatarUrl = null)
         {
             var server = this.CreateServerContext(serverId);
             var channel = this.CreateChannelContext(channelId);
-            var user = this.CreateUserContext(userId);
+            var user = this.CreateUserContext(userId, avatarUrl);
             var message = this.CreateMessageContext();
             return new Contexts(server, channel, user, message);
         }
@@ -41,13 +41,13 @@ namespace Watchman.Discord.UnitTests.TestObjectFactories
             return new ChannelContext(channelId, fixture.Create<string>());
         }
 
-        public UserContext CreateUserContext(ulong userId)
+        public UserContext CreateUserContext(ulong userId, string avatarUrl = null)
         {
             return new UserContext(
                 userId,
                 fixture.Create<string>(),
                 new List<UserRole>() { new UserRole(fixture.Create<ulong>(), fixture.Create<string>(), fixture.Create<ulong>()) },
-                fixture.Create<string>(),
+                avatarUrl,
                 fixture.Create<string>(),
                 x => false,
                 x => DateTime.UtcNow.AddDays(-10)
