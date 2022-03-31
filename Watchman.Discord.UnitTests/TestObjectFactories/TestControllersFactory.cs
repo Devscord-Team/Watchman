@@ -114,13 +114,13 @@ namespace Watchman.Discord.UnitTests.TestObjectFactories
             Mock<IMessagesServiceFactory> messagesServiceFactoryMock = null, 
             Mock<IRolesService> rolesServiceMock = null, 
             Mock<IUsersService> usersServiceMock = null, 
-            Mock<IResponsesService> responsesServiceMock = null)
+            Mock<Devscord.DiscordFramework.Commands.Responses.IResponsesService> responsesServiceMock = null)
         {
             queryBusMock ??= new Mock<IQueryBus>();
             messagesServiceFactoryMock ??= new Mock<IMessagesServiceFactory>();
             rolesServiceMock ??= new Mock<IRolesService>();
             usersServiceMock ??= new Mock<IUsersService>();
-            responsesServiceMock ??= new Mock<IResponsesService>();
+            responsesServiceMock ??= new Mock<Devscord.DiscordFramework.Commands.Responses.IResponsesService>();
 
             return new UsersController(
                 queryBusMock.Object,
@@ -132,11 +132,11 @@ namespace Watchman.Discord.UnitTests.TestObjectFactories
 
         internal ResponsesController CreateResponsesController(
             Mock<IMessagesServiceFactory> messagesServiceFactoryMock = null,
-            Mock<IResponsesService> responsesServiceMock = null,
+            Mock<Areas.Responses.Services.IResponsesService> responsesServiceMock = null,
             Mock<IResponsesMessageService> responsesMessageServiceMock = null)
         {
             messagesServiceFactoryMock ??= new Mock<IMessagesServiceFactory>();
-            responsesServiceMock ??= new Mock<IResponsesService>();
+            responsesServiceMock ??= new Mock<Areas.Responses.Services.IResponsesService>();
             responsesMessageServiceMock ??= new Mock<IResponsesMessageService>();
           
             return new ResponsesController(
