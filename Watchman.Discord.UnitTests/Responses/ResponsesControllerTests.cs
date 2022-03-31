@@ -27,8 +27,6 @@ namespace Watchman.Discord.UnitTests.Responses
         {
             //Arrange
             var contexts = this.testContextsFactory.CreateContexts(1, 1, 1);
-
-            var serverId = 5ul;
             var command = new RemoveResponseCommand() { OnEvent = "test" };
             var expectedResponse = new DomainModel.Responses.Response("test", "test", (ulong)43, new string[] { "test" });
            
