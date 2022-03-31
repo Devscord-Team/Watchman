@@ -143,8 +143,8 @@ namespace Devscord.DiscordFramework
             await this.TryToAwaitTask(this.controllersService.Run(socketMessage.Id, request, contexts), request, contexts);
 
             runStopwatch.Stop();
-            Log.Information("Elapsed time {elapsedFullMessageProcessMS}ms for message {message} recognized as command {isCommand}",
-                runStopwatch.ElapsedMilliseconds, request.OriginalMessage, request.IsCommandForBot);
+            Log.Information("Elapsed time {elapsedFullMessageProcessTicks}ticks for message {message} recognized as command {isCommand}",
+                runStopwatch.ElapsedTicks, request.OriginalMessage, request.IsCommandForBot);
         }
 
         private DiscordRequest ParseRequest(IMessage socketMessage)
