@@ -10,9 +10,9 @@ namespace Devscord.DiscordFramework.Commands.Responses
         {
             var fields = new List<KeyValuePair<string, string>>
             {
-                new KeyValuePair<string, string>("user", contexts.User.Name),
-                new KeyValuePair<string, string>("channel", contexts.Channel.Name),
-                new KeyValuePair<string, string>("server", contexts.Server.Name)
+                new KeyValuePair<string, string>("context_user", contexts.User.Name),
+                new KeyValuePair<string, string>("context_channel", contexts.Channel.Name),
+                new KeyValuePair<string, string>("context_server", contexts.Server.Name)
             };
             return fields.Where(x => requiredFields.Contains(x.Key));
         }

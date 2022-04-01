@@ -20,10 +20,6 @@ namespace Devscord.DiscordFramework.Commands.Responses
         {
             return responsesService.ProcessResponse("InvalidArguments");
         }
-        public static string MoreThanOneRegexHasBeenMatched(this IResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("MoreThanOneRegexHasBeenMatched");
-        }
 
         public static string NotAdminPermissions(this IResponsesService responsesService)
         {

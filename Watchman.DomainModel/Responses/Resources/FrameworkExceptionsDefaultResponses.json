@@ -1,16 +1,44 @@
 ﻿[
   {
-    "OnEvent": "a",
-    "Value": "a",
-    "Variables": [ "" ],
-    "RequireContext": true
-  },
-  {
-    "OnEvent": "b",
-    "Value": "b"
+    "OnEvent": "ArgumentsDuplicated",
+    "Value": "Podane argumenty są zduplikowane."
   },
   {
     "OnEvent": "ComplaintsChannelAlreadyExists",
     "Value": "Kanał na skargi już istnieje na tym serwerze."
+  },
+  {
+    "OnEvent": "InvalidArguments",
+    "Value": "Podane argumenty są niepoprawne."
+  },
+  {
+    "OnEvent": "NotAdminPermissions",
+    "Value": "Nie masz wystarczających uprawnień do wywołania tej komendy."
+  },
+  {
+    "OnEvent": "NotEnoughArguments",
+    "Value": "Podano niewystarczającą liczbę argumentów!"
+  },
+  {
+    "OnEvent": "RoleNotFound",
+    "Value": "Nie znaleziono roli {{role}}.",
+    "Variables": [ "role" ]
+  },
+  {
+    "OnEvent": "TimeCannotBeNegative",
+    "Value": "Czas nie może być ujemny!"
+  },
+  {
+    "OnEvent": "TimeIsTooBig",
+    "Value": "Podano za dużą wartość czasu!"
+  },
+  {
+    "OnEvent": "TimeNotSpecified",
+    "Value": "Nie określiłeś przedziału czasu!"
+  },
+  {
+    "OnEvent": "UserNotFound",
+    "Value": "Użytkownik {{user}} nie istnieje.",
+    "Variables": [ "user" ]
   }
 ]
