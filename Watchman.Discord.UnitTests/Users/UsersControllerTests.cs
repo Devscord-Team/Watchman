@@ -133,11 +133,11 @@ namespace Watchman.Discord.UnitTests.Users
             rolesServiceMock.Verify(x => x.AddRoleToUser(It.IsAny<IEnumerable<SafeRole>>(), It.IsAny<Contexts>(), It.IsAny<List<string>>()), Times.Once);
         }
         [Test]
-        public async Task AddRole_ShouldThrowException()
+        public void AddRole_ShouldThrowException()
         {
             //Arrange
             AddRoleCommand command = new AddRoleCommand();
-            command.Roles = new List<string>() { "test", "test", "test", "test", "test", "test"};
+            command.Roles = new List<string>() { "test", "test", "test", "test", "test", "test" };
             var contexts = testContextsFactory.CreateContexts(1, 1, 1, "test");
 
             var rolesServiceMock = new Mock<Areas.Users.Services.IRolesService>();
