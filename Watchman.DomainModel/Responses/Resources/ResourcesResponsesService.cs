@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Watchman.DomainModel.Responses.Areas.Administration
@@ -18,7 +19,12 @@ namespace Watchman.DomainModel.Responses.Areas.Administration
         {
             foreach (var area in areas)
             {
-                var path = Path.Combine(Environment.CurrentDirectory, "Responses", "Resources", $"{area}DefaultResponses.json");
+                var dllPathSplitted = Assembly.GetExecutingAssembly().Location
+                    .Replace("\\", "/")
+                    .Split("/")
+                    .SkipLast(1);
+                var dllDirectory = string.Join("/", dllPathSplitted);
+                var path = Path.Combine(dllDirectory, "Responses", "Resources", $"{area}DefaultResponses.json");
                 var json = File.ReadAllText(path);
                 var defaultResponses = JsonConvert.DeserializeObject<List<DefaultResponseModel>>(json);
                 foreach (var defaultResponse in defaultResponses)

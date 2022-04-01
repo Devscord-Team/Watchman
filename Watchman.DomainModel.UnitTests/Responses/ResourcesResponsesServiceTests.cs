@@ -22,13 +22,13 @@ namespace Watchman.DomainModel.UnitTests.Responses
         [TestCase("UselessFeatures")]
         [TestCase("Users")]
         [TestCase("Warns")]
-        public async Task ShouldFindResources(string area)
+        public void ShouldFindResources(string area)
         {
             //Arrange
             var service = new ResourcesResponsesService();
 
             //Act
-            var result = (await service.GetResponses(area)).ToList();
+            var result = service.GetResponses(area).ToList();
 
             //Assert
             result.Should().NotBeEmpty();
