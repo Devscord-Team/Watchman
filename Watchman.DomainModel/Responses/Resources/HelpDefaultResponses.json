@@ -1,0 +1,50 @@
+﻿[
+  {
+    "OnEvent": "NoDefaultDescription",
+    "Value": "Brak domyślnego opisu"
+  },
+  {
+    "OnEvent": "AvailableCommands",
+    "Value": "Dostępne komendy:"
+  },
+  {
+    "OnEvent": "HereYouCanFindAvailableCommandsWithDescriptions",
+    "Value": "Poniżej znajdziesz listę dostępnych komend\n\nJeśli chcesz dowiedzieć się jak używać wybranej komendy, sprawdź to za pomocą komendy\n`-help -command nazwakomendy`\nprzykładowo\n`-help -command help`"
+  },
+  {
+    "OnEvent": "HowToUseCommand",
+    "Value": "Jak używać komendy"
+  },
+  {
+    "OnEvent": "Example",
+    "Value": "Przykład"
+  },
+  {
+    "OnEvent": "Parameters",
+    "Value": "Parametry"
+  },
+  {
+    "OnEvent": "Type",
+    "Value": "Typ"
+  },
+  {
+    "OnEvent": "ExampleChannelMention",
+    "Value": "&lt;#12345678&gt;"
+  },
+  {
+    "OnEvent": "ExampleList",
+    "Value": "jeden dwa trzy"
+  },
+  {
+    "OnEvent": "ExampleSingleWord",
+    "Value": "JednoSłowo"
+  },
+  {
+    "OnEvent": "ExampleText",
+    "Value": "\"kilka słów\""
+  },
+  {
+    "OnEvent": "ExampleUserMention",
+    "Value": "&lt;@12345678&gt;"
+  },
+]

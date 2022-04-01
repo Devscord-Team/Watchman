@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Watchman.Cqrs;
 using Watchman.DomainModel.Help;
 using Watchman.DomainModel.Help.Queries;
+using Watchman.Discord.ResponsesManagers;
 
 namespace Watchman.Discord.Areas.Help.Services
 {

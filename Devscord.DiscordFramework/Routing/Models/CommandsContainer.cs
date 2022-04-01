@@ -39,7 +39,8 @@ namespace Devscord.DiscordFramework.Routing.Models
             }
             catch (InvalidOperationException)
             {
-                throw new MoreThanOneRegexHasBeenMatchedException();
+                throw;
+                //todo remove custom commands logic
             }
         }
 

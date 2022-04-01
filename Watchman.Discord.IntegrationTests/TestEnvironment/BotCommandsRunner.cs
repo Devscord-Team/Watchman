@@ -49,6 +49,7 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment
                             new FakeRole() { Id = 1, Name = "First", CreatedAt = DateTime.UtcNow.AddDays(-5), },
                             new FakeRole() { Id = 2, Name = "Second", CreatedAt = DateTime.UtcNow.AddDays(-5), },
                             new FakeRole() { Id = 3, Name = "Third", CreatedAt = DateTime.UtcNow.AddDays(-5), },
+                            new FakeRole() { Id = 3, Name = "muted", CreatedAt = DateTime.UtcNow.AddDays(-5), },
                         }
                     }
                 },

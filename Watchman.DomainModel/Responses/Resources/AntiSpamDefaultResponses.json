@@ -1,0 +1,7 @@
+﻿[
+  {
+    "OnEvent": "SpamAlertRecognized",
+    "Value": "Spam alert! Wykryto spam u użytkownika {{context_user}} na kanale {{context_channel}}. Poczekaj chwile zanim coś napiszesz.",
+    "RequireContext": true
+  }
+]

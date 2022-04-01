@@ -9,20 +9,25 @@ using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Discord.Areas.Responses.Services;
 using Watchman.Discord.Areas.Responses.BotCommands;
 using DomainResponse = Watchman.DomainModel.Responses.Response;
+using Watchman.Discord.Areas.Commons;
+using Watchman.Discord.ResponsesManagers;
 
 namespace Watchman.Discord.Areas.Responses.Controllers
 {
     public class ResponsesController : IController
     {
         private readonly IMessagesServiceFactory _messagesServiceFactory;
-        private readonly Services.IResponsesService _responsesService;
+        private readonly ICustomResponsesService _responsesService;
         private readonly IResponsesMessageService _responsesMessageService;
+        private readonly IResponsesCachingService responsesCachingService;
 
-        public ResponsesController(IMessagesServiceFactory messagesServiceFactory, Services.IResponsesService responsesService, IResponsesMessageService responsesMessageService)
+        public ResponsesController(IMessagesServiceFactory messagesServiceFactory, ICustomResponsesService responsesService, IResponsesMessageService responsesMessageService,
+            IResponsesCachingService responsesCachingService)
         {
             this._messagesServiceFactory = messagesServiceFactory;
             this._responsesService = responsesService;
             this._responsesMessageService = responsesMessageService;
+            this.responsesCachingService = responsesCachingService;
         }
 
         [AdminCommand]
@@ -49,6 +54,7 @@ namespace Watchman.Discord.Areas.Responses.Controllers
 
             await this._responsesService.AddCustomResponse(command.OnEvent, command.Message, contexts.Server.Id);
             await messageService.SendResponse(x => x.ResponseHasBeenAdded(contexts, command.OnEvent));
+            this.responsesCachingService.UpdateServerResponses(contexts.Server.Id);
         }
 
         [AdminCommand]
@@ -72,6 +78,7 @@ namespace Watchman.Discord.Areas.Responses.Controllers
 
             await this._responsesService.UpdateResponse(response.Id, command.Message);
             await messageService.SendResponse(x => x.ResponseHasBeenUpdated(contexts, command.OnEvent, response.Message, command.Message));
+            this.responsesCachingService.UpdateServerResponses(contexts.Server.Id);
         }
 
         [AdminCommand]
@@ -86,6 +93,7 @@ namespace Watchman.Discord.Areas.Responses.Controllers
             }
             await this._responsesService.RemoveResponse(command.OnEvent, contexts.Server.Id);
             await messageService.SendResponse(x => x.ResponseHasBeenRemoved(contexts, command.OnEvent));
+            this.responsesCachingService.UpdateServerResponses(contexts.Server.Id);
         }
 
         [AdminCommand]

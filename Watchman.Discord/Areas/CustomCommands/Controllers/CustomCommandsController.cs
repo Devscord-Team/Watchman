@@ -16,17 +16,18 @@ namespace Watchman.Discord.Areas.CustomCommands.Controllers
 {
     public class CustomCommandsController : IController
     {
+        //todo delete custom commands logic
         private readonly IQueryBus _queryBus;
         private readonly MessagesServiceFactory _messagesServiceFactory;
-        private readonly ResponsesService _responsesService;
+        private readonly IResponsesService _responsesService;
 
-        public CustomCommandsController(IQueryBus queryBus, MessagesServiceFactory messagesServiceFactory, ResponsesService responsesService)
+        public CustomCommandsController(IQueryBus queryBus, MessagesServiceFactory messagesServiceFactory, IResponsesService responsesService)
         {
             this._queryBus = queryBus;
             this._messagesServiceFactory = messagesServiceFactory;
             this._responsesService = responsesService;
         }
-
+        /*
         public async Task PrintCustomCommands(CustomCommandsCommand command, Contexts contexts)
         {
             var getCustomCommandsQuery = new GetCustomCommandsQuery(contexts.Server.Id); 
@@ -34,5 +35,6 @@ namespace Watchman.Discord.Areas.CustomCommands.Controllers
             var messagesServices = this._messagesServiceFactory.Create(contexts);
             await messagesServices.SendEmbedMessage(this._responsesService.CustomCommandsHeader(), string.Empty, customCommands.CustomCommands.Select(x => new KeyValuePair<string, string>(x.CommandFullName, x.CustomTemplateRegex)));
         }
+        */
     }
 }

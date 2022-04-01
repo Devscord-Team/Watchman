@@ -1,0 +1,7 @@
+﻿[
+  {
+    "OnEvent": "TryToGoogleIt",
+    "Value": "Spróbuj to wygooglować :wink:\nMasz tu link: {{link}}",
+    "Variables": [ "link" ]
+  }
+]

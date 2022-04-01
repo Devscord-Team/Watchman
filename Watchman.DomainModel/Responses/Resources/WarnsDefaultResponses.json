@@ -1,0 +1,7 @@
+﻿[
+  {
+    "OnEvent": "UserHasBeenWarned",
+    "Value": "Użytkownik {{receiver}} został ostrzeżony przez {{grantor}} z powodu: {{reason}}.",
+    "Variables": [ "grantor", "receiver", "reason" ]
+  }
+]

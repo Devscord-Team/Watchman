@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Discord;
+using Devscord.DiscordFramework.Middlewares.Contexts;
+using Watchman.Discord.IntegrationTests.TestEnvironment.Models;
 
 namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients
 {
@@ -15,7 +17,17 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients
 
         public Task<IUser> GetUser(ulong userId)
         {
-            throw new NotImplementedException();
+            IUser user = new FakeUser()
+            {
+                Id = 3u,
+                IsBot = false,
+                IsWebhook = false,
+                Username = "TestUser",
+                Mention = "<@12345678>",
+                Status = UserStatus.Online,
+                CreatedAt = DateTime.UtcNow.AddDays(-10),
+            };
+            return Task.FromResult(user);
         }
 
         public Task<bool> IsUserStillOnServer(ulong userId, ulong guildId)
@@ -25,17 +37,47 @@ namespace Watchman.Discord.IntegrationTests.TestEnvironment.FakeClients
 
         public Task<IGuildUser> GetGuildUser(ulong userId, ulong guildId)
         {
-            throw new NotImplementedException();
+            IGuildUser user = new FakeUser()
+            {
+                Id = 3u,
+                IsBot = false,
+                IsWebhook = false,
+                Username = "TestUser",
+                Mention = "<@12345678>",
+                Status = UserStatus.Online,
+                CreatedAt = DateTime.UtcNow.AddDays(-10),
+            };
+            return Task.FromResult(user);
         }
 
         public IEnumerable<IGuildUser> GetGuildUsers(ulong guildId)
         {
-            throw new NotImplementedException();
+            IGuildUser user = new FakeUser()
+            {
+                Id = 3u,
+                IsBot = false,
+                IsWebhook = false,
+                Username = "TestUser",
+                Mention = "<@12345678>",
+                Status = UserStatus.Online,
+                CreatedAt = DateTime.UtcNow.AddDays(-10),
+            };
+            return new List<IGuildUser> { user };
         }
 
-        public RestUser GetBotUser()
+        public IUser GetBotUser()
         {
-            throw new NotImplementedException();
+            IUser user = new FakeUser()
+            {
+                Id = 8u,
+                IsBot = false,
+                IsWebhook = false,
+                Username = "TestUser",
+                Mention = "<@12345678>",
+                Status = UserStatus.Online,
+                CreatedAt = DateTime.UtcNow.AddDays(-10),
+            };
+            return user;
         }
     }
 }
