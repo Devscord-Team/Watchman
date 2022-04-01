@@ -59,5 +59,54 @@ namespace Watchman.Discord.ResponsesManagers
                 new KeyValuePair<string, string>("user", contexts.User.Mention),
                 new KeyValuePair<string, string>("server", contexts.Server.Name));
         }
+        /// <summary>
+        /// /
+        /// </summary>
+        /// <param name="responsesService"></param>
+        /// <param name="role"></param>
+        /// <returns></returns>
+        public static string RoleIsSafeAlready(this IResponsesService responsesService, string role)
+        {
+            return responsesService.ProcessResponse("RoleIsSafeAlready",
+                new KeyValuePair<string, string>("role", role));
+        }
+
+        public static string RoleIsUnsafeAlready(this IResponsesService responsesService, string role)
+        {
+            return responsesService.ProcessResponse("RoleIsUnsafeAlready",
+                new KeyValuePair<string, string>("role", role));
+        }
+
+        public static string Roles(this IResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("Roles");
+        }
+
+        public static string ServerDoesntHaveAnySafeRoles(this IResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("ServerDoesntHaveAnySafeRoles");
+        }
+
+        public static string AvailableSafeRoles(this IResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("AvailableSafeRoles");
+        }
+
+        public static string AvailableSafeRolesDescription(this IResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("AvailableSafeRolesDescription");
+        }
+
+        public static string RoleSettingsChanged(this IResponsesService responsesService, string role)
+        {
+            return responsesService.ProcessResponse("RoleSettingsChanged",
+                new KeyValuePair<string, string>("role", role));
+        }
+
+        public static string UserDoesntHaveAvatar(this IResponsesService responsesService, UserContext user)
+        {
+            return responsesService.ProcessResponse("UserDoesntHaveAvatar",
+                new KeyValuePair<string, string>("user", user.Mention));
+        }
     }
 }

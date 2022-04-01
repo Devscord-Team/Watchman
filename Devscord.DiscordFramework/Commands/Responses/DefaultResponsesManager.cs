@@ -56,13 +56,6 @@ namespace Devscord.DiscordFramework.Commands.Responses
             return responsesService.ProcessResponse("TimeIsTooBig");
         }
 
-        public static string SentByDmMessagesOfAskedUser(this IResponsesService responsesService, int messagesCount, UserContext user)
-        {
-            return responsesService.ProcessResponse("SentByDmMessagesOfAskedUser",
-                new KeyValuePair<string, string>("messagesCount", messagesCount.ToString()),
-                new KeyValuePair<string, string>("user", user.Name));
-        }
-
         public static string NumberOfMessagesIsHuge(this IResponsesService responsesService, int messagesCount)
         {
             return responsesService.ProcessResponse("NumberOfMessagesIsHuge",

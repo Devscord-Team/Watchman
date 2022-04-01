@@ -13,22 +13,6 @@ namespace Watchman.Discord.Areas.Commons
             return responsesService.ProcessResponse("UserIsNotAdmin");
         }
 
-        public static string NotAdminPermissions(this IResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("NotAdminPermissions");
-        }
-
-        public static string UserDidntMentionAnyUser(this IResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("UserDidntMentionAnyUser");
-        }
-
-        public static string UserDoesntHaveAvatar(this IResponsesService responsesService, UserContext user)
-        {
-            return responsesService.ProcessResponse("UserDoesntHaveAvatar",
-                new KeyValuePair<string, string>("user", user.Mention));
-        }
-
         public static string UserDidntWriteAnyMessageInThisTime(this IResponsesService responsesService, UserContext user)
         {
             return responsesService.ProcessResponse("UserDidntWriteAnyMessageInThisTime",
@@ -48,47 +32,9 @@ namespace Watchman.Discord.Areas.Commons
                 new KeyValuePair<string, string>("messagesCount", messagesCount.ToString()));
         }
 
-        public static string ServerDoesntHaveAnySafeRoles(this IResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("ServerDoesntHaveAnySafeRoles");
-        }
-
-        public static string AvailableSafeRoles(this IResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("AvailableSafeRoles");
-        }
-
-        public static string AvailableSafeRolesDescription(this IResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("AvailableSafeRolesDescription");
-        }
-
-        public static string RoleSettingsChanged(this IResponsesService responsesService, string role)
-        {
-            return responsesService.ProcessResponse("RoleSettingsChanged",
-                new KeyValuePair<string, string>("role", role));
-        }
-
         public static string TimeNotSpecified(this IResponsesService responsesService)
         {
             return responsesService.ProcessResponse("TimeNotSpecified");
-        }
-
-        public static string RoleIsSafeAlready(this IResponsesService responsesService, string role)
-        {
-            return responsesService.ProcessResponse("RoleIsSafeAlready",
-                new KeyValuePair<string, string>("role", role));
-        }
-
-        public static string RoleIsUnsafeAlready(this IResponsesService responsesService, string role)
-        {
-            return responsesService.ProcessResponse("RoleIsUnsafeAlready",
-                new KeyValuePair<string, string>("role", role));
-        }
-
-        public static string Roles(this IResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("Roles");
         }
     }
 }

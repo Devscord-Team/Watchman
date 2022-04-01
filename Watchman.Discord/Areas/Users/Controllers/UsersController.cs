@@ -12,6 +12,7 @@ using Watchman.Cqrs;
 using Watchman.DomainModel.DiscordServer.Queries;
 using Watchman.Discord.Areas.Users.Services;
 using Watchman.Discord.Areas.Users.BotCommands;
+using Watchman.Discord.ResponsesManagers;
 
 namespace Watchman.Discord.Areas.Users.Controllers
 {
