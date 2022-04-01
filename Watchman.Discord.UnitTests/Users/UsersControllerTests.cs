@@ -154,5 +154,56 @@ namespace Watchman.Discord.UnitTests.Users
             queryBusMock.Verify(x => x.Execute(It.IsAny<GetDiscordServerSafeRolesQuery>()), Times.Never);
             rolesServiceMock.Verify(x => x.AddRoleToUser(It.IsAny<IEnumerable<SafeRole>>(), It.IsAny<Contexts>(), It.IsAny<List<string>>()), Times.Never);
         }
+
+        [Test]
+        public async Task RemoveRole_ShouldRemoveRole()
+        {
+            //Arrange
+            RemoveRoleCommand command = new RemoveRoleCommand();
+            command.Roles = new List<string>();
+            var contexts = testContextsFactory.CreateContexts(1, 1, 1, "test");
+            var safeRole = new SafeRole(1ul, 3ul);
+            var safeRoles = new List<SafeRole>();
+            safeRoles.Add(safeRole);
+
+            var rolesServiceMock = new Mock<Areas.Users.Services.IRolesService>();
+            var queryBusMock = new Mock<IQueryBus>();
+            queryBusMock.Setup(x => x.Execute(It.IsAny<GetDiscordServerSafeRolesQuery>()))
+                .Returns(new GetDiscordServerSafeRolesQueryResult(safeRoles));
+
+            var controller = this.testControllersFactory.CreateUsersController(
+                queryBusMock: queryBusMock,
+                rolesServiceMock: rolesServiceMock);
+
+            //Act
+            await controller.RemoveRole(command, contexts);
+
+            //Assert
+            queryBusMock.Verify(x => x.Execute(It.IsAny<GetDiscordServerSafeRolesQuery>()), Times.Once);
+            rolesServiceMock.Verify(x => x.DeleteRoleFromUser(It.IsAny<IEnumerable<SafeRole>>(), It.IsAny<Contexts>(), It.IsAny<List<string>>()), Times.Once);
+        }
+        [Test]
+        public void RemoveRole_ShouldThrowException()
+        {
+            //Arrange
+            RemoveRoleCommand command = new RemoveRoleCommand();
+            command.Roles = new List<string>() { "test", "test", "test", "test", "test", "test" };
+            var contexts = testContextsFactory.CreateContexts(1, 1, 1, "test");
+
+            var rolesServiceMock = new Mock<Areas.Users.Services.IRolesService>();
+            var queryBusMock = new Mock<IQueryBus>();
+
+            var controller = this.testControllersFactory.CreateUsersController(
+                queryBusMock: queryBusMock,
+                rolesServiceMock: rolesServiceMock);
+
+            //Act
+            Assert.ThrowsAsync<InvalidArgumentsException>(async () => await controller.RemoveRole(command, contexts));
+
+            //Assert
+            queryBusMock.Verify(x => x.Execute(It.IsAny<GetDiscordServerSafeRolesQuery>()), Times.Never);
+            rolesServiceMock.Verify(x => x.DeleteRoleFromUser(It.IsAny<IEnumerable<SafeRole>>(), It.IsAny<Contexts>(), It.IsAny<List<string>>()), Times.Never);
+        }
+
     }
 }
