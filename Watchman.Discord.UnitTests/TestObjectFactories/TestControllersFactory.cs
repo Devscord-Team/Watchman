@@ -136,17 +136,20 @@ namespace Watchman.Discord.UnitTests.TestObjectFactories
 
         internal ResponsesController CreateResponsesController(
             Mock<IMessagesServiceFactory> messagesServiceFactoryMock = null,
-            Mock<Areas.Responses.Services.ICustomResponsesService> responsesServiceMock = null,
-            Mock<IResponsesMessageService> responsesMessageServiceMock = null)
+            Mock<ICustomResponsesService> responsesServiceMock = null,
+            Mock<IResponsesMessageService> responsesMessageServiceMock = null,
+            Mock<IResponsesCachingService> responsesCachingServiceMock = null)
         {
             messagesServiceFactoryMock ??= new Mock<IMessagesServiceFactory>();
-            responsesServiceMock ??= new Mock<Areas.Responses.Services.ICustomResponsesService>();
+            responsesServiceMock ??= new Mock<ICustomResponsesService>();
             responsesMessageServiceMock ??= new Mock<IResponsesMessageService>();
+            responsesCachingServiceMock ??= new Mock<IResponsesCachingService>();
           
             return new ResponsesController(
                 messagesServiceFactoryMock.Object,
                 responsesServiceMock.Object,
-                responsesMessageServiceMock.Object);
+                responsesMessageServiceMock.Object,
+                responsesCachingServiceMock.Object);
         }
     }
 }
