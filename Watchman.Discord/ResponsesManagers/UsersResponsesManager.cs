@@ -8,14 +8,12 @@ namespace Watchman.Discord.ResponsesManagers
     {
         public static string AllRolesAddedToUser(this IResponsesService responsesService, Contexts contexts)
         {
-            return responsesService.ProcessResponse("AllRolesAddedToUser",
-                new KeyValuePair<string, string>("user", contexts.User.Name));
+            return responsesService.ProcessResponse("AllRolesAddedToUser", contexts);
         }
 
         public static string AllRolesRemovedFromUser(this IResponsesService responsesService, Contexts contexts)
         {
-            return responsesService.ProcessResponse("AllRolesRemovedFromUser",
-                new KeyValuePair<string, string>("user", contexts.User.Name));
+            return responsesService.ProcessResponse("AllRolesRemovedFromUser", contexts);
         }
 
         public static string AllRolesSettingsChanged(this IResponsesService responsesService)
@@ -55,9 +53,7 @@ namespace Watchman.Discord.ResponsesManagers
 
         public static string NewUserArrived(this IResponsesService responsesService, Contexts contexts)
         {
-            return responsesService.ProcessResponse("NewUserArrived",
-                new KeyValuePair<string, string>("user", contexts.User.Mention),
-                new KeyValuePair<string, string>("server", contexts.Server.Name));
+            return responsesService.ProcessResponse("NewUserArrived", contexts);
         }
 
         public static string RoleIsSafeAlready(this IResponsesService responsesService, string role)

@@ -1,8 +1,7 @@
 ﻿[
   {
     "OnEvent": "AllRolesAddedToUser",
-    "Value": "a",
-    "Variables": [ "Dodano wszystkie role pomyślnie użytkownikowi {{context_user}}" ],
+    "Value": "Dodano wszystkie role pomyślnie użytkownikowi {{context_user}}",
     "RequireContext": true
   },
   {
