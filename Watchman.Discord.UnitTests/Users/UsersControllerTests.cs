@@ -109,7 +109,7 @@ namespace Watchman.Discord.UnitTests.Users
         public async Task AddRole_ShouldAddRole()
         {
             //Arrange
-            AddRoleCommand command = new AddRoleCommand();
+            var command = new AddRoleCommand();
             command.Roles = new List<string>();
             var contexts = testContextsFactory.CreateContexts(1, 1, 1, "test");
             var safeRole = new SafeRole(1ul, 3ul);
@@ -136,8 +136,7 @@ namespace Watchman.Discord.UnitTests.Users
         public void AddRole_ShouldThrowException()
         {
             //Arrange
-            AddRoleCommand command = new AddRoleCommand();
-            command.Roles = new List<string>() { "test", "test", "test", "test", "test", "test" };
+            var command = new AddRoleCommand() { Roles = new List<string>() { "test", "test", "test", "test", "test", "test" }};
             var contexts = testContextsFactory.CreateContexts(1, 1, 1, "test");
 
             var rolesServiceMock = new Mock<Areas.Users.Services.IRolesService>();
@@ -159,12 +158,10 @@ namespace Watchman.Discord.UnitTests.Users
         public async Task RemoveRole_ShouldRemoveRole()
         {
             //Arrange
-            RemoveRoleCommand command = new RemoveRoleCommand();
-            command.Roles = new List<string>();
+            var command = new RemoveRoleCommand() { Roles = new List<string>() };
             var contexts = testContextsFactory.CreateContexts(1, 1, 1, "test");
             var safeRole = new SafeRole(1ul, 3ul);
-            var safeRoles = new List<SafeRole>();
-            safeRoles.Add(safeRole);
+            var safeRoles = new List<SafeRole>() { safeRole};
 
             var rolesServiceMock = new Mock<Areas.Users.Services.IRolesService>();
             var queryBusMock = new Mock<IQueryBus>();
@@ -186,8 +183,7 @@ namespace Watchman.Discord.UnitTests.Users
         public void RemoveRole_ShouldThrowException()
         {
             //Arrange
-            RemoveRoleCommand command = new RemoveRoleCommand();
-            command.Roles = new List<string>() { "test", "test", "test", "test", "test", "test" };
+            var command = new RemoveRoleCommand() {Roles = new List<string>() { "test", "test", "test", "test", "test", "test" } };
             var contexts = testContextsFactory.CreateContexts(1, 1, 1, "test");
 
             var rolesServiceMock = new Mock<Areas.Users.Services.IRolesService>();
