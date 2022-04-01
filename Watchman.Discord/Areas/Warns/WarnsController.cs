@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Watchman.Discord.Areas.Warns.Services;
 using Watchman.Discord.Areas.Warns.BotCommands;
+using Watchman.Discord.ResponsesManagers;
 
 namespace Watchman.Discord.Areas.Warns
 {

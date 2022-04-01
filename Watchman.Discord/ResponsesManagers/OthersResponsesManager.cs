@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Watchman.Discord.Areas.Commons
 {
-    public static class ResponsesManager
+    public static class OthersResponsesManager
     {
         public static string NewUserArrived(this IResponsesService responsesService, Contexts contexts)
         {
@@ -41,8 +41,6 @@ namespace Watchman.Discord.Areas.Commons
             return responsesService.ProcessResponse("RoleNotFound",
                 new KeyValuePair<string, string>("role", role));
         }
-
-        
 
         public static string TimeCannotBeNegative(this IResponsesService responsesService)
         {

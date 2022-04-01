@@ -10,6 +10,7 @@ using Watchman.Discord.Areas.Responses.Services;
 using Watchman.Discord.Areas.Responses.BotCommands;
 using DomainResponse = Watchman.DomainModel.Responses.Response;
 using Watchman.Discord.Areas.Commons;
+using Watchman.Discord.ResponsesManagers;
 
 namespace Watchman.Discord.Areas.Responses.Controllers
 {

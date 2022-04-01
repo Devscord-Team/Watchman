@@ -96,7 +96,7 @@ namespace Devscord.DiscordFramework.Services
         public Task SendExceptionResponse(BotException botException)
         {
             var responseName = botException.GetType().Name.Replace("Exception", string.Empty);
-            var responseManagerMethod = typeof(ResponsesManager).GetMethod(responseName);
+            var responseManagerMethod = typeof(DefaultResponsesManager).GetMethod(responseName);
             if (responseManagerMethod == null)
             {
                 Log.Error("{name} doesn't exists as a response", responseName);

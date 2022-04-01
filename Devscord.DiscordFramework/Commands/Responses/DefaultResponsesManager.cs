@@ -7,6 +7,10 @@ namespace Devscord.DiscordFramework.Commands.Responses
 {
     public static class DefaultResponsesManager
     {
+        public static string ArgumentsDuplicated(this IResponsesService responsesService)
+        {
+            return responsesService.ProcessResponse("ArgumentsDuplicated");
+        }
 
         public static string NewUserArrived(this IResponsesService responsesService, Contexts contexts)
         {
@@ -82,31 +86,6 @@ namespace Devscord.DiscordFramework.Commands.Responses
             return responsesService.ProcessResponse("TimeNotSpecified");
         }
 
-        public static string ArgumentsDuplicated(this IResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("ArgumentsDuplicated");
-        }
-
-        public static string ResponseNotFound(this IResponsesService responsesService, Contexts contexts, string onEvent)
-        {
-            return responsesService.ProcessResponse("ResponseNotFound", contexts,
-                new KeyValuePair<string, string>("onEvent", onEvent));
-        }
-
-        public static string ResponseHasBeenUpdated(this IResponsesService responsesService, Contexts contexts, string onEvent, string oldMessage, string newMessage)
-        {
-            return responsesService.ProcessResponse("ResponseHasBeenUpdated", contexts,
-                new KeyValuePair<string, string>("onEvent", onEvent),
-                new KeyValuePair<string, string>("oldMessage", oldMessage),
-                new KeyValuePair<string, string>("newMessage", newMessage));
-        }
-
-        public static string ResponseHasBeenRemoved(this IResponsesService responsesService, Contexts contexts, string onEvent)
-        {
-            return responsesService.ProcessResponse("ResponseHasBeenRemoved", contexts,
-                new KeyValuePair<string, string>("onEvent", onEvent));
-        }
-
         public static string InvalidArguments(this IResponsesService responsesService)
         {
             return responsesService.ProcessResponse("InvalidArguments");
@@ -115,51 +94,6 @@ namespace Devscord.DiscordFramework.Commands.Responses
         public static string MoreThanOneRegexHasBeenMatched(this IResponsesService responsesService)
         {
             return responsesService.ProcessResponse("MoreThanOneRegexHasBeenMatched");
-        }
-
-        public static string NoDefaultDescription(this IResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("NoDefaultDescription");
-        }
-
-        public static string Example(this IResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("Example");
-        }
-
-        public static string Type(this IResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("Type");
-        }
-
-        public static string Parameters(this IResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("Parameters");
-        }
-
-        public static string ExampleChannelMention(this IResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("ExampleChannelMention");
-        }
-
-        public static string ExampleUserMention(this IResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("ExampleUserMention");
-        }
-
-        public static string ExampleList(this IResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("ExampleList");
-        }
-
-        public static string ExampleSingleWord(this IResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("ExampleSingleWord");
-        }
-
-        public static string ExampleText(this IResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("ExampleText");
         }
     }
 }
