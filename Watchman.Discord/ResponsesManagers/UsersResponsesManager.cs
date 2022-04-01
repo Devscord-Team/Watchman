@@ -52,5 +52,12 @@ namespace Watchman.Discord.ResponsesManagers
             return responsesService.ProcessResponse("RoleIsInUserAlready", contexts,
                 new KeyValuePair<string, string>("role", role));
         }
+
+        public static string NewUserArrived(this IResponsesService responsesService, Contexts contexts)
+        {
+            return responsesService.ProcessResponse("NewUserArrived",
+                new KeyValuePair<string, string>("user", contexts.User.Mention),
+                new KeyValuePair<string, string>("server", contexts.Server.Name));
+        }
     }
 }

@@ -8,13 +8,6 @@ namespace Watchman.Discord.Areas.Commons
 {
     public static class OthersResponsesManager
     {
-        public static string NewUserArrived(this IResponsesService responsesService, Contexts contexts)
-        {
-            return responsesService.ProcessResponse("NewUserArrived",
-                new KeyValuePair<string, string>("user", contexts.User.Mention),
-                new KeyValuePair<string, string>("server", contexts.Server.Name));
-        }
-
         public static string UserIsNotAdmin(this IResponsesService responsesService)
         {
             return responsesService.ProcessResponse("UserIsNotAdmin");
@@ -28,28 +21,6 @@ namespace Watchman.Discord.Areas.Commons
         public static string UserDidntMentionAnyUser(this IResponsesService responsesService)
         {
             return responsesService.ProcessResponse("UserDidntMentionAnyUser");
-        }
-
-        public static string UserNotFound(this IResponsesService responsesService, string user)
-        {
-            return responsesService.ProcessResponse("UserNotFound",
-                new KeyValuePair<string, string>("user", user));
-        }
-
-        public static string RoleNotFound(this IResponsesService responsesService, string role)
-        {
-            return responsesService.ProcessResponse("RoleNotFound",
-                new KeyValuePair<string, string>("role", role));
-        }
-
-        public static string TimeCannotBeNegative(this IResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("TimeCannotBeNegative");
-        }
-
-        public static string TimeIsTooBig(this IResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("TimeIsTooBig");
         }
 
         public static string UserDoesntHaveAvatar(this IResponsesService responsesService, UserContext user)
@@ -92,11 +63,6 @@ namespace Watchman.Discord.Areas.Commons
             return responsesService.ProcessResponse("AvailableSafeRolesDescription");
         }
 
-        public static string NotEnoughArguments(this IResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("NotEnoughArguments");
-        }
-
         public static string RoleSettingsChanged(this IResponsesService responsesService, string role)
         {
             return responsesService.ProcessResponse("RoleSettingsChanged",
@@ -106,11 +72,6 @@ namespace Watchman.Discord.Areas.Commons
         public static string TimeNotSpecified(this IResponsesService responsesService)
         {
             return responsesService.ProcessResponse("TimeNotSpecified");
-        }
-
-        public static string ArgumentsDuplicated(this IResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("ArgumentsDuplicated");
         }
 
         public static string RoleIsSafeAlready(this IResponsesService responsesService, string role)
@@ -125,24 +86,9 @@ namespace Watchman.Discord.Areas.Commons
                 new KeyValuePair<string, string>("role", role));
         }
 
-        public static string InvalidArguments(this IResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("InvalidArguments");
-        }
-
-        public static string MoreThanOneRegexHasBeenMatched(this IResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("MoreThanOneRegexHasBeenMatched");
-        }
-
         public static string Roles(this IResponsesService responsesService)
         {
             return responsesService.ProcessResponse("Roles");
-        }
-
-        public static string CustomCommandsHeader(this IResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("CustomCommandsHeader");
         }
     }
 }

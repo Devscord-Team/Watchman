@@ -8,9 +8,6 @@
   <data name="InvalidArguments" xml:space="preserve">
     <value>Podane argumenty są niepoprawne</value>
   </data>
-  <data name="NewUserArrived" xml:space="preserve">
-    <value>Cześć {{context_user}}! Witamy cię na serwerze {{context_server}}</value>
-  </data>
   <data name="NotAdminPermissions" xml:space="preserve">
     <value>Nie masz wystarczających uprawnień do wywołania tej komendy.</value>
   </data>
@@ -64,8 +61,5 @@
   </data>
   <data name="Roles" xml:space="preserve">
     <value>Role</value>
-  </data>
-  <data name="CustomCommandsHeader" xml:space="preserve">
-    <value>Niestandardowe komendy</value>
   </data>
 </aa>

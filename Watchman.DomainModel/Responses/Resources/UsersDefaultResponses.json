@@ -43,5 +43,10 @@
     "Value": "Użytkownik {{context_user}} posiada już role {{role}}",
     "Variables": [ "role" ],
     "RequireContext": true
+  },
+  {
+    "OnEvent": "NewUserArrived",
+    "Value": "Cześć {{context_user}}! Witamy cię na serwerze {{context_server}}",
+    "RequireContext": true
   }
 ]

@@ -12,13 +12,6 @@ namespace Devscord.DiscordFramework.Commands.Responses
             return responsesService.ProcessResponse("ArgumentsDuplicated");
         }
 
-        public static string NewUserArrived(this IResponsesService responsesService, Contexts contexts)
-        {
-            return responsesService.ProcessResponse("NewUserArrived",
-                new KeyValuePair<string, string>("user", contexts.User.Mention),
-                new KeyValuePair<string, string>("server", contexts.Server.Name));
-        }
-
         public static string UserIsNotAdmin(this IResponsesService responsesService)
         {
             return responsesService.ProcessResponse("UserIsNotAdmin");
