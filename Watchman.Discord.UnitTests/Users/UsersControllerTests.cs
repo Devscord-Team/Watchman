@@ -200,5 +200,66 @@ namespace Watchman.Discord.UnitTests.Users
             queryBusMock.Verify(x => x.Execute(It.IsAny<GetDiscordServerSafeRolesQuery>()), Times.Never);
             rolesServiceMock.Verify(x => x.DeleteRoleFromUser(It.IsAny<IEnumerable<SafeRole>>(), It.IsAny<Contexts>(), It.IsAny<List<string>>()), Times.Never);
         }
+        [Test]
+        public async Task PrintRoles_ShouldPrintRoles()
+        {
+            //Arrange
+            var command = new RolesCommand() { };
+            var contexts = testContextsFactory.CreateContexts(1, 1, 1);
+            var safeRole = new SafeRole(1ul, 3ul);
+            var safeRoles = new List<SafeRole>() { safeRole };
+
+            var messagesServiceMock = new Mock<IMessagesService>();
+            var rolesServiceMock = new Mock<Areas.Users.Services.IRolesService>();
+            var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
+            messagesServiceFactoryMock.Setup(x => x.Create(It.IsAny<Contexts>()))
+                .Returns(messagesServiceMock.Object);
+            var queryBusMock = new Mock<IQueryBus>();
+            queryBusMock.Setup(x => x.Execute(It.IsAny<GetDiscordServerSafeRolesQuery>()))
+                .Returns(new GetDiscordServerSafeRolesQueryResult(safeRoles));
+
+            var controller = this.testControllersFactory.CreateUsersController(
+                queryBusMock: queryBusMock,
+                messagesServiceFactoryMock: messagesServiceFactoryMock,
+                rolesServiceMock: rolesServiceMock);
+
+            //Act
+            await controller.PrintRoles(command, contexts);
+
+            //Assert
+            messagesServiceFactoryMock.Verify(x => x.Create(It.IsAny<Contexts>()), Times.Once);
+            queryBusMock.Verify(x => x.Execute(It.IsAny<GetDiscordServerSafeRolesQuery>()), Times.Once);
+            messagesServiceMock.Verify(x => x.SendResponse(It.IsAny<Func<IResponsesService, string>>()), Times.Never);
+        }
+        [Test]
+        public async Task PrintRoles_ShouldNotPrintRolesIfServerHasNotAnyRoles()
+        {
+            //Arrange
+            var command = new RolesCommand() { };
+            var contexts = testContextsFactory.CreateContexts(1, 1, 1);
+            var safeRoles = new List<SafeRole>() {};
+
+            var messagesServiceMock = new Mock<IMessagesService>();
+            var rolesServiceMock = new Mock<Areas.Users.Services.IRolesService>();
+            var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
+            messagesServiceFactoryMock.Setup(x => x.Create(It.IsAny<Contexts>()))
+                .Returns(messagesServiceMock.Object);
+            var queryBusMock = new Mock<IQueryBus>();
+            queryBusMock.Setup(x => x.Execute(It.IsAny<GetDiscordServerSafeRolesQuery>()))
+                .Returns(new GetDiscordServerSafeRolesQueryResult(safeRoles));
+
+            var controller = this.testControllersFactory.CreateUsersController(
+                queryBusMock: queryBusMock,
+                messagesServiceFactoryMock: messagesServiceFactoryMock,
+                rolesServiceMock: rolesServiceMock);
+
+            //Act
+            await controller.PrintRoles(command, contexts);
+
+            //Assert
+            messagesServiceFactoryMock.Verify(x => x.Create(It.IsAny<Contexts>()), Times.Once);
+            queryBusMock.Verify(x => x.Execute(It.IsAny<GetDiscordServerSafeRolesQuery>()), Times.Once);
+            messagesServiceMock.Verify(x => x.SendResponse(It.IsAny<Func<IResponsesService, string>>()), Times.Once);
+        }
     }
 }
