@@ -2,6 +2,7 @@
 using Devscord.DiscordFramework.Services.Factories;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
+using Watchman.Discord.ResponsesManagers;
 using Watchman.DomainModel.Muting.Services;
 
 namespace Watchman.Discord.Areas.Muting.Services.Commands

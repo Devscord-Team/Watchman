@@ -1,0 +1,30 @@
+﻿[
+  {
+    "OnEvent": "MutedUser",
+    "Value": "Użytkownik {{user}} został wyciszony do {{timeEnd}}",
+    "Variables": [ "user", "timeEnd" ]
+  },
+  {
+    "OnEvent": "UnmutedUser",
+    "Value": "Użytkownik {{user}} może pisać ponownie.",
+    "Variables": [ "user" ]
+  },
+  {
+    "OnEvent": "UnmutedUserForUser",
+    "Value": "Cześć {{user}}! Już możesz pisać ponownie na serwerze {{server}}",
+    "Variables": [ "user", "server" ]
+  },
+  {
+    "OnEvent": "ThereAreNoMutedUsers",
+    "Value": "Na tym serwerze nie ma żadnych wyciszonych użytkowników."
+  },
+  {
+    "OnEvent": "MutedUsersListSent",
+    "Value": "Wysłano listę wyciszonych użytkowników."
+  },
+  {
+    "OnEvent": "UserWasntMuted",
+    "Value": "Użytkownik {{user}} nie jest wyciszony.",
+    "Variables": [ "user" ]
+  }
+]

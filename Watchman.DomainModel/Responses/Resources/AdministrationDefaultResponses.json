@@ -1,0 +1,30 @@
+﻿[
+  {
+    "OnEvent": "ServerDoesntHaveAnyTrustedRole",
+    "Value": "Serwer nie ma żadnych roli ustawionych jako zaufane."
+  },
+  {
+    "OnEvent": "RoleAlreadyIsTrusted",
+    "Value": "Rola {{role}} jest już ustawiona jako zaufana.",
+    "Variables": [ "role" ]
+  },
+  {
+    "OnEvent": "RoleAlreadyIsUntrusted",
+    "Value": "Rola {{role}} nie jest ustawiona jako zaufana.",
+    "Variables": [ "role" ]
+  },
+  {
+    "OnEvent": "RoleSetAsTrusted",
+    "Value": "Ustawiono rolę {{role}} jako zaufaną.",
+    "Variables": [ "role" ]
+  },
+  {
+    "OnEvent": "RoleSetAsUntrusted",
+    "Value": "Ustawiono rolę {{role}} jako niezaufaną.",
+    "Variables": [ "role" ]
+  },
+  {
+    "OnEvent": "ComplaintsChannelHasBeenCreated",
+    "Value": "Kanał na skargi został utworzony pomyślnie."
+  }
+]

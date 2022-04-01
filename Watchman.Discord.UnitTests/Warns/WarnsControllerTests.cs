@@ -11,13 +11,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Watchman.Discord.Areas.Muting.Services;
-using Watchman.Discord.Areas.Users.BotCommands;
 using FluentAssertions;
 using Watchman.Discord.UnitTests.TestObjectFactories;
-using Devscord.DiscordFramework.Commands.AntiSpam.Models;
-using Watchman.Discord.Areas.Users.BotCommands.Warns;
 using Devscord.DiscordFramework.Commons.Exceptions;
+using Watchman.Discord.Areas.Warns.Services;
+using Watchman.Discord.Areas.Warns.BotCommands;
 
 namespace Watchman.Discord.UnitTests.Warns
 {

@@ -19,6 +19,7 @@ using Watchman.Discord.Areas.Users.Services;
 using Watchman.DomainModel.Configuration.ConfigurationItems;
 using Watchman.DomainModel.Configuration.Services;
 using Watchman.DomainModel.DiscordServer.Queries;
+using Watchman.Discord.ResponsesManagers;
 
 namespace Watchman.Discord.Areas.Administration.Controllers
 {
@@ -135,7 +136,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             var complaintsChannelName = string.IsNullOrWhiteSpace(command.Name) ? "skargi" : command.Name;
             _ = await this.complaintsChannelService.CreateComplaintsChannel(complaintsChannelName, contexts);
             var messagesService = this._messagesServiceFactory.Create(contexts);
-            await messagesService.SendResponse(x => x.ComplaintsChannelHasBeenCreated());
+            //await messagesService.SendResponse(x => x.ComplaintsChannelHasBeenCreated());
         }
     }
 }

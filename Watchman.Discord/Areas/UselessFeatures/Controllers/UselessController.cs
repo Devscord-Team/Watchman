@@ -8,6 +8,7 @@ using Watchman.Discord.Areas.UselessFeatures.BotCommands;
 using Watchman.Integrations.Images;
 using System.Web;
 using Devscord.DiscordFramework.Commands.Responses;
+using Watchman.Discord.ResponsesManagers;
 
 namespace Watchman.Discord.Areas.UselessFeatures.Controllers
 {

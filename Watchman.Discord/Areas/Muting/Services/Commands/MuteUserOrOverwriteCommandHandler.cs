@@ -6,6 +6,7 @@ using Devscord.DiscordFramework.Services.Factories;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
+using Watchman.Discord.ResponsesManagers;
 using Watchman.DomainModel.Muting;
 using Watchman.DomainModel.Muting.Commands;
 using Watchman.DomainModel.Muting.Services;

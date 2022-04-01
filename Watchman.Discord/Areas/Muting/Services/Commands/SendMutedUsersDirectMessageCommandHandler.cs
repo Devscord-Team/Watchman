@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Muting.Models;
+using Watchman.Discord.ResponsesManagers;
 using Watchman.DomainModel.Muting;
 using Watchman.DomainModel.Muting.Services;
 

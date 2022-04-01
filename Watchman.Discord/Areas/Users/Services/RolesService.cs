@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
+using Watchman.Discord.ResponsesManagers;
 using Watchman.DomainModel.DiscordServer;
 using Watchman.DomainModel.DiscordServer.Commands;
 using Watchman.DomainModel.DiscordServer.Queries;

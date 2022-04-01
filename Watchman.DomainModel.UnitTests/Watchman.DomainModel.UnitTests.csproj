@@ -6,6 +6,12 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Commons\**" />
+    <EmbeddedResource Remove="Commons\**" />
+    <None Remove="Commons\**" />
+  </ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="Autofac.Extras.Moq" Version="6.0.0" />
 		<PackageReference Include="AutoFixture" Version="4.17.0" />
@@ -26,10 +32,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Watchman.DomainModel\Watchman.DomainModel.csproj" />
     <ProjectReference Include="..\Watchman.Integrations\Watchman.Integrations.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Commons\" />
   </ItemGroup>
 
 </Project>

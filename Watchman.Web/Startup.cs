@@ -47,6 +47,7 @@ namespace Watchman.Web
             //    });
 
             services.AddControllersWithViews();
+            services.AddHangfireServer();
 
 #if DEBUG
             services.AddHangfire(x => x.UseMemoryStorage());
@@ -89,7 +90,6 @@ namespace Watchman.Web
 
             app.UseRouting();
             app.UseHangfireDashboard("/hangfire", new DashboardOptions { Authorization = new List<IDashboardAuthorizationFilter> { new HangfireDashboardFilter() } });
-            app.UseHangfireServer();
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
