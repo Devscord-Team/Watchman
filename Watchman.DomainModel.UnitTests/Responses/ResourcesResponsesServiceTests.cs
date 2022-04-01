@@ -14,6 +14,13 @@ namespace Watchman.DomainModel.UnitTests.Responses
         [Test]
         [TestCase("Template")]
         [TestCase("Administration")]
+        [TestCase("AntiSpam")]
+        [TestCase("Help")]
+        [TestCase("Muting")]
+        [TestCase("Responses")]
+        [TestCase("UselessFeatures")]
+        [TestCase("Users")]
+        [TestCase("Warns")]
         public async Task ShouldFindResources(string area)
         {
             //Arrange

@@ -22,7 +22,10 @@ namespace Watchman.DomainModel.Responses.Areas.Administration
                     {
                         parameters.AddRange(defaultResponse.Variables);
                     }
-                    parameters.AddRange(new[] { "context_user", "context_channel", "context_server" });
+                    if(defaultResponse.RequireContext)
+                    {
+                        parameters.AddRange(new[] { "context_user", "context_channel", "context_server" });
+                    }
                     return new Response(defaultResponse.OnEvent, defaultResponse.Value, Response.DEFAULT_SERVER_ID, parameters.ToArray());
                 });
             return responses;
@@ -34,5 +37,6 @@ namespace Watchman.DomainModel.Responses.Areas.Administration
         public string OnEvent { get; set; }
         public string Value { get; set; }
         public string[] Variables { get; set; }
+        public bool RequireContext { get; set; }
     }
 }
