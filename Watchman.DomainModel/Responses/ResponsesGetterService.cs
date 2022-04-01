@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Watchman.Cqrs;
+using Watchman.DomainModel.Responses.Areas.Administration;
 using Watchman.DomainModel.Responses.Queries;
 using Response = Watchman.DomainModel.Responses.Response;
 
@@ -13,23 +14,35 @@ namespace Watchman.Discord.Areas.Responses.Services
 
     public class ResponsesGetterService : IResponsesGetterService
     {
-        private readonly IQueryBus _queryBus;
-
-        public ResponsesGetterService(IQueryBus queryBus)
+        private readonly IQueryBus queryBus;
+        private readonly IResourcesResponsesService resourcesResponsesService;
+        private readonly string[] areas = new[] //todo from configuration or auto
         {
-            this._queryBus = queryBus;
+            "FrameworkExceptions",
+            "Administration",
+            "AntiSpam",
+            "Help",
+            "Muting",
+            "Responses",
+            "UselessFeatures",
+            "Users",
+            "Warns"
+        };
+
+        public ResponsesGetterService(IQueryBus queryBus, IResourcesResponsesService resourcesResponsesService)
+        {
+            this.queryBus = queryBus;
+            this.resourcesResponsesService = resourcesResponsesService;
         }
 
         public IEnumerable<Response> GetResponsesFromBase()
         {
             var query = new GetResponsesQuery();
-            var responsesInBase = this._queryBus.Execute(query).Responses;
+            var responsesInBase = this.queryBus.Execute(query).Responses;
             return responsesInBase;
         }
 
         public IEnumerable<Response> GetResponsesFromResources()
-        {
-            return default;
-        }
+            => this.resourcesResponsesService.GetResponses(this.areas);
     }
 }
