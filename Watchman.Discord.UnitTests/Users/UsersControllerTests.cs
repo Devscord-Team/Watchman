@@ -204,10 +204,9 @@ namespace Watchman.Discord.UnitTests.Users
         public async Task PrintRoles_ShouldPrintRoles()
         {
             //Arrange
-            var command = new RolesCommand() { };
+            var command = new RolesCommand();
             var contexts = testContextsFactory.CreateContexts(1, 1, 1);
-            var safeRole = new SafeRole(1ul, 3ul);
-            var safeRoles = new List<SafeRole>() { safeRole };
+            var safeRoles = new List<SafeRole>() { new SafeRole(1ul, 3ul) };
 
             var messagesServiceMock = new Mock<IMessagesService>();
             var rolesServiceMock = new Mock<Areas.Users.Services.IRolesService>();
@@ -235,9 +234,9 @@ namespace Watchman.Discord.UnitTests.Users
         public async Task PrintRoles_ShouldNotPrintRolesIfServerHasNotAnyRoles()
         {
             //Arrange
-            var command = new RolesCommand() { };
+            var command = new RolesCommand();
             var contexts = testContextsFactory.CreateContexts(1, 1, 1);
-            var safeRoles = new List<SafeRole>() {};
+            var safeRoles = new List<SafeRole>();
 
             var messagesServiceMock = new Mock<IMessagesService>();
             var rolesServiceMock = new Mock<Areas.Users.Services.IRolesService>();
