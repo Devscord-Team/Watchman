@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
-namespace Watchman.Discord.Areas.Users.BotCommands
+namespace Watchman.Discord.Areas.Warns.BotCommands
 {
     public class AddWarnCommand : IBotCommand
     {

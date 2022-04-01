@@ -4,9 +4,9 @@ using System.Linq;
 
 namespace Devscord.DiscordFramework.Commands.Responses
 {
-    internal static class ContextsToResponseFields
+    public static class ContextsToResponseFields
     {
-        internal static IEnumerable<KeyValuePair<string, string>> ConvertToResponseFields(this Contexts contexts, IEnumerable<string> requiredFields)
+        public static IEnumerable<KeyValuePair<string, string>> ConvertToResponseFields(this Contexts contexts, IEnumerable<string> requiredFields)
         {
             var fields = new List<KeyValuePair<string, string>>
             {

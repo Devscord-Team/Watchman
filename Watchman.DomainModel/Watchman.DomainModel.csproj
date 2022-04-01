@@ -9,4 +9,13 @@
     <ProjectReference Include="..\Watchman.Integrations\Watchman.Integrations.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Responses\Resources\TemplateDefaultResponses.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Responses\Resources\AdministrationDefaultResponses.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

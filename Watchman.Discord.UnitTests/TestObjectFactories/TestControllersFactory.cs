@@ -22,6 +22,8 @@ using Watchman.DomainModel.Configuration.Services;
 using Watchman.Discord.Areas.AntiSpam.Controllers;
 using Watchman.Discord.Areas.AntiSpam.Services;
 using Watchman.Discord.Areas.AntiSpam.Strategies;
+using Watchman.Discord.Areas.Warns.Services;
+using Watchman.Discord.Areas.Warns;
 
 namespace Watchman.Discord.UnitTests.TestObjectFactories
 {
@@ -134,11 +136,11 @@ namespace Watchman.Discord.UnitTests.TestObjectFactories
 
         internal ResponsesController CreateResponsesController(
             Mock<IMessagesServiceFactory> messagesServiceFactoryMock = null,
-            Mock<Areas.Responses.Services.IResponsesService> responsesServiceMock = null,
+            Mock<Areas.Responses.Services.ICustomResponsesService> responsesServiceMock = null,
             Mock<IResponsesMessageService> responsesMessageServiceMock = null)
         {
             messagesServiceFactoryMock ??= new Mock<IMessagesServiceFactory>();
-            responsesServiceMock ??= new Mock<Areas.Responses.Services.IResponsesService>();
+            responsesServiceMock ??= new Mock<Areas.Responses.Services.ICustomResponsesService>();
             responsesMessageServiceMock ??= new Mock<IResponsesMessageService>();
           
             return new ResponsesController(
