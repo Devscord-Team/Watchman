@@ -15,6 +15,7 @@ using Watchman.Cqrs;
 using Watchman.Discord.Areas.Muting.Services.Commands;
 using Watchman.Discord.Areas.Muting.BotCommands;
 using Watchman.DomainModel.Muting;
+using Watchman.Discord.ResponsesManagers;
 
 namespace Watchman.Discord.Areas.Muting.Controllers
 {

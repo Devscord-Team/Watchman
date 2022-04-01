@@ -59,12 +59,7 @@ namespace Watchman.Discord.ResponsesManagers
                 new KeyValuePair<string, string>("user", contexts.User.Mention),
                 new KeyValuePair<string, string>("server", contexts.Server.Name));
         }
-        /// <summary>
-        /// /
-        /// </summary>
-        /// <param name="responsesService"></param>
-        /// <param name="role"></param>
-        /// <returns></returns>
+
         public static string RoleIsSafeAlready(this IResponsesService responsesService, string role)
         {
             return responsesService.ProcessResponse("RoleIsSafeAlready",

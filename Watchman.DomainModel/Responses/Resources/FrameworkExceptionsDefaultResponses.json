@@ -1,0 +1,16 @@
+﻿[
+  {
+    "OnEvent": "a",
+    "Value": "a",
+    "Variables": [ "" ],
+    "RequireContext": true
+  },
+  {
+    "OnEvent": "b",
+    "Value": "b"
+  },
+  {
+    "OnEvent": "ComplaintsChannelAlreadyExists",
+    "Value": "Kanał na skargi już istnieje na tym serwerze."
+  }
+]

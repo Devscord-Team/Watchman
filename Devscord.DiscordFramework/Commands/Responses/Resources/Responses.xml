@@ -2,9 +2,6 @@
   <data name="ArgumentsDuplicated" xml:space="preserve">
     <value>Podane argumenty są zduplikowane.</value>
   </data>
-  <data name="AvailableSafeRoles" xml:space="preserve">
-    <value>Dostępne role</value>
-  </data>
   <data name="InvalidArguments" xml:space="preserve">
     <value>Podane argumenty są niepoprawne</value>
   </data>
@@ -14,24 +11,10 @@
   <data name="NotEnoughArguments" xml:space="preserve">
     <value>Podano niewystarczającą liczbę argumentów!</value>
   </data>
-  <data name="NumberOfMessagesIsHuge" xml:space="preserve">
-    <value>Liczba wiadomości w podanym zakresie jest ogromna ({{messagesCount}} wiadomości). Czy na pewno chcesz wszystkie przeczytać? (użyj parametru -force)</value>
-  </data>
-  <data name="RoleIsSafeAlready" xml:space="preserve">
-    <value>Rola "{{role}}" już jest ustawiona jako bezpieczna.</value>
-  </data>
-  <data name="RoleIsUnsafeAlready" xml:space="preserve">
-    <value>Rola "{{role}}" nie jest już ustawiona jako bezpieczna</value>
-  </data>
   <data name="RoleNotFound" xml:space="preserve">
     <value>Nie znaleziono roli {{role}}.</value>
   </data>
-  <data name="SentByDmMessagesOfAskedUser" xml:space="preserve">
-    <value>Wysłano {{messagesCount}} wiadomości użytkownika {{context_user}} w wiadomości prywatnej.</value>
-  </data>
-  <data name="ServerDoesntHaveAnySafeRoles" xml:space="preserve">
-    <value>Serwer nie ma żadnych dostępnych bezpiecznych ról (jeśli jesteś adminem, ustaw bezpieczne role za pomocą komendy -set role &lt;nazwa_roli&gt; safe) </value>
-  </data>
+
   <data name="TimeCannotBeNegative" xml:space="preserve">
     <value>Czas nie może być ujemny!</value>
   </data>
@@ -41,25 +24,10 @@
   <data name="TimeNotSpecified" xml:space="preserve">
     <value>Nie określiłeś przedziału czasu!</value>
   </data>
-  <data name="UserDidntMentionAnyUser" xml:space="preserve">
-    <value>Nie wskazałeś żadnego użytkownika!</value>
-  </data>
-  <data name="UserDidntWriteAnyMessageInThisTime" xml:space="preserve">
-    <value>Użytkownik {{context_user}} nie napisał żadnej wiadomości w podanym czasie.</value>
-  </data>
-  <data name="UserDoesntHaveAvatar" xml:space="preserve">
-    <value>Użytkownik {{context_user}} nie posiada avatara.</value>
-  </data>
   <data name="UserNotFound" xml:space="preserve">
     <value>Użytkownik {{context_user}} nie istnieje.</value>
   </data>
   <data name="MoreThanOneRegexHasBeenMatched" xml:space="preserve">
     <value>Podana komenda została dopasowana do więcej niż tylko jednego regexu (custom command), więc nie można jej wykonać. Należy zmienić regexy do tej komendy tak, aby nigdy nie było sytuacji, że do podanej komendy pasuje kilka regexów jednocześnie.</value>
-  </data>
-  <data name="AvailableSafeRolesDescription" xml:space="preserve">
-    <value>Poniżej wypisane są role, które możesz sobie przypisać.</value>
-  </data>
-  <data name="Roles" xml:space="preserve">
-    <value>Role</value>
   </data>
 </aa>

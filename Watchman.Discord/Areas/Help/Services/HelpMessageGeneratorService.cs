@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Watchman.Discord.ResponsesManagers;
 using Watchman.DomainModel.Help;
 
 namespace Watchman.Discord.Areas.Help.Services

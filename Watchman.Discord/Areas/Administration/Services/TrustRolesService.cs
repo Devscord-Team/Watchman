@@ -8,6 +8,7 @@ using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Cqrs;
 using Watchman.DomainModel.DiscordServer.Commands;
 using Watchman.DomainModel.DiscordServer.Queries;
+using Watchman.Discord.ResponsesManagers;
 
 namespace Watchman.Discord.Areas.Administration.Services
 {

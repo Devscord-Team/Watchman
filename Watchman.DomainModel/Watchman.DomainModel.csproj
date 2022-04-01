@@ -31,6 +31,9 @@
     <None Update="Responses\Resources\WarnsDefaultResponses.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Responses\Resources\FrameworkExceptionsDefaultResponses.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Responses\Resources\_TemplateDefaultResponses.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

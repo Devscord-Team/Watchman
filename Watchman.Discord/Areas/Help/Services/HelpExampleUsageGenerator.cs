@@ -4,6 +4,7 @@ using System.Text;
 using Devscord.DiscordFramework.Commands.PropertyAttributes;
 using Devscord.DiscordFramework.Commands.Responses;
 using Devscord.DiscordFramework.Middlewares.Contexts;
+using Watchman.Discord.ResponsesManagers;
 using Watchman.DomainModel.Help;
 
 namespace Watchman.Discord.Areas.Help.Services

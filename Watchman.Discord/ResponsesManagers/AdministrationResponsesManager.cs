@@ -38,10 +38,5 @@ namespace Watchman.Discord.ResponsesManagers
         {
             return responsesService.ProcessResponse("ComplaintsChannelHasBeenCreated");
         }
-
-        public static string ComplaintsChannelAlreadyExists(this IResponsesService responsesService)
-        {
-            return responsesService.ProcessResponse("ComplaintsChannelAlreadyExists");
-        }
     }
 }

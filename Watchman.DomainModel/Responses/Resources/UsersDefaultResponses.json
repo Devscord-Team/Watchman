@@ -48,5 +48,41 @@
     "OnEvent": "NewUserArrived",
     "Value": "Cześć {{context_user}}! Witamy cię na serwerze {{context_server}}",
     "RequireContext": true
+  },
+  {
+    "OnEvent": "RoleIsSafeAlready",
+    "Value": "Rola `{{role}}` już jest ustawiona jako bezpieczna.",
+    "Variables": [ "role" ]
+  },
+  {
+    "OnEvent": "RoleIsUnsafeAlready",
+    "Value": "Rola `{{role}}` nie jest już ustawiona jako bezpieczna",
+    "Variables": [ "role" ]
+  },
+  {
+    "OnEvent": "Roles",
+    "Value": "Role"
+  },
+  {
+    "OnEvent": "ServerDoesntHaveAnySafeRoles",
+    "Value": "Serwer nie ma żadnych dostępnych bezpiecznych ról (jeśli jesteś adminem, ustaw bezpieczne role za pomocą komendy -set role &lt;nazwa_roli&gt; safe)"
+  },
+  {
+    "OnEvent": "AvailableSafeRoles",
+    "Value": "Dostępne role"
+  },
+  {
+    "OnEvent": "AvailableSafeRolesDescription",
+    "Value": "Poniżej wypisane są role, które możesz sobie przypisać."
+  },
+  {
+    "OnEvent": "RoleSettingsChanged",
+    "Value": "Zmieniono ustawienia roli {{role}} pomyślnie!",
+    "Variables": [ "role" ]
+  },
+  {
+    "OnEvent": "UserDoesntHaveAvatar",
+    "Value": "Użytkownik {{user}} nie posiada avatara.",
+    "Variables": [ "user" ]
   }
 ]
