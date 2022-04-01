@@ -5,6 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Commands\Responses\Resources\Responses.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Commands\Responses\Resources\Responses.xml">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Responses.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Autofac" Version="6.3.0" />
     <PackageReference Include="Discord.Net" Version="3.4.1" />
     <PackageReference Include="PCRE.NET" Version="0.18.1" />
@@ -15,7 +26,7 @@
     <Compile Update="Commands\Responses\Resources\Responses.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>Responses.resx</DependentUpon>
+      <DependentUpon>Responses.xml</DependentUpon>
     </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -30,10 +41,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Commands\Responses\Resources\Responses.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Responses.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

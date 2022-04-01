@@ -12,7 +12,7 @@ namespace Watchman.DomainModel.UnitTests.Responses
     public class ResourcesResponsesServiceTests
     {
         [Test]
-        [TestCase("Template")]
+        [TestCase("_Template")]
         [TestCase("Administration")]
         [TestCase("AntiSpam")]
         [TestCase("Help")]

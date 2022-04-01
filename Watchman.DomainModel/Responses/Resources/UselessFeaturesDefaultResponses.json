@@ -1,0 +1,12 @@
+﻿[
+  {
+    "OnEvent": "a",
+    "Value": "a",
+    "Variables": [ "" ],
+    "RequireContext": true
+  },
+  {
+    "OnEvent": "b",
+    "Value": "b",
+  },
+]

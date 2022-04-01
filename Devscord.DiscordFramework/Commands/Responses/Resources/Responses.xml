@@ -1,9 +1,9 @@
 <aa>
   <data name="AllRolesAddedToUser" xml:space="preserve">
-    <value>Dodano wszystkie role pomyślnie użytkownikowi {{user}}</value>
+    <value>Dodano wszystkie role pomyślnie użytkownikowi {{context_user}}</value>
   </data>
   <data name="AllRolesRemovedFromUser" xml:space="preserve">
-    <value>Usunięto wszystkie role pomyślnie użytkownikowi {{user}}</value>
+    <value>Usunięto wszystkie role pomyślnie użytkownikowi {{context_user}}</value>
   </data>
   <data name="AllRolesSettingsChanged" xml:space="preserve">
     <value>Zmieniono ustawienia wszystkich powyższych roli pomyślnie</value>
@@ -17,11 +17,8 @@
   <data name="InvalidArguments" xml:space="preserve">
     <value>Podane argumenty są niepoprawne</value>
   </data>
-  <data name="MutedUser" xml:space="preserve">
-    <value>Użytkownik {{user}} został wyciszony do {{timeEnd}}</value>
-  </data>
   <data name="NewUserArrived" xml:space="preserve">
-    <value>Cześć {{user}}! Witamy cię na serwerze {{server}}</value>
+    <value>Cześć {{context_user}}! Witamy cię na serwerze {{context_server}}</value>
   </data>
   <data name="NotAdminPermissions" xml:space="preserve">
     <value>Nie masz wystarczających uprawnień do wywołania tej komendy.</value>
@@ -33,28 +30,28 @@
     <value>Liczba wiadomości w podanym zakresie jest ogromna ({{messagesCount}} wiadomości). Czy na pewno chcesz wszystkie przeczytać? (użyj parametru -force)</value>
   </data>
   <data name="ResponseAlreadyExists" xml:space="preserve">
-    <value>Odpowiedź `{{onEvent}}` już istnieje dla serwera **{{server}}**.</value>
+    <value>Odpowiedź `{{onEvent}}` już istnieje dla serwera **{{context_server}}**.</value>
   </data>
   <data name="ResponseHasBeenAdded" xml:space="preserve">
-    <value>Odpowiedź `{{onEvent}}` została dodana dla serwera **{{server}}**.</value>
+    <value>Odpowiedź `{{onEvent}}` została dodana dla serwera **{{context_server}}**.</value>
   </data>
   <data name="ResponseTheSameAsDefault" xml:space="preserve">
-    <value>Odpowiedź `{{onEvent}}` po zmianie odpowiedź jest identyczna jak domyślna, usunięto odpowiedź na serwerze **{{server}}**.</value>
+    <value>Odpowiedź `{{onEvent}}` po zmianie odpowiedź jest identyczna jak domyślna, usunięto odpowiedź na serwerze **{{context_server}}**.</value>
   </data>
   <data name="ResponseHasBeenRemoved" xml:space="preserve">
-    <value>Odpowiedź `{{onEvent}}` została usunięta dla serwera **{{server}}**.</value>
+    <value>Odpowiedź `{{onEvent}}` została usunięta dla serwera **{{context_server}}**.</value>
   </data>
   <data name="ResponseHasBeenUpdated" xml:space="preserve">
-    <value>Odpowiedź `{{onEvent}}` została zaktualizowana dla serwera **{{server}}**.\nStara odpowiedź: *{{oldMessage}}*.\nNowa odpowiedź: *{{newMessage}}*.</value>
+    <value>Odpowiedź `{{onEvent}}` została zaktualizowana dla serwera **{{context_server}}**.\nStara odpowiedź: *{{oldMessage}}*.\nNowa odpowiedź: *{{newMessage}}*.</value>
   </data>
   <data name="ResponseNotFound" xml:space="preserve">
-    <value>Odpowiedź `{{onEvent}}` nie została odnaleziona dla serwera **{{server}}**.</value>
+    <value>Odpowiedź `{{onEvent}}` nie została odnaleziona dla serwera **{{context_server}}**.</value>
   </data>
   <data name="RoleAddedToUser" xml:space="preserve">
-    <value>Dodano role: {{role}} użytkownikowi {{user}}</value>
+    <value>Dodano role: {{role}} użytkownikowi {{context_user}}</value>
   </data>
   <data name="RoleIsInUserAlready" xml:space="preserve">
-    <value>Użytkownik {{user}} posiada już role {{role}}</value>
+    <value>Użytkownik {{context_user}} posiada już role {{role}}</value>
   </data>
   <data name="RoleIsSafeAlready" xml:space="preserve">
     <value>Rola "{{role}}" już jest ustawiona jako bezpieczna.</value>
@@ -66,25 +63,22 @@
     <value>Nie znaleziono roli {{role}}.</value>
   </data>
   <data name="RoleNotFoundInUser" xml:space="preserve">
-    <value>Użytkownik {{user}} nie posiada roli {{role}}</value>
+    <value>Użytkownik {{context_user}} nie posiada roli {{role}}</value>
   </data>
   <data name="RoleNotFoundOrIsNotSafe" xml:space="preserve">
     <value>Nie znaleziono roli {{role}} lub wybrana rola musi być zmieniona ręcznie przez członka administracji</value>
   </data>
   <data name="RoleRemovedFromUser" xml:space="preserve">
-    <value>Usunięto role {{role}} użytkownikowi {{user}}</value>
+    <value>Usunięto role {{role}} użytkownikowi {{context_user}}</value>
   </data>
   <data name="RoleSettingsChanged" xml:space="preserve">
     <value>Zmieniono ustawienia roli {{role}} pomyślnie!</value>
   </data>
   <data name="SentByDmMessagesOfAskedUser" xml:space="preserve">
-    <value>Wysłano {{messagesCount}} wiadomości użytkownika {{user}} w wiadomości prywatnej.</value>
+    <value>Wysłano {{messagesCount}} wiadomości użytkownika {{context_user}} w wiadomości prywatnej.</value>
   </data>
   <data name="ServerDoesntHaveAnySafeRoles" xml:space="preserve">
     <value>Serwer nie ma żadnych dostępnych bezpiecznych ról (jeśli jesteś adminem, ustaw bezpieczne role za pomocą komendy -set role &lt;nazwa_roli&gt; safe) </value>
-  </data>
-  <data name="SpamAlertRecognized" xml:space="preserve">
-    <value>Spam alert! Wykryto spam u użytkownika {{user}} na kanale {{channel}}. Poczekaj chwile zanim coś napiszesz.</value>
   </data>
   <data name="TimeCannotBeNegative" xml:space="preserve">
     <value>Czas nie może być ujemny!</value>
@@ -95,26 +89,17 @@
   <data name="TimeNotSpecified" xml:space="preserve">
     <value>Nie określiłeś przedziału czasu!</value>
   </data>
-  <data name="UnmutedUser" xml:space="preserve">
-    <value>Użytkownik {{user}} może pisać ponownie.</value>
-  </data>
-  <data name="UnmutedUserForUser" xml:space="preserve">
-    <value>Cześć {{user}}! Już możesz pisać ponownie na serwerze {{server}}</value>
-  </data>
   <data name="UserDidntMentionAnyUser" xml:space="preserve">
     <value>Nie wskazałeś żadnego użytkownika!</value>
   </data>
   <data name="UserDidntWriteAnyMessageInThisTime" xml:space="preserve">
-    <value>Użytkownik {{user}} nie napisał żadnej wiadomości w podanym czasie.</value>
+    <value>Użytkownik {{context_user}} nie napisał żadnej wiadomości w podanym czasie.</value>
   </data>
   <data name="UserDoesntHaveAvatar" xml:space="preserve">
-    <value>Użytkownik {{user}} nie posiada avatara.</value>
+    <value>Użytkownik {{context_user}} nie posiada avatara.</value>
   </data>
   <data name="UserNotFound" xml:space="preserve">
-    <value>Użytkownik {{user}} nie istnieje.</value>
-  </data>
-  <data name="UserWasntMuted" xml:space="preserve">
-    <value>Użytkownik {{user}} nie jest wyciszony.</value>
+    <value>Użytkownik {{context_user}} nie istnieje.</value>
   </data>
   <data name="UserHasBeenWarned" xml:space="preserve">
     <value>Użytkownik {{receiver}} został ostrzeżony przez {{grantor}} z powodu: {{reason}}.</value>
@@ -122,50 +107,8 @@
   <data name="MoreThanOneRegexHasBeenMatched" xml:space="preserve">
     <value>Podana komenda została dopasowana do więcej niż tylko jednego regexu (custom command), więc nie można jej wykonać. Należy zmienić regexy do tej komendy tak, aby nigdy nie było sytuacji, że do podanej komendy pasuje kilka regexów jednocześnie.</value>
   </data>
-  <data name="MutedUsersListSent" xml:space="preserve">
-    <value>Wysłano listę wyciszonych użytkowników.</value>
-  </data>
   <data name="TryToGoogleIt" xml:space="preserve">
     <value>Spróbuj to wygooglować :wink:\nMasz tu link: {{link}}</value>
-  </data>
-  <data name="ThereAreNoMutedUsers" xml:space="preserve">
-    <value>Na tym serwerze nie ma żadnych wyciszonych użytkowników.</value>
-  </data>
-  <data name="NoDefaultDescription" xml:space="preserve">
-    <value>Brak domyślnego opisu</value>
-  </data>
-  <data name="AvailableCommands" xml:space="preserve">
-    <value>Dostępne komendy:</value>
-  </data>
-  <data name="HereYouCanFindAvailableCommandsWithDescriptions" xml:space="preserve">
-    <value>Poniżej znajdziesz listę dostępnych komend\n\nJeśli chcesz dowiedzieć się jak używać wybranej komendy, sprawdź to za pomocą komendy\n`-help -command nazwakomendy`\nprzykładowo\n`-help -command help`</value>
-  </data>
-  <data name="HowToUseCommand" xml:space="preserve">
-    <value>Jak używać komendy</value>
-  </data>
-  <data name="Example" xml:space="preserve">
-    <value>Przykład</value>
-  </data>
-  <data name="Parameters" xml:space="preserve">
-    <value>Parametry</value>
-  </data>
-  <data name="Type" xml:space="preserve">
-    <value>Typ</value>
-  </data>
-  <data name="ExampleChannelMention" xml:space="preserve">
-    <value>&lt;#12345678&gt;</value>
-  </data>
-  <data name="ExampleList" xml:space="preserve">
-    <value>jeden dwa trzy</value>
-  </data>
-  <data name="ExampleSingleWord" xml:space="preserve">
-    <value>JednoSłowo</value>
-  </data>
-  <data name="ExampleText" xml:space="preserve">
-    <value>"kilka słów"</value>
-  </data>
-  <data name="ExampleUserMention" xml:space="preserve">
-    <value>&lt;@12345678&gt;</value>
   </data>
   <data name="AvailableSafeRolesDescription" xml:space="preserve">
     <value>Poniżej wypisane są role, które możesz sobie przypisać.</value>
