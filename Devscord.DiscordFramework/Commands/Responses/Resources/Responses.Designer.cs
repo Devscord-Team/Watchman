@@ -133,15 +133,6 @@ namespace Devscord.DiscordFramework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Kanał na skargi został utworzony pomyślnie..
-        /// </summary>
-        public static string ComplaintsChannelHasBeenCreated {
-            get {
-                return ResourceManager.GetString("ComplaintsChannelHasBeenCreated", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Niestandardowe komendy.
         /// </summary>
         public static string CustomCommandsHeader {
@@ -205,7 +196,7 @@ namespace Devscord.DiscordFramework.Commands.Responses.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Poniżej znajdziesz listę dostępnych komend wraz z ich opisami\nJeśli chcesz poznać dokładniejszy opis - zapraszamy do opisu w naszej dokumentacji\nhttps://watchman.readthedocs.io/pl/latest/156-lista-funkcjonalnosci/.
+        ///   Looks up a localized string similar to Poniżej znajdziesz listę dostępnych komend\n\nJeśli chcesz dowiedzieć się jak używać wybranej komendy, sprawdź to za pomocą komendy\n`-help -command nazwakomendy`\nprzykładowo\n`-help -command help`.
         /// </summary>
         public static string HereYouCanFindAvailableCommandsWithDescriptions {
             get {
@@ -507,15 +498,6 @@ namespace Devscord.DiscordFramework.Commands.Responses.Resources {
         public static string ServerDoesntHaveAnySafeRoles {
             get {
                 return ResourceManager.GetString("ServerDoesntHaveAnySafeRoles", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Serwer nie ma żadnych roli ustawionych jako zaufane..
-        /// </summary>
-        public static string ServerDoesntHaveAnyTrustedRole {
-            get {
-                return ResourceManager.GetString("ServerDoesntHaveAnyTrustedRole", resourceCulture);
             }
         }
         

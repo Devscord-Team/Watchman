@@ -12,12 +12,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
-using Watchman.Discord.Areas.Users.BotCommands;
 using Watchman.DomainModel.Warns;
 using Watchman.DomainModel.Warns.Commands;
 using Watchman.DomainModel.Warns.Queries;
+using Watchman.Discord.Areas.Warns.BotCommands;
 
-namespace Watchman.Discord.Areas.Muting.Services
+namespace Watchman.Discord.Areas.Warns.Services
 {
     public interface IWarnsService
     {

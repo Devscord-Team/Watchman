@@ -1,58 +1,61 @@
-﻿using System;
-using System.Threading.Tasks;
-using Watchman.Cqrs;
-using Watchman.DomainModel.Responses;
-using Watchman.DomainModel.Responses.Commands;
-using Watchman.DomainModel.Responses.Queries;
+﻿using Devscord.DiscordFramework.Commands.Responses;
+using Devscord.DiscordFramework.Commons.Extensions;
+using Devscord.DiscordFramework.Middlewares.Contexts;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Watchman.Discord.Areas.Responses.Services
 {
-    public interface IResponsesService
+    public class ResponsesService : IResponsesService //todo use configuration instead
     {
-        Task AddCustomResponse(string onEvent, string message, ulong serverId);
-        Task<Response> GetResponseByOnEvent(string onEvent, ulong serverId = 0);
-        Task RemoveResponse(string onEvent, ulong serverId);
-        Task UpdateResponse(Guid id, string message);
-    }
+        public IEnumerable<Response> Responses { get; set; }
 
-    public class ResponsesService : IResponsesService
-    {
-        private readonly ICommandBus _commandBus;
-        private readonly IQueryBus _queryBus;
+        private readonly IResponsesCachingService _responsesCachingService;
+        private readonly IResponsesParser _responsesParser;
 
-        public ResponsesService(IQueryBus queryBus, ICommandBus commandBus)
+        public ResponsesService(IResponsesCachingService responsesCachingService, IResponsesParser responsesParser)
         {
-            this._queryBus = queryBus;
-            this._commandBus = commandBus;
+            this._responsesCachingService = responsesCachingService;
+            this._responsesParser = responsesParser;
         }
 
-        public async Task<Response> GetResponseByOnEvent(string onEvent, ulong serverId = 0)
+        public string GetResponse(ulong serverId, Func<IResponsesService, string> getResponse)
         {
-            var query = new GetResponseQuery(onEvent, serverId);
-            var queryResult = await this._queryBus.ExecuteAsync(query);
-            var response = queryResult.Response;
+            this.Responses = this._responsesCachingService.GetResponses(serverId);
+            var response = getResponse.Invoke(this);
             return response;
         }
 
-        public async Task AddCustomResponse(string onEvent, string message, ulong serverId)
+        public string ProcessResponse(string response, params KeyValuePair<string, string>[] values)
         {
-            var query = new GetResponseQuery(onEvent);
-            var response = (await this._queryBus.ExecuteAsync(query)).Response;
-            var addResponse = new Response(onEvent, message, serverId, response.AvailableVariables);
-            var command = new AddResponseCommand(addResponse);
-            await this._commandBus.ExecuteAsync(command);
+            return this.ProcessResponse(this.GetResponse(response), values);
         }
 
-        public async Task UpdateResponse(Guid id, string message)
+        public string ProcessResponse(string response, Contexts contexts, params KeyValuePair<string, string>[] values)
         {
-            var command = new UpdateResponseCommand(id, message);
-            await this._commandBus.ExecuteAsync(command);
+            return this.ProcessResponse(this.GetResponse(response), contexts, values);
         }
 
-        public async Task RemoveResponse(string onEvent, ulong serverId)
+        private Response GetResponse(string name)
         {
-            var command = new RemoveResponseCommand(onEvent, serverId);
-            await this._commandBus.ExecuteAsync(command);
+            return this.Responses.SingleOrDefault(x => x.OnEvent == name);
+        }
+
+        private string ProcessResponse(Response response, params KeyValuePair<string, string>[] values)
+        {
+            if (values.Length != response.GetFields().Count())
+            {
+                throw new ArgumentException(@"Cannot process response {response}. Values must be equal to required.", response.ToJson());
+            }
+            return this._responsesParser.Parse(response, values);
+        }
+
+        private string ProcessResponse(Response response, Contexts contexts, params KeyValuePair<string, string>[] values)
+        {
+            var fields = contexts.ConvertToResponseFields(response.GetFields()).ToList();
+            fields.AddRange(values);
+            return this._responsesParser.Parse(response, fields);
         }
     }
 }
