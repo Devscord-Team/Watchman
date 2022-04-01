@@ -1,13 +1,4 @@
 <aa>
-  <data name="AllRolesAddedToUser" xml:space="preserve">
-    <value>Dodano wszystkie role pomyślnie użytkownikowi {{context_user}}</value>
-  </data>
-  <data name="AllRolesRemovedFromUser" xml:space="preserve">
-    <value>Usunięto wszystkie role pomyślnie użytkownikowi {{context_user}}</value>
-  </data>
-  <data name="AllRolesSettingsChanged" xml:space="preserve">
-    <value>Zmieniono ustawienia wszystkich powyższych roli pomyślnie</value>
-  </data>
   <data name="ArgumentsDuplicated" xml:space="preserve">
     <value>Podane argumenty są zduplikowane.</value>
   </data>
@@ -29,30 +20,6 @@
   <data name="NumberOfMessagesIsHuge" xml:space="preserve">
     <value>Liczba wiadomości w podanym zakresie jest ogromna ({{messagesCount}} wiadomości). Czy na pewno chcesz wszystkie przeczytać? (użyj parametru -force)</value>
   </data>
-  <data name="ResponseAlreadyExists" xml:space="preserve">
-    <value>Odpowiedź `{{onEvent}}` już istnieje dla serwera **{{context_server}}**.</value>
-  </data>
-  <data name="ResponseHasBeenAdded" xml:space="preserve">
-    <value>Odpowiedź `{{onEvent}}` została dodana dla serwera **{{context_server}}**.</value>
-  </data>
-  <data name="ResponseTheSameAsDefault" xml:space="preserve">
-    <value>Odpowiedź `{{onEvent}}` po zmianie odpowiedź jest identyczna jak domyślna, usunięto odpowiedź na serwerze **{{context_server}}**.</value>
-  </data>
-  <data name="ResponseHasBeenRemoved" xml:space="preserve">
-    <value>Odpowiedź `{{onEvent}}` została usunięta dla serwera **{{context_server}}**.</value>
-  </data>
-  <data name="ResponseHasBeenUpdated" xml:space="preserve">
-    <value>Odpowiedź `{{onEvent}}` została zaktualizowana dla serwera **{{context_server}}**.\nStara odpowiedź: *{{oldMessage}}*.\nNowa odpowiedź: *{{newMessage}}*.</value>
-  </data>
-  <data name="ResponseNotFound" xml:space="preserve">
-    <value>Odpowiedź `{{onEvent}}` nie została odnaleziona dla serwera **{{context_server}}**.</value>
-  </data>
-  <data name="RoleAddedToUser" xml:space="preserve">
-    <value>Dodano role: {{role}} użytkownikowi {{context_user}}</value>
-  </data>
-  <data name="RoleIsInUserAlready" xml:space="preserve">
-    <value>Użytkownik {{context_user}} posiada już role {{role}}</value>
-  </data>
   <data name="RoleIsSafeAlready" xml:space="preserve">
     <value>Rola "{{role}}" już jest ustawiona jako bezpieczna.</value>
   </data>
@@ -61,18 +28,6 @@
   </data>
   <data name="RoleNotFound" xml:space="preserve">
     <value>Nie znaleziono roli {{role}}.</value>
-  </data>
-  <data name="RoleNotFoundInUser" xml:space="preserve">
-    <value>Użytkownik {{context_user}} nie posiada roli {{role}}</value>
-  </data>
-  <data name="RoleNotFoundOrIsNotSafe" xml:space="preserve">
-    <value>Nie znaleziono roli {{role}} lub wybrana rola musi być zmieniona ręcznie przez członka administracji</value>
-  </data>
-  <data name="RoleRemovedFromUser" xml:space="preserve">
-    <value>Usunięto role {{role}} użytkownikowi {{context_user}}</value>
-  </data>
-  <data name="RoleSettingsChanged" xml:space="preserve">
-    <value>Zmieniono ustawienia roli {{role}} pomyślnie!</value>
   </data>
   <data name="SentByDmMessagesOfAskedUser" xml:space="preserve">
     <value>Wysłano {{messagesCount}} wiadomości użytkownika {{context_user}} w wiadomości prywatnej.</value>
@@ -101,14 +56,8 @@
   <data name="UserNotFound" xml:space="preserve">
     <value>Użytkownik {{context_user}} nie istnieje.</value>
   </data>
-  <data name="UserHasBeenWarned" xml:space="preserve">
-    <value>Użytkownik {{receiver}} został ostrzeżony przez {{grantor}} z powodu: {{reason}}.</value>
-  </data>
   <data name="MoreThanOneRegexHasBeenMatched" xml:space="preserve">
     <value>Podana komenda została dopasowana do więcej niż tylko jednego regexu (custom command), więc nie można jej wykonać. Należy zmienić regexy do tej komendy tak, aby nigdy nie było sytuacji, że do podanej komendy pasuje kilka regexów jednocześnie.</value>
-  </data>
-  <data name="TryToGoogleIt" xml:space="preserve">
-    <value>Spróbuj to wygooglować :wink:\nMasz tu link: {{link}}</value>
   </data>
   <data name="AvailableSafeRolesDescription" xml:space="preserve">
     <value>Poniżej wypisane są role, które możesz sobie przypisać.</value>

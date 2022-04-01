@@ -1,12 +1,7 @@
 ﻿[
   {
-    "OnEvent": "a",
-    "Value": "a",
-    "Variables": [ "" ],
-    "RequireContext": true
-  },
-  {
-    "OnEvent": "b",
-    "Value": "b",
-  },
+    "OnEvent": "UserHasBeenWarned",
+    "Value": "Użytkownik {{receiver}} został ostrzeżony przez {{grantor}} z powodu: {{reason}}.",
+    "Variables": [ "grantor", "receiver", "reason" ]
+  }
 ]

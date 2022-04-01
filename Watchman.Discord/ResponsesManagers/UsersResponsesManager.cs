@@ -22,6 +22,7 @@ namespace Watchman.Discord.ResponsesManagers
         {
             return responsesService.ProcessResponse("AllRolesSettingsChanged");
         }
+
         public static string RoleAddedToUser(this IResponsesService responsesService, Contexts contexts, string role)
         {
             return responsesService.ProcessResponse("RoleAddedToUser", contexts,

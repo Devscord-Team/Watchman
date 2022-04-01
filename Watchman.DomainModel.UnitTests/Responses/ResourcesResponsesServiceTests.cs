@@ -30,7 +30,7 @@ namespace Watchman.DomainModel.UnitTests.Responses
             var result = (await service.GetResponses(area)).ToList();
 
             //Assert
-            result.Should().HaveCountGreaterThan(0);
+            result.Should().NotBeEmpty();
         }
     }
 }

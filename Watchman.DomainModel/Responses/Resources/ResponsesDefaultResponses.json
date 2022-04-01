@@ -1,12 +1,38 @@
 ﻿[
   {
-    "OnEvent": "a",
-    "Value": "a",
-    "Variables": [ "" ],
+    "OnEvent": "ResponseAlreadyExists",
+    "Value": "Odpowiedź `{{onEvent}}` już istnieje dla serwera **{{context_server}}**.",
+    "Variables": [ "onEvent" ],
     "RequireContext": true
   },
   {
-    "OnEvent": "b",
-    "Value": "b",
+    "OnEvent": "ResponseHasBeenAdded",
+    "Value": "Odpowiedź `{{onEvent}}` została dodana dla serwera **{{context_server}}**.",
+    "Variables": [ "onEvent" ],
+    "RequireContext": true
   },
+  {
+    "OnEvent": "ResponseTheSameAsDefault",
+    "Value": "Odpowiedź `{{onEvent}}` po zmianie odpowiedź jest identyczna jak domyślna, usunięto odpowiedź na serwerze **{{context_server}}**.",
+    "Variables": [ "onEvent" ],
+    "RequireContext": true
+  },
+  {
+    "OnEvent": "ResponseHasBeenRemoved",
+    "Value": "Odpowiedź `{{onEvent}}` została usunięta dla serwera **{{context_server}}**.",
+    "Variables": [ "onEvent" ],
+    "RequireContext": true
+  },
+  {
+    "OnEvent": "ResponseHasBeenUpdated",
+    "Value": "Odpowiedź `{{onEvent}}` została zaktualizowana dla serwera **{{context_server}}**.\nStara odpowiedź: *{{oldMessage}}*.\nNowa odpowiedź: *{{newMessage}}*.",
+    "Variables": [ "onEvent", "oldMessage", "newMessage" ],
+    "RequireContext": true
+  },
+  {
+    "OnEvent": "ResponseNotFound",
+    "Value": "Odpowiedź `{{onEvent}}` nie została odnaleziona dla serwera **{{context_server}}**.",
+    "Variables": [ "onEvent" ],
+    "RequireContext": true
+  }
 ]

@@ -1,12 +1,7 @@
 ﻿[
   {
-    "OnEvent": "a",
-    "Value": "a",
-    "Variables": [ "" ],
-    "RequireContext": true
-  },
-  {
-    "OnEvent": "b",
-    "Value": "b",
-  },
+    "OnEvent": "TryToGoogleIt",
+    "Value": "Spróbuj to wygooglować :wink:\nMasz tu link: {{link}}",
+    "Variables": [ "link" ]
+  }
 ]

@@ -1,12 +1,47 @@
 ﻿[
   {
-    "OnEvent": "a",
+    "OnEvent": "AllRolesAddedToUser",
     "Value": "a",
-    "Variables": [ "" ],
+    "Variables": [ "Dodano wszystkie role pomyślnie użytkownikowi {{context_user}}" ],
     "RequireContext": true
   },
   {
-    "OnEvent": "b",
-    "Value": "b",
+    "OnEvent": "AllRolesRemovedFromUser",
+    "Value": "Usunięto wszystkie role pomyślnie użytkownikowi {{context_user}}",
+    "RequireContext": true
   },
+  {
+    "OnEvent": "AllRolesSettingsChanged",
+    "Value": "Zmieniono ustawienia wszystkich powyższych roli pomyślnie"
+  },
+  {
+    "OnEvent": "RoleAddedToUser",
+    "Value": "Dodano role: {{role}} użytkownikowi {{context_user}}",
+    "Variables": [ "role" ],
+    "RequireContext": true
+  },
+  {
+    "OnEvent": "RoleRemovedFromUser",
+    "Value": "Usunięto role {{role}} użytkownikowi {{context_user}}",
+    "Variables": [ "role" ],
+    "RequireContext": true
+  },
+  {
+    "OnEvent": "RoleNotFoundInUser",
+    "Value": "Użytkownik {{context_user}} nie posiada roli {{role}}",
+    "Variables": [ "role" ],
+    "RequireContext": true
+  },
+  {
+    "OnEvent": "RoleNotFoundOrIsNotSafe",
+    "Value": "Nie znaleziono roli {{role}} lub wybrana rola musi być zmieniona ręcznie przez członka administracji",
+    "Variables": [ "role" ],
+    "RequireContext": true
+  },
+  {
+    "OnEvent": "RoleIsInUserAlready",
+    "Value": "Użytkownik {{context_user}} posiada już role {{role}}",
+    "Variables": [ "role" ],
+    "RequireContext": true
+  }
 ]
