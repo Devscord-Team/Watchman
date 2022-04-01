@@ -1,12 +1,11 @@
-using Devscord.DiscordFramework.Commands.Responses;
 using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using System;
 using System.Collections.Generic;
 
-namespace Watchman.Discord.Areas.Commons
+namespace Devscord.DiscordFramework.Commands.Responses
 {
-    public static class ResponsesManager
+    public static class ResponsesManager //todo use configuration instead
     {
         public static string RoleAddedToUser(this IResponsesService responsesService, Contexts contexts, string role)
         {
@@ -271,7 +270,7 @@ namespace Watchman.Discord.Areas.Commons
             return responsesService.ProcessResponse("RoleSetAsTrusted",
                 new KeyValuePair<string, string>("role", roleName));
         }
-
+        
         public static string RoleSetAsUntrusted(this IResponsesService responsesService, string roleName)
         {
             return responsesService.ProcessResponse("RoleSetAsUntrusted",
@@ -302,7 +301,7 @@ namespace Watchman.Discord.Areas.Commons
         {
             return responsesService.ProcessResponse("MutedUsersListSent");
         }
-
+      
         public static string TryToGoogleIt(this IResponsesService responsesService, string link)
         {
             return responsesService.ProcessResponse("TryToGoogleIt",

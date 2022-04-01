@@ -22,7 +22,7 @@ namespace Devscord.DiscordFramework.Services
             {
                 if(messageType == MessageType.BlockFormatted)
                 {
-                    return new List<string> { $"```\r\n{fullMessage.Trim('\r', '\n')}\r\n```" };
+                    return new List<string> { $"```\r\n{fullMessage}\r\n```" };
                 }
                 return new List<string> { fullMessage };
             }

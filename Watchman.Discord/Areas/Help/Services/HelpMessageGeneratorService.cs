@@ -35,10 +35,11 @@ namespace Watchman.Discord.Areas.Help.Services
 
         public IEnumerable<KeyValuePair<string, string>> MapHelpForAllCommandsToEmbed(IEnumerable<HelpInformation> helpInformations, DiscordServerContext server)
         {
-            var areas = helpInformations.GroupBy(x => x.AreaName).OrderBy(x => x.Key).ToList();
+            var areas = helpInformations.GroupBy(x => x.AreaName).ToList();
             foreach (var area in areas.SkipLast(1))
             {
                 var helpBuilder = this.GetBasicDescriptionForArea(area, server.Id);
+                helpBuilder.AppendLine("||-------------||");
                 yield return new KeyValuePair<string, string>(area.Key, helpBuilder.ToString());
             }
             var builder = this.GetBasicDescriptionForArea(areas.Last(), server.Id);
@@ -77,19 +78,23 @@ namespace Watchman.Discord.Areas.Help.Services
         private StringBuilder GetBasicDescriptionForArea(IEnumerable<HelpInformation> area, ulong serverId)
         {
             var helpBuilder = new StringBuilder();
-            helpBuilder.AppendLine("```");
             foreach (var helpInfo in area)
             {
                 helpBuilder = this.GetBasicDescriptionForCommand(helpBuilder, helpInfo, serverId);
             }
-            helpBuilder.Append("```");
             return helpBuilder;
         }
 
         private StringBuilder GetBasicDescriptionForCommand(StringBuilder helpBuilder, HelpInformation helpInformation, ulong serverId)
         {
+            var noDefaultDescriptionResponse = this._responsesService.GetResponse(serverId, x => x.NoDefaultDescription());
             var name = "-" + helpInformation.CommandName.ToLowerInvariant().Replace("command", string.Empty);
-            helpBuilder.AppendLine(name);
+            var description = helpInformation.Descriptions
+                .FirstOrDefault(x => x.Language == helpInformation.DefaultLanguage)?.Text ?? noDefaultDescriptionResponse;
+
+            helpBuilder.AppendLine($"**{name}**");
+            helpBuilder.AppendLine(description);
+            helpBuilder.AppendLine();
             return helpBuilder;
         }
     }

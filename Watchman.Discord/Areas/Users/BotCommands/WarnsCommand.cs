@@ -1,7 +1,7 @@
 ﻿using Devscord.DiscordFramework.Commands;
 using Devscord.DiscordFramework.Commands.PropertyAttributes;
 
-namespace Watchman.Discord.Areas.Warns.BotCommands
+namespace Watchman.Discord.Areas.Users.BotCommands.Warns
 {
     public class WarnsCommand : IBotCommand
     {

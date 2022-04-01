@@ -31,7 +31,7 @@ namespace Watchman.Discord.UnitTests.Responses
             var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
             messagesServiceFactoryMock.Setup(x => x.Create(It.IsAny<Contexts>()))
                 .Returns(messagesServiceMock.Object);
-            var responsesServiceMock = new Mock<ICustomResponsesService>();
+            var responsesServiceMock = new Mock<IResponsesService>();
             responsesServiceMock.Setup(x => x.GetResponseByOnEvent(It.IsAny<string>(), DomainModel.Responses.Response.DEFAULT_SERVER_ID))
                 .Returns(Task.FromResult(response));
 
@@ -59,7 +59,7 @@ namespace Watchman.Discord.UnitTests.Responses
             var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
             messagesServiceFactoryMock.Setup(x => x.Create(It.IsAny<Contexts>()))
                 .Returns(messagesServiceMock.Object);
-            var responsesServiceMock = new Mock<ICustomResponsesService>();
+            var responsesServiceMock = new Mock<IResponsesService>();
             responsesServiceMock.Setup(x => x.GetResponseByOnEvent(It.IsAny<string>(), It.IsAny<ulong>()))
                 .Returns(Task.FromResult(expectedResponse));
 
@@ -84,7 +84,7 @@ namespace Watchman.Discord.UnitTests.Responses
             var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
             messagesServiceFactoryMock.Setup(x => x.Create(It.IsAny<Contexts>()))
                 .Returns(messagesServiceMock.Object);
-            var responsesServiceMock = new Mock<ICustomResponsesService>();
+            var responsesServiceMock = new Mock<IResponsesService>();
 
             var controller = this.testControllersFactory.CreateResponsesController(
                 messagesServiceFactoryMock: messagesServiceFactoryMock,
@@ -108,7 +108,7 @@ namespace Watchman.Discord.UnitTests.Responses
             var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
             messagesServiceFactoryMock.Setup(x => x.Create(It.IsAny<Contexts>()))
                 .Returns(messagesServiceMock.Object);
-            var responsesServiceMock = new Mock<ICustomResponsesService>();
+            var responsesServiceMock = new Mock<IResponsesService>();
             responsesServiceMock.Setup(x => x.GetResponseByOnEvent(It.IsAny<string>(), It.IsAny<ulong>()))
                 .Returns(Task.FromResult(expectedResponse));
 
@@ -137,7 +137,7 @@ namespace Watchman.Discord.UnitTests.Responses
             var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
             messagesServiceFactoryMock.Setup(x => x.Create(It.IsAny<Contexts>()))
                 .Returns(messagesServiceMock.Object);
-            var responsesServiceMock = new Mock<ICustomResponsesService>();
+            var responsesServiceMock = new Mock<IResponsesService>();
 
             var controller = this.testControllersFactory.CreateResponsesController(
                 messagesServiceFactoryMock: messagesServiceFactoryMock,
@@ -164,7 +164,7 @@ namespace Watchman.Discord.UnitTests.Responses
             var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
             messagesServiceFactoryMock.Setup(x => x.Create(It.IsAny<Contexts>()))
                 .Returns(messagesServiceMock.Object);
-            var responsesServiceMock = new Mock<ICustomResponsesService>();
+            var responsesServiceMock = new Mock<IResponsesService>();
             responsesServiceMock.Setup(x => x.GetResponseByOnEvent(It.IsAny<string>(), It.IsAny<ulong>()))
                .Returns(Task.FromResult(expectedResponse));
 
@@ -194,7 +194,7 @@ namespace Watchman.Discord.UnitTests.Responses
             var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
             messagesServiceFactoryMock.Setup(x => x.Create(It.IsAny<Contexts>()))
                 .Returns(messagesServiceMock.Object);
-            var responsesServiceMock = new Mock<ICustomResponsesService>();
+            var responsesServiceMock = new Mock<IResponsesService>();
             responsesServiceMock.Setup(x => x.GetResponseByOnEvent(It.IsAny<string>(), It.IsAny<ulong>()))
                 .Returns(Task.FromResult(expectedResponse));
 
@@ -221,7 +221,7 @@ namespace Watchman.Discord.UnitTests.Responses
             var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
             messagesServiceFactoryMock.Setup(x => x.Create(It.IsAny<Contexts>()))
                 .Returns(messagesServiceMock.Object);
-            var responsesServiceMock = new Mock<ICustomResponsesService>();
+            var responsesServiceMock = new Mock<IResponsesService>();
 
             var controller = this.testControllersFactory.CreateResponsesController(
                 messagesServiceFactoryMock: messagesServiceFactoryMock,

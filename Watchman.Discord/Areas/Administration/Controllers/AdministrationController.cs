@@ -119,7 +119,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             var messagesService = this._messagesServiceFactory.Create(contexts);
             if (!trustedRoles.Any())
             {
-                //await messagesService.SendResponse(x => x.ServerDoesntHaveAnyTrustedRole());
+                await messagesService.SendResponse(x => x.ServerDoesntHaveAnyTrustedRole());
                 return;
             }
             var trustedRolesNames = trustedRoles.Select(x => this._usersRolesService.GetRole(x, contexts.Server.Id)).Where(x => x != null);
@@ -135,7 +135,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             var complaintsChannelName = string.IsNullOrWhiteSpace(command.Name) ? "skargi" : command.Name;
             _ = await this.complaintsChannelService.CreateComplaintsChannel(complaintsChannelName, contexts);
             var messagesService = this._messagesServiceFactory.Create(contexts);
-            //await messagesService.SendResponse(x => x.ComplaintsChannelHasBeenCreated());
+            await messagesService.SendResponse(x => x.ComplaintsChannelHasBeenCreated());
         }
     }
 }

@@ -8,9 +8,9 @@ namespace Watchman.Discord.Areas.Responses.Services
     public class ResponsesCleanupService : ICyclicService
     {
         private readonly ResponsesGetterService _responsesGetterService;
-        private readonly CustomResponsesService _responsesService;
+        private readonly ResponsesService _responsesService;
 
-        public ResponsesCleanupService(ResponsesGetterService responsesGetterService, CustomResponsesService responsesService)
+        public ResponsesCleanupService(ResponsesGetterService responsesGetterService, ResponsesService responsesService)
         {
             this._responsesGetterService = responsesGetterService;
             this._responsesService = responsesService;
