@@ -204,6 +204,5 @@ namespace Watchman.Discord.UnitTests.Users
             queryBusMock.Verify(x => x.Execute(It.IsAny<GetDiscordServerSafeRolesQuery>()), Times.Never);
             rolesServiceMock.Verify(x => x.DeleteRoleFromUser(It.IsAny<IEnumerable<SafeRole>>(), It.IsAny<Contexts>(), It.IsAny<List<string>>()), Times.Never);
         }
-
     }
 }
