@@ -81,5 +81,17 @@ namespace Watchman.Discord.IntegrationTests
             //Act
             Assert.ThrowsAsync<NotAdminPermissionsException>(() => commandsRunner.SendMessage(command));
         }
+
+        [Test]
+        [TestCase("-trustedroles")]
+        [TestCase("-mutedusers")]
+        public void AdminCommands_IfOwnerShouldNotThrowException(string command)
+        {
+            //Arrange
+            var commandsRunner = this.testWatchmanBotFactory.CreateCommandsRunner();
+
+            //Act
+            Assert.DoesNotThrowAsync(() => commandsRunner.SendMessage(command, isOwner: true));
+        }
     }
 }

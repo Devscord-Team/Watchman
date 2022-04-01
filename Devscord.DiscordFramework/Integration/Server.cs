@@ -62,7 +62,7 @@ namespace Devscord.DiscordFramework.Integration
             return _discordClient.UsersService.IsUserStillOnServer(userId, guildId);
         }
 
-        internal static RestUser GetBotUser()
+        internal static IUser GetBotUser()
         {
             return _discordClient.UsersService.GetBotUser();
         }
