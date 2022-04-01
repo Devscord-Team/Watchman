@@ -19,6 +19,7 @@ using Watchman.Discord.Areas.Users.Services;
 using Watchman.DomainModel.Configuration.ConfigurationItems;
 using Watchman.DomainModel.Configuration.Services;
 using Watchman.DomainModel.DiscordServer.Queries;
+using Watchman.Discord.ResponsesManagers;
 
 namespace Watchman.Discord.Areas.Administration.Controllers
 {
@@ -119,7 +120,7 @@ namespace Watchman.Discord.Areas.Administration.Controllers
             var messagesService = this._messagesServiceFactory.Create(contexts);
             if (!trustedRoles.Any())
             {
-                //await messagesService.SendResponse(x => x.ServerDoesntHaveAnyTrustedRole());
+                await messagesService.SendResponse(x => x.ServerDoesntHaveAnyTrustedRole());
                 return;
             }
             var trustedRolesNames = trustedRoles.Select(x => this._usersRolesService.GetRole(x, contexts.Server.Id)).Where(x => x != null);
