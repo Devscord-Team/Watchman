@@ -105,10 +105,12 @@ namespace Watchman.Discord.UnitTests.Users
             messagesServiceMock.Verify(x => x.SendMessage(contexts.User.AvatarUrl, It.IsAny<MessageType>()), Times.Once);
             messagesServiceMock.Verify(x => x.SendResponse(It.IsAny<Func<IResponsesService, string>>()), Times.Never);
         }
-        [Test, AutoData]
-        public async Task AddRole_ShouldAddRole(AddRoleCommand command)
+        [Test]
+        public async Task AddRole_ShouldAddRole()
         {
             //Arrange
+            AddRoleCommand command = new AddRoleCommand();
+            command.Roles = new List<string>();
             var contexts = testContextsFactory.CreateContexts(1, 1, 1, "test");
             var safeRole = new SafeRole(1ul, 3ul);
             var safeRoles = new List<SafeRole>();
@@ -130,14 +132,13 @@ namespace Watchman.Discord.UnitTests.Users
             queryBusMock.Verify(x => x.Execute(It.IsAny<GetDiscordServerSafeRolesQuery>()), Times.Once);
             rolesServiceMock.Verify(x => x.AddRoleToUser(It.IsAny<IEnumerable<SafeRole>>(), It.IsAny<Contexts>(), It.IsAny<List<string>>()), Times.Once);
         }
-        [Test, AutoData]
-        public async Task AddRole_ShouldThrowExceptionIfRulesCountIsGreaterThanFive(AddRoleCommand command)
+        [Test]
+        public async Task AddRole_ShouldThrowException()
         {
             //Arrange
+            AddRoleCommand command = new AddRoleCommand();
+            command.Roles = new List<string>() { "test", "test", "test", "test", "test", "test"};
             var contexts = testContextsFactory.CreateContexts(1, 1, 1, "test");
-            command.Roles.Add("test");
-            command.Roles.Add("test");
-            command.Roles.Add("test");
 
             var rolesServiceMock = new Mock<Areas.Users.Services.IRolesService>();
             var queryBusMock = new Mock<IQueryBus>();
