@@ -29,7 +29,7 @@
   },
   {
     "OnEvent": "ExampleChannelMention",
-    "Value": "&lt;#12345678&gt;"
+    "Value": "<#12345678>"
   },
   {
     "OnEvent": "ExampleList",
@@ -45,6 +45,6 @@
   },
   {
     "OnEvent": "ExampleUserMention",
-    "Value": "&lt;@12345678&gt;"
+    "Value": "<@12345678>"
   },
 ]
