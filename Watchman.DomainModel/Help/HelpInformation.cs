@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.Help
@@ -49,6 +50,18 @@ namespace Watchman.DomainModel.Help
         public HelpInformation SetDescriptions(IEnumerable<Description> descriptions)
         {
             this.Descriptions = descriptions;
+            this.Update();
+            return this;
+        }
+
+        public HelpInformation UpdateDescription(Description description)
+        {
+            var foundDescription = this.Descriptions.FirstOrDefault(x => x.Language == description.Language);
+            if(foundDescription == null || foundDescription.Text == description.Text)
+            {
+                return this;
+            }
+            foundDescription.Text = description.Text;
             this.Update();
             return this;
         }

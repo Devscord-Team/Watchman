@@ -1,4 +1,5 @@
-﻿using Devscord.DiscordFramework.Commons.Extensions;
+﻿using Devscord.DiscordFramework.Commands.Responses;
+using Devscord.DiscordFramework.Commons.Extensions;
 using Devscord.DiscordFramework.Services.Models;
 using Serilog;
 using System.Collections.Generic;
@@ -22,29 +23,43 @@ namespace Watchman.Discord.Areas.Help.Services
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
         private readonly IHelpInformationFactory _helpInformationFactory;
+        private readonly IResponsesService responsesService;
 
-        public HelpDBGeneratorService(IQueryBus queryBus, ICommandBus commandBus, IHelpInformationFactory helpInformationFactory)
+        public HelpDBGeneratorService(IQueryBus queryBus, ICommandBus commandBus, IHelpInformationFactory helpInformationFactory, IResponsesService responsesService)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;
             this._helpInformationFactory = helpInformationFactory;
+            this.responsesService = responsesService;
         }
 
         public Task FillDatabase(IEnumerable<BotCommandInformation> commandInfosFromAssembly)
         {
             var commandInfosFromAssemblyList = commandInfosFromAssembly.ToList();
-            var query = new GetHelpInformationQuery(HelpInformation.EMPTY_SERVER_ID);
-            var helpInfos = this._queryBus.Execute(query).HelpInformations.ToList();
+            var query = new GetHelpInformationsQuery(HelpInformation.EMPTY_SERVER_ID);
 
-            this.CheckIfExistsUselessHelp(commandInfosFromAssemblyList, helpInfos);
+            var helpInfosInRepository = this._queryBus.Execute(query).HelpInformations.ToList();
+            this.CheckIfExistsUselessHelp(commandInfosFromAssemblyList, helpInfosInRepository);
 
-            var newCommands = this.FindNewCommands(commandInfosFromAssemblyList, helpInfos).ToList();
-            if (!newCommands.Any())
+            var helpInformationsToAddOrUpdate = new List<HelpInformation>(helpInfosInRepository);
+
+            var newCommands = this.FindNewCommands(commandInfosFromAssemblyList, helpInfosInRepository).ToList();
+            if (newCommands.Any())
+            {
+                var newHelpInfos = newCommands.Select(x => this._helpInformationFactory.Create(x));
+                helpInformationsToAddOrUpdate.AddRange(newHelpInfos);
+            }
+
+            foreach (var helpInformation in helpInformationsToAddOrUpdate)
+            {
+                var plResponse = 
+            }
+
+            if (!helpInformationsToAddOrUpdate.Any())
             {
                 return Task.CompletedTask;
             }
-            var newHelpInfos = newCommands.Select(x => this._helpInformationFactory.Create(x));
-            var command = new AddHelpInformationCommand(newHelpInfos);
+            var command = new AddOrUpdateHelpInformationsCommand(helpInformationsToAddOrUpdate);
             return this._commandBus.ExecuteAsync(command);
         }
 

@@ -4,16 +4,16 @@ using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.Help.Queries.Handlers
 {
-    public class GetHelpInformationQueryHandler : IQueryHandler<GetHelpInformationQuery, GetHelpInformationQueryResult>
+    public class GetHelpInformationsQueryHandler : IQueryHandler<GetHelpInformationsQuery, GetHelpInformationsQueryResult>
     {
         private readonly ISessionFactory _sessionFactory;
 
-        public GetHelpInformationQueryHandler(ISessionFactory sessionFactory)
+        public GetHelpInformationsQueryHandler(ISessionFactory sessionFactory)
         {
             this._sessionFactory = sessionFactory;
         }
 
-        public GetHelpInformationQueryResult Handle(GetHelpInformationQuery query)
+        public GetHelpInformationsQueryResult Handle(GetHelpInformationsQuery query)
         {
             var session = this._sessionFactory.CreateMongo();
             var allHelpInfos = session.Get<HelpInformation>().ToList();
@@ -21,7 +21,7 @@ namespace Watchman.DomainModel.Help.Queries.Handlers
             var customHelpInfos = allHelpInfos.Where(x => x.ServerId == query.ServerId).ToList();
 
             customHelpInfos.AddRange(defaultHelpInfos.Where(x => customHelpInfos.All(c => c.CommandName != x.CommandName)));
-            return new GetHelpInformationQueryResult(customHelpInfos);
+            return new GetHelpInformationsQueryResult(customHelpInfos);
         }
     }
 }

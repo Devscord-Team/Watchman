@@ -38,7 +38,7 @@ namespace Watchman.Discord.Areas.Help.Services
 
         public IEnumerable<HelpInformation> GetHelpInformations(Contexts contexts)
         {
-            var helpInformations = this._queryBus.Execute(new GetHelpInformationQuery(contexts.Server.Id)).HelpInformations;
+            var helpInformations = this._queryBus.Execute(new GetHelpInformationsQuery(contexts.Server.Id)).HelpInformations;
             return helpInformations;
         }
 
