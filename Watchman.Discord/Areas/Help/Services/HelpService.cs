@@ -72,7 +72,7 @@ namespace Watchman.Discord.Areas.Help.Services
                 description = this._responsesService.GetResponse(contexts.Server.Id, x => x.NoDefaultDescription());
             }
             var howToUseCommand = this._responsesService.GetResponse(contexts.Server.Id, x => x.HowToUseCommand());
-            return messagesService.SendEmbedMessage($"{howToUseCommand} {helpInformation.CommandName.Replace("Command", string.Empty)}", description, helpMessage);
+            return messagesService.SendEmbedMessage($"{howToUseCommand} {helpInformation.CommandName.Replace("Command", string.Empty)}", $"```\n{description}\n```", helpMessage);
         }
 
         private string NormalizeCommandName(string commandName)

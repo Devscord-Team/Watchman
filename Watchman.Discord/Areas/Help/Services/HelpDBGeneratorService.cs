@@ -4,6 +4,8 @@ using Devscord.DiscordFramework.Services.Models;
 using Serilog;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Help.Factories;
@@ -25,13 +27,16 @@ namespace Watchman.Discord.Areas.Help.Services
         private readonly ICommandBus _commandBus;
         private readonly IHelpInformationFactory _helpInformationFactory;
         private readonly IResponsesService responsesService;
+        private readonly IResponsesCachingService responsesCachingService;
 
-        public HelpDBGeneratorService(IQueryBus queryBus, ICommandBus commandBus, IHelpInformationFactory helpInformationFactory, IResponsesService responsesService)
+        public HelpDBGeneratorService(IQueryBus queryBus, ICommandBus commandBus, IHelpInformationFactory helpInformationFactory, 
+            IResponsesService responsesService, IResponsesCachingService responsesCachingService)
         {
             this._queryBus = queryBus;
             this._commandBus = commandBus;
             this._helpInformationFactory = helpInformationFactory;
             this.responsesService = responsesService;
+            this.responsesCachingService = responsesCachingService;
         }
 
         public Task FillDatabase(IEnumerable<BotCommandInformation> commandInfosFromAssembly)
@@ -50,11 +55,18 @@ namespace Watchman.Discord.Areas.Help.Services
                 var newHelpInfos = newCommands.Select(x => this._helpInformationFactory.Create(x));
                 helpInformationsToAddOrUpdate.AddRange(newHelpInfos);
             }
-
+            this.responsesService.Responses = this.responsesCachingService.GetResponses(HelpInformation.EMPTY_SERVER_ID);
             foreach (var helpInformation in helpInformationsToAddOrUpdate)
             {
                 //todo more languages
-                helpInformation.UpdateDescription(new Description() { Language = "PL", Text = this.GetResponseDescription("PL", helpInformation.CommandName) });
+                var plDescription = new Description()
+                {
+                    Language = "PL",
+                    Text = this.GetResponseDescription("PL", helpInformation.CommandName)
+                };
+                var descriptions = new List<Description>() { plDescription };
+                helpInformation.SetDescriptions(descriptions);
+                helpInformation.SetDefaultLanguage("PL");
             }
 
             if (!helpInformationsToAddOrUpdate.Any(x => x.IsChanged()))
@@ -89,8 +101,26 @@ namespace Watchman.Discord.Areas.Help.Services
                 Log.Warning("{responseName} doesn't exists as a response", responseName);
                 return null;
             }
-            var result = (string) responseManagerMethod.Invoke(null, new[] { this.responsesService });
+            var result = this.TryGetDescription(responseManagerMethod, 3);
             return result;
+        }
+
+        private string TryGetDescription(MethodInfo method, int times)
+        {
+            var i = 0;
+            do
+            {
+                try
+                {
+                    return (string)method.Invoke(null, new[] { this.responsesService });
+                }
+                catch (System.Exception)
+                {
+                    Thread.Sleep(200);
+                    i++;
+                }
+            } while (i < times);
+            return null;
         }
     }
 }

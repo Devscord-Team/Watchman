@@ -13,7 +13,7 @@ namespace Watchman.DomainModel.Help
         public IEnumerable<ArgumentInformation> ArgumentInformations { get; private set; }
         public IEnumerable<Description> Descriptions { get; private set; }
         public ulong ServerId { get; private set; }
-        public string DefaultLanguage { get; private set; } = "EN";
+        public string DefaultLanguage { get; private set; } = "PL";
         public string ExampleUsage { get; private set; }
         public bool IsDefault => this.ServerId == EMPTY_SERVER_ID;
 
@@ -49,6 +49,7 @@ namespace Watchman.DomainModel.Help
 
         public HelpInformation SetDescriptions(IEnumerable<Description> descriptions)
         {
+            //todo update only if changed
             this.Descriptions = descriptions;
             this.Update();
             return this;
