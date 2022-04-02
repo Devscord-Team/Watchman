@@ -1,0 +1,6 @@
+﻿[
+  {
+    "OnEvent": "ServerDoesntHaveAnyTrustedRole",
+    "Value": "Serwer nie ma żadnych roli ustawionych jako zaufane."
+  }
+]

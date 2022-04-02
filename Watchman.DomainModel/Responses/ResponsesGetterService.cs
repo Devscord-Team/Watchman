@@ -19,6 +19,7 @@ namespace Watchman.Discord.Areas.Responses.Services
         private readonly string[] areas = new[] //todo from configuration or auto
         {
             "FrameworkExceptions",
+            "HelpInformations",
             "Administration",
             "AntiSpam",
             "Help",

@@ -43,8 +43,8 @@ namespace Watchman.Discord.ResponsesManagers
         public static string PL_removeresponse_description(this IResponsesService responsesService)
             => responsesService.ProcessResponse("PL_removeresponse_description");
 
-        public static string PL_response_description(this IResponsesService responsesService)
-            => responsesService.ProcessResponse("PL_response_description");
+        public static string PL_responses_description(this IResponsesService responsesService)
+            => responsesService.ProcessResponse("PL_responses_description");
 
         public static string PL_updateresponse_description(this IResponsesService responsesService)
             => responsesService.ProcessResponse("PL_updateresponse_description");

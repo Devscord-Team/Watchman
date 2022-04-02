@@ -1,50 +1,106 @@
 ﻿[
   {
-    "OnEvent": "NoDefaultDescription",
-    "Value": "Brak domyślnego opisu"
+    "OnEvent": "PL_addrole_description",
+    "Value": "Dodaje role do użytkownika."
   },
   {
-    "OnEvent": "AvailableCommands",
-    "Value": "Dostępne komendy:"
+    "OnEvent": "PL_addwarn_description",
+    "Value": "Dodaje użytkownikowi ostrzeżenie."
   },
   {
-    "OnEvent": "HereYouCanFindAvailableCommandsWithDescriptions",
-    "Value": "Poniżej znajdziesz listę dostępnych komend\n\nJeśli chcesz dowiedzieć się jak używać wybranej komendy, sprawdź to za pomocą komendy\n`-help -command nazwakomendy`\nprzykładowo\n`-help -command help`"
+    "OnEvent": "PL_avatar_description",
+    "Value": "Wyświetla avatar oznaczonego użytkownika, w przeciwnym wypadku wyświetla avatar użtykownika który wpisał komendę."
   },
   {
-    "OnEvent": "HowToUseCommand",
-    "Value": "Jak używać komendy"
+    "OnEvent": "PL_removerole_description",
+    "Value": "Usuwa role użytkownikowi."
   },
   {
-    "OnEvent": "Example",
-    "Value": "Przykład"
+    "OnEvent": "PL_roles_description",
+    "Value": "Dodaje listę ról dostępnych dla użytkownika."
   },
   {
-    "OnEvent": "Parameters",
-    "Value": "Parametry"
+    "OnEvent": "PL_warns_description",
+    "Value": "Wyświetla ostrzeżenia oznaczonego użykownika, w przeciwnym wypadku wyświetla ostrzeżenia użytkownika który wpisał komendę."
   },
   {
-    "OnEvent": "Type",
-    "Value": "Typ"
+    "OnEvent": "PL_dontask_description",
+    "Value": "Wysyła odnośnik do strony https://dontasktoask.com/"
   },
   {
-    "OnEvent": "ExampleChannelMention",
-    "Value": "&lt;#12345678&gt;"
+    "OnEvent": "PL_google_description",
+    "Value": "Wysyła odnośnik do google'a z wynikiem wyszukiwania frazy wpisanej przez użytkownika."
   },
   {
-    "OnEvent": "ExampleList",
-    "Value": "jeden dwa trzy"
+    "OnEvent": "PL_marchew_description",
+    "Value": "Tak jak Pan Jezus powiedział."
   },
   {
-    "OnEvent": "ExampleSingleWord",
-    "Value": "JednoSłowo"
+    "OnEvent": "PL_maruda_description",
+    "Value": "A kto to przyszedł?"
   },
   {
-    "OnEvent": "ExampleText",
-    "Value": "\"kilka słów\""
+    "OnEvent": "PL_nohello_description",
+    "Value": "Wysyła odnośnik do strony https://www.nohello.com/"
   },
   {
-    "OnEvent": "ExampleUserMention",
-    "Value": "&lt;@12345678&gt;"
+    "OnEvent": "PL_addresponse_description",
+    "Value": "Dodaje niestandardową odpowiedź bota dla podanego zdarzenia."
   },
+  {
+    "OnEvent": "PL_removeresponse_description",
+    "Value": "Usuwa niestandardową odpowiedź bota dla podanego zdarzenia."
+  },
+  {
+    "OnEvent": "PL_responses_description",
+    "Value": "Wyświetla odpowiedzi bota."
+  },
+  {
+    "OnEvent": "PL_updateresponse_description",
+    "Value": "Aktualizuje niestandardową odpowiedź bota dla podanego zdarzenia."
+  },
+  {
+    "OnEvent": "PL_mutedusers_description",
+    "Value": "Wyświetla listę wyciszonych użytkowników."
+  },
+  {
+    "OnEvent": "PL_mute_description",
+    "Value": "Wycisza oznaczonego użytkownika."
+  },
+  {
+    "OnEvent": "PL_unmute_description",
+    "Value": "Odcisza oznaczonego użytkownika."
+  },
+  {
+    "OnEvent": "PL_send_description",
+    "Value": "Wysyła wiadomość w imieniu bota."
+  },
+  {
+    "OnEvent": "PL_help_description",
+    "Value": "Wyświetla listę oraz opis wszystkich komend."
+  },
+  {
+    "OnEvent": "PL_complaintschannel_description",
+    "Value": "Po wpisaniu komendy tworzy się kanał do składania skargi, na którym mogą pisać wyciszeni użytkownicy."
+  },
+  {
+    "OnEvent": "PL_safeusers_description",
+    "Value": "Wyświetla listę zaufanych użytkowników."
+  },
+  {
+    "OnEvent": "PL_setrole_description",
+    "Value": "Nadaję oznaczonemu użytkownikowi role."
+  },
+  {
+    "OnEvent": "PL_trust_description",
+    "Value": "Dodaje role do listy zaufanych ról.\n(każdy z taką rolą jest automatycznie zaufanym użytkownikiem)"
+  },
+  {
+    "OnEvent": "PL_untrust_description",
+    "Value": "Usuwa role z listy ról dla zaufanych użytkowników.\n(każdy z taką rolą jest automatycznie zaufanym użytkownikiem)"
+  },
+  {
+    "OnEvent": "PL_trustedroles_description",
+    "Value": "Wyświetla listę ról dla zaufanych użytkowników.\n(każdy z taką rolą jest automatycznie zaufanym użytkownikiem)"
+  }
 ]
