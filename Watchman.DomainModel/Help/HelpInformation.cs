@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.Help
@@ -12,7 +13,7 @@ namespace Watchman.DomainModel.Help
         public IEnumerable<ArgumentInformation> ArgumentInformations { get; private set; }
         public IEnumerable<Description> Descriptions { get; private set; }
         public ulong ServerId { get; private set; }
-        public string DefaultLanguage { get; private set; } = "EN";
+        public string DefaultLanguage { get; private set; } = "PL";
         public string ExampleUsage { get; private set; }
         public bool IsDefault => this.ServerId == EMPTY_SERVER_ID;
 
@@ -48,7 +49,20 @@ namespace Watchman.DomainModel.Help
 
         public HelpInformation SetDescriptions(IEnumerable<Description> descriptions)
         {
+            //todo update only if changed
             this.Descriptions = descriptions;
+            this.Update();
+            return this;
+        }
+
+        public HelpInformation UpdateDescription(Description description)
+        {
+            var foundDescription = this.Descriptions.FirstOrDefault(x => x.Language == description.Language);
+            if(foundDescription == null || foundDescription.Text == description.Text)
+            {
+                return this;
+            }
+            foundDescription.Text = description.Text;
             this.Update();
             return this;
         }

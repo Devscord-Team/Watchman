@@ -10,6 +10,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Responses\Resources\HelpInformationsDefaultResponses.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Responses\Resources\AntiSpamDefaultResponses.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
