@@ -64,7 +64,7 @@
   },
   {
     "OnEvent": "ServerDoesntHaveAnySafeRoles",
-    "Value": "Serwer nie ma żadnych dostępnych bezpiecznych ról (jeśli jesteś adminem, ustaw bezpieczne role za pomocą komendy -set role &lt;nazwa_roli&gt; safe)"
+    "Value": "Serwer nie ma żadnych dostępnych bezpiecznych ról (jeśli jesteś adminem, ustaw bezpieczne role za pomocą komendy -set role nazwa_roli safe)"
   },
   {
     "OnEvent": "AvailableSafeRoles",
