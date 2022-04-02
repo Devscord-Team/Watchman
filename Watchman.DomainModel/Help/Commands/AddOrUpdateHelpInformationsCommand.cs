@@ -3,11 +3,11 @@ using Watchman.Cqrs;
 
 namespace Watchman.DomainModel.Help.Commands
 {
-    public class AddHelpInformationCommand : ICommand
+    public class AddOrUpdateHelpInformationsCommand : ICommand
     {
         public IEnumerable<HelpInformation> HelpInformation { get; private set; }
 
-        public AddHelpInformationCommand(IEnumerable<HelpInformation> helpInformation)
+        public AddOrUpdateHelpInformationsCommand(IEnumerable<HelpInformation> helpInformation)
         {
             this.HelpInformation = helpInformation;
         }

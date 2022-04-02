@@ -53,7 +53,7 @@ namespace Watchman.Discord.Areas.Help.Services
             var exampleResponse = this._responsesService.GetResponse(server.Id, x => x.Example());
             foreach (var argument in helpInformation.ArgumentInformations)
             {
-                helpBuilder.AppendLine($"**{argument.Name}**");
+                helpBuilder.AppendLine($"{argument.Name}");
                 helpBuilder.AppendLine($"```{typeResponse.ToLowerInvariant()}: {argument.ExpectedTypeName}");
                 var exampleValue = argument.ExampleValue ?? this._helpExampleUsageGenerator.GetExampleValue(argument, server);
                 helpBuilder.AppendLine(!string.IsNullOrWhiteSpace(exampleValue)
@@ -64,10 +64,10 @@ namespace Watchman.Discord.Areas.Help.Services
             var helpBuilderResult = helpBuilder.ToString();
             if (!string.IsNullOrWhiteSpace(helpBuilderResult))
             {
-                yield return new KeyValuePair<string, string>($"__{parametersResponse}__", helpBuilderResult);
+                yield return new KeyValuePair<string, string>($"**{parametersResponse}**", helpBuilderResult);
             }
             var exampleCommandUsage = helpInformation.ExampleUsage ?? this._helpExampleUsageGenerator.GetExampleUsage(helpInformation, server);
-            yield return new KeyValuePair<string, string>($"__{exampleResponse}__", exampleCommandUsage);
+            yield return new KeyValuePair<string, string>($"**{exampleResponse}**", exampleCommandUsage);
         }
 
         private string RemoveFirstAndLastBracket(string fullMessage) // '[' & ']'

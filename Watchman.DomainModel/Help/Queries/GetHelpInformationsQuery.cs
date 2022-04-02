@@ -2,11 +2,11 @@
 
 namespace Watchman.DomainModel.Help.Queries
 {
-    public class GetHelpInformationQuery : IQuery<GetHelpInformationQueryResult>
+    public class GetHelpInformationsQuery : IQuery<GetHelpInformationsQueryResult>
     {
         public ulong ServerId { get; }
 
-        public GetHelpInformationQuery(ulong serverId)
+        public GetHelpInformationsQuery(ulong serverId)
         {
             this.ServerId = serverId;
         }

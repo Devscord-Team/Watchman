@@ -14,6 +14,7 @@ namespace Watchman.DomainModel.UnitTests.Responses
         [Test]
         [TestCase("_Template")]
         [TestCase("FrameworkExceptions")]
+        [TestCase("HelpInformations")]
         [TestCase("Administration")]
         [TestCase("AntiSpam")]
         [TestCase("Help")]
