@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Help.Factories;
+using Watchman.Discord.ResponsesManagers;
 using Watchman.DomainModel.Help;
 using Watchman.DomainModel.Help.Commands;
 using Watchman.DomainModel.Help.Queries;
@@ -52,10 +53,11 @@ namespace Watchman.Discord.Areas.Help.Services
 
             foreach (var helpInformation in helpInformationsToAddOrUpdate)
             {
-                var plResponse = 
+                //todo more languages
+                helpInformation.UpdateDescription(new Description() { Language = "PL", Text = this.GetResponseDescription("PL", helpInformation.CommandName) });
             }
 
-            if (!helpInformationsToAddOrUpdate.Any())
+            if (!helpInformationsToAddOrUpdate.Any(x => x.IsChanged()))
             {
                 return Task.CompletedTask;
             }
@@ -76,6 +78,19 @@ namespace Watchman.Discord.Areas.Help.Services
         {
             var defaultHelpInfosInDb = helpInfos.Where(x => x.IsDefault); // for optimize checking only defaults
             return commandInfosFromAssembly.Where(x => defaultHelpInfosInDb.All(h => h.CommandName != x.Name));
+        }
+
+        private string GetResponseDescription(string language, string commandName)
+        {
+            var responseName = $"{language.ToUpper()}_{commandName.ToLower().Replace("command", string.Empty)}_description";
+            var responseManagerMethod = typeof(HelpInformationsResponsesManager).GetMethod(responseName);
+            if (responseManagerMethod == null)
+            {
+                Log.Warning("{responseName} doesn't exists as a response", responseName);
+                return null;
+            }
+            var result = (string) responseManagerMethod.Invoke(null, new[] { this.responsesService });
+            return result;
         }
     }
 }

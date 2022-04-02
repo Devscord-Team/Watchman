@@ -27,11 +27,11 @@ namespace Watchman.Discord.Extensions
             {
                 builder
                     .AddHandler(() => Task.Run(() => Log.Information("Bot started and logged in...")))
+                    .AddFromIoC<IResponsesInitService>(responsesService => responsesService.InitNewResponsesFromResources)
                     .AddFromIoC<IConfigurationService>(configurationService => configurationService.InitDefaultConfigurations)
                     .AddFromIoC<ICustomCommandsLoader>(customCommandsLoader => customCommandsLoader.InitDefaultCustomCommands)
                     .AddFromIoC<IHelpDataCollectorService, IHelpDBGeneratorService>((dataCollector, helpService) =>
                         () => helpService.FillDatabase(dataCollector.GetBotCommandsInfo(typeof(WatchmanBot).Assembly)))
-                    .AddFromIoC<IResponsesInitService>(responsesService => responsesService.InitNewResponsesFromResources)
                     .AddFromIoC<IInitializationService, IDiscordServersService>((initService, serversService) => async () =>
                     {
                         // when bot was offline for less than 1 minutes, it doesn't make sense to init all servers
