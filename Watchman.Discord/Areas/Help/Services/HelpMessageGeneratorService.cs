@@ -42,7 +42,6 @@ namespace Watchman.Discord.Areas.Help.Services
             return serialized;
         }
 
-
         public IEnumerable<KeyValuePair<string, string>> MapHelpForAllCommandsToEmbed(IEnumerable<HelpInformation> helpInformations, DiscordServerContext server)
         {
             var areas = helpInformations.GroupBy(x => x.AreaName).OrderBy(x => x.Key).ToList();
