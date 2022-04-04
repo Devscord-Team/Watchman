@@ -12,7 +12,7 @@ namespace Watchman.Discord.Areas.Help.Services
     public interface IHelpMessageGeneratorService
     {
         string GenerateJsonHelp(IEnumerable<HelpInformation> helpInformations);
-        string GenerateJsonHelpForOneCommand(string command, IEnumerable<HelpInformation> helpInformations);
+        string GenerateJsonHelpForOneCommand(HelpInformation helpInformation);
         IEnumerable<KeyValuePair<string, string>> MapHelpForAllCommandsToEmbed(IEnumerable<HelpInformation> helpInformations, DiscordServerContext server);
         IEnumerable<KeyValuePair<string, string>> MapHelpForOneCommandToEmbed(HelpInformation helpInformation, DiscordServerContext server);
     }
@@ -35,9 +35,8 @@ namespace Watchman.Discord.Areas.Help.Services
             return serialized;
         }
 
-        public string GenerateJsonHelpForOneCommand(string command, IEnumerable<HelpInformation> helpInformations)
+        public string GenerateJsonHelpForOneCommand(HelpInformation helpInformation)
         {
-            var helpInformation = helpInformations.First(x => x.CommandName.ToLower() == command + "command");
             var serialized = "```json\n" + JsonConvert.SerializeObject(helpInformation, Formatting.Indented) + "```";
             return serialized;
         }

@@ -28,7 +28,7 @@ namespace Watchman.Discord.Areas.Help.Controllers
         {
             var helpInformations = this.helpService.GetHelpInformations(contexts);
             return string.IsNullOrEmpty(command.Command)
-                ? helpService.PrintHelpForAllCommands(command.Json, contexts, helpInformations)
+                ? this.helpService.PrintHelpForAllCommands(contexts, helpInformations, command.Json)
                 : this.helpService.PrintHelpForOneCommand(command.Command, contexts, helpInformations, command.Json);
         }
     }

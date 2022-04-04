@@ -17,8 +17,8 @@ namespace Watchman.Discord.Areas.Help.Services
     public interface IHelpService
     {
         IEnumerable<HelpInformation> GetHelpInformations(Contexts contexts);
-        Task PrintHelpForAllCommands(bool isJson, Contexts contexts, IEnumerable<HelpInformation> helpInformations);
-        Task PrintHelpForOneCommand(string commandName, Contexts contexts, IEnumerable<HelpInformation> helpInformations, bool isJson = false);
+        Task PrintHelpForAllCommands(Contexts contexts, IEnumerable<HelpInformation> helpInformations, bool printAsJson);
+        Task PrintHelpForOneCommand(string commandName, Contexts contexts, IEnumerable<HelpInformation> helpInformations, bool printAsJson = false);
     }
 
     public class HelpService : IHelpService
@@ -42,10 +42,10 @@ namespace Watchman.Discord.Areas.Help.Services
             return helpInformations;
         }
 
-        public Task PrintHelpForAllCommands(bool isJson, Contexts contexts, IEnumerable<HelpInformation> helpInformations)
+        public Task PrintHelpForAllCommands(Contexts contexts, IEnumerable<HelpInformation> helpInformations, bool printAsJson)
         {
             var messagesService = this._messagesServiceFactory.Create(contexts);
-            if (isJson)
+            if (printAsJson)
             {
                 var helpMessageJson = this._helpMessageGenerator.GenerateJsonHelp(helpInformations);
                 return messagesService.SendMessage(helpMessageJson, MessageType.Json);
@@ -65,7 +65,7 @@ namespace Watchman.Discord.Areas.Help.Services
             var messagesService = this._messagesServiceFactory.Create(contexts);
             if (IsJson)
             {
-                var helpMessageJson = this._helpMessageGenerator.GenerateJsonHelpForOneCommand(commandName, helpInformations);
+                var helpMessageJson = this._helpMessageGenerator.GenerateJsonHelpForOneCommand(helpInformation);
                 return messagesService.SendMessage(helpMessageJson, MessageType.Json);
             }
             var helpMessage = this._helpMessageGenerator.MapHelpForOneCommandToEmbed(helpInformation, contexts.Server);
