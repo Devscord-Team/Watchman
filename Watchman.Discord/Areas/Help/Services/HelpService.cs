@@ -17,7 +17,7 @@ namespace Watchman.Discord.Areas.Help.Services
     public interface IHelpService
     {
         IEnumerable<HelpInformation> GetHelpInformations(Contexts contexts);
-        Task PrintHelpForAllCommands(Contexts contexts, IEnumerable<HelpInformation> helpInformations, bool printAsJson);
+        Task PrintHelpForAllCommands(Contexts contexts, IEnumerable<HelpInformation> helpInformations, bool printAsJson = false);
         Task PrintHelpForOneCommand(string commandName, Contexts contexts, IEnumerable<HelpInformation> helpInformations, bool printAsJson = false);
     }
 
@@ -42,7 +42,7 @@ namespace Watchman.Discord.Areas.Help.Services
             return helpInformations;
         }
 
-        public Task PrintHelpForAllCommands(Contexts contexts, IEnumerable<HelpInformation> helpInformations, bool printAsJson)
+        public Task PrintHelpForAllCommands(Contexts contexts, IEnumerable<HelpInformation> helpInformations, bool printAsJson = false)
         {
             var messagesService = this._messagesServiceFactory.Create(contexts);
             if (printAsJson)
@@ -55,7 +55,7 @@ namespace Watchman.Discord.Areas.Help.Services
             return messagesService.SendEmbedMessage(title: availableCommandsResponse, description: commandsDescriptionsResponses,
                 this._helpMessageGenerator.MapHelpForAllCommandsToEmbed(helpInformations, contexts.Server));
         }
-        public Task PrintHelpForOneCommand(string commandName, Contexts contexts, IEnumerable<HelpInformation> helpInformations, bool IsJson = false)
+        public Task PrintHelpForOneCommand(string commandName, Contexts contexts, IEnumerable<HelpInformation> helpInformations, bool printAsJson = false)
         {
             var helpInformation = helpInformations.FirstOrDefault(x => this.NormalizeCommandName(x.CommandName) == this.NormalizeCommandName(commandName));
             if (helpInformation == null)
@@ -63,7 +63,7 @@ namespace Watchman.Discord.Areas.Help.Services
                 return Task.CompletedTask;
             }
             var messagesService = this._messagesServiceFactory.Create(contexts);
-            if (IsJson)
+            if (printAsJson)
             {
                 var helpMessageJson = this._helpMessageGenerator.GenerateJsonHelpForOneCommand(helpInformation);
                 return messagesService.SendMessage(helpMessageJson, MessageType.Json);
