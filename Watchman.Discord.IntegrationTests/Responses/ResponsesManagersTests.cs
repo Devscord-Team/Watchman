@@ -18,6 +18,7 @@ namespace Watchman.Discord.IntegrationTests.Responses
     {
         [Test]
         [TestCase("FrameworkExceptions", typeof(FrameworkExceptionsResponsesManager))]
+        [TestCase("HelpInformations", typeof(HelpInformationsResponsesManager))]
         [TestCase("Administration", typeof(AdministrationResponsesManager))]
         [TestCase("AntiSpam", typeof(AntiSpamResponsesManager))]
         [TestCase("Help", typeof(HelpResponsesManager))]

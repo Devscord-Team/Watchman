@@ -47,6 +47,8 @@ namespace Devscord.DiscordFramework.Commands.Responses
         private void InitResponsesCache()
         {
             Log.Information("Refreshing responses cache...");
+            var defaultResponses = this.GetResponsesFunc.Invoke(0);
+            _serversResponses.Add(0, defaultResponses);
             foreach (var server in this._discordServersService.GetDiscordServersAsync().ToEnumerable())
             {
                 var responses = this.GetResponsesFunc.Invoke(server.Id);

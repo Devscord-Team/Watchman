@@ -46,5 +46,5 @@
   {
     "OnEvent": "ExampleUserMention",
     "Value": "<@12345678>"
-  },
+  }
 ]
