@@ -66,6 +66,5 @@ namespace Watchman.DomainModel.Configuration
             => this.Name == item.Name
             && this.Group == item.Group
             && this.SubGroup == item.SubGroup;
-
     }
 }

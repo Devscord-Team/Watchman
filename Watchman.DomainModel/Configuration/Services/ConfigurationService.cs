@@ -84,13 +84,11 @@ namespace Watchman.DomainModel.Configuration.Services
                 foundExisting.SetSubGroup(configuration.SubGroup);
                 //update only if changed and valid
                 await session.UpdateAsync(foundExisting);
-
             }
             this.Refresh();
         }
 
-        //todo refactor
-        public void Refresh()
+        public void Refresh() //todo refactor
         {
             using var session = this._sessionFactory.CreateMongo();
             var configurationItems = session.Get<ConfigurationItem>().ToList();
