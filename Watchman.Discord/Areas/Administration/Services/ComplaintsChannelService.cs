@@ -6,10 +6,10 @@ using Devscord.DiscordFramework.Commons.Exceptions;
 using Devscord.DiscordFramework.Middlewares.Contexts;
 using Devscord.DiscordFramework.Services;
 using Watchman.Cqrs;
-using Watchman.DomainModel.Configuration.ConfigurationItems;
 using Watchman.DomainModel.Configuration.Services;
 using Watchman.DomainModel.Complaints.Commands;
 using Watchman.DomainModel.Complaints.Queries;
+using Watchman.DomainModel.Configuration.ConfigurationItems.Complaints;
 
 namespace Watchman.Discord.Areas.Administration.Services
 {

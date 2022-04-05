@@ -22,10 +22,9 @@ namespace Watchman.DomainModel.Configuration.Services
 
         private List<Type> SearchForConfigurationTypes()
         {
-            var configurationsNamespace = typeof(MinAverageMessagesPerWeek).Namespace;
             return Assembly.GetExecutingAssembly()
                 .GetTypes()
-                .Where(x => x.IsClass && x.Namespace == configurationsNamespace)
+                .Where(x => x.IsClass && x.Namespace.StartsWith("Watchman.DomainModel.Configuration.ConfigurationItems"))
                 .ToList();
         }
     }
