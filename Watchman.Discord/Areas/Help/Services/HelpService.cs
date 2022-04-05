@@ -17,8 +17,8 @@ namespace Watchman.Discord.Areas.Help.Services
     public interface IHelpService
     {
         IEnumerable<HelpInformation> GetHelpInformations(Contexts contexts);
-        Task PrintHelpForAllCommands(bool printAsJson, Contexts contexts, IEnumerable<HelpInformation> helpInformations);
-        Task PrintHelpForOneCommand(string commandName, Contexts contexts, IEnumerable<HelpInformation> helpInformations);
+        Task PrintHelpForAllCommands(Contexts contexts, IEnumerable<HelpInformation> helpInformations, bool printAsJson = false);
+        Task PrintHelpForOneCommand(string commandName, Contexts contexts, IEnumerable<HelpInformation> helpInformations, bool printAsJson = false);
     }
 
     public class HelpService : IHelpService
@@ -42,21 +42,20 @@ namespace Watchman.Discord.Areas.Help.Services
             return helpInformations;
         }
 
-        public Task PrintHelpForAllCommands(bool printAsJson, Contexts contexts, IEnumerable<HelpInformation> helpInformations)
+        public Task PrintHelpForAllCommands(Contexts contexts, IEnumerable<HelpInformation> helpInformations, bool printAsJson = false)
         {
             var messagesService = this._messagesServiceFactory.Create(contexts);
             if (printAsJson)
             {
-                var helpMessage = this._helpMessageGenerator.GenerateJsonHelp(helpInformations);
-                return messagesService.SendMessage(helpMessage, MessageType.Json);
+                var helpMessageJson = this._helpMessageGenerator.GenerateJsonHelp(helpInformations);
+                return messagesService.SendMessage(helpMessageJson, MessageType.Json);
             }
             var availableCommandsResponse = this._responsesService.GetResponse(contexts.Server.Id, x => x.AvailableCommands());
             var commandsDescriptionsResponses = this._responsesService.GetResponse(contexts.Server.Id, x => x.HereYouCanFindAvailableCommandsWithDescriptions());
             return messagesService.SendEmbedMessage(title: availableCommandsResponse, description: commandsDescriptionsResponses,
                 this._helpMessageGenerator.MapHelpForAllCommandsToEmbed(helpInformations, contexts.Server));
         }
-
-        public Task PrintHelpForOneCommand(string commandName, Contexts contexts, IEnumerable<HelpInformation> helpInformations)
+        public Task PrintHelpForOneCommand(string commandName, Contexts contexts, IEnumerable<HelpInformation> helpInformations, bool printAsJson = false)
         {
             var helpInformation = helpInformations.FirstOrDefault(x => this.NormalizeCommandName(x.CommandName) == this.NormalizeCommandName(commandName));
             if (helpInformation == null)
@@ -64,6 +63,11 @@ namespace Watchman.Discord.Areas.Help.Services
                 return Task.CompletedTask;
             }
             var messagesService = this._messagesServiceFactory.Create(contexts);
+            if (printAsJson)
+            {
+                var helpMessageJson = this._helpMessageGenerator.GenerateJsonHelpForOneCommand(helpInformation);
+                return messagesService.SendMessage(helpMessageJson, MessageType.Json);
+            }
             var helpMessage = this._helpMessageGenerator.MapHelpForOneCommandToEmbed(helpInformation, contexts.Server);
             var description = helpInformation.Descriptions
                 .FirstOrDefault(x => x.Language == helpInformation.DefaultLanguage)?.Text;
