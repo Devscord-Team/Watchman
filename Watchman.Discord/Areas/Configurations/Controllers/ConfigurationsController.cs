@@ -17,7 +17,7 @@ namespace Watchman.Discord.Areas.Configurations.Controllers
         private readonly IQueryBus queryBus;
         private readonly IMessagesServiceFactory messagesServiceFactory;
 
-        public ConfigurationsController(IQueryHandler queryHandler, IMessagesServiceFactory messagesServiceFactory)
+        public ConfigurationsController(IQueryBus queryBus, IMessagesServiceFactory messagesServiceFactory)
         {
             this.queryBus = queryBus;
             this.messagesServiceFactory = messagesServiceFactory;
@@ -27,6 +27,11 @@ namespace Watchman.Discord.Areas.Configurations.Controllers
         {
             var getConfigurationsQuery = new GetConfigurationItemsQuery(command.Group);
             var configurationItems = (await this.queryBus.ExecuteAsync(getConfigurationsQuery)).ConfigurationItems;
+            var messagesService = this.messagesServiceFactory.Create(contexts);
+            var groupped = configurationItems.GroupBy(x => x.Group).OrderBy(x => x.Key);
+            var mapped = groupped.Select(x => new KeyValuePair<string, string>(x.Key, $"```\n{string.Join("\n", x.Select(item => $"{item.Name} ({item.Value.GetType().Name})"))}```"));
+            //todo from responses
+            await messagesService.SendEmbedMessage("Konfiguracja", "Poniżej znajdziesz liste elementów konfiguracji", mapped);
         }
     }
 }
