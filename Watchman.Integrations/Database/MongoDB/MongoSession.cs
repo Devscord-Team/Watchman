@@ -30,11 +30,16 @@ namespace Watchman.Integrations.Database.MongoDB
 
         public Task AddAsync<T>(T entity) where T : Entity
         {
+            entity.Validate();
             return this.GetCollection<T>().InsertOneAsync(entity);
         }
 
         public Task AddAsync<T>(IEnumerable<T> entities) where T : Entity
         {
+            foreach (var entity in entities)
+            {
+                entity.Validate();
+            }
             return this.GetCollection<T>().InsertManyAsync(entities);
         }
 
@@ -52,6 +57,7 @@ namespace Watchman.Integrations.Database.MongoDB
 
         public async Task UpdateAsync<T>(T entity) where T : Entity
         {
+            entity.Validate();
             if (entity.IsChanged())
             {
                 await this.GetCollection<T>().ReplaceOneAsync(x => x.Id == entity.Id, entity);
