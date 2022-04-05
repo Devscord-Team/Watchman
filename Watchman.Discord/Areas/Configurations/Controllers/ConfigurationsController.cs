@@ -28,7 +28,6 @@ namespace Watchman.Discord.Areas.Configurations.Controllers
         //todo tests
         public async Task GetConfigurations(ConfigurationsCommand command, Contexts contexts)
         {
-            var getConfigurationsQuery = new GetConfigurationItemsQuery(command.Group);
             var configurations = this.configurationService.GetConfigurationItems(contexts.Server.Id);
             if(command.Group != null)
             {
