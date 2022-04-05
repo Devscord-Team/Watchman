@@ -22,11 +22,11 @@ namespace Watchman.DomainModel.Configuration.Services
 
         private List<Type> SearchForConfigurationTypes()
         {
-            var configurationsNamespace = typeof(MinAverageMessagesPerWeek).Namespace;
-            return Assembly.GetExecutingAssembly()
+            var results = Assembly.GetExecutingAssembly()
                 .GetTypes()
-                .Where(x => x.IsClass && x.Namespace == configurationsNamespace)
+                .Where(x => !x.IsAbstract && x.IsClass && x.IsAssignableTo(typeof(IMappedConfiguration)))
                 .ToList();
+            return results;
         }
     }
 }
