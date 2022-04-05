@@ -8,6 +8,8 @@ namespace Watchman.DomainModel.Configuration
         public abstract T Value { get; set; }
         public ulong ServerId { get; }
         public string Name { get; }
+        public string Group { get; }
+        public string SubGroup { get; }
 
         public MappedConfiguration(ulong serverId)
         {
@@ -30,15 +32,17 @@ namespace Watchman.DomainModel.Configuration
 
         public override bool Equals(object obj)
         {
-            return obj is MappedConfiguration<T> configuration 
-                   && EqualityComparer<T>.Default.Equals(this.Value, configuration.Value) 
-                   && this.ServerId == configuration.ServerId 
-                   && this.Name == configuration.Name;
+            return obj is MappedConfiguration<T> configuration
+                   && EqualityComparer<T>.Default.Equals(this.Value, configuration.Value)
+                   && this.ServerId == configuration.ServerId
+                   && this.Name == configuration.Name
+                   && this.Group == configuration.Group
+                   && this.SubGroup == configuration.SubGroup;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(this.Value, this.ServerId, this.Name);
+            return HashCode.Combine(this.Value, this.ServerId, this.Name, this.Group, this.SubGroup);
         }
     }
 }

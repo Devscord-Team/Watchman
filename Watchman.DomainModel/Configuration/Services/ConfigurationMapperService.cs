@@ -46,6 +46,8 @@ namespace Watchman.DomainModel.Configuration.Services
             }
             dynamic mappedConfiguration = Activator.CreateInstance(type, configurationItem.ServerId);
             mappedConfiguration!.Value = (dynamic)configurationItem.Value;
+            mappedConfiguration!.Group = (dynamic)configurationItem.Group;
+            mappedConfiguration!.SubGroup = (dynamic)configurationItem.SubGroup;
             return mappedConfiguration;
         }
     }
