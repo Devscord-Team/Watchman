@@ -8,8 +8,8 @@ namespace Watchman.DomainModel.Configuration
         public abstract T Value { get; set; }
         public ulong ServerId { get; }
         public string Name { get; }
-        public abstract string Group { get; }
-        public virtual string SubGroup { get; }
+        public abstract string Group { get; set; }
+        public virtual string SubGroup { get; set; }
 
         public MappedConfiguration(ulong serverId)
         {

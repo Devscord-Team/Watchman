@@ -22,10 +22,11 @@ namespace Watchman.DomainModel.Configuration.Services
 
         private List<Type> SearchForConfigurationTypes()
         {
-            return Assembly.GetExecutingAssembly()
+            var results = Assembly.GetExecutingAssembly()
                 .GetTypes()
-                .Where(x => x.IsClass && x.Namespace.StartsWith("Watchman.DomainModel.Configuration.ConfigurationItems"))
+                .Where(x => !x.IsAbstract && x.IsClass && x.IsAssignableTo(typeof(IMappedConfiguration)))
                 .ToList();
+            return results;
         }
     }
 }

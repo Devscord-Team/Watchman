@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
+using Serilog;
 using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.Configuration.Services
@@ -71,13 +72,24 @@ namespace Watchman.DomainModel.Configuration.Services
             });
             using var session = this._sessionFactory.CreateMongo();
             var existingConfigurations = session.Get<ConfigurationItem>().Where(x => x.ServerId == 0).ToList();
-            foreach (var configuration in configurations.Where(x => existingConfigurations.All(y => x.Name != y.Name)))
+            foreach (var configuration in configurations)
             {
-                await session.AddAsync(configuration);
+                var foundExisting = existingConfigurations.FirstOrDefault(x => x.Name == configuration.Name);
+                if(foundExisting == null)
+                {
+                    await session.AddAsync(configuration);
+                    continue;
+                }
+                foundExisting.SetGroup(configuration.Group);
+                foundExisting.SetSubGroup(configuration.SubGroup);
+                //update only if changed and valid
+                await session.UpdateAsync(foundExisting);
+
             }
             this.Refresh();
         }
 
+        //todo refactor
         public void Refresh()
         {
             using var session = this._sessionFactory.CreateMongo();
@@ -93,7 +105,8 @@ namespace Watchman.DomainModel.Configuration.Services
                     var configurationChangesHandler = this.GetConfigurationChangesHandler(mappedConfiguration);
                     if (configurationChangesHandler == null)
                     {
-                        throw new NotImplementedException($"configurationChangesHandler for {changedConfiguration.Name} is not implemented");
+                        Log.Warning("ConfigurationChangesHandler for {ChangedConfigurationName} is not implemented", changedConfiguration.Name);
+                        return Task.CompletedTask;
                     }
                     return configurationChangesHandler.Handle(changedConfiguration.ServerId, mappedConfiguration);
                 });
@@ -103,6 +116,7 @@ namespace Watchman.DomainModel.Configuration.Services
             _cachedConfigurationItem = mappedConfigurations;
         }
 
+        //todo refactor
         private IConfigurationChangesHandler<IMappedConfiguration> GetConfigurationChangesHandler(IMappedConfiguration newMappedConfiguration)
         {
             var configurationChangesHandlers = this._componentContext.ComponentRegistry.Registrations
