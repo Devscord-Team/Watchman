@@ -1,0 +1,48 @@
+﻿@page "/User"
+@attribute [Authorize]
+@inherits LayoutComponentBase
+@inject IHttpContextAccessor httpContextAccessor
+@inject Watchman.WebClient.Areas.Auth.UsersService usrSvc
+
+
+<h1>Hello, world 2!</h1>
+
+Welcome to your new app.
+
+<p>
+    Hello, @httpContextAccessor.HttpContext.User.Identity.Name!
+
+    Name: @claim.Name#@claim.Discriminator
+    ID: @claim.UserId
+    OAuth Token: @token
+</p>
+
+<!--Since guilds is not populated instantly on page load, there needs to be a null check on guilds-->
+@if (guilds == null)
+{
+    <p><em>Loading Guilds...</em></p>
+}
+else
+{
+    <h2>Guilds</h2>
+    <br />
+    @foreach (var guild in guilds)
+    {
+        <div>
+            <a href="/Guilds/@guild.Id"><h3>@guild.Name</h3></a>
+        </div>
+    }
+}
+
+@code {
+    private Watchman.WebClient.Areas.Auth.UsersService.DiscordUserClaim claim;
+    private string token;
+    private List<Watchman.WebClient.Areas.Auth.UsersService.Guild> guilds;
+
+    protected override async Task OnInitializedAsync()
+    {
+        claim = usrSvc.GetInfo(httpContextAccessor.HttpContext);
+        token = await usrSvc.GetTokenAsync(httpContextAccessor.HttpContext);
+        guilds = await usrSvc.GetUserGuildsAsync(httpContextAccessor.HttpContext);
+    }
+}
