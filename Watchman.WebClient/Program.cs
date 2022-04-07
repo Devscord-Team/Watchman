@@ -1,12 +1,15 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Watchman.WebClient.Areas.Auth;
 using Watchman.WebClient.Areas.Auth.Discord;
 using Watchman.WebClient.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var configuration = builder.Configuration;
+builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddSingleton<UsersService>();
 
 builder.Services.AddAuthentication(opt =>
 {
@@ -28,7 +31,6 @@ builder.Services.AddAuthentication(opt =>
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<WeatherForecastService>();
 
 var app = builder.Build();
 
@@ -44,9 +46,11 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
-app.UseRouting();
+app.UseAuthentication();
 
+app.UseRouting();
 app.MapBlazorHub();
+app.MapDefaultControllerRoute();
 app.MapFallbackToPage("/_Host");
 
 app.Run();
