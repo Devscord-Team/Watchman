@@ -1,8 +1,28 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Watchman.WebClient.Areas.Auth.Discord;
 using Watchman.WebClient.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var configuration = builder.Configuration;
+
+builder.Services.AddAuthentication(opt =>
+{
+    opt.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    opt.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    opt.DefaultChallengeScheme = DiscordDefaults.AuthenticationScheme;
+}).AddCookie().AddDiscord(x =>
+{
+    x.AppId = configuration["Discord:AppId"];
+    x.AppSecret = configuration["Discord:AppSecret"];
+    x.Scope.Add("guilds");
+
+    //Required for accessing the oauth2 token in order to make requests on the user's behalf, ie. accessing the user's guild list
+    x.SaveTokens = true;
+});
+
 
 // Add services to the container.
 builder.Services.AddRazorPages();
