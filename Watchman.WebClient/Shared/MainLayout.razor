@@ -1,0 +1,31 @@
+﻿@inherits LayoutComponentBase
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<PageTitle>Watchman.WebClient</PageTitle>
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+        </div>
+
+        <article class="content px-4">
+        <AuthorizeView>
+            <Authorized>
+                <!--Greet the user with their identity name (in this case discord name)-->
+                <a href="User">User information panel</a>
+            @Body
+            </Authorized>
+            <NotAuthorized>
+                <a href="Accounts/Login">Log in</a>
+            </NotAuthorized>
+        </AuthorizeView>
+        </article>
+    </main>
+</div>
