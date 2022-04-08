@@ -42,7 +42,7 @@ namespace Watchman.Discord.Areas.Muting.Controllers
             {
                 throw new UserNotFoundException(command.User.GetUserMention());
             }
-            var timeRange = TimeRange.FromNow(Contexts.SentAt + command.Time);
+            var timeRange = TimeRange.FromNow(contexts.SentAt + command.Time);
             var muteEvent = new MuteEvent(userToMute.Id, timeRange, command.Reason, contexts.Server.Id, contexts.Channel.Id);
             await this.commandBus.ExecuteAsync(new MuteUserOrOverwriteCommand(contexts, muteEvent, userToMute));
             this._unmutingService.UnmuteInFuture(contexts, muteEvent, userToMute);
