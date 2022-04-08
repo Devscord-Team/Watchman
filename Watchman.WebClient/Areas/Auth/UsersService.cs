@@ -94,8 +94,10 @@ namespace Watchman.WebClient.Areas.Auth
                 var content = await response.Content.ReadAsStringAsync();
                 try
                 {
+                    //todo define admin user in domain
                     var guilds = Guild.ListFromJson(content);
-                    return guilds;
+                    var adminGuilds = guilds.Where(x => (x.Permissions & 0x20) == 0x20).ToList(); //0x20 == ManageGuild permission
+                    return adminGuilds;
                 }
                 catch
                 {

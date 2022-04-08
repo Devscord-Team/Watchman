@@ -10,11 +10,10 @@
 Welcome to your new app.
 
 <p>
-    Hello, @httpContextAccessor.HttpContext.User.Identity.Name!
+    Hello, @httpContextAccessor.HttpContext.User.Identity.Name!<br/>
 
-    Name: @claim.Name#@claim.Discriminator
-    ID: @claim.UserId
-    OAuth Token: @token
+    Name: @claim.Name#@claim.Discriminator<br/>
+    ID: @claim.UserId<br/>
 </p>
 
 <!--Since guilds is not populated instantly on page load, there needs to be a null check on guilds-->
@@ -29,7 +28,14 @@ else
     @foreach (var guild in guilds)
     {
         <div>
-            <a href="/Guilds/@guild.Id"><h3>@guild.Name</h3></a>
+            
+            <p>
+                <a href="/Guilds/@guild.Id"><h3>@guild.Name</h3></a><br/>
+                @foreach (var feature in guild.Features)
+                {
+                    @feature<b/>
+                }
+            </p>
         </div>
     }
 }
