@@ -1,0 +1,8 @@
+﻿@inject NavigationManager Navigation
+@code {
+    protected override void OnInitialized()
+    {
+        //This auto redirects a user to the login page
+        Navigation.NavigateTo("Accounts/Login", true);
+    }
+}

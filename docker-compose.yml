@@ -28,6 +28,7 @@ services:
         restart: "unless-stopped"
         volumes:
             - ./appsettings.json:/app/appsettings.json
+            - /etc/timezone:/etc/timezone:ro
             - /etc/localtime:/etc/localtime:ro
 volumes:
     db-data:

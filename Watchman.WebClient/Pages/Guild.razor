@@ -1,0 +1,73 @@
+﻿@page "/Guilds/{Id}"
+@attribute [Authorize] //Ensures the user is authorized prior to accessing the pages content
+@inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
+@inject Watchman.WebClient.Areas.Auth.UsersService usrSvc
+
+<p>
+    Hello, @httpContextAccessor.HttpContext.User.Identity.Name!
+</p>
+
+@if (state == State.Loading)
+{
+    <p><em>Loading Guild...</em></p>
+}
+else if (state == State.Unavailable)
+{
+    <p><em>Invalid Guild.</em></p>
+}
+else
+{
+    <p>
+        Name: @DscGuild.Name<br/>
+        Id: @DscGuild.Id<br/>
+        Permissions: @DscGuild.Permissions<br/>
+    </p>
+}
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    public Watchman.WebClient.Areas.Auth.UsersService.Guild DscGuild { get; set; }
+
+    public State state = State.Loading;
+    public enum State
+    {
+        Loading,
+        Unavailable,
+        Loaded
+    }
+
+    //Use OnParametersSet since the guild id can be changed without the page re-rendering the new content otherwise
+    protected override async Task OnParametersSetAsync()
+    {
+        DscGuild = null;
+        state = State.Loading;
+
+        if (Id == null)
+        {
+            //TODO: show all available guilds?
+            //Probably not needed since guilds are now populated on the sidebar
+            state = State.Unavailable;
+            return;
+        }
+
+        DscGuild = await GetGuild(Id);
+        if (DscGuild == null)
+        {
+            state = State.Unavailable;
+        }
+        else
+        {
+            state = State.Loaded;
+        }
+    }
+
+    private async Task<Watchman.WebClient.Areas.Auth.UsersService.Guild> GetGuild(string id)
+    {
+        var guilds = await usrSvc.GetUserGuildsAsync(httpContextAccessor.HttpContext);
+        var match = guilds.FirstOrDefault(x => x.Id == id);
+        return match;
+    }
+}

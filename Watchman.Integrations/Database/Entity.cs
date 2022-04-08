@@ -22,5 +22,9 @@ namespace Watchman.Integrations.Database
         {
             return this._changed;
         }
+
+        public virtual void Validate()
+        {
+        }
     }
 }
