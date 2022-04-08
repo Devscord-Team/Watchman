@@ -31,12 +31,12 @@ namespace Watchman.Common.Models
 
         public static TimeRange ToNow(DateTime start)
         {
-            return new TimeRange(start, DateTime.UtcNow);
+            return new TimeRange(start, DateTime.Now);
         }
 
         public static TimeRange FromNow(DateTime end)
         {
-            return new TimeRange(DateTime.UtcNow, end);
+            return new TimeRange(DateTime.Now, end);
         }
 
         public bool Contains(DateTime dateTime)
