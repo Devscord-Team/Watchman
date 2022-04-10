@@ -2,7 +2,7 @@
 {
     public interface IAntiSpamDetector
     {
-        IAntiSpamDetector WithConfiguration(IAntiSpamDetectorConfiguration configuration);
+        IAntiSpamDetector WithConfiguration<T>(IAntiSpamDetectorConfiguration<T> configuration) where T : IAntiSpamDetector;
         IAntiSpamDetectorResult Detect(AntiSpamMessagesPackage package);
     }
 }

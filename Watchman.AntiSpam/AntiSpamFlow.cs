@@ -15,7 +15,7 @@ namespace Watchman.AntiSpam
 
         public AntiSpamFlow AddDetector<T, C>(C configuration)
             where T : IAntiSpamDetector, new()
-            where C : IAntiSpamDetectorConfiguration
+            where C : IAntiSpamDetectorConfiguration<T>
         {
             this.tempDetectors.Add(new T().WithConfiguration(configuration));
             return this;
