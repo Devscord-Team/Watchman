@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -12,10 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Watchman.Common\Watchman.Common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Detectors\" />
   </ItemGroup>
 
 </Project>

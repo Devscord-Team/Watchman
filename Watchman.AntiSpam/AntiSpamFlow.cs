@@ -8,6 +8,11 @@ using Watchman.AntiSpam.Models;
 
 namespace Watchman.AntiSpam
 {
+    /// <summary>
+    /// There should be one AntiSpamFlow per discord server. 
+    /// Every AntiSpamFlow has own list of detectors and each has own configuration.
+    /// Discord servers should have possility to configure which detectors want to use and provide detailed configuration to each of them.
+    /// </summary>
     public class AntiSpamFlow
     {
         private IAntiSpamDetector[] detectors;
