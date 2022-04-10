@@ -1,4 +1,6 @@
-﻿namespace Watchman.AntiSpam
+﻿using Watchman.AntiSpam.Abstraction;
+
+namespace Watchman.AntiSpam.Models
 {
     public class AntiSpamPackageResult
     {

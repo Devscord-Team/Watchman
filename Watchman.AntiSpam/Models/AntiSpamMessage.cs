@@ -1,4 +1,4 @@
-﻿namespace Watchman.AntiSpam
+﻿namespace Watchman.AntiSpam.Models
 {
     public struct AntiSpamMessage
     {

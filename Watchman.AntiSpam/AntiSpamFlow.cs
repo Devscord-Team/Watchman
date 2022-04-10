@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Watchman.AntiSpam.Abstraction;
+using Watchman.AntiSpam.Models;
 
 namespace Watchman.AntiSpam
 {
