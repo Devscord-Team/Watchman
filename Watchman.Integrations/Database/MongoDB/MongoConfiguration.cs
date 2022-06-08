@@ -43,7 +43,7 @@ namespace Watchman.Integrations.Database.MongoDB
                 .UseSchemeValidation(enabled: false)
                 .UseProgressHandler(context => 
                     Log.Information($@"The migration with name ""{context.MigrationName}"" from {context.TargetVersion} version was processed as {context.CurrentNumber} from all {context.TotalCount} migrations"))
-                .Run(new Version(1, 2, 0));
+                .Run(Version.Zero());
 
             if (!result.Success)
             {
