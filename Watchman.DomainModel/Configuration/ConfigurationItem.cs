@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Watchman.Integrations.Database;
 
 namespace Watchman.DomainModel.Configuration
@@ -10,6 +12,7 @@ namespace Watchman.DomainModel.Configuration
         public string Name { get; private set; }
         public string Group { get; private set; }
         public string SubGroup { get; private set; }
+        public string NameCopy { get; private set; }
 
         public ConfigurationItem(object value, ulong serverId, string name, string group, string subGroup)
         {
@@ -18,6 +21,7 @@ namespace Watchman.DomainModel.Configuration
             this.Name = name;
             this.Group = group;
             this.SubGroup = subGroup;
+            this.NameCopy = name;
         }
 
         public void SetValue(object value)
