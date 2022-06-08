@@ -80,7 +80,7 @@ namespace Watchman.DomainModel.Configuration.Services
                     await session.AddAsync(configuration);
                     continue;
                 }
-                foundExisting.SetGroup(configuration.Group);
+                foundExisting.SetGroup(configuration.Groups.FirstOrDefault());
                 foundExisting.SetSubGroup(configuration.SubGroup);
                 //update only if changed and valid
                 await session.UpdateAsync(foundExisting);

@@ -23,7 +23,7 @@ namespace Watchman.DomainModel.Configuration.Queries.Handlers
             var configurationItems = session.Get<ConfigurationItem>();
             if(query.Group != null)
             {
-                configurationItems = configurationItems.Where(x => x.Group == query.Group);
+                configurationItems = configurationItems.Where(x => x.Groups.FirstOrDefault() == query.Group);
             }
             return new GetConfigurationItemsQueryResult(configurationItems);
         }
