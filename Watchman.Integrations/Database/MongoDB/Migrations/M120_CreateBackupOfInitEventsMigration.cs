@@ -13,6 +13,11 @@ namespace Watchman.Integrations.Database.MongoDB.Migrations
 
         public void Up(IMongoDatabase database)
         {
+            if (!database.ListCollectionNames().ToList().Any(x => x == "InitEvents"))
+            {
+                return;
+            }
+
             var events = database.GetCollection<InitEvent>("InitEvents").AsQueryable();
 
             database.CreateCollection("InitEvents_backup");
@@ -21,6 +26,10 @@ namespace Watchman.Integrations.Database.MongoDB.Migrations
 
         public void Down(IMongoDatabase database)
         {
+            if (!database.ListCollectionNames().ToList().Any(x => x == "InitEvents_backup"))
+            {
+                return;
+            }
             database.DropCollection("InitEvents_backup");
         }
 
