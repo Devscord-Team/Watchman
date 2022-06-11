@@ -24,7 +24,6 @@ namespace Watchman.Discord
 
         public WorkflowBuilder GetWorkflowBuilder(bool useDiscordNetClient = true)
         {
-            MongoConfiguration.Initialize();
             ExceptionHandlerService.DiscordConfiguration = this._configuration; //todo ioc
 
             return WorkflowBuilder

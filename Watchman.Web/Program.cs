@@ -14,9 +14,9 @@ namespace Watchman.Web
     {
         public static void Main(string[] args)
         {
-            MongoConfiguration.Initialize();
             var configuration = GetConfiguration();
             Log.Logger = SerilogInitializer.Initialize(configuration);
+            MongoConfiguration.Initialize(configuration);
             CreateHostBuilder(args, configuration).Build().Run();
         }
 
