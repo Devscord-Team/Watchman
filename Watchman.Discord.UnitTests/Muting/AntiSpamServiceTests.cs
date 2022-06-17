@@ -1,21 +1,18 @@
-﻿using NUnit.Framework;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Watchman.Discord.UnitTests.TestObjectFactories;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using Devscord.DiscordFramework.Commands.AntiSpam.Models;
+using Devscord.DiscordFramework.Commands.Responses;
+using Devscord.DiscordFramework.Middlewares.Contexts;
+using Devscord.DiscordFramework.Services;
+using Devscord.DiscordFramework.Services.Factories;
+using Moq;
+using NUnit.Framework;
+using System;
+using System.Threading.Tasks;
 using Watchman.Cqrs;
 using Watchman.Discord.Areas.Muting.Services;
-using Devscord.DiscordFramework.Services;
-using Devscord.DiscordFramework.Middlewares.Contexts;
-using Devscord.DiscordFramework.Services.Factories;
 using Watchman.Discord.Areas.Muting.Services.Commands;
+using Watchman.Discord.UnitTests.TestObjectFactories;
 using Watchman.DomainModel.Muting;
-using Devscord.DiscordFramework.Commands.Responses;
 
 namespace Watchman.Discord.UnitTests.Muting
 {
@@ -25,11 +22,11 @@ namespace Watchman.Discord.UnitTests.Muting
         private readonly TestContextsFactory testContextsFactory = new();
 
         [Test, AutoData]
-        public async Task SetPunishment_ShouldDoNothingWhenPunishmentOptionIsNothing(DateTime dateTime)
+        public async Task SetPunishment_ShouldDoNothingWhenPunishmentOptionIsNothing(DateTime givenAt)
         {
             //Arrange
             var contexts = testContextsFactory.CreateContexts(1, 1, 1);
-            var punishment = new Punishment(PunishmentOption.Nothing, dateTime);
+            var punishment = new Punishment(PunishmentOption.Nothing, givenAt);
 
             var commandBusMock = new Mock<ICommandBus>();
             var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
@@ -47,11 +44,11 @@ namespace Watchman.Discord.UnitTests.Muting
         }
 
         [Test, AutoData]
-        public async Task SetPunishment_ShouldSendResponseThatSpamAlertRecognizedWhenPunishmentOptionIsWarn(DateTime dateTime)
+        public async Task SetPunishment_ShouldSendResponseThatSpamAlertRecognizedWhenPunishmentOptionIsWarn(DateTime givenAt)
         {
             //Arrange
             var contexts = testContextsFactory.CreateContexts(1, 1, 1);
-            var punishment = new Punishment(PunishmentOption.Warn, dateTime);
+            var punishment = new Punishment(PunishmentOption.Warn, givenAt);
 
             var messagesServiceMock = new Mock<IMessagesService>();
             var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
@@ -68,11 +65,11 @@ namespace Watchman.Discord.UnitTests.Muting
         }
 
         [Test, AutoData]
-        public async Task SetPunishment_ShouldMuteUserForSpamWhenPunishmentOptionIsMute(DateTime dateTime, TimeSpan forTime)
+        public async Task SetPunishment_ShouldMuteUserForSpamWhenPunishmentOptionIsMute(DateTime givenAt, TimeSpan forTime)
         {
             //Arrange
             var contexts = testContextsFactory.CreateContexts(1, 1, 1);
-            var punishment = new Punishment(PunishmentOption.Mute, dateTime, forTime);
+            var punishment = new Punishment(PunishmentOption.Mute, givenAt, forTime);
 
             var commandBusMock = new Mock<ICommandBus>();
             var unmutingServiceMock = new Mock<IUnmutingService>();
