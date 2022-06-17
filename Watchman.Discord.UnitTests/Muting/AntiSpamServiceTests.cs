@@ -48,5 +48,25 @@ namespace Watchman.Discord.UnitTests.Muting
             commandBusMock.Verify(x => x.ExecuteAsync(It.IsAny<MuteUserOrOverwriteCommand>()), Times.Never);
             unmutingServiceMock.Verify(x => x.UnmuteInFuture(contexts, It.IsAny<MuteEvent>(), It.IsAny<UserContext>()), Times.Never);
         }
+
+        [Test, AutoData]
+        public async Task SetPunishment_ShouldMuteUserForSpamWhenPunishmentOptionIsMute(DateTime dateTime, TimeSpan forTime)
+        {
+            //Arrange
+            var contexts = testContextsFactory.CreateContexts(1, 1, 1);
+            var punishment = new Punishment(PunishmentOption.Mute, dateTime, forTime);
+
+            var commandBusMock = new Mock<ICommandBus>();
+            var unmutingServiceMock = new Mock<IUnmutingService>();
+
+            var service = new AntiSpamService(commandBusMock.Object, messagesServiceFactory: null, unmutingServiceMock.Object);
+
+            //Act
+            await service.SetPunishment(contexts, punishment);
+
+            //Assert
+            commandBusMock.Verify(x => x.ExecuteAsync(It.IsAny<MuteUserOrOverwriteCommand>()), Times.Once);
+            unmutingServiceMock.Verify(x => x.UnmuteInFuture(contexts, It.IsAny<MuteEvent>(), It.IsAny<UserContext>()), Times.Once);
+        }
     }
 }
