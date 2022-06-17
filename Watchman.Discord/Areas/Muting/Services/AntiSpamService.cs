@@ -39,10 +39,10 @@ namespace Watchman.Discord.Areas.Muting.Services
             }
             Log.Information("Spam recognized! User: {user} on channel: {channel} server: {server}", contexts.User.Name, contexts.Channel.Name, contexts.Server.Name);
 
-            var messagesService = this._messagesServiceFactory.Create(contexts);
             switch (punishment.PunishmentOption)
             {
                 case PunishmentOption.Warn:
+                    var messagesService = this._messagesServiceFactory.Create(contexts);
                     await messagesService.SendResponse(x => x.SpamAlertRecognized(contexts));
                     break;
                 case PunishmentOption.Mute:
