@@ -31,22 +31,18 @@ namespace Watchman.Discord.UnitTests.Muting
             var contexts = testContextsFactory.CreateContexts(1, 1, 1);
             var punishment = new Punishment(PunishmentOption.Warn, dateTime);
 
-            var commandBusMock = new Mock<ICommandBus>();
             var messagesServiceMock = new Mock<IMessagesService>();
             var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
             messagesServiceFactoryMock.Setup(x => x.Create(It.IsAny<Contexts>()))
                 .Returns(messagesServiceMock.Object);
-            var unmutingServiceMock = new Mock<IUnmutingService>();
 
-            var service = new AntiSpamService(commandBusMock.Object, messagesServiceFactoryMock.Object, unmutingServiceMock.Object);
+            var service = new AntiSpamService(commandBus: null, messagesServiceFactoryMock.Object, unmutingService: null);
 
             //Act
             await service.SetPunishment(contexts, punishment);
 
             //Assert
             messagesServiceMock.Verify(x => x.SendResponse(It.IsAny<Func<IResponsesService, string>>()), Times.Once);
-            commandBusMock.Verify(x => x.ExecuteAsync(It.IsAny<MuteUserOrOverwriteCommand>()), Times.Never);
-            unmutingServiceMock.Verify(x => x.UnmuteInFuture(contexts, It.IsAny<MuteEvent>(), It.IsAny<UserContext>()), Times.Never);
         }
 
         [Test, AutoData]
