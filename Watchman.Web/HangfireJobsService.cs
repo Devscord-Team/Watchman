@@ -34,7 +34,7 @@ namespace Watchman.Web
         {
             var generators = new List<(ICyclicService, RefreshFrequent, bool shouldTriggerNow)>
             {
-                (container.Resolve<ServerMessagesCacheService>(), RefreshFrequent.Quarterly, false),
+                //(container.Resolve<ServerMessagesCacheService>(), RefreshFrequent.Quarterly, false),
                 //(container.Resolve<ResponsesCleanupService>(), RefreshFrequent.Daily, false),
                 (container.Resolve<UnmutingService>(), RefreshFrequent.Quarterly, true) // if RefreshFrequent changed remember to change SHORT_MUTE_TIME_IN_MINUTES in unmutingService!
             };

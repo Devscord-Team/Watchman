@@ -68,7 +68,7 @@ namespace Devscord.DiscordFramework.Commands.AntiSpam.Models
             return Task.CompletedTask;
         }
 
-        private static void RemoveOldMessagesCyclic()
+        public static void RemoveOldMessagesCyclic()
         {
             var minTimeInPast = DateTime.UtcNow.AddMinutes(-15);
             var smallMessages = _usersMessages.Values.Select(list =>
