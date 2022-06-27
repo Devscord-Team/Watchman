@@ -1,15 +1,13 @@
-﻿using System;
+﻿using Devscord.DiscordFramework.Commands.Parsing.Models;
+using Devscord.DiscordFramework.Middlewares.Contexts;
+using Devscord.DiscordFramework.Services.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Devscord.DiscordFramework.Commands.Parsing.Models;
-using Devscord.DiscordFramework.Middlewares.Contexts;
-using Devscord.DiscordFramework.Services;
-using Devscord.DiscordFramework.Services.Models;
 
 namespace Devscord.DiscordFramework.Commands.AntiSpam.Models
 {
-    public interface IServerMessagesCacheService : ICyclicService
+    public interface IServerMessagesCacheService
     {
         void OverwriteMessages(IEnumerable<SmallMessage> smallMessages);
         void AddMessage(SmallMessage smallMessage);
@@ -19,18 +17,7 @@ namespace Devscord.DiscordFramework.Commands.AntiSpam.Models
 
     public class ServerMessagesCacheService : IServerMessagesCacheService
     {
-        private static Dictionary<ulong, List<SmallMessage>> _usersMessages;
-
-        static ServerMessagesCacheService()
-        {
-            _usersMessages = new Dictionary<ulong, List<SmallMessage>>();
-            //todo remove logic from constructor
-            RemoveOldMessagesCyclic();
-        }
-
-        public ServerMessagesCacheService()
-        {
-        }
+        private static Dictionary<ulong, List<SmallMessage>> _usersMessages = new();
 
         public void OverwriteMessages(IEnumerable<SmallMessage> smallMessages)
         {
@@ -42,11 +29,9 @@ namespace Devscord.DiscordFramework.Commands.AntiSpam.Models
             if (_usersMessages.ContainsKey(smallMessage.UserId))
             {
                 _usersMessages[smallMessage.UserId].Add(smallMessage);
+                return;
             }
-            else
-            {
-                _usersMessages.Add(smallMessage.UserId, new List<SmallMessage> { smallMessage });
-            }
+            _usersMessages.Add(smallMessage.UserId, new List<SmallMessage> { smallMessage });
         }
 
         public void AddMessage(DiscordRequest request, Contexts contexts)
@@ -62,12 +47,6 @@ namespace Devscord.DiscordFramework.Commands.AntiSpam.Models
                 : new List<SmallMessage>();
         }
 
-        public Task Refresh()
-        {
-            RemoveOldMessagesCyclic();
-            return Task.CompletedTask;
-        }
-
         public static void RemoveOldMessagesCyclic()
         {
             var minTimeInPast = DateTime.UtcNow.AddMinutes(-15);
@@ -75,7 +54,10 @@ namespace Devscord.DiscordFramework.Commands.AntiSpam.Models
             {
                 list.RemoveAll(message => message.SentAt < minTimeInPast);
                 return list;
-            }).Where(x => x.Any()).ToList();
+            })
+            .Where(x => x.Any())
+            .ToList();
+
             if (!smallMessages.Any())
             {
                 return;
