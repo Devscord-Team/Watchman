@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Autofac;
-using Devscord.DiscordFramework.Commands.AntiSpam.Models;
+﻿using Autofac;
 using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Models;
 using Hangfire;
-using Watchman.Discord.Areas.Muting.Services;
-using Watchman.Discord.Areas.Responses.Services;
-using Watchman.Web.Jobs;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using Watchman.DomainModel.Configuration.Services;
+using Watchman.Web.Jobs;
 
 namespace Watchman.Web
 {
@@ -26,11 +23,11 @@ namespace Watchman.Web
         public void SetDefaultJobs(IContainer container)
         {
             var recurringJobManager = container.Resolve<IRecurringJobManager>();
-            this.AddServices(container, recurringJobManager);
+            //this.AddServices(container, recurringJobManager);
             this.AddJobs(container, recurringJobManager);
         }
 
-        public void AddServices(IContainer container, IRecurringJobManager recurringJobManager) //TODO maybe rewrite CyclicServices to Jobs would be good idea
+        public void AddServices(IContainer container, IRecurringJobManager recurringJobManager)
         {
             var generators = new List<(ICyclicService, RefreshFrequent, bool shouldTriggerNow)>
             {
@@ -55,13 +52,15 @@ namespace Watchman.Web
         {
             Assembly.GetAssembly(typeof(HangfireJobsService)).GetTypes()
                 .Where(x => x.IsAssignableTo<IHangfireJob>() && !x.IsInterface)
-                .Select(x => (x.Name, Job: (IHangfireJob)container.Resolve(x))).ToList()
+                .Select(x => (x.Name, Job: (IHangfireJob)container.Resolve(x)))
+                .ToList()
                 .ForEach(x =>
                 {
-                    recurringJobManager.AddOrUpdate(this.FixJobName(x.Name), () => x.Job.Do(), this.GetCronExpression(x.Job.Frequency));
+                    var jobName = this.FixJobName(x.Name);
+                    recurringJobManager.AddOrUpdate(jobName, () => x.Job.Do(), this.GetCronExpression(x.Job.Frequency));
                     if (x.Job.RunOnStart)
                     {
-                        recurringJobManager.Trigger(this.FixJobName(x.Name));
+                        recurringJobManager.Trigger(jobName);
                     }
                 });
         }

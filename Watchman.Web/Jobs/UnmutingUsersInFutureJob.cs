@@ -10,7 +10,7 @@ namespace Watchman.Web.Jobs
 {
     public class UnmutingUsersInFutureJob : IHangfireJob
     {
-        public RefreshFrequent Frequency => RefreshFrequent.Quarterly;
+        public RefreshFrequent Frequency => RefreshFrequent.Quarterly; // if RefreshFrequent changed remember to change SHORT_MUTE_TIME_IN_MINUTES in unmutingService!
         public bool RunOnStart => true;
 
         private readonly IUnmutingService _unmutingService;

@@ -36,7 +36,6 @@ namespace Watchman.Discord.Areas.Muting.Services
             if (this.ShouldBeConsideredAsShortMute(muteEvent))
             {
                 this.UnmuteInShortTime(contexts, muteEvent, userToUnmute);
-                return;
             }
         }
 
