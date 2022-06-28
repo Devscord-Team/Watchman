@@ -36,7 +36,7 @@ namespace Watchman.Web
             {
                 //(container.Resolve<ServerMessagesCacheService>(), RefreshFrequent.Quarterly, false),
                 //(container.Resolve<ResponsesCleanupService>(), RefreshFrequent.Daily, false),
-                (container.Resolve<UnmutingService>(), RefreshFrequent.Quarterly, true) // if RefreshFrequent changed remember to change SHORT_MUTE_TIME_IN_MINUTES in unmutingService!
+                //(container.Resolve<UnmutingService>(), RefreshFrequent.Quarterly, true) // if RefreshFrequent changed remember to change SHORT_MUTE_TIME_IN_MINUTES in unmutingService!
             };
             foreach (var (generator, refreshFrequent, shouldTrigger) in generators)
             {
@@ -61,7 +61,7 @@ namespace Watchman.Web
                     recurringJobManager.AddOrUpdate(this.FixJobName(x.Name), () => x.Job.Do(), this.GetCronExpression(x.Job.Frequency));
                     if (x.Job.RunOnStart)
                     {
-                        recurringJobManager.Trigger(x.Name);
+                        recurringJobManager.Trigger(this.FixJobName(x.Name));
                     }
                 });
         }
