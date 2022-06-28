@@ -6,7 +6,7 @@ namespace Watchman.Web.Jobs
 {
     public class ServerMessagesCleanupJob : IHangfireJob
     {
-        public RefreshFrequent Frequency => RefreshFrequent.Minutely;
+        public RefreshFrequent Frequency => RefreshFrequent.Quarterly;
 
         public bool RunOnStart => false;
 
