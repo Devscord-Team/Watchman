@@ -1,19 +1,16 @@
 ﻿using Autofac;
-using Devscord.DiscordFramework.Services;
 using Devscord.DiscordFramework.Services.Models;
 using Hangfire;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Watchman.DomainModel.Configuration.Services;
 using Watchman.Web.Jobs;
 
 namespace Watchman.Web
 {
     public interface IHangfireJobsService
     {
-        void AddJobs(IContainer container, IRecurringJobManager recurringJobManager);
         void SetDefaultJobs(IContainer container);
     }
 
@@ -22,11 +19,7 @@ namespace Watchman.Web
         public void SetDefaultJobs(IContainer container)
         {
             var recurringJobManager = container.Resolve<IRecurringJobManager>();
-            this.AddJobs(container, recurringJobManager);
-        }
 
-        public void AddJobs(IContainer container, IRecurringJobManager recurringJobManager)
-        {
             Assembly.GetAssembly(typeof(HangfireJobsService)).GetTypes()
                 .Where(x => x.IsAssignableTo<IHangfireJob>() && !x.IsInterface)
                 .Select(x => (x.Name, Job: (IHangfireJob)container.Resolve(x)))
