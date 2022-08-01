@@ -14,7 +14,6 @@ namespace Watchman.Web
     public interface IHangfireJobsService
     {
         void AddJobs(IContainer container, IRecurringJobManager recurringJobManager);
-        void AddServices(IContainer container, IRecurringJobManager recurringJobManager);
         void SetDefaultJobs(IContainer container);
     }
 
@@ -23,29 +22,7 @@ namespace Watchman.Web
         public void SetDefaultJobs(IContainer container)
         {
             var recurringJobManager = container.Resolve<IRecurringJobManager>();
-            //this.AddServices(container, recurringJobManager);
             this.AddJobs(container, recurringJobManager);
-        }
-
-        public void AddServices(IContainer container, IRecurringJobManager recurringJobManager)
-        {
-            var generators = new List<(ICyclicService, RefreshFrequent, bool shouldTriggerNow)>
-            {
-                //(container.Resolve<ServerMessagesCacheService>(), RefreshFrequent.Quarterly, false),
-                //(container.Resolve<ResponsesCleanupService>(), RefreshFrequent.Daily, false),
-                //(container.Resolve<UnmutingService>(), RefreshFrequent.Quarterly, true) // if RefreshFrequent changed remember to change SHORT_MUTE_TIME_IN_MINUTES in unmutingService!
-            };
-            foreach (var (generator, refreshFrequent, shouldTrigger) in generators)
-            {
-                var cronExpression = this.GetCronExpression(refreshFrequent);
-                recurringJobManager.AddOrUpdate(this.FixJobName(generator.GetType().Name), () => generator.Refresh(), cronExpression);
-                if (shouldTrigger)
-                {
-                    recurringJobManager.Trigger(this.FixJobName(generator.GetType().Name));
-                }
-            }
-            var configurationService = container.Resolve<ConfigurationService>();
-            recurringJobManager.AddOrUpdate(nameof(ConfigurationService), () => configurationService.Refresh(), this.GetCronExpression(RefreshFrequent.Minutely));
         }
 
         public void AddJobs(IContainer container, IRecurringJobManager recurringJobManager)
