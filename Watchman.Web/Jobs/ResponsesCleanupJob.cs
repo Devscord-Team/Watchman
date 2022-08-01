@@ -1,24 +1,29 @@
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using Devscord.DiscordFramework.Services;
+using Devscord.DiscordFramework.Services.Models;
+using Watchman.Discord.Areas.Responses.Services;
 using Watchman.DomainModel.Responses;
 
-namespace Watchman.Discord.Areas.Responses.Services
+namespace Watchman.Web.Jobs
 {
-    public class ResponsesCleanupService : ICyclicService
+    public class ResponsesCleanupJob : IHangfireJob
     {
+        public RefreshFrequent Frequency => RefreshFrequent.Daily;
+        public bool RunOnStart => false;
+
         private readonly ResponsesGetterService _responsesGetterService;
         private readonly CustomResponsesService _responsesService;
 
-        public ResponsesCleanupService(ResponsesGetterService responsesGetterService, CustomResponsesService responsesService)
+        public ResponsesCleanupJob(ResponsesGetterService responsesGetterService, CustomResponsesService responsesService)
         {
             this._responsesGetterService = responsesGetterService;
             this._responsesService = responsesService;
         }
 
-        public async Task Refresh() => await this.CleanDuplicatedResponses();
+        public async Task Do() 
+            => await this.CleanDuplicatedResponses();
 
-        public async Task CleanDuplicatedResponses()
+        private async Task CleanDuplicatedResponses()
         {
             var allResponses = this._responsesGetterService.GetResponsesFromBase().ToList();
             var defaultResponses = allResponses.Where(resp => resp.ServerId == 0);
@@ -32,9 +37,9 @@ namespace Watchman.Discord.Areas.Responses.Services
             }
         }
 
-        private static bool CompareResponses(Response serverResponse, Response defaultResponse) 
+        private static bool CompareResponses(Response serverResponse, Response defaultResponse)
         {
-            return defaultResponse.Message == serverResponse.Message 
+            return defaultResponse.Message == serverResponse.Message
                 && defaultResponse.OnEvent == serverResponse.OnEvent;
         }
     }
