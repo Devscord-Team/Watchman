@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace Watchman.Discord.Areas.Configurations.BotCommands
 {
     // TODO: add option for list of each type not only string
-    public class SetCustomConfigurationCommand : IBotCommand
+    public class SetConfigurationCommand : IBotCommand
     {
         [SingleWord]
         public string Name { get; set; }
@@ -20,12 +20,8 @@ namespace Watchman.Discord.Areas.Configurations.BotCommands
         public double? NumberValue { get; set; }
 
         [Optional]
-        [Number]
-        public decimal? DecimalValue { get; set; }
-
-        [Optional]
         [Time]
-        public DateTime? TimeValue { get; set; }
+        public TimeSpan? TimeValue { get; set; }
 
         [Optional]
         [UserMention]

@@ -7,7 +7,7 @@ namespace Watchman.DomainModel.Configuration.Services
     {
         T GetConfigurationItem<T>(ulong serverId) where T : IMappedConfiguration;
         IEnumerable<IMappedConfiguration> GetConfigurationItems(ulong serverId);
-        Task SaveNewConfiguration(IMappedConfiguration changedConfiguration);
+        Task SaveNewConfiguration(ConfigurationItem changedConfiguration);
         Task InitDefaultConfigurations();
     }
 }

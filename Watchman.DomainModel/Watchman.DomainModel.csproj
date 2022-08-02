@@ -43,6 +43,9 @@
     <None Update="Responses\Resources\AdministrationDefaultResponses.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+	 <None Update="Responses\Resources\ConfigurationsDefaultResponses.json">
+	   <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	 </None>
   </ItemGroup>
 
 </Project>

@@ -2,9 +2,9 @@
 
 namespace Watchman.DomainModel.Configuration.ConfigurationItems.TestItems
 {
-    public class TestTimeItem : MappedConfiguration<DateTime>
+    public class TestTimeItem : MappedConfiguration<TimeSpan>
     {
-        public override DateTime Value { get; set; } = default;
+        public override TimeSpan Value { get; set; } = default;
         public override string Group { get; set; } = "TestItems";
 
         public TestTimeItem(ulong serverId) : base(serverId)

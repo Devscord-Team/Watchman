@@ -1,0 +1,23 @@
+[
+  {
+    "OnEvent": "ConfigurationItemNotFound",
+    "Value": "Item konfiguracji **{{name}}** nie został odnaleziony.",
+    "Variables": [ "name" ]
+  },
+  {
+    "OnEvent": "TooManyValueArgumentsForSetConfiguration",
+    "Value": "Podano za dużo wartości. Podaj tylko jedną wartość dla tego itemu konfiguracji"
+  },
+  {
+    "OnEvent": "CustomConfigurationHasBeenSet",
+    "Value": "Itemowi konfiguracji **{{name}}** ustawiono niestandardową wartość dla serwera **{{context_server}}**.",
+    "Variables": [ "name" ],
+    "RequireContext": true
+  },
+  {
+    "OnEvent": "ConfigurationValueHasBeenSetAsDefaultOfType",
+    "Value": "Itemowi konfiguracji **{{name}}** ustawiono **domyślną** wartość jego typu dla serwera **{{context_server}}**.",
+    "Variables": [ "name" ],
+    "RequireContext": true
+  }
+]
