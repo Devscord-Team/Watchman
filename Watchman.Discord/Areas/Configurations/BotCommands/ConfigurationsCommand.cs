@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Watchman.Discord.Areas.Configurations.IBotCommands
+namespace Watchman.Discord.Areas.Configurations.BotCommands
 {
     public class ConfigurationsCommand : IBotCommand
     {

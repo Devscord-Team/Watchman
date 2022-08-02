@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
-using Watchman.Discord.Areas.Configurations.IBotCommands;
+using Watchman.Discord.Areas.Configurations.BotCommands;
 using Watchman.DomainModel.Configuration;
 using Watchman.DomainModel.Configuration.Queries;
 using Watchman.DomainModel.Configuration.Services;
