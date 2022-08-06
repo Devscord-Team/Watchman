@@ -49,9 +49,10 @@ namespace Watchman.Discord.Areas.Configurations.Services
 
         private object GetNumberValue(double? numberValue, Type configurationValueType)
         {
+            const string defaultValueForNumberTypes = "0";
             var underlyingValueType = this.GetUnderlyingType(configurationValueType);
             var doesItemAcceptNumbers = underlyingValueType.IsValueType 
-                ? Activator.CreateInstance(underlyingValueType).ToString() == "0"
+                ? Activator.CreateInstance(underlyingValueType).ToString() == defaultValueForNumberTypes
                 : false;
 
             if (!doesItemAcceptNumbers)
