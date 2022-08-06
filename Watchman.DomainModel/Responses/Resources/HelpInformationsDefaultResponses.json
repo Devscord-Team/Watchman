@@ -105,10 +105,10 @@
   },
   {
     "OnEvent": "PL_setconfiguration_description",
-    "Value": "Ustawia niestandardową wartość itemowi konfiguracji dla serwera"
+    "Value": "Ustawia niestandardową wartość itemowi konfiguracji dla serwera."
   },
   {
     "OnEvent": "PL_removeconfiguration_description",
-    "Value": "Usuwa niestandardową wartość itemowi konfiguracji dla serwera"
+    "Value": "Usuwa niestandardową wartość itemowi konfiguracji dla serwera."
   }
 ]
