@@ -12,4 +12,3 @@ namespace Watchman.DomainModel.Configuration.ConfigurationItems.TestItems
         }
     }
 }
-
