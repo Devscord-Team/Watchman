@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Watchman.DomainModel.Configuration.Services
@@ -9,5 +10,6 @@ namespace Watchman.DomainModel.Configuration.Services
         IEnumerable<IMappedConfiguration> GetConfigurationItems(ulong serverId);
         Task SaveNewConfiguration(ConfigurationItem changedConfiguration);
         Task InitDefaultConfigurations();
+        Type GetConfigurationValueType(IMappedConfiguration mappedConfiguration);
     }
 }

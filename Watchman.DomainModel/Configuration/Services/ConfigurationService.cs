@@ -113,6 +113,11 @@ namespace Watchman.DomainModel.Configuration.Services
             _cachedConfigurationItem = mappedConfigurations;
         }
 
+        public Type GetConfigurationValueType(IMappedConfiguration mappedConfiguration)
+        {
+            return ((dynamic)mappedConfiguration).ValueType;
+        }
+
         //todo refactor
         private IConfigurationChangesHandler<IMappedConfiguration> GetConfigurationChangesHandler(IMappedConfiguration newMappedConfiguration)
         {

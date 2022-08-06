@@ -6,6 +6,7 @@ namespace Watchman.DomainModel.Configuration
     public abstract class MappedConfiguration<T> : IMappedConfiguration
     {
         public abstract T Value { get; set; }
+        public Type ValueType { get; } = typeof(T);
         public ulong ServerId { get; }
         public string Name { get; }
         public abstract string Group { get; set; }

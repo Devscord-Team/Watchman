@@ -13,6 +13,7 @@ using Watchman.DomainModel.Configuration.Queries;
 using Watchman.DomainModel.Configuration.Services;
 using Watchman.Discord.ResponsesManagers;
 using Devscord.DiscordFramework.Commons.Exceptions;
+using Watchman.Discord.Areas.Configurations.Services;
 
 namespace Watchman.Discord.Areas.Configurations.Controllers
 {
@@ -21,12 +22,14 @@ namespace Watchman.Discord.Areas.Configurations.Controllers
         private readonly IMessagesServiceFactory _messagesServiceFactory;
         private readonly IConfigurationService _configurationService;
         private readonly IConfigurationMapperService _configurationMapperService;
+        private readonly IConfigurationValueSetter _configurationValueSetter;
 
-        public ConfigurationsController(IMessagesServiceFactory messagesServiceFactory, IConfigurationService configurationService, IConfigurationMapperService configurationMapperService)
+        public ConfigurationsController(IMessagesServiceFactory messagesServiceFactory, IConfigurationService configurationService, IConfigurationMapperService configurationMapperService, IConfigurationValueSetter configurationValueSetter)
         {
             this._messagesServiceFactory = messagesServiceFactory;
             this._configurationService = configurationService;
             this._configurationMapperService = configurationMapperService;
+            this._configurationValueSetter = configurationValueSetter;
         }
 
         //todo tests
@@ -44,7 +47,7 @@ namespace Watchman.Discord.Areas.Configurations.Controllers
             await messagesService.SendEmbedMessage("Konfiguracja", "Poniżej znajdziesz liste elementów konfiguracji", mapped);
         }
 
-        // TODO: Add tests and refactor
+        // TODO: Add tests
         public async Task SetCustomConfiguration(SetConfigurationCommand command, Contexts contexts)
         {
             var mappedConfiguration = this._configurationService.GetConfigurationItems(contexts.Server.Id)
@@ -57,50 +60,24 @@ namespace Watchman.Discord.Areas.Configurations.Controllers
                 return;
             }
 
-            var valueProperties = command.GetType().GetProperties().Where(x => x.Name.EndsWith("Value"));
-
-            if (valueProperties.Count(x => x.GetValue(command) != null) > 1)
+            var propertiesValues = command.GetType().GetProperties().Where(x => x.Name.EndsWith("Value")).Select(x => x.GetValue(command));
+            var countOfPropertiesWithValue = propertiesValues.Count(x => x != null);
+            if (countOfPropertiesWithValue > 1)
             {
                 await messageService.SendResponse(x => x.TooManyValueArgumentsForSetConfiguration());
                 return;
             }
 
-            var configurationItem = this._configurationMapperService.MapIntoBaseFormat(mappedConfiguration, newServerId: contexts.Server.Id);
-
-            if (valueProperties.All(x => x.GetValue(command) == null))
+            var configurationItem = this._configurationMapperService.MapIntoBaseFormat(mappedConfiguration, contexts.Server.Id);
+            var configurationValueType = this._configurationService.GetConfigurationValueType(mappedConfiguration);
+            if (countOfPropertiesWithValue == 0)
             {
-                var type = configurationItem.Value.GetType();
-                var defaultValue = type.IsValueType ? Activator.CreateInstance(type) : null;
-                configurationItem.SetValue(defaultValue);
-                await this._configurationService.SaveNewConfiguration(configurationItem);
+                await this._configurationValueSetter.SetDefaultValueForConfiguration(configurationItem, configurationValueType);
                 await messageService.SendResponse(x => x.ConfigurationValueHasBeenSetAsDefaultOfType(contexts, command.Name));
                 return;
             }
 
-            if (command.NumberValue != null)
-            {
-                if (!double.TryParse(configurationItem.Value.ToString(), out var _))
-                {
-                    throw new InvalidArgumentsException();
-                }
-                var convertedValue = Convert.ChangeType(command.NumberValue, configurationItem.Value.GetType());
-                configurationItem.SetValue(convertedValue);
-            }
-            else if (command.BoolValue != null)
-            {
-                if (!bool.TryParse(command.BoolValue, out var result))
-                {
-                    throw new InvalidArgumentsException();
-                }
-                configurationItem.SetValue(result);
-            }
-            else
-            {
-                var value = valueProperties.Select(x => x.GetValue(command)).First(x => x != null);
-                configurationItem.SetValue(value);
-            }
-
-            await this._configurationService.SaveNewConfiguration(configurationItem);
+            await this._configurationValueSetter.SetConfigurationValueFromCommand(command, configurationItem, propertiesValues, configurationValueType);
             await messageService.SendResponse(x => x.CustomConfigurationHasBeenSet(contexts, command.Name));
         }
     }
