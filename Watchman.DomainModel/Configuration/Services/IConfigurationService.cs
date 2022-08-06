@@ -10,6 +10,7 @@ namespace Watchman.DomainModel.Configuration.Services
         IEnumerable<IMappedConfiguration> GetConfigurationItems(ulong serverId);
         Task SaveNewConfiguration(ConfigurationItem changedConfiguration);
         Task InitDefaultConfigurations();
+        Task RemoveCustomConfiguration(IMappedConfiguration configurationToDelete);
         Type GetConfigurationValueType(IMappedConfiguration mappedConfiguration);
     }
 }

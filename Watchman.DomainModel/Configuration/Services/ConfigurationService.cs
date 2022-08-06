@@ -113,6 +113,22 @@ namespace Watchman.DomainModel.Configuration.Services
             _cachedConfigurationItem = mappedConfigurations;
         }
 
+        public async Task RemoveCustomConfiguration(IMappedConfiguration configurationToDelete)
+        {
+            using var session = this._sessionFactory.CreateMongo();
+            var existingConfiguration = session.Get<ConfigurationItem>()
+                .FirstOrDefault(x => x.ServerId == configurationToDelete.ServerId && x.Name == configurationToDelete.Name);
+
+            if (existingConfiguration == null)
+            {
+                Log.Warning("Server with id {ServerId} just doesn't have custom configuration with name {ConfigurationName}", configurationToDelete.ServerId, configurationToDelete.Name);
+                return;
+            }
+
+            await session.DeleteAsync(existingConfiguration);
+            this.Refresh();
+        }
+
         public Type GetConfigurationValueType(IMappedConfiguration mappedConfiguration)
         {
             return ((dynamic)mappedConfiguration).ValueType;

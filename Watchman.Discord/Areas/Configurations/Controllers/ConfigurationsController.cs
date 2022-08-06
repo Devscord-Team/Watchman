@@ -14,6 +14,7 @@ using Watchman.DomainModel.Configuration.Services;
 using Watchman.Discord.ResponsesManagers;
 using Devscord.DiscordFramework.Commons.Exceptions;
 using Watchman.Discord.Areas.Configurations.Services;
+using Watchman.DomainModel.Responses;
 
 namespace Watchman.Discord.Areas.Configurations.Controllers
 {
@@ -79,6 +80,23 @@ namespace Watchman.Discord.Areas.Configurations.Controllers
 
             await this._configurationValueSetter.SetConfigurationValueFromCommand(command, configurationItem, propertiesValues, configurationValueType);
             await messageService.SendResponse(x => x.CustomConfigurationHasBeenSet(contexts, command.Name));
+        }
+
+        // TODO: Add tests
+        public async Task RemoveCustomConfiguration(RemoveConfigurationCommand command, Contexts contexts)
+        {
+            var mappedConfiguration = this._configurationService.GetConfigurationItems(contexts.Server.Id)
+                .FirstOrDefault(item => item.Name.ToLowerInvariant() == command.Name.ToLowerInvariant());
+            var messageService = this._messagesServiceFactory.Create(contexts);
+
+            if (mappedConfiguration == null || mappedConfiguration.ServerId == Response.DEFAULT_SERVER_ID)
+            {
+                await messageService.SendResponse(x => x.ServerDoesntHaveCustomValueForConfiguration(contexts, command.Name));
+                return;
+            }
+
+            await this._configurationService.RemoveCustomConfiguration(mappedConfiguration);
+            await messageService.SendResponse(x => x.CustomConfigurationHasBeenRemoved(contexts, command.Name));
         }
     }
 }

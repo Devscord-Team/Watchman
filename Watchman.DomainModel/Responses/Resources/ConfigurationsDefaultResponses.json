@@ -19,5 +19,17 @@
     "Value": "Itemowi konfiguracji **{{name}}** ustawiono **domyślną** wartość jego typu dla serwera **{{context_server}}**.",
     "Variables": [ "name" ],
     "RequireContext": true
+  },
+  {
+    "OnEvent": "CustomConfigurationHasBeenRemoved",
+    "Value": "Niestandardowa konfiguracja **{{name}}** została usunięta dla serwera **{{context_server}}**.",
+    "Variables": [ "name" ],
+    "RequireContext": true
+  },
+  {
+    "OnEvent": "ServerDoesntHaveCustomValueForConfiguration",
+    "Value": "Serwer **{{context_server}}** nie ma niestandardowej wartości dla konfiguracji **{{name}}**.",
+    "Variables": [ "name" ],
+    "RequireContext": true
   }
 ]
