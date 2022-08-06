@@ -102,5 +102,13 @@
   {
     "OnEvent": "PL_trustedroles_description",
     "Value": "Wyświetla listę ról dla zaufanych użytkowników.\n(każdy z taką rolą jest automatycznie zaufanym użytkownikiem)"
+  },
+  {
+    "OnEvent": "PL_setconfiguration_description",
+    "Value": "Ustawia niestandardową wartość itemowi konfiguracji dla serwera"
+  },
+  {
+    "OnEvent": "PL_removeconfiguration_description",
+    "Value": "Usuwa niestandardową wartość itemowi konfiguracji dla serwera"
   }
 ]

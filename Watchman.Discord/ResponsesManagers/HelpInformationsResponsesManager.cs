@@ -81,5 +81,11 @@ namespace Watchman.Discord.ResponsesManagers
 
         public static string PL_trustedroles_description(this IResponsesService responsesService)
             => responsesService.ProcessResponse("PL_trustedroles_description");
+
+        public static string PL_setconfiguration_description(this IResponsesService responsesService)
+            => responsesService.ProcessResponse(nameof(PL_setconfiguration_description));
+
+        public static string PL_removeconfiguration_description(this IResponsesService responsesService)
+            => responsesService.ProcessResponse(nameof(PL_removeconfiguration_description));
     }
 }
