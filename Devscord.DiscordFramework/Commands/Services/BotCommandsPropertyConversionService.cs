@@ -11,7 +11,7 @@ namespace Devscord.DiscordFramework.Commands.Services
 {
     public interface IBotCommandsPropertyConversionService
     {
-        object ConvertType(string value, BotCommandPropertyType type);
+        object ConvertType(string value, BotCommandPropertyType commandType, Type propertyType);
     }
 
     public class BotCommandsPropertyConversionService : IBotCommandsPropertyConversionService
@@ -19,9 +19,9 @@ namespace Devscord.DiscordFramework.Commands.Services
         private readonly Regex _exTime = new Regex(@"(?<Value>\d+)(?<Unit>(ms|d|h|m|s))", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         private readonly Regex _exMention = new Regex(@"\d+", RegexOptions.Compiled);
 
-        public object ConvertType(string value, BotCommandPropertyType type)
+        public object ConvertType(string value, BotCommandPropertyType commandType, Type propertyType)
         {
-            return type switch
+            object convertedValue = commandType switch
             {
                 BotCommandPropertyType.Time => this.ToTimeSpan(value),
                 BotCommandPropertyType.Number => int.Parse(value),
@@ -30,6 +30,10 @@ namespace Devscord.DiscordFramework.Commands.Services
                 BotCommandPropertyType.ChannelMention => ulong.Parse(_exMention.Match(value).Value),
                 _ => value
             };
+
+            var underlyingType = Nullable.GetUnderlyingType(propertyType) ?? propertyType;
+            var result = Convert.ChangeType(convertedValue, underlyingType);
+            return result;
         }
 
         private TimeSpan ToTimeSpan(string value)

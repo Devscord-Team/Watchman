@@ -42,8 +42,8 @@ namespace Devscord.DiscordFramework.Commands.Services
             var instance = Activator.CreateInstance(commandType);
             foreach (var property in commandType.GetProperties())
             {
-                var propertyType = template.Properties.First(x => x.Name == property.Name).Type;
-                var isList = propertyType == BotCommandPropertyType.List;
+                var propertyCommandType = template.Properties.First(x => x.Name == property.Name).Type;
+                var isList = propertyCommandType == BotCommandPropertyType.List;
                 var value = getValueByName.Invoke(property.Name, isList);
                 if (string.IsNullOrWhiteSpace(value as string) && !isList)
                 {
@@ -62,8 +62,8 @@ namespace Devscord.DiscordFramework.Commands.Services
                 }
                 if (value is string valueString)
                 {
-                    var convertedType = this._botCommandPropertyConversionService.ConvertType(valueString, propertyType);
-                    property.SetValue(instance, convertedType);
+                    var convertedValue = this._botCommandPropertyConversionService.ConvertType(valueString, propertyCommandType, property.PropertyType);
+                    property.SetValue(instance, convertedValue);
                 }
             }
             return (IBotCommand)instance;

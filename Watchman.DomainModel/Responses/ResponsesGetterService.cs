@@ -22,6 +22,7 @@ namespace Watchman.Discord.Areas.Responses.Services
             "HelpInformations",
             "Administration",
             "AntiSpam",
+            "Configurations",
             "Help",
             "Muting",
             "Responses",

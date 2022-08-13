@@ -44,19 +44,18 @@ namespace Watchman.DomainModel.Configuration.Services
             return _cachedConfigurationItem.Select(x => x.Value.GetValueOrDefault(serverId) ?? x.Value[DEFAULT_SERVER_ID]);
         }
 
-        public async Task SaveNewConfiguration(IMappedConfiguration changedConfiguration) // todo: saving new configuration not tested
+        public async Task SaveNewConfiguration(ConfigurationItem changedConfiguration) // todo: saving new configuration not tested
         {
             using var session = this._sessionFactory.CreateMongo();
             var existingConfiguration = session.Get<ConfigurationItem>()
                 .FirstOrDefault(x => x.ServerId == changedConfiguration.ServerId && x.Name == changedConfiguration.Name);
-            var baseFormatConfigurationItem = this._configurationMapperService.MapIntoBaseFormat(changedConfiguration);
             if (existingConfiguration == null)
             {
-                await session.AddAsync(baseFormatConfigurationItem);
+                await session.AddAsync(changedConfiguration);
             }
             else
             {
-                existingConfiguration.SetValue(baseFormatConfigurationItem.Value);
+                existingConfiguration.SetValue(changedConfiguration.Value);
                 await session.AddOrUpdateAsync(existingConfiguration);
             }
             this.Refresh();
@@ -112,6 +111,27 @@ namespace Watchman.DomainModel.Configuration.Services
             }
             _configurationVersions = configurationItems.ToDictionary(x => x.Id, x => x.Version);
             _cachedConfigurationItem = mappedConfigurations;
+        }
+
+        public async Task RemoveCustomConfiguration(IMappedConfiguration configurationToDelete)
+        {
+            using var session = this._sessionFactory.CreateMongo();
+            var existingConfiguration = session.Get<ConfigurationItem>()
+                .FirstOrDefault(x => x.ServerId == configurationToDelete.ServerId && x.Name == configurationToDelete.Name);
+
+            if (existingConfiguration == null)
+            {
+                Log.Warning("Server with id {ServerId} just doesn't have custom configuration with name {ConfigurationName}", configurationToDelete.ServerId, configurationToDelete.Name);
+                return;
+            }
+
+            await session.DeleteAsync(existingConfiguration);
+            this.Refresh();
+        }
+
+        public Type GetConfigurationValueType(IMappedConfiguration mappedConfiguration)
+        {
+            return ((dynamic)mappedConfiguration).ValueType;
         }
 
         //todo refactor

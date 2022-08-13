@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Watchman.DomainModel.Configuration.Services
@@ -7,7 +8,9 @@ namespace Watchman.DomainModel.Configuration.Services
     {
         T GetConfigurationItem<T>(ulong serverId) where T : IMappedConfiguration;
         IEnumerable<IMappedConfiguration> GetConfigurationItems(ulong serverId);
-        Task SaveNewConfiguration(IMappedConfiguration changedConfiguration);
+        Task SaveNewConfiguration(ConfigurationItem changedConfiguration);
         Task InitDefaultConfigurations();
+        Task RemoveCustomConfiguration(IMappedConfiguration configurationToDelete);
+        Type GetConfigurationValueType(IMappedConfiguration mappedConfiguration);
     }
 }

@@ -8,7 +8,7 @@ namespace Watchman.DomainModel.Configuration.Services
     public interface IConfigurationMapperService
     {
         Dictionary<Type, Dictionary<ulong, IMappedConfiguration>> GetMappedConfigurations(IEnumerable<ConfigurationItem> configurationItems);
-        ConfigurationItem MapIntoBaseFormat(IMappedConfiguration mappedConfiguration);
+        ConfigurationItem MapIntoBaseFormat(IMappedConfiguration mappedConfiguration, ulong? newServerId = null);
     }
 
     public class ConfigurationMapperService : IConfigurationMapperService
@@ -26,9 +26,11 @@ namespace Watchman.DomainModel.Configuration.Services
             return groupedByTypes.Select(this.MakeServersDictionary).ToDictionary(x => x.Values.First().GetType(), x => x);
         }
 
-        public ConfigurationItem MapIntoBaseFormat(IMappedConfiguration mappedConfiguration)
+        public ConfigurationItem MapIntoBaseFormat(IMappedConfiguration mappedConfiguration, ulong? newServerId = null)
         {
-            return new ConfigurationItem(((dynamic)mappedConfiguration).Value, mappedConfiguration.ServerId, mappedConfiguration.Name, mappedConfiguration.Group, mappedConfiguration.SubGroup);
+            var value = ((dynamic)mappedConfiguration).Value;
+            var serverId = newServerId ?? mappedConfiguration.ServerId;
+            return new ConfigurationItem(value, serverId, mappedConfiguration.Name, mappedConfiguration.Group, mappedConfiguration.SubGroup);
         }
 
         private Dictionary<ulong, IMappedConfiguration> MakeServersDictionary(IEnumerable<ConfigurationItem> configurationItems)

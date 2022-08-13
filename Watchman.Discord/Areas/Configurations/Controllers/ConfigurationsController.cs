@@ -7,28 +7,36 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Watchman.Cqrs;
-using Watchman.Discord.Areas.Configurations.IBotCommands;
+using Watchman.Discord.Areas.Configurations.BotCommands;
 using Watchman.DomainModel.Configuration;
 using Watchman.DomainModel.Configuration.Queries;
 using Watchman.DomainModel.Configuration.Services;
+using Watchman.Discord.ResponsesManagers;
+using Devscord.DiscordFramework.Commons.Exceptions;
+using Watchman.Discord.Areas.Configurations.Services;
+using Watchman.DomainModel.Responses;
 
 namespace Watchman.Discord.Areas.Configurations.Controllers
 {
     public class ConfigurationsController : IController
     {
-        private readonly IMessagesServiceFactory messagesServiceFactory;
-        private readonly IConfigurationService configurationService;
+        private readonly IMessagesServiceFactory _messagesServiceFactory;
+        private readonly IConfigurationService _configurationService;
+        private readonly IConfigurationMapperService _configurationMapperService;
+        private readonly IConfigurationValueSetter _configurationValueSetter;
 
-        public ConfigurationsController(IQueryBus queryBus, IMessagesServiceFactory messagesServiceFactory, IConfigurationService configurationService)
+        public ConfigurationsController(IMessagesServiceFactory messagesServiceFactory, IConfigurationService configurationService, IConfigurationMapperService configurationMapperService, IConfigurationValueSetter configurationValueSetter)
         {
-            this.messagesServiceFactory = messagesServiceFactory;
-            this.configurationService = configurationService;
+            this._messagesServiceFactory = messagesServiceFactory;
+            this._configurationService = configurationService;
+            this._configurationMapperService = configurationMapperService;
+            this._configurationValueSetter = configurationValueSetter;
         }
 
         //todo tests
         public async Task GetConfigurations(ConfigurationsCommand command, Contexts contexts)
         {
-            var configurations = this.configurationService.GetConfigurationItems(contexts.Server.Id);
+            var configurations = this._configurationService.GetConfigurationItems(contexts.Server.Id);
             if(command.Group != null)
             {
                 configurations = configurations.Where(x => x.Group.ToLower() == command.Group.ToLower());
@@ -36,8 +44,57 @@ namespace Watchman.Discord.Areas.Configurations.Controllers
             var groupped = configurations.GroupBy(x => x.Group).OrderBy(x => x.Key);
             var mapped = groupped.Select(x => new KeyValuePair<string, string>(x.Key, $"```\n{string.Join("\n", x.Select(item => item.Name))}```"));
             //todo from responses
-            var messagesService = this.messagesServiceFactory.Create(contexts);
+            var messagesService = this._messagesServiceFactory.Create(contexts);
             await messagesService.SendEmbedMessage("Konfiguracja", "Poniżej znajdziesz liste elementów konfiguracji", mapped);
+        }
+
+        public async Task SetCustomConfiguration(SetConfigurationCommand command, Contexts contexts)
+        {
+            var mappedConfiguration = this._configurationService.GetConfigurationItems(contexts.Server.Id)
+                .FirstOrDefault(item => item.Name.ToLowerInvariant() == command.Name.ToLowerInvariant());
+            var messageService = this._messagesServiceFactory.Create(contexts);
+
+            if (mappedConfiguration == null)
+            {
+                await messageService.SendResponse(x => x.ConfigurationItemNotFound(command.Name));
+                return;
+            }
+
+            var propertiesValues = command.GetType().GetProperties().Where(x => x.Name.EndsWith("Value")).Select(x => x.GetValue(command));
+            var countOfPropertiesWithValue = propertiesValues.Count(x => x != null);
+            if (countOfPropertiesWithValue > 1)
+            {
+                await messageService.SendResponse(x => x.TooManyValueArgumentsForSetConfiguration());
+                return;
+            }
+
+            var configurationItem = this._configurationMapperService.MapIntoBaseFormat(mappedConfiguration, contexts.Server.Id);
+            var configurationValueType = this._configurationService.GetConfigurationValueType(mappedConfiguration);
+            if (countOfPropertiesWithValue == 0)
+            {
+                await this._configurationValueSetter.SetDefaultValueForConfiguration(configurationItem, configurationValueType);
+                await messageService.SendResponse(x => x.ConfigurationValueHasBeenSetAsDefaultOfType(contexts, command.Name));
+                return;
+            }
+
+            await this._configurationValueSetter.SetConfigurationValueFromCommand(command, configurationItem, propertiesValues, configurationValueType);
+            await messageService.SendResponse(x => x.CustomConfigurationHasBeenSet(contexts, command.Name));
+        }
+
+        public async Task RemoveCustomConfiguration(RemoveConfigurationCommand command, Contexts contexts)
+        {
+            var mappedConfiguration = this._configurationService.GetConfigurationItems(contexts.Server.Id)
+                .FirstOrDefault(item => item.Name.ToLowerInvariant() == command.Name.ToLowerInvariant());
+            var messageService = this._messagesServiceFactory.Create(contexts);
+
+            if (mappedConfiguration == null || mappedConfiguration.ServerId == Response.DEFAULT_SERVER_ID)
+            {
+                await messageService.SendResponse(x => x.ServerDoesntHaveCustomValueForConfiguration(contexts, command.Name));
+                return;
+            }
+
+            await this._configurationService.RemoveCustomConfiguration(mappedConfiguration);
+            await messageService.SendResponse(x => x.CustomConfigurationHasBeenRemoved(contexts, command.Name));
         }
     }
 }
