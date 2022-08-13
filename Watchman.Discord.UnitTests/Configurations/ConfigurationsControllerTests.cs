@@ -14,6 +14,7 @@ using Watchman.Discord.Areas.Configurations.Services;
 using Watchman.Discord.UnitTests.TestObjectFactories;
 using Watchman.DomainModel.Configuration;
 using Watchman.DomainModel.Configuration.Services;
+using DomainReponses = Watchman.DomainModel.Responses;
 
 namespace Watchman.Discord.UnitTests.Configurations
 {
@@ -187,6 +188,97 @@ namespace Watchman.Discord.UnitTests.Configurations
             configurationValueSetterMock.Verify(x => x.SetDefaultValueForConfiguration(It.IsAny<ConfigurationItem>(), It.IsAny<Type>()), Times.Never);
             configurationValueSetterMock
                 .Verify(x => x.SetConfigurationValueFromCommand(It.IsAny<SetConfigurationCommand>(), It.IsAny<ConfigurationItem>(), It.IsAny<IEnumerable<object>>(), It.IsAny<Type>()), Times.Once);
+        }
+
+        [Test, AutoData]
+        public async Task RemoveCustomConfiguration_SendResponseServerDoesntHaveCustomValueForConfiguration_WhenProvidedConfigurationWillBeNotFound(RemoveConfigurationCommand command)
+        {
+            // Arrange
+            var contexts = this._testContextsFactory.CreateContexts(1, 1, 1);
+
+            var responsesServiceMock = new Mock<IResponsesService>();
+            var messagesServiceMock = this._messagesServiceMockFactory.Create(responsesServiceMock);
+            var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
+            messagesServiceFactoryMock.Setup(x => x.Create(It.IsAny<Contexts>()))
+                .Returns(messagesServiceMock.Object);
+
+            var configurationServiceMock = new Mock<IConfigurationService>();
+
+            var controller = new ConfigurationsController(messagesServiceFactoryMock.Object, configurationServiceMock.Object, null, null);
+
+            // Act
+            await controller.RemoveCustomConfiguration(command, contexts);
+
+            // Assert
+            messagesServiceMock.Verify(x => x.SendResponse(It.IsAny<Func<IResponsesService, string>>()), Times.Once);
+            responsesServiceMock.Verify(x => x.ProcessResponse("ServerDoesntHaveCustomValueForConfiguration", It.IsAny<Contexts>(), It.IsAny<KeyValuePair<string, string>[]>()), Times.Once);
+            configurationServiceMock.Verify(x => x.RemoveCustomConfiguration(It.IsAny<IMappedConfiguration>()), Times.Never);
+        }
+
+        [Test, AutoData]
+        public async Task RemoveCustomConfiguration_SendResponseServerDoesntHaveCustomValueForConfiguration_WhenProvidedConfigurationWillBeFoundAsDefault(RemoveConfigurationCommand command)
+        {
+            // Arrange
+            var contexts = this._testContextsFactory.CreateContexts(serverId: 1, 1, 1);
+
+            var responsesServiceMock = new Mock<IResponsesService>();
+            var messagesServiceMock = this._messagesServiceMockFactory.Create(responsesServiceMock);
+            var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
+            messagesServiceFactoryMock.Setup(x => x.Create(It.IsAny<Contexts>()))
+                .Returns(messagesServiceMock.Object);
+
+            var testMappedConfigurationMock = new Mock<IMappedConfiguration>();
+            testMappedConfigurationMock.SetupGet(x => x.Name)
+                .Returns(command.Name);
+            testMappedConfigurationMock.SetupGet(x => x.ServerId)
+                .Returns(DomainReponses.Response.DEFAULT_SERVER_ID);
+
+            var configurationServiceMock = new Mock<IConfigurationService>();
+            configurationServiceMock.Setup(x => x.GetConfigurationItems(It.IsAny<ulong>()))
+                .Returns(new List<IMappedConfiguration> { testMappedConfigurationMock.Object });
+
+            var controller = new ConfigurationsController(messagesServiceFactoryMock.Object, configurationServiceMock.Object, null, null);
+
+            // Act
+            await controller.RemoveCustomConfiguration(command, contexts);
+
+            // Assert
+            messagesServiceMock.Verify(x => x.SendResponse(It.IsAny<Func<IResponsesService, string>>()), Times.Once);
+            responsesServiceMock.Verify(x => x.ProcessResponse("ServerDoesntHaveCustomValueForConfiguration", It.IsAny<Contexts>(), It.IsAny<KeyValuePair<string, string>[]>()), Times.Once);
+            configurationServiceMock.Verify(x => x.RemoveCustomConfiguration(It.IsAny<IMappedConfiguration>()), Times.Never);
+        }
+
+        [Test, AutoData]
+        public async Task RemoveCustomConfiguration_RemoveCustomConfigurationForServer(RemoveConfigurationCommand command, ulong serverId)
+        {
+            // Arrange
+            var contexts = this._testContextsFactory.CreateContexts(serverId, 1, 1);
+
+            var responsesServiceMock = new Mock<IResponsesService>();
+            var messagesServiceMock = this._messagesServiceMockFactory.Create(responsesServiceMock);
+            var messagesServiceFactoryMock = new Mock<IMessagesServiceFactory>();
+            messagesServiceFactoryMock.Setup(x => x.Create(It.IsAny<Contexts>()))
+                .Returns(messagesServiceMock.Object);
+
+            var testMappedConfigurationMock = new Mock<IMappedConfiguration>();
+            testMappedConfigurationMock.SetupGet(x => x.Name)
+                .Returns(command.Name);
+            testMappedConfigurationMock.SetupGet(x => x.ServerId)
+                .Returns(serverId);
+
+            var configurationServiceMock = new Mock<IConfigurationService>();
+            configurationServiceMock.Setup(x => x.GetConfigurationItems(It.IsAny<ulong>()))
+                .Returns(new List<IMappedConfiguration> { testMappedConfigurationMock.Object });
+
+            var controller = new ConfigurationsController(messagesServiceFactoryMock.Object, configurationServiceMock.Object, null, null);
+
+            // Act
+            await controller.RemoveCustomConfiguration(command, contexts);
+
+            // Assert
+            messagesServiceMock.Verify(x => x.SendResponse(It.IsAny<Func<IResponsesService, string>>()), Times.Once);
+            responsesServiceMock.Verify(x => x.ProcessResponse("CustomConfigurationHasBeenRemoved", It.IsAny<Contexts>(), It.IsAny<KeyValuePair<string, string>[]>()), Times.Once);
+            configurationServiceMock.Verify(x => x.RemoveCustomConfiguration(It.IsAny<IMappedConfiguration>()), Times.Once);
         }
     }
 }

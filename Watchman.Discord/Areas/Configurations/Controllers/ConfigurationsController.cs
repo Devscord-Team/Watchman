@@ -81,7 +81,6 @@ namespace Watchman.Discord.Areas.Configurations.Controllers
             await messageService.SendResponse(x => x.CustomConfigurationHasBeenSet(contexts, command.Name));
         }
 
-        // TODO: Add tests
         public async Task RemoveCustomConfiguration(RemoveConfigurationCommand command, Contexts contexts)
         {
             var mappedConfiguration = this._configurationService.GetConfigurationItems(contexts.Server.Id)
