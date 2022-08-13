@@ -48,7 +48,6 @@ namespace Watchman.Discord.Areas.Configurations.Controllers
             await messagesService.SendEmbedMessage("Konfiguracja", "Poniżej znajdziesz liste elementów konfiguracji", mapped);
         }
 
-        // TODO: Add tests
         public async Task SetCustomConfiguration(SetConfigurationCommand command, Contexts contexts)
         {
             var mappedConfiguration = this._configurationService.GetConfigurationItems(contexts.Server.Id)
